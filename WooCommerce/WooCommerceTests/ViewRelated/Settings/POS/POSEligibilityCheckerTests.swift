@@ -31,9 +31,11 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_all_conditions_satisfied_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -47,9 +49,11 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_account_not_whitelisted_in_backend_and_enabled_via_local_feature_flag_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBarcodeScanningi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -63,9 +67,11 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_account_not_whitelisted_in_backend_and_not_enabled_via_local_feature_flag_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -79,10 +85,12 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_non_iPad_device_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         [UIUserInterfaceIdiom.phone, UIUserInterfaceIdiom.mac, UIUserInterfaceIdiom.tv, UIUserInterfaceIdiom.carPlay]
             .forEach { userInterfaceIdiom in
-                let checker = POSEligibilityChecker(userInterfaceIdiom: userInterfaceIdiom,
+                let checker = POSEligibilityChecker(siteID: siteID,
+                                                    userInterfaceIdiom: userInterfaceIdiom,
                                                     siteSettings: siteSettings,
                                                     currencySettings: Fixtures.usdCurrencySettings,
                                                     stores: stores,
@@ -97,11 +105,13 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_non_us_site_then_returns_false() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         [Country.ca, Country.es, Country.gb].forEach { country in
             // When
             setupCountry(country: country)
             accountWhitelistedInBackend(true)
-            let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+            let checker = POSEligibilityChecker(siteID: siteID,
+                                                userInterfaceIdiom: .pad,
                                                 siteSettings: siteSettings,
                                                 currencySettings: Fixtures.usdCurrencySettings,
                                                 stores: stores,
@@ -116,9 +126,11 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_when_non_usd_currency_then_isEligible_returns_false() {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.nonUSDCurrencySettings,
                                             stores: stores,
@@ -132,8 +144,10 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_feature_flag_is_disabled_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -147,13 +161,15 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_WooCommerce_version_is_below_9_6_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
 
         // Unsupported WooCommerce version
         setupWooCommerceVersion("9.5.2")
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -167,6 +183,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_WooCommerce_version_is_at_least_9_6_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -174,7 +191,8 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupWooCommerceVersion("9.6.0-beta1")
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -188,6 +206,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_enabled_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -196,7 +215,8 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupPOSFeatureEnabled(.success(true))
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -210,6 +230,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_disabled_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -218,7 +239,8 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupPOSFeatureEnabled(.success(false))
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -232,6 +254,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_core_version_is_10_0_0_and_POS_feature_check_fails_then_returns_false() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -240,7 +263,8 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,
@@ -254,6 +278,7 @@ final class POSEligibilityCheckerTests: XCTestCase {
     func test_is_eligible_when_core_version_is_smaller_than_10_0_0_and_POS_feature_disabled_then_returns_true() throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
 
@@ -262,7 +287,8 @@ final class POSEligibilityCheckerTests: XCTestCase {
         setupPOSFeatureEnabled(.success(false))
 
         // When
-        let checker = POSEligibilityChecker(userInterfaceIdiom: .pad,
+        let checker = POSEligibilityChecker(siteID: siteID,
+                                            userInterfaceIdiom: .pad,
                                             siteSettings: siteSettings,
                                             currencySettings: Fixtures.usdCurrencySettings,
                                             stores: stores,

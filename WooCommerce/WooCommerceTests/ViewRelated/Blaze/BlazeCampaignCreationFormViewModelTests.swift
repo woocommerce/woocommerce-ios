@@ -973,49 +973,110 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_code"] as? String, "1")
     }
 
-    // MARK: ToS Checkbox Attributed Text
-    func test_tosCheckboxAttributedText_contains_weekly_amount() throws {
+    // MARK: ToS Checkbox First Line - Evergreen Campaigns
+    func test_tos_checkbox_first_line_evergreen_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
         let attributedText = viewModel.tosCheckboxAttributedText
-
-        // Then
-        let expectedWeeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
         let textContent = String(attributedText.characters)
-        XCTAssertTrue(textContent.contains("$\(Int(expectedWeeklyAmount))"), "Attributed text should contain the weekly amount")
-    }
-
-    func test_tosCheckboxAttributedText_contains_start_date() throws {
-        // Given
-        insertProduct(sampleProduct)
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           onCompletion: {})
-
-        // When
-        let attributedText = viewModel.tosCheckboxAttributedText
 
         // Then
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .medium
-        let expectedDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
-        let textContent = String(attributedText.characters)
-        XCTAssertTrue(textContent.contains(expectedDate), "Attributed text should contain the formatted start date")
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+
+        let expectedFirstLine = "I agree to a recurring weekly charge of $\(Int(weeklyAmount)) starting \(startDate), which will continue until I cancel."
+        XCTAssertTrue(textContent.contains(expectedFirstLine), "Evergreen campaign first line should match expected text")
     }
 
-    func test_tosCheckboxAttributedText_has_proper_link_attributes() throws {
+    func test_tos_checkbox_second_line_evergreen_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let expectedSecondLine = "I understand I can cancel anytime from the campaign details screen to stop future charges."
+        XCTAssertTrue(textContent.contains(expectedSecondLine), "Evergreen campaign second line should match expected text")
+    }
+
+    // MARK: ToS Checkbox First Line - Finite Campaigns
+    func test_tos_checkbox_first_line_finite_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let defaultDuration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
+        let totalAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(defaultDuration)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let startDate = Date.now + 60 * 60 * 24
+        let endDate = startDate.addingTimeInterval(86400 * Double(defaultDuration))
+        let startDateString = dateFormatter.string(for: startDate) ?? ""
+        let endDateString = dateFormatter.string(for: endDate) ?? ""
+
+        let expectedFirstLine = "I agree to a total charge of $\(Int(totalAmount)) for a campaign running from \(startDateString) to \(endDateString)."
+        XCTAssertTrue(textContent.contains(expectedFirstLine), "Finite campaign first line should match expected text")
+    }
+
+    func test_tos_checkbox_second_line_finite_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let expectedSecondLine = "I understand I can cancel anytime from the campaign details screen before the campaign ends."
+        XCTAssertTrue(textContent.contains(expectedSecondLine), "Finite campaign second line should match expected text")
+    }
+
+    // MARK: ToS Checkbox Link Attributes
+    func test_tos_checkbox_attributed_text_has_proper_link_attributes() throws {
         // Given
         insertProduct(sampleProduct)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,

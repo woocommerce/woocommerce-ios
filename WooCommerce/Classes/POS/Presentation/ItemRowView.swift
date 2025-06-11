@@ -23,17 +23,9 @@ struct ItemRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: Constants.horizontalElementSpacing) {
-            if case .loading = cartItem.state {
-                GhostItemCardView(configuration: .cart) {
-                    if let onCancelLoading {
-                        CartRowRemoveButton {
-                            onCancelLoading()
-                        }
-                    }
-                }
-                .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-            } else {
+        switch cartItem.state {
+        case .loaded:
+            HStack(spacing: Constants.horizontalElementSpacing) {
                 productImage
 
                 VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
@@ -62,12 +54,23 @@ struct ItemRowView: View {
                     }
                 }
             }
+            .padding(.trailing, Constants.cardContentHorizontalPadding)
+            .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+            .background(Color.posSurfaceContainerLowest)
+            .posItemCardBorderStyles()
+            .padding(.horizontal, Constants.horizontalPadding)
+        case .loading:
+            GhostItemCardView(configuration: .cart) {
+                if let onCancelLoading {
+                    CartRowRemoveButton {
+                        onCancelLoading()
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
+            .background(Color.posSurfaceContainerLowest)
+            .padding(.horizontal, Constants.horizontalPadding)
         }
-        .padding(.trailing, Constants.cardContentHorizontalPadding)
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder

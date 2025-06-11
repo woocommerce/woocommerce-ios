@@ -32,6 +32,7 @@ struct GhostItemCardView: View {
 
             if let accessory {
                 accessory
+                    .padding(Constants.accessoryButtonPadding * (1 / scale))
             }
         }
         .measureWidth { width in
@@ -39,7 +40,7 @@ struct GhostItemCardView: View {
         }
         .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(Color.posSurfaceBright)
-        .if(configuration.bordered) { $0.posItemCardBorderStyles() }
+        .posItemCardBorderStyles()
     }
 
     @ViewBuilder var placeholders: some View {
@@ -75,16 +76,13 @@ fileprivate enum Localization {
 
 struct GhostItemCardViewConfiguration {
     let placeholderHeight: CGFloat
-    let bordered: Bool
 
     static let itemList = GhostItemCardViewConfiguration(
-        placeholderHeight: 32,
-        bordered: true
+        placeholderHeight: 32
     )
 
     static let cart = GhostItemCardViewConfiguration(
-        placeholderHeight: 24,
-        bordered: false
+        placeholderHeight: 24
     )
 }
 

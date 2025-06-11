@@ -65,7 +65,8 @@ final class NotificationsBadgeController {
     ///
     private func hideDotOn(with input: NotificationsBadgeInput) {
         let tag = dotTag(for: input.tab)
-        if let subviews = input.tabBar.orderedTabBarActionableViews[input.tabIndex].subviews.first?.subviews {
+        if let tab = input.tabBar.orderedTabBarActionableViews[safe: input.tabIndex],
+           let subviews = tab.subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()

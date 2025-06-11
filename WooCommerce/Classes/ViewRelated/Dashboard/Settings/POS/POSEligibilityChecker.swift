@@ -29,7 +29,7 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
         if hasWaitedForSiteSettingsNotification || !featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) {
             return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
                 .filter { [weak self] _ in
-                    self?.isEligibleFromSiteSettings() ?? false
+                    self?.isEligibleFromSiteChecks ?? false
                 }
                 .map { $0 && $1 }
                 .eraseToAnyPublisher()
@@ -164,15 +164,15 @@ private extension POSEligibilityChecker {
         NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed, object: siteSettings)
             .map { [weak self] _ -> Bool in
                 guard let self else { return false }
-                return isEligibleFromSiteSettings()
+                return isEligibleFromSiteChecks
             }
             .eraseToAnyPublisher()
     }
 
-    func isEligibleFromSiteSettings() -> Bool {
+    var isEligibleFromSiteChecks: Bool {
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
-        let currencyCode = currencySettings.currencyCode
-        switch (countryCode, currencyCode) {
+        let currency = currencySettings.currencyCode
+        switch (countryCode, currency) {
             case (.US, .USD),
                 (.GB, .GBP):
                 return true

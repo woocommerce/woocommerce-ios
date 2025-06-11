@@ -1,6 +1,7 @@
 import Testing
 import WooFoundation
 @testable import Yosemite
+@testable import Networking
 
 struct POSProductOrVariationResolverTests {
     private var mockProductsRemote: MockProductsRemote!
@@ -13,8 +14,8 @@ struct POSProductOrVariationResolverTests {
         mockItemMapper = MockPointOfSaleItemMapper()
         currencySettings = CurrencySettings()
         sut = POSProductOrVariationResolver(productsRemote: mockProductsRemote,
-                                          currencySettings: currencySettings,
-                                          itemMapper: mockItemMapper)
+                                            currencySettings: currencySettings,
+                                            itemMapper: mockItemMapper)
     }
 
     @Test("Resolves simple product correctly")
@@ -101,7 +102,7 @@ struct POSProductOrVariationResolverTests {
     }
 
     @Test("Throws error for downloadable product")
-    func testThrowsErrorForDownloadableProduct() async {
+    func testThrowsErrorForDownloadableProduct() async throws {
         // Given
         let downloadableProduct = POSProduct.fake().copy(
             productID: 321,
@@ -115,6 +116,8 @@ struct POSProductOrVariationResolverTests {
         await #expect(throws: PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: productName)) {
             _ = try await sut.itemForProductOrVariation(downloadableProduct, scannedCode: scannedCode)
         }
+
+        try await #expect(queryParametersForProductsRequest().contains("downloadable=false"))
     }
 
 
@@ -135,7 +138,7 @@ struct POSProductOrVariationResolverTests {
     }
 
     @Test("Throws error for unsupported product type")
-    func testThrowsErrorForUnsupportedProductType() async {
+    func testThrowsErrorForUnsupportedProductType() async throws {
         // Given
         let unsupportedProduct = POSProduct.fake().copy(
             productID: 789,
@@ -148,6 +151,7 @@ struct POSProductOrVariationResolverTests {
         await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: scannedCode, productName: productName)) {
             _ = try await sut.itemForProductOrVariation(unsupportedProduct, scannedCode: scannedCode)
         }
+        try await #expect(queryParametersForProductsRequest().contains("include_types=simple,variable"))
     }
 
     @Test("Throws loadingError when parent product loading fails")
@@ -225,6 +229,22 @@ struct POSProductOrVariationResolverTests {
         await #expect(throws: PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)) {
             _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }
+    }
+}
+
+// MARK: - Helpers
+
+private extension POSProductOrVariationResolverTests {
+    /// Verify that the query parameters for the POS products request include the expected parameter and match resolver logic.
+    func queryParametersForProductsRequest() async throws -> [String] {
+        let network = MockNetwork()
+        let remote = ProductsRemote(network: network)
+        _ = try? await remote.loadProductsForPointOfSale(
+            for: 1,
+            productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            pageNumber: 1
+        )
+        return network.queryParameters ?? []
     }
 }
 

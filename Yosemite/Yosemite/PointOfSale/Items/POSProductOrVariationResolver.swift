@@ -17,7 +17,7 @@ struct POSProductOrVariationResolver {
         let items: [POSItem]
 
         guard productOrVariation.downloadable == false else {
-            throw PointOfSaleBarcodeScanError.downloadableProduct
+            throw .downloadableProduct
         }
 
         switch productOrVariation.productType {
@@ -29,18 +29,18 @@ struct POSProductOrVariationResolver {
             let variableProduct = try await parentProductForVariation(variation)
             items = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableProduct)
         default:
-            throw PointOfSaleBarcodeScanError.unsupportedProductType
+            throw .unsupportedProductType
         }
 
         guard let item = items.first else {
-            throw PointOfSaleBarcodeScanError.unknown
+            throw .unknown
         }
         return item
     }
 
     private func parentProductForVariation(_ variation: POSProductVariation) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
         guard variation.productID != 0 else {
-            throw PointOfSaleBarcodeScanError.noParentProductForVariation
+            throw .noParentProductForVariation
         }
 
         let parentProduct = try await loadParentProduct(variation)
@@ -48,7 +48,7 @@ struct POSProductOrVariationResolver {
 
         guard let mappedProduct = mappedProducts.first,
               case .variableParentProduct(let variableProduct) = mappedProduct else {
-            throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted
+            throw .variationCouldNotBeConverted
         }
         return variableProduct
     }

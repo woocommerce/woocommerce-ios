@@ -3,9 +3,10 @@ import protocol Networking.ProductsRemoteProtocol
 import class Networking.ProductsRemote
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
+import enum Networking.NetworkError
 
 public protocol PointOfSaleBarcodeScanServiceProtocol {
-    func getItem(barcode: String) async throws -> POSItem
+    func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem
 }
 
 public enum PointOfSaleBarcodeScanError: Error, Equatable {
@@ -14,18 +15,20 @@ public enum PointOfSaleBarcodeScanError: Error, Equatable {
     case variationCouldNotBeConverted
     case unsupportedProductType
     case downloadableProduct
+    case notFound
     case loadingError(underlyingError: Error)
     case mappingError(underlyingError: Error)
 
     public static func == (lhs: PointOfSaleBarcodeScanError, rhs: PointOfSaleBarcodeScanError) -> Bool {
         switch (lhs, rhs) {
         case (.unknown, .unknown),
-             (.noParentProductForVariation, .noParentProductForVariation),
-             (.variationCouldNotBeConverted, .variationCouldNotBeConverted),
-             (.unsupportedProductType, .unsupportedProductType),
-             (.downloadableProduct, .downloadableProduct),
-             (.loadingError, .loadingError),
-             (.mappingError, .mappingError):
+            (.noParentProductForVariation, .noParentProductForVariation),
+            (.variationCouldNotBeConverted, .variationCouldNotBeConverted),
+            (.unsupportedProductType, .unsupportedProductType),
+            (.downloadableProduct, .downloadableProduct),
+            (.notFound, .notFound),
+            (.loadingError, .loadingError),
+            (.mappingError, .mappingError):
             return true
         default:
             return false
@@ -60,13 +63,19 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     /// Looks up a POSItem using a barcode scan string
     /// - Parameter barcode: The barcode string from a scan (global unique identifier)
     /// - Returns: A POSItem if found, or throws an error
-    public func getItem(barcode: String) async throws -> POSItem {
+    public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+        let productOrVariation = try await loadPOSProduct(barcode: barcode)
+        return try await itemResolver.itemForProductOrVariation(productOrVariation)
+    }
+
+    private func loadPOSProduct(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
-            let productOrVariation = try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
-                                                                                                      globalUniqueID: barcode)
-            return try await itemResolver.itemForProductOrVariation(productOrVariation)
+            return try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
+                                                                                   globalUniqueID: barcode)
+        } catch NetworkError.notFound {
+            throw .notFound
         } catch {
-            throw PointOfSaleBarcodeScanError.unknown
+            throw .loadingError(underlyingError: error)
         }
     }
 }

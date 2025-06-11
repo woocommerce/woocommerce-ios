@@ -15,7 +15,7 @@
             "manage_stock": true,
             "stock_quantity": 10,
             "stock_status": "instock",
-            "downloadable": true,
+            "downloadable": false,
             "parent_id": 0
         }
     ]

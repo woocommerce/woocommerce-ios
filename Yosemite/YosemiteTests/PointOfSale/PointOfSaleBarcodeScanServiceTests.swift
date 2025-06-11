@@ -47,7 +47,7 @@ struct PointOfSaleBarcodeScanServiceTests {
         network.simulateError(requestUrlSuffix: "products", error: NetworkError.notFound())
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unknown) {
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound) {
             _ = try await sut.getItem(barcode: barcode)
         }
     }

@@ -19,6 +19,7 @@ import struct Yosemite.POSProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -233,7 +234,7 @@ struct POSPreviewHelpers {
 
 // MARK: - Barcode Scan Service
 final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
-    func getItem(barcode: String) async throws -> POSItem {
+    func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return mockSimpleProductItem(id: 5, price: "35.50")
     }
 }

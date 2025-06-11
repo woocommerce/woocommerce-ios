@@ -101,6 +101,22 @@ struct POSProductOrVariationResolverTests {
         #expect(result == expectedVariationItem)
     }
 
+    @Test("Throws unknown error for product with no mapped items")
+     func testThrowsErrorForUnknownProductType() async {
+         // Given
+         let unknownProduct = POSProduct.fake().copy(
+            productID: 321,
+            productTypeKey: "simple"
+         )
+         mockItemMapper.mockMappedProducts = []
+         let scannedCode = "test-unknown"
+
+         // When/Then
+         await #expect(throws: PointOfSaleBarcodeScanError.unknown(scannedCode: scannedCode)) {
+             _ = try await sut.itemForProductOrVariation(unknownProduct, scannedCode: scannedCode)
+         }
+     }
+
     @Test("Throws error for downloadable product")
     func testThrowsErrorForDownloadableProduct() async throws {
         // Given
@@ -118,23 +134,6 @@ struct POSProductOrVariationResolverTests {
         }
 
         try await #expect(queryParametersForProductsRequest().contains("downloadable=false"))
-    }
-
-
-    @Test("Throws error for unknown product type (no mapped item)")
-    func testThrowsErrorForUnknownProductTypeNoMappedItem() async {
-        // Given
-        let simpleProduct = POSProduct.fake().copy(
-            productID: 999,
-            productTypeKey: "simple"
-        )
-        let scannedCode = "test-barcode-unknown"
-        mockItemMapper.mockMappedProducts = [] // Simulate no mapped item
-
-        // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unknown(scannedCode: scannedCode)) {
-            _ = try await sut.itemForProductOrVariation(simpleProduct, scannedCode: scannedCode)
-        }
     }
 
     @Test("Throws error for unsupported product type")

@@ -205,7 +205,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         try await viewModel.purchaseLabel()
 
         // Then
-        let shipmentDetails = encodedHazmat?[viewModel.shipment.id] as? [String: Any]
+        let shipmentDetails = encodedHazmat?[viewModel.shipment.index.description] as? [String: Any]
         XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
@@ -628,7 +628,8 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                             dimensions: ProductDimensions.fake(),
                                             attributes: [],
                                             imageURL: nil)
-        return Shipment(contents: [CollapsibleShipmentItemCardViewModel(item: item, currency: "GBP")],
+        return Shipment(index: 0,
+                        contents: [CollapsibleShipmentItemCardViewModel(item: item, currency: "GBP")],
                         currency: "GBP",
                         currencySettings: ServiceLocator.currencySettings,
                         shippingSettingsService: ServiceLocator.shippingSettingsService)

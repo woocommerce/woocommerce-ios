@@ -568,7 +568,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         try await viewModel.saveShipmentInfo()
 
         // Then
-        let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: ["0", "1"],
+        let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: [:],
                                                                  shipments: ["1": [WooShippingShipmentItem(id: 1, subItems: [])],
                                                                              "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
                                                                                    WooShippingShipmentItem(id: 2, subItems: [])]])
@@ -745,7 +745,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shipments[0].contents.allSatisfy({ $0.mainItemRow.isSelectable }))
 
         // When
-        let shipmentID = viewModel.shipments[0].id
+        let shipmentID = viewModel.shipments[0].index
         let purchasedLabelID: Int64 = 325
         viewModel.didPurchaseLabel(for: shipmentID, purchasedLabelID: purchasedLabelID)
 
@@ -787,7 +787,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shipments[0].contents.allSatisfy({ $0.mainItemRow.isSelectable == false }))
 
         // When
-        let shipmentID = viewModel.shipments[0].id
+        let shipmentID = viewModel.shipments[0].index
         viewModel.didRequestRefund(for: shipmentID)
 
         // Then

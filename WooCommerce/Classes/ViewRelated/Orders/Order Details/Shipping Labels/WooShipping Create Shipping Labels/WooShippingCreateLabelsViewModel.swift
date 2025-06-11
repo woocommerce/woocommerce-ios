@@ -508,33 +508,33 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
-        guard let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
+        guard let index = shipments.firstIndex(where: { $0.index == shipment.index }) else { return }
         shippingLabels.append(newLabel)
-        shipments[index] = Shipment(id: index.description,
+        shipments[index] = Shipment(index: index,
                                     contents: shipment.contents,
                                     purchasedLabelID: newLabel.shippingLabelID,
                                     currency: order.currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didPurchaseLabel(for: shipment.id,
+        splitShipmentsViewModel.didPurchaseLabel(for: shipment.index,
                                                  purchasedLabelID: newLabel.shippingLabelID)
         onLabelPurchase?(markOrderComplete)
     }
 
     func handleLabelRefundRequested(labelID: Int64,
                                     in shipment: Shipment) {
-        let shipmentIndex = shipments.firstIndex(where: { $0.id == shipment.id })
+        let shipmentIndex = shipments.firstIndex(where: { $0.index == shipment.index })
         let labelIndex = shippingLabels.firstIndex(where: { $0.shippingLabelID == labelID })
 
         guard let shipmentIndex, let labelIndex else { return }
-        shipments[shipmentIndex] = Shipment(id: shipmentIndex.description,
+        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: shipment.contents,
                                             purchasedLabelID: nil,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
         shippingLabels.remove(at: labelIndex)
-        splitShipmentsViewModel.didRequestRefund(for: shipment.id)
+        splitShipmentsViewModel.didRequestRefund(for: shipment.index)
         refundNotice = Notice(message: Localization.refundNotice)
     }
 

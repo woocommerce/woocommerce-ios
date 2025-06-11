@@ -25,18 +25,13 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     /// Shipment info saved in remote. Used to compare with locally edited info and enable "Done" button
     ///
-    @Published private var shipmentsSavedInRemote: WooShippingUpdateShipment?
+    @Published private var shipmentsSavedInRemote: WooShippingShipments?
 
     /// Edited shipments info to send to remote
     ///
-    private var editedShipmentsInfo: WooShippingUpdateShipment {
+    private var editedShipmentsInfo: WooShippingShipments {
         var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
-        var shipmentIdsToUpdate = [String]()
-        for (index, shipment) in shipments.enumerated() {
-            let key = "\(index)"
-            // TODO: 15309 Investigate which IDs need to be sent to remote
-            shipmentIdsToUpdate.append(key)
-
+        for shipment in shipments {
             var items = [WooShippingShipmentItem]()
             for item in shipment.contents {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
@@ -48,12 +43,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                 }
             }
 
-            shipmentsForRemote[key] = items
+            shipmentsForRemote[shipment.index.description] = items
         }
 
-        let shipment = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
-                                                 shipments: shipmentsForRemote)
-        return shipment
+        return shipmentsForRemote
     }
 
     var containsUnsavedChanges: Bool {
@@ -142,15 +135,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
-    func didPurchaseLabel(for shipmentID: String, purchasedLabelID: Int64) {
-        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+    func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {
+        guard let index = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
             return
         }
         let currentShipment = shipments[index]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[index] = Shipment(id: currentShipment.id,
+        shipments[index] = Shipment(index: currentShipment.index,
                                     contents: updatedContents,
                                     purchasedLabelID: purchasedLabelID,
                                     currency: order.currency,
@@ -158,15 +151,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                     shippingSettingsService: shippingSettingsService)
     }
 
-    func didRequestRefund(for shipmentID: String) {
-        guard let index = shipments.firstIndex(where: { $0.id == shipmentID }) else {
+    func didRequestRefund(for shipmentIndex: Int) {
+        guard let index = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
             return
         }
         let currentShipment = shipments[index]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[index] = Shipment(id: currentShipment.id,
+        shipments[index] = Shipment(index: currentShipment.index,
                                     contents: updatedContents,
                                     purchasedLabelID: nil,
                                     currency: order.currency,
@@ -215,7 +208,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // Step 2: Update the current shipment
-        shipments[currentIndex] = createShipment(id: currentIndex.description,
+        shipments[currentIndex] = createShipment(index: currentIndex,
                                                  contents: newShipmentContents)
 
         // Step 3: Add new or update existing shipment
@@ -226,7 +219,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         switch destination {
         case .newShipment:
-            let newShipment = createShipment(id: shipments.count.description,
+            let newShipment = createShipment(index: shipments.count,
                                              contents: movedItems)
             shipments.append(newShipment)
             updatedShipmentIndex = shipments.count - 1
@@ -252,7 +245,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
             // Add the rest of the new items to the shipment
             updatedShipmentContents.append(contentsOf: movedItems)
-            shipments[index] = createShipment(id: index.description,
+            shipments[index] = createShipment(index: index,
                                               contents: updatedShipmentContents)
             updatedShipmentIndex = index
         }
@@ -325,12 +318,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // TODO: revise logic for shipment IDs
-        shipments = [createShipment(id: "0", contents: mergedShipmentContents)] + fulfilledShipments
+        shipments = [createShipment(index: 0, contents: mergedShipmentContents)] + fulfilledShipments
         selectedShipmentIndex = 0
     }
 
     func retrieveName(for shipment: Shipment) -> String {
-        guard let index = shipments.firstIndex(where: { $0.id == shipment.id }) else {
+        guard let index = shipments.firstIndex(where: { $0.index == shipment.index }) else {
             DDLogWarn("⚠️ Cannot retrieve name for shipment \(shipment)")
             return ""
         }
@@ -394,7 +387,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        let mergedShipment = createShipment(id: mergedShipmentIndex.description,
+        let mergedShipment = createShipment(index: mergedShipmentIndex,
                                             contents: mergedContents)
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
@@ -490,7 +483,7 @@ extension WooShippingSplitShipmentsViewModel {
             let contents = packageItems.map { item in
                 CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
-            let shipment = Shipment(id: "0",
+            let shipment = Shipment(index: 0,
                                     contents: contents,
                                     currency: currency,
                                     currencySettings: currencySettings,
@@ -526,7 +519,7 @@ extension WooShippingSplitShipmentsViewModel {
                 shipmentContents.append(content)
             }
 
-            let shipment = Shipment(id: key,
+            let shipment = Shipment(index: Int(key) ?? 0,
                                     contents: shipmentContents,
                                     purchasedLabelID: purchasedLabel?.shippingLabelID,
                                     currency: currency,
@@ -537,9 +530,19 @@ extension WooShippingSplitShipmentsViewModel {
         return shipments
     }
 
-    private func createShipment(id: String, contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
-        Shipment(id: id,
+    private func createShipment(index: Int, contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+        Shipment(index: index,
                  contents: contents,
+                 currency: order.currency,
+                 currencySettings: currencySettings,
+                 shippingSettingsService: shippingSettingsService)
+    }
+
+    private func copy(_ shipment: Shipment, with newIndex: Int) -> Shipment {
+        Shipment(id: shipment.id,
+                 index: newIndex,
+                 contents: shipment.contents,
+                 purchasedLabelID: shipment.purchasedLabelID,
                  currency: order.currency,
                  currencySettings: currencySettings,
                  shippingSettingsService: shippingSettingsService)
@@ -547,7 +550,12 @@ extension WooShippingSplitShipmentsViewModel {
 
     struct Shipment: Identifiable, Equatable {
 
+        /// Underlying ID - do not use this to send to API requests.
         let id: String
+
+        /// Index of the shipment in the shipment list - used to identify shipments in API requests.
+        let index: Int
+
         let contents: [CollapsibleShipmentItemCardViewModel]
         let purchasedLabelID: Int64?
 
@@ -569,13 +577,15 @@ extension WooShippingSplitShipmentsViewModel {
             purchasedLabelID != nil
         }
 
-        init(id: String,
+        init(id: String = UUID().uuidString,
+             index: Int,
              contents: [CollapsibleShipmentItemCardViewModel],
              purchasedLabelID: Int64? = nil,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.id = id
+            self.index = index
             self.contents = contents
             self.purchasedLabelID = purchasedLabelID
 
@@ -607,23 +617,24 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         static func == (lhs: WooShippingSplitShipmentsViewModel.Shipment, rhs: WooShippingSplitShipmentsViewModel.Shipment) -> Bool {
-            lhs.id == rhs.id
+            lhs.index == rhs.index
         }
     }
 
     @discardableResult
     @MainActor
     private func updateShipment() async throws -> WooShippingShipments {
-        let shipments = editedShipmentsInfo
+        let shipmentsInfo = WooShippingUpdateShipment(shipmentIdsToUpdate: [:],
+                                                      shipments: editedShipmentsInfo)
         return try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.updateShipment(siteID: order.siteID,
                                                           orderID: order.orderID,
-                                                          shipmentToUpdate: shipments) { [weak self] result in
+                                                          shipmentToUpdate: shipmentsInfo) { [weak self] result in
                 guard let self else { return }
 
                 switch result {
                 case .success(let shipmentResponse):
-                    shipmentsSavedInRemote = shipments
+                    shipmentsSavedInRemote = shipmentsInfo.shipments
                     continuation.resume(returning: shipmentResponse)
                 case .failure(let error):
                     DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")

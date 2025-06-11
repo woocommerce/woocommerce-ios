@@ -1,5 +1,4 @@
 import Testing
-import XCTest
 import WooFoundation
 import Yosemite
 @testable import WooCommerce
@@ -19,8 +18,7 @@ struct POSTabEligibilityCheckerTests {
         siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
     }
 
-    @Test("When all conditions are satisfied, returns eligible")
-    func test_is_eligible_when_all_conditions_satisfied() async throws {
+    @Test func is_eligible_when_all_conditions_satisfied() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -39,8 +37,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test("When account is not whitelisted and feature flag is disabled, returns ineligible")
-    func test_is_eligible_when_account_not_whitelisted_and_feature_flag_disabled() async throws {
+    @Test func is_eligible_when_account_not_whitelisted_and_feature_flag_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
         setupCountry(country: .us)
@@ -59,8 +56,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .featureFlagDisabled))
     }
 
-    @Test("When non-iPad device, returns ineligible")
-    func test_is_eligible_when_non_ipad_device() async throws {
+    @Test func is_eligible_when_non_iPad_device() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -79,16 +75,46 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .notTablet))
     }
 
-    @Test("When non-US site, returns ineligible")
-    func test_is_eligible_when_non_us_site() async throws {
+    @Test(arguments: [(country: Country.us, currency: CurrencyCode.USD), (country: Country.gb, currency: .GBP)])
+    fileprivate func is_eligible_when_country_is_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: .ca)
+        setupCountry(country: country)
         accountWhitelistedInBackend(true)
+        let currencySettings = CurrencySettings(currencyCode: currency,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               currencySettings: currencySettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test(arguments: [(country: Country.ca, currency: CurrencyCode.CAD), (country: Country.es, currency: CurrencyCode.EUR)])
+    fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: country)
+        accountWhitelistedInBackend(true)
+        let currencySettings = CurrencySettings(currencyCode: currency,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: currencySettings,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -99,8 +125,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .unsupportedCountry))
     }
 
-    @Test("When non-USD currency, returns ineligible")
-    func test_is_eligible_when_non_usd_currency() async throws {
+    @Test func is_eligible_when_non_usd_currency() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -119,8 +144,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .unsupportedCurrency))
     }
 
-    @Test("When WooCommerce version is below minimum, returns ineligible")
-    func test_is_eligible_when_woocommerce_version_below_minimum() async throws {
+    @Test func is_eligible_when_woocommerce_version_below_minimum() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -138,6 +162,90 @@ struct POSTabEligibilityCheckerTests {
 
         // Then
         #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion))
+    }
+
+    @Test func is_eligible_when_core_version_is_10_0_0_and_POS_feature_enabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.success(true))
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test func is_eligible_when_core_version_is_10_0_0_and_POS_feature_disabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.success(false))
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .featureSwitchDisabled))
+    }
+
+    @Test func is_eligible_when_core_version_is_10_0_0_and_POS_feature_check_fails() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupWooCommerceVersion("10.0.0")
+        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .featureSwitchSyncFailure))
+    }
+
+    @Test func is_eligible_when_core_version_is_smaller_than_10_0_0_and_POS_feature_disabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        setupWooCommerceVersion("9.9.9")
+        setupPOSFeatureEnabled(.success(false))
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
     }
 }
 
@@ -170,6 +278,17 @@ private extension POSTabEligibilityCheckerTests {
             switch action {
             case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
                 completion(isAllowed)
+            }
+        }
+    }
+
+    func setupPOSFeatureEnabled(_ result: Result<Bool, Error>) {
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .isFeatureEnabled(_, _, let completion):
+                completion(result)
+            default:
+                break
             }
         }
     }

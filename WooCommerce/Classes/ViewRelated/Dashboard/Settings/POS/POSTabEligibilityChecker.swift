@@ -146,7 +146,7 @@ private extension POSTabEligibilityChecker {
                 case .success(let isEnabled):
                     continuation.resume(returning: isEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled))
                 case .failure:
-                    continuation.resume(returning: .ineligible(reason: .featureSwitchDisabled))
+                    continuation.resume(returning: .ineligible(reason: .featureSwitchSyncFailure))
                 }
             }
             stores.dispatch(action)

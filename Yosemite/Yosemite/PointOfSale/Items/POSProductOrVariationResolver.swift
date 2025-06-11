@@ -13,8 +13,13 @@ struct POSProductOrVariationResolver {
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
-    func itemForProductOrVariation(_ productOrVariation: POSProduct) async throws -> POSItem {
+    func itemForProductOrVariation(_ productOrVariation: POSProduct) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         let items: [POSItem]
+
+        guard productOrVariation.downloadable == false else {
+            throw PointOfSaleBarcodeScanError.downloadableProduct
+        }
+
         switch productOrVariation.productType {
         case .simple:
             let product = productOrVariation
@@ -24,7 +29,7 @@ struct POSProductOrVariationResolver {
             let variableProduct = try await parentProductForVariation(variation)
             items = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableProduct)
         default:
-            throw PointOfSaleBarcodeScanError.unknown
+            throw PointOfSaleBarcodeScanError.unsupportedProductType
         }
 
         guard let item = items.first else {
@@ -33,13 +38,12 @@ struct POSProductOrVariationResolver {
         return item
     }
 
-    private func parentProductForVariation(_ variation: POSProductVariation) async throws -> POSVariableParentProduct {
+    private func parentProductForVariation(_ variation: POSProductVariation) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
         guard variation.productID != 0 else {
             throw PointOfSaleBarcodeScanError.noParentProductForVariation
         }
 
-        let parentProduct = try await productsRemote.loadPOSProduct(for: variation.siteID,
-                                                                     productID: variation.productID)
+        let parentProduct = try await loadParentProduct(variation)
         let mappedProducts = itemMapper.mapProductsToPOSItems(products: [parentProduct])
 
         guard let mappedProduct = mappedProducts.first,
@@ -48,26 +52,40 @@ struct POSProductOrVariationResolver {
         }
         return variableProduct
     }
+
+    private func loadParentProduct(_ variation: POSProductVariation) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
+        do {
+            return try await productsRemote.loadPOSProduct(for: variation.siteID,
+                                                           productID: variation.productID)
+        } catch {
+            throw .loadingError(underlyingError: error)
+        }
+    }
 }
 
 
 private extension POSProduct {
-    func toProductVariation() throws -> POSProductVariation {
-        POSProductVariation(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: try attributes.compactMap { try $0.toProductVariationAttribute() },
-            image: images.first,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey)
+    func toProductVariation() throws(PointOfSaleBarcodeScanError) -> POSProductVariation {
+        do {
+            return POSProductVariation(
+                siteID: siteID,
+                productID: parentID,
+                productVariationID: productID,
+                attributes: try attributes.compactMap { try $0.toProductVariationAttribute() },
+                image: images.first,
+                sku: sku,
+                globalUniqueID: globalUniqueID,
+                price: price,
+                regularPrice: regularPrice,
+                salePrice: salePrice,
+                onSale: onSale,
+                downloadable: downloadable,
+                manageStock: manageStock,
+                stockQuantity: stockQuantity,
+                stockStatusKey: stockStatusKey
+            )
+        } catch {
+            throw .mappingError(underlyingError: error)
+        }
     }
 }

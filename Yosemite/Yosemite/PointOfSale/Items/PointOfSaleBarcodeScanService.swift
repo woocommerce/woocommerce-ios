@@ -12,6 +12,25 @@ public enum PointOfSaleBarcodeScanError: Error, Equatable {
     case unknown
     case noParentProductForVariation
     case variationCouldNotBeConverted
+    case unsupportedProductType
+    case downloadableProduct
+    case loadingError(underlyingError: Error)
+    case mappingError(underlyingError: Error)
+
+    public static func == (lhs: PointOfSaleBarcodeScanError, rhs: PointOfSaleBarcodeScanError) -> Bool {
+        switch (lhs, rhs) {
+        case (.unknown, .unknown),
+             (.noParentProductForVariation, .noParentProductForVariation),
+             (.variationCouldNotBeConverted, .variationCouldNotBeConverted),
+             (.unsupportedProductType, .unsupportedProductType),
+             (.downloadableProduct, .downloadableProduct),
+             (.loadingError, .loadingError),
+             (.mappingError, .mappingError):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 /// Service for handling barcode scanning in Point of Sale

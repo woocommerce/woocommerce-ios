@@ -98,17 +98,82 @@ struct POSProductOrVariationResolverTests {
         #expect(result == expectedVariationItem)
     }
 
-    @Test("Throws error for unknown product type")
-    func testThrowsErrorForUnknownProductType() async {
+    @Test("Throws error for downloadable product")
+    func testThrowsErrorForDownloadableProduct() async {
         // Given
-        let unknownProduct = POSProduct.fake().copy(
+        let downloadableProduct = POSProduct.fake().copy(
+            productID: 321,
+            productTypeKey: "simple",
+            downloadable: true
+        )
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.downloadableProduct) {
+            _ = try await sut.itemForProductOrVariation(downloadableProduct)
+        }
+    }
+
+
+    @Test("Throws error for unknown product type (no mapped item)")
+    func testThrowsErrorForUnknownProductTypeNoMappedItem() async {
+        // Given
+        let simpleProduct = POSProduct.fake().copy(
+            productID: 999,
+            productTypeKey: "simple"
+        )
+        mockItemMapper.mockMappedProducts = [] // Simulate no mapped item
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.unknown) {
+            _ = try await sut.itemForProductOrVariation(simpleProduct)
+        }
+    }
+
+    @Test("Throws error for unsupported product type")
+    func testThrowsErrorForUnsupportedProductType() async {
+        // Given
+        let unsupportedProduct = POSProduct.fake().copy(
             productID: 789,
             productTypeKey: "grouped"
         )
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unknown) {
-            _ = try await sut.itemForProductOrVariation(unknownProduct)
+        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType) {
+            _ = try await sut.itemForProductOrVariation(unsupportedProduct)
+        }
+    }
+
+    @Test("Throws loadingError when parent product loading fails")
+    func testThrowsLoadingErrorWhenParentProductFails() async {
+        // Given
+        let variation = POSProduct.fake().copy(
+            productID: 456,
+            productTypeKey: "variation",
+            parentID: 123
+        )
+        let someError = NSError(domain: "Test", code: 1, userInfo: nil)
+        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(someError))
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.loadingError(underlyingError: someError)) {
+            _ = try await sut.itemForProductOrVariation(variation)
+        }
+    }
+
+    @Test("Throws mappingError when toProductVariation fails")
+    func testThrowsMappingErrorWhenToProductVariationFails() async {
+        // Given: attributes with empty options will cause toProductVariationAttribute to throw
+        let badAttribute = ProductAttribute(siteID: 1, attributeID: 1, name: "Bad", position: 0, visible: true, variation: true, options: [])
+        let variation = POSProduct.fake().copy(
+            productID: 456,
+            productTypeKey: "variation",
+            parentID: 123,
+            attributes: [badAttribute]
+        )
+
+        // When/Then
+        await #expect(throws: PointOfSaleBarcodeScanError.mappingError(underlyingError: ProductAttribute.ProductAttributeError.notFromAVariationAsAProduct)) {
+            _ = try await sut.itemForProductOrVariation(variation)
         }
     }
 

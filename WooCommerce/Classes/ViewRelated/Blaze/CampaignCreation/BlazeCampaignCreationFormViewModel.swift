@@ -402,18 +402,27 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 // MARK: TOS checkbox
 extension BlazeCampaignCreationFormViewModel {
     var tosCheckboxAttributedText: AttributedString {
-        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
-        let formattedStartDate = dateFormatter.string(for: startDate) ?? ""
+        return tosCheckboxFirstLine() + AttributedString(" ") + tosCheckboxSecondLine()
+    }
 
-        let firstLine = String.localizedStringWithFormat(Localization.tosCheckboxFirstLine, weeklyAmount, formattedStartDate)
+    private func tosCheckboxSecondLine() -> AttributedString {
+        let secondLineFormat = isEvergreen ?
+        Localization.tosCheckboxSecondLineEvergreen :
+        Localization.tosCheckboxSecondLineFinite
 
-        let secondLineWithLink = AttributedString.withEmbeddedLink(
-            mainContent: Localization.tosCheckboxSecondLine,
+        return AttributedString.withEmbeddedLink(
+            mainContent: secondLineFormat,
             linkText: Localization.campaignDetailsLinkText,
-            link: Links.stopAnAdCampaign // TODO: Replace with actual campaign details URL
+            link: Links.stopAnAdCampaign
         )
+    }
 
+    private func tosCheckboxFirstLine() -> AttributedString {
         // Create the first line as AttributedString with bold formatting
+        let firstLine = isEvergreen ?
+        tosCheckboxFirstLineEvergreenString() :
+        tosCheckboxFirstLineFiniteString()
+
         let firstLineElements = BoldableTextParser().parseBoldableElements(string: firstLine)
         var firstLineAttributed = AttributedString()
         for element in firstLineElements {
@@ -426,9 +435,28 @@ extension BlazeCampaignCreationFormViewModel {
             firstLineAttributed += elementText
         }
 
-        return firstLineAttributed +
-        AttributedString(" ") +
-        secondLineWithLink
+        return firstLineAttributed
+    }
+
+    private func tosCheckboxFirstLineEvergreenString() -> String {
+        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        return String.localizedStringWithFormat(
+            Localization.tosCheckboxFirstLineEvergreen,
+            weeklyAmount,
+            dateFormatter.string(for: startDate) ?? ""
+        )
+    }
+
+    private func tosCheckboxFirstLineFiniteString() -> String {
+        let totalAmount = dailyBudget * Double(duration)
+        let endDate = startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration))
+        let formattedEndDate = dateFormatter.string(for: endDate) ?? ""
+        return String.localizedStringWithFormat(
+            Localization.tosCheckboxFirstLineFinite,
+            totalAmount,
+            dateFormatter.string(for: startDate) ?? "",
+            formattedEndDate
+        )
     }
 }
 
@@ -645,16 +673,28 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "Everywhere",
             comment: "Text indicating all locations for a Blaze campaign"
         )
-        static let tosCheckboxFirstLine = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLine",
+        static let tosCheckboxFirstLineEvergreen = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLineEvergreen",
             value: "I agree to a recurring **weekly charge of $%1$.0f** starting **%2$@**, which will continue until I cancel.",
             comment: "First part of checkbox text for accepting terms of service for the Blaze campaign subscription billing. " +
             "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
         )
-        static let tosCheckboxSecondLine = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLine",
+        static let tosCheckboxFirstLineFinite = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLineFinite",
+            value: "I agree to a **total charge of $%1$.0f** for a campaign running from **%2$@** to **%3$@**.",
+            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with end date. " +
+            "%1$.0f is the total campaign budget amount, %2$@ is the formatted start date, %3$@ is the formatted end date. The content inside two double asterisks **...** denote bolded text."
+        )
+        static let tosCheckboxSecondLineEvergreen = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLineEvergreen",
             value: "I understand I can cancel anytime from the %@ screen to stop future charges.",
             comment: "Second part of checkbox text for accepting terms of service for the Blaze campaign subscription billing. " +
+            "%@ is the campaign details screen name."
+        )
+        static let tosCheckboxSecondLineFinite = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLineFinite",
+            value: "I understand I can cancel anytime from the %@ screen before the campaign ends.",
+            comment: "Second part of checkbox text for accepting terms of service for finite Blaze campaigns. " +
             "%@ is the campaign details screen name."
         )
         static let campaignDetailsLinkText = NSLocalizedString(

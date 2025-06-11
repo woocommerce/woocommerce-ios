@@ -103,6 +103,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var isSavingShipmentInfo = false
 
+    /// Whether to show the error alert for saving shipment info
+    @Published var shouldShowSaveShipmentErrorAlert = false
+
     init(order: Order,
          config: WooShippingConfig?,
          items: [ShippingLabelPackageItem],
@@ -294,8 +297,16 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     @MainActor
     func saveShipmentInfo() async throws {
         isSavingShipmentInfo = true
-        try await updateShipment()
-        isSavingShipmentInfo = false
+        defer {
+            isSavingShipmentInfo = false
+        }
+
+        do {
+            try await updateShipment()
+        } catch {
+            shouldShowSaveShipmentErrorAlert = true
+            throw error
+        }
     }
 
     func mergeAllUnfulfilledShipments() {

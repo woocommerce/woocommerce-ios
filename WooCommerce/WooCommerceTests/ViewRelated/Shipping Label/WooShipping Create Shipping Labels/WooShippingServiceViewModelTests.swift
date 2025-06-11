@@ -295,6 +295,28 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
     }
+
+    func test_switching_tab_updates_the_card_list() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.displayedServiceCards.count, 2)
+        XCTAssertEqual(viewModel.displayedServiceCards.first?.title, "USPS - Media Mail")
+
+        // When
+        viewModel.selectedTabIndex = 1
+
+        // Then
+        XCTAssertEqual(viewModel.displayedServiceCards.count, 1)
+        XCTAssertEqual(viewModel.displayedServiceCards.first?.title, "DHL - Next Day")
+    }
 }
 
 private extension WooShippingServiceViewModelTests {

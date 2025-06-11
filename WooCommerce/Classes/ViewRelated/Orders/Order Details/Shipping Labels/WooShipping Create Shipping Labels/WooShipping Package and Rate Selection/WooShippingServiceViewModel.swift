@@ -17,6 +17,10 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
+    @Published var selectedTabIndex: Int = 0
+
+    @Published private(set) var displayedServiceCards: [WooShippingServiceCardViewModel] = []
+
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
@@ -57,6 +61,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onSelectRate = onSelectRate
+        observeSelectedTab()
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -218,6 +223,14 @@ private extension WooShippingServiceViewModel {
             serviceTabs = []
         }
         loadingState = state
+    }
+
+    func observeSelectedTab() {
+        $serviceTabs.combineLatest($selectedTabIndex)
+            .map { tabs, index in
+                tabs[safe: index]?.cards ?? []
+            }
+            .assign(to: &$displayedServiceCards)
     }
 }
 

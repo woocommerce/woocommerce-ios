@@ -3,6 +3,7 @@ import SwiftUI
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var viewWidth: CGFloat = 0.0
+    @Binding private var showProductImage: Bool
     private let configuration: GhostItemCardViewConfiguration
     private let accessory: AnyView?
 
@@ -10,14 +11,18 @@ struct GhostItemCardView: View {
         min(configuration.cardSize * scale, configuration.maximumCardSize)
     }
 
-    init(configuration: GhostItemCardViewConfiguration = .itemList) {
+    init(configuration: GhostItemCardViewConfiguration = .itemList,
+         showProductImage: Binding<Bool> = .constant(true)) {
         self.configuration = configuration
+        self._showProductImage = showProductImage
         self.accessory = nil
     }
 
     init<Accessory: View>(configuration: GhostItemCardViewConfiguration = .itemList,
+                          showProductImage: Binding<Bool> = .constant(true),
                          @ViewBuilder accessory: () -> Accessory) {
         self.configuration = configuration
+        self._showProductImage = showProductImage
         self.accessory = AnyView(accessory())
     }
 
@@ -48,6 +53,7 @@ struct GhostItemCardView: View {
             Rectangle()
                 .frame(maxWidth: dimension)
                 .aspectRatio(1, contentMode: .fill)
+                .renderedIf(showProductImage)
             VStack(alignment: .leading) {
                 Rectangle()
                     .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier,

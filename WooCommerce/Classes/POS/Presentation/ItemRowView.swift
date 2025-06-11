@@ -31,7 +31,8 @@ struct ItemRowView: View {
                 .posItemCardBorderStyles()
                 .padding(.horizontal, Constants.horizontalPadding)
         case .loading:
-            GhostItemCardView(configuration: Constants.cartConfiguration) {
+            GhostItemCardView(configuration: Constants.cartConfiguration,
+                              showProductImage: $showProductImage) {
                 if let onCancelLoading {
                     CartRowRemoveButton {
                         onCancelLoading()

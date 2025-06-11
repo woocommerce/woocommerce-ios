@@ -13,7 +13,7 @@ extension Notification.Name {
 
 /// Settings for the selected Site
 ///
-final class SelectedSiteSettings: NSObject {
+final class SelectedSiteSettings: NSObject, @unchecked Sendable {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 

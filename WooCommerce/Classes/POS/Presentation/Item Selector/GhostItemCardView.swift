@@ -48,10 +48,10 @@ struct GhostItemCardView: View {
                 .aspectRatio(1, contentMode: .fit)
             VStack(alignment: .leading) {
                 Rectangle()
-                    .frame(width: viewWidth * 0.5, height: configuration.titleHeight * scale)
+                    .frame(width: viewWidth * 0.5, height: configuration.placeholderHeight * scale)
                     .cornerRadius(Layout.cornerRadius)
                 Rectangle()
-                    .frame(width: viewWidth * 0.1, height: configuration.priceHeight * scale)
+                    .frame(width: viewWidth * 0.1, height: configuration.placeholderHeight * scale)
                     .cornerRadius(Layout.cornerRadius)
             }
             .foregroundColor(.posOnSurfaceVariantLowest)
@@ -74,19 +74,16 @@ fileprivate enum Localization {
 }
 
 struct GhostItemCardViewConfiguration {
-    let titleHeight: CGFloat
-    let priceHeight: CGFloat
+    let placeholderHeight: CGFloat
     let bordered: Bool
 
     static let itemList = GhostItemCardViewConfiguration(
-        titleHeight: 32,
-        priceHeight: 32,
+        placeholderHeight: 32,
         bordered: true
     )
 
     static let cart = GhostItemCardViewConfiguration(
-        titleHeight: 20,
-        priceHeight: 20,
+        placeholderHeight: 24,
         bordered: false
     )
 }

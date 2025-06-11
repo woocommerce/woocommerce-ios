@@ -150,7 +150,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[index] = Shipment(contents: updatedContents,
+        shipments[index] = Shipment(id: currentShipment.id,
+                                    contents: updatedContents,
                                     purchasedLabelID: purchasedLabelID,
                                     currency: order.currency,
                                     currencySettings: currencySettings,
@@ -165,7 +166,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[index] = Shipment(contents: updatedContents,
+        shipments[index] = Shipment(id: currentShipment.id,
+                                    contents: updatedContents,
                                     purchasedLabelID: nil,
                                     currency: order.currency,
                                     currencySettings: currencySettings,
@@ -213,7 +215,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // Step 2: Update the current shipment
-        shipments[currentIndex] = createShipment(with: newShipmentContents)
+        shipments[currentIndex] = createShipment(id: currentIndex.description,
+                                                 contents: newShipmentContents)
 
         // Step 3: Add new or update existing shipment
         let totalItemsMoved = movedItems
@@ -223,7 +226,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         switch destination {
         case .newShipment:
-            let newShipment = createShipment(with: movedItems)
+            let newShipment = createShipment(id: shipments.count.description,
+                                             contents: movedItems)
             shipments.append(newShipment)
             updatedShipmentIndex = shipments.count - 1
 
@@ -248,7 +252,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
             // Add the rest of the new items to the shipment
             updatedShipmentContents.append(contentsOf: movedItems)
-            shipments[index] = createShipment(with: updatedShipmentContents)
+            shipments[index] = createShipment(id: index.description,
+                                              contents: updatedShipmentContents)
             updatedShipmentIndex = index
         }
 
@@ -319,7 +324,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        shipments = [createShipment(with: mergedShipmentContents)] + fulfilledShipments
+        // TODO: revise logic for shipment IDs
+        shipments = [createShipment(id: "0", contents: mergedShipmentContents)] + fulfilledShipments
         selectedShipmentIndex = 0
     }
 
@@ -388,7 +394,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        let mergedShipment = createShipment(with: mergedContents)
+        let mergedShipment = createShipment(id: mergedShipmentIndex.description,
+                                            contents: mergedContents)
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
         selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
@@ -475,15 +482,16 @@ private extension WooShippingSplitShipmentsViewModel {
 extension WooShippingSplitShipmentsViewModel {
 
     private static func createShipments(with config: WooShippingConfig?,
-                                packageItems: [ShippingLabelPackageItem],
-                                currency: String,
-                                currencySettings: CurrencySettings,
-                                shippingSettingsService: ShippingSettingsService) -> [Shipment] {
+                                        packageItems: [ShippingLabelPackageItem],
+                                        currency: String,
+                                        currencySettings: CurrencySettings,
+                                        shippingSettingsService: ShippingSettingsService) -> [Shipment] {
         guard let config, config.shipments.isEmpty == false else {
             let contents = packageItems.map { item in
                 CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
-            let shipment = Shipment(contents: contents,
+            let shipment = Shipment(id: "0",
+                                    contents: contents,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
@@ -499,7 +507,7 @@ extension WooShippingSplitShipmentsViewModel {
             }
 
             let purchasedLabel = currentOrderLabels
-                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil})
+                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil })
 
             let isPurchased = purchasedLabel != nil
 
@@ -518,7 +526,8 @@ extension WooShippingSplitShipmentsViewModel {
                 shipmentContents.append(content)
             }
 
-            let shipment = Shipment(contents: shipmentContents,
+            let shipment = Shipment(id: key,
+                                    contents: shipmentContents,
                                     purchasedLabelID: purchasedLabel?.shippingLabelID,
                                     currency: currency,
                                     currencySettings: currencySettings,
@@ -528,8 +537,9 @@ extension WooShippingSplitShipmentsViewModel {
         return shipments
     }
 
-    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
-        Shipment(contents: contents,
+    private func createShipment(id: String, contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+        Shipment(id: id,
+                 contents: contents,
                  currency: order.currency,
                  currencySettings: currencySettings,
                  shippingSettingsService: shippingSettingsService)
@@ -537,7 +547,7 @@ extension WooShippingSplitShipmentsViewModel {
 
     struct Shipment: Identifiable, Equatable {
 
-        let id = UUID().uuidString
+        let id: String
         let contents: [CollapsibleShipmentItemCardViewModel]
         let purchasedLabelID: Int64?
 
@@ -559,11 +569,13 @@ extension WooShippingSplitShipmentsViewModel {
             purchasedLabelID != nil
         }
 
-        init(contents: [CollapsibleShipmentItemCardViewModel],
+        init(id: String,
+             contents: [CollapsibleShipmentItemCardViewModel],
              purchasedLabelID: Int64? = nil,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
+            self.id = id
             self.contents = contents
             self.purchasedLabelID = purchasedLabelID
 

@@ -510,7 +510,8 @@ private extension WooShippingCreateLabelsViewModel {
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
         guard let index = shipments.firstIndex(where: { $0.id == shipment.id }) else { return }
         shippingLabels.append(newLabel)
-        shipments[index] = Shipment(contents: shipment.contents,
+        shipments[index] = Shipment(id: index.description,
+                                    contents: shipment.contents,
                                     purchasedLabelID: newLabel.shippingLabelID,
                                     currency: order.currency,
                                     currencySettings: currencySettings,
@@ -526,7 +527,8 @@ private extension WooShippingCreateLabelsViewModel {
         let labelIndex = shippingLabels.firstIndex(where: { $0.shippingLabelID == labelID })
 
         guard let shipmentIndex, let labelIndex else { return }
-        shipments[shipmentIndex] = Shipment(contents: shipment.contents,
+        shipments[shipmentIndex] = Shipment(id: shipmentIndex.description,
+                                            contents: shipment.contents,
                                             purchasedLabelID: nil,
                                             currency: order.currency,
                                             currencySettings: currencySettings,

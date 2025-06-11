@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import Storage
+import protocol Storage.StorageManagerType
 import WooFoundation
 
 
@@ -17,6 +17,10 @@ final class SelectedSiteSettings: NSObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
+    /// Async stream for observing site settings changes.
+    private let settingsContinuation: AsyncStream<(siteID: Int64, settings: [SiteSetting])>.Continuation
+    public let settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting])>
+
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
@@ -29,8 +33,20 @@ final class SelectedSiteSettings: NSObject {
     init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
         self.storageManager = storageManager
+
+        // Sets up async stream with buffering to ensure current value is sent.
+        let (stream, continuation) = AsyncStream<(siteID: Int64, settings: [SiteSetting])>.makeStream(
+            bufferingPolicy: .bufferingNewest(1)
+        )
+        self.settingsStream = stream
+        self.settingsContinuation = continuation
+
         super.init()
         configureResultsController()
+    }
+
+    deinit {
+        settingsContinuation.finish()
     }
 }
 
@@ -51,6 +67,11 @@ extension SelectedSiteSettings {
             guard let self = self else { return }
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
             self.siteSettings = self.resultsController.fetchedObjects
+            guard let siteID = stores.sessionManager.defaultStoreID else {
+                DDLogError("Error: no siteID found when setting site settings results.")
+                return
+            }
+            settingsContinuation.yield((siteID: siteID, settings: siteSettings))
         }
         refreshResultsPredicate()
     }
@@ -71,7 +92,9 @@ extension SelectedSiteSettings {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
 
-        NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: self)
+        settingsContinuation.yield((siteID: siteID, settings: fetchedObjects))
+
+        NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
 
         // Needed to correcly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)

@@ -25,18 +25,30 @@ struct ItemRowView: View {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
+                    .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemSubtitleFont)
+                        .redacted(reason: cartItem.state.isLoading ? .placeholder : [])
                 }
-                Text(cartItem.item.formattedPrice)
-                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                    .font(Constants.itemPriceFont)
+
+                switch cartItem.state {
+                case .loaded(let item):
+                    Text(item.formattedPrice)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                case .loading:
+                    Text("$0.00")
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                        .redacted(reason: .placeholder)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
             .accessibilityElement(children: .combine)
+            .shimmering(active: cartItem.state.isLoading)
 
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
@@ -56,10 +68,20 @@ struct ItemRowView: View {
         if !showProductImage {
             EmptyView()
         } else {
-            POSItemImageView(imageSource: cartItem.item.productImageSource,
-                             imageSize: dimension,
-                             scale: 1)
-            .frame(width: dimension, height: dimension)
+            switch cartItem.state {
+            case .loaded(let item):
+                POSItemImageView(imageSource: item.productImageSource,
+                                 imageSize: dimension,
+                                 scale: 1)
+                .frame(width: dimension, height: dimension)
+            case .loading:
+                POSItemImageView(imageSource: nil,
+                                 imageSize: dimension,
+                                 scale: 1)
+                .frame(width: dimension, height: dimension)
+                .redacted(reason: .placeholder)
+                .shimmering()
+            }
         }
     }
 }
@@ -96,6 +118,12 @@ private extension ItemRowView {
                                                title: "Item Title",
                                                subtitle: nil,
                                                quantity: 2),
+                onItemRemoveTapped: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
                 onItemRemoveTapped: { })
 }
 #endif

@@ -26,44 +26,25 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
                 .eraseToAnyPublisher()
         }
 
-        if hasWaitedForSiteSettingsNotification || !featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) {
-            return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
-                .filter { [weak self] _ in
-                    self?.isEligibleFromSiteChecks ?? false
-                }
-                .map { $0 && $1 }
-                .eraseToAnyPublisher()
-        } else {
-            return Publishers
-                .CombineLatest3(
-                    isWooCommerceVersionSupportedAndFeatureSwitchEnabled,
-                    isPointOfSaleFeatureFlagEnabled,
-                    initialSiteSettingsEligibilityPublisher
-                        .handleEvents(receiveOutput: { [weak self] _ in
-                            self?.hasWaitedForSiteSettingsNotification = true
-                        })
-                )
-                .map { $0 && $1 && $2 }
-                .eraseToAnyPublisher()
-        }
+        return Publishers.CombineLatest(isWooCommerceVersionSupportedAndFeatureSwitchEnabled, isPointOfSaleFeatureFlagEnabled)
+            .filter { [weak self] _ in
+                self?.isEligibleFromSiteChecks ?? false
+            }
+            .map { $0 && $1 }
+            .eraseToAnyPublisher()
     }
 
-    private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
-    private var hasWaitedForSiteSettingsNotification: Bool = false
-
-    init(siteID: Int64,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+    init(userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
@@ -75,7 +56,8 @@ final class POSEligibilityChecker: POSEligibilityCheckerProtocol {
 private extension POSEligibilityChecker {
     var isWooCommerceVersionSupported: AnyPublisher<(isSupported: Bool, wcVersion: String?), Never> {
         Future<(isSupported: Bool, wcVersion: String?), Never> { [weak self] promise in
-            guard let self else {
+            guard let self,
+                  let siteID = self.stores.sessionManager.defaultStoreID else {
                 promise(.success((isSupported: false, wcVersion: nil)))
                 return
             }
@@ -101,7 +83,8 @@ private extension POSEligibilityChecker {
             .flatMap { [weak self] isSupported, wcVersion -> AnyPublisher<Bool, Never> in
                 guard let self,
                       isSupported,
-                      let wcVersion else {
+                      let wcVersion,
+                      let siteID = self.stores.sessionManager.defaultStoreID else {
                     return Just(false).eraseToAnyPublisher()
                 }
 
@@ -114,10 +97,7 @@ private extension POSEligibilityChecker {
                 }
 
                 // For versions that support the feature switch, checks if the feature switch is enabled.
-                return Future<Bool, Never> { [weak self] promise in
-                    guard let self else {
-                        return promise(.success(false))
-                    }
+                return Future<Bool, Never> { promise in
                     let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
                         switch result {
                         case .success(let isEnabled):
@@ -156,20 +136,9 @@ private extension POSEligibilityChecker {
         }
         .eraseToAnyPublisher()
     }
-}
-
-private extension POSEligibilityChecker {
-    // Site settings are refreshed async during site initialization, `siteSettings` from `ServiceLocator` could be outdated until the notification.
-    var initialSiteSettingsEligibilityPublisher: AnyPublisher<Bool, Never> {
-        NotificationCenter.default.publisher(for: .selectedSiteSettingsRefreshed, object: siteSettings)
-            .map { [weak self] _ -> Bool in
-                guard let self else { return false }
-                return isEligibleFromSiteChecks
-            }
-            .eraseToAnyPublisher()
-    }
 
     var isEligibleFromSiteChecks: Bool {
+        // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
         let currency = currencySettings.currencyCode
         switch (countryCode, currency) {

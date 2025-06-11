@@ -24,7 +24,6 @@ final class POSTabCoordinator {
     private let tabContainerController: TabContainerController
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
-    private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let credentials: Credentials?
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
@@ -64,11 +63,9 @@ final class POSTabCoordinator {
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         posEligibilityChecker: POSEligibilityCheckerProtocol) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.storesManager = storesManager
-        self.posEligibilityChecker = posEligibilityChecker
         self.tabContainerController = tabContainerController
         self.viewControllerToPresent = viewControllerToPresent
         self.credentials = storesManager.sessionManager.defaultCredentials

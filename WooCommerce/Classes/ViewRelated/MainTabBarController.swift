@@ -122,11 +122,11 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager = ServiceLocator.stores
     private let analytics: Analytics
-    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEligibilityCheckerProtocol)
+    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
-    private var posEligibilityChecker: POSEligibilityCheckerProtocol?
+    private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
     private var posEligibilitySubscription: AnyCancellable?
 
     private var isPOSTabVisible: Bool = false
@@ -138,13 +138,13 @@ final class MainTabBarController: UITabBarController {
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
-          posEligibilityCheckerFactory: ((Int64) -> POSEligibilityCheckerProtocol)? = nil) {
+          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
-            POSEligibilityChecker(siteID: siteID)
+            POSTabEligibilityChecker(siteID: siteID)
         }
         super.init(coder: coder)
     }
@@ -155,7 +155,7 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.posEligibilityCheckerFactory = { siteID in
-            POSEligibilityChecker(siteID: siteID)
+            POSTabEligibilityChecker(siteID: siteID)
         }
         super.init(coder: coder)
     }
@@ -655,14 +655,18 @@ private extension MainTabBarController {
 
         // Hides POS tab initially.
         updateTabViewControllers(isPOSTabVisible: false)
+
         // Starts observing the POS eligibility state.
-        posEligibilitySubscription = posEligibilityChecker?.isEligible
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isPOSTabVisible in
+        Task { [weak self] in
+            guard let self, let posEligibilityChecker else { return }
+            let eligibility = await posEligibilityChecker.checkEligibility()
+            let isPOSTabVisible = eligibility == .eligible
+            await MainActor.run { [weak self] in
                 guard let self else { return }
                 updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
                 viewModel.loadHubMenuTabBadge()
             }
+        }
     }
 
     func updateTabViewControllers(isPOSTabVisible: Bool) {
@@ -729,8 +733,7 @@ private extension MainTabBarController {
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
-            viewControllerToPresent: self,
-            posEligibilityChecker: posEligibilityChecker
+            viewControllerToPresent: self
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

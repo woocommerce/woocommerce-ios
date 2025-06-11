@@ -25,52 +25,56 @@ struct ItemRowView: View {
     var body: some View {
         switch cartItem.state {
         case .loaded:
-            HStack(spacing: Constants.horizontalElementSpacing) {
-                productImage
-
-                VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
-                    Text(cartItem.title)
-                        .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
-                        .font(Constants.itemTitleFont)
-                    if let subtitle = cartItem.subtitle {
-                        Text(subtitle)
-                            .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                            .font(Constants.itemSubtitleFont)
-                    }
-
-                    if case .loaded(let item) = cartItem.state {
-                        Text(item.formattedPrice)
-                            .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                            .font(Constants.itemPriceFont)
-                    }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
-                .accessibilityElement(children: .combine)
-
-                if let onItemRemoveTapped {
-                    CartRowRemoveButton {
-                        onItemRemoveTapped()
-                    }
-                }
-            }
-            .padding(.trailing, Constants.cardContentHorizontalPadding)
-            .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-            .background(Color.posSurfaceContainerLowest)
-            .posItemCardBorderStyles()
-            .padding(.horizontal, Constants.horizontalPadding)
+            productRow
+                .frame(maxWidth: .infinity, idealHeight: dimension)
+                .background(Color.posSurfaceContainerLowest)
+                .posItemCardBorderStyles()
+                .padding(.horizontal, Constants.horizontalPadding)
         case .loading:
-            GhostItemCardView(configuration: .cart) {
+            GhostItemCardView(configuration: Constants.cartConfiguration) {
                 if let onCancelLoading {
                     CartRowRemoveButton {
                         onCancelLoading()
                     }
                 }
             }
-            .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
             .background(Color.posSurfaceContainerLowest)
             .padding(.horizontal, Constants.horizontalPadding)
         }
+    }
+
+    @ViewBuilder
+    private var productRow: some View {
+        HStack(spacing: Constants.horizontalElementSpacing) {
+            productImage
+
+            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
+                Text(cartItem.title)
+                    .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
+                    .font(Constants.itemTitleFont)
+                if let subtitle = cartItem.subtitle {
+                    Text(subtitle)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemSubtitleFont)
+                }
+
+                if case .loaded(let item) = cartItem.state {
+                    Text(item.formattedPrice)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
+            .accessibilityElement(children: .combine)
+
+            if let onItemRemoveTapped {
+                CartRowRemoveButton {
+                    onItemRemoveTapped()
+                }
+            }
+        }
+        .padding(.trailing, Constants.cardContentHorizontalPadding)
     }
 
     @ViewBuilder
@@ -97,6 +101,13 @@ private extension ItemRowView {
         static let itemTitleFont: POSFontStyle = .posBodySmallBold
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+
+        static let cartConfiguration = GhostItemCardViewConfiguration(
+            placeholderHeight: 24,
+            cardSize: Constants.productCardSize,
+            maximumCardSize: Constants.maximumProductCardSize,
+            placeholderWidthMultiplier: 0.3
+        )
     }
 }
 

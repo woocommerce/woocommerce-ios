@@ -7,7 +7,7 @@ struct GhostItemCardView: View {
     private let accessory: AnyView?
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(configuration.cardSize * scale, configuration.maximumCardSize)
     }
 
     init(configuration: GhostItemCardViewConfiguration = .itemList) {
@@ -32,7 +32,7 @@ struct GhostItemCardView: View {
 
             if let accessory {
                 accessory
-                    .padding(Constants.accessoryButtonPadding * (1 / scale))
+                    .padding(Constants.accessoryButtonPadding)
             }
         }
         .measureWidth { width in
@@ -46,13 +46,16 @@ struct GhostItemCardView: View {
     @ViewBuilder var placeholders: some View {
         HStack(alignment: .center, spacing: Constants.cardSpacing) {
             Rectangle()
-                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: dimension)
+                .aspectRatio(1, contentMode: .fill)
             VStack(alignment: .leading) {
                 Rectangle()
-                    .frame(width: viewWidth * 0.5, height: configuration.placeholderHeight * scale)
+                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier,
+                           maxHeight: configuration.placeholderHeight * scale)
                     .cornerRadius(Layout.cornerRadius)
                 Rectangle()
-                    .frame(width: viewWidth * 0.1, height: configuration.placeholderHeight * scale)
+                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier * 0.2,
+                           maxHeight: configuration.placeholderHeight * scale)
                     .cornerRadius(Layout.cornerRadius)
             }
             .foregroundColor(.posOnSurfaceVariantLowest)
@@ -76,22 +79,21 @@ fileprivate enum Localization {
 
 struct GhostItemCardViewConfiguration {
     let placeholderHeight: CGFloat
+    let cardSize: CGFloat
+    let maximumCardSize: CGFloat
+    let placeholderWidthMultiplier: CGFloat
 
     static let itemList = GhostItemCardViewConfiguration(
-        placeholderHeight: 32
-    )
-
-    static let cart = GhostItemCardViewConfiguration(
-        placeholderHeight: 24
+        placeholderHeight: 32,
+        cardSize: Constants.productCardSize,
+        maximumCardSize: Constants.maximumProductCardSize,
+        placeholderWidthMultiplier: 0.5
     )
 }
 
 #Preview {
     VStack(spacing: 20) {
         GhostItemCardView(configuration: .itemList) {
-            CartRowRemoveButton {}
-        }
-        GhostItemCardView(configuration: .cart) {
             CartRowRemoveButton {}
         }
         GhostItemCardView(configuration: .itemList)

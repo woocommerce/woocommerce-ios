@@ -2,21 +2,20 @@ import Foundation
 import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
+import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
-import enum Yosemite.SiteSettingsFeature
 import enum Yosemite.SettingAction
-import enum WooFoundation.CurrencyCode
 
 enum POSIneligibleReason: Equatable {
     case notTablet
     case unsupportedIOSVersion
     case unsupportedWooCommerceVersion
-    case systemInformationNotAvailable
+    case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureFlagDisabled
     case featureSwitchDisabled
@@ -48,20 +47,26 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let featureFlagEligibility = isPointOfSaleFeatureFlagEnabled()
+        async let pluginEligibility = isEligibleFromPluginChecks()
 
-        // Waits for both results.
-        let (siteSettingsResult, featureFlagResult) = await (siteSettingsEligibility, featureFlagEligibility)
-
-        // Checks feature flag first.
-        switch featureFlagResult {
+        // Checks site settings first since it's likely to complete fastest.
+        switch await siteSettingsEligibility {
         case .eligible:
             break
         case .ineligible(let reason):
             return .ineligible(reason: reason)
         }
 
-        // Then checks site settings.
-        switch siteSettingsResult {
+        // Then checks feature flag.
+        switch await featureFlagEligibility {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
+
+        // Finally checks plugin eligibility.
+        switch await pluginEligibility {
         case .eligible:
             return .eligible
         case .ineligible(let reason):
@@ -92,6 +97,80 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 }
 
 private extension POSTabEligibilityChecker {
+    func isEligibleFromPluginChecks() async -> POSEligibilityState {
+        let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
+
+        guard let wcPlugin, wcPlugin.active else {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
+
+        guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                minimumRequired: Constants.wcPluginMinimumVersion) else {
+            return .ineligible(reason: .unsupportedWooCommerceVersion)
+        }
+
+        // For versions below 10.0.0, the feature is enabled by default.
+        let isFeatureSwitchSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                                         minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
+                                                                         includesDevAndBetaVersions: true)
+        if !isFeatureSwitchSupported {
+            return .eligible
+        }
+
+        // For versions that support the feature switch, checks if the feature switch is enabled.
+        return await checkFeatureSwitchEnabled(siteID: siteID)
+    }
+
+    func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin? {
+        await withCheckedContinuation { continuation in
+            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
+                continuation.resume(returning: wcPlugin)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
+                switch result {
+                case .success(let isEnabled):
+                    continuation.resume(returning: isEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled))
+                case .failure:
+                    continuation.resume(returning: .ineligible(reason: .featureSwitchDisabled))
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
+private extension POSTabEligibilityChecker {
+    func checkSiteSettingsEligibility() async -> POSEligibilityState {
+        // Waits for the first site settings that matches the given site ID.
+        let siteSettings = await waitForSiteSettingsRefresh()
+        guard siteSettings.isNotEmpty else {
+            return .ineligible(reason: .siteSettingsNotAvailable)
+        }
+
+        // Conditions that can change if site settings are synced during the lifetime.
+        let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
+        let currencyCode = currencySettings.currencyCode
+
+        return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
+    }
+
+    func waitForSiteSettingsRefresh() async -> [SiteSetting] {
+        for await siteSettings in siteSettings.settingsStream {
+            guard siteSettings.siteID == siteID else {
+                continue
+            }
+            return siteSettings.settings
+        }
+        // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
+        return []
+    }
+
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {
         // Checks country first.
         switch countryCode {
@@ -107,65 +186,6 @@ private extension POSTabEligibilityChecker {
             return .eligible
         default:
             return .ineligible(reason: .unsupportedCurrency)
-        }
-    }
-
-    func isEligibleFromPluginChecks(systemPlugins: [SystemPlugin], enabledFeatures: [String]?) -> POSEligibilityState {
-        guard let wcPlugin = systemPlugins.first(where: { $0.name == Constants.wcPluginName && $0.active }) else {
-            return .ineligible(reason: .wooCommercePluginNotFound)
-        }
-
-        guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                minimumRequired: Constants.wcPluginMinimumVersion) else {
-            return .ineligible(reason: .unsupportedWooCommerceVersion)
-        }
-
-        if VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                             minimumRequired: Constants.wcPluginMinimumVersionWithFeatureSwitch,
-                                             includesDevAndBetaVersions: true) {
-            // For versions that support the feature switch, checks if the feature switch is enabled.
-            guard let enabledFeatures,
-                  enabledFeatures.contains(SiteSettingsFeature.pointOfSale.rawValue) else {
-                return .ineligible(reason: .featureSwitchDisabled)
-            }
-            return .eligible
-        } else {
-            // For versions below 10.0.0, the feature is enabled by default.
-            return .eligible
-        }
-    }
-}
-
-private extension POSTabEligibilityChecker {
-    func checkSiteSettingsEligibility() async -> POSEligibilityState {
-        // Wait for the first site settings refresh
-        await waitForSiteSettingsRefresh()
-        
-        // Conditions that can change if site settings are synced during the lifetime.
-        let countryCode = SiteAddress(siteSettings: siteSettings.siteSettings).countryCode
-        let currency = currencySettings.currencyCode
-
-        // Checks country first.
-        switch countryCode {
-        case .US, .GB:
-            break
-        default:
-            return .ineligible(reason: .unsupportedCountry)
-        }
-
-        // Then checks currency.
-        switch currency {
-        case .USD, .GBP:
-            return .eligible
-        default:
-            return .ineligible(reason: .unsupportedCurrency)
-        }
-    }
-
-    @MainActor
-    func waitForSiteSettingsRefresh() async {
-        for await _ in NotificationCenter.default.notifications(named: .selectedSiteSettingsRefreshed, object: siteSettings).map( { $0.name } ) {
-            break // Exit after first notification
         }
     }
 }

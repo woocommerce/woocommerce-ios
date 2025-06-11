@@ -37,9 +37,10 @@ struct POSProductOrVariationResolverTests {
             stockStatusKey: ""
         ))
         mockItemMapper.mockMappedProducts = [expectedItem]
+        let scannedCode = "test-barcode-simple"
 
         // When
-        let result = try await sut.itemForProductOrVariation(simpleProduct)
+        let result = try await sut.itemForProductOrVariation(simpleProduct, scannedCode: scannedCode)
 
         // Then
         #expect(mockItemMapper.mapProductsToPOSItemsCalled)
@@ -80,13 +81,14 @@ struct POSProductOrVariationResolverTests {
             variationID: 456,
             parentProductName: "Parent Product"
         ))
+        let scannedCode = "test-barcode-variation"
 
         mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .success(parentProduct))
         mockItemMapper.mockMappedProducts = [expectedParentItem]
         mockItemMapper.mockMappedVariations = [expectedVariationItem]
 
         // When
-        let result = try await sut.itemForProductOrVariation(variation)
+        let result = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
 
         // Then
         #expect(mockProductsRemote.invocationCountOfLoadPOSProduct == 1)
@@ -106,10 +108,12 @@ struct POSProductOrVariationResolverTests {
             productTypeKey: "simple",
             downloadable: true
         )
+        let scannedCode = "test-barcode-downloadable"
+        let productName = downloadableProduct.name
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.downloadableProduct) {
-            _ = try await sut.itemForProductOrVariation(downloadableProduct)
+        await #expect(throws: PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: productName)) {
+            _ = try await sut.itemForProductOrVariation(downloadableProduct, scannedCode: scannedCode)
         }
     }
 
@@ -121,11 +125,12 @@ struct POSProductOrVariationResolverTests {
             productID: 999,
             productTypeKey: "simple"
         )
+        let scannedCode = "test-barcode-unknown"
         mockItemMapper.mockMappedProducts = [] // Simulate no mapped item
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unknown) {
-            _ = try await sut.itemForProductOrVariation(simpleProduct)
+        await #expect(throws: PointOfSaleBarcodeScanError.unknown(scannedCode: scannedCode)) {
+            _ = try await sut.itemForProductOrVariation(simpleProduct, scannedCode: scannedCode)
         }
     }
 
@@ -136,10 +141,12 @@ struct POSProductOrVariationResolverTests {
             productID: 789,
             productTypeKey: "grouped"
         )
+        let scannedCode = "test-barcode-unsupported"
+        let productName = unsupportedProduct.name
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType) {
-            _ = try await sut.itemForProductOrVariation(unsupportedProduct)
+        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: scannedCode, productName: productName)) {
+            _ = try await sut.itemForProductOrVariation(unsupportedProduct, scannedCode: scannedCode)
         }
     }
 
@@ -151,12 +158,13 @@ struct POSProductOrVariationResolverTests {
             productTypeKey: "variation",
             parentID: 123
         )
+        let scannedCode = "test-barcode-loading"
         let someError = NSError(domain: "Test", code: 1, userInfo: nil)
         mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(someError))
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.loadingError(underlyingError: someError)) {
-            _ = try await sut.itemForProductOrVariation(variation)
+        await #expect(throws: PointOfSaleBarcodeScanError.loadingError(scannedCode: scannedCode, underlyingError: someError)) {
+            _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }
     }
 
@@ -170,10 +178,12 @@ struct POSProductOrVariationResolverTests {
             parentID: 123,
             attributes: [badAttribute]
         )
+        let scannedCode = "test-barcode-mapping"
+        let error = ProductAttribute.ProductAttributeError.notFromAVariationAsAProduct
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.mappingError(underlyingError: ProductAttribute.ProductAttributeError.notFromAVariationAsAProduct)) {
-            _ = try await sut.itemForProductOrVariation(variation)
+        await #expect(throws: PointOfSaleBarcodeScanError.mappingError(scannedCode: scannedCode, underlyingError: error)) {
+            _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }
     }
 
@@ -185,10 +195,11 @@ struct POSProductOrVariationResolverTests {
             productTypeKey: "variation",
             parentID: 0 // Invalid parent ID for a variation
         )
+        let scannedCode = "test-barcode-noparent"
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.noParentProductForVariation) {
-            _ = try await sut.itemForProductOrVariation(variation)
+        await #expect(throws: PointOfSaleBarcodeScanError.noParentProductForVariation(scannedCode: scannedCode)) {
+            _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }
     }
 
@@ -205,13 +216,41 @@ struct POSProductOrVariationResolverTests {
             name: "Parent Product",
             productTypeKey: "simple" // Wrong type for parent
         )
+        let scannedCode = "test-barcode-cannotconvert"
 
         mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .success(parentProduct))
         mockItemMapper.mockMappedProducts = []
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.variationCouldNotBeConverted) {
-            _ = try await sut.itemForProductOrVariation(variation)
+        await #expect(throws: PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)) {
+            _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
+        }
+    }
+}
+
+// MARK: - PointOfSaleBarcodeScanError equatable for testing
+
+extension PointOfSaleBarcodeScanError: @retroactive Equatable {
+    public static func == (lhs: PointOfSaleBarcodeScanError, rhs: PointOfSaleBarcodeScanError) -> Bool {
+        switch (lhs, rhs) {
+        case let (.unknown(lhsScannedCode), .unknown(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.noParentProductForVariation(lhsScannedCode), .noParentProductForVariation(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.variationCouldNotBeConverted(lhsScannedCode), .variationCouldNotBeConverted(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.notFound(lhsScannedCode), .notFound(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.unsupportedProductType(lhsScannedCode, lhsProductName), .unsupportedProductType(rhsScannedCode, rhsProductName)):
+            return lhsScannedCode == rhsScannedCode && lhsProductName == rhsProductName
+        case let (.downloadableProduct(lhsScannedCode, lhsProductName), .downloadableProduct(rhsScannedCode, rhsProductName)):
+            return lhsScannedCode == rhsScannedCode && lhsProductName == rhsProductName
+        case let (.loadingError(lhsScannedCode, _), .loadingError(rhsScannedCode, _)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.mappingError(lhsScannedCode, _), .mappingError(rhsScannedCode, _)):
+            return lhsScannedCode == rhsScannedCode
+        default:
+            return false
         }
     }
 }

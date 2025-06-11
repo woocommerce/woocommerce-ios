@@ -13,11 +13,11 @@ struct POSProductOrVariationResolver {
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
-    func itemForProductOrVariation(_ productOrVariation: POSProduct) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+    func itemForProductOrVariation(_ productOrVariation: POSProduct, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         let items: [POSItem]
 
         guard productOrVariation.downloadable == false else {
-            throw .downloadableProduct
+            throw .downloadableProduct(scannedCode: scannedCode, productName: productOrVariation.name)
         }
 
         switch productOrVariation.productType {
@@ -25,47 +25,47 @@ struct POSProductOrVariationResolver {
             let product = productOrVariation
             items = itemMapper.mapProductsToPOSItems(products: [product])
         case .custom("variation"):
-            let variation = try productOrVariation.toProductVariation()
-            let variableProduct = try await parentProductForVariation(variation)
+            let variation = try productOrVariation.toProductVariation(scannedCode: scannedCode)
+            let variableProduct = try await parentProductForVariation(variation, scannedCode: scannedCode)
             items = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableProduct)
         default:
-            throw .unsupportedProductType
+            throw .unsupportedProductType(scannedCode: scannedCode, productName: productOrVariation.name)
         }
 
         guard let item = items.first else {
-            throw .unknown
+            throw .unknown(scannedCode: scannedCode)
         }
         return item
     }
 
-    private func parentProductForVariation(_ variation: POSProductVariation) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
+    private func parentProductForVariation(_ variation: POSProductVariation, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
         guard variation.productID != 0 else {
-            throw .noParentProductForVariation
+            throw .noParentProductForVariation(scannedCode: scannedCode)
         }
 
-        let parentProduct = try await loadParentProduct(variation)
+        let parentProduct = try await loadParentProduct(variation, scannedCode: scannedCode)
         let mappedProducts = itemMapper.mapProductsToPOSItems(products: [parentProduct])
 
         guard let mappedProduct = mappedProducts.first,
               case .variableParentProduct(let variableProduct) = mappedProduct else {
-            throw .variationCouldNotBeConverted
+            throw .variationCouldNotBeConverted(scannedCode: scannedCode)
         }
         return variableProduct
     }
 
-    private func loadParentProduct(_ variation: POSProductVariation) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
+    private func loadParentProduct(_ variation: POSProductVariation, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
             return try await productsRemote.loadPOSProduct(for: variation.siteID,
                                                            productID: variation.productID)
         } catch {
-            throw .loadingError(underlyingError: error)
+            throw .loadingError(scannedCode: scannedCode, underlyingError: error)
         }
     }
 }
 
 
 private extension POSProduct {
-    func toProductVariation() throws(PointOfSaleBarcodeScanError) -> POSProductVariation {
+    func toProductVariation(scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSProductVariation {
         do {
             return POSProductVariation(
                 siteID: siteID,
@@ -85,7 +85,7 @@ private extension POSProduct {
                 stockStatusKey: stockStatusKey
             )
         } catch {
-            throw .mappingError(underlyingError: error)
+            throw .mappingError(scannedCode: scannedCode, underlyingError: error)
         }
     }
 }

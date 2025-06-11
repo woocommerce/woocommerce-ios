@@ -125,6 +125,7 @@ final class WooShippingServiceViewModel: ObservableObject {
             guard let self,
                   /// Avoids showing the obsolete rates if the user changes the package weight while loading.
                   [self.selectedPackage] == remotePackages else {
+                onLoadingCompletion(.success(()))
                 return
             }
 

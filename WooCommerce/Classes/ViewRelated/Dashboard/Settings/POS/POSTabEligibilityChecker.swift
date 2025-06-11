@@ -124,6 +124,7 @@ private extension POSTabEligibilityChecker {
         return await checkFeatureSwitchEnabled(siteID: siteID)
     }
 
+    @MainActor
     func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin? {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
@@ -136,6 +137,7 @@ private extension POSTabEligibilityChecker {
         }
     }
 
+    @MainActor
     func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
@@ -200,6 +202,7 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
+    @MainActor
     func checkRemoteFeatureEligibility() async -> POSEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration

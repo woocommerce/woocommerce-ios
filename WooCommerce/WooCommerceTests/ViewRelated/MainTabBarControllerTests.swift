@@ -77,7 +77,7 @@ final class MainTabBarControllerTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.isEligibleValue = true
+        mockPOSEligibilityChecker.result = .eligible
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
@@ -117,7 +117,7 @@ final class MainTabBarControllerTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.isEligibleValue = false
+        mockPOSEligibilityChecker.result = .ineligible(reason: .featureFlagDisabled)
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
@@ -153,7 +153,7 @@ final class MainTabBarControllerTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.isEligibleValue = true
+        mockPOSEligibilityChecker.result = .eligible
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
@@ -190,7 +190,7 @@ final class MainTabBarControllerTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.isEligibleValue = false
+        mockPOSEligibilityChecker.result = .ineligible(reason: .featureFlagDisabled)
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
@@ -210,7 +210,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
 
         // When - change POS eligibility
-        mockPOSEligibilityChecker.isEligibleValue = true
+        mockPOSEligibilityChecker.result = .eligible
 
         // Then tabs remain the same
         XCTAssertEqual(tabBarController.viewControllers?.count, 4)
@@ -710,10 +710,10 @@ private extension MainTabBarController {
 
 // MARK: - MockPOSEligibilityChecker
 
-private final class MockPOSEligibilityChecker: POSEligibilityCheckerProtocol {
-    var isEligibleValue: Bool = false
+private final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    var result: POSEligibilityState = .eligible
 
-    var isEligible: AnyPublisher<Bool, Never> {
-        Just(isEligibleValue).eraseToAnyPublisher()
+    func checkEligibility() async -> POSEligibilityState {
+        result
     }
 }

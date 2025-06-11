@@ -295,13 +295,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
-    func purchaseLabel() async {
-        guard isPurchaseButtonEnabled, !isPurchasingLabel else { return }
-
+    func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
 
         do {
+            if shouldRefreshPackageAndRate {
+                try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
+            }
             try await currentShipmentDetailsViewModel.purchaseLabel()
         } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
@@ -311,7 +312,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                               feedbackType: .error,
                                               actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
                 Task {
-                    await self?.purchaseLabel()
+                    await self?.purchaseLabel(shouldRefreshPackageAndRate: shouldRefreshPackageAndRate)
                 }
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")

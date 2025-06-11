@@ -399,31 +399,58 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 }
 
+// MARK: Duration type
+
+private extension BlazeCampaignCreationFormViewModel {
+    enum BlazeCampaignDuration {
+        case upToSevenDays
+        case moreThanSevenDays
+        case evergreen
+
+        var tosCheckboxFirstLineLocalizedFormat: String {
+            switch self {
+            case .evergreen:
+                return Localization.tosCheckboxFirstLinePartEvergreen
+            case .upToSevenDays:
+                return Localization.tosCheckboxFirstLinePartUpToSevenDays
+            case .moreThanSevenDays:
+                return Localization.tosCheckboxFirstLinePartMoreThanSevenDays
+            }
+        }
+    }
+
+    var campaignDuration: BlazeCampaignDuration {
+        if isEvergreen {
+            return .evergreen
+        } else if duration <= 7 {
+            return .upToSevenDays
+        } else {
+            return .moreThanSevenDays
+        }
+    }
+}
+
 // MARK: TOS checkbox
 extension BlazeCampaignCreationFormViewModel {
+    private var weeklyAmount: Double {
+        return dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+    }
+
     var tosCheckboxAttributedText: AttributedString {
-        return tosCheckboxFirstLine() + AttributedString(" ") + tosCheckboxSecondLine()
+        return tosCheckboxFirstLineAttributedText() +
+        AttributedString(" ") +
+        tosCheckboxSecondLineAttributedText()
     }
 
-    private func tosCheckboxSecondLine() -> AttributedString {
-        let secondLineFormat = isEvergreen ?
-        Localization.tosCheckboxSecondLineEvergreen :
-        Localization.tosCheckboxSecondLineFinite
-
-        return AttributedString.withEmbeddedLink(
-            mainContent: secondLineFormat,
-            linkText: Localization.campaignDetailsLinkText,
-            link: Links.stopAnAdCampaign
-        )
-    }
-
-    private func tosCheckboxFirstLine() -> AttributedString {
+    private func tosCheckboxFirstLineAttributedText() -> AttributedString {
         // Create the first line as AttributedString with bold formatting
-        let firstLine = isEvergreen ?
-        tosCheckboxFirstLineEvergreenString() :
-        tosCheckboxFirstLineFiniteString()
+        let firstLineString = String.localizedStringWithFormat(
+            campaignDuration.tosCheckboxFirstLineLocalizedFormat,
+            weeklyAmount,
+            dateFormatter.string(for: startDate) ?? ""
+        )
 
-        let firstLineElements = BoldableTextParser().parseBoldableElements(string: firstLine)
+        let firstLineElements = BoldableTextParser().parseBoldableElements(string: firstLineString)
         var firstLineAttributed = AttributedString()
         for element in firstLineElements {
             var elementText = AttributedString(element.content)
@@ -438,24 +465,11 @@ extension BlazeCampaignCreationFormViewModel {
         return firstLineAttributed
     }
 
-    private func tosCheckboxFirstLineEvergreenString() -> String {
-        let weeklyAmount = dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
-        return String.localizedStringWithFormat(
-            Localization.tosCheckboxFirstLineEvergreen,
-            weeklyAmount,
-            dateFormatter.string(for: startDate) ?? ""
-        )
-    }
-
-    private func tosCheckboxFirstLineFiniteString() -> String {
-        let totalAmount = dailyBudget * Double(duration)
-        let endDate = startDate.addingTimeInterval(Constants.oneDayInSeconds * Double(duration))
-        let formattedEndDate = dateFormatter.string(for: endDate) ?? ""
-        return String.localizedStringWithFormat(
-            Localization.tosCheckboxFirstLineFinite,
-            totalAmount,
-            dateFormatter.string(for: startDate) ?? "",
-            formattedEndDate
+    private func tosCheckboxSecondLineAttributedText() -> AttributedString {
+        return AttributedString.withEmbeddedLink(
+            mainContent: Localization.tosCheckboxSecondLinePart,
+            linkText: Localization.campaignDetailsLinkText,
+            link: Links.stopAnAdCampaign
         )
     }
 }
@@ -673,33 +687,38 @@ private extension BlazeCampaignCreationFormViewModel {
             value: "Everywhere",
             comment: "Text indicating all locations for a Blaze campaign"
         )
-        static let tosCheckboxFirstLineEvergreen = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLineEvergreen",
-            value: "I agree to a recurring **weekly charge of $%1$.0f** starting **%2$@**, which will continue until I cancel.",
-            comment: "First part of checkbox text for accepting terms of service for the Blaze campaign subscription billing. " +
+
+        static let tosCheckboxFirstLinePartUpToSevenDays = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays",
+            value: "I agree to be charged up to **$%1$.0f** starting **%2$@**. Charges may occur in one or more payments while the campaign is active.",
+            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. " +
             "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
         )
-        static let tosCheckboxFirstLineFinite = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLineFinite",
-            value: "I agree to a **total charge of $%1$.0f** for a campaign running from **%2$@** to **%3$@**.",
-            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with end date. " +
-            "%1$.0f is the total campaign budget amount, %2$@ is the formatted start date, %3$@ is the formatted end date. The content inside two double asterisks **...** denote bolded text."
+
+        static let tosCheckboxFirstLinePartMoreThanSevenDays = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays",
+            value: "I agree to a recurring charge of up to **$%1$.0f weekly** starting **%2$@**. Charges may occur at varying times during the campaign.",
+            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
         )
-        static let tosCheckboxSecondLineEvergreen = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLineEvergreen",
-            value: "I understand I can cancel anytime from the %@ screen to stop future charges.",
-            comment: "Second part of checkbox text for accepting terms of service for the Blaze campaign subscription billing. " +
-            "%@ is the campaign details screen name."
+
+        static let tosCheckboxFirstLinePartEvergreen = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen",
+            value: "I agree to a recurring **weekly charge up to $%1$.0f** starting **%2$@**. Charges may occur at varying times during the campaign.",
+            comment: "First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
         )
-        static let tosCheckboxSecondLineFinite = NSLocalizedString(
-            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLineFinite",
-            value: "I understand I can cancel anytime from the %@ screen before the campaign ends.",
+
+        static let tosCheckboxSecondLinePart = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart",
+            value: "%@; I’ll only pay for ads delivered up to cancellation.",
             comment: "Second part of checkbox text for accepting terms of service for finite Blaze campaigns. " +
-            "%@ is the campaign details screen name."
+            "%@ is \"I can cancel anytime\" substring for a hyperlink."
         )
+
         static let campaignDetailsLinkText = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.campaignDetailsLinkText",
-            value: "campaign details",
+            value: "I can cancel anytime",
             comment: "Text that will become a hyperlink in the second line of the terms of service checkbox text."
         )
     }

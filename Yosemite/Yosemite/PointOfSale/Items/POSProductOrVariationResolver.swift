@@ -30,7 +30,9 @@ struct POSProductOrVariationResolver {
             let variableProduct = try await parentProductForVariation(variation, scannedCode: scannedCode)
             items = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableProduct)
         default:
-            throw .unsupportedProductType(scannedCode: scannedCode, productName: productOrVariation.name)
+            throw .unsupportedProductType(scannedCode: scannedCode,
+                                          productName: productOrVariation.name,
+                                          productType: productOrVariation.productType)
         }
 
         guard let item = items.first else {

@@ -147,7 +147,7 @@ struct POSProductOrVariationResolverTests {
         let productName = unsupportedProduct.name
 
         // When/Then
-        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: scannedCode, productName: productName)) {
+        await #expect(throws: PointOfSaleBarcodeScanError.unsupportedProductType(scannedCode: scannedCode, productName: productName, productType: .grouped)) {
             _ = try await sut.itemForProductOrVariation(unsupportedProduct, scannedCode: scannedCode)
         }
         try await #expect(queryParametersForProductsRequest().contains("include_types=simple,variable"))
@@ -260,7 +260,7 @@ extension PointOfSaleBarcodeScanError: @retroactive Equatable {
             return lhsScannedCode == rhsScannedCode
         case let (.notFound(lhsScannedCode), .notFound(rhsScannedCode)):
             return lhsScannedCode == rhsScannedCode
-        case let (.unsupportedProductType(lhsScannedCode, lhsProductName), .unsupportedProductType(rhsScannedCode, rhsProductName)):
+        case let (.unsupportedProductType(lhsScannedCode, lhsProductName, _), .unsupportedProductType(rhsScannedCode, rhsProductName, _)):
             return lhsScannedCode == rhsScannedCode && lhsProductName == rhsProductName
         case let (.downloadableProduct(lhsScannedCode, lhsProductName), .downloadableProduct(rhsScannedCode, rhsProductName)):
             return lhsScannedCode == rhsScannedCode && lhsProductName == rhsProductName

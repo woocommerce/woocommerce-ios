@@ -13,7 +13,7 @@ public enum PointOfSaleBarcodeScanError: Error {
     case unknown(scannedCode: String)
     case noParentProductForVariation(scannedCode: String)
     case variationCouldNotBeConverted(scannedCode: String)
-    case unsupportedProductType(scannedCode: String, productName: String)
+    case unsupportedProductType(scannedCode: String, productName: String, productType: ProductType)
     case downloadableProduct(scannedCode: String, productName: String)
     case notFound(scannedCode: String)
     case loadingError(scannedCode: String, underlyingError: Error)

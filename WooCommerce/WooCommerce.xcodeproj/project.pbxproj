@@ -925,6 +925,7 @@
 		20D3D4352C65E640004CE6E3 /* OrdersDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4342C65E640004CE6E3 /* OrdersDestination.swift */; };
 		20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */; };
 		20D4AE012D133B43004555B2 /* ItemsStackState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D4AE002D133B43004555B2 /* ItemsStackState.swift */; };
+		20D557592DF9D58D00D9EC8B /* ScannerInputContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D557582DF9D58D00D9EC8B /* ScannerInputContainer.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
 		20D920EA2CEF86520023B089 /* PointOfSaleErrorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D920E92CEF86520023B089 /* PointOfSaleErrorState.swift */; };
@@ -4182,6 +4183,7 @@
 		20D3D4342C65E640004CE6E3 /* OrdersDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersDestination.swift; sourceTree = "<group>"; };
 		20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRouteTests.swift; sourceTree = "<group>"; };
 		20D4AE002D133B43004555B2 /* ItemsStackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsStackState.swift; sourceTree = "<group>"; };
+		20D557582DF9D58D00D9EC8B /* ScannerInputContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerInputContainer.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
 		20D920E92CEF86520023B089 /* PointOfSaleErrorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleErrorState.swift; sourceTree = "<group>"; };
@@ -7256,6 +7258,7 @@
 		026826A12BF59DED0036F959 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				20D557572DF9D57800D9EC8B /* Barcode Scanning */,
 				016A77672D9D24A30004FCD6 /* Coupons */,
 				026A50262D2F6BBF002C42C2 /* Infinite Scroll */,
 				029149792D2682DF00F7B3B3 /* Item Selector */,
@@ -8453,6 +8456,14 @@
 				20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */,
 			);
 			path = "Deposits Overview";
+			sourceTree = "<group>";
+		};
+		20D557572DF9D57800D9EC8B /* Barcode Scanning */ = {
+			isa = PBXGroup;
+			children = (
+				20D557582DF9D58D00D9EC8B /* ScannerInputContainer.swift */,
+			);
+			path = "Barcode Scanning";
 			sourceTree = "<group>";
 		};
 		20D5CB4F2AFCF82D009A39C3 /* Payments Menu */ = {
@@ -16624,6 +16635,7 @@
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				D449C51B26DE6B5000D75B02 /* ReportList.swift in Sources */,
 				68E952D0287587BF0095A23D /* CardReaderManualRowView.swift in Sources */,
+				20D557592DF9D58D00D9EC8B /* ScannerInputContainer.swift in Sources */,
 				CE13681529FBD42100EBF43C /* QuantityRules.swift in Sources */,
 				DEF657A32C88540700ACD61E /* BlazeScheduleSettingView.swift in Sources */,
 				CC4A4FF126557D0E00B75DCD /* TitleAndToggleRow.swift in Sources */,

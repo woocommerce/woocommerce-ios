@@ -13,7 +13,8 @@ struct POSProductOrVariationResolver {
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
-    func itemForProductOrVariation(_ productOrVariation: POSProduct, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+    func itemForProductOrVariation(_ productOrVariation: POSProduct,
+                                   scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         let items: [POSItem]
 
         guard productOrVariation.downloadable == false else {
@@ -38,7 +39,8 @@ struct POSProductOrVariationResolver {
         return item
     }
 
-    private func parentProductForVariation(_ variation: POSProductVariation, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
+    private func parentProductForVariation(_ variation: POSProductVariation,
+                                           scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSVariableParentProduct {
         guard variation.productID != 0 else {
             throw .noParentProductForVariation(scannedCode: scannedCode)
         }
@@ -53,7 +55,8 @@ struct POSProductOrVariationResolver {
         return variableProduct
     }
 
-    private func loadParentProduct(_ variation: POSProductVariation, scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
+    private func loadParentProduct(_ variation: POSProductVariation,
+                                   scannedCode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
             return try await productsRemote.loadPOSProduct(for: variation.siteID,
                                                            productID: variation.productID)

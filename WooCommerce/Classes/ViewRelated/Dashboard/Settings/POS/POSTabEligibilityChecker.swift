@@ -11,6 +11,7 @@ import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 
+/// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
     case notTablet
     case unsupportedIOSVersion
@@ -25,17 +26,40 @@ enum POSIneligibleReason: Equatable {
     case selfDeallocated
 }
 
+/// Represents the eligibility state for POS.
 enum POSEligibilityState: Equatable {
     case eligible
     case ineligible(reason: POSIneligibleReason)
 }
 
 protocol POSEntryPointEligibilityCheckerProtocol {
+    /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
 
-/// Determines whether the POS entry point can be shown based on the selected store and feature gates.
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    private let siteID: Int64
+    private let userInterfaceIdiom: UIUserInterfaceIdiom
+    private let siteSettings: SelectedSiteSettings
+    private let currencySettings: CurrencySettings
+    private let stores: StoresManager
+    private let featureFlagService: FeatureFlagService
+
+    init(siteID: Int64,
+         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
+         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.siteID = siteID
+        self.userInterfaceIdiom = userInterfaceIdiom
+        self.siteSettings = siteSettings
+        self.currencySettings = currencySettings
+        self.stores = stores
+        self.featureFlagService = featureFlagService
+    }
+
+    /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
@@ -46,8 +70,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
-        async let featureFlagEligibility = isPointOfSaleFeatureFlagEnabled()
-        async let pluginEligibility = isEligibleFromPluginChecks()
+        async let featureFlagEligibility = checkRemoteFeatureEligibility()
+        async let pluginEligibility = checkPluginEligibility()
 
         // Checks site settings first since it's likely to complete fastest.
         switch await siteSettingsEligibility {
@@ -73,31 +97,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .ineligible(reason: reason)
         }
     }
-
-    private let siteID: Int64
-    private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let siteSettings: SelectedSiteSettings
-    private let currencySettings: CurrencySettings
-    private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
-
-    init(siteID: Int64,
-         userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.siteID = siteID
-        self.userInterfaceIdiom = userInterfaceIdiom
-        self.siteSettings = siteSettings
-        self.currencySettings = currencySettings
-        self.stores = stores
-        self.featureFlagService = featureFlagService
-    }
 }
 
 private extension POSTabEligibilityChecker {
-    func isEligibleFromPluginChecks() async -> POSEligibilityState {
+    func checkPluginEligibility() async -> POSEligibilityState {
         let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
 
         guard let wcPlugin, wcPlugin.active else {
@@ -122,7 +125,10 @@ private extension POSTabEligibilityChecker {
     }
 
     func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin? {
-        await withCheckedContinuation { continuation in
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: nil)
+            }
             let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
                 continuation.resume(returning: wcPlugin)
             }
@@ -131,7 +137,10 @@ private extension POSTabEligibilityChecker {
     }
 
     func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
-        await withCheckedContinuation { continuation in
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
+            }
             let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
                 switch result {
                 case .success(let isEnabled):
@@ -191,10 +200,10 @@ private extension POSTabEligibilityChecker {
 }
 
 private extension POSTabEligibilityChecker {
-    func isPointOfSaleFeatureFlagEnabled() async -> POSEligibilityState {
+    func checkRemoteFeatureEligibility() async -> POSEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        return await withCheckedContinuation { [weak self] continuation in
+        await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
             }

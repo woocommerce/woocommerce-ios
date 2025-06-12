@@ -272,6 +272,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 // TODO: `selected_rate_options` will be updated while adding UPS support PaJDVv-2Gf-p2
                 ParameterKey.selectedRateOptions: [:],
+                ParameterKey.featuresSupported: [Values.upsdap],
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
             ]

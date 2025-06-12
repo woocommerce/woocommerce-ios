@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import UIKit
 import KeychainAccess
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
@@ -233,6 +234,7 @@ final class SessionManager: SessionManagerProtocol {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress,
+                                                              deviceModelIdentifierInfo: UIDevice.current.deviceModelIdentifierInfo,
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)

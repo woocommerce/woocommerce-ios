@@ -116,8 +116,10 @@ struct ItemListView: View {
             // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
             .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
 
-            BarcodeScannerContainer() { scannedCode in
-                posModel.barcodeScanned(scannedCode)
+            if isBarcodeScani1FeatureEnabled {
+                BarcodeScannerContainer() { scannedCode in
+                    posModel.barcodeScanned(scannedCode)
+                }
             }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,

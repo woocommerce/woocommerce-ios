@@ -17,6 +17,10 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
 
+    @Published var selectedTabIndex: Int = 0
+
+    @Published private(set) var displayedServiceCards: [WooShippingServiceCardViewModel] = []
+
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
@@ -57,6 +61,7 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onSelectRate = onSelectRate
+        observeSelectedTab()
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -74,16 +79,40 @@ final class WooShippingServiceViewModel: ObservableObject {
         analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
     }
 
+    func refreshSelectedRate(from oldRate: WooShippingSelectedRate) -> WooShippingSelectedRate? {
+        let updatedStandardRate = standardRates.first(where: {
+            $0.serviceID == oldRate.rate.serviceID
+        })
+        let updatedSignatureRate = signatureRates.first(where: {
+            $0.serviceID == oldRate.signatureRate?.serviceID
+        })
+        let updatedAdultSignatureRate = adultSignatureRates.first(where: {
+            $0.serviceID == oldRate.adultSignatureRate?.serviceID
+        })
+        guard let updatedStandardRate else {
+            return nil
+        }
+        let newSelectedRate = WooShippingSelectedRate(rate: updatedStandardRate,
+                                                      signatureRate: updatedSignatureRate,
+                                                      adultSignatureRate: updatedAdultSignatureRate)
+        self.selectedRate = newSelectedRate
+        generateServiceTabs()
+        return newSelectedRate
+    }
+
     /// Retrieves shipping label rates for this shipment from remote.
-    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected,
+                        onLoadingCompletion: @escaping (Result<Void, Swift.Error>) -> Void = { _ in }) {
         // Store the selected package for retrying if error occurs
         self.selectedPackage = selectedPackage
 
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
+            onLoadingCompletion(.failure(Error.missingDestinationAddress))
             return updateLoadingState(to: .error(Error.missingDestinationAddress))
         }
 
         guard selectedPackage.weight > 0 else {
+            onLoadingCompletion(.failure(Error.missingShipmentWeight))
             return updateLoadingState(to: .error(Error.missingShipmentWeight))
         }
 
@@ -96,6 +125,7 @@ final class WooShippingServiceViewModel: ObservableObject {
             guard let self,
                   /// Avoids showing the obsolete rates if the user changes the package weight while loading.
                   [self.selectedPackage] == remotePackages else {
+                onLoadingCompletion(.success(()))
                 return
             }
 
@@ -108,6 +138,7 @@ final class WooShippingServiceViewModel: ObservableObject {
                     let error = Error.noRatesAvailable(isHAZMAT: isHAZMAT)
                     updateLoadingState(to: .error(error))
                     analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                    onLoadingCompletion(.failure(error))
                     return
                 }
 
@@ -116,10 +147,12 @@ final class WooShippingServiceViewModel: ObservableObject {
                 adultSignatureRates = rates.adultSignatureRequired
                 updateLoadingState(to: .loaded)
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingSuccess))
+                onLoadingCompletion(.success(()))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
                 updateLoadingState(to: .error(Error.failedLoadingLabelRates))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                onLoadingCompletion(.failure(Error.failedLoadingLabelRates))
             }
         }
         stores.dispatch(action)
@@ -218,6 +251,14 @@ private extension WooShippingServiceViewModel {
             serviceTabs = []
         }
         loadingState = state
+    }
+
+    func observeSelectedTab() {
+        $serviceTabs.combineLatest($selectedTabIndex)
+            .map { tabs, index in
+                tabs[safe: index]?.cards ?? []
+            }
+            .assign(to: &$displayedServiceCards)
     }
 }
 

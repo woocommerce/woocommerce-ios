@@ -10,6 +10,8 @@ import struct Yosemite.SystemPlugin
 import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
+import protocol Yosemite.PluginsServiceProtocol
+import class Yosemite.PluginsService
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
@@ -42,6 +44,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
+    private let pluginsService: PluginsServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
@@ -49,12 +52,14 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
+        self.pluginsService = pluginsService
         self.stores = stores
         self.featureFlagService = featureFlagService
     }
@@ -103,10 +108,6 @@ private extension POSTabEligibilityChecker {
     func checkPluginEligibility() async -> POSEligibilityState {
         let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
 
-        guard let wcPlugin, wcPlugin.active else {
-            return .ineligible(reason: .wooCommercePluginNotFound)
-        }
-
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                 minimumRequired: Constants.wcPluginMinimumVersion) else {
             return .ineligible(reason: .unsupportedWooCommerceVersion)
@@ -125,16 +126,8 @@ private extension POSTabEligibilityChecker {
     }
 
     @MainActor
-    func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin? {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: nil)
-            }
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-                continuation.resume(returning: wcPlugin)
-            }
-            stores.dispatch(action)
-        }
+    func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
+        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginName: Constants.wcPluginName, isActive: true)
     }
 
     @MainActor
@@ -173,7 +166,7 @@ private extension POSTabEligibilityChecker {
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID else {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty else {
                 continue
             }
             return siteSettings.settings
@@ -191,9 +184,9 @@ private extension POSTabEligibilityChecker {
             return .ineligible(reason: .unsupportedCountry)
         }
 
-        // Then checks currency.
-        switch currencyCode {
-        case .USD, .GBP:
+        // Then checks currency based on the country.
+        switch (countryCode, currencyCode) {
+        case (.US, .USD), (.GB, .GBP):
             return .eligible
         default:
             return .ineligible(reason: .unsupportedCurrency)

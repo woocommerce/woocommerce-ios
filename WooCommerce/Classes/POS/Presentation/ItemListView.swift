@@ -69,6 +69,11 @@ struct ItemListView: View {
         return itemListState.isLoaded || itemListState.isEmpty
     }
 
+    private var shouldShowProductFilterButton: Bool {
+        guard case .products = selectedItemListType else { return false }
+        return true
+    }
+
     private var isSearchAllowed: Bool {
         switch selectedItemListType {
         case .products:
@@ -83,6 +88,7 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
+    @State private var showProductFiltersModal: Bool = false
 
     @State private var barcodeScanSimulatorIsPresented: Bool = false
     @State private var barcodeScanSimulatorText: String = ""
@@ -129,6 +135,9 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .sheet(isPresented: $showProductFiltersModal) {
+            Text("Filters")
+        }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -258,6 +267,9 @@ private extension ItemListView {
                             simulatedScanButton
                                 .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
 
+                            productFiltersButton
+                                .renderedIf(shouldShowProductFilterButton)
+
                             POSPageHeaderActionButton(systemName: "magnifyingglass") {
                                 analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                                 setSearch(true)
@@ -313,6 +325,13 @@ private extension ItemListView {
 ///
 @available(iOS 17.0, *)
 private extension ItemListView {
+    @ViewBuilder
+    private var productFiltersButton: some View {
+        POSPageHeaderActionButton(systemName: "line.3.horizontal.decrease") {
+            showProductFiltersModal = true
+        }
+    }
+
     @ViewBuilder
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {

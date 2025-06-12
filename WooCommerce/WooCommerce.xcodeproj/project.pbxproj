@@ -82,6 +82,7 @@
 		01BE94042DDCC7670063541C /* PointOfSaleEmptyErrorStateViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BE94032DDCC7650063541C /* PointOfSaleEmptyErrorStateViewLayout.swift */; };
 		01C9C59F2DA3D98400CD81D8 /* CartRowRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
+		01E62EC82DFADF56003A6D9E /* Cart+BarcodeScanError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */; };
 		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
 		01F42C162CE34AB8003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C152CE34AB3003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift */; };
 		01F42C182CE34AD2003D0A5A /* CardPresentModalSuccessEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */; };
@@ -3331,6 +3332,7 @@
 		01BE94032DDCC7650063541C /* PointOfSaleEmptyErrorStateViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEmptyErrorStateViewLayout.swift; sourceTree = "<group>"; };
 		01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartRowRemoveButton.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
+		01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Cart+BarcodeScanError.swift"; sourceTree = "<group>"; };
 		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
 		01F42C152CE34AB3003D0A5A /* CardPresentModalTapToPaySuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalTapToPaySuccessEmailSent.swift; sourceTree = "<group>"; };
 		01F42C172CE34AD1003D0A5A /* CardPresentModalSuccessEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalSuccessEmailSent.swift; sourceTree = "<group>"; };
@@ -10011,6 +10013,7 @@
 				20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */,
 				20D4AE002D133B43004555B2 /* ItemsStackState.swift */,
 				68F151E02C0DA7910082AEC8 /* Cart.swift */,
+				01E62EC72DFADF4B003A6D9E /* Cart+BarcodeScanError.swift */,
 				20D920E92CEF86520023B089 /* PointOfSaleErrorState.swift */,
 				2044158C2CE4DB480070BF54 /* PointOfSaleOrderStage.swift */,
 				2044158E2CE6181E0070BF54 /* PointOfSaleOrderState.swift */,
@@ -15971,6 +15974,7 @@
 				028AFFB32484ED2800693C09 /* Dictionary+Logging.swift in Sources */,
 				026CAF802AC2B7FF002D23BB /* ConfigurableBundleProductView.swift in Sources */,
 				45BBFBC1274FD94300213001 /* HubMenuCoordinator.swift in Sources */,
+				01E62EC82DFADF56003A6D9E /* Cart+BarcodeScanError.swift in Sources */,
 				D8652E582630BFF500350F37 /* OrderDetailsPaymentAlerts.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,

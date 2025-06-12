@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import struct Yosemite.ProductTag
 
 @available(iOS 17.0, *)
 struct ItemListView: View {
@@ -93,6 +94,8 @@ struct ItemListView: View {
     @State private var barcodeScanSimulatorIsPresented: Bool = false
     @State private var barcodeScanSimulatorText: String = ""
 
+    @State private var allTags: [ProductTag] = []
+
     var body: some View {
         if #available(iOS 18.0, *) {
             NavigationStack {
@@ -136,7 +139,24 @@ struct ItemListView: View {
             }
         })
         .sheet(isPresented: $showProductFiltersModal) {
-            Text("Filters")
+            VStack {
+                Text("Filters")
+                ScrollView {
+                    ForEach(allTags, id: \.tagID) { tag in
+                        Text("\(tag.tagID) - \(tag.name)")
+                    }
+                }
+
+                Button(action: {
+                    Task {
+                        allTags = try await posModel.productFilterService.fetchAllTags()
+                    }
+                }, label: {
+                    Text("Fetch all tags")
+                })
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: false))
+                .padding()
+            }
         }
     }
 
@@ -477,25 +497,25 @@ private extension ItemListView {
     }
 }
 
-#if DEBUG
-
-@available(iOS 17.0, *)
-#Preview("Loaded with all product types") {
-    let itemsController = PointOfSalePreviewItemsController()
-    Task { @MainActor in
-        await itemsController.loadItems(base: .root)
-    }
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
-    return ItemListView(selectedItemListType: .constant(.products(search: false)),
-                        searchTerm: .constant(""))
-        .environment(posModel)
-}
-
-@available(iOS 17.0, *)
-#Preview("Loading") {
-    ItemListView(selectedItemListType: .constant(.products(search: false)),
-                 searchTerm: .constant(""))
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
-}
-
-#endif
+//#if DEBUG
+//
+//@available(iOS 17.0, *)
+//#Preview("Loaded with all product types") {
+//    let itemsController = PointOfSalePreviewItemsController()
+//    Task { @MainActor in
+//        await itemsController.loadItems(base: .root)
+//    }
+//    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
+//    return ItemListView(selectedItemListType: .constant(.products(search: false)),
+//                        searchTerm: .constant(""))
+//        .environment(posModel)
+//}
+//
+//@available(iOS 17.0, *)
+//#Preview("Loading") {
+//    ItemListView(selectedItemListType: .constant(.products(search: false)),
+//                 searchTerm: .constant(""))
+//        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+//}
+//
+//#endif

@@ -997,33 +997,16 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         dateFormatter.dateStyle = .medium
         let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
 
-        let expectedFirstLine = "I agree to a recurring weekly charge of $\(Int(weeklyAmount)) starting \(startDate), which will continue until I cancel."
-        XCTAssertTrue(textContent.contains(expectedFirstLine), "Evergreen campaign first line should match expected text")
+        let expectedFirstLine = "I agree to a recurring weekly charge up to $\(Int(weeklyAmount)) starting \(startDate). " +
+                                 "Charges may occur at varying times during the campaign."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Evergreen campaign first line should match expected text"
+        )
     }
 
-    func test_tos_checkbox_second_line_evergreen_displays_expected_text() throws {
-        // Given
-        insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
-                                                           onCompletion: {})
-
-        // When
-        let attributedText = viewModel.tosCheckboxAttributedText
-        let textContent = String(attributedText.characters)
-
-        // Then
-        let expectedSecondLine = "I understand I can cancel anytime from the campaign details screen to stop future charges."
-        XCTAssertTrue(textContent.contains(expectedSecondLine), "Evergreen campaign second line should match expected text")
-    }
-
-    // MARK: ToS Checkbox First Line - Finite Campaigns
-    func test_tos_checkbox_first_line_finite_displays_expected_text() throws {
+    // MARK: ToS Checkbox First Line - Finite Campaigns Up To 7 Days
+    func test_tos_checkbox_first_line_finite_up_to_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
         let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
@@ -1040,21 +1023,23 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         let textContent = String(attributedText.characters)
 
         // Then
-        let defaultDuration = BlazeBudgetSettingViewModel.Constants.defaultDayCount
-        let totalAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(defaultDuration)
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
         let dateFormatter = DateFormatter()
         dateFormatter.timeStyle = .none
         dateFormatter.dateStyle = .medium
-        let startDate = Date.now + 60 * 60 * 24
-        let endDate = startDate.addingTimeInterval(86400 * Double(defaultDuration))
-        let startDateString = dateFormatter.string(for: startDate) ?? ""
-        let endDateString = dateFormatter.string(for: endDate) ?? ""
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
 
-        let expectedFirstLine = "I agree to a total charge of $\(Int(totalAmount)) for a campaign running from \(startDateString) to \(endDateString)."
-        XCTAssertTrue(textContent.contains(expectedFirstLine), "Finite campaign first line should match expected text")
+        // Default duration is 7 days, which should trigger the "up to 7 days" scenario
+        let expectedFirstLine = "I agree to be charged up to $\(Int(weeklyAmount)) starting \(startDate). " +
+                                 "Charges may occur in one or more payments while the campaign is active."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Finite campaign with default duration should match 'up to 7 days' expected text"
+        )
     }
 
-    func test_tos_checkbox_second_line_finite_displays_expected_text() throws {
+    // MARK: ToS Checkbox First Line - Finite Campaigns More Than 7 Days
+    func test_tos_checkbox_first_line_finite_more_than_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
         let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
@@ -1067,12 +1052,26 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
                                                            onCompletion: {})
 
         // When
+        // Set duration to more than 7 days to trigger the "more than 7 days" scenario
+        viewModel.budgetSettingViewModel.didTapApplyDuration(dayCount: 14, since: Date.now + 60 * 60 * 24)
+        viewModel.budgetSettingViewModel.confirmSettings()
+
         let attributedText = viewModel.tosCheckboxAttributedText
         let textContent = String(attributedText.characters)
 
         // Then
-        let expectedSecondLine = "I understand I can cancel anytime from the campaign details screen before the campaign ends."
-        XCTAssertTrue(textContent.contains(expectedSecondLine), "Finite campaign second line should match expected text")
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+
+        let expectedFirstLine = "I agree to a recurring charge of up to $\(Int(weeklyAmount)) weekly starting \(startDate). " +
+                                 "Charges may occur at varying times during the campaign."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Finite campaign with more than 7 days should match 'more than 7 days' expected text"
+        )
     }
 
     // MARK: ToS Checkbox Link Attributes
@@ -1091,13 +1090,36 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Then
         let textContent = String(attributedText.characters)
-        if let range = textContent.range(of: "campaign details") {
+        if let range = textContent.range(of: "I can cancel anytime") {
             let attributedRange = Range(range, in: attributedText)
             if let attributedRange = attributedRange {
                 let linkAttributes = attributedText[attributedRange]
-                XCTAssertNotNil(linkAttributes.link, "Campaign details text should have a link attribute")
+                XCTAssertNotNil(linkAttributes.link, "I can cancel anytime text should have a link attribute")
             }
         }
+    }
+
+    // MARK: ToS Checkbox Second Line - Unified for All Campaign Types
+    func test_tos_checkbox_second_line_displays_unified_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let expectedSecondLine = "I can cancel anytime; I’ll only pay for ads delivered up to cancellation."
+        XCTAssertTrue(
+            textContent.contains(expectedSecondLine),
+            "All campaign types should have the unified second line text"
+        )
     }
 }
 

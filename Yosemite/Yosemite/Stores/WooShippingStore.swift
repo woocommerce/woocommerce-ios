@@ -622,4 +622,6 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseErrorStatus
     /// No labels are returned by initial purchase request
     case purchaseMissingLabels
+    case failedToRefreshSelectedPackage
+    case failedToRefreshSelectedRate
 }

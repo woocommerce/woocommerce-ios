@@ -5,11 +5,11 @@ import SwiftUI
 struct WooShippingServiceView: View {
     @ObservedObject var viewModel: WooShippingServiceViewModel
 
-    private var carriers: [TopTabItem<WooShippingServiceCardListView>] {
+    private var carriers: [TopTabItem<EmptyView>] {
         viewModel.serviceTabs.map { tab in
             TopTabItem(name: tab.id.name,
                        icon: tab.id.logo) {
-                WooShippingServiceCardListView(cards: tab.cards)
+                EmptyView()
             }
         }
     }
@@ -78,12 +78,17 @@ struct WooShippingServiceView: View {
     }
 
     var contentView: some View {
-        TopTabView(tabs: carriers,
-                   tabsContainerHorizontalPadding: 16,
-                   unselectedStateColor: .secondary,
-                   tabsNameFont: .subheadline.bold(),
-                   tabItemContentHorizontalPadding: 6,
-                   tabItemContentVerticalPadding: 12)
+        VStack(spacing: 0) {
+            TopTabView(tabs: carriers,
+                       showContent: false,
+                       tabsContainerHorizontalPadding: 16,
+                       unselectedStateColor: .secondary,
+                       tabsNameFont: .subheadline.bold(),
+                       tabItemContentHorizontalPadding: 6,
+                       tabItemContentVerticalPadding: 12,
+                       onTabChange: { viewModel.selectedTabIndex = $0 })
+            WooShippingServiceCardListView(cards: viewModel.displayedServiceCards)
+        }
         .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView
     }
 

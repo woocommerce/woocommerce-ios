@@ -119,7 +119,10 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
                     UPSTermsView(viewModel: termsViewModel) {
-                        // TODO: reload rates
+                        viewModel.shouldShowUPSTermsAndConditions = false
+                        Task { @MainActor in
+                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                        }
                     }
                     .presentationDetents([.fraction(0.8), .large])
                 }
@@ -144,7 +147,7 @@ private extension WooShippingCreateLabelsView {
             TopTabView(tabs: tabs,
                        showContent: false,
                        showDividerBelowTabs: false,
-                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       selectedTabIndex: viewModel.selectedShipmentIndex,
                        tabsContainerHorizontalPadding: nil,
                        selectedStateColor: .accentColor,
                        unselectedStateColor: .secondary,
@@ -155,7 +158,8 @@ private extension WooShippingCreateLabelsView {
                        tabsIconAlignment: .trailing,
                        tabsIconForegroundColor: Layout.green,
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding,
+                       onTabChange: { viewModel.selectedShipmentIndex = $0 })
             .overlay(alignment: .trailing) {
                 LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
                     .frame(width: Layout.gradientViewWidth)
@@ -183,6 +187,7 @@ private extension WooShippingCreateLabelsView {
                     })
                 }
                 WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
+                    .disabled(viewModel.isPurchasingLabel)
             }
             .padding(Layout.contentSpacing)
         }
@@ -534,7 +539,7 @@ private extension WooShippingCreateLabelsView {
     var purchaseButton: some View {
         Button {
             Task {
-                await viewModel.purchaseLabel()
+                await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
             }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))

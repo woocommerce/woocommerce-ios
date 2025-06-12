@@ -29,6 +29,25 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword() async throws
 }
 
+/// A wrapper for the `UIDevice` `model` and `identifierForVendor` properties.
+///
+/// This is necessary because `UIDevice` is part of UIKit which we cannot use when targeting watchOS.
+/// So, to keep this package compatible with watchOS, we need to abstract UIKit away and delegate it to the consumers to provide us
+/// with the device information.
+///
+/// This approach is feasible because only the `applicationPasswordName` method in
+/// `DefaultApplicationPasswordUseCase` needs access to the information and watchOS does not need to create application
+/// passwords. We can therefore pass a `nil` value to it to satisfy the compilation without issues for the user experience.
+public struct DeviceModelIdentifierInfo {
+    let model: String
+    let identifierForVendor: String
+
+    public init(model: String, identifierForVendor: String) {
+        self.model = model
+        self.identifierForVendor = identifierForVendor
+    }
+}
+
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Site Address
     ///
@@ -46,30 +65,31 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let storage: ApplicationPasswordStorage
 
+    private let deviceModelIdentifierInfo: DeviceModelIdentifierInfo?
+
     /// Used to name the password in wpadmin.
     ///
     private var applicationPasswordName: String {
-        get async {
-#if !os(watchOS)
+        get {
+            guard let deviceModelIdentifierInfo else {
+                return "" // This is not needed on watchOS as the watch does not create application passwords.
+            }
+
             let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
-            let model = await UIDevice.current.model
-            let identifierForVendor = await UIDevice.current.identifierForVendor?.uuidString ?? ""
-            return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
-#endif
-#if os(watchOS)
-            return "" // This is not needed on watchOS as the watch does not create application passwords.
-#endif
+            return "\(bundleIdentifier).ios-app-client.\(deviceModelIdentifierInfo.model).\(deviceModelIdentifierInfo.identifierForVendor)"
         }
     }
 
     public init(username: String,
                 password: String,
                 siteAddress: String,
+                deviceModelIdentifierInfo: DeviceModelIdentifierInfo? = nil,
                 network: Network? = nil,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
         self.siteAddress = siteAddress
         self.username = username
         self.storage = ApplicationPasswordStorage(keychain: keychain)
+        self.deviceModelIdentifierInfo = deviceModelIdentifierInfo
 
         if let network {
             self.network = network

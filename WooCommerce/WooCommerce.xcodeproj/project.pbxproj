@@ -1306,6 +1306,7 @@
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
 		3F587026281B9C19004F7556 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F587028281B9C19004F7556 /* InfoPlist.strings */; };
+		3F88EC3F2DF8D4BC0023A6F4 /* UIDevice+DeviceModelIdentifierInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F88EC3E2DF8D4BC0023A6F4 /* UIDevice+DeviceModelIdentifierInfo.swift */; };
 		3FA96DF42C94043200CDA78F /* Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FA96DF32C94043200CDA78F /* Yosemite.framework */; };
 		3FF314E126FC74450012E68E /* UITestsFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = 3FF314E026FC74450012E68E /* UITestsFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
@@ -4513,6 +4514,7 @@
 		3F587037281B9C50004F7556 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F587038281B9C52004F7556 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3F88EC3E2DF8D4BC0023A6F4 /* UIDevice+DeviceModelIdentifierInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+DeviceModelIdentifierInfo.swift"; sourceTree = "<group>"; };
 		3FA96DF32C94043200CDA78F /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FF314D626FC55DE0012E68E /* ScreenObject+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScreenObject+Extension.swift"; sourceTree = "<group>"; };
 		3FF314DE26FC74450012E68E /* UITestsFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UITestsFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -11137,6 +11139,7 @@
 				DE6906E627D74A1900735E3B /* WooSplitViewController.swift */,
 				26A7C8782BE91F3D00382627 /* WatchDependenciesSynchronizer.swift */,
 				26B249702BEC801400730730 /* WatchDependencies.swift */,
+				3F88EC3E2DF8D4BC0023A6F4 /* UIDevice+DeviceModelIdentifierInfo.swift */,
 			);
 			path = System;
 			sourceTree = "<group>";
@@ -16518,6 +16521,7 @@
 				02CE4304276993DA0006EAEF /* CaptureDevicePermissionChecker.swift in Sources */,
 				205B7ECD2C19FD2F00D14A36 /* PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel.swift in Sources */,
 				DEF8CF1F29AC870A00800A60 /* WPComEmailLoginViewModel.swift in Sources */,
+				3F88EC3F2DF8D4BC0023A6F4 /* UIDevice+DeviceModelIdentifierInfo.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
 				454453CA27566CDE00464AC5 /* HubMenuViewModel.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,

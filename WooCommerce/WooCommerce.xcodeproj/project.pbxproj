@@ -1203,6 +1203,7 @@
 		26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */; };
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
+		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */; };
 		311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
@@ -4425,6 +4426,7 @@
 		26FE09E024DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SurveyCoordinatorControllerTests.swift; sourceTree = "<group>"; };
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
+		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -9579,6 +9581,7 @@
 		45D875D72611EA3D00226C3F /* SwiftUI Components */ = {
 			isa = PBXGroup;
 			children = (
+				2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */,
 				EE3B17B52AA03837004D3E0C /* CelebrationView.swift */,
 				DE7E5E8B2B4E9353002E28D2 /* ErrorStateView.swift */,
 				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
@@ -16318,6 +16321,7 @@
 				013D2FB42CFEFEC600845D75 /* TapToPayCardReaderMerchantEducationPresenter.swift in Sources */,
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
+				2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */,
 				DA4080722CC2967C002A4577 /* WooShippingAddCustomPackageViewModel.swift in Sources */,
 				02038C5C2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,

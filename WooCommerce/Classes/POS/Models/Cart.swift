@@ -1,6 +1,7 @@
 import Foundation
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
+import enum Yosemite.PointOfSaleBarcodeScanError
 
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
@@ -29,6 +30,7 @@ extension Cart {
         enum ItemState {
             case loaded(POSOrderableItem)
             case loading
+            case error
 
             var isLoading: Bool {
                 switch self {

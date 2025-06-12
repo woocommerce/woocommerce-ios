@@ -30,10 +30,12 @@ struct CartViewHelper {
 
     func hasUnresolvedItems(cart: Cart) -> Bool {
         cart.purchasableItems.contains { item in
-            if case .loading = item.state {
+            switch item.state {
+            case .loading, .error:
                 return true
+            case .loaded:
+                return false
             }
-            return false
         }
     }
 }

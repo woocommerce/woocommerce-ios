@@ -12,6 +12,7 @@ import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import enum Yosemite.PointOfSaleBarcodeScanError
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -183,12 +184,12 @@ extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
         Task {
             let placeholderItemID = cart.addLoadingItem()
-            do {
+            do throws(PointOfSaleBarcodeScanError) {
                 let item = try await barcodeScanService.getItem(barcode: barcode)
                 cart.updateLoadingItem(id: placeholderItemID, with: item)
             } catch {
-                DDLogInfo("Failed to scan barcode: \(error)")
-                cart.removeItem(id: placeholderItemID)
+                DDLogInfo("Failed to find item by barcode: \(error)")
+                cart.updateLoadingItem(id: placeholderItemID, with: error)
             }
         }
     }

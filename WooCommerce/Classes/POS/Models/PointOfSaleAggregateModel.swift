@@ -187,6 +187,7 @@ extension PointOfSaleAggregateModel {
                 let item = try await barcodeScanService.getItem(barcode: barcode)
                 cart.updateLoadingItem(id: placeholderItemID, with: item)
             } catch {
+                DDLogInfo("Failed to scan barcode: \(error)")
                 cart.removeItem(id: placeholderItemID)
             }
         }

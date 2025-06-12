@@ -173,7 +173,7 @@ private extension POSTabEligibilityChecker {
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID else {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty else {
                 continue
             }
             return siteSettings.settings

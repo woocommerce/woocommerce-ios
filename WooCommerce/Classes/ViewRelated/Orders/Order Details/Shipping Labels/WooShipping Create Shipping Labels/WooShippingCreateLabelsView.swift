@@ -147,7 +147,7 @@ private extension WooShippingCreateLabelsView {
             TopTabView(tabs: tabs,
                        showContent: false,
                        showDividerBelowTabs: false,
-                       selectedTabIndex: viewModel.selectedShipmentIndex,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
                        tabsContainerHorizontalPadding: nil,
                        selectedStateColor: .accentColor,
                        unselectedStateColor: .secondary,
@@ -158,8 +158,7 @@ private extension WooShippingCreateLabelsView {
                        tabsIconAlignment: .trailing,
                        tabsIconForegroundColor: Layout.green,
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding,
-                       onTabChange: { viewModel.selectedShipmentIndex = $0 })
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             .overlay(alignment: .trailing) {
                 LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
                     .frame(width: Layout.gradientViewWidth)

@@ -141,7 +141,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: currentShipment.index,
+        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
                                             purchasedLabelID: purchasedLabelID,
                                             currency: order.currency,
@@ -154,7 +154,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: currentShipment.index,
+        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
                                             purchasedLabelID: nil,
                                             currency: order.currency,
@@ -356,13 +356,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {
-        let removedShipmentIndex = shipment.index
-        let mergedShipmentIndex = otherShipment.index
-
         defer {
             updateShipmentIndices() // !!IMPORTANT!!
         }
 
+        let removedShipmentIndex = shipment.index
+        let mergedShipmentIndex = otherShipment.index
         var mergedContents = otherShipment.contents
 
         for item in shipment.contents {
@@ -634,17 +633,17 @@ extension WooShippingSplitShipmentsViewModel {
     @MainActor
     private func updateShipment() async throws -> WooShippingShipments {
         let shipmentIdsToUpdate: [String: Int] = {
-            var idsMap: [String: Int] = [:]
+            var indicesMap: [String: Int] = [:]
             for item in shipmentsSavedInRemote.filter({ $0.isPurchased }) {
                 guard let matchingItem = shipments.first(where: { $0.id == item.id }) else {
                     DDLogWarn("⚠️ Cannot find matching fulfilled shipment to update at index: \(item.index)")
                     continue
                 }
                 if item.index != matchingItem.index {
-                    idsMap[item.index.description] = matchingItem.index
+                    indicesMap[item.index.description] = matchingItem.index
                 }
             }
-            return idsMap
+            return indicesMap
         }()
         let shipmentsInfo = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
                                                       shipments: editedShipmentsInfo)

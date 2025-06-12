@@ -314,6 +314,10 @@ private extension HubMenuViewModel {
     }
 
     func setupPOSElement() {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) == false else {
+            return
+        }
+
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()

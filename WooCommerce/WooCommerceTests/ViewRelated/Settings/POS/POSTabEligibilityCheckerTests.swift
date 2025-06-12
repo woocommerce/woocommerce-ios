@@ -8,13 +8,15 @@ struct POSTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var siteSettings: SelectedSiteSettings!
+    private var pluginsService: MockPluginsService!
     private let siteID: Int64 = 2
 
     init() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
-        setupWooCommerceVersion()
         storageManager = MockStorageManager()
+        pluginsService = MockPluginsService()
+        setupWooCommerceVersion()
         siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
     }
 
@@ -27,6 +29,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -46,6 +49,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -65,6 +69,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .phone,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -90,6 +95,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: currencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -115,6 +121,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: currencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -143,6 +150,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: currencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -163,6 +171,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -184,6 +193,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -205,6 +215,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -226,6 +237,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -247,6 +259,7 @@ struct POSTabEligibilityCheckerTests {
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -272,14 +285,12 @@ private extension POSTabEligibilityCheckerTests {
     }
 
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case .fetchSystemPlugin(_, _, let completion):
-                completion(SystemPlugin.fake().copy(name: "WooCommerce", version: version, active: true))
-            default:
-                break
-            }
-        }
+        pluginsService.pluginToReturn = .fake().copy(
+            siteID: siteID,
+            plugin: "WooCommerce",
+            version: version,
+            active: true
+        )
     }
 
     func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
@@ -320,5 +331,13 @@ private extension POSTabEligibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+    }
+}
+
+private final class MockPluginsService: PluginsServiceProtocol {
+    var pluginToReturn: SystemPlugin = .fake()
+
+    func waitForPluginInStorage(siteID: Int64, pluginName: String, isActive: Bool) async -> SystemPlugin {
+        pluginToReturn
     }
 }

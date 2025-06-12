@@ -184,7 +184,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var targetDeviceText: String = ""
     @Published private(set) var targetTopicText: String = ""
     @Published private(set) var targetLocationText: String = ""
-    @Published private(set) var tosCheckboxText: String = ""
 
     // Ad destination URL
     @Published private var targetUrl: String = ""

@@ -65,7 +65,6 @@ struct BlazeCampaignCreationForm: View {
     @ObservedObject private var viewModel: BlazeCampaignCreationFormViewModel
 
     @Environment(\.colorScheme) var colorScheme
-    @Environment(\.sizeCategory) var sizeCategory
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var isShowingCampaignObjectivePicker = false

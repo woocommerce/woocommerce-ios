@@ -1,18 +1,18 @@
 import SwiftUI
 
 @available(iOS 17.0, *)
-struct ScannerInputContainer: View {
+struct BarcodeScannerContainer: View {
     let onScan: (String) -> Void
 
     var body: some View {
-        ScannerInputContainerRepresentable(onScan: onScan)
+        BarcodeScannerContainerRepresentable(onScan: onScan)
             .frame(width: 0, height: 0)
             .allowsHitTesting(false)
             .accessibilityHidden(true)
     }
 }
 
-struct ScannerInputContainerRepresentable<Content: View>: UIViewControllerRepresentable {
+struct BarcodeScannerContainerRepresentable<Content: View>: UIViewControllerRepresentable {
     let content: Content
     let onScan: (String) -> Void
 
@@ -21,19 +21,19 @@ struct ScannerInputContainerRepresentable<Content: View>: UIViewControllerRepres
         self.onScan = onScan
     }
 
-    func makeUIViewController(context: Context) -> ScannerInputHostingController<Content> {
-        let controller = ScannerInputHostingController(rootView: content)
+    func makeUIViewController(context: Context) -> BarcodeScannerHostingController<Content> {
+        let controller = BarcodeScannerHostingController(rootView: content)
         controller.onScan = onScan
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: ScannerInputHostingController<Content>, context: Context) {
+    func updateUIViewController(_ uiViewController: BarcodeScannerHostingController<Content>, context: Context) {
         uiViewController.rootView = content
         uiViewController.onScan = onScan
     }
 }
 
-class ScannerInputHostingController<Content: View>: UIHostingController<Content> {
+class BarcodeScannerHostingController<Content: View>: UIHostingController<Content> {
     var onScan: ((String) -> Void)?
     private var buffer = ""
 
@@ -49,9 +49,9 @@ class ScannerInputHostingController<Content: View>: UIHostingController<Content>
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        /// While a scanner should just “press” each key once, in theory it’s possible for presses to be cancelled
+        /// While a scanner should just "press" each key once, in theory it's possible for presses to be cancelled
         /// or change between the `began` call and the `ended` call.
-        /// It’s better practice for barcode scanning to only consider the presses when they end.
+        /// It's better practice for barcode scanning to only consider the presses when they end.
         for press in presses {
             if let key = press.key?.charactersIgnoringModifiers {
                 if key == "\r" || key == "\n" {

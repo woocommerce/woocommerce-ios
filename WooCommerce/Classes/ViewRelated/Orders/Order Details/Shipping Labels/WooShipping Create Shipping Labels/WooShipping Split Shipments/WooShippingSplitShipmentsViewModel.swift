@@ -382,7 +382,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         let mergedShipment = createShipment(with: mergedContents)
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
-        selectedShipmentIndex = shipments.firstIndex(where: { $0.id == mergedShipment.id }) ?? 0
+        selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
     }
 }
 
@@ -635,7 +635,7 @@ extension WooShippingSplitShipmentsViewModel {
         let shipmentIdsToUpdate: [String: Int] = {
             var indicesMap: [String: Int] = [:]
             for item in shipmentsSavedInRemote.filter({ $0.isPurchased }) {
-                guard let matchingItem = shipments.first(where: { $0.id == item.id }) else {
+                guard let matchingItem = shipments.first(where: { $0 == item }) else {
                     DDLogWarn("⚠️ Cannot find matching fulfilled shipment to update at index: \(item.index)")
                     continue
                 }

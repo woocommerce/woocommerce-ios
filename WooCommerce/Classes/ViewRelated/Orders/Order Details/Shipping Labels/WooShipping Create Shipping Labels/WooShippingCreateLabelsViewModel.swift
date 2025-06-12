@@ -524,7 +524,6 @@ private extension WooShippingCreateLabelsViewModel {
 
     func handleLabelRefundRequested(labelID: Int64,
                                     in shipment: Shipment) {
-        
         let labelIndex = shippingLabels.firstIndex(where: { $0.shippingLabelID == labelID })
         guard let labelIndex else { return }
 

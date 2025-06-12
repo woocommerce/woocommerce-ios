@@ -94,8 +94,14 @@ class BarcodeScannerHostingController: UIHostingController<EmptyView> {
         becomeFirstResponder()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        resignFirstResponder()
+    }
+
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesBegan(presses, with: event)
+        /// We don't call super here because it helps prevent the system from hiding the software keyboard when
+        /// a textfield is next used.
     }
 
     /// Handles the end of keyboard press events, interpreting them as barcode input.

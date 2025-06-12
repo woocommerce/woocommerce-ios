@@ -168,8 +168,18 @@ struct ItemListView: View {
                 Button(action: {
                     // TODO, for now the tags are hardcoded
                     Task {
-                        let products = try await posModel.productFilterService.fetchProductsByTag()
-                        debugPrint("✨ \(products) ✨")
+                        let result = try await posModel.productFilterService.fetchProductsByTag()
+                        let items = result.items.map { posProduct in
+                            POSItem.simpleProduct(.init(id: UUID(),
+                                                        name: posProduct.name,
+                                                        formattedPrice: posProduct.price,
+                                                        productID: posProduct.productID,
+                                                        price: posProduct.price,
+                                                        manageStock: posProduct.manageStock,
+                                                        stockQuantity: nil,
+                                                        stockStatusKey: "instock"))
+                        }
+                        posModel.purchasableItemsController.itemsViewState.itemsStack.root = .loaded(items, hasMoreItems: false)
                         showProductFiltersModal = false
                     }
                 }, label: {

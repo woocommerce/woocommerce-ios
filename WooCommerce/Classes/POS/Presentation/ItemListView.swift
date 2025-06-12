@@ -149,11 +149,18 @@ struct ItemListView: View {
                         }, label: {
                             HStack {
                                 Text("\(tag.tagID) - \(tag.name)")
+                                    .font(.body)
+                                    .foregroundColor(.primary)
                                 Spacer()
                                 if selectedtags.contains(tag.tagID) {
                                     Image(systemName: "checkmark")
+                                        .foregroundColor(.accentColor)
                                 }
                             }
+                            .padding(.vertical, 8)
+                            .padding(.horizontal)
+                            .background(Color(.systemGray6))
+                            .cornerRadius(8)
                         })
                     }
                 }

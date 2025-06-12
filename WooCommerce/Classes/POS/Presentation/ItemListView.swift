@@ -95,6 +95,7 @@ struct ItemListView: View {
     @State private var barcodeScanSimulatorText: String = ""
 
     @State private var allTags: [ProductTag] = []
+    @State private var selectedtags: Set<Int64> = []
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -143,7 +144,17 @@ struct ItemListView: View {
                 Text("Filters")
                 ScrollView {
                     ForEach(allTags, id: \.tagID) { tag in
-                        Text("\(tag.tagID) - \(tag.name)")
+                        Button(action: {
+                            toggleTagSelection(tag.tagID)
+                        }, label: {
+                            HStack {
+                                Text("\(tag.tagID) - \(tag.name)")
+                                Spacer()
+                                if selectedtags.contains(tag.tagID) {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        })
                     }
                 }
 
@@ -157,6 +168,14 @@ struct ItemListView: View {
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: false))
                 .padding()
             }
+        }
+    }
+    
+    private func toggleTagSelection(_ tagID: Int64) {
+        if selectedtags.contains(tagID) {
+            selectedtags.remove(tagID)
+        } else {
+            selectedtags.insert(tagID)
         }
     }
 

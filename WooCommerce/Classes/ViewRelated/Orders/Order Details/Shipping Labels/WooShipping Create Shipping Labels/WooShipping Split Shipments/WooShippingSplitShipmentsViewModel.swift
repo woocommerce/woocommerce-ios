@@ -137,35 +137,29 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {
-        guard let index = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
-            return
-        }
-        let currentShipment = shipments[index]
+        let currentShipment = shipments[shipmentIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[index] = Shipment(index: currentShipment.index,
-                                    contents: updatedContents,
-                                    purchasedLabelID: purchasedLabelID,
-                                    currency: order.currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
+        shipments[shipmentIndex] = Shipment(index: currentShipment.index,
+                                            contents: updatedContents,
+                                            purchasedLabelID: purchasedLabelID,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
     }
 
     func didRequestRefund(for shipmentIndex: Int) {
-        guard let index = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
-            return
-        }
-        let currentShipment = shipments[index]
+        let currentShipment = shipments[shipmentIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[index] = Shipment(index: currentShipment.index,
-                                    contents: updatedContents,
-                                    purchasedLabelID: nil,
-                                    currency: order.currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
+        shipments[shipmentIndex] = Shipment(index: currentShipment.index,
+                                            contents: updatedContents,
+                                            purchasedLabelID: nil,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
     }
 
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
@@ -326,12 +320,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func retrieveName(for shipment: Shipment) -> String {
-        guard let index = shipments.firstIndex(where: { $0.index == shipment.index }) else {
-            DDLogWarn("⚠️ Cannot retrieve name for shipment \(shipment)")
-            return ""
-        }
-
-        return String.localizedStringWithFormat(Localization.shipmentFormat, index + 1)
+        String.localizedStringWithFormat(Localization.shipmentFormat, shipment.index + 1)
     }
 
     /// Determines if a shipment's delete option should be disabled.
@@ -367,11 +356,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {
-        guard let removedShipmentIndex = shipments.firstIndex(where: { $0 == shipment }),
-              let mergedShipmentIndex = shipments.firstIndex(where: { $0 == otherShipment }) else {
-            DDLogWarn("⚠️ Cannot find shipments to remove or merge!")
-            return
-        }
+        let removedShipmentIndex = shipment.index
+        let mergedShipmentIndex = otherShipment.index
 
         defer {
             updateShipmentIndices() // !!IMPORTANT!!

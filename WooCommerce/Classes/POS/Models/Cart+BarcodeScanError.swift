@@ -6,7 +6,7 @@ extension Cart {
         guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
 
         purchasableItems[index] = Cart.PurchasableItem(
-            id: UUID(),
+            id: id,
             title: title(for: error),
             subtitle: subtitle(for: error),
             quantity: 1,

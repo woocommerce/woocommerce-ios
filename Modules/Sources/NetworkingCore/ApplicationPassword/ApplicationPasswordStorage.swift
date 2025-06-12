@@ -1,10 +1,6 @@
 import Foundation
 import KeychainAccess
 
-//#if canImport(WordPressShared)
-//import WordPressShared
-//#endif
-
 public struct ApplicationPasswordStorage {
     /// Stores the application password
     ///

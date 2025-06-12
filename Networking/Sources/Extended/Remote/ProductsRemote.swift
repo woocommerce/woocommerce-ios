@@ -262,16 +262,23 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     }
 
     public func fetchAlltags(for siteID: Int64) async throws -> [ProductTag] {
-        try await Task.sleep(nanoseconds: 500_000_000)
-        let fakeTag1 = ProductTag(siteID: 0,
-                                  tagID: 123,
-                                  name: "chairs",
-                                  slug: "chairs")
-        let fakeTag2 = ProductTag(siteID: 0,
-                                  tagID: 124,
-                                  name: "Some tables",
-                                  slug: "some-tables")
-        return [fakeTag1, fakeTag2]
+        let path = Path.tags
+        let parameters: [String: String] = [
+            ParameterKey.page: "1",
+            ParameterKey.perPage: "25",
+            ParameterKey.productType: "simple"
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductTagListMapper(siteID: siteID, responseType: .load)
+
+        let (tags, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        debugPrint("✨ \(String(describing: responseHeaders)) ✨")
+        return tags
     }
 
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
@@ -761,7 +768,8 @@ public extension ProductsRemote {
     }
 
     private enum Path {
-        static let products   = "products"
+        static let products = "products"
+        static let tags = "products/tags"
         static let productsTotal = "reports/products/totals"
         static let stockReports = "reports/stock"
         static let productReports = "reports/products"

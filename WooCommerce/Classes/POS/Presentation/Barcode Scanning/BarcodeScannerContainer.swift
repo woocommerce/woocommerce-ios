@@ -8,37 +8,58 @@ import SwiftUI
 /// when a terminating character is detected.
 @available(iOS 17.0, *)
 struct BarcodeScannerContainer: View {
+    /// Configuration for the barcode scanner
+    let configuration: BarcodeScannerConfiguration
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (String) -> Void
 
-    var body: some View {
-        BarcodeScannerContainerRepresentable(onScan: onScan)
-            .frame(width: 0, height: 0)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
+    init(
+        configuration: BarcodeScannerConfiguration = .default,
+        onScan: @escaping (String) -> Void
+    ) {
+        self.configuration = configuration
+        self.onScan = onScan
     }
+
+    var body: some View {
+        BarcodeScannerContainerRepresentable(
+            configuration: configuration,
+            onScan: onScan
+        )
+        .frame(width: 0, height: 0)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+/// Configuration options for the barcode scanner
+struct BarcodeScannerConfiguration {
+    /// Strings that indicate the end of a barcode scan
+    let terminatingStrings: Set<String>
+
+    /// Default configuration suitable for most barcode scanners
+    static let `default` = BarcodeScannerConfiguration(
+        terminatingStrings: ["\r", "\n"]
+    )
 }
 
 /// A UIViewControllerRepresentable that bridges SwiftUI with UIKit to handle keyboard input events.
 /// This component is responsible for creating and managing the UIKit view controller that captures
 /// keyboard input for barcode scanning.
-struct BarcodeScannerContainerRepresentable<Content: View>: UIViewControllerRepresentable {
-    let content: Content
+struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
+    let configuration: BarcodeScannerConfiguration
     let onScan: (String) -> Void
 
-    init(@ViewBuilder content: () -> Content = { EmptyView() }, onScan: @escaping (String) -> Void) {
-        self.content = content()
-        self.onScan = onScan
-    }
-
-    func makeUIViewController(context: Context) -> BarcodeScannerHostingController<Content> {
-        let controller = BarcodeScannerHostingController(rootView: content)
-        controller.onScan = onScan
+    func makeUIViewController(context: Context) -> BarcodeScannerHostingController {
+        let controller = BarcodeScannerHostingController(
+            configuration: configuration,
+            onScan: onScan
+        )
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: BarcodeScannerHostingController<Content>, context: Context) {
-        uiViewController.rootView = content
+    func updateUIViewController(_ uiViewController: BarcodeScannerHostingController, context: Context) {
+        uiViewController.configuration = configuration
         uiViewController.onScan = onScan
     }
 }
@@ -46,9 +67,24 @@ struct BarcodeScannerContainerRepresentable<Content: View>: UIViewControllerRepr
 /// A UIHostingController that handles keyboard input events for barcode scanning.
 /// This controller captures keyboard input and interprets it as barcode data when a terminating
 /// character is detected.
-class BarcodeScannerHostingController<Content: View>: UIHostingController<Content> {
-    var onScan: ((String) -> Void)?
+class BarcodeScannerHostingController: UIHostingController<EmptyView> {
+    var configuration: BarcodeScannerConfiguration
+    var onScan: (String) -> Void
+
     private var buffer = ""
+
+    init(
+        configuration: BarcodeScannerConfiguration,
+        onScan: @escaping (String) -> Void
+    ) {
+        self.configuration = configuration
+        self.onScan = onScan
+        super.init(rootView: EmptyView())
+    }
+
+    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override var canBecomeFirstResponder: Bool { true }
 
@@ -71,13 +107,13 @@ class BarcodeScannerHostingController<Content: View>: UIHostingController<Conten
         /// or change between the `began` call and the `ended` call.
         /// It's better practice for barcode scanning to only consider the presses when they end.
         for press in presses {
-            if let key = press.key?.charactersIgnoringModifiers {
-                if key == "\r" || key == "\n" {
-                    onScan?(buffer)
-                    buffer = ""
-                } else {
-                    buffer.append(key)
-                }
+            guard let key = press.key?.charactersIgnoringModifiers else { continue }
+
+            if configuration.terminatingStrings.contains(key) {
+                onScan(buffer)
+                buffer = ""
+            } else {
+                buffer.append(key)
             }
         }
     }

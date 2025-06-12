@@ -926,6 +926,7 @@
 		20D3D4372C65EF72004CE6E3 /* OrdersRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */; };
 		20D4AE012D133B43004555B2 /* ItemsStackState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D4AE002D133B43004555B2 /* ItemsStackState.swift */; };
 		20D5575D2DFADF5400D9EC8B /* BarcodeScannerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5575C2DFADF5400D9EC8B /* BarcodeScannerContainer.swift */; };
+		20D557602DFAE3E400D9EC8B /* BarcodeScannerContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5575F2DFAE3E400D9EC8B /* BarcodeScannerContainerTests.swift */; };
 		20D5CB512AFCF856009A39C3 /* PaymentsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */; };
 		20D5CB532AFCF8E7009A39C3 /* PaymentsToggleRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */; };
 		20D920EA2CEF86520023B089 /* PointOfSaleErrorState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20D920E92CEF86520023B089 /* PointOfSaleErrorState.swift */; };
@@ -4184,6 +4185,7 @@
 		20D3D4362C65EF72004CE6E3 /* OrdersRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersRouteTests.swift; sourceTree = "<group>"; };
 		20D4AE002D133B43004555B2 /* ItemsStackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsStackState.swift; sourceTree = "<group>"; };
 		20D5575C2DFADF5400D9EC8B /* BarcodeScannerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerContainer.swift; sourceTree = "<group>"; };
+		20D5575F2DFAE3E400D9EC8B /* BarcodeScannerContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerContainerTests.swift; sourceTree = "<group>"; };
 		20D5CB502AFCF856009A39C3 /* PaymentsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRow.swift; sourceTree = "<group>"; };
 		20D5CB522AFCF8E7009A39C3 /* PaymentsToggleRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsToggleRow.swift; sourceTree = "<group>"; };
 		20D920E92CEF86520023B089 /* PointOfSaleErrorState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleErrorState.swift; sourceTree = "<group>"; };
@@ -7379,6 +7381,7 @@
 		026A502D2D2F8087002C42C2 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				20D5575E2DFAE3D500D9EC8B /* Barcode Scanning */,
 				01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */,
 				01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */,
 				208628722D48E476003F45DC /* Payments Onboarding */,
@@ -8462,6 +8465,14 @@
 			isa = PBXGroup;
 			children = (
 				20D5575C2DFADF5400D9EC8B /* BarcodeScannerContainer.swift */,
+			);
+			path = "Barcode Scanning";
+			sourceTree = "<group>";
+		};
+		20D5575E2DFAE3D500D9EC8B /* Barcode Scanning */ = {
+			isa = PBXGroup;
+			children = (
+				20D5575F2DFAE3E400D9EC8B /* BarcodeScannerContainerTests.swift */,
 			);
 			path = "Barcode Scanning";
 			sourceTree = "<group>";
@@ -17846,6 +17857,7 @@
 				CEC3CC7A2C93537B00B93FBE /* MockShippingSettingsService.swift in Sources */,
 				B958A7D128B5281800823EEF /* UniversalLinkRouterTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
+				20D557602DFAE3E400D9EC8B /* BarcodeScannerContainerTests.swift in Sources */,
 				039B7E6729F2855B00E21EF4 /* CardPresentPaymentOnboardingViewModelTests.swift in Sources */,
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,

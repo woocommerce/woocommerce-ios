@@ -45,6 +45,13 @@ class ScannerInputHostingController<Content: View>: UIHostingController<Content>
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesBegan(presses, with: event)
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        /// While a scanner should just “press” each key once, in theory it’s possible for presses to be cancelled
+        /// or change between the `began` call and the `ended` call.
+        /// It’s better practice for barcode scanning to only consider the presses when they end.
         for press in presses {
             if let key = press.key?.charactersIgnoringModifiers {
                 if key == "\r" || key == "\n" {
@@ -55,5 +62,14 @@ class ScannerInputHostingController<Content: View>: UIHostingController<Content>
                 }
             }
         }
+    }
+
+    override func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesChanged(presses, with: event)
+    }
+
+    override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        buffer = ""
+        super.pressesCancelled(presses, with: event)
     }
 }

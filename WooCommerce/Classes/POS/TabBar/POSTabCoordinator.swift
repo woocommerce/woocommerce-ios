@@ -29,29 +29,29 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
 
-    private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
+    private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
     }()
 
-    private(set) lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
+    private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
         PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
     }()
 
-    private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
+    private lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
                                               currencySettings: currencySettings,
                                               credentials: credentials,
                                               storage: storageManager)
     }()
 
-    private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
+    private lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,
                                         storage: storageManager)
     }()
 
-    private(set) lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
+    private lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
         PointOfSaleBarcodeScanService(siteID: siteID,
                                       credentials: credentials,
                                       currencySettings: currencySettings)

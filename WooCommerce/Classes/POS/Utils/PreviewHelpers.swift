@@ -19,6 +19,8 @@ import struct Yosemite.POSProductVariation
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import protocol Yosemite.POSProductFilterServiceProtocol
+import class Yosemite.POSProductFilterServicePreview
 import Combine
 
 // MARK: - PreviewProvider helpers
@@ -226,7 +228,8 @@ struct POSPreviewHelpers {
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
-            barcodeScanService: barcodeScanService
+            barcodeScanService: barcodeScanService,
+            productFilterService: POSProductFilterServicePreview()
         )
     }
 }

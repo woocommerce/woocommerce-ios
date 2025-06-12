@@ -1,6 +1,7 @@
 import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import class Yosemite.POSProductFilterService
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
@@ -19,6 +20,7 @@ struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let productFilterService: POSProductFilterService
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -30,7 +32,8 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol) {
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         productFilterService: POSProductFilterService) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -43,6 +46,7 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.productFilterService = productFilterService
     }
 
     var body: some View {
@@ -68,7 +72,7 @@ struct PointOfSaleEntryPointView: View {
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
-                barcodeScanService: barcodeScanService)
+                barcodeScanService: barcodeScanService, productFilterService: productFilterService)
         }
         .environmentObject(posModalManager)
         .injectKeyboardObserver()
@@ -83,20 +87,20 @@ struct PointOfSaleEntryPointView: View {
     }
 }
 
-#if DEBUG
-@available(iOS 17.0, *)
-#Preview {
-    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
-                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-                              couponsController: PointOfSalePreviewCouponsController(),
-                              couponsSearchController: PointOfSalePreviewCouponsController(),
-                              onPointOfSaleModeActiveStateChange: { _ in },
-                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
-                              searchHistoryService: PointOfSalePreviewHistoryService(),
-                              popularPurchasableItemsController: PointOfSalePreviewItemsController(),
-                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
-}
-
-#endif
+//#if DEBUG
+//@available(iOS 17.0, *)
+//#Preview {
+//    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
+//                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
+//                              couponsController: PointOfSalePreviewCouponsController(),
+//                              couponsSearchController: PointOfSalePreviewCouponsController(),
+//                              onPointOfSaleModeActiveStateChange: { _ in },
+//                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
+//                              orderController: PointOfSalePreviewOrderController(),
+//                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+//                              searchHistoryService: PointOfSalePreviewHistoryService(),
+//                              popularPurchasableItemsController: PointOfSalePreviewItemsController(),
+//                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
+//}
+//
+//#endif

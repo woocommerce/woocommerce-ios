@@ -12,8 +12,7 @@ import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
-
-import class Yosemite.POSProductFilterService
+import protocol Yosemite.POSProductFilterServiceProtocol
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -79,8 +78,8 @@ protocol PointOfSaleAggregateModelProtocol {
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
-    
-    let productFilterService: POSProductFilterService = POSProductFilterService()
+
+    let productFilterService: POSProductFilterServiceProtocol
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
@@ -111,6 +110,7 @@ protocol PointOfSaleAggregateModelProtocol {
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         productFilterService: POSProductFilterServiceProtocol,
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -124,6 +124,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.paymentState = paymentState
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.productFilterService = productFilterService
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

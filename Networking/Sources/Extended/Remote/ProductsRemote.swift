@@ -261,6 +261,19 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             parameters: parameters)
     }
 
+    public func fetchAlltags(for siteID: Int64) async throws -> [ProductTag] {
+        try await Task.sleep(nanoseconds: 500_000_000)
+        let fakeTag1 = ProductTag(siteID: 0,
+                                  tagID: 123,
+                                  name: "chairs",
+                                  slug: "chairs")
+        let fakeTag2 = ProductTag(siteID: 0,
+                                  tagID: 124,
+                                  name: "Some tables",
+                                  slug: "some-tables")
+        return [fakeTag1, fakeTag2]
+    }
+
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],

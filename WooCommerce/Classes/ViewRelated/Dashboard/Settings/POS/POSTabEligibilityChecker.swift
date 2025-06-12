@@ -191,9 +191,9 @@ private extension POSTabEligibilityChecker {
             return .ineligible(reason: .unsupportedCountry)
         }
 
-        // Then checks currency.
-        switch currencyCode {
-        case .USD, .GBP:
+        // Then checks currency based on the country.
+        switch (countryCode, currencyCode) {
+        case (.US, .USD), (.GB, .GBP):
             return .eligible
         default:
             return .ineligible(reason: .unsupportedCurrency)

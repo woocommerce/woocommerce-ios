@@ -37,7 +37,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test func is_eligible_when_account_not_whitelisted_and_feature_flag_disabled() async throws {
+    @Test func is_ineligible_when_account_not_whitelisted_and_feature_flag_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: false)
         setupCountry(country: .us)
@@ -56,7 +56,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .featureFlagDisabled))
     }
 
-    @Test func is_eligible_when_non_iPad_device() async throws {
+    @Test func is_ineligible_when_device_is_not_iPad() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -76,7 +76,7 @@ struct POSTabEligibilityCheckerTests {
     }
 
     @Test(arguments: [(country: Country.us, currency: CurrencyCode.USD), (country: Country.gb, currency: .GBP)])
-    fileprivate func is_eligible_when_country_is_supported(country: Country, currency: CurrencyCode) async throws {
+    fileprivate func is_eligible_when_country_and_currency_are_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: country)
@@ -125,15 +125,24 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .unsupportedCountry))
     }
 
-    @Test func is_eligible_when_non_usd_currency() async throws {
+    @Test(arguments: [(country: Country.us, currency: CurrencyCode.GBP),
+                      (country: Country.us, currency: CurrencyCode.CAD),
+                      (country: Country.gb, currency: CurrencyCode.EUR),
+                      (country: Country.gb, currency: CurrencyCode.USD)])
+    fileprivate func is_ineligible_when_currency_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: .us)
+        setupCountry(country: country)
         accountWhitelistedInBackend(true)
+        let currencySettings = CurrencySettings(currencyCode: currency,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.nonUSDCurrencySettings,
+                                               currencySettings: currencySettings,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -144,7 +153,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .unsupportedCurrency))
     }
 
-    @Test func is_eligible_when_woocommerce_version_below_minimum() async throws {
+    @Test func is_ineligible_when_woocommerce_version_is_below_minimum() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -185,7 +194,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test func is_eligible_when_core_version_is_10_0_0_and_POS_feature_disabled() async throws {
+    @Test func is_ineligible_when_core_version_is_10_0_0_and_POS_feature_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -206,7 +215,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
     }
 
-    @Test func is_eligible_when_core_version_is_10_0_0_and_POS_feature_check_fails() async throws {
+    @Test func is_ineligible_when_core_version_is_10_0_0_and_POS_feature_check_fails() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)
@@ -227,7 +236,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .featureSwitchSyncFailure))
     }
 
-    @Test func is_eligible_when_core_version_is_smaller_than_10_0_0_and_POS_feature_disabled() async throws {
+    @Test func is_eligible_when_core_version_is_below_10_0_0_and_POS_feature_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
         setupCountry(country: .us)

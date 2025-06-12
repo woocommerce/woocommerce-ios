@@ -476,20 +476,10 @@ private extension WooShippingSplitShipmentsViewModel {
     func updateShipmentIndices() {
         var newShipmentList: [Shipment] = []
         for (index, shipment) in shipments.enumerated() {
-            let copy = copy(shipment, with: index)
+            let copy = shipment.copy(newIndex: index)
             newShipmentList.append(copy)
         }
         shipments = newShipmentList
-    }
-
-    func copy(_ shipment: Shipment, with newIndex: Int) -> Shipment {
-        Shipment(id: shipment.id,
-                 index: newIndex,
-                 contents: shipment.contents,
-                 purchasedLabelID: shipment.purchasedLabelID,
-                 currency: order.currency,
-                 currencySettings: currencySettings,
-                 shippingSettingsService: shippingSettingsService)
     }
 }
 
@@ -590,6 +580,10 @@ extension WooShippingSplitShipmentsViewModel {
             purchasedLabelID != nil
         }
 
+        private let currency: String
+        private let currencySettings: CurrencySettings
+        private let shippingSettingsService: ShippingSettingsService
+
         init(id: String = UUID().uuidString,
              index: Int,
              contents: [CollapsibleShipmentItemCardViewModel],
@@ -607,6 +601,10 @@ extension WooShippingSplitShipmentsViewModel {
             self.quantity = Localization.itemsCount(itemsCount)
             self.weight = formatWeight(for: items)
             self.price = formatPrice(for: items)
+
+            self.currency = currency
+            self.currencySettings = currencySettings
+            self.shippingSettingsService = shippingSettingsService
 
             /// Calculates and formats the total weight of the given items based on each item's weight and quantity.
             ///
@@ -631,6 +629,16 @@ extension WooShippingSplitShipmentsViewModel {
 
         static func == (lhs: WooShippingSplitShipmentsViewModel.Shipment, rhs: WooShippingSplitShipmentsViewModel.Shipment) -> Bool {
             lhs.id == rhs.id
+        }
+
+        func copy(newIndex: Int) -> Shipment {
+            Shipment(id: id,
+                     index: newIndex,
+                     contents: contents,
+                     purchasedLabelID: purchasedLabelID,
+                     currency: currency,
+                     currencySettings: currencySettings,
+                     shippingSettingsService: shippingSettingsService)
         }
     }
 

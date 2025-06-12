@@ -260,6 +260,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
         configureSelectionCallback()
         configureSectionHeader()
+        updateShipmentIndices()
 
         // Step 5: Trigger notice for moving completion.
         let itemsCount = Localization.itemsCount(totalItemsMoved)
@@ -317,8 +318,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        // TODO: revise logic for shipment IDs
         shipments = [createShipment(index: 0, contents: mergedShipmentContents)] + fulfilledShipments
+        updateShipmentIndices()
         selectedShipmentIndex = 0
     }
 
@@ -391,7 +392,8 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                             contents: mergedContents)
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
-        selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
+        updateShipmentIndices()
+        selectedShipmentIndex = shipments.firstIndex(where: { $0.id == mergedShipment.id }) ?? 0
     }
 }
 
@@ -468,6 +470,27 @@ private extension WooShippingSplitShipmentsViewModel {
         itemsWeightLabel = currentShipment.weight
         itemsPriceLabel = currentShipment.price
     }
+
+    /// Ensure that indices in the shipments are correct based on the list order.
+    ///
+    func updateShipmentIndices() {
+        var newShipmentList: [Shipment] = []
+        for (index, shipment) in shipments.enumerated() {
+            let copy = copy(shipment, with: index)
+            newShipmentList.append(copy)
+        }
+        shipments = newShipmentList
+    }
+
+    func copy(_ shipment: Shipment, with newIndex: Int) -> Shipment {
+        Shipment(id: shipment.id,
+                 index: newIndex,
+                 contents: shipment.contents,
+                 purchasedLabelID: shipment.purchasedLabelID,
+                 currency: order.currency,
+                 currencySettings: currencySettings,
+                 shippingSettingsService: shippingSettingsService)
+    }
 }
 
 // MARK: Shipments
@@ -533,16 +556,6 @@ extension WooShippingSplitShipmentsViewModel {
     private func createShipment(index: Int, contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
         Shipment(index: index,
                  contents: contents,
-                 currency: order.currency,
-                 currencySettings: currencySettings,
-                 shippingSettingsService: shippingSettingsService)
-    }
-
-    private func copy(_ shipment: Shipment, with newIndex: Int) -> Shipment {
-        Shipment(id: shipment.id,
-                 index: newIndex,
-                 contents: shipment.contents,
-                 purchasedLabelID: shipment.purchasedLabelID,
                  currency: order.currency,
                  currencySettings: currencySettings,
                  shippingSettingsService: shippingSettingsService)
@@ -617,7 +630,7 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         static func == (lhs: WooShippingSplitShipmentsViewModel.Shipment, rhs: WooShippingSplitShipmentsViewModel.Shipment) -> Bool {
-            lhs.index == rhs.index
+            lhs.id == rhs.id
         }
     }
 

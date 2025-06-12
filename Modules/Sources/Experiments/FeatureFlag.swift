@@ -236,4 +236,8 @@ public enum FeatureFlag: Int {
     /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
     ///
     case showPointOfSaleBarcodeSimulator
+    
+    /// Enables POS product filters
+    ///
+    case pointOfSaleProductFilters
 }

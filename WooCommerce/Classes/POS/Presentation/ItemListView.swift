@@ -71,7 +71,7 @@ struct ItemListView: View {
 
     private var shouldShowProductFilterButton: Bool {
         guard case .products = selectedItemListType else { return false }
-        return true
+        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleProductFilters)
     }
 
     private var isSearchAllowed: Bool {

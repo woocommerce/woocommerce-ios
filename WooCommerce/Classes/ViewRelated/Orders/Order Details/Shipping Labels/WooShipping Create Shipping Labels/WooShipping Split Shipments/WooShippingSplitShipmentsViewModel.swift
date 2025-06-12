@@ -25,7 +25,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     /// Shipment info saved in remote. Used to compare with locally edited info and enable "Done" button
     ///
-    @Published private var shipmentsSavedInRemote: WooShippingShipments?
+    @Published private var shipmentsSavedInRemote: [Shipment]
 
     /// Edited shipments info to send to remote
     ///
@@ -50,7 +50,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     var containsUnsavedChanges: Bool {
-        shipmentsSavedInRemote != editedShipmentsInfo
+        shipmentsSavedInRemote != shipments
     }
 
     /// Label with the total number of items to ship.
@@ -107,13 +107,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
 
-        self.shipments = Self.createShipments(with: config,
-                                              packageItems: items,
-                                              currency: order.currency,
-                                              currencySettings: currencySettings,
-                                              shippingSettingsService: shippingSettingsService)
+        let shipments = Self.createShipments(with: config,
+                                             packageItems: items,
+                                             currency: order.currency,
+                                             currencySettings: currencySettings,
+                                             shippingSettingsService: shippingSettingsService)
 
-        shipmentsSavedInRemote = editedShipmentsInfo
+        self.shipments = shipments
+        shipmentsSavedInRemote = shipments
 
         configureSectionHeader()
         configureSelectionCallback()
@@ -645,7 +646,20 @@ extension WooShippingSplitShipmentsViewModel {
     @discardableResult
     @MainActor
     private func updateShipment() async throws -> WooShippingShipments {
-        let shipmentsInfo = WooShippingUpdateShipment(shipmentIdsToUpdate: [:],
+        let shipmentIdsToUpdate: [String: Int] = {
+            var idsMap: [String: Int] = [:]
+            for item in shipmentsSavedInRemote.filter({ $0.isPurchased }) {
+                guard let matchingItem = shipments.first(where: { $0.id == item.id }) else {
+                    DDLogWarn("⚠️ Cannot find matching fulfilled shipment to update at index: \(item.index)")
+                    continue
+                }
+                if item.index != matchingItem.index {
+                    idsMap[item.index.description] = matchingItem.index
+                }
+            }
+            return idsMap
+        }()
+        let shipmentsInfo = WooShippingUpdateShipment(shipmentIdsToUpdate: shipmentIdsToUpdate,
                                                       shipments: editedShipmentsInfo)
         return try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.updateShipment(siteID: order.siteID,
@@ -655,7 +669,7 @@ extension WooShippingSplitShipmentsViewModel {
 
                 switch result {
                 case .success(let shipmentResponse):
-                    shipmentsSavedInRemote = shipmentsInfo.shipments
+                    shipmentsSavedInRemote = shipments
                     continuation.resume(returning: shipmentResponse)
                 case .failure(let error):
                     DDLogError("⛔️ Error updating shipments for Woo Shipping labels: \(error)")

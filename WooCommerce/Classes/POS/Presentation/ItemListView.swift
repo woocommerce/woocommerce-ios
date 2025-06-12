@@ -40,6 +40,13 @@ struct ItemListView: View {
         _isSearching.wrappedValue
     }
 
+    private var isNotSearching: Binding<Bool> {
+        Binding(
+            get: { !isSearching },
+            set: { _ in }
+        )
+    }
+
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
@@ -115,12 +122,6 @@ struct ItemListView: View {
             .animation(.none, value: selectedItemListType)
             // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
             .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
-
-            if isBarcodeScani1FeatureEnabled && !isSearching {
-                BarcodeScannerContainer() { scannedCode in
-                    posModel.barcodeScanned(scannedCode)
-                }
-            }
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -135,6 +136,9 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .barcodeScanning(enabled: isNotSearching) { scannedCode in
+            posModel.barcodeScanned(scannedCode)
+        }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -230,6 +234,9 @@ struct ItemListView: View {
                     sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
                 )
             )
+            .barcodeScanning(enabled: isNotSearching) { scannedCode in
+                posModel.barcodeScanned(scannedCode)
+            }
         default:
             EmptyView()
         }

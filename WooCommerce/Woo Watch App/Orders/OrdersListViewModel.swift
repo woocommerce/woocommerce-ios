@@ -1,6 +1,6 @@
 import Foundation
 import Combine
-import NetworkingWatchOS
+import NetworkingCore
 import WooFoundationCore
 
 /// View Model for the OrdersListView

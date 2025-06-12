@@ -135,7 +135,6 @@
 		261CF2CB255C50010090D8D3 /* payment-gateway-list-half.json in Resources */ = {isa = PBXBuildFile; fileRef = 261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */; };
 		262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */; };
 		263659DE2A2694A000607A0D /* IPLocationRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */; };
-		263A6DA92BEAA0DE00C292B2 /* String+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263A6DA72BEAA0DB00C292B2 /* String+Helpers.swift */; };
 		264541B92CA6580E006C13A2 /* WooShippingRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264541B82CA6580E006C13A2 /* WooShippingRemoteTests.swift */; };
 		265BCA02243056E3004E53EE /* categories-all.json in Resources */ = {isa = PBXBuildFile; fileRef = 265BCA01243056E3004E53EE /* categories-all.json */; };
 		26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */; };
@@ -152,7 +151,6 @@
 		268EC45C26C169F600716F5C /* order-with-faulty-attributes.json in Resources */ = {isa = PBXBuildFile; fileRef = 268EC45B26C169F600716F5C /* order-with-faulty-attributes.json */; };
 		26B15E442A269F79000C35E4 /* ip-location.json in Resources */ = {isa = PBXBuildFile; fileRef = 26B15E432A269F79000C35E4 /* ip-location.json */; };
 		26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */ = {isa = PBXBuildFile; fileRef = 26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */; };
-		26DAAB522BEA8D3400CE399E /* NetworkingWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */ = {isa = PBXBuildFile; fileRef = 3105470F262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json */; };
 		31054714262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json in Resources */ = {isa = PBXBuildFile; fileRef = 31054713262E2F3B00C5C02B /* wcpay-payment-intent-requires-payment-method.json */; };
@@ -202,8 +200,6 @@
 		31D27C8F2602B553002EDB1D /* plugins.json in Resources */ = {isa = PBXBuildFile; fileRef = 31D27C8E2602B553002EDB1D /* plugins.json */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
 		3F2B4ACE2DDC30F400E5E49C /* XcodeTarget_NetworkingTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ACD2DDC30F400E5E49C /* XcodeTarget_NetworkingTests */; };
-		3F2B4AD02DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */; };
-		3F2B4AD22DDC310600E5E49C /* XcodeTarget_Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */; };
 		4507DDF42D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF32D6E74E400D2F3BC /* ProductImageAssetTypeCodableTests.swift */; };
 		4507DDF62D6E770500D2F3BC /* PHAssetMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF52D6E770500D2F3BC /* PHAssetMock.swift */; };
 		4507DDF82D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4507DDF72D6E79F600D2F3BC /* ProductOrVariationIDCodableTests.swift */; };
@@ -357,7 +353,6 @@
 		B554FA8B2180B1D500C54DFF /* NotificationsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */; };
 		B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */ = {isa = PBXBuildFile; fileRef = B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */; };
 		B554FA932180C17200C54DFF /* NoteHashListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */; };
-		B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B557D9E3209753AA005962F4 /* Networking.framework */; };
 		B559EBAA20A0B5CD00836CD4 /* orders-load-all.json in Resources */ = {isa = PBXBuildFile; fileRef = B559EBA920A0B5CD00836CD4 /* orders-load-all.json */; };
 		B567AF3020A0FB8F00AB6C62 /* DotcomRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2D20A0FB8F00AB6C62 /* DotcomRequestTests.swift */; };
 		B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B567AF2E20A0FB8F00AB6C62 /* JetpackRequestTests.swift */; };
@@ -720,16 +715,6 @@
 		FE28F6EC268436C9004465C7 /* UserRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE28F6EB268436C9004465C7 /* UserRemoteTests.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		B557D9EE209753AA005962F4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B557D9DA209753AA005962F4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B557D9E2209753AA005962F4;
-			remoteInfo = Networking;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		263E37EE2641F9F200260D3B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -872,7 +857,6 @@
 		261CF2CA255C50010090D8D3 /* payment-gateway-list-half.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "payment-gateway-list-half.json"; sourceTree = "<group>"; };
 		262E5AD4255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayListMapperTests.swift; sourceTree = "<group>"; };
 		263659DD2A2694A000607A0D /* IPLocationRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPLocationRemoteTests.swift; sourceTree = "<group>"; };
-		263A6DA72BEAA0DB00C292B2 /* String+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Helpers.swift"; sourceTree = "<group>"; };
 		264541B82CA6580E006C13A2 /* WooShippingRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingRemoteTests.swift; sourceTree = "<group>"; };
 		265BCA01243056E3004E53EE /* categories-all.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "categories-all.json"; sourceTree = "<group>"; };
 		26615478242DA54D00A31661 /* ProductCategoyListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoyListMapperTests.swift; sourceTree = "<group>"; };
@@ -890,8 +874,6 @@
 		26B15E432A269F79000C35E4 /* ip-location.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "ip-location.json"; sourceTree = "<group>"; };
 		26B6454D259BF81400EF3FB3 /* product-attribute-terms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-attribute-terms.json"; sourceTree = "<group>"; };
 		26BD9FCC2965EC3C004E0D15 /* product-variations-bulk-create.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-variations-bulk-create.json"; sourceTree = "<group>"; };
-		26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NetworkingWatchOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkingWatchOS.h; sourceTree = "<group>"; };
 		26E5A08B25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermRemoteTests.swift; sourceTree = "<group>"; };
 		26FB056B25F6CB9100A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3105470F262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "wcpay-payment-intent-succeeded.json"; sourceTree = "<group>"; };
@@ -1094,7 +1076,6 @@
 		B554FA8A2180B1D500C54DFF /* NotificationsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsRemoteTests.swift; sourceTree = "<group>"; };
 		B554FA8C2180B59700C54DFF /* notifications-load-hashes.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-load-hashes.json"; sourceTree = "<group>"; };
 		B554FA922180C17200C54DFF /* NoteHashListMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteHashListMapperTests.swift; sourceTree = "<group>"; };
-		B557D9E3209753AA005962F4 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9EC209753AA005962F4 /* NetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B557D9F3209753AA005962F4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B559EBA920A0B5CD00836CD4 /* orders-load-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-load-all.json"; sourceTree = "<group>"; };
@@ -1461,667 +1442,12 @@
 		FE28F6EB268436C9004465C7 /* UserRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserRemoteTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		3F7EA7BF2DDC02F5008309F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Core/ApplicationPassword/AppicationPasswordEncoder.swift,
-				Core/ApplicationPassword/ApplicationPasswordStorage.swift,
-				Core/ApplicationPassword/ApplicationPasswordUseCase.swift,
-				Core/ApplicationPassword/OneTimeApplicationPasswordUseCase.swift,
-				Core/ApplicationPassword/RequestAuthenticator.swift,
-				Core/ApplicationPassword/RequestConverter.swift,
-				Core/ApplicationPassword/RequestProcessor.swift,
-				Core/CookieNonce/CookieNonceAuthenticator.swift,
-				"Core/Extensions/CodingUserInfoKey+Woo.swift",
-				"Core/Extensions/DateFormatter+Woo.swift",
-				"Core/Extensions/DecodingError+CodingPath.swift",
-				"Core/Extensions/Dictionary+Woo.swift",
-				"Core/Extensions/Encodable+Serialization.swift",
-				"Core/Extensions/KeyedDecodingContainer+Woo.swift",
-				"Core/Extensions/Mapper+DataEnvelope.swift",
-				"Core/Extensions/Order+Fallbacks.swift",
-				"Core/Extensions/Result+Extensions.swift",
-				"Core/Extensions/String+HTML.swift",
-				"Core/Extensions/String+URL.swift",
-				"Core/Extensions/URLRequestConvertible+Path.swift",
-				Core/Internal/Logging.swift,
-				Core/Mapper/ApplicationPassword/ApplicationPasswordMapper.swift,
-				Core/Mapper/ApplicationPassword/ApplicationPasswordNameAndUUIDMapper.swift,
-				Core/Mapper/EntityDateModifiedMapper.swift,
-				Core/Mapper/Mapper.swift,
-				Core/Mapper/NoteHashListMapper.swift,
-				Core/Mapper/NoteListMapper.swift,
-				Core/Mapper/OrderListMapper.swift,
-				Core/Mapper/OrderMapper.swift,
-				Core/Mapper/OrderNoteMapper.swift,
-				Core/Mapper/OrderNotesMapper.swift,
-				Core/Mapper/OrderStatsV4Mapper.swift,
-				Core/Mapper/SiteSummaryStatsMapper.swift,
-				Core/Mapper/SiteVisitStatsMapper.swift,
-				Core/Mapper/SuccessResultMapper.swift,
-				Core/Model/Account.swift,
-				Core/Model/Address.swift,
-				Core/Model/ApplicationPassword/ApplicationPassword.swift,
-				Core/Model/ApplicationPassword/ApplicationPasswordNameAndUUID.swift,
-				Core/Model/DotcomError.swift,
-				Core/Model/MetaContainer.swift,
-				Core/Model/MetaData.swift,
-				Core/Model/Note.swift,
-				Core/Model/NoteBlock.swift,
-				Core/Model/NoteHash.swift,
-				Core/Model/NoteMedia.swift,
-				Core/Model/NoteRange.swift,
-				Core/Model/Order.swift,
-				Core/Model/OrderAttributionInfo.swift,
-				Core/Model/OrderCouponLine.swift,
-				Core/Model/OrderFeeLine.swift,
-				Core/Model/OrderFeeTaxStatus.swift,
-				Core/Model/OrderGiftCard.swift,
-				Core/Model/OrderItem.swift,
-				Core/Model/OrderItemAttribute.swift,
-				Core/Model/OrderItemBundleItem.swift,
-				Core/Model/OrderItemProductAddOn.swift,
-				Core/Model/OrderItemTax.swift,
-				Core/Model/OrderNote.swift,
-				Core/Model/OrderRefundCondensed.swift,
-				Core/Model/OrderStatus.swift,
-				Core/Model/OrderStatusEnum.swift,
-				Core/Model/OrderTaxLine.swift,
-				Core/Model/Product/ProductVariationAttribute.swift,
-				Core/Model/ShippingLabel/Enums/ShippingLabelRefundStatus.swift,
-				Core/Model/ShippingLabel/Enums/ShippingLabelStatus.swift,
-				Core/Model/ShippingLabel/ShippingLabel.swift,
-				Core/Model/ShippingLabel/ShippingLabelAddress.swift,
-				Core/Model/ShippingLabel/ShippingLabelRefund.swift,
-				Core/Model/ShippingLine.swift,
-				Core/Model/ShippingLineTax.swift,
-				Core/Model/Stats/MIContainer.swift,
-				Core/Model/Stats/OrderStatsV4.swift,
-				Core/Model/Stats/OrderStatsV4Interval.swift,
-				Core/Model/Stats/OrderStatsV4Totals.swift,
-				Core/Model/Stats/SiteSummaryStats.swift,
-				Core/Model/Stats/SiteVisitStats.swift,
-				Core/Model/Stats/SiteVisitStatsItem.swift,
-				Core/Model/Stats/StatGranularity.swift,
-				Core/Model/Stats/StatsGranularityV4.swift,
-				Core/Model/Stats/WCAnalyticsStats.swift,
-				Core/Model/WordPressApiError.swift,
-				Core/Network/AlamofireNetwork.swift,
-				Core/Network/Network.swift,
-				Core/Network/NetworkError.swift,
-				Core/Network/WordPressOrgNetwork.swift,
-				Core/Remote/NotificationsRemote.swift,
-				Core/Remote/OrdersRemote.swift,
-				Core/Remote/OrderStatsRemoteV4.swift,
-				Core/Remote/POSOrdersRemoteProtocol.swift,
-				Core/Remote/Remote.swift,
-				Core/Remote/SiteStatsRemote.swift,
-				Core/Requests/AuthenticatedDotcomRequest.swift,
-				Core/Requests/AuthenticatedRESTRequest.swift,
-				Core/Requests/DotcomRequest.swift,
-				Core/Requests/JetpackRequest.swift,
-				Core/Requests/Request.swift,
-				Core/Requests/RESTRequest.swift,
-				Core/Requests/RESTRequestConvertible.swift,
-				Core/Requests/UnauthenticatedRequest.swift,
-				Core/Settings/Credentials.swift,
-				Core/Settings/Settings.swift,
-				Core/Settings/UserAgent.swift,
-				Core/Settings/WooAPIVersion.swift,
-				Core/Settings/WooConstants.swift,
-				Core/Settings/WordPressAPIVersion.swift,
-				Core/Tools/AnyCodable.swift,
-				Core/Tools/AnyDecodable.swift,
-				Core/Tools/AnyEncodable.swift,
-				Core/Validators/DotcomValidator.swift,
-				Core/Validators/PlaceholderDataValidator.swift,
-				Core/Validators/ResponseDataValidator.swift,
-				Core/Validators/WordPressApiValidator.swift,
-				"Extended/Extensions/Array+Woo.swift",
-				"Extended/Extensions/Decimal+Extensions.swift",
-				"Extended/Extensions/URLRequest+Request.swift",
-				Extended/Internal/Queue.swift,
-				Extended/Mapper/AccountMapper.swift,
-				Extended/Mapper/AccountSettingsMapper.swift,
-				Extended/Mapper/AddOnGroupMapper.swift,
-				Extended/Mapper/AIProductMapper.swift,
-				Extended/Mapper/AnnouncementListMapper.swift,
-				Extended/Mapper/Blaze/BlazeAISuggestionListMapper.swift,
-				Extended/Mapper/Blaze/BlazeCampaignListItemMapper.swift,
-				Extended/Mapper/Blaze/BlazeCampaignListItemsMapper.swift,
-				Extended/Mapper/Blaze/BlazeCampaignObjectiveListMapper.swift,
-				Extended/Mapper/Blaze/BlazeImpressionsMapper.swift,
-				Extended/Mapper/Blaze/BlazePaymentInfoMapper.swift,
-				Extended/Mapper/Blaze/BlazeTargetOptionMappers.swift,
-				Extended/Mapper/Blaze/CreateBlazeCampaignMapper.swift,
-				Extended/Mapper/CommentResultMapper.swift,
-				Extended/Mapper/CountryListMapper.swift,
-				Extended/Mapper/CouponListMapper.swift,
-				Extended/Mapper/CouponMapper.swift,
-				Extended/Mapper/CouponReportListMapper.swift,
-				Extended/Mapper/CustomerMapper.swift,
-				Extended/Mapper/DataBoolMapper.swift,
-				Extended/Mapper/DotcomDeviceMapper.swift,
-				Extended/Mapper/EntityIDMapper.swift,
-				Extended/Mapper/GiftCardStatsMapper.swift,
-				Extended/Mapper/GoogleAds/GoogleAdsCampaignListMapper.swift,
-				Extended/Mapper/GoogleAds/GoogleAdsConnectionMapper.swift,
-				Extended/Mapper/GoogleAdsCampaignStatsMapper.swift,
-				Extended/Mapper/IgnoringResponseMapper.swift,
-				Extended/Mapper/InAppPurchaseOrderResultMapper.swift,
-				Extended/Mapper/InAppPurchasesProductMapper.swift,
-				Extended/Mapper/InAppPurchasesTransactionMapper.swift,
-				Extended/Mapper/InboxNoteListMapper.swift,
-				Extended/Mapper/InboxNoteMapper.swift,
-				Extended/Mapper/JetpackAIQueryResponseMapper.swift,
-				Extended/Mapper/JetpackConnectionURLMapper.swift,
-				Extended/Mapper/JetpackUserMapper.swift,
-				Extended/Mapper/JustInTimeMessageListMapper.swift,
-				Extended/Mapper/JWTokenMapper.swift,
-				Extended/Mapper/ListMapper.swift,
-				Extended/Mapper/MediaListMapper.swift,
-				Extended/Mapper/MetaDataMapper.swift,
-				Extended/Mapper/NewShipmentTrackingMapper.swift,
-				Extended/Mapper/OrderShippingLabelListMapper.swift,
-				Extended/Mapper/PaymentGatewayListMapper.swift,
-				Extended/Mapper/PaymentGatewayMapper.swift,
-				Extended/Mapper/PostMapper.swift,
-				Extended/Mapper/ProductAttributeListMapper.swift,
-				Extended/Mapper/ProductAttributeMapper.swift,
-				Extended/Mapper/ProductAttributeTermListMapper.swift,
-				Extended/Mapper/ProductAttributeTermMapper.swift,
-				Extended/Mapper/ProductBundleStatsMapper.swift,
-				Extended/Mapper/ProductCategoryListMapper.swift,
-				Extended/Mapper/ProductCategoryMapper.swift,
-				Extended/Mapper/ProductIDMapper.swift,
-				Extended/Mapper/ProductListMapper.swift,
-				Extended/Mapper/ProductMapper.swift,
-				Extended/Mapper/ProductReportListMapper.swift,
-				Extended/Mapper/ProductReviewListMapper.swift,
-				Extended/Mapper/ProductReviewMapper.swift,
-				Extended/Mapper/ProductsBulkUpdateMapper.swift,
-				Extended/Mapper/ProductShippingClassListMapper.swift,
-				Extended/Mapper/ProductShippingClassMapper.swift,
-				Extended/Mapper/ProductSkuMapper.swift,
-				Extended/Mapper/ProductsReportMapper.swift,
-				Extended/Mapper/ProductStockListMapper.swift,
-				Extended/Mapper/ProductsTotalMapper.swift,
-				Extended/Mapper/ProductTagListMapper.swift,
-				Extended/Mapper/ProductVariationListMapper.swift,
-				Extended/Mapper/ProductVariationMapper.swift,
-				Extended/Mapper/ProductVariationsBulkCreateMapper.swift,
-				Extended/Mapper/ProductVariationsBulkUpdateMapper.swift,
-				Extended/Mapper/ReaderConnectionTokenMapper.swift,
-				Extended/Mapper/ReceiptMapper.swift,
-				Extended/Mapper/RefundListMapper.swift,
-				Extended/Mapper/RefundMapper.swift,
-				Extended/Mapper/RemotePaymentIntentMapper.swift,
-				Extended/Mapper/RemoteReaderLocationMapper.swift,
-				Extended/Mapper/ReportOrderTotalsMapper.swift,
-				Extended/Mapper/ShipmentTrackingListMapper.swift,
-				Extended/Mapper/ShipmentTrackingProviderListMapper.swift,
-				Extended/Mapper/ShippingLabelAccountSettingsMapper.swift,
-				Extended/Mapper/ShippingLabelAddressValidationSuccessMapper.swift,
-				Extended/Mapper/ShippingLabelCarriersAndRatesMapper.swift,
-				Extended/Mapper/ShippingLabelCreationEligibilityMapper.swift,
-				Extended/Mapper/ShippingLabelPackagesMapper.swift,
-				Extended/Mapper/ShippingLabelPrintDataMapper.swift,
-				Extended/Mapper/ShippingLabelPurchaseMapper.swift,
-				Extended/Mapper/ShippingLabelRefundMapper.swift,
-				Extended/Mapper/ShippingLabelStatusMapper.swift,
-				Extended/Mapper/ShippingMethodMapper.swift,
-				Extended/Mapper/SingleItemMapper.swift,
-				Extended/Mapper/SiteAPIMapper.swift,
-				Extended/Mapper/SiteListMapper.swift,
-				Extended/Mapper/SitePlanMapper.swift,
-				Extended/Mapper/SitePluginMapper.swift,
-				Extended/Mapper/SitePluginsMapper.swift,
-				Extended/Mapper/SiteSettingMapper.swift,
-				Extended/Mapper/SiteSettingsMapper.swift,
-				Extended/Mapper/StoreOnboardingTaskListMapper.swift,
-				Extended/Mapper/StripeAccountMapper.swift,
-				Extended/Mapper/SubscriptionListMapper.swift,
-				Extended/Mapper/SubscriptionMapper.swift,
-				Extended/Mapper/SuccessDataResultMapper.swift,
-				Extended/Mapper/SystemPluginMapper.swift,
-				Extended/Mapper/SystemStatusMapper.swift,
-				Extended/Mapper/SystemStatusReportMapper.swift,
-				Extended/Mapper/TaxClassListMapper.swift,
-				Extended/Mapper/TaxRateListMapper.swift,
-				Extended/Mapper/TaxRateMapper.swift,
-				Extended/Mapper/TopEarnerStatsMapper.swift,
-				Extended/Mapper/UserMapper.swift,
-				Extended/Mapper/WCAnalyticsCustomerMapper.swift,
-				Extended/Mapper/WCPayAccountMapper.swift,
-				Extended/Mapper/WCPayChargeMapper.swift,
-				Extended/Mapper/WooCommerceAvailabilityMapper.swift,
-				Extended/Mapper/WooPaymentsDepositsOverviewMapper.swift,
-				Extended/Mapper/WooShippingAccountSettingsMapper.swift,
-				Extended/Mapper/WooShippingAddressValidationSuccessMapper.swift,
-				Extended/Mapper/WooShippingConfigMapper.swift,
-				Extended/Mapper/WooShippingCreatePackageMapper.swift,
-				Extended/Mapper/WooShippingDestinationAddressUpdateMapper.swift,
-				Extended/Mapper/WooShippingLabelRatesMapper.swift,
-				Extended/Mapper/WooShippingOriginAddressesMapper.swift,
-				Extended/Mapper/WooShippingOriginAddressMapper.swift,
-				Extended/Mapper/WooShippingPackagesMapper.swift,
-				Extended/Mapper/WooShippingStatusMapper.swift,
-				Extended/Mapper/WooShippingUpdateShipmentMapper.swift,
-				Extended/Mapper/WooShippingVerifyDestinationAddressMapper.swift,
-				Extended/Mapper/WordPressMediaMapper.swift,
-				Extended/Mapper/WordPressPageMapper.swift,
-				Extended/Mapper/WordPressSiteMapper.swift,
-				Extended/Mapper/WordPressSiteSettingsMapper.swift,
-				Extended/Mapper/WordPressThemeListMapper.swift,
-				Extended/Mapper/WordPressThemeMapper.swift,
-				Extended/Model/AccountSettings.swift,
-				Extended/Model/AddOnGroup.swift,
-				Extended/Model/Announcement.swift,
-				Extended/Model/Blaze/AI/BlazeAISuggestion.swift,
-				Extended/Model/Blaze/BlazeCampaignListItem.swift,
-				Extended/Model/Blaze/BlazeCampaignObjective.swift,
-				Extended/Model/Blaze/BlazeImpressions.swift,
-				Extended/Model/Blaze/BlazePaymentInfo.swift,
-				Extended/Model/Blaze/BlazeTargetOptions.swift,
-				Extended/Model/Blaze/CreateBlazeCampaign.swift,
-				"Extended/Model/Copiable/Models+Copiable.generated.swift",
-				Extended/Model/Country.swift,
-				Extended/Model/Coupon.swift,
-				Extended/Model/CouponReport.swift,
-				Extended/Model/Customer.swift,
-				Extended/Model/Devices/APNSDevice.swift,
-				Extended/Model/Devices/DotcomDevice.swift,
-				Extended/Model/DotcomSitePlugin.swift,
-				Extended/Model/DotcomUser.swift,
-				Extended/Model/GoogleAds/GoogleAdsCampaign.swift,
-				Extended/Model/GoogleAds/GoogleAdsConnection.swift,
-				Extended/Model/IdentifiableObject.swift,
-				Extended/Model/InboxAction.swift,
-				Extended/Model/InboxNote.swift,
-				Extended/Model/JetpackUser.swift,
-				Extended/Model/JustInTimeMessage.swift,
-				Extended/Model/JWToken.swift,
-				Extended/Model/Media/Media.swift,
-				Extended/Model/Media/UploadableMedia.swift,
-				Extended/Model/Media/WordPressMedia.swift,
-				Extended/Model/NotificationSettings.swift,
-				Extended/Model/PaymentGateway.swift,
-				Extended/Model/PaymentGatewayAccount.swift,
-				Extended/Model/POSProduct.swift,
-				Extended/Model/POSProductVariation.swift,
-				Extended/Model/Post.swift,
-				Extended/Model/Product/AIProduct.swift,
-				Extended/Model/Product/CreateProductVariation.swift,
-				Extended/Model/Product/Product.swift,
-				Extended/Model/Product/ProductAddOn.swift,
-				Extended/Model/Product/ProductAddOnEnvelope.swift,
-				Extended/Model/Product/ProductAddOnOption.swift,
-				Extended/Model/Product/ProductAttribute.swift,
-				Extended/Model/Product/ProductAttributeTerm.swift,
-				Extended/Model/Product/ProductBackordersSetting.swift,
-				Extended/Model/Product/ProductBundleItem.swift,
-				Extended/Model/Product/ProductCatalogVisibility.swift,
-				Extended/Model/Product/ProductCategory.swift,
-				Extended/Model/Product/ProductCategoryFromBatchCreation.swift,
-				Extended/Model/Product/ProductCompositeComponent.swift,
-				Extended/Model/Product/ProductDefaultAttribute.swift,
-				Extended/Model/Product/ProductDimensions.swift,
-				Extended/Model/Product/ProductDownload.swift,
-				Extended/Model/Product/ProductDownloadDragAndDrop.swift,
-				Extended/Model/Product/ProductImage.swift,
-				Extended/Model/Product/ProductMetadataExtractor.swift,
-				Extended/Model/Product/ProductReport.swift,
-				Extended/Model/Product/ProductReview.swift,
-				Extended/Model/Product/ProductReviewStatus.swift,
-				Extended/Model/Product/ProductShippingClass.swift,
-				Extended/Model/Product/ProductStatus.swift,
-				Extended/Model/Product/ProductStock.swift,
-				Extended/Model/Product/ProductStockStatus.swift,
-				Extended/Model/Product/ProductSubscription.swift,
-				Extended/Model/Product/ProductTag.swift,
-				Extended/Model/Product/ProductTagFromBatchCreation.swift,
-				Extended/Model/Product/ProductTaxStatus.swift,
-				Extended/Model/Product/ProductType.swift,
-				Extended/Model/Product/ProductVariation.swift,
-				Extended/Model/Product/StoredProductSettings.swift,
-				Extended/Model/ReaderConnectionToken.swift,
-				Extended/Model/ReaderLocation.swift,
-				Extended/Model/Receipt.swift,
-				Extended/Model/Refund/OrderItemRefund.swift,
-				Extended/Model/Refund/OrderItemRefundMetaData.swift,
-				Extended/Model/Refund/OrderItemTaxRefund.swift,
-				Extended/Model/Refund/Refund.swift,
-				Extended/Model/RemotePaymentIntent.swift,
-				Extended/Model/RemoteReaderLocation.swift,
-				Extended/Model/ShipmentTracking.swift,
-				Extended/Model/ShipmentTrackingProvider.swift,
-				Extended/Model/ShipmentTrackingProviderGroup.swift,
-				Extended/Model/ShippingLabel/Enums/ShippingLabelPaperSize.swift,
-				Extended/Model/ShippingLabel/Enums/ShippingLabelPaymentCardType.swift,
-				Extended/Model/ShippingLabel/Enums/ShippingLabelStatusPollingResponse.swift,
-				Extended/Model/ShippingLabel/Packages/CarriersAndRates/ShippingLabelCarrierRate.swift,
-				Extended/Model/ShippingLabel/Packages/CarriersAndRates/ShippingLabelCarriersAndRates.swift,
-				Extended/Model/ShippingLabel/Packages/CarriersAndRates/ShippingLabelPackageSelected.swift,
-				Extended/Model/ShippingLabel/Packages/CustomPackage/ShippingLabelCustomPackage.swift,
-				Extended/Model/ShippingLabel/Packages/CustomPackage/WooShippingCustomPackage.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/ShippingLabelPredefinedOption.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/ShippingLabelPredefinedPackage.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/WooShippingPredefinedOption.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/WooShippingPredefinedPackage.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/WooShippingPredefinedSavedOption.swift,
-				Extended/Model/ShippingLabel/Packages/PredefinedPackage/WooShippingSavedPredefinedPackage.swift.swift,
-				Extended/Model/ShippingLabel/Packages/ShippingLabelCustomsForm.swift,
-				Extended/Model/ShippingLabel/Packages/ShippingLabelPackagePurchase.swift,
-				Extended/Model/ShippingLabel/Packages/ShippingLabelPackagesResponse.swift,
-				Extended/Model/ShippingLabel/Packages/ShippingLabelStoreOptions.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingCreatePackageResponse.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingDestinationAddress.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingDestinationAddressUpdate.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingNormalizedAddress.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingOriginAddress.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingOriginAddressUpdate.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingPackagePurchase.swift,
-				Extended/Model/ShippingLabel/Packages/WooShippingPackagesResponse.swift,
-				Extended/Model/ShippingLabel/Shipments/WooShippingConfigResponse.swift,
-				Extended/Model/ShippingLabel/Shipments/WooShippingShipmentItem.swift,
-				Extended/Model/ShippingLabel/Shipments/WooShippingUpdateShipment.swift,
-				Extended/Model/ShippingLabel/Shipments/WooShippingUpdateShipmentResponse.swift,
-				Extended/Model/ShippingLabel/ShippingLabelAccountSettings.swift,
-				Extended/Model/ShippingLabel/ShippingLabelAddressValidationError.swift,
-				Extended/Model/ShippingLabel/ShippingLabelAddressValidationResponse.swift,
-				Extended/Model/ShippingLabel/ShippingLabelAddressValidationSuccess.swift,
-				Extended/Model/ShippingLabel/ShippingLabelAddressVerification.swift,
-				Extended/Model/ShippingLabel/ShippingLabelCreationEligibilityResponse.swift,
-				Extended/Model/ShippingLabel/ShippingLabelPaymentMethod.swift,
-				Extended/Model/ShippingLabel/ShippingLabelPrintData.swift,
-				Extended/Model/ShippingLabel/ShippingLabelPurchase.swift,
-				Extended/Model/ShippingLabel/ShippingLabelSettings.swift,
-				Extended/Model/ShippingLabel/VerifyDestinationAddress/WooShippingVerifyDestinationAddressResponse.swift,
-				Extended/Model/ShippingLabel/VerifyDestinationAddress/WooShippingVerifyDestinationAddressSuccess.swift,
-				Extended/Model/ShippingLabel/WooShippingAccountSettings.swift,
-				Extended/Model/ShippingLabel/WooShippingAddress.swift,
-				Extended/Model/ShippingLabel/WooShippingAddressValidationError.swift,
-				Extended/Model/ShippingLabel/WooShippingAddressValidationResponse.swift,
-				Extended/Model/ShippingLabel/WooShippingAddressValidationSuccess.swift,
-				Extended/Model/ShippingMethod.swift,
-				Extended/Model/Site.swift,
-				Extended/Model/SiteAPI.swift,
-				Extended/Model/SitePlan.swift,
-				Extended/Model/SitePlugin.swift,
-				Extended/Model/SitePluginStatusEnum.swift,
-				Extended/Model/SiteSetting.swift,
-				Extended/Model/SiteSettingGroup.swift,
-				Extended/Model/StateOfACountry.swift,
-				Extended/Model/Stats/GiftCardStats.swift,
-				Extended/Model/Stats/GiftCardStatsInterval.swift,
-				Extended/Model/Stats/GiftCardStatsTotals.swift,
-				Extended/Model/Stats/GoogleAdsCampaignStats.swift,
-				Extended/Model/Stats/GoogleAdsCampaignStatsItem.swift,
-				Extended/Model/Stats/GoogleAdsCampaignStatsTotals.swift,
-				Extended/Model/Stats/ProductBundleStats.swift,
-				Extended/Model/Stats/ProductBundleStatsInterval.swift,
-				Extended/Model/Stats/ProductBundleStatsTotals.swift,
-				Extended/Model/Stats/ProductsReportItem.swift,
-				Extended/Model/Stats/TopEarnerStats.swift,
-				Extended/Model/Stats/TopEarnerStatsItem.swift,
-				Extended/Model/StoreOnboardingTask.swift,
-				Extended/Model/StripeAccount.swift,
-				Extended/Model/Subscription.swift,
-				Extended/Model/SubscriptionStatus.swift,
-				Extended/Model/SystemPlugin.swift,
-				Extended/Model/SystemStatus.swift,
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Database.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+DropinMustUsePlugin.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Environment.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Page.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+PostTypeCount.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Security.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Settings.swift",
-				"Extended/Model/SystemStatusDetails/SystemStatusReport+Theme.swift",
-				Extended/Model/SystemStatusReport.swift,
-				Extended/Model/TaxClass.swift,
-				Extended/Model/TaxRate.swift,
-				Extended/Model/User.swift,
-				Extended/Model/WCAnalyticsCustomer.swift,
-				Extended/Model/WCPayAccount.swift,
-				Extended/Model/WCPayAccountStatusEnum.swift,
-				Extended/Model/WCPayCardBrand.swift,
-				Extended/Model/WCPayCardFunding.swift,
-				Extended/Model/WCPayCardPaymentDetails.swift,
-				Extended/Model/WCPayCardPresentPaymentDetails.swift,
-				Extended/Model/WCPayCardPresentReceiptDetails.swift,
-				Extended/Model/WCPayCharge.swift,
-				Extended/Model/WCPayChargeStatus.swift,
-				Extended/Model/WCPayPaymentIntentStatusEnum.swift,
-				Extended/Model/WCPayPaymentMethodDetails.swift,
-				Extended/Model/WCPayPaymentMethodType.swift,
-				Extended/Model/WooPaymentsPayoutsOverview.swift,
-				Extended/Model/WordPressPage.swift,
-				Extended/Model/WordPressSite.swift,
-				Extended/Model/WordPressTheme.swift,
-				Extended/Network/MockNetwork.swift,
-				Extended/Network/NullNetwork.swift,
-				Extended/ProductImageInBackground/ProductImageStatus.swift,
-				Extended/ProductImageInBackground/ProductImageStatusStorage.swift,
-				Extended/ProductImageInBackground/ProductOrVariationID.swift,
-				Extended/Remote/AccountRemote.swift,
-				Extended/Remote/AddOnGroupRemote.swift,
-				Extended/Remote/AnnouncementsRemote.swift,
-				Extended/Remote/BlazeRemote.swift,
-				Extended/Remote/CommentRemote.swift,
-				Extended/Remote/CouponsRemote.swift,
-				Extended/Remote/CustomerRemote.swift,
-				Extended/Remote/DataRemote.swift,
-				Extended/Remote/DevicesRemote.swift,
-				Extended/Remote/DomainRemote.swift,
-				Extended/Remote/FeatureFlagRemote.swift,
-				Extended/Remote/GenerativeContentRemote.swift,
-				Extended/Remote/GiftCardStatsRemote.swift,
-				Extended/Remote/GoogleListingsAndAdsRemote.swift,
-				Extended/Remote/InAppPurchasesRemote.swift,
-				Extended/Remote/InboxNotesRemote.swift,
-				Extended/Remote/IPLocationRemote.swift,
-				Extended/Remote/JetpackConnectionRemote.swift,
-				Extended/Remote/JetpackSettingsRemote.swift,
-				Extended/Remote/JustInTimeMessagesRemote.swift,
-				Extended/Remote/MediaRemote.swift,
-				Extended/Remote/MetaDataRemote.swift,
-				Extended/Remote/PaymentGatewayRemote.swift,
-				Extended/Remote/PaymentRemote.swift,
-				Extended/Remote/ProductAttributesRemote.swift,
-				Extended/Remote/ProductAttributeTermRemote.swift,
-				Extended/Remote/ProductBundleStatsRemote.swift,
-				Extended/Remote/ProductCategoriesRemote.swift,
-				Extended/Remote/ProductReviewsRemote.swift,
-				Extended/Remote/ProductShippingClassRemote.swift,
-				Extended/Remote/ProductsRemote.swift,
-				Extended/Remote/ProductsReportsRemote.swift,
-				Extended/Remote/ProductTagsRemote.swift,
-				Extended/Remote/ProductVariationsRemote.swift,
-				Extended/Remote/ReceiptRemote.swift,
-				Extended/Remote/RefundsRemote.swift,
-				Extended/Remote/ReportRemote.swift,
-				Extended/Remote/ShipmentsRemote.swift,
-				Extended/Remote/ShippingLabelRemote.swift,
-				Extended/Remote/ShippingMethodsRemote.swift,
-				Extended/Remote/SiteAPIRemote.swift,
-				Extended/Remote/SitePluginsRemote.swift,
-				Extended/Remote/SitePostsRemote.swift,
-				Extended/Remote/SiteRemote.swift,
-				Extended/Remote/SiteSettingsRemote.swift,
-				Extended/Remote/StoreOnboardingTasksRemote.swift,
-				Extended/Remote/StripeRemote.swift,
-				Extended/Remote/SubscriptionsRemote.swift,
-				Extended/Remote/SystemStatusRemote.swift,
-				Extended/Remote/TaxRemote.swift,
-				Extended/Remote/TelemetryRemote.swift,
-				Extended/Remote/TopEarnersStatsRemote.swift,
-				Extended/Remote/UserRemote.swift,
-				Extended/Remote/WCAnalyticsCustomerRemote.swift,
-				Extended/Remote/WCPayRemote.swift,
-				Extended/Remote/WooShippingRemote.swift,
-				Extended/Remote/WordPressSiteRemote.swift,
-				Extended/Remote/WordPressThemeRemote.swift,
-				Extended/Tools/Loader.swift,
-				"Extended/Tools/String+MinMaxQuantities.swift",
-				SupportingFiles/Networking.h,
-			);
-			publicHeaders = (
-				SupportingFiles/Networking.h,
-			);
-			target = B557D9E2209753AA005962F4 /* Networking */;
-		};
-		3F7EA7C02DDC02F5008309F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Core/ApplicationPassword/AppicationPasswordEncoder.swift,
-				Core/ApplicationPassword/ApplicationPasswordStorage.swift,
-				Core/ApplicationPassword/ApplicationPasswordUseCase.swift,
-				Core/ApplicationPassword/OneTimeApplicationPasswordUseCase.swift,
-				Core/ApplicationPassword/RequestAuthenticator.swift,
-				Core/ApplicationPassword/RequestConverter.swift,
-				Core/ApplicationPassword/RequestProcessor.swift,
-				Core/CookieNonce/CookieNonceAuthenticator.swift,
-				"Core/Extensions/CodingUserInfoKey+Woo.swift",
-				"Core/Extensions/DateFormatter+Woo.swift",
-				"Core/Extensions/DecodingError+CodingPath.swift",
-				"Core/Extensions/Dictionary+Woo.swift",
-				"Core/Extensions/Encodable+Serialization.swift",
-				"Core/Extensions/KeyedDecodingContainer+Woo.swift",
-				"Core/Extensions/Mapper+DataEnvelope.swift",
-				"Core/Extensions/Order+Fallbacks.swift",
-				"Core/Extensions/Result+Extensions.swift",
-				"Core/Extensions/String+HTML.swift",
-				"Core/Extensions/String+URL.swift",
-				"Core/Extensions/URLRequestConvertible+Path.swift",
-				Core/Internal/Logging.swift,
-				Core/Mapper/ApplicationPassword/ApplicationPasswordMapper.swift,
-				Core/Mapper/ApplicationPassword/ApplicationPasswordNameAndUUIDMapper.swift,
-				Core/Mapper/EntityDateModifiedMapper.swift,
-				Core/Mapper/Mapper.swift,
-				Core/Mapper/NoteHashListMapper.swift,
-				Core/Mapper/NoteListMapper.swift,
-				Core/Mapper/OrderListMapper.swift,
-				Core/Mapper/OrderMapper.swift,
-				Core/Mapper/OrderNoteMapper.swift,
-				Core/Mapper/OrderNotesMapper.swift,
-				Core/Mapper/OrderStatsV4Mapper.swift,
-				Core/Mapper/SiteSummaryStatsMapper.swift,
-				Core/Mapper/SiteVisitStatsMapper.swift,
-				Core/Mapper/SuccessResultMapper.swift,
-				Core/Model/Account.swift,
-				Core/Model/Address.swift,
-				Core/Model/ApplicationPassword/ApplicationPassword.swift,
-				Core/Model/ApplicationPassword/ApplicationPasswordNameAndUUID.swift,
-				"Core/Model/Copiable/WatchOS-Models+Copiable.swift",
-				Core/Model/DotcomError.swift,
-				Core/Model/MetaContainer.swift,
-				Core/Model/MetaData.swift,
-				Core/Model/Note.swift,
-				Core/Model/NoteBlock.swift,
-				Core/Model/NoteHash.swift,
-				Core/Model/NoteMedia.swift,
-				Core/Model/NoteRange.swift,
-				Core/Model/Order.swift,
-				Core/Model/OrderAttributionInfo.swift,
-				Core/Model/OrderCouponLine.swift,
-				Core/Model/OrderFeeLine.swift,
-				Core/Model/OrderFeeTaxStatus.swift,
-				Core/Model/OrderGiftCard.swift,
-				Core/Model/OrderItem.swift,
-				Core/Model/OrderItemAttribute.swift,
-				Core/Model/OrderItemBundleItem.swift,
-				Core/Model/OrderItemProductAddOn.swift,
-				Core/Model/OrderItemTax.swift,
-				Core/Model/OrderNote.swift,
-				Core/Model/OrderRefundCondensed.swift,
-				Core/Model/OrderStatus.swift,
-				Core/Model/OrderStatusEnum.swift,
-				Core/Model/OrderTaxLine.swift,
-				Core/Model/Product/ProductVariationAttribute.swift,
-				Core/Model/ShippingLabel/Enums/ShippingLabelRefundStatus.swift,
-				Core/Model/ShippingLabel/Enums/ShippingLabelStatus.swift,
-				Core/Model/ShippingLabel/ShippingLabel.swift,
-				Core/Model/ShippingLabel/ShippingLabelAddress.swift,
-				Core/Model/ShippingLabel/ShippingLabelRefund.swift,
-				Core/Model/ShippingLine.swift,
-				Core/Model/ShippingLineTax.swift,
-				Core/Model/Stats/MIContainer.swift,
-				Core/Model/Stats/OrderStatsV4.swift,
-				Core/Model/Stats/OrderStatsV4Interval.swift,
-				Core/Model/Stats/OrderStatsV4Totals.swift,
-				Core/Model/Stats/SiteSummaryStats.swift,
-				Core/Model/Stats/SiteVisitStats.swift,
-				Core/Model/Stats/SiteVisitStatsItem.swift,
-				Core/Model/Stats/StatGranularity.swift,
-				Core/Model/Stats/StatsGranularityV4.swift,
-				Core/Model/Stats/WCAnalyticsStats.swift,
-				Core/Model/WordPressApiError.swift,
-				Core/Network/AlamofireNetwork.swift,
-				Core/Network/Network.swift,
-				Core/Network/NetworkError.swift,
-				Core/Network/WordPressOrgNetwork.swift,
-				Core/Remote/NotificationsRemote.swift,
-				Core/Remote/OrdersRemote.swift,
-				Core/Remote/OrderStatsRemoteV4.swift,
-				Core/Remote/POSOrdersRemoteProtocol.swift,
-				Core/Remote/Remote.swift,
-				Core/Remote/SiteStatsRemote.swift,
-				Core/Requests/AuthenticatedDotcomRequest.swift,
-				Core/Requests/AuthenticatedRESTRequest.swift,
-				Core/Requests/DotcomRequest.swift,
-				Core/Requests/JetpackRequest.swift,
-				Core/Requests/Request.swift,
-				Core/Requests/RESTRequest.swift,
-				Core/Requests/RESTRequestConvertible.swift,
-				Core/Requests/UnauthenticatedRequest.swift,
-				Core/Settings/Credentials.swift,
-				Core/Settings/Secret.swift,
-				Core/Settings/Settings.swift,
-				Core/Settings/UserAgent.swift,
-				Core/Settings/WooAPIVersion.swift,
-				Core/Settings/WooConstants.swift,
-				Core/Settings/WordPressAPIVersion.swift,
-				Core/Tools/AnyCodable.swift,
-				Core/Tools/AnyDecodable.swift,
-				Core/Tools/AnyEncodable.swift,
-				Core/Validators/DotcomValidator.swift,
-				Core/Validators/PlaceholderDataValidator.swift,
-				Core/Validators/ResponseDataValidator.swift,
-				Core/Validators/WordPressApiValidator.swift,
-			);
-			target = 26DAAB4E2BEA8D3400CE399E /* NetworkingWatchOS */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		3F7EA6532DDC02ED008309F0 /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F7EA7BF2DDC02F5008309F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F7EA7C02DDC02F5008309F0 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
-		26DAAB4C2BEA8D3400CE399E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3F2B4AD02DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B557D9DF209753AA005962F4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				3F2B4AD22DDC310600E5E49C /* XcodeTarget_Networking in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B557D9E9209753AA005962F4 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
-				B557D9ED209753AA005962F4 /* Networking.framework in Frameworks */,
 				3F2B4ACE2DDC30F400E5E49C /* XcodeTarget_NetworkingTests in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2136,15 +1462,6 @@
 				4507DDF52D6E770500D2F3BC /* PHAssetMock.swift */,
 			);
 			path = Mocks;
-			sourceTree = "<group>";
-		};
-		26DAAB502BEA8D3400CE399E /* NetworkingWatchOS */ = {
-			isa = PBXGroup;
-			children = (
-				26DAAB512BEA8D3400CE399E /* NetworkingWatchOS.h */,
-				263A6DA72BEAA0DB00C292B2 /* String+Helpers.swift */,
-			);
-			path = NetworkingWatchOS;
 			sourceTree = "<group>";
 		};
 		35C45CCE73A311BE252F6BF4 /* Frameworks */ = {
@@ -2268,9 +1585,7 @@
 		B557D9D9209753AA005962F4 = {
 			isa = PBXGroup;
 			children = (
-				3F7EA6532DDC02ED008309F0 /* Sources */,
 				B557D9F0209753AA005962F4 /* NetworkingTests */,
-				26DAAB502BEA8D3400CE399E /* NetworkingWatchOS */,
 				B557D9E4209753AA005962F4 /* Products */,
 				35C45CCE73A311BE252F6BF4 /* Frameworks */,
 			);
@@ -2279,9 +1594,7 @@
 		B557D9E4209753AA005962F4 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B557D9E3209753AA005962F4 /* Networking.framework */,
 				B557D9EC209753AA005962F4 /* NetworkingTests.xctest */,
-				26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3029,67 +2342,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXHeadersBuildPhase section */
-		26DAAB4A2BEA8D3400CE399E /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				26DAAB522BEA8D3400CE399E /* NetworkingWatchOS.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B557D9E0209753AA005962F4 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
-
 /* Begin PBXNativeTarget section */
-		26DAAB4E2BEA8D3400CE399E /* NetworkingWatchOS */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 26DAAB562BEA8D3400CE399E /* Build configuration list for PBXNativeTarget "NetworkingWatchOS" */;
-			buildPhases = (
-				26DAAB4A2BEA8D3400CE399E /* Headers */,
-				26DAAB4B2BEA8D3400CE399E /* Sources */,
-				26DAAB4C2BEA8D3400CE399E /* Frameworks */,
-				26DAAB4D2BEA8D3400CE399E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = NetworkingWatchOS;
-			packageProductDependencies = (
-				3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */,
-			);
-			productName = NetworkingWatchOS;
-			productReference = 26DAAB4F2BEA8D3400CE399E /* NetworkingWatchOS.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		B557D9E2209753AA005962F4 /* Networking */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B557D9F7209753AA005962F4 /* Build configuration list for PBXNativeTarget "Networking" */;
-			buildPhases = (
-				B557D9E0209753AA005962F4 /* Headers */,
-				B557D9DE209753AA005962F4 /* Sources */,
-				B557D9DF209753AA005962F4 /* Frameworks */,
-				B557D9E1209753AA005962F4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Networking;
-			packageProductDependencies = (
-				3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */,
-			);
-			productName = Networking;
-			productReference = B557D9E3209753AA005962F4 /* Networking.framework */;
-			productType = "com.apple.product-type.framework";
-		};
 		B557D9EB209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B557D9FA209753AA005962F4 /* Build configuration list for PBXNativeTarget "NetworkingTests" */;
@@ -3102,7 +2355,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				B557D9EF209753AA005962F4 /* PBXTargetDependency */,
 			);
 			name = NetworkingTests;
 			packageProductDependencies = (
@@ -3123,13 +2375,6 @@
 				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = Automattic;
 				TargetAttributes = {
-					26DAAB4E2BEA8D3400CE399E = {
-						CreatedOnToolsVersion = 15.0;
-					};
-					B557D9E2209753AA005962F4 = {
-						CreatedOnToolsVersion = 9.3;
-						LastSwiftMigration = 1140;
-					};
 					B557D9EB209753AA005962F4 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 1020;
@@ -3149,28 +2394,12 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B557D9E2209753AA005962F4 /* Networking */,
-				26DAAB4E2BEA8D3400CE399E /* NetworkingWatchOS */,
 				B557D9EB209753AA005962F4 /* NetworkingTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		26DAAB4D2BEA8D3400CE399E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B557D9E1209753AA005962F4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B557D9EA209753AA005962F4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3666,21 +2895,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		26DAAB4B2BEA8D3400CE399E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				263A6DA92BEAA0DE00C292B2 /* String+Helpers.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B557D9DE209753AA005962F4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		B557D9E8209753AA005962F4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -3909,19 +3123,9 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		B557D9EF209753AA005962F4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B557D9E2209753AA005962F4 /* Networking */;
-			targetProxy = B557D9EE209753AA005962F4 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin XCBuildConfiguration section */
 		1A96903E2359D9F30061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
-			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3978,39 +3182,6 @@
 			};
 			name = "Release-Alpha";
 		};
-		1A96903F2359D9F30061E383 /* Release-Alpha */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PZYM8XX95Q;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				INFOPLIST_FILE = Sources/SupportingFiles/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Networking;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = "Release-Alpha";
-		};
 		1A9690402359D9F30061E383 /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4031,120 +3202,8 @@
 			};
 			name = "Release-Alpha";
 		};
-		26DAAB532BEA8D3400CE399E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Automattic. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattomatic.NetworkingWatchOS;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(ARCHS_STANDARD)";
-			};
-			name = Debug;
-		};
-		26DAAB542BEA8D3400CE399E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Automattic. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattomatic.NetworkingWatchOS;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(ARCHS_STANDARD)";
-			};
-			name = Release;
-		};
-		26DAAB552BEA8D3400CE399E /* Release-Alpha */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2024 Automattic. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited)";
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattomatic.NetworkingWatchOS;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "watchos watchsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				VALID_ARCHS = "$(ARCHS_STANDARD)";
-			};
-			name = "Release-Alpha";
-		};
 		B557D9F5209753AA005962F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
-			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -4209,8 +3268,6 @@
 		};
 		B557D9F6209753AA005962F4 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 3F7EA6532DDC02ED008309F0 /* Sources */;
-			baseConfigurationReferenceRelativePath = SupportingFiles/Networking.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -4267,71 +3324,6 @@
 			};
 			name = Release;
 		};
-		B557D9F8209753AA005962F4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PZYM8XX95Q;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				INFOPLIST_FILE = Sources/SupportingFiles/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Networking;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = Debug;
-		};
-		B557D9F9209753AA005962F4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Automatic;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = PZYM8XX95Q;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				INFOPLIST_FILE = Sources/SupportingFiles/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++14";
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woo.Networking;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = Release;
-		};
 		B557D9FB209753AA005962F4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4376,32 +3368,12 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		26DAAB562BEA8D3400CE399E /* Build configuration list for PBXNativeTarget "NetworkingWatchOS" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				26DAAB532BEA8D3400CE399E /* Debug */,
-				26DAAB542BEA8D3400CE399E /* Release */,
-				26DAAB552BEA8D3400CE399E /* Release-Alpha */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		B557D9DD209753AA005962F4 /* Build configuration list for PBXProject "Networking" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B557D9F5209753AA005962F4 /* Debug */,
 				B557D9F6209753AA005962F4 /* Release */,
 				1A96903E2359D9F30061E383 /* Release-Alpha */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B557D9F7209753AA005962F4 /* Build configuration list for PBXNativeTarget "Networking" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B557D9F8209753AA005962F4 /* Debug */,
-				B557D9F9209753AA005962F4 /* Release */,
-				1A96903F2359D9F30061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -4422,14 +3394,6 @@
 		3F2B4ACD2DDC30F400E5E49C /* XcodeTarget_NetworkingTests */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XcodeTarget_NetworkingTests;
-		};
-		3F2B4ACF2DDC30FE00E5E49C /* XcodeTarget_NetworkingWatchOS */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = XcodeTarget_NetworkingWatchOS;
-		};
-		3F2B4AD12DDC310600E5E49C /* XcodeTarget_Networking */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = XcodeTarget_Networking;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

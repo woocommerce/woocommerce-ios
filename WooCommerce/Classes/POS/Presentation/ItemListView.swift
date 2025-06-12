@@ -166,7 +166,12 @@ struct ItemListView: View {
                 }
 
                 Button(action: {
-                    showProductFiltersModal = false
+                    // TODO, for now the tags are hardcoded
+                    Task {
+                        let products = try await posModel.productFilterService.fetchProductsByTag()
+                        debugPrint("✨ \(products) ✨")
+                        showProductFiltersModal = false
+                    }
                 }, label: {
                     Text("Show products")
                 })

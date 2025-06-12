@@ -3,6 +3,7 @@ import class Networking.AlamofireNetwork
 
 public protocol POSProductFilterServiceProtocol {
     func fetchAllTags() async throws -> [ProductTag]
+    func fetchProductsByTag() async throws -> PagedItems<POSProduct>
 }
 
 public final class POSProductFilterService: POSProductFilterServiceProtocol {
@@ -20,11 +21,19 @@ public final class POSProductFilterService: POSProductFilterServiceProtocol {
     public func fetchAllTags() async throws -> [ProductTag] {
         try await productsRemote.fetchAlltags(for: siteID)
     }
+
+    public func fetchProductsByTag() async throws -> PagedItems<POSProduct> {
+        try await productsRemote.fetchProductsByTag(for: siteID)
+    }
 }
 
 public final class POSProductFilterServicePreview: POSProductFilterServiceProtocol {
     public init() {}
     public func fetchAllTags() async throws -> [ProductTag] {
         []
+    }
+    
+    public func fetchProductsByTag() async throws -> PagedItems<POSProduct> {
+        .init(items: [], hasMorePages: false, totalItems: nil)
     }
 }

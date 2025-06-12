@@ -282,6 +282,31 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         return tags
     }
 
+    public func fetchProductsByTag(for siteID: Int64) async throws -> PagedItems<POSProduct> {
+        let path = Path.products
+        
+        let parameters: [String: String] = [
+            ParameterKey.page: "1",
+            ParameterKey.perPage: "25",
+            "tag": "27,382,35"
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ListMapper<POSProduct>(siteID: siteID)
+        let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+
+        let hasMorePages: Bool = false
+        let totalItems: Int? = nil
+
+        return .init(items: products,
+                     hasMorePages: hasMorePages,
+                     totalItems: totalItems)
+    }
+
     private func pointOfSaleProductFetchParameters(pageNumber: Int,
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],

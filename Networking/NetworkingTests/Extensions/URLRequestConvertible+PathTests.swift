@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class URLRequestConvertible_PathTests: XCTestCase {
     private let network = MockNetwork()

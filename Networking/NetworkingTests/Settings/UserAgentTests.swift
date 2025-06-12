@@ -2,6 +2,7 @@ import XCTest
 import WebKit
 
 @testable import Networking
+@testable import NetworkingCore
 
 /// UserAgent Unit Tests
 ///

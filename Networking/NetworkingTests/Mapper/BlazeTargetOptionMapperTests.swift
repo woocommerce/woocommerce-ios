@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class BlazeTargetOptionMapperTests: XCTestCase {
     /// Verifies that the language list is parsed.

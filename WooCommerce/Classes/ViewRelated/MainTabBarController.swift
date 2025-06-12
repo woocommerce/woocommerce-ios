@@ -127,7 +127,6 @@ final class MainTabBarController: UITabBarController {
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
-    private var posEligibilitySubscription: AnyCancellable?
 
     private var isPOSTabVisible: Bool = false
 
@@ -162,7 +161,6 @@ final class MainTabBarController: UITabBarController {
 
     deinit {
         cancellableSiteID?.cancel()
-        posEligibilitySubscription?.cancel()
     }
 
     // MARK: - Overridden Methods

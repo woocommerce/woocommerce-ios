@@ -9,12 +9,12 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct BarcodeScannerContainer: View {
     /// Configuration for the barcode scanner
-    let configuration: BarcodeScannerConfiguration
+    let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (String) -> Void
 
     init(
-        configuration: BarcodeScannerConfiguration = .default,
+        configuration: HIDBarcodeParserConfiguration = .default,
         onScan: @escaping (String) -> Void
     ) {
         self.configuration = configuration
@@ -47,7 +47,7 @@ struct BarcodeScannerConfiguration {
 /// This component is responsible for creating and managing the UIKit view controller that captures
 /// keyboard input for barcode scanning.
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
-    let configuration: BarcodeScannerConfiguration
+    let configuration: HIDBarcodeParserConfiguration
     let onScan: (String) -> Void
 
     func makeUIViewController(context: Context) -> BarcodeScannerHostingController {
@@ -68,17 +68,18 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
 /// This controller captures keyboard input and interprets it as barcode data when a terminating
 /// character is detected.
 class BarcodeScannerHostingController: UIHostingController<EmptyView> {
-    var configuration: BarcodeScannerConfiguration
+    var configuration: HIDBarcodeParserConfiguration
     var onScan: (String) -> Void
 
-    private var buffer = ""
+    private let scanner: HIDBarcodeParser
 
     init(
-        configuration: BarcodeScannerConfiguration,
+        configuration: HIDBarcodeParserConfiguration,
         onScan: @escaping (String) -> Void
     ) {
         self.configuration = configuration
         self.onScan = onScan
+        self.scanner = HIDBarcodeParser(configuration: configuration, onScan: onScan)
         super.init(rootView: EmptyView())
     }
 
@@ -108,13 +109,7 @@ class BarcodeScannerHostingController: UIHostingController<EmptyView> {
         /// It's better practice for barcode scanning to only consider the presses when they end.
         for press in presses {
             guard let key = press.key?.charactersIgnoringModifiers else { continue }
-
-            if configuration.terminatingStrings.contains(key) {
-                onScan(buffer)
-                buffer = ""
-            } else {
-                buffer.append(key)
-            }
+            scanner.processKeyPress(key)
         }
     }
 
@@ -126,7 +121,7 @@ class BarcodeScannerHostingController: UIHostingController<EmptyView> {
     /// It makes sense to clear the buffer when this happens.
     /// We call super in case other presses are handled elsewhere in the responder chain.
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        buffer = ""
+        scanner.cancel()
         super.pressesCancelled(presses, with: event)
     }
 }

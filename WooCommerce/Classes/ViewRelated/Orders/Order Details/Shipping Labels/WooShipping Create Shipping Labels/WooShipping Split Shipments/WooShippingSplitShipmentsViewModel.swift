@@ -169,6 +169,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
+        defer {
+            updateShipmentIndices() // !!IMPORTANT!!
+        }
         moveToNoticeViewModel = nil
         instructions = nil
 
@@ -209,8 +212,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
 
         // Step 2: Update the current shipment
-        shipments[currentIndex] = createShipment(index: currentIndex,
-                                                 contents: newShipmentContents)
+        shipments[currentIndex] = createShipment(with: newShipmentContents)
 
         // Step 3: Add new or update existing shipment
         let totalItemsMoved = movedItems
@@ -220,8 +222,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         switch destination {
         case .newShipment:
-            let newShipment = createShipment(index: shipments.count,
-                                             contents: movedItems)
+            let newShipment = createShipment(with: movedItems)
             shipments.append(newShipment)
             updatedShipmentIndex = shipments.count - 1
 
@@ -246,8 +247,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
             // Add the rest of the new items to the shipment
             updatedShipmentContents.append(contentsOf: movedItems)
-            shipments[index] = createShipment(index: index,
-                                              contents: updatedShipmentContents)
+            shipments[index] = createShipment(with: updatedShipmentContents)
             updatedShipmentIndex = index
         }
 
@@ -261,7 +261,6 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
         configureSelectionCallback()
         configureSectionHeader()
-        updateShipmentIndices()
 
         // Step 5: Trigger notice for moving completion.
         let itemsCount = Localization.itemsCount(totalItemsMoved)
@@ -299,6 +298,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func mergeAllUnfulfilledShipments() {
+        defer {
+            updateShipmentIndices() // !!IMPORTANT!!
+        }
         let (unfulfilledShipments, fulfilledShipments) = shipments.partitioned(by: { $0.isPurchased })
         var mergedShipmentContents = ShipmentContents()
 
@@ -319,8 +321,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        shipments = [createShipment(index: 0, contents: mergedShipmentContents)] + fulfilledShipments
-        updateShipmentIndices()
+        shipments = [createShipment(with: mergedShipmentContents)] + fulfilledShipments
         selectedShipmentIndex = 0
     }
 
@@ -372,6 +373,10 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             return
         }
 
+        defer {
+            updateShipmentIndices() // !!IMPORTANT!!
+        }
+
         var mergedContents = otherShipment.contents
 
         for item in shipment.contents {
@@ -389,11 +394,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
             }
         }
 
-        let mergedShipment = createShipment(index: mergedShipmentIndex,
-                                            contents: mergedContents)
+        let mergedShipment = createShipment(with: mergedContents)
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
-        updateShipmentIndices()
         selectedShipmentIndex = shipments.firstIndex(where: { $0.id == mergedShipment.id }) ?? 0
     }
 }
@@ -497,8 +500,7 @@ extension WooShippingSplitShipmentsViewModel {
             let contents = packageItems.map { item in
                 CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
-            let shipment = Shipment(index: 0,
-                                    contents: contents,
+            let shipment = Shipment(contents: contents,
                                     currency: currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
@@ -544,9 +546,8 @@ extension WooShippingSplitShipmentsViewModel {
         return shipments
     }
 
-    private func createShipment(index: Int, contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
-        Shipment(index: index,
-                 contents: contents,
+    private func createShipment(with contents: [CollapsibleShipmentItemCardViewModel]) -> Shipment {
+        Shipment(contents: contents,
                  currency: order.currency,
                  currencySettings: currencySettings,
                  shippingSettingsService: shippingSettingsService)
@@ -586,7 +587,7 @@ extension WooShippingSplitShipmentsViewModel {
         private let shippingSettingsService: ShippingSettingsService
 
         init(id: String = UUID().uuidString,
-             index: Int,
+             index: Int = 0,
              contents: [CollapsibleShipmentItemCardViewModel],
              purchasedLabelID: Int64? = nil,
              currency: String,

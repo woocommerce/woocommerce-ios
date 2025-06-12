@@ -628,8 +628,7 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                             dimensions: ProductDimensions.fake(),
                                             attributes: [],
                                             imageURL: nil)
-        return Shipment(index: 0,
-                        contents: [CollapsibleShipmentItemCardViewModel(item: item, currency: "GBP")],
+        return Shipment(contents: [CollapsibleShipmentItemCardViewModel(item: item, currency: "GBP")],
                         currency: "GBP",
                         currencySettings: ServiceLocator.currencySettings,
                         shippingSettingsService: ServiceLocator.shippingSettingsService)

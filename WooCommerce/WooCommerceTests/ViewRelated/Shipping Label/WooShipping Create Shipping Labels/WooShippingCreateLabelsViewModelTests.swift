@@ -703,7 +703,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let shippingLabel = ShippingLabel.fake()
         let order = Order.fake().copy(shippingLabels: [shippingLabel])
         let shipment = Shipment(
-            index: 0,
             contents: [],
             purchasedLabelID: shippingLabel.shippingLabelID,
             currency: "USD",
@@ -748,7 +747,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             defaultAddress: true
         )
         let shipment = Shipment(
-            index: 0,
             contents: [],
             purchasedLabelID: nil,
             currency: "USD",
@@ -816,7 +814,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         )
 
         let shipment = Shipment(
-            index: 0,
             contents: [],
             purchasedLabelID: nil,
             currency: "USD",
@@ -899,7 +896,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         )
 
         let shipment = Shipment(
-            index: 0,
             contents: [],
             purchasedLabelID: nil,
             currency: "USD",

@@ -148,7 +148,7 @@ struct ItemListView: View {
                             toggleTagSelection(tag.tagID)
                         }, label: {
                             HStack {
-                                Text("\(tag.tagID) - \(tag.name)")
+                                Text("\(tag.tagID) - \(tag.name) - \(String(describing: tag.count))")
                                     .font(.body)
                                     .foregroundColor(.primary)
                                 Spacer()

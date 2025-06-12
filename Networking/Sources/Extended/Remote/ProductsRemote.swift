@@ -266,7 +266,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let parameters: [String: String] = [
             ParameterKey.page: "1",
             ParameterKey.perPage: "25",
-            ParameterKey.productType: "simple"
+            "orderby": "count",
+            "hide_empty": "true"
         ]
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,

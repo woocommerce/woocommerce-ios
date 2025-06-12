@@ -116,7 +116,7 @@ struct ItemListView: View {
             // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
             .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
 
-            if isBarcodeScani1FeatureEnabled {
+            if isBarcodeScani1FeatureEnabled && !isSearching {
                 BarcodeScannerContainer() { scannedCode in
                     posModel.barcodeScanned(scannedCode)
                 }

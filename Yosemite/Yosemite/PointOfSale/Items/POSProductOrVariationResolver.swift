@@ -63,7 +63,12 @@ struct POSProductOrVariationResolver {
             return try await productsRemote.loadPOSProduct(for: variation.siteID,
                                                            productID: variation.productID)
         } catch {
-            throw .loadingError(scannedCode: scannedCode, underlyingError: error)
+            switch ProductLoadError(underlyingError: error) {
+            case .notFound:
+                throw .notFound(scannedCode: scannedCode)
+            default:
+                throw .loadingError(scannedCode: scannedCode, underlyingError: error)
+            }
         }
     }
 }

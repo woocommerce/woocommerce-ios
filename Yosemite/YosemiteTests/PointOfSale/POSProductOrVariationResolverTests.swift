@@ -153,8 +153,8 @@ struct POSProductOrVariationResolverTests {
         try await #expect(queryParametersForProductsRequest().contains("include_types=simple,variable"))
     }
 
-    @Test("Throws loadingError when parent product loading fails")
-    func testThrowsLoadingErrorWhenParentProductFails() async {
+    @Test("Throws notFound or loadingError when parent product loading fails")
+    func testThrowsErrorWhenParentProductFails() async {
         // Given
         let variation = POSProduct.fake().copy(
             productID: 456,
@@ -163,9 +163,16 @@ struct POSProductOrVariationResolverTests {
         )
         let scannedCode = "test-barcode-loading"
         let someError = NSError(domain: "Test", code: 1, userInfo: nil)
-        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(someError))
+        let dotcomNotFoundError = DotcomError.unknown(code: "woocommerce_rest_product_invalid_id", message: "Not found")
 
-        // When/Then
+        // NotFound case (simulate DotcomError for not found)
+        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(dotcomNotFoundError))
+        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: scannedCode)) {
+            _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
+        }
+
+        // LoadingError case
+        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(someError))
         await #expect(throws: PointOfSaleBarcodeScanError.loadingError(scannedCode: scannedCode, underlyingError: someError)) {
             _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }

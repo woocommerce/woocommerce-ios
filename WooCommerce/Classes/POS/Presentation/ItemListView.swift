@@ -159,18 +159,24 @@ struct ItemListView: View {
                 }
 
                 Button(action: {
-                    Task {
-                        allTags = try await posModel.productFilterService.fetchAllTags()
-                    }
+                    showProductFiltersModal = false
                 }, label: {
-                    Text("Fetch all tags")
+                    Text("Show products")
                 })
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: false))
                 .padding()
             }
+            .task {
+                do {
+                    allTags = try await posModel.productFilterService.fetchAllTags()
+                } catch {
+                    print("Failed to fetch tags: \(error)")
+                    allTags = []
+                }
+            }
         }
     }
-    
+
     private func toggleTagSelection(_ tagID: Int64) {
         if selectedtags.contains(tagID) {
             selectedtags.remove(tagID)

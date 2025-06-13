@@ -439,7 +439,8 @@ extension Networking.CreateBlazeCampaign {
             targetUrn: .fake(),
             type: .fake(),
             objective: .fake(),
-            ctaText: .fake()
+            ctaText: .fake(),
+            acceptedTOS: .fake()
         )
     }
 }

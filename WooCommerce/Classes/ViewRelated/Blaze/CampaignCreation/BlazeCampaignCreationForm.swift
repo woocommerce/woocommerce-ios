@@ -76,6 +76,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
     @State private var isShowingSupport: Bool = false
+    @State private var externalURL: URL?
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -156,25 +157,27 @@ struct BlazeCampaignCreationForm: View {
                     .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
+
+                VStack(spacing: 0) {
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                        tosCheckboxToggle
+
+                        Button {
+                            viewModel.didTapConfirmDetails()
+                        } label: {
+                            Text(Localization.confirmDetails)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .disabled(!viewModel.canConfirmDetails)
+                    }
+                    .padding(.vertical, Layout.contentPadding)
+                }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
         .background(Constants.backgroundViewColor)
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 0) {
-                Divider()
-
-                Button {
-                    viewModel.didTapConfirmDetails()
-                } label: {
-                    Text(Localization.confirmDetails)
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentPadding)
-                .disabled(!viewModel.canConfirmDetails)
-            }
-            .background(Constants.backgroundViewColor)
-        }
         .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -264,6 +267,20 @@ struct BlazeCampaignCreationForm: View {
                 EmptyView()
             }
         }
+    }
+
+    private var tosCheckboxToggle: some View {
+        Toggle(isOn: $viewModel.isToSAccepted) {
+            Text(viewModel.tosCheckboxAttributedText)
+                .bodyStyle()
+                .multilineTextAlignment(.leading)
+                .environment(\.openURL, OpenURLAction { url in
+                    externalURL = url
+                    return .handled
+                })
+                .safariSheet(url: $externalURL)
+        }
+        .toggleStyle(CheckboxToggleStyle())
     }
 }
 

@@ -99,6 +99,10 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
     ///
     public let ctaText: String
 
+    /// Whether the user has accepted the terms of service for the subscription billing
+    ///
+    public let acceptedTOS: Bool
+
     public init(origin: String,
                 originVersion: String,
                 paymentMethodID: String,
@@ -116,7 +120,8 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
                 targetUrn: String,
                 type: String,
                 objective: String?,
-                ctaText: String) {
+                ctaText: String,
+                acceptedTOS: Bool) {
         self.origin = origin
         self.originVersion = originVersion
         self.paymentMethodID = paymentMethodID
@@ -135,5 +140,6 @@ public struct CreateBlazeCampaign: Encodable, GeneratedFakeable, GeneratedCopiab
         self.type = type
         self.objective = objective
         self.ctaText = ctaText
+        self.acceptedTOS = acceptedTOS
     }
 }

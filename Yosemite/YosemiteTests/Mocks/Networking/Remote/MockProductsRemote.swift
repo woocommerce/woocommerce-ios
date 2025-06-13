@@ -274,7 +274,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
             XCTFail("\(String(describing: self)) Could not find Result for \(siteID)")
             throw NetworkError.notFound()
         }
-        
+
         switch result {
         case let .success(products):
             return products

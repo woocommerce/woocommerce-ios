@@ -42,9 +42,9 @@ final class HubMenuCoordinator {
     }
 
     convenience init(tabContainerController: TabContainerController,
+                     storesManager: StoresManager = ServiceLocator.stores,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
                      willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
-        let storesManager = ServiceLocator.stores
         self.init(tabContainerController: tabContainerController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),

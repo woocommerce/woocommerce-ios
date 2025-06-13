@@ -120,7 +120,7 @@ final class MainTabBarController: UITabBarController {
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
-    private let stores: StoresManager = ServiceLocator.stores
+    private let stores: StoresManager
     private let analytics: Analytics
     private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
 
@@ -137,11 +137,13 @@ final class MainTabBarController: UITabBarController {
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
+          stores: StoresManager = ServiceLocator.stores,
           posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
+        self.stores = stores
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
@@ -153,6 +155,7 @@ final class MainTabBarController: UITabBarController {
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
+        self.stores = ServiceLocator.stores
         self.posEligibilityCheckerFactory = { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
@@ -757,6 +760,7 @@ private extension MainTabBarController {
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
         HubMenuCoordinator(tabContainerController: hubMenuContainerController,
+                           storesManager: stores,
                            tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker,
                            willPresentReviewDetailsFromPushNotification: { [weak self] in
             await withCheckedContinuation { [weak self] continuation in

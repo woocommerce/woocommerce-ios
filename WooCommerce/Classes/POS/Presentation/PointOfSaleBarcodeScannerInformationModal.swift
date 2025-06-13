@@ -1,37 +1,50 @@
 import Foundation
+import SwiftUI
 
-extension PointOfSaleInformationModalViewModel {
-    static var barcodeScannerModel: PointOfSaleInformationModalViewModel {
-        let title = AttributedString(Localization.barcodeInfoHeading)
-        let intro = Paragraph(AttributedString(Localization.barcodeInfoIntroMessage))
+struct PointOfSaleBarcodeScannerInformationModal: View {
+    @Binding var isPresented: Bool
 
-        let primary = AttributedString(Localization.barcodeInfoPrimaryMessage)
+    init(isPresented: Binding<Bool>) {
+        self._isPresented = isPresented
+    }
 
+    var body: some View {
+        PointOfSaleInformationModal(isPresented: $isPresented, title: AttributedString(Localization.barcodeInfoHeading)) {
+            PointOfSaleInformationParagraphView {
+                Text(AttributedString(Localization.barcodeInfoIntroMessage))
+            }
+
+            PointOfSaleInformationParagraphView {
+                Text(AttributedString(Localization.barcodeInfoPrimaryMessage))
+                Text(bulletPointWithLink)
+                Text(AttributedString(Localization.barcodeInfoTertiaryMessage))
+                Text(AttributedString(Localization.barcodeInfoQuaternaryMessage))
+            }
+            .padding(.leading, POSSpacing.medium)
+
+            PointOfSaleInformationParagraphView(style: .outlined) {
+                Text(AttributedString(Localization.barcodeInfoQuinaryMessage))
+            }
+        }
+    }
+
+    private var bulletPointWithLink: AttributedString {
         var secondary = AttributedString(Localization.barcodeInfoSecondaryMessage + " ")
         var moreDetails = AttributedString(Localization.barcodeInfoMoreDetailsLink)
         moreDetails.link = Constants.detailsLink
         moreDetails.foregroundColor = .posPrimary
+        moreDetails.underlineStyle = .single
         secondary.append(moreDetails)
-        let secondaryBullet = secondary
-
-        let tertiary = AttributedString(Localization.barcodeInfoTertiaryMessage)
-        let quaternary = AttributedString(Localization.barcodeInfoQuaternaryMessage)
-
-        let bullets = Paragraph([primary, secondaryBullet, tertiary, quaternary], identation: POSSpacing.medium)
-
-        let quinary = Paragraph(AttributedString(Localization.barcodeInfoQuinaryMessage), style: .outlined)
-
-        return PointOfSaleInformationModalViewModel(
-            title: title,
-            paragraphs: [intro, bullets, quinary]
-        )
+        return secondary
     }
+}
 
-    private enum Constants {
+private extension PointOfSaleBarcodeScannerInformationModal {
+    enum Constants {
         static let detailsLink = URL(string: "https://woocommerce.com/document/barcode-and-qr-code-scanner/")
     }
 
-    private enum Localization {
+    enum Localization {
         static let barcodeInfoHeading = NSLocalizedString(
             "pos.barcodeInfoModal.heading",
             value: "Barcode scanning",

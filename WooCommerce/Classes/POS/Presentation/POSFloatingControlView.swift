@@ -90,10 +90,7 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanning) {
-            PointOfSaleInformationModal(
-                isPresented: $showBarcodeScanning,
-                viewModel: .barcodeScannerModel
-            )
+            PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanning)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

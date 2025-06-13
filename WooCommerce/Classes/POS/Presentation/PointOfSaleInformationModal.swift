@@ -1,56 +1,26 @@
 import SwiftUI
 
-struct PointOfSaleInformationModalViewModel {
-    struct Paragraph: Hashable, Identifiable {
-        enum Style {
-            case `default`
-            case outlined
-        }
-
-        let id = UUID()
-        let lines: [AttributedString]
-        let style: Style
-        let identation: CGFloat
-
-        init(_ lines: [AttributedString],
-             style: Style = .default,
-             identation: CGFloat = 0) {
-            self.lines = lines
-            self.style = style
-            self.identation = identation
-        }
-
-        init(_ text: AttributedString,
-             style: Style = .default,
-             identation: CGFloat = 0) {
-            self.lines = [text]
-            self.style = style
-            self.identation = identation
-        }
-    }
-    let title: AttributedString
-    let paragraphs: [Paragraph]
-}
-
-// SwiftUI modal for displaying information in the Point of Sale context
-@available(iOS 17.0, *)
-struct PointOfSaleInformationModal: View {
+// Container view for displaying information modals in the POS.
+//
+struct PointOfSaleInformationModal<Content: View>: View {
     @Binding var isPresented: Bool
-    let viewModel: PointOfSaleInformationModalViewModel
+    let title: AttributedString
+    let content: Content
 
     init(
         isPresented: Binding<Bool>,
-        viewModel: PointOfSaleInformationModalViewModel
+        title: AttributedString,
+        @ViewBuilder content: () -> Content
     ) {
         self._isPresented = isPresented
-        self.viewModel = viewModel
+        self.title = title
+        self.content = content()
     }
 
     var body: some View {
         VStack(spacing: POSSpacing.xxLarge) {
-            // Modal header with title and close button
             HStack {
-                Text(viewModel.title)
+                Text(title)
                     .font(.posHeadingBold)
                 Spacer()
                 Button {
@@ -62,29 +32,8 @@ struct PointOfSaleInformationModal: View {
             }
             .foregroundColor(Color.posOnSurface)
 
-            // Display each paragraph (single or multiple lines)
-            ForEach(viewModel.paragraphs, id: \.self) { paragraph in
-                VStack {
-                    ForEach(paragraph.lines, id: \.self) { text in
-                        Text(text)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
-                .padding(.leading, paragraph.identation)
-                .if(paragraph.style == .outlined) { view in
-                    view
-                        .frame(maxWidth: .infinity)
-                        .padding(POSPadding.medium)
-                        .background(Color(.posSurfaceDim))
-                        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
-                        .multilineTextAlignment(.center)
-                }
-                .if(paragraph.style == .default) { view in
-                    view
-                        .font(.posBodyLargeRegular())
-                        .multilineTextAlignment(.leading)
-                }
+            VStack(spacing: POSSpacing.xxLarge) {
+                content
             }
 
             Button(action: {
@@ -100,10 +49,60 @@ struct PointOfSaleInformationModal: View {
     }
 }
 
-@available(iOS 17.0, *)
+struct PointOfSaleInformationParagraphView<Content: View>: View {
+    enum Style {
+        case `default`
+        case outlined
+    }
+
+    let content: Content
+    let style: Style
+
+    init(style: Style = .default, @ViewBuilder content: () -> Content) {
+        self.content = content()
+        self.style = style
+    }
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            content
+                .fixedSize(horizontal: false, vertical: true)
+                .if(style == .default, transform: { view in
+                    view.modifier(PointOfSaleInformationModalDefaultParagraphStyle())
+                })
+                .if(style == .outlined, transform: { view in
+                    view.modifier(PointOfSaleInformationModalOutlinedParagraphStyle())
+                })
+        }
+    }
+}
+
+private struct PointOfSaleInformationModalDefaultParagraphStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.posBodyLargeRegular())
+            .foregroundStyle(Color.posOnSurface)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private struct PointOfSaleInformationModalOutlinedParagraphStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.posBodySmallRegular())
+            .foregroundStyle(Color.posOnSurface)
+            .padding(POSPadding.medium)
+            .background(Color.posSurfaceDim)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, alignment: .center)
+    }
+}
+
 private extension PointOfSaleInformationModal {
     enum Constants {
-        static let modalFrameWidth: CGFloat = 896
+        static var modalFrameWidth: CGFloat { 896 }
     }
 }
 

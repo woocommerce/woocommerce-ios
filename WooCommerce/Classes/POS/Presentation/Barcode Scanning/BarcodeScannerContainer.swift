@@ -32,17 +32,6 @@ struct BarcodeScannerContainer: View {
     }
 }
 
-/// Configuration options for the barcode scanner
-struct BarcodeScannerConfiguration {
-    /// Strings that indicate the end of a barcode scan
-    let terminatingStrings: Set<String>
-
-    /// Default configuration suitable for most barcode scanners
-    static let `default` = BarcodeScannerConfiguration(
-        terminatingStrings: ["\r", "\n"]
-    )
-}
-
 /// A UIViewControllerRepresentable that bridges SwiftUI with UIKit to handle keyboard input events.
 /// This component is responsible for creating and managing the UIKit view controller that captures
 /// keyboard input for barcode scanning.

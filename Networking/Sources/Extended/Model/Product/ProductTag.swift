@@ -8,6 +8,7 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
     public let tagID: Int64
     public let name: String
     public let slug: String
+    // Q: When was `count` added? Is safe to make it non-optional?
     public let count: Int?
 
     /// ProductTag initializer.
@@ -51,6 +52,7 @@ public struct ProductTag: Codable, Equatable, GeneratedFakeable, GeneratedCopiab
         try container.encode(tagID, forKey: .tagID)
         try container.encode(name, forKey: .name)
         try container.encode(slug, forKey: .slug)
+        // try container.encode(count, forKey: .count) not need to be encodable since should be read only
     }
 }
 

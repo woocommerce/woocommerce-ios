@@ -21,6 +21,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
+    /// TODO (?): Loads specific items by their tag ID
     /// Updates the root items display with filtered results
     func updateWithFilteredItems(_ items: [POSItem], hasMoreItems: Bool)
 }

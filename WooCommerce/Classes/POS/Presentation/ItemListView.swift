@@ -94,6 +94,7 @@ struct ItemListView: View {
     @State private var barcodeScanSimulatorIsPresented: Bool = false
     @State private var barcodeScanSimulatorText: String = ""
 
+    // TODO: hook persistence
     @State private var allTags: [ProductTag] = []
     @State private var selectedtags: Set<Int64> = []
 
@@ -140,6 +141,7 @@ struct ItemListView: View {
             }
         })
         .sheet(isPresented: $showProductFiltersModal) {
+            // TODO: Trigger view updates with product selection & update filters hint
             VStack {
                 Text("Filters")
                 ScrollView {
@@ -169,6 +171,8 @@ struct ItemListView: View {
                     // TODO, for now the tags are hardcoded
                     Task {
                         let result = try await posModel.productFilterService.fetchProductsByTag()
+                        // TODO: DI or make item resolver. Currently similar POSProductOrVariationResolver coupled with currency settings
+                        // In order to update the view state, we need to pass them mapped to POSItems
                         let items = result.items.map { posProduct in
                             POSItem.simpleProduct(.init(id: UUID(),
                                                         name: posProduct.name,
@@ -193,6 +197,7 @@ struct ItemListView: View {
                 do {
                     allTags = try await posModel.productFilterService.fetchAllTags()
                 } catch {
+                    // todo: error handling
                     print("Failed to fetch tags: \(error)")
                     allTags = []
                 }

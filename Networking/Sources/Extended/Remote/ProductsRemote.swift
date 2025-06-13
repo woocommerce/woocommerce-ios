@@ -284,7 +284,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     public func fetchProductsByTag(for siteID: Int64) async throws -> PagedItems<POSProduct> {
         let path = Path.products
-        
+
+        // TODO: pass tagIDs in from selection, rather than hardcoded
         let parameters: [String: String] = [
             ParameterKey.page: "1",
             ParameterKey.perPage: "25",
@@ -299,6 +300,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
+        // TODO:
+        // Temporary values, populate from response headers:
         let hasMorePages: Bool = false
         let totalItems: Int? = nil
 

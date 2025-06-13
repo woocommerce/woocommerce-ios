@@ -21,6 +21,8 @@ protocol PointOfSaleItemsControllerProtocol {
     func refreshItems(base: ItemListBaseItem) async
     /// Loads the next page of items for a given base item.
     func loadNextItems(base: ItemListBaseItem) async
+    /// Updates the root items display with filtered results
+    func updateWithFilteredItems(_ items: [POSItem], hasMoreItems: Bool)
 }
 
 @available(iOS 17.0, *)
@@ -73,6 +75,12 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 
     func clearSearchItems(baseItem: ItemListBaseItem) {
         setSearchingState(base: baseItem)
+    }
+
+    func updateWithFilteredItems(_ items: [POSItem], hasMoreItems: Bool = false) {
+        let currentItemStates = itemsViewState.itemsStack.itemStates
+        itemsViewState.itemsStack = ItemsStackState(root: .loaded(items, hasMoreItems: hasMoreItems), itemStates: currentItemStates)
+        itemsViewState.containerState = .content
     }
 
     @MainActor

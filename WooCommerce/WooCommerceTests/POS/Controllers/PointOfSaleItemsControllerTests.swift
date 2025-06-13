@@ -601,6 +601,32 @@ final class PointOfSaleItemsControllerTests {
         }
     }
 
+    @available(iOS 17.0, *)
+    @Test func updateWithFilteredItems_sets_loaded_state_with_provided_items() async throws {
+        // Given
+        let itemProvider = MockPointOfSaleItemService()
+        let sut = PointOfSaleItemsController(
+            itemProvider: itemProvider,
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil)
+        )
+
+        let filteredItems = [
+            POSItem.simpleProduct(.init(id: UUID(), name: "Filtered Product", formattedPrice: "$10", productID: 123, price: 10, manageStock: false, stockQuantity: nil, stockStatusKey: "instock"))
+        ]
+
+        // When
+        sut.updateWithFilteredItems(filteredItems, hasMoreItems: false)
+
+        // Then
+        #expect(sut.itemsViewState.containerState == .content)
+        guard case .loaded(let items, let hasMoreItems) = sut.itemsViewState.itemsStack.root else {
+            Issue.record("Expected loaded ItemList state, but got \(sut.itemsViewState)")
+            return
+        }
+        #expect(items == filteredItems)
+        #expect(hasMoreItems == false)
+    }
+
     enum MockError: Error {
         case requestFailed
     }

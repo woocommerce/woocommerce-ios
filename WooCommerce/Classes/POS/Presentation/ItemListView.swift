@@ -179,7 +179,8 @@ struct ItemListView: View {
                                                         stockQuantity: nil,
                                                         stockStatusKey: "instock"))
                         }
-                        posModel.purchasableItemsController.itemsViewState.itemsStack.root = .loaded(items, hasMoreItems: false)
+                        // Pass hasMoreItems from the requestHeaders
+                        posModel.purchasableItemsController.updateWithFilteredItems(items, hasMoreItems: false)
                         showProductFiltersModal = false
                     }
                 }, label: {

@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-struct PointOfSaleSound {
+struct PointOfSaleSound: Equatable {
     let name: String
     let type: String
 

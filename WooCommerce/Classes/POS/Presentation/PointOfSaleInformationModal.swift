@@ -2,15 +2,30 @@ import SwiftUI
 
 struct PointOfSaleInformationModalViewModel {
     struct Paragraph: Hashable, Identifiable {
-        let id = UUID()
-        let lines: [AttributedString]
-
-        init(_ lines: [AttributedString]) {
-            self.lines = lines
+        enum Style {
+            case `default`
+            case outlined
         }
 
-        init(_ text: AttributedString) {
+        let id = UUID()
+        let lines: [AttributedString]
+        let style: Style
+        let identation: CGFloat
+
+        init(_ lines: [AttributedString],
+             style: Style = .default,
+             identation: CGFloat = 0) {
+            self.lines = lines
+            self.style = style
+            self.identation = identation
+        }
+
+        init(_ text: AttributedString,
+             style: Style = .default,
+             identation: CGFloat = 0) {
             self.lines = [text]
+            self.style = style
+            self.identation = identation
         }
     }
     let title: AttributedString
@@ -52,11 +67,23 @@ struct PointOfSaleInformationModal: View {
                 VStack {
                     ForEach(paragraph.lines, id: \.self) { text in
                         Text(text)
-                            .font(.posBodyLargeRegular())
-                            .multilineTextAlignment(.leading)
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                }
+                .padding(.leading, paragraph.identation)
+                .if(paragraph.style == .outlined) { view in
+                    view
+                        .frame(maxWidth: .infinity)
+                        .padding(POSPadding.medium)
+                        .background(Color(.posSurfaceDim))
+                        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+                        .multilineTextAlignment(.center)
+                }
+                .if(paragraph.style == .default) { view in
+                    view
+                        .font(.posBodyLargeRegular())
+                        .multilineTextAlignment(.leading)
                 }
             }
 

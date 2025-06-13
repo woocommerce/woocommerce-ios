@@ -81,6 +81,7 @@ struct WooShippingServiceView: View {
         VStack(spacing: 0) {
             TopTabView(tabs: carriers,
                        showContent: false,
+                       selectedTabIndex: $viewModel.selectedTabIndex,
                        tabsContainerHorizontalPadding: 16,
                        unselectedStateColor: .secondary,
                        tabsNameFont: .subheadline.bold(),

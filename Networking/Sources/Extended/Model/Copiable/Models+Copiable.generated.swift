@@ -4568,7 +4568,7 @@ extension Networking.WooShippingShipmentItem {
 
 extension Networking.WooShippingUpdateShipment {
     public func copy(
-        shipmentIdsToUpdate: CopiableProp<[String]> = .copy,
+        shipmentIdsToUpdate: CopiableProp<[String: Int]> = .copy,
         shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy
     ) -> Networking.WooShippingUpdateShipment {
         let shipmentIdsToUpdate = shipmentIdsToUpdate ?? self.shipmentIdsToUpdate

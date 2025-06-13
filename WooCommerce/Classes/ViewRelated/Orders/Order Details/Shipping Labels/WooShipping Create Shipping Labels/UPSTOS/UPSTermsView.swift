@@ -9,6 +9,8 @@ struct UPSTermsView: View {
 
     @State private var didFailToConfirmAcceptance = false
 
+    @State private var externalURL: URL?
+
     var body: some View {
         ScrollableVStack(alignment: .leading,
                          padding: Layout.contentPadding,
@@ -73,7 +75,11 @@ struct UPSTermsView: View {
         } message: {
             Text(Localization.errorMessage)
         }
-
+        .environment(\.openURL, OpenURLAction { url in
+            externalURL = url
+            return .handled
+        })
+        .safariSheet(url: $externalURL)
     }
 }
 

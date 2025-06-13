@@ -105,10 +105,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
         // When
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "2")])
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "1")])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -237,10 +237,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "2")])
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "1")])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
         ], shippingLabelData: shippingLabelData)
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
@@ -284,12 +284,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 1)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.quantity, 1)
 
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 1)
@@ -312,10 +314,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 1)
 
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 2)
@@ -341,12 +345,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 1)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.quantity, 1)
 
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 1)
@@ -374,6 +380,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 3)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
@@ -382,6 +389,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipments[0].contents[2].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[2].packageItem.quantity, 1)
 
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 2)
@@ -406,6 +414,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 1)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 1)
@@ -513,9 +522,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Confidence checks
         XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 1)
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 2)
@@ -526,6 +537,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.shipments.count, 1)
 
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
@@ -536,7 +548,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
     // MARK: - `saveShipmentInfo`
 
     @MainActor
-    func test_save_shipping_info_sends_request_to_save() async throws {
+    func test_save_shipping_info_sends_correct_request_to_save_when_there_are_no_fulfilled_shipments() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
@@ -568,10 +580,59 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         try await viewModel.saveShipmentInfo()
 
         // Then
-        let expectedShipmentToUpdate = WooShippingUpdateShipment(shipmentIdsToUpdate: ["0", "1"],
-                                                                 shipments: ["1": [WooShippingShipmentItem(id: 1, subItems: [])],
-                                                                             "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
-                                                                                   WooShippingShipmentItem(id: 2, subItems: [])]])
+        let expectedShipmentToUpdate = WooShippingUpdateShipment(
+            shipmentIdsToUpdate: [:],
+            shipments: ["1": [WooShippingShipmentItem(id: 1, subItems: [])],
+                        "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                              WooShippingShipmentItem(id: 2, subItems: [])]]
+        )
+        XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
+    }
+
+    @MainActor
+    func test_save_shipping_info_sends_correct_request_to_save_when_there_is_change_to_fulfilled_shipments_index() async throws {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "2")])
+        let config = WooShippingConfig(siteID: 123, shipments: [
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])],
+            "2": [WooShippingShipmentItem(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])]
+        ], shippingLabelData: shippingLabelData)
+
+        var receivedShipmentToUpdate: WooShippingUpdateShipment?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .updateShipment(_, _, shipmentToUpdate, completion):
+                receivedShipmentToUpdate = shipmentToUpdate
+                completion(.success(["0": [WooShippingShipmentItem.fake()]]))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
+                                                           config: config,
+                                                           items: items,
+                                                           stores: stores,
+                                                           currencySettings: currencySettings,
+                                                           shippingSettingsService: shippingSettingsService)
+
+        // When
+        viewModel.mergeAllUnfulfilledShipments()
+        try await viewModel.saveShipmentInfo()
+
+        // Then
+        let expectedShipmentToUpdate = WooShippingUpdateShipment(
+            shipmentIdsToUpdate: ["2": 1],
+            shipments: ["1": [WooShippingShipmentItem(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])],
+                        "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                              WooShippingShipmentItem(id: 2, subItems: [])]]
+        )
         XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
     }
 
@@ -639,9 +700,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 1)
@@ -676,6 +739,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 1)
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 3)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
@@ -691,11 +755,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "2")])
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabelPurchase.fake().copy(shipmentID: "1")])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "2": [WooShippingShipmentItem(id: 2, subItems: [])],
-            "3": [WooShippingShipmentItem(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])]
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])],
+            "2": [WooShippingShipmentItem(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])]
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -711,13 +775,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].contents.count, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.orderItemID, items[0].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[0].packageItem.quantity, 2)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.orderItemID, items[2].orderItemID)
         XCTAssertEqual(viewModel.shipments[0].contents[1].packageItem.quantity, 3)
 
-
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.orderItemID, items[1].orderItemID)
         XCTAssertEqual(viewModel.shipments[1].contents[0].packageItem.quantity, 1)
@@ -732,8 +797,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let shippingLabelData = WooShippingLabelData(currentOrderLabels: []) // none purchased yet
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -745,17 +810,18 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shipments[0].contents.allSatisfy({ $0.mainItemRow.isSelectable }))
 
         // When
-        let shipmentID = viewModel.shipments[0].id
+        let shipmentID = viewModel.shipments[0].index
         let purchasedLabelID: Int64 = 325
         viewModel.didPurchaseLabel(for: shipmentID, purchasedLabelID: purchasedLabelID)
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].purchasedLabelID, purchasedLabelID)
         XCTAssertFalse(viewModel.shipments[0].contents[0].mainItemRow.isSelectable)
         XCTAssertTrue(viewModel.shipments[0].contents[0].childItemRows.allSatisfy({ !$0.isSelectable }))
 
-
+        XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertTrue(viewModel.shipments[1].contents[0].mainItemRow.isSelectable)
         XCTAssertNil(viewModel.shipments[1].purchasedLabelID)
@@ -770,12 +836,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let shippingLabelData = WooShippingLabelData(
             currentOrderLabels: [
-                ShippingLabelPurchase.fake().copy(shipmentID: "1")
+                ShippingLabelPurchase.fake().copy(shipmentID: "0")
             ]
         )
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -787,7 +853,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shipments[0].contents.allSatisfy({ $0.mainItemRow.isSelectable == false }))
 
         // When
-        let shipmentID = viewModel.shipments[0].id
+        let shipmentID = viewModel.shipments[0].index
         viewModel.didRequestRefund(for: shipmentID)
 
         // Then
@@ -926,15 +992,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let shippingLabelData = WooShippingLabelData(
             currentOrderLabels: [
-                ShippingLabelPurchase.fake().copy(shipmentID: "1")
+                ShippingLabelPurchase.fake().copy(shipmentID: "0")
             ]
         )
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-                "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
             ], shippingLabelData: shippingLabelData
         )
 
@@ -987,15 +1053,15 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let shippingLabelData = WooShippingLabelData(
             currentOrderLabels: [
-                ShippingLabelPurchase.fake().copy(shipmentID: "2")
+                ShippingLabelPurchase.fake().copy(shipmentID: "1")
             ]
         )
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-                "2": [WooShippingShipmentItem(id: 2, subItems: [])]
+                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
             ],
             shippingLabelData: shippingLabelData
         )
@@ -1021,14 +1087,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Given
         let shippingLabelData = WooShippingLabelData(
             currentOrderLabels: [
-                ShippingLabelPurchase.fake().copy(shipmentID: "1")
+                ShippingLabelPurchase.fake().copy(shipmentID: "0")
             ]
         )
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "1": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])]
+                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])]
             ],
             shippingLabelData: shippingLabelData
         )

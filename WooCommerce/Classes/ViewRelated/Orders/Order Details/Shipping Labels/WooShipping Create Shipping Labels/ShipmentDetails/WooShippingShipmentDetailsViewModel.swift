@@ -126,7 +126,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
         return buildSelectedPackage(selectedPackage,
                                     weight: Double(shipmentWeight) ?? 0,
-                                    shipmentID: shipment.id,
+                                    shipmentID: shipment.index.description,
                                     hazmatCategory: hazmatCategory,
                                     customsForm: customsForm)
     }
@@ -195,7 +195,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
         let finalPackage = buildSelectedPackage(updatedPackage,
                                                 weight: Double(shipmentWeight) ?? 0,
-                                                shipmentID: shipment.id,
+                                                shipmentID: shipment.index.description,
                                                 hazmatCategory: hazmatCategory,
                                                 customsForm: customsForm)
 
@@ -223,7 +223,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
 
         analytics.track(event: .WooShipping.purchaseStep(state: .started))
-        let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.id,
+        let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.index.description,
                                                          package: package,
                                                          rate: selectedRate.purchaseRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
@@ -328,7 +328,7 @@ private extension WooShippingShipmentDetailsViewModel {
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
-                                                   shipmentID: shipment.id,
+                                                   shipmentID: shipment.index.description,
                                                    hazmatCategory: hazmatCategory,
                                                    customsForm: customsForm)
                 shippingService.loadLabelRates(for: package)

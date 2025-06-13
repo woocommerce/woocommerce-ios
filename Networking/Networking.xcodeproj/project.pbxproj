@@ -1671,6 +1671,7 @@
 				Extended/Mapper/ShippingLabelRefundMapper.swift,
 				Extended/Mapper/ShippingLabelStatusMapper.swift,
 				Extended/Mapper/ShippingMethodMapper.swift,
+				Extended/Mapper/SingleItemMapper.swift,
 				Extended/Mapper/SiteAPIMapper.swift,
 				Extended/Mapper/SiteListMapper.swift,
 				Extended/Mapper/SitePlanMapper.swift,

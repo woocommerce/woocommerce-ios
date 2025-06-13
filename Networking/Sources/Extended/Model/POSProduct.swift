@@ -20,6 +20,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let salePrice: String?
     public let onSale: Bool
 
+    public let downloadable: Bool
+
+    public let parentID: Int64
+
     public let images: [ProductImage]
 
     public let attributes: [ProductAttribute]
@@ -49,6 +53,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 regularPrice: String?,
                 salePrice: String?,
                 onSale: Bool,
+                downloadable: Bool,
+                parentID: Int64,
                 images: [ProductImage],
                 attributes: [ProductAttribute],
                 manageStock: Bool,
@@ -65,6 +71,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.regularPrice = regularPrice
         self.salePrice = salePrice
         self.onSale = onSale
+
+        self.downloadable = downloadable
+
+        self.parentID = parentID
 
         self.images = images
 
@@ -120,6 +130,10 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
                 decimalString])
 
+        let downloadable = try container.decode(Bool.self, forKey: .downloadable)
+
+        let parentID = try container.decode(Int64.self, forKey: .parentID)
+
         let images = try container.decode([ProductImage].self, forKey: .images)
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
@@ -138,6 +152,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   regularPrice: regularPrice,
                   salePrice: salePrice,
                   onSale: onSale,
+                  downloadable: downloadable,
+                  parentID: parentID,
                   images: images,
                   attributes: attributes,
                   manageStock: manageStock,
@@ -169,6 +185,8 @@ private extension POSProduct {
         case regularPrice = "regular_price"
         case salePrice = "sale_price"
         case onSale = "on_sale"
+        case downloadable
+        case parentID = "parent_id"
         case images
         case attributes
         case manageStock = "manage_stock"

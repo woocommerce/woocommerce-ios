@@ -23,7 +23,7 @@ struct TopTabView<Content: View>: View {
         case trailing
     }
 
-    @Binding private var selectedTab: Int
+    @OptionalBinding private var selectedTab: Int = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
     @GestureState private var dragState: DragState = .inactive
@@ -65,7 +65,7 @@ struct TopTabView<Content: View>: View {
          showTabs: Binding<Bool> = .constant(true),
          showContent: Bool = true,
          showDividerBelowTabs: Bool = true,
-         selectedTabIndex: Binding<Int> = .constant(0),
+         selectedTabIndex: Binding<Int>? = nil,
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
          unselectedStateColor: Color = .primary,
@@ -81,7 +81,7 @@ struct TopTabView<Content: View>: View {
         self._showTabs = showTabs
         self.showContent = showContent
         self.showDividerBelowTabs = showDividerBelowTabs
-        self._selectedTab = selectedTabIndex
+        self._selectedTab = OptionalBinding(selectedTabIndex, default: 0)
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
         self.selectedStateColor = selectedStateColor

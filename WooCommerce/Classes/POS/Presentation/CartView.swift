@@ -78,7 +78,10 @@ struct CartView: View {
                                             )
                                         )
                                         posModel.remove(cartItem: cartItem)
-                                    } : nil)
+                                    } : nil,
+                                                onCancelLoading: {
+                                        posModel.cancelLoadingItem(id: cartItem.id)
+                                    })
                                     .id(cartItem.id)
                                     .transition(.opacity)
                                 }
@@ -280,6 +283,7 @@ private extension CartView {
             Text(Localization.checkoutButtonTitle)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
     }
 
     var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {

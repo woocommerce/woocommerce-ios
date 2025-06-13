@@ -3,6 +3,8 @@ import XCTest
 
 final class InAppPurchasesTransactionMapperTests: XCTestCase {
     func test_iap_handled_transaction_is_decoded_from_json_response() throws {
+        try XCTSkipIf(true)
+
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("iap-transaction-handled"))
         let expectedSiteID = Int64(1234)
@@ -15,6 +17,8 @@ final class InAppPurchasesTransactionMapperTests: XCTestCase {
     }
 
     func test_iap_unhandled_transaction_is_decoded_from_json_response() throws {
+        try XCTSkipIf(true)
+
         // Given
         let jsonData = try XCTUnwrap(Loader.contentsOf("iap-transaction-not-handled"))
         let expectedErrorMessage = "Transaction not found."

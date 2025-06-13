@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 struct MockPointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
-    func getItem(barcode: String) async throws -> POSItem {
+    func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return .simpleProduct(POSSimpleProduct(
             id: UUID(),
             name: "Scanned Item",

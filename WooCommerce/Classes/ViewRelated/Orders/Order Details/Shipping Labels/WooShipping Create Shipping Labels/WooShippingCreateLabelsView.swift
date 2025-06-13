@@ -119,7 +119,10 @@ struct WooShippingCreateLabelsView: View {
             .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
                 if let termsViewModel = viewModel.upsTermsViewModel {
                     UPSTermsView(viewModel: termsViewModel) {
-                        // TODO: reload rates
+                        viewModel.shouldShowUPSTermsAndConditions = false
+                        Task { @MainActor in
+                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                        }
                     }
                     .presentationDetents([.fraction(0.8), .large])
                 }
@@ -183,6 +186,7 @@ private extension WooShippingCreateLabelsView {
                     })
                 }
                 WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
+                    .disabled(viewModel.isPurchasingLabel)
             }
             .padding(Layout.contentSpacing)
         }
@@ -534,7 +538,7 @@ private extension WooShippingCreateLabelsView {
     var purchaseButton: some View {
         Button {
             Task {
-                await viewModel.purchaseLabel()
+                await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
             }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))

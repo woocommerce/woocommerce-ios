@@ -111,6 +111,8 @@ final class WCPayRemoteTests: XCTestCase {
 
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
+
+        XCTExpectFailure("isCardPresentEligible has been hardcoded to true. See https://github.com/woocommerce/woocommerce-ios/pull/5030")
         XCTAssertEqual(account.isCardPresentEligible, false)
     }
 
@@ -130,6 +132,8 @@ final class WCPayRemoteTests: XCTestCase {
 
         XCTAssertTrue(result.isSuccess)
         let account = try result.get()
+
+        XCTExpectFailure("isCardPresentEligible has been hardcoded to true. See https://github.com/woocommerce/woocommerce-ios/pull/5030")
         XCTAssertEqual(account.isCardPresentEligible, false)
     }
 

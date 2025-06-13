@@ -4,6 +4,7 @@ import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
+import UIKit
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
@@ -751,7 +752,8 @@ private extension AuthenticationManager {
         guard let useCase = try? DefaultApplicationPasswordUseCase(
             username: siteCredentials.username,
             password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL
+            siteAddress: siteCredentials.siteURL,
+            deviceModelIdentifierInfo: UIDevice.current.deviceModelIdentifierInfo
         ) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }

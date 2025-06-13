@@ -42,9 +42,11 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: samplePackage)
+        var loadingResult: Result<Void, Error>?
+        viewModel.loadLabelRates(for: samplePackage, onLoadingCompletion: { loadingResult = $0 })
 
         // Then
+        XCTAssert(loadingResult?.isSuccess == true)
         XCTAssertEqual(viewModel.loadingState, .loaded)
 
         XCTAssertEqual(viewModel.serviceTabs.count, 2)
@@ -111,11 +113,15 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         // When
-        viewModel.loadLabelRates(for: samplePackage)
+        var loadingResult: Result<Void, Error>?
+        viewModel.loadLabelRates(for: samplePackage, onLoadingCompletion: { loadingResult = $0 })
 
         // Then
         XCTAssertEqual(viewModel.loadingState, .error(.failedLoadingLabelRates))
         XCTAssertTrue(viewModel.serviceTabs.isEmpty)
+        XCTAssert(loadingResult?.isFailure == true)
+        XCTAssertEqual(loadingResult?.failure as? WooShippingServiceViewModel.Error,
+                       WooShippingServiceViewModel.Error.failedLoadingLabelRates)
     }
 
     func test_selecting_standard_rate_updates_expected_values() {
@@ -208,7 +214,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Media Mail")
     }
 
-    func test_shortShipping_by_deliveryDays_returns_sorted_list() {
+    func test_sortShipping_by_deliveryDays_returns_sorted_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),
                                                     originAddress: WooShippingAddress.fake(),
@@ -294,6 +300,100 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
+    }
+
+    func test_switching_tab_updates_the_card_list() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.displayedServiceCards.count, 2)
+        XCTAssertEqual(viewModel.displayedServiceCards.first?.title, "USPS - Media Mail")
+
+        // When
+        viewModel.selectedTabIndex = 1
+
+        // Then
+        XCTAssertEqual(viewModel.displayedServiceCards.count, 1)
+        XCTAssertEqual(viewModel.displayedServiceCards.first?.title, "DHL - Next Day")
+    }
+
+    func test_refreshSelectedRate_returns_updated_rate() throws {
+        // Given
+        let oldStandardRate = ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                                       insurance: "100",
+                                                       retailRate: 8,
+                                                       rate: 7.53,
+                                                       rateID: "test_rateID",
+                                                       serviceID: "test_serviceID",
+                                                       carrierID: "usps",
+                                                       shipmentID: "",
+                                                       hasTracking: true,
+                                                       isSelected: false,
+                                                       isPickupFree: true,
+                                                       deliveryDays: 7,
+                                                       deliveryDateGuaranteed: false)
+
+        let newRate = ShippingLabelCarrierRate(title: "USPS - Media Mail",
+                                               insurance: "100",
+                                               retailRate: 8,
+                                               rate: 7.53,
+                                               rateID: "updated_rateID",
+                                               serviceID: "test_serviceID",
+                                               carrierID: "usps",
+                                               shipmentID: "",
+                                               hasTracking: true,
+                                               isSelected: false,
+                                               isPickupFree: true,
+                                               deliveryDays: 7,
+                                               deliveryDateGuaranteed: false)
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let updatedRates = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
+                                                          defaultRates: [newRate],
+                                                          signatureRequired: [],
+                                                          adultSignatureRequired: [])]
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success(updatedRates))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        viewModel.loadLabelRates(for: samplePackage)
+        viewModel.selectRate(oldStandardRate, signatureRate: nil, adultSignatureRate: nil)
+        let oldSelectedRate = try XCTUnwrap(viewModel.selectedRate)
+
+        // When
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success(updatedRates))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        viewModel.loadLabelRates(for: samplePackage)
+        let updatedRate = viewModel.refreshSelectedRate(from: oldSelectedRate)
+
+        // Then
+        XCTAssertNotNil(updatedRate)
+        XCTAssertNil(updatedRate?.signatureRate)
+        XCTAssertNil(updatedRate?.adultSignatureRate)
+        XCTAssertEqual(updatedRate?.rate.rateID, newRate.rateID)
     }
 }
 

@@ -214,6 +214,56 @@ struct CartViewHelperTests {
         // When, Then
         #expect(sut.shouldShowCheckout(orderStage: .building, cart: cart) == true)
     }
+
+    @Test func hasUnresolvedItems_when_cart_is_empty_returns_false() async throws {
+        // Given
+        let cart = Cart()
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == false)
+    }
+
+    @Test func hasUnresolvedItems_when_cart_has_only_loaded_items_returns_false() async throws {
+        // Given
+        let cart = Cart(purchasableItems: [makeItem()])
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == false)
+    }
+
+    @Test func hasUnresolvedItems_when_cart_has_loading_item_returns_true() async throws {
+        // Given
+        let loadingItem = Cart.PurchasableItem.loading(id: UUID())
+        let cart = Cart(purchasableItems: [loadingItem])
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == true)
+    }
+
+    @Test func hasUnresolvedItems_when_cart_has_error_item_returns_true() async throws {
+        // Given
+        let errorItem = Cart.PurchasableItem(
+            id: UUID(),
+            title: "",
+            subtitle: "",
+            quantity: 1,
+            state: .error
+        )
+        let cart = Cart(purchasableItems: [errorItem])
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == true)
+    }
+
+    @Test func hasUnresolvedItems_when_cart_has_mixed_items_returns_true() async throws {
+        // Given
+        let loadingItem = Cart.PurchasableItem.loading(id: UUID())
+        let loadedItem = makeItem()
+        let cart = Cart(purchasableItems: [loadingItem, loadedItem])
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == true)
+    }
 }
 
 private func makeItem() -> Cart.PurchasableItem {

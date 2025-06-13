@@ -27,6 +27,17 @@ struct CartViewHelper {
 
         return cart.purchasableItems.isNotEmpty
     }
+
+    func hasUnresolvedItems(cart: Cart) -> Bool {
+        cart.purchasableItems.contains { item in
+            switch item.state {
+            case .loading, .error:
+                return true
+            case .loaded:
+                return false
+            }
+        }
+    }
 }
 
 private extension PointOfSalePaymentState {

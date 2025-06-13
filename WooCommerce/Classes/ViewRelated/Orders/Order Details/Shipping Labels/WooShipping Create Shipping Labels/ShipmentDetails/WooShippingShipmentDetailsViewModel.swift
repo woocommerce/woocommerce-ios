@@ -126,7 +126,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
         return buildSelectedPackage(selectedPackage,
                                     weight: Double(shipmentWeight) ?? 0,
-                                    shipmentID: shipment.id,
+                                    shipmentID: shipment.index.description,
                                     hazmatCategory: hazmatCategory,
                                     customsForm: customsForm)
     }
@@ -180,6 +180,39 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.packageSelectionStep(state: .selected))
     }
 
+    /// After accepting UPS TOS, the selected UPS package/rate need to be reloaded with user data.
+    /// We need to reload the package list and update the selected package with the one with the same ID.
+    /// Similarly, we need to reload the shipping rates and updated the selected rate with the one with the same service ID.
+    /// When the backend supports this reloading, we can remove this extra step.
+    /// Ref: pe5sF9-4kN-p2/#ups-tos-flow
+    ///
+    @MainActor
+    func refreshPackagesAndShippingRates() async throws {
+        guard let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
+        }
+        self.selectedPackage = updatedPackage
+
+        let finalPackage = buildSelectedPackage(updatedPackage,
+                                                weight: Double(shipmentWeight) ?? 0,
+                                                shipmentID: shipment.index.description,
+                                                hazmatCategory: hazmatCategory,
+                                                customsForm: customsForm)
+
+        guard let shippingService, let selectedRate else {
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
+        }
+        try await withCheckedThrowingContinuation { continuation in
+            shippingService.loadLabelRates(for: finalPackage) { result in
+                continuation.resume(with: result)
+            }
+        }
+        guard let updatedRate = shippingService.refreshSelectedRate(from: selectedRate) else {
+            throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
+        }
+        self.selectedRate = updatedRate
+    }
+
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel() async throws {
@@ -190,7 +223,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         }
 
         analytics.track(event: .WooShipping.purchaseStep(state: .started))
-        let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.id,
+        let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.index.description,
                                                          package: package,
                                                          rate: selectedRate.purchaseRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
@@ -295,7 +328,7 @@ private extension WooShippingShipmentDetailsViewModel {
                 guard let self, let selectedPackage, let shippingService else { return }
                 let package = buildSelectedPackage(selectedPackage,
                                                    weight: Double(weight) ?? 0,
-                                                   shipmentID: shipment.id,
+                                                   shipmentID: shipment.index.description,
                                                    hazmatCategory: hazmatCategory,
                                                    customsForm: customsForm)
                 shippingService.loadLabelRates(for: package)
@@ -363,6 +396,35 @@ private extension WooShippingShipmentDetailsViewModel {
             return rate - baseRate
         }()
         return (name, currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description)
+    }
+
+    @MainActor
+    func refreshSelectedPackage(from oldPackage: WooShippingPackageDataRepresentable) async throws -> WooShippingPackageDataRepresentable? {
+        let packages = try await withCheckedThrowingContinuation { continuation in
+            let loadPackagesAction = WooShippingAction.loadPackages(siteID: order.siteID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(loadPackagesAction)
+        }
+        let customSavedPackages = packages.customPackages.map { $0.toPackageData() }
+        let predefinedSavedPackages = packages.savedPredefinedPackages.map { $0.toPackageData() }
+
+        if let foundPackage = (customSavedPackages + predefinedSavedPackages).first(where: { $0.id == oldPackage.id }) {
+            return foundPackage
+        }
+
+        let carrierPackages = packages.allPredefinedOptions.compactMap { $0.toCarrierPackages() }
+        var foundCarrierPackage: WooShippingPackageDataRepresentable?
+        outerLoop: for carrierPackage in carrierPackages {
+            let packageGroups = carrierPackage.packageGroups
+            for group in packageGroups {
+                if let foundPackage = group.packages.first(where: { $0.id == oldPackage.id }) {
+                    foundCarrierPackage = foundPackage
+                    break outerLoop
+                }
+            }
+        }
+        return foundCarrierPackage
     }
 }
 

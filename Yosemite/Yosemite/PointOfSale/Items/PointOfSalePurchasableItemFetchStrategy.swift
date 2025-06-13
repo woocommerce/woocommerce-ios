@@ -7,16 +7,14 @@ public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 }
 
-extension PointOfSalePurchasableItemFetchStrategy {
-    var productTypes: [ProductType] { [.simple, .variable] }
-}
-
 public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
 
     private let productsRemote: ProductsRemoteProtocol
     private let variationsRemote: ProductVariationsRemoteProtocol
     private let analytics: POSItemFetchAnalyticsTracking
+
+    static var defaultProductTypes: [ProductType] { [.simple, .variable] }
 
     init(siteID: Int64,
          productsRemote: ProductsRemoteProtocol,
@@ -29,9 +27,11 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(for: siteID,
-                                                                                productTypes: productTypes,
-                                                                                pageNumber: pageNumber)
+        let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
+            for: siteID,
+            productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            pageNumber: pageNumber
+        )
 
         if pageNumber == 1 {
             analytics.trackItemsFetchComplete(totalItems: pagedProducts.totalItems ?? 0)
@@ -71,10 +71,12 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let startTime = Date()
-        let pagedProducts = try await productsRemote.searchProductsForPointOfSale(for: siteID,
-                                                                                  query: searchTerm,
-                                                                                  productTypes: productTypes,
-                                                                                  pageNumber: pageNumber)
+        let pagedProducts = try await productsRemote.searchProductsForPointOfSale(
+            for: siteID,
+            query: searchTerm,
+            productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            pageNumber: pageNumber
+        )
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
             analytics.trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
@@ -108,10 +110,12 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
     }
 
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(for: siteID,
-                                                                                       productTypes: productTypes,
-                                                                                       pageNumber: pageNumber,
-                                                                                       perPage: pageSize)
+        let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(
+            for: siteID,
+            productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
+            pageNumber: pageNumber,
+            perPage: pageSize
+        )
         let modifiedItems = PagedItems<POSProduct>(items: receivedItems.items,
                                                    hasMorePages: false,
                                                    totalItems: receivedItems.totalItems)

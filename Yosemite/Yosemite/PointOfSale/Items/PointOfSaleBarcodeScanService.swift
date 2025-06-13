@@ -1,30 +1,38 @@
 import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import class Networking.ProductsRemote
-import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
+import enum Networking.NetworkError
 
 public protocol PointOfSaleBarcodeScanServiceProtocol {
-    func getItem(barcode: String) async throws -> POSItem
+    func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem
 }
 
-public enum PointOfSaleBarcodeScanError: Error, Equatable {
-    case unknown
+public enum PointOfSaleBarcodeScanError: Error {
+    case unknown(scannedCode: String)
+    case noParentProductForVariation(scannedCode: String)
+    case variationCouldNotBeConverted(scannedCode: String)
+    case unsupportedProductType(scannedCode: String, productName: String, productType: ProductType)
+    case downloadableProduct(scannedCode: String, productName: String)
+    case notFound(scannedCode: String)
+    case loadingError(scannedCode: String, underlyingError: Error)
+    case mappingError(scannedCode: String, underlyingError: Error)
 }
 
 /// Service for handling barcode scanning in Point of Sale
 public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
     private let siteID: Int64
-    private let itemMapper: PointOfSaleItemMapper
+    private let itemResolver: POSProductOrVariationResolver
 
     init (siteID: Int64,
           productsRemote: ProductsRemoteProtocol,
           currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.productsRemote = productsRemote
-        self.itemMapper = PointOfSaleItemMapper(currencySettings: currencySettings)
+        self.itemResolver = POSProductOrVariationResolver(productsRemote: productsRemote,
+                                                          currencySettings: currencySettings)
     }
 
     public convenience init(siteID: Int64,
@@ -39,19 +47,19 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     /// Looks up a POSItem using a barcode scan string
     /// - Parameter barcode: The barcode string from a scan (global unique identifier)
     /// - Returns: A POSItem if found, or throws an error
-    public func getItem(barcode: String) async throws -> POSItem {
+    public func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+        let productOrVariation = try await loadPOSProduct(barcode: barcode)
+        return try await itemResolver.itemForProductOrVariation(productOrVariation, scannedCode: barcode)
+    }
+
+    private func loadPOSProduct(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
-            let product = try await productsRemote.fetchPOSProductByGlobalUniqueIdentifier(for: siteID, globalUniqueID: barcode)
-
-            let items = itemMapper.mapProductsToPOSItems(products: [product])
-
-            guard let item = items.first else {
-                throw PointOfSaleBarcodeScanError.unknown
-            }
-
-            return item
+            return try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
+                                                                                   globalUniqueID: barcode)
+        } catch NetworkError.notFound {
+            throw .notFound(scannedCode: barcode)
         } catch {
-            throw PointOfSaleBarcodeScanError.unknown
+            throw .loadingError(scannedCode: barcode, underlyingError: error)
         }
     }
 }

@@ -3,46 +3,105 @@ import SwiftUI
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var viewWidth: CGFloat = 0.0
+    @Binding private var showProductImage: Bool
+    private let configuration: GhostItemCardViewConfiguration
+    private let accessory: AnyView?
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        min(configuration.cardSize * scale, configuration.maximumCardSize)
+    }
+
+    init(configuration: GhostItemCardViewConfiguration = .itemList,
+         showProductImage: Binding<Bool> = .constant(true)) {
+        self.configuration = configuration
+        self._showProductImage = showProductImage
+        self.accessory = nil
+    }
+
+    init<Accessory: View>(configuration: GhostItemCardViewConfiguration = .itemList,
+                          showProductImage: Binding<Bool> = .constant(true),
+                         @ViewBuilder accessory: () -> Accessory) {
+        self.configuration = configuration
+        self._showProductImage = showProductImage
+        self.accessory = AnyView(accessory())
     }
 
     var body: some View {
         HStack(alignment: .center, spacing: Constants.cardSpacing) {
-            Rectangle()
-                .frame(width: dimension, height: dimension)
-            VStack(alignment: .leading) {
-                Rectangle()
-                    .frame(width: viewWidth * 0.5, height: Layout.placeholderHeight * scale)
-                    .cornerRadius(Layout.cornerRadius)
-                Rectangle()
-                    .frame(width: viewWidth * 0.1, height: Layout.placeholderHeight * scale)
-                    .cornerRadius(Layout.cornerRadius)
-            }
-            .padding(.horizontal, Constants.horizontalTextPadding)
+            placeholders
+                .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                .shimmering()
+                .accessibilityLabel(Localization.loadingItemAccessibilityLabel)
+
             Spacer()
+
+            if let accessory {
+                accessory
+                    .padding(Constants.accessoryButtonPadding)
+            }
         }
         .measureWidth { width in
             viewWidth = width
         }
-        .foregroundColor(.posOnSurfaceVariantLowest)
-        .shimmering()
         .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(Color.posSurfaceBright)
         .posItemCardBorderStyles()
     }
-}
 
-private extension GhostItemCardView {
-    typealias Constants = PointOfSaleItemListCardConstants
-
-    enum Layout {
-        static let placeholderHeight: CGFloat = 32
-        static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
+    @ViewBuilder var placeholders: some View {
+        HStack(alignment: .center, spacing: Constants.cardSpacing) {
+            Rectangle()
+                .frame(maxWidth: dimension)
+                .aspectRatio(1, contentMode: .fill)
+                .renderedIf(showProductImage)
+            VStack(alignment: .leading) {
+                Rectangle()
+                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier,
+                           maxHeight: configuration.placeholderHeight * scale)
+                    .cornerRadius(Layout.cornerRadius)
+                Rectangle()
+                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier * 0.2,
+                           maxHeight: configuration.placeholderHeight * scale)
+                    .cornerRadius(Layout.cornerRadius)
+            }
+            .foregroundColor(.posOnSurfaceVariantLowest)
+            .padding(.horizontal, Constants.horizontalTextPadding)
+        }
     }
 }
 
+fileprivate typealias Constants = PointOfSaleItemListCardConstants
+
+fileprivate enum Layout {
+    static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
+}
+
+fileprivate enum Localization {
+    static let loadingItemAccessibilityLabel = NSLocalizedString(
+        "pointOfSale.itemListCard.loadingItemAccessibilityLabel",
+        value: "Loading",
+        comment: "Loading item accessibility label in POS")
+}
+
+struct GhostItemCardViewConfiguration {
+    let placeholderHeight: CGFloat
+    let cardSize: CGFloat
+    let maximumCardSize: CGFloat
+    let placeholderWidthMultiplier: CGFloat
+
+    static let itemList = GhostItemCardViewConfiguration(
+        placeholderHeight: 32,
+        cardSize: Constants.productCardSize,
+        maximumCardSize: Constants.maximumProductCardSize,
+        placeholderWidthMultiplier: 0.5
+    )
+}
+
 #Preview {
-    GhostItemCardView()
+    VStack(spacing: 20) {
+        GhostItemCardView(configuration: .itemList) {
+            CartRowRemoveButton {}
+        }
+        GhostItemCardView(configuration: .itemList)
+    }
 }

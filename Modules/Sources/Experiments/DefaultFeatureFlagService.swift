@@ -80,7 +80,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .blazeEvergreenCampaigns:
             return true
         case .revampedShippingLabelCreation:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .blazeCampaignObjective:
             return true
         case .favoriteProducts:

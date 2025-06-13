@@ -3,6 +3,7 @@ import SwiftUI
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
+    private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding private var showProductImage: Bool
@@ -11,13 +12,40 @@ struct ItemRowView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(cartItem: Cart.PurchasableItem, showImage: Binding<Bool> = .constant(true), onItemRemoveTapped: (() -> Void)? = nil) {
+    init(cartItem: Cart.PurchasableItem,
+         showImage: Binding<Bool> = .constant(true),
+         onItemRemoveTapped: (() -> Void)? = nil,
+         onCancelLoading: (() -> Void)? = nil) {
         self.cartItem = cartItem
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
+        self.onCancelLoading = onCancelLoading
     }
 
     var body: some View {
+        switch cartItem.state {
+        case .loaded, .error:
+            productRow
+                .frame(maxWidth: .infinity, idealHeight: dimension)
+                .background(Color.posSurfaceContainerLowest)
+                .posItemCardBorderStyles()
+                .padding(.horizontal, Constants.horizontalPadding)
+        case .loading:
+            GhostItemCardView(configuration: Constants.cartConfiguration,
+                              showProductImage: $showProductImage) {
+                if let onCancelLoading {
+                    CartRowRemoveButton {
+                        onCancelLoading()
+                    }
+                }
+            }
+            .background(Color.posSurfaceContainerLowest)
+            .padding(.horizontal, Constants.horizontalPadding)
+        }
+    }
+
+    @ViewBuilder
+    private var productRow: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             productImage
 
@@ -27,12 +55,15 @@ struct ItemRowView: View {
                     .font(Constants.itemTitleFont)
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .foregroundColor(subtitleColor)
                         .font(Constants.itemSubtitleFont)
                 }
-                Text(cartItem.item.formattedPrice)
-                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                    .font(Constants.itemPriceFont)
+
+                if case .loaded(let item) = cartItem.state {
+                    Text(item.formattedPrice)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemPriceFont)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
@@ -45,21 +76,32 @@ struct ItemRowView: View {
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
-        .frame(maxWidth: .infinity, idealHeight: Constants.productCardSize * scale)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
     private var productImage: some View {
         if !showProductImage {
             EmptyView()
-        } else {
-            POSItemImageView(imageSource: cartItem.item.productImageSource,
+        } else if case .loaded(let item) = cartItem.state {
+            POSItemImageView(imageSource: item.productImageSource,
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
+        } else if case .error = cartItem.state {
+            POSItemImageView(imageSource: nil,
+                             imageSize: dimension,
+                             scale: 1,
+                             state: .error)
+            .frame(width: dimension, height: dimension)
+        }
+    }
+
+    private var subtitleColor: Color {
+        switch cartItem.state {
+        case .loaded, .loading:
+            return PointOfSaleItemListCardConstants.detailColor
+        case .error:
+            return .posError
         }
     }
 }
@@ -75,6 +117,13 @@ private extension ItemRowView {
         static let itemTitleFont: POSFontStyle = .posBodySmallBold
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+
+        static let cartConfiguration = GhostItemCardViewConfiguration(
+            placeholderHeight: 24,
+            cardSize: Constants.productCardSize,
+            maximumCardSize: Constants.maximumProductCardSize,
+            placeholderWidthMultiplier: 0.3
+        )
     }
 }
 
@@ -97,5 +146,22 @@ private extension ItemRowView {
                                                subtitle: nil,
                                                quantity: 2),
                 onItemRemoveTapped: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
+                onCancelLoading: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView.init(cartItem: Cart.PurchasableItem(
+        id: UUID(),
+        title: "123-123-123",
+        subtitle: "Unspported product type",
+        quantity: 1,
+        state: .error
+    ))
 }
 #endif

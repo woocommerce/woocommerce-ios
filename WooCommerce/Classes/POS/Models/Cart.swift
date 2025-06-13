@@ -1,6 +1,7 @@
 import Foundation
 import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
+import enum Yosemite.PointOfSaleBarcodeScanError
 
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
@@ -20,11 +21,52 @@ enum CartItemType: CaseIterable {
 extension Cart {
     struct PurchasableItem: CartItem {
         let id: UUID
-        let item: POSOrderableItem
         let title: String
         let subtitle: String?
         let quantity: Int
         let type: CartItemType = .purchasableItem
+        let state: ItemState
+
+        enum ItemState {
+            case loaded(POSOrderableItem)
+            case loading
+            case error
+
+            var isLoading: Bool {
+                switch self {
+                case .loading:
+                    return true
+                default:
+                    return false
+                }
+            }
+        }
+
+        init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState) {
+            self.id = id
+            self.title = title
+            self.subtitle = subtitle
+            self.quantity = quantity
+            self.state = state
+        }
+
+        init(id: UUID, item: POSOrderableItem, title: String, subtitle: String?, quantity: Int) {
+            self.id = id
+            self.title = title
+            self.subtitle = subtitle
+            self.quantity = quantity
+            self.state = .loaded(item)
+        }
+
+        static func loading(id: UUID) -> PurchasableItem {
+            PurchasableItem(
+                id: id,
+                title: "Loading...",
+                subtitle: nil,
+                quantity: 1,
+                state: .loading
+            )
+        }
     }
 
     struct CouponItem: CartItem {
@@ -39,19 +81,44 @@ extension Cart {
 
 extension Cart {
     mutating func add(_ posItem: POSItem) {
-        switch posItem {
-        case .simpleProduct(let simpleProduct):
-            let productItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
-            purchasableItems.insert(productItem, at: purchasableItems.startIndex)
-        case .variation(let variation):
-            let productItem = Cart.PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
-            purchasableItems.insert(productItem, at: purchasableItems.startIndex)
-        case .variableParentProduct:
-            return
-        case .coupon(let coupon):
+        if let purchasableItem = createPurchasableItem(id: UUID(), from: posItem) {
+            purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)
+        } else if case .coupon(let coupon) = posItem {
             let couponItem = Cart.CouponItem(id: coupon.id, code: coupon.code, summary: coupon.summary)
             coupons.insert(couponItem, at: coupons.startIndex)
         }
+    }
+
+    private func createPurchasableItem(id: UUID, from posItem: POSItem) -> Cart.PurchasableItem? {
+        switch posItem {
+        case .simpleProduct(let simpleProduct):
+            return PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
+        case .variation(let variation):
+            return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+        case .variableParentProduct, .coupon:
+            return nil
+        }
+    }
+
+    mutating func addLoadingItem() -> UUID {
+        let id = UUID()
+        let loadingItem = PurchasableItem.loading(id: id)
+        purchasableItems.insert(loadingItem, at: purchasableItems.startIndex)
+        return id
+    }
+
+    mutating func updateLoadingItem(id: UUID, with posItem: POSItem) {
+        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
+
+        if let productItem = createPurchasableItem(id: id, from: posItem) {
+            purchasableItems[index] = productItem
+        } else {
+            purchasableItems.remove(at: index)
+        }
+    }
+
+    mutating func removeItem(id: UUID) {
+        purchasableItems.removeAll(where: { $0.id == id })
     }
 
     var isEmpty: Bool {

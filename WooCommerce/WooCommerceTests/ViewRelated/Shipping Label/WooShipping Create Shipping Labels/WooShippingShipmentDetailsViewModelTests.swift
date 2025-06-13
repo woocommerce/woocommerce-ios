@@ -205,7 +205,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         try await viewModel.purchaseLabel()
 
         // Then
-        let shipmentDetails = encodedHazmat?[viewModel.shipment.id] as? [String: Any]
+        let shipmentDetails = encodedHazmat?[viewModel.shipment.index.description] as? [String: Any]
         XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
@@ -569,6 +569,51 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.customsInformationIsCompleted)
+    }
+
+    @MainActor
+    func test_refreshPackagesAndShippingRates_updates_selected_package() async {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores)
+        let package = samplePackageData()
+        viewModel.selectPackage(package)
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+
+        // Confidence check
+        XCTAssertEqual(viewModel.selectedPackage?.id, package.id)
+
+        // When: package is refreshed
+        let updatedPackage = WooShippingCustomPackage(id: "small_flat_box",
+                                                      name: "custom",
+                                                      rawType: "box",
+                                                      dimensions: "21.91 x 13.65 x 4.13",
+                                                      boxWeight: 0.25)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadPackages(_, let completion):
+                completion(.success(WooShippingPackagesResponse(siteID: 123,
+                                                                customPackages: [updatedPackage],
+                                                                savedPredefinedPackages: [],
+                                                                allPredefinedOptions: [])))
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success([]))
+            default:
+                break
+            }
+        }
+        try? await viewModel.refreshPackagesAndShippingRates() // ignoring failure in refreshing rate for simplicity
+
+        // Then
+        XCTAssertEqual(viewModel.selectedPackage?.name, updatedPackage.name)
     }
 }
 

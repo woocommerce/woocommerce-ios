@@ -1,5 +1,1 @@
-- [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
-- [*] Orders: Updated edit icons design to be consistent: [https://github.com/woocommerce/woocommerce-ios/pull/15685]
-- [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
-- [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
-- [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]
+Shipping just got a major upgrade! Our revamped flow makes it easier than ever to create and manage shipping labels for stores using WooCommerce Shipping. We've also improved some icons and fixed a display issue with the order list's last updated time. This release includes some behind-the-scenes performance improvements too.

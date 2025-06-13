@@ -49,7 +49,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
     }
 }
 
-struct PointOfSaleInformationParagraphView<Content: View>: View {
+struct PointOfSaleInformationModalParagraphView<Content: View>: View {
     enum Style {
         case `default`
         case outlined
@@ -64,39 +64,40 @@ struct PointOfSaleInformationParagraphView<Content: View>: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: style == .default ? .leading : .center) {
             content
-                .fixedSize(horizontal: false, vertical: true)
-                .if(style == .default, transform: { view in
-                    view.modifier(PointOfSaleInformationModalDefaultParagraphStyle())
-                })
-                .if(style == .outlined, transform: { view in
-                    view.modifier(PointOfSaleInformationModalOutlinedParagraphStyle())
-                })
         }
+        .if(style == .default, transform: { view in
+            view.modifier(PointOfSaleInformationModalDefaultParagraphStyle())
+        })
+        .if(style == .outlined, transform: { view in
+            view.modifier(PointOfSaleInformationModalOutlinedParagraphStyle())
+        })
     }
 }
 
 private struct PointOfSaleInformationModalDefaultParagraphStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
+            .frame(maxWidth: .infinity, alignment: .leading)
             .font(.posBodyLargeRegular())
             .foregroundStyle(Color.posOnSurface)
             .multilineTextAlignment(.leading)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
 private struct PointOfSaleInformationModalOutlinedParagraphStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
+            .frame(maxWidth: .infinity, alignment: .center)
             .font(.posBodySmallRegular())
             .foregroundStyle(Color.posOnSurface)
             .padding(POSPadding.medium)
             .background(Color.posSurfaceDim)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
             .multilineTextAlignment(.center)
-            .frame(maxWidth: .infinity, alignment: .center)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 

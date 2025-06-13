@@ -10,11 +10,11 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 
     var body: some View {
         PointOfSaleInformationModal(isPresented: $isPresented, title: AttributedString(Localization.barcodeInfoHeading)) {
-            PointOfSaleInformationParagraphView {
+            PointOfSaleInformationModalParagraphView {
                 Text(AttributedString(Localization.barcodeInfoIntroMessage))
             }
 
-            PointOfSaleInformationParagraphView {
+            PointOfSaleInformationModalParagraphView {
                 Text(AttributedString(Localization.barcodeInfoPrimaryMessage))
                 Text(bulletPointWithLink)
                 Text(AttributedString(Localization.barcodeInfoTertiaryMessage))
@@ -22,7 +22,7 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
             }
             .padding(.leading, POSSpacing.medium)
 
-            PointOfSaleInformationParagraphView(style: .outlined) {
+            PointOfSaleInformationModalParagraphView(style: .outlined) {
                 Text(AttributedString(Localization.barcodeInfoQuinaryMessage))
             }
         }
@@ -87,4 +87,9 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             comment: "Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again"
         )
     }
+}
+
+@available(iOS 17.0, *)
+#Preview {
+    PointOfSaleBarcodeScannerInformationModal(isPresented: .constant(true))
 }

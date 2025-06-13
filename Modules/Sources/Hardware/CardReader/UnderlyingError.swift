@@ -1,3 +1,5 @@
+import Foundation
+
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.
 public enum UnderlyingError: Error, Equatable {

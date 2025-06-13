@@ -255,9 +255,9 @@ for the iOS platform (and our specific requirements):
         callbacks will be executed.
 
 
-## **Hardware.framework**
+## **Hardware**
 
-The Hardware framework offers a Swift API around integrations with external hardware. 
+The Hardware module offers a Swift API around integrations with external hardware.
 key points.
 
 More on [Hardware](HARDWARE.md)

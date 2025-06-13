@@ -486,7 +486,6 @@
 		D88303E925E459DC00C877F9 /* CardPresentPaymentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */; };
 		D88303F025E45E6F00C877F9 /* MockCardReaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */; };
 		D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */; };
-		D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D88FDB3D25DD222600CB0DBD /* Hardware.framework */; };
 		D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */; };
 		D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */; };
 		D8C11A5222DF2DA200D4A88D /* StatsActionV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */; };
@@ -1063,7 +1062,6 @@
 		D88303E825E459DC00C877F9 /* CardPresentPaymentStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentStoreTests.swift; sourceTree = "<group>"; };
 		D88303EF25E45E6F00C877F9 /* MockCardReaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardReaderService.swift; sourceTree = "<group>"; };
 		D88E234425AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderFeeLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
-		D88FDB3D25DD222600CB0DBD /* Hardware.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Hardware.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "custom-shipment-provider.plist"; sourceTree = "<group>"; };
 		D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4.swift; sourceTree = "<group>"; };
 		D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsActionV4.swift; sourceTree = "<group>"; };
@@ -1141,7 +1139,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2B4AD82DDC313800E5E49C /* XcodeTarget_Yosemite in Frameworks */,
-				D88FDB3E25DD222600CB0DBD /* Hardware.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2025,7 +2022,6 @@
 		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				D88FDB3D25DD222600CB0DBD /* Hardware.framework */,
 				26FB056925F6CB7600A40B26 /* Fakes.framework */,
 			);
 			name = Frameworks;

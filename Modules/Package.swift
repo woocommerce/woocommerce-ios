@@ -20,6 +20,10 @@ let package = Package(
             targets: ["Experiments"]
         ),
         .library(
+            name: "Hardware",
+            targets: ["Hardware"]
+        ),
+        .library(
             name: "NetworkingCore",
             targets: ["NetworkingCore"]
         ),
@@ -98,6 +102,15 @@ let package = Package(
             dependencies: [
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ]
+        ),
+        .target(
+            name: "Hardware",
+            dependencies: [
+                "Codegen",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+            ],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "Networking",
@@ -213,7 +226,6 @@ let package = Package(
 
 enum XcodeTargetNames {
     static let fakes = "Fakes"
-    static let hardware = "Hardware"
     static let hardwareTests = "HardwareTests"
     static let networkingTests = "NetworkingTests"
     static let notificationExtension = "NotificationExtension"
@@ -235,7 +247,6 @@ enum XcodeSupport {
     static var products: [Product] {
         [
             XcodeTargetNames.fakes,
-            XcodeTargetNames.hardware,
             XcodeTargetNames.hardwareTests,
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
@@ -260,20 +271,15 @@ enum XcodeSupport {
                 XcodeTargetNames.fakes,
                 dependencies: [
                     "Codegen",
+                    "Hardware",
                     "Networking",
                 ]
             ),
             .xcodeTarget(
-                XcodeTargetNames.hardware,
-                dependencies: [
-                    "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.hardwareTests,
-                dependencies: [XcodeTargetNames.hardware.asDependency]
+                dependencies: [
+                    "Hardware"
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.networkingTests,
@@ -322,6 +328,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Experiments",
+                    "Hardware",
                     "Networking",
                     "Storage",
                     "WooFoundation",
@@ -413,6 +420,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemite,
                 dependencies: [
                     "Codegen",
+                    "Hardware",
                     "Networking",
                     "Storage",
                     "WooFoundation",

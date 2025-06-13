@@ -1,3 +1,5 @@
+import Foundation
+
 /// Encapsulates the parameters needed to create a PaymentIntent
 /// The Stripe Terminal SDK provides support for several parameters
 /// i.e. metadata,onBehalfOf...

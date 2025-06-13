@@ -1,3 +1,5 @@
+import Foundation
+
 /// A property wrapper to validate that a property is a valid email
 /// Property Wrappers can not throw, so
 /// what this wrapper does is return a nil when trying to set an invalid

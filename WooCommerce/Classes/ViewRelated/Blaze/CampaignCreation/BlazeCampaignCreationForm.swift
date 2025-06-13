@@ -76,6 +76,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
     @State private var isShowingSupport: Bool = false
+    @State private var externalURL: URL?
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -273,6 +274,11 @@ struct BlazeCampaignCreationForm: View {
             Text(viewModel.tosCheckboxAttributedText)
                 .bodyStyle()
                 .multilineTextAlignment(.leading)
+                .environment(\.openURL, OpenURLAction { url in
+                    externalURL = url
+                    return .handled
+                })
+                .safariSheet(url: $externalURL)
         }
         .toggleStyle(CheckboxToggleStyle())
     }

@@ -374,18 +374,12 @@ final class MainTabBarControllerTests: XCTestCase {
     func test_navigateToOrderDetails_for_the_same_store_switches_to_orders_tab_and_opens_order() throws {
         // Given
         let siteID: Int64 = 256
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.updateDefaultStore(storeID: siteID)
-        ServiceLocator.setStores(stores)
 
         let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
 
-        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
-            return MainTabBarController(coder: coder, featureFlagService: mockFeatureFlagService, stores: stores)
-        }) else {
-            return
-        }
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
         TestingAppDelegate.mockTabBarController = tabBarController
 
         // Trigger `viewDidLoad`

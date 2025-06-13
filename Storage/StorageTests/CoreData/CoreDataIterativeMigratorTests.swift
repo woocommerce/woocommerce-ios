@@ -14,7 +14,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
         DDLog.add(DDOSLogger.sharedInstance)
-        modelsInventory = try .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
+        modelsInventory = try .from(packageName: "WooCommerce", bundle: .storage)
     }
 
     override func tearDown() {
@@ -290,7 +290,7 @@ private extension CoreDataIterativeMigratorTests {
     /// Prefer using `managedObjectModel(for:)` directly.
     func urlForModel(name: String) -> URL {
 
-        let bundle = Bundle(for: CoreDataManager.self)
+        let bundle = Bundle.storage
         guard let path = bundle.paths(forResourcesOfType: "momd", inDirectory: nil).first,
             let url = bundle.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent) else {
             fatalError("Missing Model Resource")

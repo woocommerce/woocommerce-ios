@@ -27,7 +27,7 @@ Throughout the entire architecture design process, we've priorized several key c
 
         We've emphasized a clean separation of concerns at the top level, by splitting our app into a number of modules. The main four are:
 
-        1.  Storage.framework:
+        1.  Storage (`Modules/Sources/Storage`):
             Wraps up all of the actual CoreData interactions, and exposes a framework-agnostic Public API.
 
         2.  Networking (`Modules/Sources/Networking`):

@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import UIKit
 import WooFoundation
 
 
@@ -36,7 +37,7 @@ public final class CoreDataManager: StorageManagerType {
             if let modelsInventory {
                 inventory = modelsInventory
             } else {
-                inventory = try .from(packageName: name, bundle: Bundle(for: type(of: self)))
+                inventory = try .from(packageName: name, bundle: .storage)
             }
         } catch {
             // We'll throw a fatalError() because we can't really proceed without a

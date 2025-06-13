@@ -81,12 +81,12 @@ struct WooShippingServiceView: View {
         VStack(spacing: 0) {
             TopTabView(tabs: carriers,
                        showContent: false,
+                       selectedTabIndex: $viewModel.selectedTabIndex,
                        tabsContainerHorizontalPadding: 16,
                        unselectedStateColor: .secondary,
                        tabsNameFont: .subheadline.bold(),
                        tabItemContentHorizontalPadding: 6,
-                       tabItemContentVerticalPadding: 12,
-                       onTabChange: { viewModel.selectedTabIndex = $0 })
+                       tabItemContentVerticalPadding: 12)
             WooShippingServiceCardListView(cards: viewModel.displayedServiceCards)
         }
         .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView

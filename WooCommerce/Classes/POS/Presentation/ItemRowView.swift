@@ -24,7 +24,7 @@ struct ItemRowView: View {
 
     var body: some View {
         switch cartItem.state {
-        case .loaded:
+        case .loaded, .error:
             productRow
                 .frame(maxWidth: .infinity, idealHeight: dimension)
                 .background(Color.posSurfaceContainerLowest)
@@ -55,7 +55,7 @@ struct ItemRowView: View {
                     .font(Constants.itemTitleFont)
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
-                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .foregroundColor(subtitleColor)
                         .font(Constants.itemSubtitleFont)
                 }
 
@@ -87,6 +87,21 @@ struct ItemRowView: View {
                              imageSize: dimension,
                              scale: 1)
             .frame(width: dimension, height: dimension)
+        } else if case .error = cartItem.state {
+            POSItemImageView(imageSource: nil,
+                             imageSize: dimension,
+                             scale: 1,
+                             state: .error)
+            .frame(width: dimension, height: dimension)
+        }
+    }
+
+    private var subtitleColor: Color {
+        switch cartItem.state {
+        case .loaded, .loading:
+            return PointOfSaleItemListCardConstants.detailColor
+        case .error:
+            return .posError
         }
     }
 }
@@ -137,5 +152,16 @@ private extension ItemRowView {
 #Preview(traits: .sizeThatFitsLayout) {
     ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
                 onCancelLoading: { })
+}
+
+@available(iOS 17.0, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    ItemRowView.init(cartItem: Cart.PurchasableItem(
+        id: UUID(),
+        title: "123-123-123",
+        subtitle: "Unspported product type",
+        quantity: 1,
+        state: .error
+    ))
 }
 #endif

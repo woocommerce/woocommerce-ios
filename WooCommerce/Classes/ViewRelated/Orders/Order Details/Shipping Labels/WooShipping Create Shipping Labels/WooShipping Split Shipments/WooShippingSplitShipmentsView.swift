@@ -76,15 +76,7 @@ struct WooShippingSplitShipmentsView: View {
                                 return
                             }
 
-                            Task {
-                                do {
-                                    try await viewModel.saveShipmentInfo()
-                                    onShipmentUpdate(viewModel.shipments)
-                                    dismiss()
-                                } catch {
-                                    // TODO: 15309 Show error
-                                }
-                            }
+                            saveShipmentInfoAndDismiss()
                         }
                     }
                 }
@@ -99,6 +91,17 @@ struct WooShippingSplitShipmentsView: View {
         .sheet(item: $shipmentToRemove) { shipment in
             removeShipmentSheet(for: shipment)
         }
+        .alert(
+            Localization.SaveShipmentError.title,
+            isPresented: $viewModel.shouldShowSaveShipmentErrorAlert
+        ) {
+            Button(Localization.SaveShipmentError.cancel, role: .cancel) {
+                // User chose to cancel, do nothing
+            }
+            Button(Localization.SaveShipmentError.retry) {
+                saveShipmentInfoAndDismiss()
+            }
+        }
     }
 }
 
@@ -108,7 +111,7 @@ private extension WooShippingSplitShipmentsView {
             TopTabView(tabs: viewModel.topTabItems,
                        showContent: false,
                        showDividerBelowTabs: false,
-                       selectedTabIndex: viewModel.selectedShipmentIndex,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
                        tabsContainerHorizontalPadding: nil,
                        selectedStateColor: .accentColor,
                        unselectedStateColor: .secondary,
@@ -119,8 +122,7 @@ private extension WooShippingSplitShipmentsView {
                        tabsIconAlignment: .trailing,
                        tabsIconForegroundColor: Layout.green,
                        tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
-                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding,
-                       onTabChange: { viewModel.selectedShipmentIndex = $0 })
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
             .overlay(alignment: .trailing) {
                 LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
                     .frame(width: Layout.gradientViewWidth)
@@ -305,6 +307,19 @@ private extension WooShippingSplitShipmentsView {
             shipmentToMergeInto = nil
         }
     }
+
+    /// Saves shipment info and dismisses the view on success
+    private func saveShipmentInfoAndDismiss() {
+        Task {
+            do {
+                try await viewModel.saveShipmentInfo()
+                onShipmentUpdate(viewModel.shipments)
+                dismiss()
+            } catch {
+                // Error is handled by the ViewModel.
+            }
+        }
+    }
 }
 
 private struct MessageSnackBar<IconContent: View>: View {
@@ -459,6 +474,24 @@ fileprivate extension WooShippingSplitShipmentsView {
                 "wooShippingSplitShipmentsDetailView.purchasedShipment.subtitle",
                 value: "You can't move products into or out of it.",
                 comment: "Subtitle label displayed on a shipment whose label is purchased in the shipping label creation flow."
+            )
+        }
+
+        enum SaveShipmentError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.saveShipmentError.title",
+                value: "Unable to save changes. Please try again.",
+                comment: "Title of the error alert when saving split shipment changes fails"
+            )
+            static let retry = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.saveShipmentError.retry",
+                value: "Retry",
+                comment: "Retry button title on the error alert when saving split shipment changes fails"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.saveShipmentError.cancel",
+                value: "Cancel",
+                comment: "Cancel button title on the error alert when saving split shipment changes fails"
             )
         }
     }

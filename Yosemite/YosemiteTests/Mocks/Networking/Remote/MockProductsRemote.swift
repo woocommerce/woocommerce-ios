@@ -260,8 +260,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          productIDs: [Int64],
-                         excludedProductIDs: [Int64],
-                         completion: @escaping (Result<[Product], Error>) -> Void) {
+                         excludedProductIDs: [Int64]) async throws -> [Product] {
         synchronizeProductsTriggered = true
         synchronizeProductsWithStockStatus = stockStatus
         synchronizeProductsWithProductStatus = productStatus
@@ -271,10 +270,16 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         synchronizeProductsOrder = order
         synchronizeProductsProductIDs = productIDs
         synchronizeProductsExcludedProductIDs = excludedProductIDs
-        if let result = loadAllProductsResultsBySiteID[siteID] {
-            completion(result)
-        } else {
+        guard let result = loadAllProductsResultsBySiteID[siteID] else {
             XCTFail("\(String(describing: self)) Could not find Result for \(siteID)")
+            throw NetworkError.notFound()
+        }
+        
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 

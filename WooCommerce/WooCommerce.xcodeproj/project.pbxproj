@@ -4195,7 +4195,6 @@
 		260C31612524EEB200157BC2 /* IssueRefundViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = IssueRefundViewController.xib; sourceTree = "<group>"; };
 		260C32BD2527A2DE00157BC2 /* IssueRefundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssueRefundViewModel.swift; sourceTree = "<group>"; };
 		260DE20828CA7CE2009ECD7C /* StoreInfoDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreInfoDataService.swift; sourceTree = "<group>"; };
-		260DE20B28CA8F31009ECD7C /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26100B1F2722FCAD00473045 /* MockCardPresentPaymentsOnboardingUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentsOnboardingUseCase.swift; sourceTree = "<group>"; };
 		2611EE58243A473300A74490 /* ProductCategoryListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryListViewModelTests.swift; sourceTree = "<group>"; };
 		26132B3B2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationBackgroundSynchronizer.swift; sourceTree = "<group>"; };
@@ -5173,7 +5172,6 @@
 		B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayMessageView.swift; sourceTree = "<group>"; };
 		B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OverlayMessageView.xib; sourceTree = "<group>"; };
 		B5C3876321C41B9F006CE970 /* UIApplication+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Woo.swift"; sourceTree = "<group>"; };
-		B5C3B5E220D189E60072CB9D /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E420D189EA0072CB9D /* Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C3B5E620D189ED0072CB9D /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5C6CE602190D28E00515926 /* NSAttributedStringHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringHelperTests.swift; sourceTree = "<group>"; };
@@ -10422,7 +10420,6 @@
 				26B0FDE12BFFBAC500A0D937 /* Contacts.framework */,
 				263E641F2BEB419B0059D84B /* NetworkingWatchOS.framework */,
 				200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */,
-				260DE20B28CA8F31009ECD7C /* Networking.framework */,
 				80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */,
 				3FF314EF26FC784A0012E68E /* XCTest.framework */,
 				315E14F32698DA24000AD5FF /* PassKit.framework */,
@@ -10431,7 +10428,6 @@
 				5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */,
 				B5C3B5E620D189ED0072CB9D /* Yosemite.framework */,
 				B5C3B5E420D189EA0072CB9D /* Storage.framework */,
-				B5C3B5E220D189E60072CB9D /* Networking.framework */,
 				3F1FA84128B60125009E246C /* WidgetKit.framework */,
 				260837082AA66E4A0004A12B /* UserNotifications.framework */,
 				2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */,

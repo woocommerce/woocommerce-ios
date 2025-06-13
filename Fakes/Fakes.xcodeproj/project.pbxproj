@@ -41,8 +41,6 @@
 		26CA6D2425F6C87800B01F48 /* Fakes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Fakes.h; sourceTree = "<group>"; };
 		26CA6D2525F6C87800B01F48 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26CA6D2D25F6C8FB00B01F48 /* Fake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fake.swift; sourceTree = "<group>"; };
-		26CA6D3325F6C92100B01F48 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		26CA6D3525F6C93C00B01F48 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		26EEDC8E26FE1C7B00D5BA0E /* Networking.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Networking.generated.swift; sourceTree = "<group>"; };
 		26EEDC8F26FE1C7B00D5BA0E /* Yosemite.generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Yosemite.generated.swift; sourceTree = "<group>"; };
@@ -111,8 +109,6 @@
 			isa = PBXGroup;
 			children = (
 				26EEDC8C26FE1C1C00D5BA0E /* Yosemite.framework */,
-				26CA6D3525F6C93C00B01F48 /* Networking.framework */,
-				26CA6D3325F6C92100B01F48 /* Networking.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -209,7 +209,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<Product>(siteID: siteID)
 
         return try await enqueue(request, mapper: mapper)
     }

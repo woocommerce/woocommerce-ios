@@ -127,6 +127,7 @@ final class MainTabBarController: UITabBarController {
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
+    private var posEligibilityCheckTask: Task<Void, Never>?
 
     private var isPOSTabVisible: Bool = false
 
@@ -164,6 +165,7 @@ final class MainTabBarController: UITabBarController {
 
     deinit {
         cancellableSiteID?.cancel()
+        posEligibilityCheckTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -657,16 +659,16 @@ private extension MainTabBarController {
         // Hides POS tab initially.
         updateTabViewControllers(isPOSTabVisible: false)
 
+        // Cancels any existing task.
+        posEligibilityCheckTask?.cancel()
+
         // Starts observing the POS eligibility state.
-        Task { [weak self] in
+        posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
             let isPOSTabVisible = eligibility == .eligible
-            await MainActor.run { [weak self] in
-                guard let self else { return }
-                updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
-                viewModel.loadHubMenuTabBadge()
-            }
+            updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
+            viewModel.loadHubMenuTabBadge()
         }
     }
 

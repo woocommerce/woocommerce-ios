@@ -23,7 +23,7 @@ struct TopTabView<Content: View>: View {
         case trailing
     }
 
-    @State private var selectedTab: Int = 0
+    @OptionalBinding private var selectedTab: Int = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
     @GestureState private var dragState: DragState = .inactive
@@ -61,13 +61,11 @@ struct TopTabView<Content: View>: View {
     let tabItemContentHorizontalPadding: CGFloat?
     let tabItemContentVerticalPadding: CGFloat?
 
-    let onTabChange: (Int) -> Void
-
     init(tabs: [TopTabItem<Content>],
          showTabs: Binding<Bool> = .constant(true),
          showContent: Bool = true,
          showDividerBelowTabs: Bool = true,
-         selectedTabIndex: Int = 0,
+         selectedTabIndex: Binding<Int>? = nil,
          tabsContainerHorizontalPadding: CGFloat? = 0.0,
          selectedStateColor: Color = Colors.selected,
          unselectedStateColor: Color = .primary,
@@ -78,13 +76,12 @@ struct TopTabView<Content: View>: View {
          tabsIconAlignment: TabsIconAlignment = .leading,
          tabsIconForegroundColor: Color? = nil,
          tabItemContentHorizontalPadding: CGFloat? = nil,
-         tabItemContentVerticalPadding: CGFloat? = nil,
-         onTabChange: @escaping (Int) -> Void = { _ in }) {
+         tabItemContentVerticalPadding: CGFloat? = nil) {
         self.tabs = tabs
         self._showTabs = showTabs
         self.showContent = showContent
         self.showDividerBelowTabs = showDividerBelowTabs
-        self.selectedTab = selectedTabIndex
+        self._selectedTab = OptionalBinding(selectedTabIndex, default: 0)
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
         self.tabsContainerHorizontalPadding = tabsContainerHorizontalPadding
         self.selectedStateColor = selectedStateColor
@@ -97,7 +94,6 @@ struct TopTabView<Content: View>: View {
         self.tabsIconForegroundColor = tabsIconForegroundColor
         self.tabItemContentHorizontalPadding = tabItemContentHorizontalPadding
         self.tabItemContentVerticalPadding = tabItemContentVerticalPadding
-        self.onTabChange = onTabChange
     }
 
     private func tabItemContentView(_ index: Int, selected: Bool) -> some View {
@@ -193,7 +189,6 @@ struct TopTabView<Content: View>: View {
                                 withAnimation {
                                     selectTab(in: scrollViewProxy, at: newSelectedTab)
                                 }
-                                onTabChange(newSelectedTab)
                             })
                             .coordinateSpace(name: Constants.tabsHorizontalStackNameSpace)
                         }

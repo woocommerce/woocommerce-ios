@@ -375,7 +375,8 @@ private extension BlazeConfirmPaymentView {
                             targetUrn: "",
                             type: "product",
                             objective: "sales",
-                            ctaText: "Shop now"),
+                            ctaText: "Shop now",
+                            acceptedTOS: false),
         image: .init(image: .wooLogoImage()!, source: .asset(asset: PHAsset())),
         onCompletion: {}))
 }

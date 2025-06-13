@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.6
+Shipping just got a major upgrade! Our revamped flow makes it easier than ever to create and manage shipping labels for stores using WooCommerce Shipping. We've also improved some icons and fixed a display issue with the order list's last updated time. This release includes some behind-the-scenes performance improvements too.
+
 ## 22.5
 In this update we’ve fixed blurry payment icons, optimized image handling, improved accessibility, added a card payment timeout, and removed domain purchase features for a cleaner experience. We've also added new improvements to email receipts for POS (available from WooCommerce 10.0.0)
 

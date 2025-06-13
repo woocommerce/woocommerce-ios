@@ -88,7 +88,10 @@ struct ItemList<HeaderView: View>: View {
                                                 sourceViewType: .init(
                                                     isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
                                                     searchTerm: posModel.viewStateCoordinatorForView.searchTerm
-                                                ))),
+                                                )))
+                    .barcodeScanning { scannedCode in
+                        posModel.barcodeScanned(scannedCode)
+                    },
                     isActive: Binding(
                         get: { activeNavigationItem != nil },
                         set: { if !$0 { activeNavigationItem = nil } }

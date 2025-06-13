@@ -1,12 +1,17 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.7
+-----
+
+
 22.6
 -----
 - [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
 - [*] Orders: Updated edit icons design to be consistent: [https://github.com/woocommerce/woocommerce-ios/pull/15685]
 - [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
 - [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
+- [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]
 
 22.5
 -----

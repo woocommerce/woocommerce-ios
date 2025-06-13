@@ -115,6 +115,7 @@ final class BlazeRemoteTests: XCTestCase {
         XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
         XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
         XCTAssertNil(request.parameters?["objective"])
+        XCTAssertEqual(request.parameters?["accepted_tos"] as? Bool, campaign.acceptedTOS)
     }
 
     func test_createCampaign_sends_objective_if_not_nil() async throws {

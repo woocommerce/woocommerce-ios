@@ -40,6 +40,13 @@ struct ItemListView: View {
         _isSearching.wrappedValue
     }
 
+    private var isNotSearching: Binding<Bool> {
+        Binding(
+            get: { !isSearching },
+            set: { _ in }
+        )
+    }
+
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
@@ -129,6 +136,9 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .barcodeScanning(enabled: isNotSearching) { scannedCode in
+            posModel.barcodeScanned(scannedCode)
+        }
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -224,6 +234,9 @@ struct ItemListView: View {
                     sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
                 )
             )
+            .barcodeScanning(enabled: isNotSearching) { scannedCode in
+                posModel.barcodeScanned(scannedCode)
+            }
         default:
             EmptyView()
         }

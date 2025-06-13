@@ -1,1 +1,5 @@
-In this update we’ve fixed blurry payment icons, optimized image handling, improved accessibility, added a card payment timeout, and removed domain purchase features for a cleaner experience. We've also added new improvements to email receipts for POS (available from WooCommerce 10.0.0)
+- [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
+- [*] Orders: Updated edit icons design to be consistent: [https://github.com/woocommerce/woocommerce-ios/pull/15685]
+- [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
+- [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
+- [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]

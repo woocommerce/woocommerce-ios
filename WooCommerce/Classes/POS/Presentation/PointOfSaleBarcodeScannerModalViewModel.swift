@@ -17,7 +17,7 @@ extension PointOfSaleInformationModalViewModel {
         let tertiary = AttributedString(Localization.barcodeInfoTertiaryMessage)
         let quaternary = AttributedString(Localization.barcodeInfoQuaternaryMessage)
 
-        let bullets = Paragraph([primary, secondaryBullet, tertiary, quaternary], identation: POSSpacing.small)
+        let bullets = Paragraph([primary, secondaryBullet, tertiary, quaternary], identation: POSSpacing.medium)
 
         let quinary = Paragraph(AttributedString(Localization.barcodeInfoQuinaryMessage), style: .outlined)
 

@@ -124,7 +124,7 @@ public class SiteSettingsRemote: Remote {
     }
 }
 
-private extension SiteSettingsFeature {
+public extension SiteSettingsFeature {
     var rawValue: String {
         switch self {
         case .pointOfSale:

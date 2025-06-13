@@ -65,7 +65,7 @@ struct POSProductOrVariationResolver {
         } catch {
             switch ProductLoadError(underlyingError: error) {
             case .notFound:
-                throw .notFound(scannedCode: scannedCode)
+                throw .noParentProductForVariation(scannedCode: scannedCode)
             default:
                 throw .loadingError(scannedCode: scannedCode, underlyingError: error)
             }

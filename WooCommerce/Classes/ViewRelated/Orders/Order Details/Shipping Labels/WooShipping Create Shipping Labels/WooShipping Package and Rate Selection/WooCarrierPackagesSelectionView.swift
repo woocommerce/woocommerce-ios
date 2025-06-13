@@ -99,7 +99,7 @@ struct WooCarrierPackagesSelectionView: View {
             if viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
                            showContent: false,
-                           selectedTabIndex: viewModel.selectedCarriersTabIndex,
+                           selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
                            unselectedStateColor: .secondary,
@@ -107,8 +107,7 @@ struct WooCarrierPackagesSelectionView: View {
                            tabPadding: Constants.tabPadding,
                            tabsNameFont: Font.subheadline.bold(),
                            tabItemContentHorizontalPadding: Constants.tabItemContentHorizontalPadding,
-                           tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding,
-                           onTabChange: { viewModel.selectedCarriersTabIndex = $0 })
+                           tabItemContentVerticalPadding: Constants.tabItemContentVerticalPadding)
             } else if viewModel.isLoadingPackages {
                 // Loading state
                 loadingStateView

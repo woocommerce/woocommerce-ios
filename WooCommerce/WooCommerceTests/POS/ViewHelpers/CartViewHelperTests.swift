@@ -240,6 +240,21 @@ struct CartViewHelperTests {
         #expect(sut.hasUnresolvedItems(cart: cart) == true)
     }
 
+    @Test func hasUnresolvedItems_when_cart_has_error_item_returns_true() async throws {
+        // Given
+        let errorItem = Cart.PurchasableItem(
+            id: UUID(),
+            title: "",
+            subtitle: "",
+            quantity: 1,
+            state: .error
+        )
+        let cart = Cart(purchasableItems: [errorItem])
+
+        // When, Then
+        #expect(sut.hasUnresolvedItems(cart: cart) == true)
+    }
+
     @Test func hasUnresolvedItems_when_cart_has_mixed_items_returns_true() async throws {
         // Given
         let loadingItem = Cart.PurchasableItem.loading(id: UUID())

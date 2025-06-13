@@ -9,6 +9,8 @@ struct UPSTermsView: View {
 
     @State private var didFailToConfirmAcceptance = false
 
+    @State private var externalURL: URL?
+
     var body: some View {
         ScrollableVStack(alignment: .leading,
                          padding: Layout.contentPadding,
@@ -31,23 +33,35 @@ struct UPSTermsView: View {
 
             VStack(alignment: .leading, spacing: Layout.contentPadding) {
                 Toggle(isOn: $viewModel.isTOSAccepted) {
-                    Text(checkboxContent(mainContent: Localization.checkbox1,
-                                         linkText: Localization.termsOfService,
-                                         link: Links.termsOfService))
+                    Text(
+                        AttributedString.withEmbeddedLink(
+                            mainContent: Localization.checkbox1,
+                            linkText: Localization.termsOfService,
+                            link: Links.termsOfService
+                        )
+                    )
                 }
                 .toggleStyle(CheckboxToggleStyle())
 
                 Toggle(isOn: $viewModel.isProhibitedItemsAccepted) {
-                    Text(checkboxContent(mainContent: Localization.checkbox2,
-                                         linkText: Localization.prohibitedItems,
-                                         link: Links.prohibitedItems))
+                    Text(
+                        AttributedString.withEmbeddedLink(
+                            mainContent: Localization.checkbox2,
+                            linkText: Localization.prohibitedItems,
+                            link: Links.prohibitedItems
+                        )
+                    )
                 }
                 .toggleStyle(CheckboxToggleStyle())
 
                 Toggle(isOn: $viewModel.isTechnologyAgreementAccepted) {
-                    Text(checkboxContent(mainContent: Localization.checkbox3,
-                                         linkText: Localization.technologyAgreement,
-                                         link: Links.techAgreement))
+                    Text(
+                        AttributedString.withEmbeddedLink(
+                            mainContent: Localization.checkbox3,
+                            linkText: Localization.technologyAgreement,
+                            link: Links.techAgreement
+                        )
+                    )
                 }
                 .toggleStyle(CheckboxToggleStyle())
             }
@@ -73,30 +87,15 @@ struct UPSTermsView: View {
         } message: {
             Text(Localization.errorMessage)
         }
-
+        .environment(\.openURL, OpenURLAction { url in
+            externalURL = url
+            return .handled
+        })
+        .safariSheet(url: $externalURL)
     }
 }
 
 private extension UPSTermsView {
-    func checkboxContent(mainContent: String,
-                         linkText: String,
-                         link: String) -> AttributedString {
-        let content = String.localizedStringWithFormat(mainContent, linkText)
-        var attributedText = AttributedString(content)
-        attributedText.font = .body
-        attributedText.foregroundColor = Color(.text)
-
-        if let range = attributedText.range(of: linkText),
-           let url = URL(string: link) {
-            var linkContainer = AttributeContainer()
-                .link(url)
-                .foregroundColor(Color.accentColor)
-            linkContainer.underlineStyle = .single
-            attributedText[range].mergeAttributes(linkContainer)
-        }
-        return attributedText
-    }
-
     @MainActor
     func confirmAcceptance() async {
         do {

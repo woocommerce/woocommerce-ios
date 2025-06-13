@@ -167,7 +167,7 @@ struct POSProductOrVariationResolverTests {
 
         // NotFound case (simulate DotcomError for not found)
         mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(dotcomNotFoundError))
-        await #expect(throws: PointOfSaleBarcodeScanError.notFound(scannedCode: scannedCode)) {
+        await #expect(throws: PointOfSaleBarcodeScanError.noParentProductForVariation(scannedCode: scannedCode)) {
             _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }
 

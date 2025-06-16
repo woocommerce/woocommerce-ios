@@ -57,12 +57,14 @@ struct POSFloatingControlView: View {
                         title: { Text(Localization.productRestrictionsInfo) },
                         icon: { Image(systemName: "magnifyingglass") })
                 }
-                Button {
-                    showBarcodeScanning = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.barcodeScanning) },
-                        icon: { Image(systemName: "barcode.viewfinder") })
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
+                    Button {
+                        showBarcodeScanning = true
+                    } label: {
+                        Label(
+                            title: { Text(Localization.barcodeScanning) },
+                            icon: { Image(systemName: "barcode.viewfinder") })
+                    }
                 }
             } label: {
                 VStack {

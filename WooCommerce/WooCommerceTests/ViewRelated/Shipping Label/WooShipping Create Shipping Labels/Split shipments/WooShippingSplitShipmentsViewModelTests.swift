@@ -1148,6 +1148,110 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.isMergeAllUnfulfilledAvailable())
     }
+
+    // MARK: - removableShipments
+
+    func test_removableShipments_returns_empty_when_only_one_unfulfilled_shipment() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.removableShipments.isEmpty)
+    }
+
+    func test_removableShipments_returns_all_unfulfilled_shipments_when_multiple_exist() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.removableShipments.count, 2)
+    }
+
+    func test_removableShipments_excludes_purchased_shipments() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let shippingLabel = ShippingLabelPurchase.fake().copy(shipmentID: "0")
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ],
+            shippingLabelData: WooShippingLabelData(
+                currentOrderLabels: [shippingLabel]
+            )
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.removableShipments.isEmpty)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

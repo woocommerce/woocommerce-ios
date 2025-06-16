@@ -15,6 +15,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var shipments: [Shipment]
 
+    /// Returns shipments that can be removed and merged into other shipments.
+    /// A shipment can be removed if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
+    @Published private(set) var removableShipments: [Shipment] = []
+
     @Published var selectedShipmentIndex = 0 {
         didSet {
             configureSectionHeader()
@@ -121,6 +127,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         configureSectionHeader()
         configureSelectionCallback()
+        configureRemovableShipments()
     }
 
     func onAppear() {
@@ -405,10 +412,15 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     /// A shipment can be removed if:
     /// 1. It is not purchased
     /// 2. It is not the last unfulfilled shipment
-    var removableShipments: [Shipment] {
-        shipments.filter { shipment in
-            isShipmentDeleteOptionAvailable(for: shipment)
-        }
+    func configureRemovableShipments() {
+        $shipments
+            .combineLatest($isSavingShipmentInfo)
+            .map { shipments, _ in
+                shipments.filter { [weak self] shipment in
+                    self?.isShipmentDeleteOptionAvailable(for: shipment) ?? false
+                }
+            }
+            .assign(to: &$removableShipments)
     }
 }
 

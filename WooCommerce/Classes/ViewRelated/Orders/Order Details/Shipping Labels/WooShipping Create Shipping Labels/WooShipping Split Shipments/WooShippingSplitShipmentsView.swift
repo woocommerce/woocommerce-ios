@@ -134,10 +134,8 @@ private extension WooShippingSplitShipmentsView {
     }
 
     var removeShipmentMenu: some View {
-        let removableShipments = viewModel.removableShipments
-
         return Menu {
-            ForEach(removableShipments) { shipment in
+            ForEach(viewModel.removableShipments) { shipment in
                 Button(
                     String.localizedStringWithFormat(
                         Localization.removeShipmentFormat,
@@ -149,7 +147,6 @@ private extension WooShippingSplitShipmentsView {
             }
 
             Divider()
-                .renderedIf(removableShipments.isNotEmpty)
 
             Button(Localization.mergeAll) {
                 showingMergeAllSheet = true

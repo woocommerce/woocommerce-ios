@@ -22,10 +22,11 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         storageManager = MockStorageManager()
         locationService = MockLocationService(status: .authorized)
 
-        let paymentGateway = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
-        paymentGateway.update(with: .fake().copy(siteID: sampleSiteID, gatewayID: "woocommerce-payments", isCardPresentEligible: true))
-        storageManager.viewStorage.saveIfNeeded()
-
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+            let paymentGateway = storageManager.viewStorage.insertNewObject(ofType: StoragePaymentGatewayAccount.self)
+            paymentGateway.update(with: .fake().copy(siteID: sampleSiteID, gatewayID: "woocommerce-payments", isCardPresentEligible: true))
+        }, completion: nil, on: .main)
 
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)

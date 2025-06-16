@@ -59,7 +59,6 @@
     },
     {
       "skippedTests" : [
-        "CardReaderConnectionControllerTests",
         "InAppPurchaseStoreTests",
         "InAppPurchaseStoreTests\/test_iap_supported_in_canada()",
         "InAppPurchaseStoreTests\/test_iap_supported_in_us()",

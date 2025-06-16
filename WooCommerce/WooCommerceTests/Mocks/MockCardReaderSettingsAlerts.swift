@@ -34,16 +34,16 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     typealias AlertDetails = CardPresentPaymentsModalViewModel
 
     func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .cancelScanning {
+        switch mode {
+        case .cancelScanning:
             cancel()
-        }
-
-        if mode == .continueSearchingAfterConnectionFailure {
+        case .continueSearchingAfterConnectionFailure:
             /// If we've already presented a found reader once before, cancel this second search
-            ///
             if didPresentFoundReader {
                 cancel()
             }
+        default:
+            break
         }
 
         return MockCardPresentPaymentsModalViewModel()
@@ -92,13 +92,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     func connectingFailed(error: Error,
                           retrySearch: @escaping () -> Void,
                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .continueSearchingAfterConnectionFailure {
-            retrySearch()
-        }
-
-        if mode == .cancelSearchingAfterConnectionFailure {
-            cancelSearch()
-        }
+        retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
@@ -107,37 +101,19 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
                                            openWCSettings: (() -> Void)?,
                                            retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .continueSearchingAfterConnectionFailure {
-            retrySearch()
-        }
-
-        if mode == .cancelSearchingAfterConnectionFailure {
-            cancelSearch()
-        }
+        retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
     func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
                                            cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .continueSearchingAfterConnectionFailure {
-            retrySearch()
-        }
-
-        if mode == .cancelSearchingAfterConnectionFailure {
-            cancelSearch()
-        }
+        retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
     func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
                                               cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .continueSearchingAfterConnectionFailure {
-            retrySearch()
-        }
-
-        if mode == .cancelSearchingAfterConnectionFailure {
-            cancelSearch()
-        }
+        retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
@@ -149,12 +125,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     func updatingFailedLowBattery(batteryLevel: Double?,
                                   retrySearch: @escaping () -> Void,
                                   close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if mode == .continueSearchingAfterConnectionFailure {
-            retrySearch()
-        }
-        if mode == .cancelSearchingAfterConnectionFailure {
-            close()
-        }
+        retryOrCancelIfNeeded(retry: retrySearch, cancel: close)
         return MockCardPresentPaymentsModalViewModel()
     }
 
@@ -187,6 +158,17 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
             onLocationRequired(cancel)
         }
         return MockCardPresentPaymentsModalViewModel()
+    }
+
+    private func retryOrCancelIfNeeded(retry: @escaping () -> Void, cancel: @escaping () -> Void) {
+        switch mode {
+        case .cancelSearchingAfterConnectionFailure:
+            cancel()
+        case .continueSearchingAfterConnectionFailure:
+            retry()
+        default:
+            break
+        }
     }
 }
 

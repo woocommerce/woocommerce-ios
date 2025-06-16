@@ -80,6 +80,12 @@ struct CartView: View {
                                         posModel.remove(cartItem: cartItem)
                                     } : nil,
                                                 onCancelLoading: {
+                                        ServiceLocator.analytics.track(
+                                            event: .PointOfSale.itemRemovedFromCart(
+                                                sourceView: .cart,
+                                                itemType: .loading
+                                            )
+                                        )
                                         posModel.cancelLoadingItem(id: cartItem.id)
                                     })
                                     .id(cartItem.id)

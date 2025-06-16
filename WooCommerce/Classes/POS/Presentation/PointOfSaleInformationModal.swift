@@ -7,6 +7,9 @@ struct PointOfSaleInformationModal<Content: View>: View {
     let title: AttributedString
     let content: Content
 
+    // Used to make ScrollView height increase together with the content height.
+    @State private var contentHeight: CGFloat = 0
+
     init(
         isPresented: Binding<Bool>,
         title: AttributedString,
@@ -32,9 +35,15 @@ struct PointOfSaleInformationModal<Content: View>: View {
             }
             .foregroundColor(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.xxLarge) {
-                content
+            ScrollView {
+                VStack {
+                    content
+                }
+                .measureHeight { height in
+                    contentHeight = height
+                }
             }
+            .frame(maxHeight: contentHeight)
 
             Button(action: {
                 isPresented = false

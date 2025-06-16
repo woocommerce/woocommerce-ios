@@ -135,6 +135,7 @@ private extension WooShippingSplitShipmentsView {
 
     var removeShipmentMenu: some View {
         let removableShipments = viewModel.removableShipments
+        let isMergeAllUnfulfilledAvailable = viewModel.isMergeAllUnfulfilledAvailable()
 
         return Menu {
             ForEach(removableShipments) { shipment in
@@ -158,7 +159,7 @@ private extension WooShippingSplitShipmentsView {
             Image(systemName: "ellipsis")
                 .padding()
         }
-        .renderedIf(removableShipments.isNotEmpty)
+        .renderedIf(removableShipments.isNotEmpty || isMergeAllUnfulfilledAvailable)
     }
 
     var fulfilledShipmentView: some View {

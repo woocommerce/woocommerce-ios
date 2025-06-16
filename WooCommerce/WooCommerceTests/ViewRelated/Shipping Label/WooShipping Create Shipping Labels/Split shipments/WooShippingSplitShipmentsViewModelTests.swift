@@ -1144,10 +1144,32 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isMergeAllUnfulfilledAvailable())
     }
 
+    func test_isMergeAllUnfulfilledAvailable_returns_false_when_only_two_unfulfilled_shipments() {
+        // Given
+        let items = [
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 2)
+        ]
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertFalse(viewModel.isMergeAllUnfulfilledAvailable())
+    }
+
     func test_isMergeAllUnfulfilledAvailable_returns_true_when_multiple_unfulfilled_shipments() {
         // Given
         let items = [
-            sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
             sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
         ]
 
@@ -1160,6 +1182,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         )
 
         // When
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
         viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 

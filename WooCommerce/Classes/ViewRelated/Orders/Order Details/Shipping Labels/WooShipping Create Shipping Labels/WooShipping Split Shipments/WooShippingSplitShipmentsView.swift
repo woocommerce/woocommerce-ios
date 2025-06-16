@@ -144,7 +144,7 @@ private extension WooShippingSplitShipmentsView {
                 ) {
                     shipmentToRemove = shipment
                 }
-                .renderedIf(!viewModel.isShipmentDeleteOptionDisabled(for: shipment))
+                .renderedIf(viewModel.isShipmentDeleteOptionAvailable(for: shipment))
             }
             Divider()
             Button(Localization.mergeAll) {
@@ -279,7 +279,7 @@ private extension WooShippingSplitShipmentsView {
                                        lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
                                        lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
-                    .disabled(viewModel.isShipmentDeleteOptionDisabled(for: otherShipment))
+                    .renderIf(viewModel.isShipmentDeleteOptionAvailable(for: otherShipment))
                 }
             }
 

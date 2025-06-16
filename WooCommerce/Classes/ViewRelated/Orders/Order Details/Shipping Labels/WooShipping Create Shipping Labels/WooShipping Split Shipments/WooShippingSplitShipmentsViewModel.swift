@@ -334,18 +334,18 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         String.localizedStringWithFormat(Localization.shipmentFormat, shipment.index + 1)
     }
 
-    /// Determines if a shipment's delete option should be disabled.
-    /// A shipment's delete option should be disabled if:
-    /// 1. The shipment is already purchased
-    /// 2. The view model is currently saving shipment info
-    /// 3. The shipment is the last unfulfilled shipment
-    func isShipmentDeleteOptionDisabled(for shipment: Shipment) -> Bool {
+    /// Determines if a shipment's delete option should be available.
+    /// A shipment's delete option should be available if:
+    /// 1. The shipment is not purchased
+    /// 2. The view model is not currently saving shipment info
+    /// 3. The shipment is not the last unfulfilled shipment
+    func isShipmentDeleteOptionAvailable(for shipment: Shipment) -> Bool {
         if shipment.isPurchased || isSavingShipmentInfo {
-            return true
+            return false
         }
 
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
-        return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
+        return unfulfilledShipments.count > 1 || unfulfilledShipments.first != shipment
     }
 
     /// Determines if the "merge all unfulfilled" option should be available.

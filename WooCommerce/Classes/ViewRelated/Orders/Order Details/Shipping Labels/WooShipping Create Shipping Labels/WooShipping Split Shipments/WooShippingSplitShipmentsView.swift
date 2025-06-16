@@ -143,13 +143,14 @@ private extension WooShippingSplitShipmentsView {
                     )
                 ) {
                     shipmentToRemove = shipment
-                }.disabled(viewModel.isShipmentDeleteOptionDisabled(for: shipment))
+                }
+                .renderedIf(!viewModel.isShipmentDeleteOptionDisabled(for: shipment))
             }
             Divider()
             Button(Localization.mergeAll) {
                 showingMergeAllSheet = true
             }
-            .disabled(viewModel.isMergeAllUnfulfilledDisabled())
+            .renderedIf(viewModel.isMergeAllUnfulfilledAvailable())
         } label: {
             Image(systemName: "ellipsis")
                 .padding()

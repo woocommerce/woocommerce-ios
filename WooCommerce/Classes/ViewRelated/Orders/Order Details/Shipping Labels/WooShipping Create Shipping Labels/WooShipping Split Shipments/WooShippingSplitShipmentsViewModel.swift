@@ -348,18 +348,17 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
     }
 
-    /// Determines if the "merge all unfulfilled" option should be disabled.
-    /// The option should be disabled if:
-    /// 1. The view model is currently saving shipment info
-    /// 2. There are no unfulfilled shipments
-    /// 3. There is only one unfulfilled shipment
-    func isMergeAllUnfulfilledDisabled() -> Bool {
+    /// Determines if the "merge all unfulfilled" option should be available.
+    /// The option should be available if:
+    /// 1. The view model is not currently saving shipment info
+    /// 2. There are more than one unfulfilled shipments
+    func isMergeAllUnfulfilledAvailable() -> Bool {
         if isSavingShipmentInfo {
-            return true
+            return false
         }
 
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
-        return unfulfilledShipments.count <= 1
+        return unfulfilledShipments.count > 1
     }
 
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {

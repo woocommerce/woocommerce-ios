@@ -360,7 +360,7 @@ public enum AppSettingsAction: Action {
 
     /// Loads whether the POS tab should be visible for a given site.
     ///
-    case loadPOSTabVisibility(siteID: Int64, onCompletion: (Bool?) -> Void)
+    case loadPOSTabVisibility(siteID: Int64, currentDate: Date, onCompletion: (Bool?) -> Void)
 
     /// Sets whether the POS tab should be visible for a given site, along with the date when this setting was set.
     ///

@@ -73,7 +73,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             guard let self else {
                 return continuation.resume(returning: false)
             }
-            stores.dispatch(AppSettingsAction.loadPOSTabVisibility(siteID: siteID) { isVisible in
+            stores.dispatch(AppSettingsAction.loadPOSTabVisibility(siteID: siteID, currentDate: Date()) { isVisible in
                 continuation.resume(returning: isVisible ?? false)
             })
         }

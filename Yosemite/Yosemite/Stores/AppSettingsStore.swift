@@ -286,8 +286,8 @@ public class AppSettingsStore: Store {
             dismissCustomFieldsTopBanner(onCompletion: onCompletion)
         case .loadCustomFieldsTopBannerDismissState(let onCompletion):
             loadCustomFieldsTopBannerDismissState(onCompletion: onCompletion)
-        case .loadPOSTabVisibility(let siteID, let onCompletion):
-            loadPOSTabVisibility(siteID: siteID, onCompletion: onCompletion)
+        case .loadPOSTabVisibility(let siteID, let currentDate, let onCompletion):
+            loadPOSTabVisibility(siteID: siteID, currentDate: currentDate, onCompletion: onCompletion)
         case .setPOSTabVisibility(let siteID, let isVisible, let date):
             setPOSTabVisibility(siteID: siteID, isVisible: isVisible, date: date)
         }
@@ -1271,8 +1271,20 @@ private extension AppSettingsStore {
 // MARK: - POS Tab Visibility
 
 private extension AppSettingsStore {
-    func loadPOSTabVisibility(siteID: Int64, onCompletion: (Bool?) -> Void) {
+    func loadPOSTabVisibility(siteID: Int64, currentDate: Date, onCompletion: (Bool?) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
+
+        // If there's no last check date or it's older than 3 days, nil is returned.
+        guard let lastCheckDate = storeSettings.lastPOSTabVisibilityCheckDate else {
+            return onCompletion(nil)
+        }
+
+        let threeDaysInSeconds: TimeInterval = 3 * 24 * 60 * 60 // 3 days in seconds.
+        let timeSinceLastCheck = currentDate.timeIntervalSince(lastCheckDate)
+        if timeSinceLastCheck >= threeDaysInSeconds {
+            onCompletion(nil)
+            return
+        }
         onCompletion(storeSettings.isPOSTabVisible)
     }
 

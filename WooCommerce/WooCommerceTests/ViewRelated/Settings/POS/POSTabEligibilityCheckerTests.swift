@@ -349,10 +349,13 @@ private extension POSTabEligibilityCheckerTests {
         }
     }
 
-    func setupPOSTabVisibility(_ result: Bool?, lastCheckDate: Date? = nil) {
+    func setupPOSTabVisibility(_ isVisible: Bool?) {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            if case let .loadPOSTabVisibility(_, completion) = action {
-                completion(result)
+            switch action {
+            case .loadPOSTabVisibility(_, _, let completion):
+                completion(isVisible)
+            default:
+                break
             }
         }
     }

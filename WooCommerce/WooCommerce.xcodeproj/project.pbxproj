@@ -841,6 +841,7 @@
 		204CB8102C10BB88000C9773 /* CardPresentPaymentPreviewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */; };
 		204D1D602C5A3DA10064A6BE /* PointOfSaleReaderConnectionModalLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204D1D5F2C5A3DA10064A6BE /* PointOfSaleReaderConnectionModalLayout.swift */; };
 		204D1D622C5A50840064A6BE /* POSModalViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 204D1D612C5A50840064A6BE /* POSModalViewModifier.swift */; };
+		2056F4CF2E0048C800CB41BD /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 2056F4CE2E0048C800CB41BD /* Codegen */; };
 		205B7EB92C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EB82C19FAF700D14A36 /* PointOfSaleCardPresentPaymentScanningForReadersAlertViewModel.swift */; };
 		205B7EBB2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EBA2C19FB1200D14A36 /* PointOfSaleCardPresentPaymentScanningFailedAlertViewModel.swift */; };
 		205B7EBD2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205B7EBC2C19FB6600D14A36 /* PointOfSaleCardPresentPaymentFoundReaderAlertViewModel.swift */; };
@@ -6453,6 +6454,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2056F4CF2E0048C800CB41BD /* Codegen in Frameworks */,
 				263E64202BEB419B0059D84B /* NetworkingWatchOS.framework in Frameworks */,
 				3F2B4AE02DDC316900E5E49C /* XcodeTarget_Woo Watch App in Frameworks */,
 				269FFA462BF40768004E6B86 /* WooFoundationWatchOS.framework in Frameworks */,
@@ -14452,6 +14454,7 @@
 			name = "Woo Watch App";
 			packageProductDependencies = (
 				3F2B4ADF2DDC316900E5E49C /* XcodeTarget_Woo Watch App */,
+				2056F4CE2E0048C800CB41BD /* Codegen */,
 			);
 			productName = "Woo Watch App";
 			productReference = 26F81B152BE433A2009EC58E /* Woo Watch App.app */;
@@ -19450,6 +19453,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		2056F4CE2E0048C800CB41BD /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
+		};
 		3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = XcodeTarget_WordPressAuthenticatorTests;

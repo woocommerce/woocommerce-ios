@@ -50,10 +50,6 @@ struct ItemListView: View {
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
-    private var isCouponsFeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
-    }
-
     private var isSearchProductsFeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
     }
@@ -114,9 +110,7 @@ struct ItemListView: View {
 
             TabView(selection: $selectedItemListType) {
                 itemListTabContent(.products(search: false))
-                if isCouponsFeatureEnabled {
-                    itemListTabContent(.coupons(search: false))
-                }
+                itemListTabContent(.coupons(search: false))
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
@@ -266,7 +260,6 @@ private extension ItemListView {
                             .transition(.opacity.combined(with: .move(edge: .trailing)))
                         } else {
                             createCouponButton
-                                .renderedIf(isCouponsFeatureEnabled)
 
                             simulatedScanButton
                                 .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
@@ -279,7 +272,6 @@ private extension ItemListView {
                         }
                     } else {
                         createCouponButton
-                            .renderedIf(isCouponsFeatureEnabled)
                     }
                 }
             })
@@ -306,17 +298,15 @@ private extension ItemListView {
             )
         ]
 
-        if isCouponsFeatureEnabled {
-            items.append(
-                POSPageHeaderItem(
-                    title: Localization.couponsTitle,
-                    isSelected: selectedItemListType.isCoupons,
-                    action: {
-                        displayItemListType(.coupons(search: false))
-                    }
-                )
+        items.append(
+            POSPageHeaderItem(
+                title: Localization.couponsTitle,
+                isSelected: selectedItemListType.isCoupons,
+                action: {
+                    displayItemListType(.coupons(search: false))
+                }
             )
-        }
+        )
 
         return items
     }

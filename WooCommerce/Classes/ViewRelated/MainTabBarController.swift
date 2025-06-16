@@ -742,7 +742,8 @@ private extension MainTabBarController {
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
-            viewControllerToPresent: self
+            viewControllerToPresent: self,
+            storesManager: stores
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

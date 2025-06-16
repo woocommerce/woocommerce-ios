@@ -283,7 +283,6 @@ private extension WooShippingSplitShipmentsView {
                                        lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
                                        lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
-                    .renderIf(viewModel.isShipmentDeleteOptionAvailable(for: otherShipment))
                 }
             }
 

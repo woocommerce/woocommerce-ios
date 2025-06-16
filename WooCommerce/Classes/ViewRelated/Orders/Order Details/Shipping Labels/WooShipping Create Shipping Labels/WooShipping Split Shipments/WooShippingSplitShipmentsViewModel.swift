@@ -361,8 +361,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         return unfulfilledShipments.count > 1
     }
 
+    /// Returns shipments that can be merged into.
+    /// A shipment can be merged into if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {
-        shipments.filter { $0 != shipment }
+        shipments.filter { otherShipment in
+            otherShipment != shipment && isShipmentDeleteOptionAvailable(for: otherShipment)
+        }
     }
 
     func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {

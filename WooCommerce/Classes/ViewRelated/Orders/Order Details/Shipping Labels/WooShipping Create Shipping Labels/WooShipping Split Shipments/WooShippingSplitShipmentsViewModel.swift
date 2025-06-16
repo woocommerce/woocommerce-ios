@@ -394,6 +394,16 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         shipments.remove(at: removedShipmentIndex)
         selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
     }
+
+    /// Returns shipments that can be removed and merged into other shipments.
+    /// A shipment can be removed if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
+    var removableShipments: [Shipment] {
+        shipments.filter { shipment in
+            isShipmentDeleteOptionAvailable(for: shipment)
+        }
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModel {

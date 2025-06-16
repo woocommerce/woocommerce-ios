@@ -30,7 +30,13 @@ extension Cart {
     }
 
     private func subtitle(for error: PointOfSaleBarcodeScanError) -> String {
-        switch error {
+        return error.localizedDescription
+    }
+}
+
+extension PointOfSaleBarcodeScanError {
+    var localizedDescription: String {
+        switch self {
         case .notFound, .unknown:
             return Localization.notFound
         case .downloadableProduct, .unsupportedProductType:
@@ -45,10 +51,8 @@ extension Cart {
             }
         }
     }
-}
 
-private extension Cart {
-    enum Localization {
+    private enum Localization {
         static let notFound = NSLocalizedString(
             "pointOfSale.barcodeScan.error.notFound",
             value: "Unknown scanned item",

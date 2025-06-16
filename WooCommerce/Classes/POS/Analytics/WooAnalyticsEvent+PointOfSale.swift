@@ -25,6 +25,7 @@ extension WooAnalyticsEvent {
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
+            static let error = "error"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -37,19 +38,27 @@ extension WooAnalyticsEvent {
         }
 
         static func addItemToCart(
-            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView? = nil,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
-            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
+            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
+            error: String? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
-                Key.sourceView: sourceView.rawValue,
                 Key.sourceViewType: sourceViewType.rawValue,
                 Key.itemType: itemType.rawValue
             ]
 
+            if let sourceView {
+                properties[Key.sourceView] = sourceView.rawValue
+            }
+
             if let productType {
                 properties[Key.productType] = productType.rawValue
+            }
+
+            if let error {
+                properties[Key.error] = error
             }
 
             return WooAnalyticsEvent(
@@ -217,6 +226,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case list
         case search
         case preSearch = "pre_search"
+        case scanner
 
         init(isSearching: Bool, searchTerm: String = "") {
             switch (isSearching, searchTerm.isEmpty) {
@@ -235,6 +245,8 @@ extension WooAnalyticsEvent.PointOfSale {
     enum ItemType: String {
         case product
         case coupon
+        case loading
+        case error
     }
 
     /// Types of products supported in the POS

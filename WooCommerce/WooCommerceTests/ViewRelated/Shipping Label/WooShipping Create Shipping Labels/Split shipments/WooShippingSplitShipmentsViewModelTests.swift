@@ -640,9 +640,27 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
-                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3),
+                     // Item of a second initial shipment that's purchased
+                     sampleItem(id: 4, weight: 4, value: 8.5, quantity: 1)]
+
+        // The second shipment is initially purchased
+        let shippingLabel = ShippingLabelPurchase.fake().copy(shipmentID: "1")
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                    WooShippingShipmentItem.fake().copy(id: 2, subItems: []),
+                    WooShippingShipmentItem.fake().copy(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(id: 4, subItems: nil)
+                ]
+            ],
+            shippingLabelData: WooShippingLabelData(currentOrderLabels: [shippingLabel])
+        )
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           config: config,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -654,10 +672,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Confidence checks
-        XCTAssertEqual(viewModel.shipments.count, 3)
+        XCTAssertEqual(viewModel.shipments.count, 4)
 
         // When
-        let shipmentsToMerge = viewModel.shipmentsToMerge(for: viewModel.shipments[1])
+        let shipmentsToMerge = viewModel.shipmentsToMerge(for: viewModel.shipments[3])
 
         // Then
         XCTAssertEqual(shipmentsToMerge.count, 2)

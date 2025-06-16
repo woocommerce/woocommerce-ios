@@ -7,7 +7,7 @@ import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
-import enum Yosemite.SystemStatusAction
+import enum Yosemite.AppSettingsAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
@@ -35,6 +35,8 @@ enum POSEligibilityState: Equatable {
 }
 
 protocol POSEntryPointEligibilityCheckerProtocol {
+    /// Checks the initial visibility of the POS tab.
+    func checkInitialVisibility() async -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
@@ -62,6 +64,19 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.pluginsService = pluginsService
         self.stores = stores
         self.featureFlagService = featureFlagService
+    }
+
+    /// Checks the initial visibility of the POS tab without dependance on network requests.
+    @MainActor
+    func checkInitialVisibility() async -> Bool {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume(returning: false)
+            }
+            stores.dispatch(AppSettingsAction.loadPOSTabVisibility(siteID: siteID) { isVisible in
+                continuation.resume(returning: isVisible ?? false)
+            })
+        }
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.

@@ -269,6 +269,42 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == .eligible)
     }
+
+    @Test func checkInitialVisibility_returns_true_when_tab_visibility_is_enabled() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, stores: stores)
+        setupPOSTabVisibility(true)
+
+        // When
+        let result = await checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkInitialVisibility_returns_false_when_tab_visibility_is_disabled() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, stores: stores)
+        setupPOSTabVisibility(false)
+
+        // When
+        let result = await checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkInitialVisibility_returns_false_when_tab_visibility_setting_unavailable() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, stores: stores)
+        setupPOSTabVisibility(nil)
+
+        // When
+        let result = await checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
@@ -309,6 +345,14 @@ private extension POSTabEligibilityCheckerTests {
                 completion(result)
             default:
                 break
+            }
+        }
+    }
+
+    func setupPOSTabVisibility(_ result: Bool?, lastCheckDate: Date? = nil) {
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case let .loadPOSTabVisibility(_, completion) = action {
+                completion(result)
             }
         }
     }

@@ -82,6 +82,14 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var searchTermsByKey: [String: [String]]
 
+    /// Whether the POS tab is visible for this store.
+    ///
+    public var isPOSTabVisible: Bool?
+
+    /// The date when the POS tab visibility was last checked.
+    ///
+    public var lastPOSTabVisibilityCheckDate: Date?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -100,7 +108,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedStockType: String? = nil,
                 lastSelectedOrderStatus: String? = nil,
                 favoriteProductIDs: [Int64] = [],
-                searchTermsByKey: [String: [String]] = [:]) {
+                searchTermsByKey: [String: [String]] = [:],
+                isPOSTabVisible: Bool? = nil,
+                lastPOSTabVisibilityCheckDate: Date? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -120,6 +130,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastSelectedOrderStatus = lastSelectedOrderStatus
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
+        self.isPOSTabVisible = isPOSTabVisible
+        self.lastPOSTabVisibilityCheckDate = lastPOSTabVisibilityCheckDate
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -140,7 +152,9 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastSelectedStockType: lastSelectedStockType,
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
                              favoriteProductIDs: favoriteProductIDs,
-                             searchTermsByKey: searchTermsByKey)
+                             searchTermsByKey: searchTermsByKey,
+                             isPOSTabVisible: isPOSTabVisible,
+                             lastPOSTabVisibilityCheckDate: lastPOSTabVisibilityCheckDate)
     }
 }
 
@@ -173,6 +187,9 @@ extension GeneralStoreSettings {
         self.favoriteProductIDs = try container.decodeIfPresent([Int64].self,
                                                                 forKey: .favoriteProductIDs) ?? []
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
+
+        self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
+        self.lastPOSTabVisibilityCheckDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSTabVisibilityCheckDate)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

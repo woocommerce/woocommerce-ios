@@ -286,6 +286,10 @@ public class AppSettingsStore: Store {
             dismissCustomFieldsTopBanner(onCompletion: onCompletion)
         case .loadCustomFieldsTopBannerDismissState(let onCompletion):
             loadCustomFieldsTopBannerDismissState(onCompletion: onCompletion)
+        case .loadPOSTabVisibility(let siteID, let onCompletion):
+            loadPOSTabVisibility(siteID: siteID, onCompletion: onCompletion)
+        case .setPOSTabVisibility(let siteID, let isVisible, let date):
+            setPOSTabVisibility(siteID: siteID, isVisible: isVisible, date: date)
         }
     }
 }
@@ -1261,6 +1265,21 @@ private extension AppSettingsStore {
 
     func loadCustomFieldsTopBannerDismissState(onCompletion: (Bool) -> Void) {
         onCompletion(generalAppSettings.value(for: \.isCustomFieldsTopBannerDismissed))
+    }
+}
+
+// MARK: - POS Tab Visibility
+
+private extension AppSettingsStore {
+    func loadPOSTabVisibility(siteID: Int64, onCompletion: (Bool?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.isPOSTabVisible)
+    }
+
+    func setPOSTabVisibility(siteID: Int64, isVisible: Bool, date: Date) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(isPOSTabVisible: isVisible, lastPOSTabVisibilityCheckDate: date)
+        setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }
 

@@ -665,14 +665,20 @@ private extension MainTabBarController {
         // Starts observing the POS eligibility state.
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posEligibilityChecker else { return }
-            let eligibility = await posEligibilityChecker.checkEligibility()
-            let isPOSTabVisible = eligibility == .eligible
+            async let initialVisibility = posEligibilityChecker.checkInitialVisibility()
+            async let eligibility = posEligibilityChecker.checkEligibility()
+            updateTabViewControllers(isPOSTabVisible: await initialVisibility)
+            let isPOSTabVisible = await eligibility == .eligible
+            setPOSTabVisibilityToAppSettings(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()
         }
     }
 
     func updateTabViewControllers(isPOSTabVisible: Bool) {
+        guard isPOSTabVisible != self.isPOSTabVisible || (viewControllers?.count ?? 0) == 0 else {
+            return
+        }
         var controllers = [UIViewController]()
         let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
         tabs.forEach { tab in
@@ -920,6 +926,12 @@ private extension MainTabBarController {
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
         rootTabViewController(tab: .products).present(productNavController, animated: true)
+    }
+}
+
+private extension MainTabBarController {
+    func setPOSTabVisibilityToAppSettings(siteID: Int64, isPOSTabVisible: Bool) {
+        stores.dispatch(AppSettingsAction.setPOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible, date: .init()))
     }
 }
 

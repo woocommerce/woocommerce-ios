@@ -2,8 +2,9 @@ import Foundation
 import enum Yosemite.PointOfSaleBarcodeScanError
 
 extension Cart {
-    mutating func updateLoadingItem(id: UUID, with error: PointOfSaleBarcodeScanError) {
-        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
+    @discardableResult
+    mutating func updateLoadingItem(id: UUID, with error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem? {
+        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
         purchasableItems[index] = Cart.PurchasableItem(
             id: id,
@@ -12,6 +13,8 @@ extension Cart {
             quantity: 1,
             state: .error
         )
+
+        return purchasableItems[index]
     }
 
     private func title(for error: PointOfSaleBarcodeScanError) -> String {

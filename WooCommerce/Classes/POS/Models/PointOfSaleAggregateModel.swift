@@ -209,16 +209,18 @@ extension PointOfSaleAggregateModel {
                 }
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
-                cart.updateLoadingItem(id: placeholderItemID, with: error)
-                await soundPlayer.playSound(.barcodeScanFailure)
+                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                    // Only play a sound and track analytics if the item still exists in the cart.
+                    await soundPlayer.playSound(.barcodeScanFailure)
 
-                analytics.track(
-                    event: .PointOfSale.addItemToCart(
-                        sourceViewType: .scanner,
-                        itemType: .error,
-                        error: error.localizedDescription
+                    analytics.track(
+                        event: .PointOfSale.addItemToCart(
+                            sourceViewType: .scanner,
+                            itemType: .error,
+                            error: error.localizedDescription
+                        )
                     )
-                )
+                }
             }
         }
     }

@@ -134,8 +134,10 @@ private extension WooShippingSplitShipmentsView {
     }
 
     var removeShipmentMenu: some View {
+        let removableShipments = viewModel.removableShipments
+
         return Menu {
-            ForEach(viewModel.removableShipments) { shipment in
+            ForEach(removableShipments) { shipment in
                 Button(
                     String.localizedStringWithFormat(
                         Localization.removeShipmentFormat,
@@ -156,6 +158,7 @@ private extension WooShippingSplitShipmentsView {
             Image(systemName: "ellipsis")
                 .padding()
         }
+        .renderedIf(removableShipments.isNotEmpty)
     }
 
     var fulfilledShipmentView: some View {

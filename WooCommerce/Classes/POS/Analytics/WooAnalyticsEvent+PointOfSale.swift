@@ -247,6 +247,17 @@ extension WooAnalyticsEvent.PointOfSale {
         case coupon
         case loading
         case error
+
+        init(cartItem: Cart.PurchasableItem) {
+            switch cartItem.state {
+            case .loaded:
+                self = .product
+            case .loading:
+                self = .loading
+            case .error:
+                self = .error
+            }
+        }
     }
 
     /// Types of products supported in the POS

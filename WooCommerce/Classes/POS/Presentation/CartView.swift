@@ -73,7 +73,7 @@ struct CartView: View {
                                         ServiceLocator.analytics.track(
                                             event: .PointOfSale.itemRemovedFromCart(
                                                 sourceView: .cart,
-                                                itemType: .product,
+                                                itemType: .init(cartItem: cartItem),
                                                 productType: .init(cartItem: cartItem)
                                             )
                                         )

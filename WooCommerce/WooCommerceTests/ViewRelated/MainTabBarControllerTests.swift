@@ -457,19 +457,19 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
-        
+
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
         mockPOSEligibilityChecker.initialVisibility = true
-        
+
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        
+
         // For initializing `CardPresentPaymentService` async in `POSTabCoordinator.presentPOSView`.
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             if case let .publishCardReaderConnections(completion) = action {
                 completion(Just<[CardReader]>([]).eraseToAnyPublisher())
             }
         }
-        
+
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         featureFlagService: featureFlagService,
@@ -478,15 +478,15 @@ final class MainTabBarControllerTests: XCTestCase {
         }) else {
             return
         }
-        
+
         window.rootViewController = tabBarController
-        
+
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
-        
+
         // When POS tab initial visibility is set to true
         stores.updateDefaultStore(storeID: 1126)
-        
+
         // Then POS tab is visible before eligibility check is returned
         waitUntil {
             tabBarController.tabRootViewControllers.count == 5
@@ -496,29 +496,29 @@ final class MainTabBarControllerTests: XCTestCase {
         let posTabContainerController = try XCTUnwrap(
             tabBarController.viewControllers?[WooTab.pointOfSale.visibleIndex(isPOSTabVisible: true)] as? TabContainerController
         )
-        
+
         // When selecting POS tab
         XCTAssertFalse(tabBarController.tabBarController(tabBarController, shouldSelect: posTabContainerController))
-        
+
         waitUntil {
             posTabContainerController.presentedViewController is UIHostingController<PointOfSaleEntryPointView>
         }
-        
+
         // When returning POS eligibility as ineligible
         mockPOSEligibilityChecker.setEligibilityResult(.ineligible(reason: .featureFlagDisabled))
-        
+
         // Then POS tab is hidden
         waitUntil {
             tabBarController.tabRootViewControllers.count == 4
         }
-        
+
         assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: false),
                    isAnInstanceOf: DashboardViewHostingController.self)
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
                    isAnInstanceOf: ProductsViewController.self)
-        
+
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)

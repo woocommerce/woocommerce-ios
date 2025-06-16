@@ -1282,8 +1282,7 @@ private extension AppSettingsStore {
         let threeDaysInSeconds: TimeInterval = 3 * 24 * 60 * 60 // 3 days in seconds.
         let timeSinceLastCheck = currentDate.timeIntervalSince(lastCheckDate)
         if timeSinceLastCheck >= threeDaysInSeconds {
-            onCompletion(nil)
-            return
+            return onCompletion(nil)
         }
         onCompletion(storeSettings.isPOSTabVisible)
     }

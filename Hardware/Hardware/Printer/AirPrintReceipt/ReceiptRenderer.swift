@@ -5,17 +5,23 @@ import UIKit
 public final class ReceiptRenderer: UIPrintPageRenderer {
     private let content: ReceiptContent
 
-    private let dateFormatter: DateFormatter = {
+    private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
-        formatter.locale = Locale.current
+        formatter.locale = locale
+        formatter.timeZone = timeZone
 
         return formatter
     }()
 
-    public init(content: ReceiptContent) {
+    private let locale: Locale
+    private let timeZone: TimeZone
+
+    public init(content: ReceiptContent, locale: Locale = .current, timeZone: TimeZone = .current) {
         self.content = content
+        self.locale = locale
+        self.timeZone = timeZone
 
         super.init()
     }

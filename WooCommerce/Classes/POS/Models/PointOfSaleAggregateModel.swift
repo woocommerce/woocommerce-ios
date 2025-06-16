@@ -194,7 +194,7 @@ extension PointOfSaleAggregateModel {
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
                 cart.updateLoadingItem(id: placeholderItemID, with: error)
-                soundPlayer.playSound(.barcodeScanFailure)
+                await soundPlayer.playSound(.barcodeScanFailure)
             }
         }
     }

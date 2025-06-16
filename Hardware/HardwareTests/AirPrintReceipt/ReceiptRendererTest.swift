@@ -41,8 +41,6 @@ final class ReceiptRendererTest: XCTestCase {
 
         let renderer = ReceiptRenderer(content: content, locale: locale, timeZone: timeZone)
 
-        print(renderer.htmlContent())
-
         XCTAssertEqual(
             Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,
             expectedResultWithHtmlSymbolsMd5Description

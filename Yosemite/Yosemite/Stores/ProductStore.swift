@@ -90,18 +90,24 @@ public class ProductStore: Store {
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
-            synchronizeProducts(siteID: siteID,
-                                pageNumber: pageNumber,
-                                pageSize: pageSize,
-                                stockStatus: stockStatus,
-                                productStatus: productStatus,
-                                productType: productType,
-                                productCategory: productCategory,
-                                sortOrder: sortOrder,
-                                productIDs: productIDs,
-                                excludedProductIDs: excludedProductIDs,
-                                shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage,
-                                onCompletion: onCompletion)
+            Task { @MainActor in
+                do {
+                    let hasNextPage = try await synchronizeProducts(siteID: siteID,
+                                                                    pageNumber: pageNumber,
+                                                                    pageSize: pageSize,
+                                                                    stockStatus: stockStatus,
+                                                                    productStatus: productStatus,
+                                                                    productType: productType,
+                                                                    productCategory: productCategory,
+                                                                    sortOrder: sortOrder,
+                                                                    productIDs: productIDs,
+                                                                    excludedProductIDs: excludedProductIDs,
+                                                                    shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage)
+                    onCompletion(.success(hasNextPage))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
@@ -287,43 +293,35 @@ private extension ProductStore {
                              sortOrder: ProductsSortOrder,
                              productIDs: [Int64],
                              excludedProductIDs: [Int64],
-                             shouldDeleteStoredProductsOnFirstPage: Bool,
-                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        remote.loadAllProducts(for: siteID,
-                               context: nil,
-                               pageNumber: pageNumber,
-                               pageSize: pageSize,
-                               stockStatus: stockStatus,
-                               productStatus: productStatus,
-                               productType: productType,
-                               productCategory: productCategory,
-                               orderBy: sortOrder.remoteOrderKey,
-                               order: sortOrder.remoteOrder,
-                               productIDs: productIDs,
-                               excludedProductIDs: excludedProductIDs) { [weak self] result in
-                                switch result {
-                                case .failure(let error):
-                                    if let productType,
-                                        let error = error as? DotcomError,
-                                        case let .unknown(code, message) = error,
-                                        code == "rest_invalid_param",
-                                        message == "Invalid parameter(s): type",
-                                        ProductType.coreTypes.contains(productType) == false {
-                                        return onCompletion(.success(false))
-                                    }
-                                    onCompletion(.failure(error))
-                                case .success(let products):
-                                    guard let self = self else {
-                                        return
-                                    }
-                                    let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
-                                    self.upsertStoredProductsInBackground(readOnlyProducts: products,
-                                                                          siteID: siteID,
-                                                                          shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
-                                        let hasNextPage = products.count == pageSize
-                                        onCompletion(.success(hasNextPage))
-                                    }
-                                }
+                             shouldDeleteStoredProductsOnFirstPage: Bool) async throws -> Bool {
+        do {
+            let products = try await remote.loadAllProducts(for: siteID,
+                                                            context: nil,
+                                                            pageNumber: pageNumber,
+                                                            pageSize: pageSize,
+                                                            stockStatus: stockStatus,
+                                                            productStatus: productStatus,
+                                                            productType: productType,
+                                                            productCategory: productCategory,
+                                                            orderBy: sortOrder.remoteOrderKey,
+                                                            order: sortOrder.remoteOrder,
+                                                            productIDs: productIDs,
+                                                            excludedProductIDs: excludedProductIDs)
+
+            let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+            await upsertStoredProductsInBackground(readOnlyProducts: products,
+                                                   siteID: siteID,
+                                                   shouldDeleteExistingProducts: shouldDeleteExistingProducts)
+            let hasNextPage = products.count == pageSize
+            return hasNextPage
+        } catch let error as DotcomError where error == .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): type") {
+            if let productType,
+               ProductType.coreTypes.contains(productType) == false {
+                return false
+            }
+            throw error
+        } catch {
+            throw error
         }
     }
 
@@ -852,6 +850,23 @@ extension ProductStore {
         }, completion: onCompletion, on: .main)
     }
 
+    /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread* async.
+    /// Also deletes existing products if requested.
+    func upsertStoredProductsInBackground(readOnlyProducts: [Networking.Product],
+                                          siteID: Int64,
+                                          shouldDeleteExistingProducts: Bool = false) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+            upsertStoredProductsInBackground(readOnlyProducts: readOnlyProducts,
+                                             siteID: siteID,
+                                             shouldDeleteExistingProducts: shouldDeleteExistingProducts) {
+                continuation.resume()
+            }
+        }
+    }
+
     /// Updates (OR Inserts) the specified ReadOnly Product Entities *in a background thread*.
     /// Also deletes existing products if requested.
     /// `onCompletion` will be called on the main thread!
@@ -861,7 +876,9 @@ extension ProductStore {
                                           shouldDeleteExistingProducts: Bool = false,
                                           onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+            guard let self else {
+                return onCompletion()
+            }
             if shouldDeleteExistingProducts {
                 storage.deleteProducts(siteID: siteID)
             }

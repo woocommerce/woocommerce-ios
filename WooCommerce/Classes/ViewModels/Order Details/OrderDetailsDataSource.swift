@@ -136,27 +136,19 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Order shipment tracking list
     ///
-    var orderTracking: [ShipmentTracking] {
-        return resultsControllers.orderTracking
-    }
+    var orderTracking: [ShipmentTracking] = []
 
     /// Order statuses list
     ///
-    var currentSiteStatuses: [OrderStatus] {
-        return resultsControllers.currentSiteStatuses
-    }
+    var currentSiteStatuses: [OrderStatus] = []
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return resultsControllers.products
-    }
+    var products: [Product] = []
 
     /// Custom amounts (fees) from an Order
     ///
-    var customAmounts: [OrderFeeLine] {
-        return resultsControllers.feeLines
-    }
+    var customAmounts: [OrderFeeLine] = []
 
     /// OrderItemsRefund Count
     ///
@@ -166,19 +158,13 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Refunds on an Order
     ///
-    var refunds: [Refund] {
-        return resultsControllers.refunds
-    }
+    var refunds: [Refund] = []
 
-    var addOnGroups: [AddOnGroup] {
-        resultsControllers.addOnGroups
-    }
+    var addOnGroups: [AddOnGroup] = []
 
     /// Shipping Methods list
     ///
-    var siteShippingMethods: [ShippingMethod] {
-        resultsControllers.siteShippingMethods
-    }
+    var siteShippingMethods: [ShippingMethod] = []
 
     /// Shipping Labels for an Order
     ///
@@ -1202,6 +1188,13 @@ extension OrderDetailsDataSource {
             products: products,
             productVariations: resultsControllers.productVariations
         )
+        refunds = resultsControllers.refunds
+        customAmounts = resultsControllers.feeLines
+        orderTracking = resultsControllers.orderTracking
+        currentSiteStatuses = resultsControllers.currentSiteStatuses
+        products = resultsControllers.products
+        addOnGroups = resultsControllers.addOnGroups
+        siteShippingMethods = resultsControllers.siteShippingMethods
 
         var sections = buildStaticSections().compactMap { $0 }
         let paymentSection = await createPaymentSection()

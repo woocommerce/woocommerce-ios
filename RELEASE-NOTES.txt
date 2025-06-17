@@ -3,6 +3,7 @@
 
 22.7
 -----
+- [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
 
 
 22.6

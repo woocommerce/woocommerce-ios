@@ -80,7 +80,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
+        .environment(\.posBackgroundAppearance, posModel.paymentState.card != .processingPayment ? .primary : .secondary)
         .animation(.easeInOut, value: itemsViewState.containerState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)

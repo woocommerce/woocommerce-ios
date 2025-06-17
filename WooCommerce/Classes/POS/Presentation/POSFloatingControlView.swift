@@ -69,7 +69,7 @@ struct POSFloatingControlView: View {
             }
             .background(backgroundColor)
             .cornerRadius(Constants.cornerRadius)
-            .disabled(posModel.paymentState == .card(.processingPayment))
+            .disabled(posModel.paymentState.card == .processingPayment)
 
             CardReaderConnectionStatusView()
                 .foregroundStyle(fontColor)

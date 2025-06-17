@@ -523,6 +523,43 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(hubMenuNavigationController.topViewController,
                    isAnInstanceOf: HubMenuViewController.self)
     }
+
+    func test_pos_tab_visibility_is_cached_after_eligibility_check() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
+        mockPOSEligibilityChecker.initialVisibility = false
+
+        let mockPOSEligibilityService = MockPOSEligibilityService()
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        stores: stores,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker },
+                                        posEligibilityService: mockPOSEligibilityService)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When POS tab initial visibility is set to true
+        stores.updateDefaultStore(storeID: 1216)
+        mockPOSEligibilityChecker.setEligibilityResult(.eligible)
+
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 5
+        }
+
+        // Then
+        XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: 1216), true)
+    }
 }
 
 extension MainTabBarController {
@@ -570,7 +607,7 @@ extension MainTabBarController {
 
 private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
-    private var eligibilityResult: POSEligibilityState = .eligible
+    private var eligibilityResult: POSEligibilityState?
     private var eligibilityContinuation: CheckedContinuation<POSEligibilityState, Never>?
 
     func setEligibilityResult(_ result: POSEligibilityState) {
@@ -586,11 +623,14 @@ private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityChec
     }
 
     func checkEligibility() async -> POSEligibilityState {
-        await withCheckedContinuation { continuation in
+        if let eligibilityResult {
+            return eligibilityResult
+        }
+        return await withCheckedContinuation { continuation in
             eligibilityContinuation = continuation
             // If we already have a result, return it immediately.
             if eligibilityContinuation == nil {
-                continuation.resume(returning: eligibilityResult)
+                continuation.resume(returning: eligibilityResult ?? .eligible)
             }
         }
     }

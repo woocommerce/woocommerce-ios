@@ -355,10 +355,4 @@ public enum AppSettingsAction: Action {
     /// Loads the favorite products.
     ///
     case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
-
-    // MARK: - POS Tab Visibility
-
-    /// Sets whether the POS tab should be visible for a given site, along with the date when this setting was set.
-    ///
-    case setPOSTabVisibility(siteID: Int64, isVisible: Bool, date: Date)
 }

@@ -123,6 +123,7 @@ final class MainTabBarController: UITabBarController {
     private let stores: StoresManager
     private let analytics: Analytics
     private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
+    private let posEligibilityService: POSEligibilityServiceProtocol
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -139,7 +140,8 @@ final class MainTabBarController: UITabBarController {
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
-          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil) {
+          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
+          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -148,6 +150,7 @@ final class MainTabBarController: UITabBarController {
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
+        self.posEligibilityService = posEligibilityService
         super.init(coder: coder)
     }
 
@@ -160,6 +163,7 @@ final class MainTabBarController: UITabBarController {
         self.posEligibilityCheckerFactory = { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
+        self.posEligibilityService = POSEligibilityService()
         super.init(coder: coder)
     }
 
@@ -931,7 +935,7 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func setPOSTabVisibilityToAppSettings(siteID: Int64, isPOSTabVisible: Bool) {
-        stores.dispatch(AppSettingsAction.setPOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible, date: .init()))
+        posEligibilityService.setPOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
     }
 }
 

@@ -31,10 +31,10 @@ struct HIDBarcodeParserTests {
         )
 
         // Simulate a complete scan
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["123"])
     }
@@ -50,16 +50,16 @@ struct HIDBarcodeParserTests {
         )
 
         // First scan
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         // Second scan
-        parser.processKeyPress("4")
-        parser.processKeyPress("5")
-        parser.processKeyPress("6")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "4"))
+        parser.processKeyPress(MockUIKey(character: "5"))
+        parser.processKeyPress(MockUIKey(character: "6"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["123", "456"])
     }
@@ -75,18 +75,18 @@ struct HIDBarcodeParserTests {
         )
 
         // Start a scan
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
 
         // Cancel the scan
         parser.cancel()
 
         // Start a new scan
-        parser.processKeyPress("4")
-        parser.processKeyPress("5")
-        parser.processKeyPress("6")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "4"))
+        parser.processKeyPress(MockUIKey(character: "5"))
+        parser.processKeyPress(MockUIKey(character: "6"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["456"])
     }
@@ -108,10 +108,10 @@ struct HIDBarcodeParserTests {
         )
 
         // Try to scan a short barcode
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes.isEmpty)
     }
@@ -141,10 +141,10 @@ struct HIDBarcodeParserTests {
         )
 
         // Start a scan
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        parser.processKeyPress("4")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "4"))
 
         // Simulate timer firing
         timerBlock?()
@@ -169,12 +169,12 @@ struct HIDBarcodeParserTests {
         )
 
         // Simulate slow typing
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        Thread.sleep(forTimeInterval: 0.06)
-        parser.processKeyPress("4")
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        Thread.sleep(forTimeInterval: 0.06) // Just over maximumInterCharacterTime
+        parser.processKeyPress(MockUIKey(character: "4"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes.isEmpty)
     }
@@ -196,15 +196,15 @@ struct HIDBarcodeParserTests {
         )
 
         // Simulate slow typing
-        parser.processKeyPress("1")
+        parser.processKeyPress(MockUIKey(character: "1"))
         Thread.sleep(forTimeInterval: 0.03)
-        parser.processKeyPress("2")
+        parser.processKeyPress(MockUIKey(character: "2"))
         Thread.sleep(forTimeInterval: 0.03)
-        parser.processKeyPress("3")
+        parser.processKeyPress(MockUIKey(character: "3"))
         Thread.sleep(forTimeInterval: 0.03)
-        parser.processKeyPress("4")
+        parser.processKeyPress(MockUIKey(character: "4"))
         Thread.sleep(forTimeInterval: 0.03)
-        parser.processKeyPress("\r")
+        parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["1234"])
     }
@@ -215,8 +215,8 @@ struct HIDBarcodeParserTests {
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r", "\n", "\t"],
             minimumBarcodeLength: 4,
-            maximumScanTime: 1.5,
-            maximumInterCharacterTime: 0.1
+            maximumScanTime: 0.3,
+            maximumInterCharacterTime: 0.05
         )
         let parser = HIDBarcodeParser(
             configuration: configuration,
@@ -226,19 +226,60 @@ struct HIDBarcodeParserTests {
         )
 
         // Test with different terminating strings
-        parser.processKeyPress("1")
-        parser.processKeyPress("2")
-        parser.processKeyPress("3")
-        parser.processKeyPress("4")
-        parser.processKeyPress("\n")
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "4"))
+        parser.processKeyPress(MockUIKey(character: "\n"))
 
-        parser.processKeyPress("5")
-        parser.processKeyPress("6")
-        parser.processKeyPress("7")
-        parser.processKeyPress("8")
-        parser.processKeyPress("\t")
+        parser.processKeyPress(MockUIKey(character: "5"))
+        parser.processKeyPress(MockUIKey(character: "6"))
+        parser.processKeyPress(MockUIKey(character: "7"))
+        parser.processKeyPress(MockUIKey(character: "8"))
+        parser.processKeyPress(MockUIKey(character: "\t"))
 
         #expect(scannedCodes == ["1234", "5678"])
+    }
+
+    @Test("Parser ignores excluded keys as input")
+    func testExcludedKeysInput() {
+        var scannedCodes: [String] = []
+        let parser = HIDBarcodeParser(
+            configuration: testConfiguration,
+            onScan: { code in
+                scannedCodes.append(code)
+            }
+        )
+
+        // Try to scan with some excluded keys mixed in
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "4", keyCode: .keyboardLeftShift))
+        parser.processKeyPress(MockUIKey(character: "5", keyCode: .keyboardCapsLock))
+        parser.processKeyPress(MockUIKey(character: "6", keyCode: .keyboardDownArrow))
+        parser.processKeyPress(MockUIKey(character: "\r"))
+
+        #expect(scannedCodes == ["123"])
+    }
+
+    @Test("Parser allows excluded keys as terminators")
+    func testExcludedKeysTerminators() {
+        var scannedCodes: [String] = []
+        let parser = HIDBarcodeParser(
+            configuration: testConfiguration,
+            onScan: { code in
+                scannedCodes.append(code)
+            }
+        )
+
+        // Try to scan with some excluded keys mixed in
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "\n", keyCode: .keyboardDownArrow))
+
+        #expect(scannedCodes == ["123"])
     }
 }
 
@@ -246,31 +287,22 @@ struct HIDBarcodeParserTests {
 
 private extension HIDBarcodeParserTests {
     var testConfiguration: HIDBarcodeParserConfiguration {
-        HIDBarcodeParserConfiguration(terminatingStrings: ["\r"],
-                                      minimumBarcodeLength: 3,
-                                      maximumScanTime: 0.3,
-                                      maximumInterCharacterTime: 0.05)
-    }
-}
-
-private class MockUIPress: UIPress {
-    private let mockCharacter: String
-
-    init(character: String) {
-        self.mockCharacter = character
-        super.init()
-    }
-
-    override var key: UIKey? {
-        MockUIKey(character: mockCharacter)
+        HIDBarcodeParserConfiguration(terminatingStrings: ["\r", "\n"],
+                                       minimumBarcodeLength: 3,
+                                       maximumScanTime: 0.3,
+                                       maximumInterCharacterTime: 0.05)
     }
 }
 
 private class MockUIKey: UIKey {
     private let mockCharacter: String
 
-    init(character: String) {
+    // We use a default which won't be ignored when the key is evaluated. Control keys are ignored.
+    private let mockKeyCode: UIKeyboardHIDUsage
+
+    init(character: String, keyCode: UIKeyboardHIDUsage = .keypad0) {
         self.mockCharacter = character
+        self.mockKeyCode = keyCode
         super.init()
     }
 
@@ -280,6 +312,10 @@ private class MockUIKey: UIKey {
 
     override var charactersIgnoringModifiers: String {
         mockCharacter
+    }
+
+    override var keyCode: UIKeyboardHIDUsage {
+        mockKeyCode
     }
 }
 

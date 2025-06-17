@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 /// Protocol for creating timers, allowing injection of test timers
 protocol TimerFactory {
@@ -37,7 +38,7 @@ final class HIDBarcodeParser {
 
     /// Process a key press event
     /// - Parameter key: The key that was pressed
-    func processKeyPress(_ key: String) {
+    func processKeyPress(_ key: UIKey) {
         let currentTime = Date()
 
         // If characters are entered too slowly, it's probably typing and we should ignore it
@@ -52,12 +53,96 @@ final class HIDBarcodeParser {
         }
         lastKeyPressTime = currentTime
 
-        if configuration.terminatingStrings.contains(key) {
+        let character = key.charactersIgnoringModifiers
+        if configuration.terminatingStrings.contains(character) {
             processScan()
         } else {
-            buffer.append(key)
+            guard !excludedKeys.contains(key.keyCode) else { return }
+            buffer.append(character)
         }
     }
+
+    private let excludedKeys: [UIKeyboardHIDUsage] = [
+        .keyboardCapsLock,
+        .keyboardF1,
+        .keyboardF2,
+        .keyboardF3,
+        .keyboardF4,
+        .keyboardF5,
+        .keyboardF6,
+        .keyboardF7,
+        .keyboardF8,
+        .keyboardF9,
+        .keyboardF10,
+        .keyboardF11,
+        .keyboardF12,
+        .keyboardPrintScreen,
+        .keyboardScrollLock,
+        .keyboardPause,
+        .keyboardInsert,
+        .keyboardHome,
+        .keyboardPageUp,
+        .keyboardDeleteForward,
+        .keyboardEnd,
+        .keyboardPageDown,
+        .keyboardRightArrow,
+        .keyboardLeftArrow,
+        .keyboardDownArrow,
+        .keyboardUpArrow,
+        .keypadNumLock,
+        .keyboardApplication,
+        .keyboardPower,
+        .keypadEqualSign,
+        .keyboardF13,
+        .keyboardF14,
+        .keyboardF15,
+        .keyboardF16,
+        .keyboardF17,
+        .keyboardF18,
+        .keyboardF19,
+        .keyboardF20,
+        .keyboardF21,
+        .keyboardF22,
+        .keyboardF23,
+        .keyboardF24,
+        .keyboardExecute,
+        .keyboardHelp,
+        .keyboardMenu,
+        .keyboardSelect,
+        .keyboardStop,
+        .keyboardAgain,
+        .keyboardUndo,
+        .keyboardCut,
+        .keyboardCopy,
+        .keyboardPaste,
+        .keyboardFind,
+        .keyboardMute,
+        .keyboardVolumeUp,
+        .keyboardVolumeDown,
+        .keyboardLockingCapsLock,
+        .keyboardLockingNumLock,
+        .keyboardLockingScrollLock,
+        .keyboardAlternateErase,
+        .keyboardSysReqOrAttention,
+        .keyboardCancel,
+        .keyboardClear,
+        .keyboardPrior,
+        .keyboardSeparator,
+        .keyboardOut,
+        .keyboardOper,
+        .keyboardClearOrAgain,
+        .keyboardCrSelOrProps,
+        .keyboardExSel,
+        .keyboardLeftControl,
+        .keyboardLeftShift,
+        .keyboardLeftAlt,
+        .keyboardLeftGUI,
+        .keyboardRightControl,
+        .keyboardRightShift,
+        .keyboardRightAlt,
+        .keyboardRightGUI,
+        .keyboard_Reserved
+    ]
 
     /// Cancel the current scan and clear the buffer
     func cancel() {

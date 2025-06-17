@@ -1271,7 +1271,7 @@ private extension AppSettingsStore {
 private extension AppSettingsStore {
     func setPOSTabVisibility(siteID: Int64, isVisible: Bool, date: Date) {
         let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(isPOSTabVisible: isVisible, lastPOSTabVisibilityCheckDate: date)
+        let updatedSettings = storeSettings.copy(isPOSTabVisible: isVisible)
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }

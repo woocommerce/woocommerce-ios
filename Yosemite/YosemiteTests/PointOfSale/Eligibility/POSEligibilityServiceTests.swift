@@ -32,7 +32,7 @@ final class POSEligibilityServiceTests: XCTestCase {
 
     func test_loadPOSTabVisibility_returns_stored_value_when_tab_is_visible() {
         // Given
-        let storeSettings = GeneralStoreSettings(isPOSTabVisible: true, lastPOSTabVisibilityCheckDate: nil)
+        let storeSettings = GeneralStoreSettings(isPOSTabVisible: true)
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = storeSettings
 
         // When
@@ -44,7 +44,7 @@ final class POSEligibilityServiceTests: XCTestCase {
 
     func test_loadPOSTabVisibility_returns_false_when_tab_is_not_visible() {
         // Given
-        let storeSettings = GeneralStoreSettings(isPOSTabVisible: false, lastPOSTabVisibilityCheckDate: nil)
+        let storeSettings = GeneralStoreSettings(isPOSTabVisible: false)
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = storeSettings
 
         // When

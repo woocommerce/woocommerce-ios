@@ -1511,10 +1511,10 @@ extension AppSettingsStoreTests {
 // MARK: - POS Tab Visibility
 
 extension AppSettingsStoreTests {
-    func test_setPOSTabVisibility_updates_both_visibility_and_check_date() {
+    func test_setPOSTabVisibility_updates_isPOSTabVisible() {
         // Given
         let currentDate = Date(timeIntervalSince1970: 1750054337)
-        let initialSettings = GeneralStoreSettings(isPOSTabVisible: false, lastPOSTabVisibilityCheckDate: nil)
+        let initialSettings = GeneralStoreSettings(isPOSTabVisible: false)
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = initialSettings
 
         // When
@@ -1524,7 +1524,6 @@ extension AppSettingsStoreTests {
         // Then
         let updatedSettings = mockSiteSpecificAppSettingsStoreMethods.storeSettings
         XCTAssertEqual(updatedSettings.isPOSTabVisible, true)
-        XCTAssertEqual(updatedSettings.lastPOSTabVisibilityCheckDate, currentDate)
     }
 }
 

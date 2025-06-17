@@ -72,7 +72,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
     func checkInitialVisibility() -> Bool {
-        eligibilityService.loadPOSTabVisibility(siteID: siteID, currentDate: .init()) ?? false
+        eligibilityService.loadPOSTabVisibility(siteID: siteID) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.

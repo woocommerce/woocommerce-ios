@@ -1511,59 +1511,6 @@ extension AppSettingsStoreTests {
 // MARK: - POS Tab Visibility
 
 extension AppSettingsStoreTests {
-    func test_loadPOSTabVisibility_returns_nil_when_last_check_date_is_older_than_3_days() {
-        // Given
-        let currentDate = Date(timeIntervalSince1970: 1750054337)
-        let oldDate = currentDate.addingTimeInterval(-3 * 24 * 60 * 60 - 1) // 3 days and 1 second ago
-        let storeSettings = GeneralStoreSettings(isPOSTabVisible: true, lastPOSTabVisibilityCheckDate: oldDate)
-        mockSiteSpecificAppSettingsStoreMethods.storeSettings = storeSettings
-
-        // When
-        let result = waitFor { promise in
-            self.subject?.onAction(AppSettingsAction.loadPOSTabVisibility(siteID: TestConstants.siteID, currentDate: currentDate) { visibility in
-                promise(visibility)
-            })
-        }
-
-        // Then
-        XCTAssertNil(result)
-    }
-
-    func test_loadPOSTabVisibility_returns_stored_value_when_last_check_date_is_within_3_days() {
-        // Given
-        let currentDate = Date(timeIntervalSince1970: 1750054337)
-        let recentDate = currentDate.addingTimeInterval(-3 * 24 * 60 * 60 + 1) // 1 second before 3 days ago
-        let storeSettings = GeneralStoreSettings(isPOSTabVisible: true, lastPOSTabVisibilityCheckDate: recentDate)
-        mockSiteSpecificAppSettingsStoreMethods.storeSettings = storeSettings
-
-        // When
-        let result = waitFor { promise in
-            self.subject?.onAction(AppSettingsAction.loadPOSTabVisibility(siteID: TestConstants.siteID, currentDate: currentDate) { visibility in
-                promise(visibility)
-            })
-        }
-
-        // Then
-        XCTAssertEqual(result, true)
-    }
-
-    func test_loadPOSTabVisibility_returns_nil_when_no_last_check_date() {
-        // Given
-        let currentDate = Date(timeIntervalSince1970: 1750054337)
-        let storeSettings = GeneralStoreSettings(isPOSTabVisible: true, lastPOSTabVisibilityCheckDate: nil)
-        mockSiteSpecificAppSettingsStoreMethods.storeSettings = storeSettings
-
-        // When
-        let result = waitFor { promise in
-            self.subject?.onAction(AppSettingsAction.loadPOSTabVisibility(siteID: TestConstants.siteID, currentDate: currentDate) { visibility in
-                promise(visibility)
-            })
-        }
-
-        // Then
-        XCTAssertNil(result)
-    }
-
     func test_setPOSTabVisibility_updates_both_visibility_and_check_date() {
         // Given
         let currentDate = Date(timeIntervalSince1970: 1750054337)

@@ -45,7 +45,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
+         paymentState: PointOfSalePaymentState = PointOfSalePaymentState()) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.purchasableItemsController = purchasableItemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController

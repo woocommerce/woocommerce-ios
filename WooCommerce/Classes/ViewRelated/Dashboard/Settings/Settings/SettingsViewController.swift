@@ -29,8 +29,6 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private var domainSettingsCoordinator: DomainSettingsCoordinator?
-
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self = self else { throw CloseAccountError.presenterDeallocated }

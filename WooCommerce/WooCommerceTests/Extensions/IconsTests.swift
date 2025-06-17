@@ -160,10 +160,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.documentImage)
     }
 
-    func test_domainCreditImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.domainCreditImage)
-    }
-
     func test_domainPurchaseSuccessImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainPurchaseSuccessImage)
     }

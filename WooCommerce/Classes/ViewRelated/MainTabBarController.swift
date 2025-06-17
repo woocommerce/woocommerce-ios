@@ -666,8 +666,8 @@ private extension MainTabBarController {
         // Starts observing the POS eligibility state.
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
-            async let eligibility = posEligibilityChecker.checkEligibility()
-            let isPOSTabVisible = await eligibility == .eligible
+            let eligibility = await posEligibilityChecker.checkEligibility()
+            let isPOSTabVisible = eligibility == .eligible
             setPOSTabVisibilityToAppSettings(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()

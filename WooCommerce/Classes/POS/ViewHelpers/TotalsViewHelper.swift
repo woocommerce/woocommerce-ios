@@ -2,33 +2,37 @@ import Foundation
 
 struct TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState {
-        case .card(let cardPaymentState):
-            switch cardPaymentState {
-            case .idle,
-                    .acceptingCard,
-                    .cardInserted,
-                    .validatingOrder,
-                    .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .preparingReader:
-                return true
-            case .processingPayment,
-                    .paymentError,
-                    .cardPaymentSuccessful:
-                return false
-            }
-        case .cash:
+        guard paymentState.cash == .idle else {
+            return false
+        }
+
+        switch paymentState.card {
+        case .idle,
+                .acceptingCard,
+                .cardInserted,
+                .validatingOrder,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .preparingReader:
+            return true
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful:
             return false
         }
     }
 
     func shouldShowDisconnectedMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                       paymentState: PointOfSaleCardPaymentState) -> Bool {
+                                       paymentState: PointOfSalePaymentState) -> Bool {
         guard readerConnectionStatus == .disconnected else {
             return false
         }
-        switch paymentState {
+
+        guard paymentState.cash == .idle else {
+            return false
+        }
+
+        switch paymentState.card {
         case .idle,
                 .acceptingCard,
                 .preparingReader:
@@ -47,8 +51,11 @@ struct TotalsViewHelper {
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
-        guard orderState != .syncing,
-              case .card(let cardState) = paymentState else {
+        guard orderState != .syncing else {
+            return false
+        }
+
+        guard paymentState.cash == .idle else {
             return false
         }
 
@@ -60,7 +67,7 @@ struct TotalsViewHelper {
             return true
         }
 
-        switch cardState {
+        switch paymentState.card {
         case .validatingOrderError,
                 .paymentIntentCreationError,
              .acceptingCard:
@@ -71,8 +78,15 @@ struct TotalsViewHelper {
     }
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .cash(.collectingCash), .card(.paymentError):
+        switch paymentState.cash {
+        case .collectingCash, .paymentSuccess:
+            return false
+        case .idle:
+            break
+        }
+
+        switch paymentState.card {
+        case .cardPaymentSuccessful, .paymentError:
             return false
         default:
             return true

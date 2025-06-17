@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// A SwiftUI view that provides barcode scanning functionality by capturing keyboard input.
 /// This container is designed to be invisible and non-interactive, serving as a bridge between

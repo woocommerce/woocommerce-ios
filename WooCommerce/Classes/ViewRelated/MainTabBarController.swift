@@ -348,7 +348,7 @@ private extension MainTabBarController {
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            ServiceLocator.analytics.track(.pointOfSaleTabSelected)
             break
         }
     }
@@ -369,7 +369,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            ServiceLocator.analytics.track(.pointOfSaleTabReselected)
             break
         }
     }

@@ -321,7 +321,7 @@
 		B53A569F211245E0000776C9 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
 		B54EAF2021188C470029C35E /* EntityListenerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityListenerTests.swift; sourceTree = "<group>"; };
 		B5A01CA020D19C4700E3207E /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockStorageManager.swift; sourceTree = "<group>"; };
-		B5BC71DA21139CF2005CF5AA /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Networking/NetworkingTests/Responses; sourceTree = "<group>"; };
+		B5BC71DA21139CF2005CF5AA /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Modules/Tests/NetworkingTests/Responses; sourceTree = "<group>"; };
 		B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AccountStoreTests.swift; sourceTree = "<group>"; };
 		B5BC736D20D1AB3500B5B6FA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		B5C9DDFE2087FEC0006B910A /* YosemiteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YosemiteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };

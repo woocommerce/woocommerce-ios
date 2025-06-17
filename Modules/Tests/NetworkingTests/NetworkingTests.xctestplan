@@ -14,8 +14,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:Networking.xcodeproj",
-        "identifier" : "B557D9EB209753AA005962F4",
+        "containerPath" : "container:",
+        "identifier" : "NetworkingTests",
         "name" : "NetworkingTests"
       }
     }

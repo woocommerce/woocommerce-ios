@@ -1,8 +1,14 @@
 import Foundation
 import Yosemite
 
-struct MockPointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
+class MockPointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
+    var errorToThrow: PointOfSaleBarcodeScanError?
+
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
+        if let error = errorToThrow {
+            throw error
+        }
+
         return .simpleProduct(POSSimpleProduct(
             id: UUID(),
             name: "Scanned Item",

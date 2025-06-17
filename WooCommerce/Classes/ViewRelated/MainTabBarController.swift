@@ -667,6 +667,7 @@ private extension MainTabBarController {
             guard let self, let posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
             let isPOSTabVisible = eligibility == .eligible
+            analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()
         }

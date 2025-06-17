@@ -450,6 +450,41 @@ final class MainTabBarControllerTests: XCTestCase {
         // Resets the tab bar controller mock at the end of the test.
         TestingAppDelegate.mockTabBarController = nil
     }
+
+    func test_event_is_tracked_after_eligibility_check() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
+        mockPOSEligibilityChecker.result = .eligible
+
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        analytics: self.analytics,
+                                        stores: storesManager,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When
+        storesManager.updateDefaultStore(storeID: 322)
+
+        // Then
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 5
+        }
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.pointOfSaleTabVisibilityChecked.rawValue))
+        assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
+    }
 }
 
 extension MainTabBarController {

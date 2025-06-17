@@ -1,5 +1,17 @@
 import Foundation
 
+/// Protocol for creating timers, allowing injection of test timers
+protocol TimerFactory {
+    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer
+}
+
+/// Default timer factory that creates real timers
+struct DefaultTimerFactory: TimerFactory {
+    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer {
+        Timer.scheduledTimer(withTimeInterval: interval, repeats: repeats, block: { _ in block() })
+    }
+}
+
 /// Parses HID (Human Interface Device) keyboard input into barcode scans.
 /// This class handles the core logic for interpreting keyboard input as barcode data,
 /// particularly useful for physical barcode scanners that operate as keyboard input devices.
@@ -9,13 +21,18 @@ final class HIDBarcodeParser {
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (String) -> Void
 
+    private let timerFactory: TimerFactory
+
     private var buffer = ""
     private var lastKeyPressTime: Date?
     private var scanTimer: Timer?
 
-    init(configuration: HIDBarcodeParserConfiguration, onScan: @escaping (String) -> Void) {
+    init(configuration: HIDBarcodeParserConfiguration,
+         onScan: @escaping (String) -> Void,
+         timerFactory: TimerFactory = DefaultTimerFactory()) {
         self.configuration = configuration
         self.onScan = onScan
+        self.timerFactory = timerFactory
     }
 
     /// Process a key press event
@@ -56,9 +73,9 @@ final class HIDBarcodeParser {
 
     private func startScanTimer() {
         scanTimer?.invalidate()
-        scanTimer = Timer.scheduledTimer(withTimeInterval: configuration.maximumScanTime, repeats: false) { [weak self] _ in
+        scanTimer = timerFactory.createTimer(interval: configuration.maximumScanTime, repeats: false) { [weak self] in
             guard let self = self else { return }
-            processScan()
+            self.processScan()
         }
     }
 

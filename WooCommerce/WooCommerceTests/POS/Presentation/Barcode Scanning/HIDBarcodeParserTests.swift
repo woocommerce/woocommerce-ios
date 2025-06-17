@@ -119,17 +119,25 @@ struct HIDBarcodeParserTests {
     @Test("Parser processes scan after maximum scan time")
     func testMaximumScanTime() {
         var scannedCodes: [String] = []
+        var timerBlock: (() -> Void)?
+
+        let mockTimerFactory = MockTimerFactory { interval, repeats, block in
+            timerBlock = block
+            return Timer()
+        }
+
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r"],
             minimumBarcodeLength: 4,
-            maximumScanTime: 0.1,
+            maximumScanTime: 0.01,
             maximumInterCharacterTime: 0.05
         )
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in
                 scannedCodes.append(code)
-            }
+            },
+            timerFactory: mockTimerFactory
         )
 
         // Start a scan
@@ -138,8 +146,8 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress("3")
         parser.processKeyPress("4")
 
-        // Run the run loop to allow the timer to fire
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.2))
+        // Simulate timer firing
+        timerBlock?()
 
         #expect(scannedCodes == ["1234"])
     }
@@ -272,5 +280,17 @@ private class MockUIKey: UIKey {
 
     override var charactersIgnoringModifiers: String {
         mockCharacter
+    }
+}
+
+private class MockTimerFactory: TimerFactory {
+    private let createTimerBlock: (TimeInterval, Bool, @escaping () -> Void) -> Timer
+
+    init(createTimerBlock: @escaping (TimeInterval, Bool, @escaping () -> Void) -> Timer) {
+        self.createTimerBlock = createTimerBlock
+    }
+
+    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer {
+        createTimerBlock(interval, repeats, block)
     }
 }

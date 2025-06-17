@@ -53,7 +53,7 @@ final class HIDBarcodeParser {
         }
         lastKeyPressTime = currentTime
 
-        let character = key.charactersIgnoringModifiers
+        let character = key.characters
         if configuration.terminatingStrings.contains(character) {
             processScan()
         } else {

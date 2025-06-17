@@ -288,9 +288,9 @@ struct HIDBarcodeParserTests {
 private extension HIDBarcodeParserTests {
     var testConfiguration: HIDBarcodeParserConfiguration {
         HIDBarcodeParserConfiguration(terminatingStrings: ["\r", "\n"],
-                                       minimumBarcodeLength: 3,
-                                       maximumScanTime: 0.3,
-                                       maximumInterCharacterTime: 0.05)
+                                      minimumBarcodeLength: 3,
+                                      maximumScanTime: 0.3,
+                                      maximumInterCharacterTime: 0.05)
     }
 }
 
@@ -310,7 +310,7 @@ private class MockUIKey: UIKey {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override var charactersIgnoringModifiers: String {
+    override var characters: String {
         mockCharacter
     }
 

@@ -223,6 +223,12 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "HardwareTests",
+            dependencies: [
+                "Hardware"
+            ]
+        ),
+        .testTarget(
             name: "WooFoundationTests",
             dependencies: ["TestKit", .target(name: "WooFoundation")]
         ),
@@ -260,7 +266,6 @@ let package = Package(
 
 enum XcodeTargetNames {
     static let fakes = "Fakes"
-    static let hardwareTests = "HardwareTests"
     static let networkingTests = "NetworkingTests"
     static let notificationExtension = "NotificationExtension"
     static let storageTests = "StorageTests"
@@ -279,7 +284,6 @@ enum XcodeTargetNames {
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.hardwareTests,
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
             XcodeTargetNames.storageTests,
@@ -298,12 +302,6 @@ enum XcodeSupport {
 
     static var targets: [Target] {
         [
-            .xcodeTarget(
-                XcodeTargetNames.hardwareTests,
-                dependencies: [
-                    "Hardware"
-                ]
-            ),
             .xcodeTarget(
                 XcodeTargetNames.networkingTests,
                 dependencies: [

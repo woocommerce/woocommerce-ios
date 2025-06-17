@@ -13,7 +13,4 @@
    <FileRef
       location = "group:Networking/Networking.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Hardware/Hardware.xcodeproj">
-   </FileRef>
 </Workspace>

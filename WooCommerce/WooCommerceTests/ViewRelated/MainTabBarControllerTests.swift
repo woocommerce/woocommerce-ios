@@ -581,7 +581,7 @@ private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityChec
         }
     }
 
-    func checkInitialVisibility() async -> Bool {
+    func checkInitialVisibility() -> Bool {
         initialVisibility
     }
 

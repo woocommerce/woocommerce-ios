@@ -650,24 +650,23 @@ extension MainTabBarController: DeepLinkNavigator {
 //
 private extension MainTabBarController {
     func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) else {
+        guard let posEligibilityChecker, featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) else {
             updateTabViewControllers(isPOSTabVisible: false)
             viewModel.loadHubMenuTabBadge()
             return
         }
 
-        // Hides POS tab initially.
-        updateTabViewControllers(isPOSTabVisible: false)
+        // Sets POS tab initial visibility based on cached value if available.
+        let initialVisibility = posEligibilityChecker.checkInitialVisibility()
+        updateTabViewControllers(isPOSTabVisible: initialVisibility)
 
         // Cancels any existing task.
         posEligibilityCheckTask?.cancel()
 
         // Starts observing the POS eligibility state.
         posEligibilityCheckTask = Task { @MainActor [weak self] in
-            guard let self, let posEligibilityChecker else { return }
-            async let initialVisibility = posEligibilityChecker.checkInitialVisibility()
+            guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
             async let eligibility = posEligibilityChecker.checkEligibility()
-            updateTabViewControllers(isPOSTabVisible: await initialVisibility)
             let isPOSTabVisible = await eligibility == .eligible
             setPOSTabVisibilityToAppSettings(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)

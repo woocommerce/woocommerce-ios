@@ -5,9 +5,10 @@ import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
+import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
+import class Yosemite.POSEligibilityService
 import struct Yosemite.SystemPlugin
-import enum Yosemite.AppSettingsAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
@@ -36,7 +37,7 @@ enum POSEligibilityState: Equatable {
 
 protocol POSEntryPointEligibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
-    func checkInitialVisibility() async -> Bool
+    func checkInitialVisibility() -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
@@ -47,6 +48,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteSettings: SelectedSiteSettings
     private let currencySettings: CurrencySettings
     private let pluginsService: PluginsServiceProtocol
+    private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
@@ -55,6 +57,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
@@ -62,21 +65,14 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.siteSettings = siteSettings
         self.currencySettings = currencySettings
         self.pluginsService = pluginsService
+        self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
-    @MainActor
-    func checkInitialVisibility() async -> Bool {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: false)
-            }
-            stores.dispatch(AppSettingsAction.loadPOSTabVisibility(siteID: siteID, currentDate: Date()) { isVisible in
-                continuation.resume(returning: isVisible ?? false)
-            })
-        }
+    func checkInitialVisibility() -> Bool {
+        eligibilityService.loadPOSTabVisibility(siteID: siteID, currentDate: .init()) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.

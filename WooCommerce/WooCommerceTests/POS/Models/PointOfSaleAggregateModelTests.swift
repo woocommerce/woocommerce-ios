@@ -540,6 +540,34 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
+            #expect(sut.paymentState.activePaymentMethod == .card)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_card_when_cash_is_idle() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .card)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_cash_when_cash_is_not_idle() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .cash)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_cash_when_cash_is_paymentSuccess() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .cash)
         }
 
         @available(iOS 17.0, *)

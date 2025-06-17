@@ -9,12 +9,20 @@ struct PointOfSalePaymentState: Equatable {
         self.cash = cash
     }
 
-    var shownFullScreen: Bool {
+    var activePaymentMethod: PointOfSalePaymentMethod {
         if cash != .idle {
-            return cash.shownFullScreen
+            return .cash
         }
+        return .card
+    }
 
-        return card.shownFullScreen
+    var shownFullScreen: Bool {
+        switch activePaymentMethod {
+        case .cash:
+            return cash.shownFullScreen
+        case .card:
+            return card.shownFullScreen
+        }
     }
 }
 

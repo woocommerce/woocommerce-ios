@@ -672,7 +672,7 @@ private extension MainTabBarController {
             guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
             let isPOSTabVisible = eligibility == .eligible
-            setPOSTabVisibilityToAppSettings(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
+            cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()
         }
@@ -934,8 +934,8 @@ private extension MainTabBarController {
 }
 
 private extension MainTabBarController {
-    func setPOSTabVisibilityToAppSettings(siteID: Int64, isPOSTabVisible: Bool) {
-        posEligibilityService.setPOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
+    func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
+        posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
     }
 }
 

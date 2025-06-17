@@ -8,7 +8,7 @@ final class MockPOSEligibilityService: POSEligibilityServiceProtocol {
         cachedTabVisibility[siteID]
     }
 
-    func setPOSTabVisibility(siteID: Int64, isVisible: Bool) {
+    func cachePOSTabVisibility(siteID: Int64, isVisible: Bool) {
         cachedTabVisibility[siteID] = isVisible
     }
 }

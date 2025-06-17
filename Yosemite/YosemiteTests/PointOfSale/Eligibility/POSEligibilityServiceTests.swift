@@ -48,15 +48,15 @@ struct POSEligibilityServiceTests {
         #expect(result == false)
     }
 
-    // MARK: - setPOSTabVisibility Tests
+    // MARK: - cachePOSTabVisibility Tests
 
-    @Test func setPOSTabVisibility_updates_isPOSTabVisible_to_true() {
+    @Test func cachePOSTabVisibility_updates_isPOSTabVisible_to_true() {
         // Given
         let initialSettings = GeneralStoreSettings(isPOSTabVisible: false)
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = initialSettings
 
         // When
-        sut.setPOSTabVisibility(siteID: siteID, isVisible: true)
+        sut.cachePOSTabVisibility(siteID: siteID, isVisible: true)
 
         // Then
         #expect(mockSiteSpecificAppSettingsStoreMethods.setStoreSettingsCalled == true)
@@ -64,13 +64,13 @@ struct POSEligibilityServiceTests {
         #expect(updatedSettings.isPOSTabVisible == true)
     }
 
-    @Test func setPOSTabVisibility_updates_isPOSTabVisible_to_false() {
+    @Test func cachePOSTabVisibility_updates_isPOSTabVisible_to_false() {
         // Given
         let initialSettings = GeneralStoreSettings(isPOSTabVisible: true)
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = initialSettings
 
         // When
-        sut.setPOSTabVisibility(siteID: siteID, isVisible: false)
+        sut.cachePOSTabVisibility(siteID: siteID, isVisible: false)
 
         // Then
         #expect(mockSiteSpecificAppSettingsStoreMethods.setStoreSettingsCalled == true)
@@ -78,7 +78,7 @@ struct POSEligibilityServiceTests {
         #expect(updatedSettings.isPOSTabVisible == false)
     }
 
-    @Test func setPOSTabVisibility_preserves_other_settings() {
+    @Test func cachePOSTabVisibility_preserves_other_settings() {
         // Given
         let initialSettings = GeneralStoreSettings(
             storeID: "test-store",
@@ -88,7 +88,7 @@ struct POSEligibilityServiceTests {
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = initialSettings
 
         // When
-        sut.setPOSTabVisibility(siteID: siteID, isVisible: true)
+        sut.cachePOSTabVisibility(siteID: siteID, isVisible: true)
 
         // Then
         let updatedSettings = mockSiteSpecificAppSettingsStoreMethods.storeSettings

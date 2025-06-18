@@ -15,7 +15,6 @@ struct HIDBarcodeParserTests {
         let customTerminators: Set<String> = ["\t", " "]
         let configuration = HIDBarcodeParserConfiguration(terminatingStrings: customTerminators,
                                                           minimumBarcodeLength: 1,
-                                                          maximumScanTime: 1,
                                                           maximumInterCharacterTime: 1)
         #expect(configuration.terminatingStrings == customTerminators)
     }
@@ -97,7 +96,6 @@ struct HIDBarcodeParserTests {
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r"],
             minimumBarcodeLength: 4,
-            maximumScanTime: 1.5,
             maximumInterCharacterTime: 0.1
         )
         let parser = HIDBarcodeParser(
@@ -114,37 +112,6 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes.isEmpty)
-    }
-
-    @Test("Parser processes scan after maximum scan time")
-    func testMaximumScanTime() {
-        var scannedCodes: [String] = []
-        var timerBlock: (() -> Void)?
-
-        let mockTimerFactory = MockTimerFactory { interval, repeats, block in
-            timerBlock = block
-            return Timer()
-        }
-
-        let configuration = testConfiguration
-        let parser = HIDBarcodeParser(
-            configuration: configuration,
-            onScan: { code in
-                scannedCodes.append(code)
-            },
-            timerFactory: mockTimerFactory
-        )
-
-        // Start a scan
-        parser.processKeyPress(MockUIKey(character: "1"))
-        parser.processKeyPress(MockUIKey(character: "2"))
-        parser.processKeyPress(MockUIKey(character: "3"))
-        parser.processKeyPress(MockUIKey(character: "4"))
-
-        // Simulate timer firing
-        timerBlock?()
-
-        #expect(scannedCodes == ["1234"])
     }
 
     @Test("Parser ignores slow typing")
@@ -204,7 +171,6 @@ struct HIDBarcodeParserTests {
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r", "\n", "\t"],
             minimumBarcodeLength: 4,
-            maximumScanTime: 0.3,
             maximumInterCharacterTime: 0.05
         )
         let parser = HIDBarcodeParser(
@@ -278,7 +244,6 @@ private extension HIDBarcodeParserTests {
     var testConfiguration: HIDBarcodeParserConfiguration {
         HIDBarcodeParserConfiguration(terminatingStrings: ["\r", "\n"],
                                       minimumBarcodeLength: 3,
-                                      maximumScanTime: 0.3,
                                       maximumInterCharacterTime: 0.05)
     }
 }
@@ -305,17 +270,5 @@ private class MockUIKey: UIKey {
 
     override var keyCode: UIKeyboardHIDUsage {
         mockKeyCode
-    }
-}
-
-private class MockTimerFactory: TimerFactory {
-    private let createTimerBlock: (TimeInterval, Bool, @escaping () -> Void) -> Timer
-
-    init(createTimerBlock: @escaping (TimeInterval, Bool, @escaping () -> Void) -> Timer) {
-        self.createTimerBlock = createTimerBlock
-    }
-
-    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer {
-        createTimerBlock(interval, repeats, block)
     }
 }

@@ -1,18 +1,6 @@
 import Foundation
 import UIKit
 
-/// Protocol for creating timers, allowing injection of test timers
-protocol TimerFactory {
-    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer
-}
-
-/// Default timer factory that creates real timers
-struct DefaultTimerFactory: TimerFactory {
-    func createTimer(interval: TimeInterval, repeats: Bool, block: @escaping () -> Void) -> Timer {
-        Timer.scheduledTimer(withTimeInterval: interval, repeats: repeats, block: { _ in block() })
-    }
-}
-
 /// Parses HID (Human Interface Device) keyboard input into barcode scans.
 /// This class handles the core logic for interpreting keyboard input as barcode data,
 /// particularly useful for physical barcode scanners that operate as keyboard input devices.
@@ -22,20 +10,16 @@ final class HIDBarcodeParser {
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (String) -> Void
 
-    private let timerFactory: TimerFactory
     private let timeProvider: TimeProvider
 
     private var buffer = ""
     private var lastKeyPressTime: Date?
-    private var scanTimer: Timer?
 
     init(configuration: HIDBarcodeParserConfiguration,
          onScan: @escaping (String) -> Void,
-         timerFactory: TimerFactory = DefaultTimerFactory(),
          timeProvider: TimeProvider = DefaultTimeProvider()) {
         self.configuration = configuration
         self.onScan = onScan
-        self.timerFactory = timerFactory
         self.timeProvider = timeProvider
     }
 
@@ -50,10 +34,6 @@ final class HIDBarcodeParser {
             resetScan()
         }
 
-        // Start timing if this is the first key press
-        if scanTimer == nil {
-            startScanTimer()
-        }
         lastKeyPressTime = currentTime
 
         let character = key.characters
@@ -155,16 +135,6 @@ final class HIDBarcodeParser {
     private func resetScan() {
         buffer = ""
         lastKeyPressTime = nil
-        scanTimer?.invalidate()
-        scanTimer = nil
-    }
-
-    private func startScanTimer() {
-        scanTimer?.invalidate()
-        scanTimer = timerFactory.createTimer(interval: configuration.maximumScanTime, repeats: false) { [weak self] in
-            guard let self = self else { return }
-            self.processScan()
-        }
     }
 
     private func processScan() {
@@ -183,10 +153,6 @@ struct HIDBarcodeParserConfiguration {
     /// Minimum length to consider scanned input complete
     let minimumBarcodeLength: Int
 
-    /// Maximum time to allow for scanned input.
-    /// After this time elapses from the first "keystroke", the scan will be checked
-    let maximumScanTime: TimeInterval
-
     /// Maximum time between scanned keystrokes
     /// After this time elapses, any further keystrokes result in the scan being rejected
     let maximumInterCharacterTime: TimeInterval
@@ -195,7 +161,6 @@ struct HIDBarcodeParserConfiguration {
     static let `default` = HIDBarcodeParserConfiguration(
         terminatingStrings: ["\r", "\n"],
         minimumBarcodeLength: 4,
-        maximumScanTime: 1.5,
         maximumInterCharacterTime: 0.2
     )
 }

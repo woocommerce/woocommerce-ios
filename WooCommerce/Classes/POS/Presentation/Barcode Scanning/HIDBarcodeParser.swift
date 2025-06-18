@@ -23,6 +23,7 @@ final class HIDBarcodeParser {
     let onScan: (String) -> Void
 
     private let timerFactory: TimerFactory
+    private let timeProvider: TimeProvider
 
     private var buffer = ""
     private var lastKeyPressTime: Date?
@@ -30,16 +31,18 @@ final class HIDBarcodeParser {
 
     init(configuration: HIDBarcodeParserConfiguration,
          onScan: @escaping (String) -> Void,
-         timerFactory: TimerFactory = DefaultTimerFactory()) {
+         timerFactory: TimerFactory = DefaultTimerFactory(),
+         timeProvider: TimeProvider = DefaultTimeProvider()) {
         self.configuration = configuration
         self.onScan = onScan
         self.timerFactory = timerFactory
+        self.timeProvider = timeProvider
     }
 
     /// Process a key press event
     /// - Parameter key: The key that was pressed
     func processKeyPress(_ key: UIKey) {
-        let currentTime = Date()
+        let currentTime = timeProvider.now()
 
         // If characters are entered too slowly, it's probably typing and we should ignore it
         if let lastTime = lastKeyPressTime,

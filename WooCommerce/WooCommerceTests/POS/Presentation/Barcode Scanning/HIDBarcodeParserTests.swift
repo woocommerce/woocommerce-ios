@@ -126,12 +126,7 @@ struct HIDBarcodeParserTests {
             return Timer()
         }
 
-        let configuration = HIDBarcodeParserConfiguration(
-            terminatingStrings: ["\r"],
-            minimumBarcodeLength: 4,
-            maximumScanTime: 0.01,
-            maximumInterCharacterTime: 0.05
-        )
+        let configuration = testConfiguration
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in
@@ -155,24 +150,21 @@ struct HIDBarcodeParserTests {
     @Test("Parser ignores slow typing")
     func testSlowTyping() {
         var scannedCodes: [String] = []
-        let configuration = HIDBarcodeParserConfiguration(
-            terminatingStrings: ["\r"],
-            minimumBarcodeLength: 4,
-            maximumScanTime: 0.3,
-            maximumInterCharacterTime: 0.05
-        )
+        let configuration = HIDBarcodeParserConfiguration.default
+        let mockTimeProvider = MockTimeProvider()
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in
                 scannedCodes.append(code)
-            }
+            },
+            timeProvider: mockTimeProvider
         )
 
         // Simulate slow typing
         parser.processKeyPress(MockUIKey(character: "1"))
         parser.processKeyPress(MockUIKey(character: "2"))
         parser.processKeyPress(MockUIKey(character: "3"))
-        Thread.sleep(forTimeInterval: 0.06) // Just over maximumInterCharacterTime
+        mockTimeProvider.advance(by: 0.101) // Just over maximumInterCharacterTime
         parser.processKeyPress(MockUIKey(character: "4"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
@@ -182,28 +174,25 @@ struct HIDBarcodeParserTests {
     @Test("Parser accepts slowish scans")
     func testSlowScans() {
         var scannedCodes: [String] = []
-        let configuration = HIDBarcodeParserConfiguration(
-            terminatingStrings: ["\r"],
-            minimumBarcodeLength: 4,
-            maximumScanTime: 0.3,
-            maximumInterCharacterTime: 0.05
-        )
+        let configuration = HIDBarcodeParserConfiguration.default
+        let mockTimeProvider = MockTimeProvider()
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in
                 scannedCodes.append(code)
-            }
+            },
+            timeProvider: mockTimeProvider
         )
 
         // Simulate slow typing
         parser.processKeyPress(MockUIKey(character: "1"))
-        Thread.sleep(forTimeInterval: 0.03)
+        mockTimeProvider.advance(by: 0.099) // Just under maximumInterCharacterTime
         parser.processKeyPress(MockUIKey(character: "2"))
-        Thread.sleep(forTimeInterval: 0.03)
+        mockTimeProvider.advance(by: 0.099)
         parser.processKeyPress(MockUIKey(character: "3"))
-        Thread.sleep(forTimeInterval: 0.03)
+        mockTimeProvider.advance(by: 0.099)
         parser.processKeyPress(MockUIKey(character: "4"))
-        Thread.sleep(forTimeInterval: 0.03)
+        mockTimeProvider.advance(by: 0.099)
         parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["1234"])
@@ -212,12 +201,7 @@ struct HIDBarcodeParserTests {
     @Test("Parser handles multiple terminating strings")
     func testMultipleTerminatingStrings() {
         var scannedCodes: [String] = []
-        let configuration = HIDBarcodeParserConfiguration(
-            terminatingStrings: ["\r", "\n", "\t"],
-            minimumBarcodeLength: 4,
-            maximumScanTime: 0.3,
-            maximumInterCharacterTime: 0.05
-        )
+        let configuration = testConfiguration
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in

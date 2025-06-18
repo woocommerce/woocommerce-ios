@@ -134,11 +134,8 @@ private extension WooShippingSplitShipmentsView {
     }
 
     var removeShipmentMenu: some View {
-        let removableShipments = viewModel.removableShipments
-        let isMergeAllUnfulfilledAvailable = viewModel.isMergeAllUnfulfilledAvailable()
-
-        return Menu {
-            ForEach(removableShipments) { shipment in
+        Menu {
+            ForEach(viewModel.removableShipments) { shipment in
                 Button(
                     String.localizedStringWithFormat(
                         Localization.removeShipmentFormat,
@@ -159,7 +156,7 @@ private extension WooShippingSplitShipmentsView {
             Image(systemName: "ellipsis")
                 .padding()
         }
-        .renderedIf(removableShipments.isNotEmpty || isMergeAllUnfulfilledAvailable)
+        .renderedIf(viewModel.shouldShowRemoveShipmentMenu)
     }
 
     var fulfilledShipmentView: some View {

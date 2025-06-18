@@ -105,6 +105,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     /// Whether to show the error alert for saving shipment info
     @Published var shouldShowSaveShipmentErrorAlert = false
 
+    /// Whether the remove shipment menu should be displayed.
+    /// The menu is shown when there are removable shipments or when merge all unfulfilled is available.
+    var shouldShowRemoveShipmentMenu: Bool {
+        removableShipments.isNotEmpty || isMergeAllUnfulfilledAvailable()
+    }
+
     init(order: Order,
          config: WooShippingConfig?,
          items: [ShippingLabelPackageItem],

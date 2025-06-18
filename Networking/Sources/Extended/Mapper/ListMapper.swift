@@ -2,8 +2,19 @@ import Foundation
 
 /// Shared error types for mappers.
 ///
-public enum MapperError: Error {
+public enum MapperError: LocalizedError {
     case dataTooLarge
+
+    public var errorDescription: String? {
+        switch self {
+        case .dataTooLarge:
+            return NSLocalizedString(
+                "mapper.error.data.too.large",
+                value: "The response data is too large to process.",
+                comment: "Error message when API response data exceeds the maximum allowed size."
+            )
+        }
+    }
 }
 
 /// ListMapper: Maps generic WooCommerce REST API Lists

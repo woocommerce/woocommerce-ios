@@ -285,18 +285,21 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .success([Product.fake()]))
 
         // When
-        let synchronizeAction = ProductAction.synchronizeProducts(siteID: sampleSiteID,
-                                                             pageNumber: defaultPageNumber,
-                                                             pageSize: defaultPageSize,
-                                                             stockStatus: filteredStockStatus,
-                                                             productStatus: filteredProductStatus,
-                                                             productType: filteredProductType,
-                                                             productCategory: filteredProductCategory,
-                                                             sortOrder: filteredProductSortOrder,
-                                                             productIDs: [1, 2],
-                                                             excludedProductIDs: [30, 45],
-                                                             onCompletion: { _ in })
-        productStore.onAction(synchronizeAction)
+        waitFor { promise in
+            productStore.onAction(ProductAction.synchronizeProducts(siteID: self.sampleSiteID,
+                                                                    pageNumber: self.defaultPageNumber,
+                                                                    pageSize: self.defaultPageSize,
+                                                                    stockStatus: filteredStockStatus,
+                                                                    productStatus: filteredProductStatus,
+                                                                    productType: filteredProductType,
+                                                                    productCategory: filteredProductCategory,
+                                                                    sortOrder: filteredProductSortOrder,
+                                                                    productIDs: [1, 2],
+                                                                    excludedProductIDs: [30, 45],
+                                                                    onCompletion: { _ in
+                promise(())
+            }))
+        }
 
         // Then
         XCTAssertTrue(remote.synchronizeProductsTriggered)

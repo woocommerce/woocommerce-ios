@@ -11904,8 +11904,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Por que não consigo ver meus produtos?";
 
-/* Label to be displayed in the product's card when out of stock
-   Label to be displayed in the product's card when there's stock of a given product */
+/* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "Sem estoque";
 
 /* Button title for new order button */
@@ -13649,9 +13648,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.title" = "Adicionar uma forma de pagamento";
-
-/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder. */
-"wooShippingPaymentMethodsView.note" = "Cartões de crédito são recuperados da seguinte conta do WordPress.com: @%1$@.";
 
 /* Subtitle of the payment method sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.subtitle" = "Escolha uma forma de pagamento.";

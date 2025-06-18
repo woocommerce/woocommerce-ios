@@ -97,8 +97,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsInPOSPt2PopularProducts:
             return true
-        case .searchCouponsInPOS:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:
@@ -111,7 +109,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleAsATabi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

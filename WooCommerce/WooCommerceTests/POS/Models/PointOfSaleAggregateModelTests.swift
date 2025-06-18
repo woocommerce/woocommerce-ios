@@ -24,7 +24,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             // Then
             #expect(sut.orderStage == .building)
         }
@@ -42,7 +43,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             sut.addToCart(makePurchasableItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
@@ -69,7 +71,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             sut.addToCart(makePurchasableItem())
 
             // When
@@ -92,7 +95,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             sut.addToCart(makePurchasableItem())
             await sut.checkOut()
             try #require(sut.orderStage == .finalizing)
@@ -164,7 +168,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             try #require(sut.cart.isEmpty)
             let item = makePurchasableItem()
 
@@ -188,7 +193,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             let items = [makePurchasableItem(), makePurchasableItem(), makePurchasableItem()]
 
             // When
@@ -217,7 +223,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -247,7 +254,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
 
@@ -275,7 +283,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             let item = makePurchasableItem(name: "Item 1")
             let anotherItem = makePurchasableItem(name: "Item 2")
             let couponItem = makeCouponItem(code: "VALID")
@@ -321,7 +330,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
 
@@ -347,7 +357,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
             sut.addToCart(makePurchasableItem())
@@ -376,7 +387,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
             sut.removeAllItemsFromCart()
@@ -404,7 +416,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -432,7 +445,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             try await sut.sendReceipt(to: "")
@@ -458,7 +472,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
 
             do {
                 // When
@@ -486,7 +501,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
 
@@ -519,7 +535,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // Then
             #expect(sut.paymentState == .card(.idle))
@@ -540,6 +557,7 @@ struct PointOfSaleAggregateModelTests {
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
                 barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer(),
                 paymentState: .card(.cardPaymentSuccessful))
 
             // When
@@ -564,7 +582,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
             try #require(sut.cardPresentPaymentInlineMessage != nil)
@@ -591,6 +610,7 @@ struct PointOfSaleAggregateModelTests {
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
                 barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer(),
                 paymentState: .card(.cardPaymentSuccessful))
 
             // When
@@ -615,7 +635,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             cardPresentPaymentService.paymentEvent = .show(
                 eventDetails: .tapSwipeOrInsertCard(
@@ -646,7 +667,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             await sut.startCashPayment()
@@ -671,7 +693,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             await sut.startCashPayment()
@@ -695,7 +718,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             await sut.startCashPayment()
             #expect(sut.paymentState == .cash(.collectingCash))
 
@@ -721,7 +745,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             #expect(sut.orderStage == .building)
 
             await sut.checkOut()
@@ -757,7 +782,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
@@ -785,7 +811,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             struct TestError: Error {}
 
             // When paymentIntentCreationError event is received
@@ -819,7 +846,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             struct TestError: Error {}
             await sut.checkOut()
 
@@ -856,7 +884,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             cardPresentPaymentService.connectedReader = nil
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
@@ -892,7 +921,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.01", orderTotalDecimal: 0.01)
 
@@ -918,7 +948,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$0.00", orderTotalDecimal: 0.0)
 
@@ -944,7 +975,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             cardPresentPaymentService.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
@@ -981,7 +1013,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
             await orderController.syncOrder(for: .init(), retryHandler: {})
 
@@ -1013,7 +1046,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
             let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
                 fixedState: .pluginNotActivated(plugin: .stripe),
                 useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotActivated(plugin: .stripe))
@@ -1055,7 +1089,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
 
@@ -1090,7 +1125,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             sut.addToCart(makePurchasableItem())
 
@@ -1116,7 +1152,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             //When
             sut.connectCardReader()
@@ -1140,7 +1177,8 @@ struct PointOfSaleAggregateModelTests {
                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                 searchHistoryService: MockPOSSearchHistoryService(),
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
 
             //When
             sut.disconnectCardReader()
@@ -1162,7 +1200,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: analyticsTracker,
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             await sut.checkOut()
@@ -1185,7 +1224,8 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: analyticsTracker,
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
             // When
             await sut.cancelCashPayment()
 
@@ -1208,13 +1248,45 @@ struct PointOfSaleAggregateModelTests {
                                                 collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
                                                 searchHistoryService: MockPOSSearchHistoryService(),
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                barcodeScanService: MockPointOfSaleBarcodeScanService())
+                                                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                                                soundPlayer: MockPointOfSaleSoundPlayer())
 
             // When
             await sut.startCashPayment()
 
             // Then
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
+        }
+    }
+
+    struct BarcodeTests {
+        @available(iOS 17.0, *)
+        @Test func barcodeScanned_when_fails_then_plays_sound() async {
+            // Given
+            let soundPlayer = MockPointOfSaleSoundPlayer()
+            let barcodeScanService = MockPointOfSaleBarcodeScanService()
+            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+                                                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                                                couponsController: MockPointOfSaleCouponsController(),
+                                                couponsSearchController: MockPointOfSaleCouponsController(),
+                                                cardPresentPaymentService: MockCardPresentPaymentService(),
+                                                orderController: MockPointOfSaleOrderController(),
+                                                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                                                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                                                searchHistoryService: MockPOSSearchHistoryService(),
+                                                popularPurchasableItemsController: MockPointOfSaleItemsController(),
+                                                barcodeScanService: barcodeScanService,
+                                                soundPlayer: soundPlayer)
+            barcodeScanService.errorToThrow = .notFound(scannedCode: "123")
+
+            // When & Then
+            await withCheckedContinuation { continuation in
+                soundPlayer.onPlaySound = { sound in
+                    #expect(sound == .barcodeScanFailure)
+                    continuation.resume()
+                }
+                sut.barcodeScanned("123")
+            }
         }
     }
 }

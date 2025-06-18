@@ -309,6 +309,7 @@ private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
             self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                             stores: stores,
                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }

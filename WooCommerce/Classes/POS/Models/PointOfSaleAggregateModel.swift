@@ -82,6 +82,8 @@ protocol PointOfSaleAggregateModelProtocol {
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
+    private let soundPlayer: PointOfSaleSoundPlayerProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
     // Private storage of the concrete coordinator
@@ -108,6 +110,7 @@ protocol PointOfSaleAggregateModelProtocol {
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .card(.idle)) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -121,6 +124,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.paymentState = paymentState
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.soundPlayer = soundPlayer
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
@@ -190,6 +194,7 @@ extension PointOfSaleAggregateModel {
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
                 cart.updateLoadingItem(id: placeholderItemID, with: error)
+                await soundPlayer.playSound(.barcodeScanFailure)
             }
         }
     }

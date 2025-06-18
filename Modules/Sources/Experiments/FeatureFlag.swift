@@ -209,10 +209,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsInPOSPt2PopularProducts
 
-    /// Allows searching coupons in POS
-    ///
-    case searchCouponsInPOS
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling

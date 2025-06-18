@@ -9,6 +9,7 @@ struct POSTabEligibilityCheckerTests {
     private var storageManager: MockStorageManager!
     private var siteSettings: SelectedSiteSettings!
     private var pluginsService: MockPluginsService!
+    private var eligibilityService: MockPOSEligibilityService!
     private let siteID: Int64 = 2
 
     init() async throws {
@@ -16,6 +17,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(storeID: siteID)
         storageManager = MockStorageManager()
         pluginsService = MockPluginsService()
+        eligibilityService = MockPOSEligibilityService()
         setupWooCommerceVersion()
         siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
     }
@@ -269,6 +271,42 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == .eligible)
     }
+
+    @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        setupPOSTabVisibility(siteID: siteID, isVisible: true)
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        setupPOSTabVisibility(siteID: siteID, isVisible: false)
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
+        // Given
+        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        setupPOSTabVisibility(siteID: siteID, isVisible: nil)
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
@@ -311,6 +349,10 @@ private extension POSTabEligibilityCheckerTests {
                 break
             }
         }
+    }
+
+    func setupPOSTabVisibility(siteID: Int64, isVisible: Bool?) {
+        eligibilityService.cachedTabVisibility[siteID] = isVisible
     }
 
     enum Fixtures {

@@ -352,7 +352,7 @@ private extension MainTabBarController {
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            ServiceLocator.analytics.track(.pointOfSaleTabSelected)
             break
         }
     }
@@ -373,7 +373,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            assertionFailure("Point of Sale tab should not be reselected as it cannot be selected from `tabBarController(_:shouldSelect:)`.")
             break
         }
     }
@@ -672,6 +672,7 @@ private extension MainTabBarController {
             guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
             let isPOSTabVisible = eligibility == .eligible
+            analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()

@@ -15,8 +15,8 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
             }
 
             PointOfSaleInformationModalParagraphView {
-                Text(AttributedString(Localization.barcodeInfoPrimaryMessage))
                 Text(bulletPointWithLink)
+                Text(AttributedString(Localization.barcodeInfoSecondaryMessage))
                 Text(AttributedString(Localization.barcodeInfoTertiaryMessage))
                 Text(AttributedString(Localization.barcodeInfoQuaternaryMessage))
             }
@@ -29,7 +29,7 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
     }
 
     private var bulletPointWithLink: AttributedString {
-        var secondary = AttributedString(Localization.barcodeInfoSecondaryMessage + " ")
+        var secondary = AttributedString(Localization.barcodeInfoPrimaryMessage + " ")
         var moreDetails = AttributedString(Localization.barcodeInfoMoreDetailsLink)
         moreDetails.link = Constants.detailsLink
         moreDetails.foregroundColor = .posPrimary
@@ -72,7 +72,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
         )
         static let barcodeInfoTertiaryMessage = NSLocalizedString(
             "pos.barcodeInfoModal.tertiaryMessage",
-            value: "• Connect your barcode scanner in System Bluetooth settings.",
+            value: "• Connect your barcode scanner in iOS Bluetooth settings.",
             comment: "Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings"
         )
         static let barcodeInfoQuaternaryMessage = NSLocalizedString(
@@ -83,7 +83,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
         static let barcodeInfoQuinaryMessage = NSLocalizedString(
             "pos.barcodeInfoModal.quinaryMessage",
             value: "The scanner emulates a keyboard, so sometimes it will prevent the software keyboard from showing, e.g. in search. " +
-                "Tap on the keyboard icon to show the software keyboard back.",
+                "Tap on the keyboard icon to show it again.",
             comment: "Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again"
         )
     }

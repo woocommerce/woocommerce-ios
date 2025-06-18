@@ -2,8 +2,9 @@ import Foundation
 import enum Yosemite.PointOfSaleBarcodeScanError
 
 extension Cart {
-    mutating func updateLoadingItem(id: UUID, with error: PointOfSaleBarcodeScanError) {
-        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
+    @discardableResult
+    mutating func updateLoadingItem(id: UUID, with error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem? {
+        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
         purchasableItems[index] = Cart.PurchasableItem(
             id: id,
@@ -12,6 +13,8 @@ extension Cart {
             quantity: 1,
             state: .error
         )
+
+        return purchasableItems[index]
     }
 
     private func title(for error: PointOfSaleBarcodeScanError) -> String {
@@ -30,7 +33,13 @@ extension Cart {
     }
 
     private func subtitle(for error: PointOfSaleBarcodeScanError) -> String {
-        switch error {
+        return error.localizedDescription
+    }
+}
+
+extension PointOfSaleBarcodeScanError {
+    var localizedDescription: String {
+        switch self {
         case .notFound, .unknown:
             return Localization.notFound
         case .downloadableProduct, .unsupportedProductType:
@@ -45,10 +54,8 @@ extension Cart {
             }
         }
     }
-}
 
-private extension Cart {
-    enum Localization {
+    private enum Localization {
         static let notFound = NSLocalizedString(
             "pointOfSale.barcodeScan.error.notFound",
             value: "Unknown scanned item",

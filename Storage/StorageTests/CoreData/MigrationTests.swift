@@ -3332,6 +3332,42 @@ final class MigrationTests: XCTestCase {
         let updatedExpiryDate = migratedLabel.value(forKey: "expiryDate") as? Date
         XCTAssertEqual(updatedExpiryDate, date)
     }
+
+    func test_migrate_121_to_122() throws {
+        // G
+        let sourceContainer = try startPersistentContainer("Model 121")
+        let sourceContext = sourceContainer.viewContext
+
+        let object = sourceContext.insert(entityName: "Order", properties: [
+            "orderID": 123,
+            "statusKey": "" // Error Domain=NSCocoaErrorDomain Code=1570 "statusKey is a required value.
+        ])
+        try sourceContext.save()
+
+        // Should not be present in 121
+        XCTAssertNil(object.entity.attributesByName["createdVia"], "Precondition. Attribute does not exist.")
+
+        // W
+        let targetContainer = try migrate(sourceContainer, to: "Model 122")
+
+        // T
+        let targetContext = targetContainer.viewContext
+        let migratedObject = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // Should be present in 122
+        XCTAssertNotNil(migratedObject.entity.attributesByName["createdVia"])
+
+        // Default value as nil
+        let value = migratedObject.value(forKey: "createdVia") as? String
+        XCTAssertNil(value)
+
+        // Must be settable
+        migratedObject.setValue("pos-rest-api", forKey: "createdVia")
+        try targetContext.save()
+
+        let updatedValue = migratedObject.value(forKey: "createdVia") as? String
+        XCTAssertEqual(updatedValue, "pos-rest-api")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

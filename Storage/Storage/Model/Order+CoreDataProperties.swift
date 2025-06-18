@@ -62,6 +62,7 @@ extension Order {
     @NSManaged public var appliedGiftCards: Set<OrderGiftCard>?
     @NSManaged public var coupons: Set<OrderCoupon>?
     @NSManaged public var customFields: Set<MetaData>?
+    @NSManaged public var createdVia: String?
     @NSManaged public var items: NSOrderedSet?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?

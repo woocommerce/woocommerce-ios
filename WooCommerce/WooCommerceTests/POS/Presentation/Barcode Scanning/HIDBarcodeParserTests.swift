@@ -201,7 +201,12 @@ struct HIDBarcodeParserTests {
     @Test("Parser handles multiple terminating strings")
     func testMultipleTerminatingStrings() {
         var scannedCodes: [String] = []
-        let configuration = testConfiguration
+        let configuration = HIDBarcodeParserConfiguration(
+            terminatingStrings: ["\r", "\n", "\t"],
+            minimumBarcodeLength: 4,
+            maximumScanTime: 0.3,
+            maximumInterCharacterTime: 0.05
+        )
         let parser = HIDBarcodeParser(
             configuration: configuration,
             onScan: { code in

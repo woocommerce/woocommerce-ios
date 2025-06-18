@@ -116,10 +116,6 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Payouts item in the Payments menu
-    ///
-    case wooPaymentsPayoutsOverviewInPaymentsMenu
-
     /// Enables Tap to Pay for UK Woo Payments stores
     ///
     case tapToPayOnIPhoneInUK

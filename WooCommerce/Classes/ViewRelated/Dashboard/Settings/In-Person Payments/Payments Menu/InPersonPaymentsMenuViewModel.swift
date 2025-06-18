@@ -115,8 +115,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     private func refreshPayoutSummary() async {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsPayoutsOverviewInPaymentsMenu),
-              let payoutService = dependencies.wooPaymentsPayoutService,
+        guard let payoutService = dependencies.wooPaymentsPayoutService,
               await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
                                                                                pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
             shouldShowPayoutSummary = false

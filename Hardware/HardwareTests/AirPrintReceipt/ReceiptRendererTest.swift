@@ -5,11 +5,14 @@ import Foundation
 import CryptoKit
 
 final class ReceiptRendererTest: XCTestCase {
+    let locale = Locale(identifier: "en_US_POSIX")
+    let timeZone = TimeZone(secondsFromGMT: 0)!
+
     func test_TextWithoutHtmlSymbols() {
         let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: 4eaaad801b2e0da0c113fb1db9267197"
         let content = generateReceiptContent()
 
-        let renderer = ReceiptRenderer(content: content)
+        let renderer = ReceiptRenderer(content: content, locale: locale, timeZone: timeZone)
 
         XCTAssertEqual(
             Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,
@@ -22,7 +25,7 @@ final class ReceiptRendererTest: XCTestCase {
         let stringWithHtml = "<tt><table></table></footer>"
         let content = generateReceiptContent(stringToAppend: stringWithHtml)
 
-        let renderer = ReceiptRenderer(content: content)
+        let renderer = ReceiptRenderer(content: content, locale: locale, timeZone: timeZone)
 
         XCTAssertEqual(
             Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,
@@ -36,9 +39,7 @@ final class ReceiptRendererTest: XCTestCase {
         let attributeTwo = ReceiptLineAttribute(name: "name_attr_2", value: "value_attr_2")
         let content = generateReceiptContent(attributes: [attributeOne, attributeTwo])
 
-        let renderer = ReceiptRenderer(content: content)
-
-        print(renderer.htmlContent())
+        let renderer = ReceiptRenderer(content: content, locale: locale, timeZone: timeZone)
 
         XCTAssertEqual(
             Insecure.MD5.hash(data: renderer.htmlContent().data(using: .utf8)!).description,

@@ -640,9 +640,27 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
-                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
+                     sampleItem(id: 3, weight: 4, value: 5, quantity: 3),
+                     // Item of a second initial shipment that's purchased
+                     sampleItem(id: 4, weight: 4, value: 8.5, quantity: 1)]
+
+        // The second shipment is initially purchased
+        let shippingLabel = ShippingLabelPurchase.fake().copy(shipmentID: "1")
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                    WooShippingShipmentItem.fake().copy(id: 2, subItems: []),
+                    WooShippingShipmentItem.fake().copy(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(id: 4, subItems: nil)
+                ]
+            ],
+            shippingLabelData: WooShippingLabelData(currentOrderLabels: [shippingLabel])
+        )
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           config: config,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -654,10 +672,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Confidence checks
-        XCTAssertEqual(viewModel.shipments.count, 3)
+        XCTAssertEqual(viewModel.shipments.count, 4)
 
         // When
-        let shipmentsToMerge = viewModel.shipmentsToMerge(for: viewModel.shipments[1])
+        let shipmentsToMerge = viewModel.shipmentsToMerge(for: viewModel.shipments[3])
 
         // Then
         XCTAssertEqual(shipmentsToMerge.count, 2)
@@ -981,9 +999,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.containsUnsavedChanges)
     }
 
-    // MARK: - `isShipmentDeleteOptionDisabled`
+    // MARK: - `isShipmentDeleteOptionAvailable`
 
-    func test_isShipmentDeleteOptionDisabled_returns_true_for_purchased_shipment() throws {
+    func test_isShipmentDeleteOptionAvailable_returns_false_for_purchased_shipment() throws {
         // Given
         let items = [
             sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
@@ -1001,7 +1019,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
             shipments: [
                 "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
                 "1": [WooShippingShipmentItem(id: 2, subItems: [])]
-            ], shippingLabelData: shippingLabelData
+            ],
+            shippingLabelData: shippingLabelData
         )
 
         let viewModel = WooShippingSplitShipmentsViewModel(
@@ -1016,10 +1035,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let purchasedShipment = viewModel.shipments[0]  // First shipment is purchased
 
         // Then
-        XCTAssertTrue(viewModel.isShipmentDeleteOptionDisabled(for: purchasedShipment))
+        XCTAssertFalse(viewModel.isShipmentDeleteOptionAvailable(for: purchasedShipment))
     }
 
-    func test_isShipmentDeleteOptionDisabled_returns_false_for_unfulfilled_shipment_when_there_are_multiple() throws {
+    func test_isShipmentDeleteOptionAvailable_returns_true_for_unfulfilled_shipment_when_there_are_multiple() throws {
         // Given
         let items = [
             sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
@@ -1035,16 +1054,16 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         )
 
         // When
-        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
-        XCTAssertFalse(viewModel.isShipmentDeleteOptionDisabled(for: viewModel.shipments[0]))
-        XCTAssertFalse(viewModel.isShipmentDeleteOptionDisabled(for: viewModel.shipments[1]))
+        XCTAssertTrue(viewModel.isShipmentDeleteOptionAvailable(for: viewModel.shipments[0]))
+        XCTAssertTrue(viewModel.isShipmentDeleteOptionAvailable(for: viewModel.shipments[1]))
     }
 
-    func test_isShipmentDeleteOptionDisabled_returns_true_for_last_unfulfilled_shipment() throws {
+    func test_isShipmentDeleteOptionAvailable_returns_false_for_last_unfulfilled_shipment() throws {
         // Given
         let items = [
             sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
@@ -1078,12 +1097,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let unfulfilledShipment = viewModel.shipments[0]  // First shipment is unfulfilled
 
         // Then
-        XCTAssertTrue(viewModel.isShipmentDeleteOptionDisabled(for: unfulfilledShipment))
+        XCTAssertFalse(viewModel.isShipmentDeleteOptionAvailable(for: unfulfilledShipment))
     }
 
-    // MARK: - `isMergeAllUnfulfilledDisabled`
+    // MARK: - `isMergeAllUnfulfilledAvailable`
 
-    func test_isMergeAllUnfulfilledDisabled_returns_true_when_no_unfulfilled_shipments() throws {
+    func test_isMergeAllUnfulfilledAvailable_returns_false_when_no_unfulfilled_shipments() throws {
         // Given
         let shippingLabelData = WooShippingLabelData(
             currentOrderLabels: [
@@ -1108,10 +1127,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         )
 
         // Then
-        XCTAssertTrue(viewModel.isMergeAllUnfulfilledDisabled())
+        XCTAssertFalse(viewModel.isMergeAllUnfulfilledAvailable())
     }
 
-    func test_isMergeAllUnfulfilledDisabled_returns_true_when_only_one_unfulfilled_shipment() {
+    func test_isMergeAllUnfulfilledAvailable_returns_false_when_only_one_unfulfilled_shipment() {
         // Given
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
@@ -1122,14 +1141,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         )
 
         // Then
-        XCTAssertTrue(viewModel.isMergeAllUnfulfilledDisabled())
+        XCTAssertFalse(viewModel.isMergeAllUnfulfilledAvailable())
     }
 
-    func test_isMergeAllUnfulfilledDisabled_returns_false_when_multiple_unfulfilled_shipments() {
+    func test_isMergeAllUnfulfilledAvailable_returns_false_when_only_two_unfulfilled_shipments() {
         // Given
         let items = [
-            sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
-            sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 2)
         ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(
@@ -1145,7 +1163,242 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.moveSelectedItems(to: .newShipment)
 
         // Then
-        XCTAssertFalse(viewModel.isMergeAllUnfulfilledDisabled())
+        XCTAssertFalse(viewModel.isMergeAllUnfulfilledAvailable())
+    }
+
+    func test_isMergeAllUnfulfilledAvailable_returns_true_when_multiple_unfulfilled_shipments() {
+        // Given
+        let items = [
+            sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
+            sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
+        ]
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.shipments.first?.contents.last?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+
+        // Then
+        XCTAssertTrue(viewModel.isMergeAllUnfulfilledAvailable())
+    }
+
+    // MARK: - removableShipments
+
+    func test_removableShipments_returns_empty_when_only_one_unfulfilled_shipment() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.removableShipments.isEmpty)
+    }
+
+    func test_removableShipments_returns_all_unfulfilled_shipments_when_multiple_exist() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.removableShipments.count, 2)
+    }
+
+    func test_removableShipments_excludes_purchased_shipments() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let shippingLabel = ShippingLabelPurchase.fake().copy(shipmentID: "0")
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ],
+            shippingLabelData: WooShippingLabelData(
+                currentOrderLabels: [shippingLabel]
+            )
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.removableShipments.isEmpty)
+    }
+
+    // MARK: - shouldShowRemoveShipmentMenu
+
+    func test_shouldShowRemoveShipmentMenu_returns_true_when_removable_shipments_exist_and_merge_not_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRemoveShipmentMenu)
+    }
+
+    func test_shouldShowRemoveShipmentMenu_returns_true_when_removable_shipments_exist_and_merge_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 3
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-1"]
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-2"]
+                    )
+                ],
+                "2": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-3"]
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRemoveShipmentMenu)
+    }
+
+    func test_shouldShowRemoveShipmentMenu_returns_false_when_no_removable_shipments_and_merge_not_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRemoveShipmentMenu)
     }
 }
 

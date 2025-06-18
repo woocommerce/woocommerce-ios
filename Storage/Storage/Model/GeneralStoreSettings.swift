@@ -82,6 +82,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var searchTermsByKey: [String: [String]]
 
+    /// Whether the POS tab is visible for this store.
+    ///
+    public var isPOSTabVisible: Bool?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -100,7 +104,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedStockType: String? = nil,
                 lastSelectedOrderStatus: String? = nil,
                 favoriteProductIDs: [Int64] = [],
-                searchTermsByKey: [String: [String]] = [:]) {
+                searchTermsByKey: [String: [String]] = [:],
+                isPOSTabVisible: Bool? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -120,6 +125,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastSelectedOrderStatus = lastSelectedOrderStatus
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
+        self.isPOSTabVisible = isPOSTabVisible
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -140,7 +146,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastSelectedStockType: lastSelectedStockType,
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
                              favoriteProductIDs: favoriteProductIDs,
-                             searchTermsByKey: searchTermsByKey)
+                             searchTermsByKey: searchTermsByKey,
+                             isPOSTabVisible: isPOSTabVisible)
     }
 }
 
@@ -173,6 +180,8 @@ extension GeneralStoreSettings {
         self.favoriteProductIDs = try container.decodeIfPresent([Int64].self,
                                                                 forKey: .favoriteProductIDs) ?? []
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
+
+        self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

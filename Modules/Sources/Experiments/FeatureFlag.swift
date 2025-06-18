@@ -153,10 +153,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSale
 
-    /// Enables coupons in Point of Sale
-    ///
-    case enableCouponsInPointOfSale
-
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView
@@ -213,10 +209,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsInPOSPt2PopularProducts
 
-    /// Allows searching coupons in POS
-    ///
-    case searchCouponsInPOS
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
@@ -236,4 +228,8 @@ public enum FeatureFlag: Int {
     /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
     ///
     case showPointOfSaleBarcodeSimulator
+
+    /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
+    ///
+    case pointOfSaleAsATabi1
 }

@@ -20,8 +20,7 @@ public protocol ProductsRemoteProtocol {
                          orderBy: ProductsRemote.OrderKey,
                          order: ProductsRemote.Order,
                          productIDs: [Int64],
-                         excludedProductIDs: [Int64],
-                         completion: @escaping (Result<[Product], Error>) -> Void)
+                         excludedProductIDs: [Int64]) async throws -> [Product]
     func searchProducts(for siteID: Int64,
                         keyword: String,
                         pageNumber: Int,
@@ -179,8 +178,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                 orderBy: OrderKey = .name,
                                 order: Order = .ascending,
                                 productIDs: [Int64] = [],
-                                excludedProductIDs: [Int64] = [],
-                                completion: @escaping (Result<[Product], Error>) -> Void) {
+                                excludedProductIDs: [Int64] = []) async throws -> [Product] {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfProductIDs: String = {
@@ -211,9 +209,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<Product>(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves products for the Point of Sale. Simple and variable products are loaded for WC version 9.6+, otherwise only simple products are loaded.

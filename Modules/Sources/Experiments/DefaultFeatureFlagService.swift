@@ -69,8 +69,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .enableCouponsInPointOfSale:
-            return true
         case .googleAdsCampaignCreationOnWebView:
             return true
         case .backgroundTasks:
@@ -99,8 +97,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsInPOSPt2PopularProducts:
             return true
-        case .searchCouponsInPOS:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:
@@ -112,6 +108,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .showPointOfSaleBarcodeSimulator:
             // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleAsATabi1:
+            return true
         default:
             return true
         }

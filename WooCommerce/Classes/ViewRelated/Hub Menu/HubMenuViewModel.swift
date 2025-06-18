@@ -309,11 +309,16 @@ private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
             self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                             stores: stores,
                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }
 
     func setupPOSElement() {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) == false else {
+            return
+        }
+
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()

@@ -15,6 +15,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
     @Published private(set) var shipments: [Shipment]
 
+    /// Returns shipments that can be removed and merged into other shipments.
+    /// A shipment can be removed if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
+    @Published private(set) var removableShipments: [Shipment] = []
+
     @Published var selectedShipmentIndex = 0 {
         didSet {
             configureSectionHeader()
@@ -99,6 +105,12 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     /// Whether to show the error alert for saving shipment info
     @Published var shouldShowSaveShipmentErrorAlert = false
 
+    /// Whether the remove shipment menu should be displayed.
+    /// The menu is shown when there are removable shipments or when merge all unfulfilled is available.
+    var shouldShowRemoveShipmentMenu: Bool {
+        removableShipments.isNotEmpty || isMergeAllUnfulfilledAvailable()
+    }
+
     init(order: Order,
          config: WooShippingConfig?,
          items: [ShippingLabelPackageItem],
@@ -121,6 +133,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
 
         configureSectionHeader()
         configureSelectionCallback()
+        configureRemovableShipments()
     }
 
     func onAppear() {
@@ -334,36 +347,41 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         String.localizedStringWithFormat(Localization.shipmentFormat, shipment.index + 1)
     }
 
-    /// Determines if a shipment's delete option should be disabled.
-    /// A shipment's delete option should be disabled if:
-    /// 1. The shipment is already purchased
-    /// 2. The view model is currently saving shipment info
-    /// 3. The shipment is the last unfulfilled shipment
-    func isShipmentDeleteOptionDisabled(for shipment: Shipment) -> Bool {
+    /// Determines if a shipment's delete option should be available.
+    /// A shipment's delete option should be available if:
+    /// 1. The shipment is not purchased
+    /// 2. The view model is not currently saving shipment info
+    /// 3. The shipment is not the last unfulfilled shipment
+    func isShipmentDeleteOptionAvailable(for shipment: Shipment) -> Bool {
         if shipment.isPurchased || isSavingShipmentInfo {
-            return true
+            return false
         }
 
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
-        return unfulfilledShipments.count == 1 && unfulfilledShipments.first == shipment
+        return unfulfilledShipments.count > 1 || unfulfilledShipments.first != shipment
     }
 
-    /// Determines if the "merge all unfulfilled" option should be disabled.
-    /// The option should be disabled if:
-    /// 1. The view model is currently saving shipment info
-    /// 2. There are no unfulfilled shipments
-    /// 3. There is only one unfulfilled shipment
-    func isMergeAllUnfulfilledDisabled() -> Bool {
+    /// Determines if the "merge all unfulfilled" option should be available.
+    /// The option should be available if:
+    /// 1. The view model is not currently saving shipment info
+    /// 2. There are more than two unfulfilled shipments
+    func isMergeAllUnfulfilledAvailable() -> Bool {
         if isSavingShipmentInfo {
-            return true
+            return false
         }
 
         let unfulfilledShipments = shipments.filter { !$0.isPurchased }
-        return unfulfilledShipments.count <= 1
+        return unfulfilledShipments.count > 2
     }
 
+    /// Returns shipments that can be merged into.
+    /// A shipment can be merged into if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
     func shipmentsToMerge(for shipment: Shipment) -> [Shipment] {
-        shipments.filter { $0 != shipment }
+        shipments.filter { otherShipment in
+            otherShipment != shipment && isShipmentDeleteOptionAvailable(for: otherShipment)
+        }
     }
 
     func removeShipment(_ shipment: Shipment, mergeInto otherShipment: Shipment) {
@@ -394,6 +412,20 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         shipments[mergedShipmentIndex] = mergedShipment
         shipments.remove(at: removedShipmentIndex)
         selectedShipmentIndex = shipments.firstIndex(where: { $0 == mergedShipment }) ?? 0
+    }
+
+    /// Returns shipments that can be removed and merged into other shipments.
+    /// A shipment can be removed if:
+    /// 1. It is not purchased
+    /// 2. It is not the last unfulfilled shipment
+    func configureRemovableShipments() {
+        $shipments
+            .map { shipments in
+                shipments.filter { [weak self] shipment in
+                    self?.isShipmentDeleteOptionAvailable(for: shipment) ?? false
+                }
+            }
+            .assign(to: &$removableShipments)
     }
 }
 

@@ -93,10 +93,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .allowMerchantAIAPIKey:
             return false
-        case .searchProductsInPOS:
-            return true
-        case .searchProductsInPOSPt2PopularProducts:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:

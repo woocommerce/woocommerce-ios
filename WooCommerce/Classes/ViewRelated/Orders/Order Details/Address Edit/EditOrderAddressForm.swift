@@ -515,7 +515,7 @@ struct EditAddressForm_Previews: PreviewProvider {
                                    renewalSubscriptionID: nil,
                                    appliedGiftCards: [],
                                    attributionInfo: nil,
-                                   shippingLabels: [])
+                                   shippingLabels: [], createdVia: nil)
 
     static let sampleAddress = Address(firstName: "Johnny",
                                        lastName: "Appleseed",

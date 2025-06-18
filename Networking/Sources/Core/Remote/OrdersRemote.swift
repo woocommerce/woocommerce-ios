@@ -526,7 +526,7 @@ private extension OrdersRemote.OrderCreationSource {
         case .storeManagement:
             return nil
         case .pointOfSale:
-            return "pos-rest-api"
+            return "pos-rest-api" // TODO: confirm is there.
         }
     }
 }

@@ -65,6 +65,9 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let shippingLabels: [ShippingLabel]
 
+    ///
+    public let createdVia: String?
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -105,7 +108,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 renewalSubscriptionID: String?,
                 appliedGiftCards: [OrderGiftCard],
                 attributionInfo: OrderAttributionInfo?,
-                shippingLabels: [ShippingLabel]) {
+                shippingLabels: [ShippingLabel],
+                createdVia: String?) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -151,6 +155,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.appliedGiftCards = appliedGiftCards
         self.attributionInfo = attributionInfo
         self.shippingLabels = shippingLabels
+        self.createdVia = createdVia
     }
 
 
@@ -242,13 +247,22 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 return nil
             }
 
-            return OrderAttributionInfo(metaData: allOrderMetaData)
+            return OrderAttributionInfo(metaData: allOrderMetaData) // Order has a relationship with attribution info
         }()
 
         // Shipping labels
         /// This will be an empty array by default because it's not directly parsed from the Order details, so it won't be decoded.
         /// It's fetched with a specific API request, while at the same time it has a relationship in Core Data with Order.
         let shippingLabels: [ShippingLabel] = []
+
+        // Use decodeIfPresent to avoid Mapping Error keyNotFound
+        /**
+         po try container.decodeIfPresent(String.self, forKey: .createdVia) ?? nil
+         ▿ Optional<String>
+           - some : "pos-rest-api"
+         */
+        let createdVia = try container.decodeIfPresent(String.self, forKey: .createdVia) ?? nil
+        
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -288,7 +302,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   renewalSubscriptionID: renewalSubscriptionID,
                   appliedGiftCards: appliedGiftCards,
                   attributionInfo: attributionInfo,
-                  shippingLabels: shippingLabels)
+                  shippingLabels: shippingLabels,
+                  createdVia: createdVia) // ok createdVia    String?    "pos-rest-api"    some
     }
 
     public static var empty: Order {
@@ -330,7 +345,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   renewalSubscriptionID: nil,
                   appliedGiftCards: [],
                   attributionInfo: nil,
-                  shippingLabels: [])
+                  shippingLabels: [],
+                  createdVia: nil)
     }
 }
 

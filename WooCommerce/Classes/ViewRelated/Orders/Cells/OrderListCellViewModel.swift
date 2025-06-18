@@ -76,6 +76,13 @@ struct OrderListCellViewModel {
         return order.status.localizedName
     }
 
+    ///
+    ///
+    var salesChannel: String {
+        debugPrint(order.attributionInfo ?? "No attribution info")
+        return order.createdVia ?? "Not found"
+    }
+
     /// The localized unabbreviated total for a given order item, which includes the currency.
     ///
     /// Example: $48,415,504.20

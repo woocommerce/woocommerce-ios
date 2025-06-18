@@ -111,6 +111,7 @@ extension Order {
                                   renewalSubscriptionID: nil,
                                   appliedGiftCards: [],
                                   attributionInfo: nil,
-                                  shippingLabels: [])
+                                   shippingLabels: [], createdVia: nil
+    )
 }
 #endif

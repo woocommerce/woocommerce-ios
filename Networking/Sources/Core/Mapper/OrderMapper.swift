@@ -24,6 +24,17 @@ struct OrderMapper: Mapper {
             return try decoder.decode(OrderEnvelope.self, from: response).order
         } else {
             return try decoder.decode(Order.self, from: response)
+            /**
+             1. It does return the value from the API, as soon as we create the order via POS Checkout
+             ▿ createdVia : Optional<String>
+               - some : "pos-rest-api"
+             
+             Also:
+             ▿ attributionInfo : Optional<OrderAttributionInfo>
+               ▿ some : OrderAttributionInfo
+                 ▿ sourceType : Optional<String>
+                   - some : "mobile_app"
+             */
         }
     }
 }

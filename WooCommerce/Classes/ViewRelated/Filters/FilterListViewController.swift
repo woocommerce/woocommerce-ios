@@ -301,7 +301,15 @@ private extension FilterListViewController {
                 self.listSelector.navigationController?.pushViewController(statusesFilterVC, animated: true)
 
             case .salesChannel(let allowedSalesChannel):
-                
+                let selectedSalesChannel = selected.selectedValue as? SalesChannel
+                // TODO: Actual SalesChannelFilterViewController
+                let salesChannelFilterVC = OrderStatusFilterViewController(selected: [.onHold], allowedStatuses: []) { statuses in
+                    selected.selectedValue = statuses.isEmpty ? nil : statuses
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
+                self.listSelector.navigationController?.pushViewController(salesChannelFilterVC, animated: true)
+
                 debugPrint("selected. Registered when we tap in the filter button")
                 break
             case .ordersDateRange:

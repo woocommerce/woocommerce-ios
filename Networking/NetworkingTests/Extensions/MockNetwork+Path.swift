@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 extension MockNetwork {
     /// Returns the parameters ("\(key)=\(value)") for the WC API query in the first network request URL.

@@ -135,7 +135,7 @@ private extension WooShippingSplitShipmentsView {
 
     var removeShipmentMenu: some View {
         Menu {
-            ForEach(viewModel.shipments) { shipment in
+            ForEach(viewModel.removableShipments) { shipment in
                 Button(
                     String.localizedStringWithFormat(
                         Localization.removeShipmentFormat,
@@ -143,17 +143,20 @@ private extension WooShippingSplitShipmentsView {
                     )
                 ) {
                     shipmentToRemove = shipment
-                }.disabled(viewModel.isShipmentDeleteOptionDisabled(for: shipment))
+                }
             }
+
             Divider()
+
             Button(Localization.mergeAll) {
                 showingMergeAllSheet = true
             }
-            .disabled(viewModel.isMergeAllUnfulfilledDisabled())
+            .renderedIf(viewModel.isMergeAllUnfulfilledAvailable())
         } label: {
             Image(systemName: "ellipsis")
                 .padding()
         }
+        .renderedIf(viewModel.shouldShowRemoveShipmentMenu)
     }
 
     var fulfilledShipmentView: some View {
@@ -278,7 +281,6 @@ private extension WooShippingSplitShipmentsView {
                                        lineColor: otherShipment == shipmentToMergeInto ? .accentColor : Color(.separator),
                                        lineWidth: otherShipment == shipmentToMergeInto ? 2 : 1)
                     }
-                    .disabled(viewModel.isShipmentDeleteOptionDisabled(for: otherShipment))
                 }
             }
 

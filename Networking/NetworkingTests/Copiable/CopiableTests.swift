@@ -1,6 +1,7 @@
 import XCTest
 
 @testable import Networking
+@testable import NetworkingCore
 
 /// Tests the concepts of the `CopiableProp` and `NullableCopiableProp` in the `copy()` methods.
 ///

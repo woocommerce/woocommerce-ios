@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class InAppPurchasesProductsMapperTests: XCTestCase {
     func test_iap_products_list_is_decoded_from_json_response() throws {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-04 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-06-17 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -8907,6 +8907,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
 "blazeBudgetSettingView.dailySpend" = "일일 지출";
 
+/* Value format for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpendValue" = "$%d";
+
 /* Subtitle of the Blaze budget setting screen */
 "blazeBudgetSettingView.description" = "캠페인에 얼마를 지출하고 얼마 동안 캠페인을 진행하시겠나요?";
 
@@ -8934,6 +8937,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "일정";
 
+/* Accessibility hint for the schedule section on the Blaze budget setting screen */
+"blazeBudgetSettingView.scheduleAccessibilityHint" = "캠페인 일정 설정 열기";
+
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "예산 설정";
 
@@ -8945,6 +8951,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
 "blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ ~ %2$@";
+
+/* The label for failed to load impressions */
+"blazeBudgetSettingViewModel.impressionsFailure" = "노출 수 로드 실패";
+
+/* The label for loading impressions */
+"blazeBudgetSettingViewModel.impressionsLoading" = "로드 중...";
+
+/* The formatted estimated impression range for a Blaze campaign. Reads like: Estimated total impressions range is from 26100 to 35300 */
+"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "예상 총 노출 수 범위는 %1$lld~%2$lld입니다.";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d일";
@@ -9136,11 +9151,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %3$@부터 %2$d일";
 
+/* Text that will become a hyperlink in the second line of the terms of service checkbox text. */
+"blazeCampaignCreationFormViewModel.campaignDetailsLinkText" = "본인이 언제든지 취소할 수 있습니다.";
+
 /* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
 "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%2$@부터 주당 %1$@";
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "모든 위치";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "**%2$@**부터 반복되는 최대 **$%1$.0f 주간** 요금 청구에 동의합니다. 캠페인 동안 청구 시간은 달라질 수 있습니다.";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "**%2$@**부터 최대 **$%1$.0f** 요금 청구에 동의합니다. 캠페인이 활성 상태인 동안 하나 이상의 결제에서 요금 청구가 발생할 수 있습니다.";
+
+/* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "**%2$@**부터 반복되는 **최대 $%1$.0f 주간 요금 청구**에 동의합니다. 캠페인 동안 청구 시간은 달라질 수 있습니다.";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@. 본인은 취소 시점까지 전달된 광고만 결제하겠습니다.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
@@ -9507,6 +9537,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDate" = "시작 날짜";
+
+/* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDateAccessibilityHint" = "두 번 눌러 캠페인 시작 날짜 편집";
+
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "캠페인 시작 날짜 %@";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "모든 기기";
@@ -11304,6 +11340,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
 "payouts.currency.overview.pendingFunds" = "대기 중인 자금";
 
+/* Accessibility label for the button to edit */
+"pencilEditButton.accessibility.editButtonAccessibilityLabel" = "편집";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "요금제 종료됨";
 
@@ -11312,6 +11351,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "플러그인";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "네트워크 요청 실패";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "인터넷에 연결되지 않음";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "변형에 대한 상위 상품을 찾을 수 없음";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "스캔된 알 수 없는 아이템";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "지원되지 않는 아이템 유형";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "판독기에서 결제 취소됨";
@@ -11685,6 +11739,9 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "제거";
 
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "로드 중";
+
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "주문 수정";
 
@@ -11904,8 +11961,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "왜 내 상품이 보이지 않나요?";
 
-/* Label to be displayed in the product's card when out of stock
-   Label to be displayed in the product's card when there's stock of a given product */
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ 재고 있음";
+
+/* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "재고 없음";
 
 /* Button title for new order button */
@@ -12419,6 +12478,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "취소";
 
+/* Label indicating the expiry date of a credit/debit card. The placeholder is the date. Reads like: Expire 08/26 */
+"shippingLabelPaymentMethod.expiry" = "%1$@ 만료";
+
 /* Badge wording when the customs information is completed */
 "shippingLabels.customs.completedBadge" = "완료됨";
 
@@ -12881,6 +12943,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "상품 상세 정보 보기";
+
+/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.cancel" = "취소";
+
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "%1$@에 동의합니다.";
+
+/* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
+"upsTermsView.checkbox2" = "본인은 UPS®에서 불허하는 %1$@ 또는 필요한 허가를 받지 않은 규제 아이템을 발송하지 않겠습니다.";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "%1$@에도 동의합니다.";
+
+/* Button to confirm all agreements on the UPS Terms and Conditions view */
+"upsTermsView.confirmButton" = "확인하고 계속하기";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorMessage" = "수락을 확인하는 동안 예기치 않은 오류가 발생했습니다. 다시 시도해 주세요.";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorTitle" = "수락 확인 오류";
+
+/* Message on the UPS Terms and Conditions view */
+"upsTermsView.message" = "이 주소에서 UPS®를 통해 발송을 시작하려면 다음 이용 약관에 동의하셔야 합니다.";
+
+/* Link to the prohibited items on the UPS Terms and Conditions view */
+"upsTermsView.prohibitedItems" = "금지된 아이템";
+
+/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.retry" = "다시 시도";
+
+/* Title label for the origin address on the UPS Terms and Conditions view */
+"upsTermsView.shippingFrom" = "배송 출발지";
+
+/* Link to the technology agreement on the UPS Terms and Conditions view */
+"upsTermsView.technologyAgreement" = "UPS® 기술 계약";
+
+/* Link to the terms of service on the UPS Terms and Conditions view */
+"upsTermsView.termsOfService" = "UPS® 서비스 약관";
+
+/* Title of the UPS Terms and Conditions view */
+"upsTermsView.title" = "UPS® 이용 약관";
 
 /* Label displayed on video media items. */
 "video" = "비디오";
@@ -13392,6 +13496,15 @@ which should be translated separately and considered part of this sentence. */
 /* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
 "wooShipping.createLabels.splitShipment.movingCompletionFormat" = "%1$@개가 %2$@ 위치로 이동되었음";
 
+/* Cancel button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.cancel" = "취소";
+
+/* Retry button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "다시 시도";
+
+/* Title of the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.title" = "변경 사항을 저장할 수 없습니다. 다시 시도해 주세요.";
+
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.splitShipment.shipmentFormat" = "배송 %1$d";
 
@@ -13641,6 +13754,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "위험물 또는 유해물질을 배송하시나요?";
 
+/* Button to dismiss the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.doneButton" = "완료";
+
+/* Notice displayed after adding a new payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.methodAddedNotice" = "결제 수단 추가됨";
+
+/* Title of the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.webViewTitle" = "결제 수단 추가";
+
+/* Button to confirm a credit/debit for purchasing a shipping label */
+"wooShippingPaymentMethodsView.confirmButton" = "이 카드 사용";
+
+/* Button to dismiss an error alert on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.cancel" = "취소";
+
+/* Button to retry an action on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.retry" = "다시 시도";
+
+/* Title of the error alert when confirming a payment method for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.confirmErrorTitle" = "결제 수단을 확인할 수 없음";
+
+/* Label of the toggle to enable emailing receipt upon purchasing a shipping label */
+"wooShippingPaymentMethodsView.emailReceipt" = "이메일로 영수증 보내기";
+
 /* Action button on the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.actionButton" = "새 신용카드 또는 체크카드";
 
@@ -13650,8 +13787,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.title" = "결제 수단 추가";
 
-/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholder is the username of an associated WordPress account. Please keep the `@` in front of the placeholder. */
-"wooShippingPaymentMethodsView.note" = "워드프레스닷컴 계정 @%1$@에서 신용카드가 검색되었습니다.";
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
+"wooShippingPaymentMethodsView.noteWithUsername" = "워드프레스닷컴 계정 %1$@ <@%2$@>에서 신용카드가 검색되었습니다.";
+
+/* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
+"wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "사이트 소유자만 배송 레이블 결제 수단을 관리할 수 있습니다. 결제 수단을 관리하려면 스토어 소유자 %1$@(%2$@) 측에 문의하세요.";
+
+/* Title of the error alert when refresh payment methods for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.refreshErrorTitle" = "결제 수단을 새로 고칠 수 없음";
 
 /* Subtitle of the payment method sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.subtitle" = "결제 수단을 선택하세요.";

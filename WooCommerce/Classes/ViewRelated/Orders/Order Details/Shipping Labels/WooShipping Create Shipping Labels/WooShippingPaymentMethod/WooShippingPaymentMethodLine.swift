@@ -1,3 +1,4 @@
+import Foundation
 import Networking
 
 /// Represents payment method line in the order details bottom sheet.

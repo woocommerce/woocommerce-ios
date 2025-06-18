@@ -54,10 +54,6 @@ struct ItemListView: View {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
     }
 
-    private var isSearchCouponsFeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchCouponsInPOS)
-    }
-
     private var isBarcodeScani1FeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
     }
@@ -77,7 +73,7 @@ struct ItemListView: View {
         case .products:
             return isSearchProductsFeatureEnabled
         case .coupons:
-            return isSearchCouponsFeatureEnabled
+            return true
         }
     }
 

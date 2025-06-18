@@ -5,6 +5,7 @@ excluded:
   - DerivedData
   - fastlane
   - Modules/.build
+  - Modules/DerivedData
   - Pods
   - Scripts
   # Automattic's CI caching setup may generate this in the project folder

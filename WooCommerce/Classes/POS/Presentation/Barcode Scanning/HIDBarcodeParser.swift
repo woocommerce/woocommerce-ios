@@ -75,7 +75,6 @@ final class HIDBarcodeParser {
         .keypadNumLock,
         .keyboardApplication,
         .keyboardPower,
-        .keypadEqualSign,
         .keyboardF13,
         .keyboardF14,
         .keyboardF15,

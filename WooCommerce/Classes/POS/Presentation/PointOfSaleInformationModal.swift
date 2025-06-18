@@ -40,7 +40,10 @@ struct PointOfSaleInformationModal<Content: View>: View {
                     content
                 }
                 .measureHeight { height in
-                    contentHeight = height
+                    // Workaround for ScrollView not updating its height immediately on iOS 17
+                    withAnimation(.easeIn(duration: 0)) {
+                        contentHeight = height
+                    }
                 }
             }
             .frame(maxHeight: contentHeight)

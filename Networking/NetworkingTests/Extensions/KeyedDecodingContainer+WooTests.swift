@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class KeyedDecodingContainer_WooTests: XCTestCase {
     func test_failsafeDecodeIfPresent_string_supports_alternative_types() throws {

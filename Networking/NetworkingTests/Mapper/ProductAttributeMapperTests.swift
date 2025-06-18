@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// ProductAttributeMapper Unit Tests

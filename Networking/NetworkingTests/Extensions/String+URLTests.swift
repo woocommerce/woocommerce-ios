@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class String_URLTests: XCTestCase {
     func test_prefix_slash() {

@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 
 @testable import Networking
+@testable import NetworkingCore
 
 /// PaymentGatewayRemote Unit Tests
 ///

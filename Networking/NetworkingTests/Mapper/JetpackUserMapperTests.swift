@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 /// JetpackUserMapper Unit Tests
 ///

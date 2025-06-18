@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import WordPressShared
 @testable import Networking
+@testable import NetworkingCore
 
 /// AuthenticatedDotcomRequest Unit Tests
 ///

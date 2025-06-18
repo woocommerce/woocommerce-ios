@@ -4,6 +4,7 @@ import Fakes
 import TestKit
 
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// Remote UnitTests

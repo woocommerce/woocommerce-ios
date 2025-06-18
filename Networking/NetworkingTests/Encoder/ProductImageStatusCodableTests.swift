@@ -1,6 +1,7 @@
 import XCTest
 import Photos
 @testable import Networking
+@testable import NetworkingCore
 
 final class ProductImageStatusCodableTests: XCTestCase {
 

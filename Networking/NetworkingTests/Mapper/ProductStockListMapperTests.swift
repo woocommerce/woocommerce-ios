@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class ProductStockListMapperTests: XCTestCase {
     private let sampleSiteID: Int64 = 123

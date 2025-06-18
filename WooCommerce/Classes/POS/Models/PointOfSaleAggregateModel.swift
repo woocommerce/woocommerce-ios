@@ -187,14 +187,40 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
         Task {
-            let placeholderItemID = cart.addLoadingItem()
+            let placeholderItemID = cart.addLoadingItem().id
+
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    sourceViewType: .scanner,
+                    itemType: .loading
+                )
+            )
+
             do throws(PointOfSaleBarcodeScanError) {
                 let item = try await barcodeScanService.getItem(barcode: barcode)
-                cart.updateLoadingItem(id: placeholderItemID, with: item)
+                if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
+                    analytics.track(
+                        event: .PointOfSale.addItemToCart(
+                            sourceViewType: .scanner,
+                            itemType: .product,
+                            productType: .init(cartItem: cartItem)
+                        )
+                    )
+                }
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
-                cart.updateLoadingItem(id: placeholderItemID, with: error)
-                await soundPlayer.playSound(.barcodeScanFailure)
+                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                    // Only play a sound and track analytics if the item still exists in the cart.
+                    await soundPlayer.playSound(.barcodeScanFailure)
+
+                    analytics.track(
+                        event: .PointOfSale.addItemToCart(
+                            sourceViewType: .scanner,
+                            itemType: .error,
+                            error: error
+                        )
+                    )
+                }
             }
         }
     }

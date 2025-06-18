@@ -1294,6 +1294,112 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.removableShipments.isEmpty)
     }
+
+    // MARK: - shouldShowRemoveShipmentMenu
+
+    func test_shouldShowRemoveShipmentMenu_returns_true_when_removable_shipments_exist_and_merge_not_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: nil
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRemoveShipmentMenu)
+    }
+
+    func test_shouldShowRemoveShipmentMenu_returns_true_when_removable_shipments_exist_and_merge_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 3
+            )
+        ]
+        let config = WooShippingConfig.fake().copy(
+            shipments: [
+                "0": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-1"]
+                    )
+                ],
+                "1": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-2"]
+                    )
+                ],
+                "2": [
+                    WooShippingShipmentItem.fake().copy(
+                        id: 1,
+                        subItems: ["sub-3"]
+                    )
+                ]
+            ]
+        )
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowRemoveShipmentMenu)
+    }
+
+    func test_shouldShowRemoveShipmentMenu_returns_false_when_no_removable_shipments_and_merge_not_available() {
+        // Given
+        let items = [
+            sampleItem(
+                id: 1,
+                weight: 5,
+                value: 10,
+                quantity: 2
+            )
+        ]
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowRemoveShipmentMenu)
+    }
 }
 
 private extension WooShippingSplitShipmentsViewModelTests {

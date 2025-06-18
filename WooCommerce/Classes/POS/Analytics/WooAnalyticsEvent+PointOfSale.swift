@@ -25,7 +25,6 @@ extension WooAnalyticsEvent {
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
-            static let error = "error"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -42,7 +41,7 @@ extension WooAnalyticsEvent {
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
-            error: String? = nil
+            error: Error? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
                 Key.sourceViewType: sourceViewType.rawValue,
@@ -57,13 +56,10 @@ extension WooAnalyticsEvent {
                 properties[Key.productType] = productType.rawValue
             }
 
-            if let error {
-                properties[Key.error] = error
-            }
-
             return WooAnalyticsEvent(
                 statName: .pointOfSaleAddItemToCart,
-                properties: properties
+                properties: properties,
+                error: error
             )
         }
 

@@ -217,7 +217,7 @@ extension PointOfSaleAggregateModel {
                         event: .PointOfSale.addItemToCart(
                             sourceViewType: .scanner,
                             itemType: .error,
-                            error: error.localizedDescription
+                            error: error
                         )
                     )
                 }

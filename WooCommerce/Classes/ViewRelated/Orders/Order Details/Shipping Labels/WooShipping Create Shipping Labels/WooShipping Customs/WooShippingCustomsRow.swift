@@ -10,7 +10,7 @@ struct WooShippingCustomsRow: View {
     @State private var showCustomsForm: Bool = false
 
     var body: some View {
-        AdaptiveStack {
+        HStack {
             Text(Localization.customsTitle)
                 .headlineStyle()
                 .foregroundColor(.primary)
@@ -22,7 +22,7 @@ struct WooShippingCustomsRow: View {
                 .captionStyle()
                 .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
                 .padding(.vertical, Layout.statusBadgeVerticalPadding)
-                .frame(height: Layout.statusBadgeHeight * scale)
+                .frame(minHeight: Layout.statusBadgeHeight * scale)
                 .background(
                     RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
                         .fill(informationIsCompleted ?

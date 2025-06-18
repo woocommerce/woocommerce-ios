@@ -200,10 +200,10 @@ extension Storage.Product: ReadOnlyConvertible {
                        customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
     }
 
-    /// Returns a simplified ReadOnly version of the receiver.
+    /// Returns a lightweight ReadOnly version of the receiver.
     /// No relationships are populated except for images.
     ///
-    public func toSimplifiedReadOnly() -> Yosemite.Product {
+    public func toLightweightReadOnly() -> Yosemite.Product {
 
         let productImages = imagesArray.map { $0.toReadOnly() }
 

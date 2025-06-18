@@ -12,10 +12,10 @@ final class URLRequestConvertible_PathTests: XCTestCase {
     // MARK: - `pathForAnalytics`
 
     // Example from `ProductsRemote.loadAllProducts`.
-    func test_pathForAnalytics_returns_path_of_JetpackRequest() throws {
+    func test_pathForAnalytics_returns_path_of_JetpackRequest() async throws {
         // Given
         let productsRemote = ProductsRemote(network: network)
-        productsRemote.loadAllProducts(for: 134, completion: { _ in })
+        _ = try? await productsRemote.loadAllProducts(for: 134)
 
         // When
         let request = try XCTUnwrap(network.requestsForResponseData.first)

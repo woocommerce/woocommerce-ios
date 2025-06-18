@@ -1,1 +1,0 @@
-In deze update hebben we onscherpe betalingspictogrammen hersteld, afbeeldingstoepassingen geoptimaliseerd, de toegankelijkheid verbeterd, een time-out voor kaartbetalingen toegevoegd en domeinaankoopfuncties verwijderd voor een soepelere ervaring. We hebben ook nieuwe verbeteringen toegevoegd aan e-mailontvangstbewijzen voor POS (beschikbaar vanaf WooCommerce 10.0.0)

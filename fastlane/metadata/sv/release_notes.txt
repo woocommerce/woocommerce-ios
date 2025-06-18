@@ -1,1 +1,0 @@
-I den här uppdateringen har vi åtgärdat suddiga betalningsikoner, optimerat bildhanteringen, förbättrat tillgängligheten, lagt till en tidsgräns för kortbetalningar och tagit bort domänköpsfunktioner för en renare upplevelse. Vi har också lagt till nya förbättringar av e-postkvitton för POS (tillgängligt från WooCommerce 10.0.0)

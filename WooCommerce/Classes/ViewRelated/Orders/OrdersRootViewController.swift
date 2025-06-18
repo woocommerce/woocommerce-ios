@@ -317,7 +317,7 @@ final class OrdersRootViewController: UIViewController {
 
         let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
 
-        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
+        let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, allowedSalesChannels: [], siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
 
@@ -451,11 +451,12 @@ private extension OrdersRootViewController {
     func syncLocalOrdersSettings(onCompletion: @escaping (Result<StoredOrderSettings.Setting, Error>) -> Void) {
         let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { [weak self] (result) in
             switch result {
-            case .success(let settings):
+            case .success(let settings): // (TODO: StoredOrderSettings.Setting)
                 self?.filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                  dateRange: settings.dateRangeFilter,
                                                                  product: settings.productFilter,
                                                                  customer: settings.customerFilter,
+                                                                 salesChannel: nil,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")

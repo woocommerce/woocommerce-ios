@@ -92,6 +92,8 @@ enum FilterListValueSelectorConfig {
     case products(siteID: Int64)
     // Filter list selector for customer
     case customer(siteID: Int64)
+    
+    case salesChannel(allowedSalesChannel: [SalesChannel])
 
 }
 
@@ -297,6 +299,11 @@ private extension FilterListViewController {
                     self.listSelector.reloadData()
                 }
                 self.listSelector.navigationController?.pushViewController(statusesFilterVC, animated: true)
+
+            case .salesChannel(let allowedSalesChannel):
+                
+                debugPrint("selected. Registered when we tap in the filter button")
+                break
             case .ordersDateRange:
                 let selectedOrderFilter = selected.selectedValue as? OrderDateRangeFilter
                 let datesFilterVC = OrderDatesFilterViewController(selected: selectedOrderFilter) { dateRangeFilter in

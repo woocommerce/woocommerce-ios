@@ -3,6 +3,24 @@ import Yosemite
 import Experiments
 import WooFoundation
 
+enum SalesChannel: FilterType {
+    var isActive: Bool {
+        return true
+    }
+    
+    case online
+    case pointOfSale
+    
+    var description: String {
+        switch self {
+        case .online:
+            return "online"
+        case .pointOfSale:
+            return "POS"
+        }
+    }
+}
+
 /// `FilterListViewModel` for filtering a list of orders.
 final class FilterOrderListViewModel: FilterListViewModel {
     typealias Criteria = Filters
@@ -13,6 +31,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?
         let customer: CustomerFilter?
+        let salesChannel: SalesChannel?
 
         let numberOfActiveFilters: Int
 
@@ -21,6 +40,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
             dateRange = nil
             product = nil
             customer = nil
+            salesChannel = nil
             numberOfActiveFilters = 0
         }
 
@@ -28,11 +48,13 @@ final class FilterOrderListViewModel: FilterListViewModel {
              dateRange: OrderDateRangeFilter?,
              product: FilterOrdersByProduct?,
              customer: CustomerFilter?,
+             salesChannel: SalesChannel?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
             self.product = product
             self.customer = customer
+            self.salesChannel = salesChannel
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -50,6 +72,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let customer = customer {
                 readable.append(customer.description)
             }
+            if let salesChannel = salesChannel {
+                readable.append(salesChannel.description)
+            }
             return readable.joined(separator: ", ")
         }
     }
@@ -63,6 +88,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     let source = FilterSource.orders
 
     private let orderStatusFilterViewModel: FilterTypeViewModel
+    private let salesChannelFilterViewModel: FilterTypeViewModel
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
@@ -79,21 +105,23 @@ final class FilterOrderListViewModel: FilterListViewModel {
     ///   - stores: stores manager
     init(filters: Filters,
          allowedStatuses: [OrderStatus],
+         allowedSalesChannels: [SalesChannel],
          siteID: Int64,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
-        orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
-        dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
-        productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
-        customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses, allowedSalesChannels: allowedSalesChannels)
+        dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses, allowedSalesChannels: allowedSalesChannels)
+        productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses, allowedSalesChannels: allowedSalesChannels)
+        customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses, allowedSalesChannels: allowedSalesChannels)
+        salesChannelFilterViewModel = OrderListFilter.salesChannel.createViewModel(filters: filters, allowedStatuses: [], allowedSalesChannels: allowedSalesChannels)
 
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
+        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel, salesChannelFilterViewModel]
     }
 
     var criteria: Filters {
@@ -101,11 +129,13 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
         let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
+        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannel ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
                        product: product,
                        customer: customer,
+                       salesChannel: salesChannel,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -120,6 +150,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                 dateRange: item.dateRangeFilter,
                                 product: item.productFilter,
                                 customer: item.customerFilter,
+                                salesChannel: nil,
                                 numberOfActiveFilters: item.numberOfActiveFilters())
                     }
                     continuation.resume(returning: filters)
@@ -198,6 +229,7 @@ extension FilterOrderListViewModel {
         case dateRange
         case product(siteID: Int64)
         case customer(siteID: Int64)
+        case salesChannel
     }
 }
 
@@ -212,12 +244,16 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleProduct
         case .customer:
             return Localization.rowCustomer
+        case .salesChannel:
+            return "Sales Channel!"
         }
     }
 }
 
 extension FilterOrderListViewModel.OrderListFilter {
-    func createViewModel(filters: FilterOrderListViewModel.Filters, allowedStatuses: [OrderStatus]) -> FilterTypeViewModel {
+    func createViewModel(filters: FilterOrderListViewModel.Filters,
+                         allowedStatuses: [OrderStatus],
+                         allowedSalesChannels: [SalesChannel] ) -> FilterTypeViewModel {
         switch self {
         case .orderStatus:
             return FilterTypeViewModel(title: title,
@@ -235,6 +271,10 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
+        case .salesChannel:
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .salesChannel(allowedSalesChannel: allowedSalesChannels),
+                                       selectedValue: filters.salesChannel)
         }
     }
 }

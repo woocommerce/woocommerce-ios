@@ -420,8 +420,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     /// 2. It is not the last unfulfilled shipment
     func configureRemovableShipments() {
         $shipments
-            .combineLatest($isSavingShipmentInfo)
-            .map { shipments, _ in
+            .map { shipments in
                 shipments.filter { [weak self] shipment in
                     self?.isShipmentDeleteOptionAvailable(for: shipment) ?? false
                 }

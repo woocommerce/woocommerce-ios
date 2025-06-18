@@ -146,6 +146,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var products: [Product] = []
 
+    /// Product variations from an order
+    ///
+    var productVariations: [ProductVariation] = []
+
     /// Custom amounts (fees) from an Order
     ///
     var customAmounts: [OrderFeeLine] = []
@@ -1157,7 +1161,7 @@ extension OrderDetailsDataSource {
     }
 
     private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
-        return resultsControllers.productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
+        return productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
     }
 
     func lookUpRefund(by refundID: Int64) -> Refund? {
@@ -1181,13 +1185,6 @@ extension OrderDetailsDataSource {
     @MainActor
     func reloadSections() async {
         // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
-        shippingLabels = resultsControllers.shippingLabels
-        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
-            shippingLabels: shippingLabels,
-            orderItems: items,
-            products: products,
-            productVariations: resultsControllers.productVariations
-        )
         refunds = resultsControllers.refunds
         customAmounts = resultsControllers.feeLines
         orderTracking = resultsControllers.orderTracking
@@ -1195,6 +1192,14 @@ extension OrderDetailsDataSource {
         products = resultsControllers.products
         addOnGroups = resultsControllers.addOnGroups
         siteShippingMethods = resultsControllers.siteShippingMethods
+        productVariations = resultsControllers.productVariations
+        shippingLabels = resultsControllers.shippingLabels
+        shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
+            shippingLabels: shippingLabels,
+            orderItems: items,
+            products: products,
+            productVariations: productVariations
+        )
 
         var sections = buildStaticSections().compactMap { $0 }
         let paymentSection = await createPaymentSection()

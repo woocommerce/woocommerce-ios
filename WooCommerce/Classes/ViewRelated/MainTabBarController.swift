@@ -373,7 +373,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
         case .pointOfSale:
-            ServiceLocator.analytics.track(.pointOfSaleTabReselected)
+            assertionFailure("Point of Sale tab should not be reselected as it cannot be selected from `tabBarController(_:shouldSelect:)`.")
             break
         }
     }

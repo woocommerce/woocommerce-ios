@@ -1277,7 +1277,6 @@ enum WooAnalyticsStat: String {
 
     // MARK: Point of Sale events
     case pointOfSaleTabSelected = "main_tab_pos_selected"
-    case pointOfSaleTabReselected = "main_tab_pos_reselected"
     case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
     case pointOfSaleLoaded = "loaded"
     case pointOfSaleItemsFetched = "items_fetched"

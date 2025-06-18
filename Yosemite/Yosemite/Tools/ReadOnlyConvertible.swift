@@ -17,6 +17,10 @@ public protocol ReadOnlyConvertible: TypeErasedReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     func toReadOnly() -> ReadOnlyType
+
+    /// Returns a simplified ReadOnly version of the receiver.
+    ///
+    func toSimplifiedReadOnly() -> ReadOnlyType
 }
 
 
@@ -39,5 +43,11 @@ extension ReadOnlyConvertible {
     ///
     public func toTypeErasedReadOnly() -> Any {
         return toReadOnly()
+    }
+
+    /// Default implementation is the same result of `toReadOnly()`
+    ///
+    public func toSimplifiedReadOnly() -> ReadOnlyType {
+        toReadOnly()
     }
 }

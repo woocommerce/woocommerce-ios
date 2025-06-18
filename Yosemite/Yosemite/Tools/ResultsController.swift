@@ -203,6 +203,16 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return readOnlyObjects ?? []
     }
 
+    /// Returns an array of all of the (ReadOnly) Fetched Objects.
+    ///
+    public var simplifiedFetchedObjects: [T.ReadOnlyType] {
+        let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            mutableObject.toSimplifiedReadOnly()
+        }
+
+        return readOnlyObjects ?? []
+    }
+
     /// Returns an array of SectionInfo Entitites.
     ///
     public var sections: [SectionInfo] {

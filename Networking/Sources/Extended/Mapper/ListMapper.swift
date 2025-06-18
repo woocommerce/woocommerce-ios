@@ -1,5 +1,11 @@
 import Foundation
 
+/// Shared error types for mappers.
+///
+public enum MapperError: Error {
+    case dataTooLarge
+}
+
 /// ListMapper: Maps generic WooCommerce REST API Lists
 ///
 struct ListMapper<Output: Decodable>: Mapper {
@@ -9,9 +15,23 @@ struct ListMapper<Output: Decodable>: Mapper {
     ///
     let siteID: Int64
 
+    let maxSizeInBytes: Int64?
+
+    /// - Parameters:
+    ///   - siteID: The site identifier associated with the items that will be parsed.
+    ///   - maxSizeInBytes: Optional maximum size of the response data in bytes. Defaults to 100MB.
+    init(siteID: Int64, maxSizeInBytes: Int64? = 100 * 1024 * 1024) {
+        self.siteID = siteID
+        self.maxSizeInBytes = maxSizeInBytes
+    }
+
     /// (Attempts) to convert a dictionary into [Output].
     ///
     func map(response: Data) throws -> [Output] {
+        if let maxSizeInBytes, Int64(response.count) > maxSizeInBytes {
+            throw MapperError.dataTooLarge
+        }
+
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

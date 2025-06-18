@@ -135,4 +135,60 @@ struct ListMapperTests {
         // Then we map to an empty array
         #expect(posProducts == [])
     }
+
+    @Test func it_throws_error_when_exceeding_default_size_limit() throws {
+        // Given a large response that exceeds the size limit
+        let largeData = Data(repeating: 0, count: 101 * 1024 * 1024) // 101MB, exceeding 100MB limit
+
+        // When we map with default size limit
+        // Then it throws MapperError.dataTooLarge
+        #expect(throws: MapperError.dataTooLarge) {
+            _ = try ListMapper<Order>(siteID: 123).map(response: largeData)
+        }
+    }
+
+    @Test func it_throws_error_when_exceeding_custom_size_limit() throws {
+        // Given a response that's larger than a custom limit but smaller than default
+        let mediumData = Data(repeating: 0, count: 2 * 1024 * 1024) // 2MB
+        let customLimit: Int64 = 1 * 1024 * 1024 // 1MB limit
+
+        // When we map with custom size limit
+        // Then it throws MapperError.dataTooLarge
+        #expect(throws: MapperError.dataTooLarge) {
+            _ = try ListMapper<Order>(siteID: 123, maxSizeInBytes: customLimit).map(response: mediumData)
+        }
+    }
+
+    @Test func it_skips_size_check_when_maxSizeInBytes_is_nil() throws {
+        // Given a large response
+        let largeData = Data(repeating: 0, count: 101 * 1024 * 1024) // 101MB
+
+        // When we map with nil size limit (should skip size check)
+        // Then it should attempt to decode (will fail due to invalid JSON, but not due to size)
+        do {
+            _ = try ListMapper<Order>(siteID: 123, maxSizeInBytes: nil).map(response: largeData)
+            Issue.record("Expected decoding to fail due to invalid JSON")
+        } catch MapperError.dataTooLarge {
+            Issue.record("Expected decoding error, not size error")
+        } catch {
+            // Expected decoding error due to invalid JSON data
+        }
+    }
+
+    @Test func it_succeeds_when_data_exactly_at_maxSizeInBytes() throws {
+        // Given data that's exactly at the size limit
+        let exactSizeData = Data(repeating: 0, count: 100 * 1024) // Exactly 100KB
+        let limit: Int64 = 100 * 1024 // 100KB limit
+
+        // When we map with exact size limit
+        // Then it should attempt to decode (will fail due to invalid JSON, but not due to size)
+        do {
+            _ = try ListMapper<Order>(siteID: 123, maxSizeInBytes: limit).map(response: exactSizeData)
+            Issue.record("Expected decoding to fail due to invalid JSON")
+        } catch MapperError.dataTooLarge {
+            Issue.record("Expected decoding error, not size error")
+        } catch {
+            // Expected decoding error due to invalid JSON data
+        }
+    }
 }

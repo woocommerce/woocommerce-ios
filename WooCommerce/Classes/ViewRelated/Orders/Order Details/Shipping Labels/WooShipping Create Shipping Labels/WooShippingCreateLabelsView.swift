@@ -569,6 +569,7 @@ private extension WooShippingCreateLabelsView {
             Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
             Text(label)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
                     .renderedIf(!isVerified)

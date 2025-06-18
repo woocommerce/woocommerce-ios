@@ -87,6 +87,7 @@ private extension POSTabCoordinator {
             guard let self else { return }
             let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                            stores: storesManager,
                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),

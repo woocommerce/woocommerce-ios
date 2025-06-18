@@ -9,7 +9,7 @@ struct POSFloatingControlView: View {
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
     @State private var showProductRestrictionsModal: Bool = false
-    @State private var showBarcodeScanning: Bool = false
+    @State private var showBarcodeScanningInformation: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -59,7 +59,7 @@ struct POSFloatingControlView: View {
                 }
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
                     Button {
-                        showBarcodeScanning = true
+                        showBarcodeScanningInformation = true
                     } label: {
                         Label(
                             title: { Text(Localization.barcodeScanning) },
@@ -91,8 +91,8 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showProductRestrictionsModal) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
-        .posModal(isPresented: $showBarcodeScanning) {
-            PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanning)
+        .posModal(isPresented: $showBarcodeScanningInformation) {
+            PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningInformation)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

@@ -12,36 +12,16 @@ struct SimpleProductsOnlyInformation: View {
     }
 
     var body: some View {
-        VStack(spacing: Constants.contentBlockSpacing) {
-            HStack {
-                Spacer()
-                Button {
-                    isPresented = false
-                } label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .padding(Constants.dismissIconPadding)
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+        PointOfSaleInformationModal(isPresented: $isPresented, title: AttributedString(Localization.modalTitle)) {
+            PointOfSaleInformationModalParagraphView {
+                Text(issueMessage)
+                Text(futureMessage)
             }
 
-            VStack(spacing: Constants.textSpacing) {
-                Text(Localization.modalTitle)
-                    .font(.posHeadingBold)
-
-                Group {
-                    Text(issueMessage)
-                    Text(futureMessage)
-                }
-                .font(.posBodyLargeRegular())
-            }
-            .foregroundStyle(Color.posOnSurface)
-            .multilineTextAlignment(.center)
-
-            VStack(spacing: Constants.textSpacing) {
+            PointOfSaleInformationModalParagraphView(style: .outlined) {
                 Text(hintMessage)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurface)
+
+                Spacer().frame(height: POSSpacing.small)
 
                 Button {
                     deepLinkNavigator?.navigate(to: OrdersDestination.createOrder)
@@ -49,23 +29,9 @@ struct SimpleProductsOnlyInformation: View {
                     Label(Localization.modalAction, systemImage: "plus")
                         .font(.posBodySmallRegular())
                 }
+                .foregroundStyle(Color.posPrimary)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Constants.hintVerticalPadding)
-            .padding(.horizontal, Constants.hintHorizontalPadding)
-            .background(Color(.posSurfaceDim))
-            .clipShape(RoundedRectangle(cornerRadius: Constants.hintBackgroundCornerRadius))
-            .multilineTextAlignment(.center)
-
-            Button(action: {
-                isPresented = false
-            }) {
-                Text(Localization.okButtonTitle)
-            }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
-        .padding(Constants.modalContentPadding)
-        .frame(width: Constants.modalFrameWidth)
     }
 
     private var issueMessage: String {
@@ -84,17 +50,6 @@ struct SimpleProductsOnlyInformation: View {
 // Constants and Localization enums
 @available(iOS 17.0, *)
 private extension SimpleProductsOnlyInformation {
-    enum Constants {
-        static let modalFrameWidth: CGFloat = 896
-        static let modalContentPadding: CGFloat = POSSpacing.medium
-        static let hintVerticalPadding: CGFloat = POSSpacing.medium
-        static let hintHorizontalPadding: CGFloat = POSSpacing.medium
-        static let hintBackgroundCornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
-        static let contentBlockSpacing: CGFloat = POSSpacing.xxLarge
-        static let textSpacing: CGFloat = POSSpacing.small
-        static let dismissIconPadding: EdgeInsets = .init(top: 8, leading: 8, bottom: 8, trailing: 8)
-    }
-
     enum Localization {
         static let modalTitle = NSLocalizedString(
             "pos.simpleProductsModal.title",

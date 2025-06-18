@@ -233,19 +233,20 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product] {
         requestedProductIDsForLoading = productIDs
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
 
-            let key = ResultKey(siteID: siteID, productIDs: productIDs)
-            if let result = self.productsLoadingResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = ResultKey(siteID: siteID, productIDs: productIDs)
+        guard let result = productsLoadingResults[key] else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            throw NetworkError.notFound()
+        }
+
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 

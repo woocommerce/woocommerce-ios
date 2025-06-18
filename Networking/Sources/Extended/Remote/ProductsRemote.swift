@@ -8,7 +8,7 @@ public protocol ProductsRemoteProtocol {
     func addProduct(product: Product, completion: @escaping (Result<Product, Error>) -> Void)
     func deleteProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
     func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Result<Product, Error>) -> Void)
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void)
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product]
     func loadAllProducts(for siteID: Int64,
                          context: String?,
                          pageNumber: Int,
@@ -102,12 +102,11 @@ public protocol ProductsRemoteProtocol {
 }
 
 extension ProductsRemoteProtocol {
-    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping (Result<[Product], Error>) -> Void) {
-        loadProducts(for: siteID,
-                     by: productIDs,
-                     pageNumber: ProductsRemote.Default.pageNumber,
-                     pageSize: ProductsRemote.Default.pageSize,
-                     completion: completion)
+    public func loadProducts(for siteID: Int64, by productIDs: [Int64]) async throws -> [Product] {
+        try await loadProducts(for: siteID,
+                               by: productIDs,
+                               pageNumber: ProductsRemote.Default.pageNumber,
+                               pageSize: ProductsRemote.Default.pageSize)
     }
 }
 
@@ -387,16 +386,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - productIDs: The array of product IDs that are requested.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadProducts(for siteID: Int64,
                              by productIDs: [Int64],
                              pageNumber: Int = Default.pageNumber,
-                             pageSize: Int = Default.pageSize,
-                             completion: @escaping (Result<[Product], Error>) -> Void) {
+                             pageSize: Int = Default.pageSize) async throws -> [Product] {
         guard productIDs.isEmpty == false else {
-            completion(.success([]))
-            return
+            return []
         }
 
         let stringOfProductIDs = productIDs.map { String($0) }
@@ -409,9 +405,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<Product>(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
 

@@ -252,6 +252,43 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - Load products tests
+
+    func test_loadProducts_properly_returns_parsed_products() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        let products = try await remote.loadProducts(for: sampleSiteID, by: [6, 2])
+
+        // Then
+        XCTAssertEqual(products.count, 10)
+    }
+
+    func test_loadProducts_returns_empty_array_when_productIDs_is_empty() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let products = try await remote.loadProducts(for: sampleSiteID, by: [])
+
+        // Then
+        XCTAssertEqual(products.count, 0)
+    }
+
+    func test_loadProducts_properly_relays_netwoking_errors() async {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        do {
+            _ = try await remote.loadProducts(for: sampleSiteID, by: [6, 2])
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .notFound())
+        }
+    }
+
     // MARK: - Load all products tests
 
     /// Verifies that loadAllProducts properly parses the `products-load-all` sample response.

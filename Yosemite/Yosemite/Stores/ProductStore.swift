@@ -340,13 +340,12 @@ private extension ProductStore {
             return
         }
 
-        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
-                    onCompletion(nil)
-                })
-            case .failure(let error):
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadProducts(for: order.siteID, by: missingIDs)
+                await upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID)
+                onCompletion(nil)
+            } catch {
                 onCompletion(error)
             }
         }
@@ -365,14 +364,13 @@ private extension ProductStore {
             return
         }
 
-        remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
-                    let hasNextPage = products.count == pageSize
-                    onCompletion(.success((products: products, hasNextPage: hasNextPage)))
-                })
-            case .failure(let error):
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize)
+                await upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID)
+                let hasNextPage = products.count == pageSize
+                onCompletion(.success((products: products, hasNextPage: hasNextPage)))
+            } catch {
                 onCompletion(.failure(error))
             }
         }

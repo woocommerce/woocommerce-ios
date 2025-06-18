@@ -164,7 +164,7 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "1"))
         parser.processKeyPress(MockUIKey(character: "2"))
         parser.processKeyPress(MockUIKey(character: "3"))
-        mockTimeProvider.advance(by: 0.101) // Just over maximumInterCharacterTime
+        mockTimeProvider.advance(by: 0.201) // Just over maximumInterCharacterTime
         parser.processKeyPress(MockUIKey(character: "4"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
@@ -186,13 +186,13 @@ struct HIDBarcodeParserTests {
 
         // Simulate slow typing
         parser.processKeyPress(MockUIKey(character: "1"))
-        mockTimeProvider.advance(by: 0.099) // Just under maximumInterCharacterTime
+        mockTimeProvider.advance(by: 0.199) // Just under maximumInterCharacterTime
         parser.processKeyPress(MockUIKey(character: "2"))
-        mockTimeProvider.advance(by: 0.099)
+        mockTimeProvider.advance(by: 0.199)
         parser.processKeyPress(MockUIKey(character: "3"))
-        mockTimeProvider.advance(by: 0.099)
+        mockTimeProvider.advance(by: 0.199)
         parser.processKeyPress(MockUIKey(character: "4"))
-        mockTimeProvider.advance(by: 0.099)
+        mockTimeProvider.advance(by: 0.199)
         parser.processKeyPress(MockUIKey(character: "\r"))
 
         #expect(scannedCodes == ["1234"])

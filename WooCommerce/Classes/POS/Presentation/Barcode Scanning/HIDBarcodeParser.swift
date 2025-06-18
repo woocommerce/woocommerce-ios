@@ -196,6 +196,6 @@ struct HIDBarcodeParserConfiguration {
         terminatingStrings: ["\r", "\n"],
         minimumBarcodeLength: 4,
         maximumScanTime: 1.5,
-        maximumInterCharacterTime: 0.1
+        maximumInterCharacterTime: 0.2
     )
 }

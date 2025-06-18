@@ -1,5 +1,6 @@
 import Combine
 import Photos
+import SwiftUI
 import TestKit
 import XCTest
 @testable import WooCommerce
@@ -451,6 +452,115 @@ final class MainTabBarControllerTests: XCTestCase {
         TestingAppDelegate.mockTabBarController = nil
     }
 
+    @available(iOS 17.0, *)
+    func test_pos_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
+        mockPOSEligibilityChecker.initialVisibility = true
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        // For initializing `CardPresentPaymentService` async in `POSTabCoordinator.presentPOSView`.
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .publishCardReaderConnections(completion) = action {
+                completion(Just<[CardReader]>([]).eraseToAnyPublisher())
+            }
+        }
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        stores: stores,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
+        }) else {
+            return
+        }
+
+        window.rootViewController = tabBarController
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When POS tab initial visibility is set to true
+        stores.updateDefaultStore(storeID: 1126)
+
+        // Then POS tab is visible before eligibility check is returned
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 5
+        }
+        assertThat(tabBarController.tabRootViewController(tab: .pointOfSale, isPOSTabVisible: true),
+                   isAnInstanceOf: POSTabViewController.self)
+        let posTabContainerController = try XCTUnwrap(
+            tabBarController.viewControllers?[WooTab.pointOfSale.visibleIndex(isPOSTabVisible: true)] as? TabContainerController
+        )
+
+        // When selecting POS tab
+        XCTAssertFalse(tabBarController.tabBarController(tabBarController, shouldSelect: posTabContainerController))
+
+        waitUntil {
+            posTabContainerController.presentedViewController is UIHostingController<PointOfSaleEntryPointView>
+        }
+
+        // When returning POS eligibility as ineligible
+        mockPOSEligibilityChecker.setEligibilityResult(.ineligible(reason: .featureFlagDisabled))
+
+        // Then POS tab is hidden
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 4
+        }
+
+        assertThat(tabBarController.tabRootViewController(tab: .myStore, isPOSTabVisible: false),
+                   isAnInstanceOf: DashboardViewHostingController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
+                   isAnInstanceOf: OrdersSplitViewWrapperController.self)
+        assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
+                   isAnInstanceOf: ProductsViewController.self)
+
+        let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
+        assertThat(hubMenuNavigationController.topViewController,
+                   isAnInstanceOf: HubMenuViewController.self)
+    }
+
+    func test_pos_tab_visibility_is_cached_after_eligibility_check() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
+
+        let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
+        mockPOSEligibilityChecker.initialVisibility = false
+
+        let mockPOSEligibilityService = MockPOSEligibilityService()
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: featureFlagService,
+                                        stores: stores,
+                                        posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker },
+                                        posEligibilityService: mockPOSEligibilityService)
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        // When POS tab initial visibility is set to true
+        stores.updateDefaultStore(storeID: 1216)
+        mockPOSEligibilityChecker.setEligibilityResult(.eligible)
+
+        waitUntil {
+            tabBarController.tabRootViewControllers.count == 5
+        }
+
+        // Then
+        XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: 1216), true)
+    }
+
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
@@ -527,5 +637,36 @@ extension MainTabBarController {
             return nil
         }
         return viewController
+    }
+}
+
+private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    var initialVisibility: Bool = false
+    private var eligibilityResult: POSEligibilityState?
+    private var eligibilityContinuation: CheckedContinuation<POSEligibilityState, Never>?
+
+    func setEligibilityResult(_ result: POSEligibilityState) {
+        eligibilityResult = result
+        if let continuation = eligibilityContinuation {
+            eligibilityContinuation = nil
+            continuation.resume(returning: result)
+        }
+    }
+
+    func checkInitialVisibility() -> Bool {
+        initialVisibility
+    }
+
+    func checkEligibility() async -> POSEligibilityState {
+        if let eligibilityResult {
+            return eligibilityResult
+        }
+        return await withCheckedContinuation { continuation in
+            eligibilityContinuation = continuation
+            // If we already have a result, return it immediately.
+            if eligibilityContinuation == nil {
+                continuation.resume(returning: eligibilityResult ?? .eligible)
+            }
+        }
     }
 }

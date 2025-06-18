@@ -97,8 +97,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .searchProductsInPOSPt2PopularProducts:
             return true
-        case .searchCouponsInPOS:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:

@@ -87,6 +87,8 @@
 		029BA55B255E0D39006171FD /* ShippingLabelAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029BA55A255E0D39006171FD /* ShippingLabelAction.swift */; };
 		029F44CB28D310BA00FCF439 /* ProductSearchFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029F44CA28D310BA00FCF439 /* ProductSearchFilter.swift */; };
 		02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */; };
+		02A6CA4F2E01124D00FFD6CE /* POSEligibilityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6CA4E2E01124200FFD6CE /* POSEligibilityService.swift */; };
+		02A6CA552E01139600FFD6CE /* POSEligibilityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6CA542E01139600FFD6CE /* POSEligibilityServiceTests.swift */; };
 		02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */; };
 		02AED9DA2AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AED9D92AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift */; };
 		02C254F62563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254F52563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift */; };
@@ -662,6 +664,8 @@
 		029BA55A255E0D39006171FD /* ShippingLabelAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelAction.swift; sourceTree = "<group>"; };
 		029F44CA28D310BA00FCF439 /* ProductSearchFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchFilter.swift; sourceTree = "<group>"; };
 		02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
+		02A6CA4E2E01124200FFD6CE /* POSEligibilityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEligibilityService.swift; sourceTree = "<group>"; };
+		02A6CA542E01139600FFD6CE /* POSEligibilityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEligibilityServiceTests.swift; sourceTree = "<group>"; };
 		02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ComparableTests.swift"; sourceTree = "<group>"; };
 		02AED9D92AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItemProductAddOn+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		02C254F52563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1313,6 +1317,22 @@
 			path = Enums;
 			sourceTree = "<group>";
 		};
+		02A6CA4D2E010F6600FFD6CE /* Eligibility */ = {
+			isa = PBXGroup;
+			children = (
+				02A6CA4E2E01124200FFD6CE /* POSEligibilityService.swift */,
+			);
+			path = Eligibility;
+			sourceTree = "<group>";
+		};
+		02A6CA532E01138500FFD6CE /* Eligibility */ = {
+			isa = PBXGroup;
+			children = (
+				02A6CA542E01139600FFD6CE /* POSEligibilityServiceTests.swift */,
+			);
+			path = Eligibility;
+			sourceTree = "<group>";
+		};
 		02E262BB238CE45300B79588 /* ShippingSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -1651,6 +1671,7 @@
 		687F83702C0EBF3E00460AB3 /* PointOfSale */ = {
 			isa = PBXGroup;
 			children = (
+				02A6CA532E01138500FFD6CE /* Eligibility */,
 				20A8E9332DEF5452000C3DE7 /* PointOfSaleBarcodeScanServiceTests.swift */,
 				20A8F2552DF077FD000C3DE7 /* PointOfSaleItemMapperTests.swift */,
 				013337902DBFE970000B1D8D /* PointOfSaleSearchCouponFetchStrategyTests.swift */,
@@ -1671,6 +1692,7 @@
 			isa = PBXGroup;
 			children = (
 				0149547B2DBBA51500C8870D /* Coupons */,
+				02A6CA4D2E010F6600FFD6CE /* Eligibility */,
 				0149547A2DBBA50A00C8870D /* Items */,
 				206643562DAEABF7002D5191 /* POSSearchHistoryService.swift */,
 				2066435A2DAEAC76002D5191 /* POSItemType.swift */,
@@ -2424,6 +2446,7 @@
 				2095A64B2D9D82D400CA1849 /* PointOfSalePurchasableItemFetchStrategy.swift in Sources */,
 				CC6A054628773F75002C144E /* MetaData+ReadOnlyConvertible.swift in Sources */,
 				209AD3CC2AC1A68800825D76 /* WooPaymentsPayoutService.swift in Sources */,
+				02A6CA4F2E01124D00FFD6CE /* POSEligibilityService.swift in Sources */,
 				029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */,
 				021EAA5C25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift in Sources */,
 				45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */,
@@ -2812,6 +2835,7 @@
 				E1F54D0427AD4DAF00012983 /* CardPresentConfigurationTests.swift in Sources */,
 				206BFD582DF31432000BD68E /* POSProductOrVariationResolverTests.swift in Sources */,
 				025CA2D0238F54E800B05C81 /* ProductShippingClassStoreTests.swift in Sources */,
+				02A6CA552E01139600FFD6CE /* POSEligibilityServiceTests.swift in Sources */,
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				02DAE7F8291A9F11009342B7 /* DomainStoreTests.swift in Sources */,
 				DED91DF62AD67F8F00CDCC53 /* MockBlazeRemote.swift in Sources */,

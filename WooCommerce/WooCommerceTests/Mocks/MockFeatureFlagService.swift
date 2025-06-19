@@ -19,7 +19,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
     var viewEditCustomFieldsInProductsAndOrders: Bool
-    var favoriteProducts: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
@@ -44,7 +43,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
          viewEditCustomFieldsInProductsAndOrders: Bool = false,
-         favoriteProducts: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
@@ -67,7 +65,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
-        self.favoriteProducts = favoriteProducts
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
@@ -117,8 +114,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return revampedShippingLabelCreation
         case .viewEditCustomFieldsInProductsAndOrders:
             return viewEditCustomFieldsInProductsAndOrders
-        case .favoriteProducts:
-            return favoriteProducts
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

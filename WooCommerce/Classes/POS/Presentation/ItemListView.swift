@@ -338,7 +338,11 @@ private extension ItemListView {
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
                     itemListType: selectedItemListType,
-                    baseItem: .root))
+                    baseItem: .root)) {
+                Task {
+                    await itemsController(selectedItemListType).loadItems(base: .root)
+                }
+            }
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(

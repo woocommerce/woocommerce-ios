@@ -77,8 +77,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         /// Custom fields should only be available on .edit form type. For other cases:
         /// - .add: The API requires product ID is required to save custom fields, so it can't be added during product creation.
         /// - .readonly: Hide Custom Fields setting as it won't be useful in this context.
-        featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
-        && formType == .edit
+        formType == .edit
     }
 
     // TODO: Remove default parameter

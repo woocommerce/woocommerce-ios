@@ -153,10 +153,6 @@ public enum FeatureFlag: Int {
     ///
     case googleAdsCampaignCreationOnWebView
 
-    /// Enables view/editing of custom fields (metadata) in both Products and Orders
-    ///
-    case viewEditCustomFieldsInProductsAndOrders
-
     /// Supports evergreen campaigns for Blaze
     ///
     case blazeEvergreenCampaigns

@@ -62,9 +62,8 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-        let actions = Fixtures.actionsFactory(product: model, formType: .add, featureFlagService: featureFlagService).settingsSectionActions()
-        let bottomSheetActions = Fixtures.actionsFactory(product: model, formType: .add, featureFlagService: featureFlagService).bottomSheetActions()
+        let actions = Fixtures.actionsFactory(product: model, formType: .add).settingsSectionActions()
+        let bottomSheetActions = Fixtures.actionsFactory(product: model, formType: .add).bottomSheetActions()
 
         // Then
         XCTAssertFalse(actions.contains(.customFields))

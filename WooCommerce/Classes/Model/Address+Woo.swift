@@ -3,8 +3,8 @@ import Contacts
 
 #if canImport(Yosemite)
 import Yosemite
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
+#elseif canImport(NetworkingCore)
+import NetworkingCore
 #endif
 
 

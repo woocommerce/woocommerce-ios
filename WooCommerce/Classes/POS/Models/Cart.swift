@@ -100,20 +100,23 @@ extension Cart {
         }
     }
 
-    mutating func addLoadingItem() -> UUID {
+    mutating func addLoadingItem() -> Cart.PurchasableItem {
         let id = UUID()
         let loadingItem = PurchasableItem.loading(id: id)
         purchasableItems.insert(loadingItem, at: purchasableItems.startIndex)
-        return id
+        return loadingItem
     }
 
-    mutating func updateLoadingItem(id: UUID, with posItem: POSItem) {
-        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return }
+    @discardableResult
+    mutating func updateLoadingItem(id: UUID, with posItem: POSItem) -> Cart.PurchasableItem? {
+        guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
         if let productItem = createPurchasableItem(id: id, from: posItem) {
             purchasableItems[index] = productItem
+            return productItem
         } else {
             purchasableItems.remove(at: index)
+            return nil
         }
     }
 

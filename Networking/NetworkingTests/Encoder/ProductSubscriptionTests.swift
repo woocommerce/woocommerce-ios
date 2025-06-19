@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class ProductSubscriptionTests: XCTestCase {
     func test_it_encodes_into_expected_key_value_format() throws {

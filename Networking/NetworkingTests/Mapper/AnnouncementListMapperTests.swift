@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class AnnouncementListMapperTests: XCTestCase {
     /// Verifies that all of the Announcement fields are properly parsed.

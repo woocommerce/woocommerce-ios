@@ -37,16 +37,20 @@ extension WooAnalyticsEvent {
         }
 
         static func addItemToCart(
-            sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+            sourceView: WooAnalyticsEvent.PointOfSale.SourceView? = nil,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
-            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
+            productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
+            error: Error? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
-                Key.sourceView: sourceView.rawValue,
                 Key.sourceViewType: sourceViewType.rawValue,
                 Key.itemType: itemType.rawValue
             ]
+
+            if let sourceView {
+                properties[Key.sourceView] = sourceView.rawValue
+            }
 
             if let productType {
                 properties[Key.productType] = productType.rawValue
@@ -54,7 +58,8 @@ extension WooAnalyticsEvent {
 
             return WooAnalyticsEvent(
                 statName: .pointOfSaleAddItemToCart,
-                properties: properties
+                properties: properties,
+                error: error
             )
         }
 
@@ -217,6 +222,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case list
         case search
         case preSearch = "pre_search"
+        case scanner
 
         init(isSearching: Bool, searchTerm: String = "") {
             switch (isSearching, searchTerm.isEmpty) {
@@ -235,6 +241,19 @@ extension WooAnalyticsEvent.PointOfSale {
     enum ItemType: String {
         case product
         case coupon
+        case loading
+        case error
+
+        init(cartItem: Cart.PurchasableItem) {
+            switch cartItem.state {
+            case .loaded:
+                self = .product
+            case .loading:
+                self = .loading
+            case .error:
+                self = .error
+            }
+        }
     }
 
     /// Types of products supported in the POS

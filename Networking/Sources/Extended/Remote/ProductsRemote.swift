@@ -29,18 +29,15 @@ public protocol ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
-                        excludedProductIDs: [Int64],
-                        completion: @escaping (Result<[Product], Error>) -> Void)
+                        excludedProductIDs: [Int64]) async throws -> [Product]
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void)
+                             pageSize: Int) async throws -> [Product]
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void)
+                             pageSize: Int) async throws -> [Product]
     func searchSku(for siteID: Int64,
                    sku: String,
                    completion: @escaping (Result<String, Error>) -> Void)
@@ -434,7 +431,6 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - excludedProductIDs: a list of product IDs to be excluded from the results.
-    ///     - completion: Closure to be executed upon completion.
     ///
     public func searchProducts(for siteID: Int64,
                                keyword: String,
@@ -444,8 +440,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                productStatus: ProductStatus? = nil,
                                productType: ProductType? = nil,
                                productCategory: ProductCategory? = nil,
-                               excludedProductIDs: [Int64] = [],
-                               completion: @escaping (Result<[Product], Error>) -> Void) {
+                               excludedProductIDs: [Int64] = []) async throws -> [Product] {
         let stringOfExcludedProductIDs = excludedProductIDs.map { String($0) }
             .joined(separator: ",")
 
@@ -467,9 +462,9 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
+        let mapper = ListMapper<Product>(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `Product`s that match the SKU. Partial SKU search is supported for WooCommerce version 6.6+, otherwise full SKU match is performed.
@@ -478,12 +473,10 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
     ///   - keyword: Search string that should be matched by the SKU (partial or full depending on the WC version).
     ///   - pageNumber: Number of page that should be retrieved.
     ///   - pageSize: Number of products to be retrieved per page.
-    ///   - completion: Closure to be executed upon completion.
     public func searchProductsBySKU(for siteID: Int64,
                                     keyword: String,
                                     pageNumber: Int,
-                                    pageSize: Int,
-                                    completion: @escaping (Result<[Product], Error>) -> Void) {
+                                    pageSize: Int) async throws -> [Product] {
         let parameters = [
             ParameterKey.sku: keyword,
             ParameterKey.partialSKUSearch: keyword,
@@ -493,15 +486,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
-        enqueue(request, mapper: mapper, completion: completion)
+        let mapper = ListMapper<Product>(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     public func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void) {
+                             pageSize: Int) async throws -> [Product] {
         let parameters = [
             ParameterKey.globalUniqueID: keyword,
             ParameterKey.page: String(pageNumber),
@@ -510,8 +502,8 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
         ]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = ProductListMapper(siteID: siteID)
-        enqueue(request, mapper: mapper, completion: completion)
+        let mapper = ListMapper<Product>(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a product SKU if available.

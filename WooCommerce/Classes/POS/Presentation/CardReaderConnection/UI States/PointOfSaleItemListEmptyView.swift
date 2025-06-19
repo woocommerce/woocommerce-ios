@@ -147,11 +147,13 @@ struct PointOfSaleItemListEmptyViewModel {
     }
 
     var buttonTitle: String? {
-        switch itemListType {
-        case .coupons(search: false):
+        switch (baseItem, itemListType) {
+        case (.root, .coupons(search: false)):
             return Localization.emptyCouponsButtonTitle
-        case .products(search: false):
+        case (.root, .products(search: false)):
             return Localization.emptyProductsButtonTitle
+        case (.parent, .products):
+            return Localization.emptyVariationsButtonTitle
         default:
             return nil
         }
@@ -236,6 +238,11 @@ struct PointOfSaleItemListEmptyViewModel {
             "pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle",
             value: "Refresh",
             comment: "Text for the button appearing on the products list screen when there are no products found."
+        )
+        static let emptyVariationsButtonTitle = NSLocalizedString(
+            "pos.pointOfSaleItemListEmptyView.emptyVariationsButtonTitle",
+            value: "Refresh",
+            comment: "Text for the button appearing on the variations list screen when there are no variations found."
         )
     }
 }

@@ -182,6 +182,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
+    @Published var showingPaymentMethods = false
     @Published private var paymentMethod: ShippingLabelPaymentMethod?
     @Published private(set) var paymentMethodLine: WooShippingPaymentMethodLine?
 
@@ -296,6 +297,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
     func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
+        guard paymentMethod != nil else {
+            showingPaymentMethods = true
+            return
+        }
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
 

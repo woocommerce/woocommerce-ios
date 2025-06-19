@@ -2,6 +2,7 @@ import Alamofire
 import Foundation
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 /// WordPress.com Requests Unit Tests
 ///

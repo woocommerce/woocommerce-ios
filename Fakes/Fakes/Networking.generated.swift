@@ -47,19 +47,6 @@ extension Networking.APNSDevice {
         )
     }
 }
-extension Networking.Account {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Account {
-        .init(
-            userID: .fake(),
-            displayName: .fake(),
-            email: .fake(),
-            username: .fake(),
-            gravatarUrl: .fake()
-        )
-    }
-}
 extension Networking.AccountSettings {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -118,25 +105,6 @@ extension Networking.AddOnType {
     ///
     public static func fake() -> Networking.AddOnType {
         .multipleChoice
-    }
-}
-extension Networking.Address {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Address {
-        .init(
-            firstName: .fake(),
-            lastName: .fake(),
-            company: .fake(),
-            address1: .fake(),
-            address2: .fake(),
-            city: .fake(),
-            state: .fake(),
-            postcode: .fake(),
-            country: .fake(),
-            phone: .fake(),
-            email: .fake()
-        )
     }
 }
 extension Networking.Announcement {
@@ -503,13 +471,6 @@ extension Networking.DomainContactInfo {
         )
     }
 }
-extension Networking.DotcomError {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.DotcomError {
-        .empty
-    }
-}
 extension Networking.DotcomSitePlugin {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -756,248 +717,6 @@ extension Networking.Media {
         )
     }
 }
-extension Networking.MetaData {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.MetaData {
-        .init(
-            metadataID: .fake(),
-            key: .fake(),
-            value: .fake()
-        )
-    }
-}
-extension Networking.Note {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Note {
-        .init(
-            noteID: .fake(),
-            hash: .fake(),
-            read: .fake(),
-            icon: .fake(),
-            noticon: .fake(),
-            timestamp: .fake(),
-            type: .fake(),
-            subtype: .fake(),
-            url: .fake(),
-            title: .fake(),
-            subject: .fake(),
-            header: .fake(),
-            body: .fake(),
-            meta: .fake()
-        )
-    }
-}
-extension Networking.NoteBlock {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.NoteBlock {
-        .init(
-            media: .fake(),
-            ranges: .fake(),
-            text: .fake(),
-            actions: .fake(),
-            meta: .fake(),
-            type: .fake()
-        )
-    }
-}
-extension Networking.NoteMedia {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.NoteMedia {
-        .init(
-            type: .fake(),
-            range: .fake(),
-            url: .fake(),
-            size: .fake()
-        )
-    }
-}
-extension Networking.NoteRange {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.NoteRange {
-        .init(
-            type: .fake(),
-            range: .fake(),
-            url: .fake(),
-            identifier: .fake(),
-            postID: .fake(),
-            siteID: .fake(),
-            value: .fake()
-        )
-    }
-}
-extension Networking.Order {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Order {
-        .init(
-            siteID: .fake(),
-            orderID: .fake(),
-            parentID: .fake(),
-            customerID: .fake(),
-            orderKey: .fake(),
-            isEditable: .fake(),
-            needsPayment: .fake(),
-            needsProcessing: .fake(),
-            number: .fake(),
-            status: .fake(),
-            currency: .fake(),
-            currencySymbol: .fake(),
-            customerNote: .fake(),
-            dateCreated: .fake(),
-            dateModified: .fake(),
-            datePaid: .fake(),
-            discountTotal: .fake(),
-            discountTax: .fake(),
-            shippingTotal: .fake(),
-            shippingTax: .fake(),
-            total: .fake(),
-            totalTax: .fake(),
-            paymentMethodID: .fake(),
-            paymentMethodTitle: .fake(),
-            paymentURL: .fake(),
-            chargeID: .fake(),
-            items: .fake(),
-            billingAddress: .fake(),
-            shippingAddress: .fake(),
-            shippingLines: .fake(),
-            coupons: .fake(),
-            refunds: .fake(),
-            fees: .fake(),
-            taxes: .fake(),
-            customFields: .fake(),
-            renewalSubscriptionID: .fake(),
-            appliedGiftCards: .fake(),
-            attributionInfo: .fake(),
-            shippingLabels: .fake()
-        )
-    }
-}
-extension Networking.OrderAttributionInfo {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderAttributionInfo {
-        .init(
-            sourceType: .fake(),
-            campaign: .fake(),
-            source: .fake(),
-            medium: .fake(),
-            deviceType: .fake(),
-            sessionPageViews: .fake()
-        )
-    }
-}
-extension Networking.OrderCouponLine {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderCouponLine {
-        .init(
-            couponID: .fake(),
-            code: .fake(),
-            discount: .fake(),
-            discountTax: .fake()
-        )
-    }
-}
-extension Networking.OrderFeeLine {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderFeeLine {
-        .init(
-            feeID: .fake(),
-            name: .fake(),
-            taxClass: .fake(),
-            taxStatus: .fake(),
-            total: .fake(),
-            totalTax: .fake(),
-            taxes: .fake(),
-            attributes: .fake()
-        )
-    }
-}
-extension Networking.OrderFeeTaxStatus {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderFeeTaxStatus {
-        .taxable
-    }
-}
-extension Networking.OrderGiftCard {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderGiftCard {
-        .init(
-            giftCardID: .fake(),
-            code: .fake(),
-            amount: .fake()
-        )
-    }
-}
-extension Networking.OrderItem {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItem {
-        .init(
-            itemID: .fake(),
-            name: .fake(),
-            productID: .fake(),
-            variationID: .fake(),
-            quantity: .fake(),
-            price: .fake(),
-            sku: .fake(),
-            subtotal: .fake(),
-            subtotalTax: .fake(),
-            taxClass: .fake(),
-            taxes: .fake(),
-            total: .fake(),
-            totalTax: .fake(),
-            attributes: .fake(),
-            addOns: .fake(),
-            parent: .fake(),
-            bundleConfiguration: .fake()
-        )
-    }
-}
-extension Networking.OrderItemAttribute {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemAttribute {
-        .init(
-            metaID: .fake(),
-            name: .fake(),
-            value: .fake()
-        )
-    }
-}
-extension Networking.OrderItemBundleItem {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemBundleItem {
-        .init(
-            bundledItemID: .fake(),
-            productID: .fake(),
-            quantity: .fake(),
-            isOptionalAndSelected: .fake(),
-            variationID: .fake(),
-            variationAttributes: .fake()
-        )
-    }
-}
-extension Networking.OrderItemProductAddOn {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemProductAddOn {
-        .init(
-            addOnID: .fake(),
-            key: .fake(),
-            value: .fake()
-        )
-    }
-}
 extension Networking.OrderItemRefund {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1020,17 +739,6 @@ extension Networking.OrderItemRefund {
         )
     }
 }
-extension Networking.OrderItemTax {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemTax {
-        .init(
-            taxID: .fake(),
-            subtotal: .fake(),
-            total: .fake()
-        )
-    }
-}
 extension Networking.OrderItemTaxRefund {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1039,103 +747,6 @@ extension Networking.OrderItemTaxRefund {
             taxID: .fake(),
             subtotal: .fake(),
             total: .fake()
-        )
-    }
-}
-extension Networking.OrderNote {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderNote {
-        .init(
-            noteID: .fake(),
-            dateCreated: .fake(),
-            note: .fake(),
-            isCustomerNote: .fake(),
-            author: .fake()
-        )
-    }
-}
-extension Networking.OrderRefundCondensed {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderRefundCondensed {
-        .init(
-            refundID: .fake(),
-            reason: .fake(),
-            total: .fake()
-        )
-    }
-}
-extension Networking.OrderStatsV4 {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderStatsV4 {
-        .init(
-            siteID: .fake(),
-            granularity: .fake(),
-            totals: .fake(),
-            intervals: .fake()
-        )
-    }
-}
-extension Networking.OrderStatsV4Interval {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderStatsV4Interval {
-        .init(
-            interval: .fake(),
-            dateStart: .fake(),
-            dateEnd: .fake(),
-            subtotals: .fake()
-        )
-    }
-}
-extension Networking.OrderStatsV4Totals {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderStatsV4Totals {
-        .init(
-            totalOrders: .fake(),
-            totalItemsSold: .fake(),
-            grossRevenue: .fake(),
-            netRevenue: .fake(),
-            averageOrderValue: .fake()
-        )
-    }
-}
-extension Networking.OrderStatus {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderStatus {
-        .init(
-            name: .fake(),
-            siteID: .fake(),
-            slug: .fake(),
-            total: .fake()
-        )
-    }
-}
-extension Networking.OrderStatusEnum {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderStatusEnum {
-        .autoDraft
-    }
-}
-extension Networking.OrderTaxLine {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderTaxLine {
-        .init(
-            taxID: .fake(),
-            rateCode: .fake(),
-            rateID: .fake(),
-            label: .fake(),
-            isCompoundTaxRate: .fake(),
-            totalTax: .fake(),
-            totalShippingTax: .fake(),
-            ratePercent: .fake(),
-            attributes: .fake()
         )
     }
 }
@@ -1746,17 +1357,6 @@ extension Networking.ProductVariation {
         )
     }
 }
-extension Networking.ProductVariationAttribute {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductVariationAttribute {
-        .init(
-            id: .fake(),
-            name: .fake(),
-            option: .fake()
-        )
-    }
-}
 extension Networking.ProductsReportItem {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1853,34 +1453,6 @@ extension Networking.ShipmentTrackingProviderGroup {
         )
     }
 }
-extension Networking.ShippingLabel {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLabel {
-        .init(
-            siteID: .fake(),
-            orderID: .fake(),
-            shippingLabelID: .fake(),
-            carrierID: .fake(),
-            dateCreated: .fake(),
-            packageName: .fake(),
-            rate: .fake(),
-            currency: .fake(),
-            trackingNumber: .fake(),
-            serviceName: .fake(),
-            refundableAmount: .fake(),
-            status: .fake(),
-            refund: .fake(),
-            originAddress: .fake(),
-            destinationAddress: .fake(),
-            productIDs: .fake(),
-            productNames: .fake(),
-            commercialInvoiceURL: .fake(),
-            usedDate: .fake(),
-            expiryDate: .fake()
-        )
-    }
-}
 extension Networking.ShippingLabelAccountSettings {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1899,23 +1471,6 @@ extension Networking.ShippingLabelAccountSettings {
             paperSize: .fake(),
             lastSelectedPackageID: .fake(),
             addPaymentMethodURL: .fake()
-        )
-    }
-}
-extension Networking.ShippingLabelAddress {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLabelAddress {
-        .init(
-            company: .fake(),
-            name: .fake(),
-            phone: .fake(),
-            country: .fake(),
-            state: .fake(),
-            address1: .fake(),
-            address2: .fake(),
-            city: .fake(),
-            postcode: .fake()
         )
     }
 }
@@ -2177,23 +1732,6 @@ extension Networking.ShippingLabelPurchase {
         )
     }
 }
-extension Networking.ShippingLabelRefund {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLabelRefund {
-        .init(
-            dateRequested: .fake(),
-            status: .fake()
-        )
-    }
-}
-extension Networking.ShippingLabelRefundStatus {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLabelRefundStatus {
-        .pending
-    }
-}
 extension Networking.ShippingLabelSettings {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2205,13 +1743,6 @@ extension Networking.ShippingLabelSettings {
         )
     }
 }
-extension Networking.ShippingLabelStatus {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLabelStatus {
-        .purchased
-    }
-}
 extension Networking.ShippingLabelStoreOptions {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -2221,31 +1752,6 @@ extension Networking.ShippingLabelStoreOptions {
             dimensionUnit: .fake(),
             weightUnit: .fake(),
             originCountry: .fake()
-        )
-    }
-}
-extension Networking.ShippingLine {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLine {
-        .init(
-            shippingID: .fake(),
-            methodTitle: .fake(),
-            methodID: .fake(),
-            total: .fake(),
-            totalTax: .fake(),
-            taxes: .fake()
-        )
-    }
-}
-extension Networking.ShippingLineTax {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ShippingLineTax {
-        .init(
-            taxID: .fake(),
-            subtotal: .fake(),
-            total: .fake()
         )
     }
 }
@@ -2349,54 +1855,11 @@ extension Networking.SiteSettingGroup {
         .general
     }
 }
-extension Networking.SiteSummaryStats {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.SiteSummaryStats {
-        .init(
-            siteID: .fake(),
-            date: .fake(),
-            period: .fake(),
-            visitors: .fake(),
-            views: .fake()
-        )
-    }
-}
 extension Networking.SiteVisibility {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> Networking.SiteVisibility {
         .privateSite
-    }
-}
-extension Networking.SiteVisitStats {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.SiteVisitStats {
-        .init(
-            siteID: .fake(),
-            date: .fake(),
-            granularity: .fake(),
-            items: .fake()
-        )
-    }
-}
-extension Networking.SiteVisitStatsItem {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.SiteVisitStatsItem {
-        .init(
-            period: .fake(),
-            visitors: .fake(),
-            views: .fake()
-        )
-    }
-}
-extension Networking.StatGranularity {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.StatGranularity {
-        .day
     }
 }
 extension Networking.StateOfACountry {
@@ -2407,13 +1870,6 @@ extension Networking.StateOfACountry {
             code: .fake(),
             name: .fake()
         )
-    }
-}
-extension Networking.StatsGranularityV4 {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.StatsGranularityV4 {
-        .hourly
     }
 }
 extension Networking.StoredProductSettings {

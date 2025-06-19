@@ -2,8 +2,8 @@ import Foundation
 
 #if canImport(Networking)
 import struct Networking.Note
-#elseif canImport(NetworkingWatchOS)
-import struct NetworkingWatchOS.Note
+#elseif canImport(NetworkingCore)
+import struct NetworkingCore.Note
 #endif
 #if DEBUG
 import UserNotifications

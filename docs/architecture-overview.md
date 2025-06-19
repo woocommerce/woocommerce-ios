@@ -25,12 +25,12 @@ Throughout the entire architecture design process, we've priorized several key c
 
 2.  **Separation of concerns**
 
-        We've emphasized a clean separation of concerns at the top level, by splitting our app into four targets:
+        We've emphasized a clean separation of concerns at the top level, by splitting our app into a number of modules. The main four are:
 
         1.  Storage.framework:
             Wraps up all of the actual CoreData interactions, and exposes a framework-agnostic Public API.
 
-        2.  Networking.framework:
+        2.  Networking (`Modules/Sources/Networking`):
             In charge of providing a Swift API around the WooCommerce REST Endpoints.
 
         3.  Yosemite.framework:

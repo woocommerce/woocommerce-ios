@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class ProductVariationEncoderTests: XCTestCase {
     func test_it_encodes_subscription_into_meta_data() throws {

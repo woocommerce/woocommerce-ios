@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 
 @testable import Networking
+@testable import NetworkingCore
 
 final class String_HTMLTests: XCTestCase {
 

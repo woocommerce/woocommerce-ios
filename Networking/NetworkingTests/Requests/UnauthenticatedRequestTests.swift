@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 /// `UnauthenticatedRequest` Unit Tests
 final class UnauthenticatedRequestTests: XCTestCase {

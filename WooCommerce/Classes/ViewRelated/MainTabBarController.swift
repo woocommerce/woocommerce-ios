@@ -123,6 +123,7 @@ final class MainTabBarController: UITabBarController {
     private let stores: StoresManager
     private let analytics: Analytics
     private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
+    private let posEligibilityService: POSEligibilityServiceProtocol
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -139,7 +140,8 @@ final class MainTabBarController: UITabBarController {
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
-          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil) {
+          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
+          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -148,6 +150,7 @@ final class MainTabBarController: UITabBarController {
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
+        self.posEligibilityService = posEligibilityService
         super.init(coder: coder)
     }
 
@@ -160,6 +163,7 @@ final class MainTabBarController: UITabBarController {
         self.posEligibilityCheckerFactory = { siteID in
             POSTabEligibilityChecker(siteID: siteID)
         }
+        self.posEligibilityService = POSEligibilityService()
         super.init(coder: coder)
     }
 
@@ -348,7 +352,7 @@ private extension MainTabBarController {
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            ServiceLocator.analytics.track(.pointOfSaleTabSelected)
             break
         }
     }
@@ -369,7 +373,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
         case .pointOfSale:
-            // TODO: WOOMOB-571 - analytics
+            assertionFailure("Point of Sale tab should not be reselected as it cannot be selected from `tabBarController(_:shouldSelect:)`.")
             break
         }
     }
@@ -650,29 +654,35 @@ extension MainTabBarController: DeepLinkNavigator {
 //
 private extension MainTabBarController {
     func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) else {
+        guard let posEligibilityChecker, featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) else {
             updateTabViewControllers(isPOSTabVisible: false)
             viewModel.loadHubMenuTabBadge()
             return
         }
 
-        // Hides POS tab initially.
-        updateTabViewControllers(isPOSTabVisible: false)
+        // Sets POS tab initial visibility based on cached value if available.
+        let initialVisibility = posEligibilityChecker.checkInitialVisibility()
+        updateTabViewControllers(isPOSTabVisible: initialVisibility)
 
         // Cancels any existing task.
         posEligibilityCheckTask?.cancel()
 
         // Starts observing the POS eligibility state.
         posEligibilityCheckTask = Task { @MainActor [weak self] in
-            guard let self, let posEligibilityChecker else { return }
+            guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
             let isPOSTabVisible = eligibility == .eligible
+            analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
+            cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()
         }
     }
 
     func updateTabViewControllers(isPOSTabVisible: Bool) {
+        guard isPOSTabVisible != self.isPOSTabVisible || (viewControllers?.count ?? 0) == 0 else {
+            return
+        }
         var controllers = [UIViewController]()
         let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
         tabs.forEach { tab in
@@ -736,7 +746,8 @@ private extension MainTabBarController {
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,
             tabContainerController: posContainerController,
-            viewControllerToPresent: self
+            viewControllerToPresent: self,
+            storesManager: stores
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
@@ -920,6 +931,12 @@ private extension MainTabBarController {
                                                                 forceReadOnly: false)
         let productNavController = WooNavigationController(rootViewController: productViewController)
         rootTabViewController(tab: .products).present(productNavController, animated: true)
+    }
+}
+
+private extension MainTabBarController {
+    func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
+        posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
     }
 }
 

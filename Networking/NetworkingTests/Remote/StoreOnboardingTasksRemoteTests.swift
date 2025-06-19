@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import TestKit
 @testable import Networking
+@testable import NetworkingCore
 
 final class StoreOnboardingTasksRemoteTests: XCTestCase {
     /// Mock network wrapper.

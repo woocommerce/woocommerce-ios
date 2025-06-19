@@ -1,6 +1,7 @@
 import TestKit
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// ProductsRemoteTests
@@ -256,39 +257,28 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts properly parses the `products-load-all` sample response.
     ///
-    func testLoadAllProductsProperlyReturnsParsedProducts() {
+    func test_loadAllProducts_properly_returns_parsed_products() async throws {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Products")
-
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
 
-        remote.loadAllProducts(for: sampleSiteID) { result in
-            switch result {
-            case .success(let products):
-                XCTAssertEqual(products.count, 10)
-            default:
-                XCTFail("Unexpected result: \(result)")
-            }
-            expectation.fulfill()
-        }
+        // When
+        let products = try await remote.loadAllProducts(for: sampleSiteID)
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertEqual(products.count, 10)
     }
 
     /// Verifies that loadAllProducts with `excludedProductIDs` makes a network request with the corresponding parameter.
     ///
-    func testLoadAllProductsWithExcludedIDsIncludesAnExcludeParamInNetworkRequest() throws {
+    func test_loadAllProducts_with_excluded_ids_includes_an_exclude_param_in_network_request() async throws {
         // Arrange
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         let excludedProductIDs: [Int64] = [17, 671]
 
         // Action
-        waitForExpectation { expectation in
-            remote.loadAllProducts(for: sampleSiteID, excludedProductIDs: excludedProductIDs) { result in
-                expectation.fulfill()
-            }
-        }
+        _ = try await remote.loadAllProducts(for: sampleSiteID, excludedProductIDs: excludedProductIDs)
 
         // Assert
         let queryParameters = try XCTUnwrap(network.queryParameters)
@@ -298,18 +288,14 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts with `productIDs` makes a network request with the `include` parameter.
     ///
-    func test_loadAllProducts_with_productIDs_adds_a_include_param_in_network_request() throws {
+    func test_loadAllProducts_with_productIDs_adds_a_include_param_in_network_request() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         let productIDs: [Int64] = [13, 61]
 
         // When
-        waitForExpectation { expectation in
-            remote.loadAllProducts(for: sampleSiteID, productIDs: productIDs) { result in
-                expectation.fulfill()
-            }
-        }
+        _ = try await remote.loadAllProducts(for: sampleSiteID, productIDs: productIDs)
 
         // Then
         let queryParameters = try XCTUnwrap(network.queryParameters)
@@ -319,17 +305,13 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts with empty `productIDs` makes a network request without the `include` parameter.
     ///
-    func test_loadAllProducts_with_empty_productIDs_does_not_add_include_param_in_network_request() throws {
+    func test_loadAllProducts_with_empty_productIDs_does_not_add_include_param_in_network_request() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
 
         // When
-        waitForExpectation { expectation in
-            remote.loadAllProducts(for: sampleSiteID, productIDs: []) { result in
-                expectation.fulfill()
-            }
-        }
+        _ = try await remote.loadAllProducts(for: sampleSiteID, productIDs: [])
 
         // Then
         let queryParameters = try XCTUnwrap(network.queryParameters)
@@ -339,21 +321,16 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that loadAllProducts properly relays Networking Layer errors.
     ///
-    func test_loadAllProducts_properly_relays_netwoking_errors() {
+    func test_loadAllProducts_properly_relays_netwoking_errors() async {
+        // Given
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Load all products returns error")
 
-        remote.loadAllProducts(for: sampleSiteID) { result in
-            switch result {
-            case .failure:
-                break
-            default:
-                XCTFail("Unexpected result: \(result)")
-            }
-            expectation.fulfill()
+        do {
+            _ = try await remote.loadAllProducts(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .notFound())
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
 

@@ -2,8 +2,8 @@ import Foundation
 
 #if canImport(Networking)
 import Networking
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
+#elseif canImport(NetworkingCore)
+import NetworkingCore
 #endif
 
 import WooFoundationCore

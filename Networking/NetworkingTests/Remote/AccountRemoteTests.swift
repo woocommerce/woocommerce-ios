@@ -2,6 +2,7 @@ import Combine
 import XCTest
 import TestKit
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// AccountRemote Unit Tests

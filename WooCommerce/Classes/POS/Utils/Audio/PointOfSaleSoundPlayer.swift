@@ -14,11 +14,9 @@ protocol PointOfSaleSoundPlayerProtocol {
     func playSound(_ sound: PointOfSaleSound) async
 }
 
-final class PointOfSaleSoundPlayer: PointOfSaleSoundPlayerProtocol {
-    private var audioPlayer: AVAudioPlayer?
+actor PointOfSaleSoundPlayer: PointOfSaleSoundPlayerProtocol {
     private var playerCache: [PointOfSaleSound: AVAudioPlayer] = [:]
 
-    @MainActor
     func playSound(_ sound: PointOfSaleSound) async {
         guard let url = Bundle.main.url(forResource: sound.name, withExtension: sound.type) else {
             DDLogError("Sound file not found: \(sound.name).\(sound.type)")
@@ -34,9 +32,9 @@ final class PointOfSaleSoundPlayer: PointOfSaleSoundPlayerProtocol {
          }
 
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
+            let audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer.prepareToPlay()
+            audioPlayer.play()
             playerCache[sound] = audioPlayer
         } catch {
             DDLogError("Failed to play sound: \(error)")

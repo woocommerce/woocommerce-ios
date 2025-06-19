@@ -120,10 +120,6 @@ public enum FeatureFlag: Int {
     ///
     case wooPaymentsPayoutsOverviewInPaymentsMenu
 
-    /// Enables Tap to Pay for UK Woo Payments stores
-    ///
-    case tapToPayOnIPhoneInUK
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm

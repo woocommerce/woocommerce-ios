@@ -52,8 +52,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .wooPaymentsPayoutsOverviewInPaymentsMenu:
             return true
-        case .tapToPayOnIPhoneInUK:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:

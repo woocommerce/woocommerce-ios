@@ -111,11 +111,7 @@ struct PointOfSaleDashboardView: View {
         .task {
             await posModel.purchasableItemsController.loadItems(base: .root)
             await posModel.couponsController.loadItems(base: .root)
-
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-               ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
-                await posModel.popularPurchasableItemsController.loadItems(base: .root)
-            }
+            await posModel.popularPurchasableItemsController.loadItems(base: .root)
         }
         .ignoresSafeArea(.keyboard)
     }

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 
 /// Abstracts the integration with a Card Reader
 public protocol CardReaderService {

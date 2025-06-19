@@ -1,4 +1,5 @@
 import Codegen
+import Foundation
 
 /// Encapsulates the information necessary to print a receipt for a
 /// card present payment

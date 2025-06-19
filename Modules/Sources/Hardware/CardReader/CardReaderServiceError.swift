@@ -1,3 +1,5 @@
+import Foundation
+
 /// Models errors thrown by the CardReaderService.
 /// It identifies the interaction with the card reader
 /// where the error was thrown.

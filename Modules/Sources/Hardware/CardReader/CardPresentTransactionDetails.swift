@@ -1,4 +1,5 @@
 import Codegen
+import Foundation
 
 /// An object representing details from a transaction using a card_present payment method.
 public struct CardPresentTransactionDetails: Codable, Equatable, GeneratedFakeable {

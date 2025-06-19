@@ -1,3 +1,5 @@
+import Foundation
+
 /// A property wrapper to return a string as lowercased.
 /// This checks also that the currency code is one of the codes
 /// returned by Locale.isoCurrencyCodes. If it isn't, it will return an empty string

@@ -123,6 +123,51 @@ extension Storage.Order: ReadOnlyConvertible {
 
     }
 
+    /// Returns a lightweight ReadOnly version of the receiver without any relationships populated.
+    ///
+    public func toLightweightReadOnly() -> Yosemite.Order {
+        Order(siteID: siteID,
+              orderID: orderID,
+              parentID: parentID,
+              customerID: customerID,
+              orderKey: orderKey,
+              isEditable: isEditable,
+              needsPayment: needsPayment,
+              needsProcessing: needsPayment,
+              number: number ?? "",
+              status: OrderStatusEnum(rawValue: statusKey),
+              currency: currency ?? "",
+              currencySymbol: "", // Not stored in the Storage Layer, only used in the notifications extension.
+              customerNote: customerNote ?? "",
+              dateCreated: dateCreated ?? Date(),
+              dateModified: dateModified ?? Date(),
+              datePaid: datePaid,
+              discountTotal: discountTotal ?? "",
+              discountTax: discountTax ?? "",
+              shippingTotal: shippingTotal ?? "",
+              shippingTax: shippingTax ?? "",
+              total: total ?? "",
+              totalTax: totalTax ?? "",
+              paymentMethodID: paymentMethodID ?? "",
+              paymentMethodTitle: paymentMethodTitle ?? "",
+              paymentURL: paymentURL as URL?,
+              chargeID: chargeID,
+              items: [],
+              billingAddress: createReadOnlyBillingAddress(),
+              shippingAddress: createReadOnlyShippingAddress(),
+              shippingLines: [],
+              coupons: [],
+              refunds: [],
+              fees: [],
+              taxes: [],
+              customFields: [],
+              renewalSubscriptionID: renewalSubscriptionID,
+              appliedGiftCards: [],
+              attributionInfo: attributionInfo?.toReadOnly(),
+              shippingLabels: [])
+
+    }
+
 
     // MARK: - Private Helpers
 

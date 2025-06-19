@@ -81,7 +81,7 @@ final class OrderListViewModel {
     ///
     private var hasAnyPublishedProducts: Bool {
         (storageManager.viewStorage.loadProducts(siteID: siteID) ?? [])
-            .map { $0.toReadOnly() }
+            .map { $0.toLightweightReadOnly() }
             .contains(where: { $0.productStatus == .published })
     }
 

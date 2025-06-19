@@ -1,5 +1,6 @@
 import Testing
 @testable import Networking
+@testable import NetworkingCore
 
 struct POSProductsNetworkingTests {
 

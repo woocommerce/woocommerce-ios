@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class OrderEncoderTests: XCTestCase {
     func test_OrderItemBundleItem_isOptionalAndSelected_is_encoded_to_a_placeholder_string_when_false() throws {

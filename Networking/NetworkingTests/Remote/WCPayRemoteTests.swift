@@ -1,6 +1,7 @@
 import Combine
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// WCPayRemote Unit Tests

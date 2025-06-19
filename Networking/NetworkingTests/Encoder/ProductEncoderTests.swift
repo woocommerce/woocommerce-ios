@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class ProductEncoderTests: XCTestCase {
     func test_it_encodes_subscription_into_meta_data_when_type_is_subscription() throws {

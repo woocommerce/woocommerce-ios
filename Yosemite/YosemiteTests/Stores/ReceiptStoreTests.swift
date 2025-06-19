@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 @testable import Storage
 @testable import Networking
+@testable import NetworkingCore
 @testable import Hardware
 
 /// ReceiptStore Unit Tests

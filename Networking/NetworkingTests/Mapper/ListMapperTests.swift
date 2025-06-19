@@ -1,5 +1,7 @@
+import Foundation
 import Testing
 @testable import Networking
+@testable import NetworkingCore
 
 struct ListMapperTests {
 

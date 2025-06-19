@@ -146,7 +146,7 @@ private extension CoreDataIterativeMigrator {
     }
 
     func model(for metadata: [String: Any]) throws -> NSManagedObjectModel {
-        let bundle = Bundle(for: CoreDataManager.self)
+        let bundle = Bundle.storage
         guard let sourceModel = NSManagedObjectModel.mergedModel(from: [bundle], forStoreMetadata: metadata) else {
             let description = "Failed to find source model for metadata: \(metadata)"
             throw NSError(domain: "IterativeMigrator", code: 100, userInfo: [NSLocalizedDescriptionKey: description])

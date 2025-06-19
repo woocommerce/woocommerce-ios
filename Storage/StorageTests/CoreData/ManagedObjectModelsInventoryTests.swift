@@ -12,7 +12,7 @@ private typealias IntrospectionError = ManagedObjectModelsInventory.Introspectio
 ///
 final class ManagedObjectModelsInventoryTests: XCTestCase {
 
-    private let bundle = Bundle(for: CoreDataManager.self)
+    private let bundle = Bundle.storage
     private let packageName = "WooCommerce"
 
     func test_it_loads_the_momd_using_the_given_packageName() throws {

@@ -2,6 +2,7 @@ import Combine
 import XCTest
 @testable import Yosemite
 @testable import Networking
+@testable import NetworkingCore
 @testable import Storage
 
 

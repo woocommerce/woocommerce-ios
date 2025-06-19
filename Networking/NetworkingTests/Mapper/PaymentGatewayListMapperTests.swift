@@ -1,6 +1,7 @@
 import XCTest
 
 @testable import Networking
+@testable import NetworkingCore
 
 final class PaymentGatewayListMapperTests: XCTestCase {
 

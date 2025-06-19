@@ -1,6 +1,7 @@
 import XCTest
 import Alamofire
 @testable import Networking
+@testable import NetworkingCore
 
 final class DefaultRequestAuthenticatorTests: XCTestCase {
 

@@ -103,7 +103,7 @@ class BarcodeScannerHostingController: UIHostingController<EmptyView> {
         /// or change between the `began` call and the `ended` call.
         /// It's better practice for barcode scanning to only consider the presses when they end.
         for press in presses {
-            guard let key = press.key?.charactersIgnoringModifiers else { continue }
+            guard let key = press.key else { continue }
             scanner.processKeyPress(key)
         }
     }

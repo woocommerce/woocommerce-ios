@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 @testable import Alamofire
 
 /// RequestProcessor Unit Tests

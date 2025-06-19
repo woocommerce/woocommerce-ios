@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class JetpackAIQueryResponseMapperTests: XCTestCase {
     func test_it_parses_all_contents_in_response() throws {

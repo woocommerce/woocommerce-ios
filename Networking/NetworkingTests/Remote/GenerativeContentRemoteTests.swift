@@ -2,6 +2,7 @@ import TestKit
 import XCTest
 import protocol Alamofire.URLRequestConvertible
 @testable import Networking
+@testable import NetworkingCore
 
 final class GenerativeContentRemoteTests: XCTestCase {
     /// Mock Network Wrapper

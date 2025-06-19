@@ -1,6 +1,7 @@
 import XCTest
 import Alamofire
 @testable import Networking
+@testable import NetworkingCore
 
 final class RequestConvertorTests: XCTestCase {
     func test_jetpack_request_is_returned_when_credentials_not_available() {

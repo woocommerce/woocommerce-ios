@@ -8,6 +8,7 @@
 - [**] POS: a POS tab in the tab bar is now available in the app for stores eligible for Point of Sale, instead of the previous entry point in the Menu tab. [https://github.com/woocommerce/woocommerce-ios/pull/15766]
 - [***] POS: Barcode scanning using Bluetooth scanners in Point of Sale (HID-based scanners are supported) [https://github.com/woocommerce/woocommerce-ios/pull/15776]
 - [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
+- [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
 
 22.6
 -----

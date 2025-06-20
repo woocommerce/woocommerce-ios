@@ -3332,6 +3332,37 @@ final class MigrationTests: XCTestCase {
         let updatedExpiryDate = migratedLabel.value(forKey: "expiryDate") as? Date
         XCTAssertEqual(updatedExpiryDate, date)
     }
+
+    func test_migrating_from_121_to_122_adds_new_attribute_shipmentID_to_shippingLabel() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 121")
+        let sourceContext = sourceContainer.viewContext
+
+        let label = insertShippingLabel(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(label.entity.attributesByName["shipmentID"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 122")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+
+        // `shipmentID` should be present in `migratedLabel`
+        XCTAssertNotNil(migratedLabel.entity.attributesByName["shipmentID"])
+
+        let savedShipmentID = migratedLabel.value(forKey: "shipmentID") as? String
+        XCTAssertEqual(savedShipmentID, "0") // default value
+
+        let id = "1"
+        migratedLabel.setValue(id, forKey: "shipmentID")
+        try targetContext.save()
+
+        let updatedShipmentID = migratedLabel.value(forKey: "shipmentID") as? String
+        XCTAssertEqual(updatedShipmentID, id)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

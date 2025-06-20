@@ -4,7 +4,7 @@ configurations:
             - ../../../../../Modules/Sources/WooFoundation
       templates:
           - Fakes.swifttemplate
-      output: ../../../../../Fakes/Fakes/WooFoundation.generated.swift
+      output: ../../../../../Modules/Sources/Fakes/WooFoundation.generated.swift
       args:
           moduleName: WooFoundation
     - sources:
@@ -12,6 +12,6 @@ configurations:
             - ../../../../../Modules/Sources/WooFoundationCore
       templates:
           - Fakes.swifttemplate
-      output: ../../../../../Fakes/Fakes/WooFoundationCore.generated.swift
+      output: ../../../../../Modules/Sources/Fakes/WooFoundationCore.generated.swift
       args:
           moduleName: WooFoundationCore

@@ -125,12 +125,12 @@ struct PointOfSaleAggregateModelTests {
             try #require(cart.purchasableItems.isEmpty)
 
             // When
-            let id = cart.addLoadingItem()
+            let loadingItem = cart.addLoadingItem()
 
             // Then
             #expect(cart.purchasableItems.count == 1)
             let item = try #require(cart.purchasableItems.first)
-            #expect(item.id == id)
+            #expect(item.id == loadingItem.id)
             guard case .loading = item.state else {
                 throw CartTestError.unexpectedItemStateInCart
             }
@@ -140,11 +140,11 @@ struct PointOfSaleAggregateModelTests {
         @Test func updateLoadingItem_updates_loading_item_with_simple_product() async throws {
             // Given
             var cart = Cart()
-            let id = cart.addLoadingItem()
+            let loadingItem = cart.addLoadingItem()
             let purchasableItem = makePurchasableItem(name: "Test Product")
 
             // When
-            cart.updateLoadingItem(id: id, with: purchasableItem)
+            cart.updateLoadingItem(id: loadingItem.id, with: purchasableItem)
 
             // Then
             #expect(cart.purchasableItems.count == 1)

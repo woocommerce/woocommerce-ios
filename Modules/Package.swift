@@ -16,8 +16,16 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
+            name: "Fakes",
+            targets: ["Fakes"]
+        ),
+        .library(
             name: "Experiments",
             targets: ["Experiments"]
+        ),
+        .library(
+            name: "Hardware",
+            targets: ["Hardware"]
         ),
         .library(
             name: "NetworkingCore",
@@ -26,6 +34,10 @@ let package = Package(
         .library(
             name: "Networking",
             targets: ["Networking"]
+        ),
+        .library(
+            name: "Storage",
+            targets: ["Storage"]
         ),
         .library(
             name: "TestKit",
@@ -50,6 +62,10 @@ let package = Package(
         .library(
             name: "WPMediaPicker",
             targets: ["WPMediaPicker"]
+        ),
+        .library(
+            name: "Yosemite",
+            targets: ["Yosemite"]
         ),
     ],
     dependencies: [
@@ -96,6 +112,24 @@ let package = Package(
             ]
         ),
         .target(
+            name: "Fakes",
+            dependencies: [
+                "Codegen",
+                "Hardware",
+                "Networking",
+                "Yosemite"
+            ]
+        ),
+        .target(
+            name: "Hardware",
+            dependencies: [
+                "Codegen",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+            ],
+            resources: [.process("Resources")]
+        ),
+        .target(
             name: "Networking",
             dependencies: [
                 "Codegen",
@@ -117,6 +151,15 @@ let package = Package(
                 .product(name: "HTMLParser", package: "AztecEditor-iOS"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ]
+        ),
+        .target(
+            name: "Storage",
+            dependencies: [
+                "Codegen",
+                "WooFoundation"
+            ],
+            exclude: ["Model/Migrations.md"],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "TestKit",
@@ -154,6 +197,23 @@ let package = Package(
         .target(
             name: "WPMediaPicker",
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "Yosemite",
+            dependencies: [
+                "Codegen",
+                "Hardware",
+                "Networking",
+                "Storage",
+                "WooFoundation",
+                "WordPressShared",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "Aztec", package: "AztecEditor-iOS"),
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
+            ]
         ),
         .testTarget(
             name: "ExperimentsTests",
@@ -200,11 +260,9 @@ let package = Package(
 
 enum XcodeTargetNames {
     static let fakes = "Fakes"
-    static let hardware = "Hardware"
     static let hardwareTests = "HardwareTests"
     static let networkingTests = "NetworkingTests"
     static let notificationExtension = "NotificationExtension"
-    static let storage = "Storage"
     static let storageTests = "StorageTests"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let uiTestsFoundation = "UITestsFoundation"
@@ -215,19 +273,15 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
-    static let yosemite = "Yosemite"
     static let yosemiteTests = "YosemiteTests"
 }
 
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.fakes,
-            XcodeTargetNames.hardware,
             XcodeTargetNames.hardwareTests,
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
-            XcodeTargetNames.storage,
             XcodeTargetNames.storageTests,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.uiTestsFoundation,
@@ -238,7 +292,6 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
-            XcodeTargetNames.yosemite,
             XcodeTargetNames.yosemiteTests
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
@@ -246,28 +299,16 @@ enum XcodeSupport {
     static var targets: [Target] {
         [
             .xcodeTarget(
-                XcodeTargetNames.fakes,
-                dependencies: [
-                    "Codegen",
-                    "Networking",
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.hardware,
-                dependencies: [
-                    "Codegen",
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios")
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.hardwareTests,
-                dependencies: [XcodeTargetNames.hardware.asDependency]
+                dependencies: [
+                    "Hardware"
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.networkingTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "Networking",
                     "TestKit",
                     "WooFoundation",
@@ -280,16 +321,16 @@ enum XcodeSupport {
                 dependencies: [
                     "Networking",
                     "WooFoundation",
+                    "Yosemite",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(
-                XcodeTargetNames.storage,
-                dependencies: ["Codegen", "WooFoundation"]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.storageTests,
-                dependencies: ["TestKit", XcodeTargetNames.storage.asDependency]
+                dependencies: [
+                    "Storage",
+                    "TestKit"
+                ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
@@ -312,11 +353,14 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Experiments",
+                    "Hardware",
                     "Networking",
+                    "Storage",
                     "WooFoundation",
                     "WordPressShared",
                     "WordPressUI",
                     "WPMediaPicker",
+                    "Yosemite",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
@@ -349,6 +393,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerceTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "TestKit",
                     "WordPressShared",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
@@ -399,28 +444,14 @@ enum XcodeSupport {
                 ]
             ),
             .xcodeTarget(
-                XcodeTargetNames.yosemite,
-                dependencies: [
-                    "Codegen",
-                    "Networking",
-                    "WooFoundation",
-                    "WordPressShared",
-                    .product(name: "Alamofire", package: "Alamofire"),
-                    .product(name: "Aztec", package: "AztecEditor-iOS"),
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
-                    .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.yosemiteTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "TestKit",
                     "WooFoundation",
                     "WordPressShared",
-                    XcodeTargetNames.yosemite.asDependency
+                    "Yosemite"
                 ]
             )
         ]

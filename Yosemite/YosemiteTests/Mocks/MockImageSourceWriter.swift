@@ -1,3 +1,5 @@
+import Foundation
+import ImageIO
 @testable import Yosemite
 
 final class MockImageSourceWriter: ImageSourceWriter {

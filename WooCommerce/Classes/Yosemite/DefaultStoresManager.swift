@@ -425,6 +425,7 @@ private extension DefaultStoresManager {
 
         group.enter()
         let generalSettingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+            ServiceLocator.selectedSiteSettings.refresh()
             if let error = error {
                 errors.append(error)
             }
@@ -653,7 +654,6 @@ private extension DefaultStoresManager {
         }
 
         synchronizeSettings(with: siteID) {
-            ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
         synchronizePaymentGateways(siteID: siteID)

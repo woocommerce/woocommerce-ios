@@ -4,7 +4,7 @@ configurations:
             - ../../../../../Modules/Sources/Networking/
       templates:
           - Fakes.swifttemplate
-      output: ../../../../../Fakes/Fakes/Networking.generated.swift
+      output: ../../../../../Modules/Sources/Fakes/Networking.generated.swift
       args:
           moduleName: Networking
     - sources:
@@ -12,6 +12,6 @@ configurations:
             - ../../../../../Modules/Sources/NetworkingCore/
       templates:
           - Fakes.swifttemplate
-      output: ../../../../../Fakes/Fakes/NetworkingCore.generated.swift
+      output: ../../../../../Modules/Sources/Fakes/NetworkingCore.generated.swift
       args:
           moduleName: NetworkingCore

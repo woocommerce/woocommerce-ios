@@ -3,8 +3,11 @@
 
 22.7
 -----
+- [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
 - [*] Shipping Labels: Improved shipment management UI by hiding remove/merge options instead of disabling them, hiding merge option for orders with 2 or fewer unfulfilled shipments, and hiding the ellipsis menu when no remove/merge actions are available [https://github.com/woocommerce/woocommerce-ios/pull/15760]
 - [**] POS: a POS tab in the tab bar is now available in the app for stores eligible for Point of Sale, instead of the previous entry point in the Menu tab. [https://github.com/woocommerce/woocommerce-ios/pull/15766]
+- [***] POS: Barcode scanning using Bluetooth scanners in Point of Sale (HID-based scanners are supported) [https://github.com/woocommerce/woocommerce-ios/pull/15776]
+- [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
 
 22.6
 -----

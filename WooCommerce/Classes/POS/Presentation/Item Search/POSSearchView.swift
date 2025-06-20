@@ -133,25 +133,14 @@ struct POSSearchContentView<Content: View>: View {
 
     @ViewBuilder
     private var preSearchView: some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
-            POSPreSearchView(savedSearches: searchable.searchHistory,
-                             onSearchSelected: { selectedSearchTerm in
-                searchTerm = selectedSearchTerm
-                ServiceLocator.analytics.track(
-                    event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
-            },
-                             itemListType: searchable.itemListType
-            )
-        } else {
-            POSRecentSearchesView(
-                savedSearches: searchable.searchHistory,
-                onSearchSelected: { selectedSearchTerm in
-                    searchTerm = selectedSearchTerm
-                    ServiceLocator.analytics.track(
-                        event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
-                }
-            )
-        }
+        POSPreSearchView(savedSearches: searchable.searchHistory,
+                         onSearchSelected: { selectedSearchTerm in
+            searchTerm = selectedSearchTerm
+            ServiceLocator.analytics.track(
+                event: .PointOfSale.preSearchRecentTermTapped(itemListType: searchable.itemListType))
+        },
+                         itemListType: searchable.itemListType
+        )
     }
 }
 

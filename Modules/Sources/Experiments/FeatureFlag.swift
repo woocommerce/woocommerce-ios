@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case showInboxCTA
 
-    /// Displays the OrderForm side by side with the Product Selector
-    ///
-    case sideBySideViewForOrderForm
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -116,10 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables Tap to Pay for UK Woo Payments stores
-    ///
-    case tapToPayOnIPhoneInUK
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm
@@ -196,14 +188,6 @@ public enum FeatureFlag: Int {
     /// Allows merchants to use their own API keys for AI-powered features
     ///
     case allowMerchantAIAPIKey
-
-    /// Allows searching products in POS
-    ///
-    case searchProductsInPOS
-
-    /// Shows popular products in the pre-search UI in POS, along with using final designs.
-    ///
-    case searchProductsInPOSPt2PopularProducts
 
     /// Enables optimized handling of product images
     ///

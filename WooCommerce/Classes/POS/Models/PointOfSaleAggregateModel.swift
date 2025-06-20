@@ -212,9 +212,7 @@ extension PointOfSaleAggregateModel {
                 if let errorItem = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                     // Only play a sound and track analytics if the item still exists in the cart.
                     await soundPlayer.playSound(.barcodeScanFailure, completion: { [weak self] in
-                        DispatchQueue.main.async { [weak self] in
-                            self?.cart.accessibilityFocusedItemID = errorItem.id
-                        }
+                        self?.cart.accessibilityFocusedItemID = errorItem.id
                     })
 
                     analytics.track(

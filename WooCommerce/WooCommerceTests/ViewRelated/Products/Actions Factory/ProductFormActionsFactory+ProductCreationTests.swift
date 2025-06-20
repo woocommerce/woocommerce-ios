@@ -79,14 +79,12 @@ private extension ProductFormActionsFactory_ProductCreationTests {
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
                                    isLinkedProductsPromoEnabled: Bool = false,
-                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown,
-                                   featureFlagService: MockFeatureFlagService = MockFeatureFlagService()) -> ProductFormActionsFactory {
+                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      variationsPrice: variationsPrice,
-                                      featureFlagService: featureFlagService)
+                                      variationsPrice: variationsPrice)
         }
     }
 }

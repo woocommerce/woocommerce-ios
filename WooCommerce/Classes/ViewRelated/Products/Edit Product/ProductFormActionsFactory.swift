@@ -64,7 +64,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let variationsPrice: VariationsPrice
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
 
     private let isLinkedProductsPromoEnabled: Bool
     private let linkedProductsPromoCampaign = LinkedProductsPromoCampaign()
@@ -87,8 +86,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          variationsPrice: VariationsPrice = .unknown,
-         stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         stores: StoresManager = ServiceLocator.stores,) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -97,7 +95,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.stores = stores
-        self.featureFlagService = featureFlagService
     }
 
     /// Returns an array of actions that are visible in the product form primary section.

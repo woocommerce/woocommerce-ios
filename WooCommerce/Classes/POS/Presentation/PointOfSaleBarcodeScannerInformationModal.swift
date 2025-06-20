@@ -16,9 +16,13 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 
             PointOfSaleInformationModalParagraphView {
                 Text(bulletPointWithLink)
+                    .accessibilityLabel(bulletPointWithLinkAccessibilityLabel)
                 Text(AttributedString(Localization.barcodeInfoSecondaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoSecondaryMessageAccessible)
                 Text(AttributedString(Localization.barcodeInfoTertiaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoTertiaryMessageAccessible)
                 Text(AttributedString(Localization.barcodeInfoQuaternaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoQuaternaryMessageAccessible)
             }
             .padding(.leading, POSSpacing.medium)
 
@@ -36,6 +40,10 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
         moreDetails.underlineStyle = .single
         secondary.append(moreDetails)
         return secondary
+    }
+    
+    private var bulletPointWithLinkAccessibilityLabel: String {
+        return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLink
     }
 }
 
@@ -85,6 +93,28 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             value: "The scanner emulates a keyboard, so sometimes it will prevent the software keyboard from showing, e.g. in search. " +
                 "Tap on the keyboard icon to show it again.",
             comment: "Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again"
+        )
+        
+        // Accessibility-friendly versions without bullet points
+        static let barcodeInfoPrimaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.primaryMessage.accessible",
+            value: "First: Set up barcodes in the \"GTIN, UPC, EAN, ISBN\" field in Products > Product Details > Inventory.",
+            comment: "Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.secondaryMessage.accessible", 
+            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
+            comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoTertiaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.tertiaryMessage.accessible",
+            value: "Third: Connect your barcode scanner in iOS Bluetooth settings.",
+            comment: "Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoQuaternaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.quaternaryMessage.accessible",
+            value: "Fourth: Scan barcodes while on the item list to add products to the cart.",
+            comment: "Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers"
         )
     }
 }

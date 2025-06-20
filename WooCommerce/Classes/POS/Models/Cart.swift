@@ -26,6 +26,7 @@ extension Cart {
         let quantity: Int
         let type: CartItemType = .purchasableItem
         let state: ItemState
+        let accessibilityLabel: String?
 
         enum ItemState {
             case loaded(POSOrderableItem)
@@ -42,12 +43,13 @@ extension Cart {
             }
         }
 
-        init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState) {
+        init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState, accessibilityLabel: String? = nil) {
             self.id = id
             self.title = title
             self.subtitle = subtitle
             self.quantity = quantity
             self.state = state
+            self.accessibilityLabel = accessibilityLabel
         }
 
         init(id: UUID, item: POSOrderableItem, title: String, subtitle: String?, quantity: Int) {
@@ -56,6 +58,7 @@ extension Cart {
             self.subtitle = subtitle
             self.quantity = quantity
             self.state = .loaded(item)
+            self.accessibilityLabel = nil
         }
 
         static func loading(id: UUID) -> PurchasableItem {

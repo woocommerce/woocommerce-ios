@@ -326,7 +326,7 @@ extension OrderListViewModel {
 
     /// Creates an `OrderListCellViewModel` for the `Order` pointed to by `objectID`.
     func cellViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderListCellViewModel? {
-        guard let order = snapshotsProvider.object(withID: objectID) else {
+        guard let order = snapshotsProvider.lightweightObject(withID: objectID) else {
             return nil
         }
 

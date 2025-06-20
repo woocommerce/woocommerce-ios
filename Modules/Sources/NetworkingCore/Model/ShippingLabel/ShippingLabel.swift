@@ -16,6 +16,9 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
     /// The remote ID of the shipping carrier.
     public let carrierID: String
 
+    /// ID of the shipment associated with this label
+    public let shipmentID: String
+
     /// The date the shipping label was created.
     public let dateCreated: Date
 
@@ -71,6 +74,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
                 orderID: Int64,
                 shippingLabelID: Int64,
                 carrierID: String,
+                shipmentID: String,
                 dateCreated: Date,
                 packageName: String,
                 rate: Double,
@@ -91,6 +95,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
         self.carrierID = carrierID
+        self.shipmentID = shipmentID
         self.dateCreated = dateCreated
         self.packageName = packageName
         self.rate = rate
@@ -126,6 +131,7 @@ extension ShippingLabel: Decodable {
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
         let carrierID = try container.decode(String.self, forKey: .carrierID)
+        let shipmentID = (try container.decodeIfPresent(String.self, forKey: .shipmentID)) ?? "0"
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
         let rate = try container.decode(Double.self, forKey: .rate)
@@ -148,6 +154,7 @@ extension ShippingLabel: Decodable {
                   orderID: orderID,
                   shippingLabelID: shippingLabelID,
                   carrierID: carrierID,
+                  shipmentID: shipmentID,
                   dateCreated: dateCreated,
                   packageName: packageName,
                   rate: rate,
@@ -171,6 +178,7 @@ extension ShippingLabel: Decodable {
         case orderID
         case shippingLabelID = "label_id"
         case carrierID = "carrier_id"
+        case shipmentID = "id"
         case dateCreated = "created"
         case packageName = "package_name"
         case rate

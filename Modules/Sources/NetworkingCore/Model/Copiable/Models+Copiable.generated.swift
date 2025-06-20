@@ -694,6 +694,7 @@ extension NetworkingCore.ShippingLabel {
         orderID: CopiableProp<Int64> = .copy,
         shippingLabelID: CopiableProp<Int64> = .copy,
         carrierID: CopiableProp<String> = .copy,
+        shipmentID: CopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         packageName: CopiableProp<String> = .copy,
         rate: CopiableProp<Double> = .copy,
@@ -715,6 +716,7 @@ extension NetworkingCore.ShippingLabel {
         let orderID = orderID ?? self.orderID
         let shippingLabelID = shippingLabelID ?? self.shippingLabelID
         let carrierID = carrierID ?? self.carrierID
+        let shipmentID = shipmentID ?? self.shipmentID
         let dateCreated = dateCreated ?? self.dateCreated
         let packageName = packageName ?? self.packageName
         let rate = rate ?? self.rate
@@ -737,6 +739,7 @@ extension NetworkingCore.ShippingLabel {
             orderID: orderID,
             shippingLabelID: shippingLabelID,
             carrierID: carrierID,
+            shipmentID: shipmentID,
             dateCreated: dateCreated,
             packageName: packageName,
             rate: rate,

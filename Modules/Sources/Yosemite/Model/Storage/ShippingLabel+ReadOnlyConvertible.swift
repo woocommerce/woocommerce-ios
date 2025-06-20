@@ -33,6 +33,7 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               orderID: orderID,
               shippingLabelID: shippingLabelID,
               carrierID: carrierID,
+              shipmentID: "0", // TODO: update model
               dateCreated: dateCreated ?? Date(timeIntervalSince1970: 0),
               packageName: packageName,
               rate: rate,

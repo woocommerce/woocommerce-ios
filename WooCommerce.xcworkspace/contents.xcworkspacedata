@@ -16,7 +16,4 @@
    <FileRef
       location = "group:Hardware/Hardware.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Fakes/Fakes.xcodeproj">
-   </FileRef>
 </Workspace>

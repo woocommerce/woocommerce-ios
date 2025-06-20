@@ -1,3 +1,4 @@
+import Foundation
 @testable import Yosemite
 
 struct MockMediaExportService: MediaExportService {

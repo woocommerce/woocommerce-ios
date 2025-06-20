@@ -52,8 +52,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .wooPaymentsPayoutsOverviewInPaymentsMenu:
             return true
-        case .tapToPayOnIPhoneInUK:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
@@ -93,10 +91,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .allowMerchantAIAPIKey:
             return false
-        case .searchProductsInPOS:
-            return true
-        case .searchProductsInPOSPt2PopularProducts:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:
@@ -104,10 +98,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productImageOptimizedHandling:
             return true
         case .pointOfSaleBarcodeScanningi1:
-            return false
+            return true
         case .showPointOfSaleBarcodeSimulator:
             // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         case .pointOfSaleAsATabi1:
             return true
         default:

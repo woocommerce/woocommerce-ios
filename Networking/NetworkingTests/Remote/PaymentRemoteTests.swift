@@ -150,34 +150,6 @@ final class PaymentRemoteTests: XCTestCase {
             (error as? NetworkError) == .notFound()
         }
     }
-
-    // MARK: - `checkoutCartWithDomainCredit` with a domain
-    func test_checkoutCartWithDomainCredit_returns_on_success() async throws {
-        // Given
-        let remote = PaymentRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "me/transactions", filename: "checkout-doman-cart-with-domain-credit-success")
-
-        // When
-        do {
-            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
-        } catch {
-            // Then
-            XCTFail("Unexpected error: \(error)")
-        }
-    }
-
-    func test_checkoutCartWithDomainCredit_throws_notFound_error_when_no_response() async throws {
-        // Given
-        let remote = PaymentRemote(network: network)
-
-        // When
-        await assertThrowsError {
-            try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
-        } errorAssert: { error in
-            // Then
-            (error as? NetworkError) == .notFound()
-        }
-    }
 }
 
 private extension PaymentRemoteTests {

@@ -23,13 +23,16 @@ struct ItemRowView: View {
     }
 
     var body: some View {
+        itemRow
+            .posItemCardBorderStyles()
+            .padding(.horizontal, Constants.horizontalPadding)
+    }
+
+    @ViewBuilder
+    private var itemRow: some View {
         switch cartItem.state {
         case .loaded, .error:
             productRow
-                .frame(maxWidth: .infinity, idealHeight: dimension)
-                .background(Color.posSurfaceContainerLowest)
-                .posItemCardBorderStyles()
-                .padding(.horizontal, Constants.horizontalPadding)
         case .loading:
             GhostItemCardView(configuration: Constants.cartConfiguration,
                               showProductImage: $showProductImage) {
@@ -39,8 +42,6 @@ struct ItemRowView: View {
                     }
                 }
             }
-            .background(Color.posSurfaceContainerLowest)
-            .padding(.horizontal, Constants.horizontalPadding)
         }
     }
 
@@ -76,6 +77,8 @@ struct ItemRowView: View {
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .background(Color.posSurfaceContainerLowest)
     }
 
     @ViewBuilder
@@ -122,7 +125,8 @@ private extension ItemRowView {
             placeholderHeight: 24,
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
-            placeholderWidthMultiplier: 0.3
+            placeholderWidthMultiplier: 0.3,
+            backgroundColor: Color.posSurfaceContainerLowest
         )
     }
 }

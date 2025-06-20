@@ -44,7 +44,7 @@ struct GhostItemCardView: View {
             viewWidth = width
         }
         .frame(maxWidth: .infinity, idealHeight: dimension)
-        .background(Color.posSurfaceBright)
+        .background(configuration.backgroundColor)
         .posItemCardBorderStyles()
     }
 
@@ -88,12 +88,14 @@ struct GhostItemCardViewConfiguration {
     let cardSize: CGFloat
     let maximumCardSize: CGFloat
     let placeholderWidthMultiplier: CGFloat
+    let backgroundColor: Color
 
     static let itemList = GhostItemCardViewConfiguration(
         placeholderHeight: 32,
         cardSize: Constants.productCardSize,
         maximumCardSize: Constants.maximumProductCardSize,
-        placeholderWidthMultiplier: 0.5
+        placeholderWidthMultiplier: 0.5,
+        backgroundColor: Color.posSurfaceBright
     )
 }
 

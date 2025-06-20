@@ -11,7 +11,6 @@
 		020D07C023D8587700FD9580 /* MediaRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */; };
 		020D0C03291504DE00BB3DCE /* UnauthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */; };
 		0212683524C046CB00F8A892 /* MockNetwork+Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212683424C046CB00F8A892 /* MockNetwork+Path.swift */; };
-		0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0239306A291A96F800B2632F /* DomainRemoteTests.swift */; };
 		025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */; };
 		025F9A252B020F1900B91F1D /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025F9A242B020F1900B91F1D /* MockURLProtocol.swift */; };
 		02616F8C292132800095BC00 /* SiteRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02616F8B292132800095BC00 /* SiteRemoteTests.swift */; };
@@ -50,7 +49,6 @@
 		2670C3FC270F4E06002FE931 /* SiteListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2670C3FB270F4E06002FE931 /* SiteListMapperTests.swift */; };
 		2685C0DA263B551300D9EE97 /* AddOnGroupMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */; };
 		2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */; };
-		26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056B25F6CB9100A40B26 /* Fakes.framework */; };
 		311976E02602BD4B006AC56C /* SitePluginsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */; };
 		31A451BD2786344B00FE81AA /* StripeRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A451BC2786344B00FE81AA /* StripeRemoteTests.swift */; };
 		31D27C952602B737002EDB1D /* SitePluginsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */; };
@@ -248,7 +246,6 @@
 		020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteTests.swift; sourceTree = "<group>"; };
 		020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		0212683424C046CB00F8A892 /* MockNetwork+Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockNetwork+Path.swift"; sourceTree = "<group>"; };
-		0239306A291A96F800B2632F /* DomainRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemoteTests.swift; sourceTree = "<group>"; };
 		025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassRemoteTests.swift; sourceTree = "<group>"; };
 		025F9A242B020F1900B91F1D /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
 		02616F8B292132800095BC00 /* SiteRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteRemoteTests.swift; sourceTree = "<group>"; };
@@ -288,7 +285,6 @@
 		2685C0D9263B551300D9EE97 /* AddOnGroupMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupMapperTests.swift; sourceTree = "<group>"; };
 		2685C101263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupRemoteTests.swift; sourceTree = "<group>"; };
 		26E5A08B25A66FD3000DF8F6 /* ProductAttributeTermRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermRemoteTests.swift; sourceTree = "<group>"; };
-		26FB056B25F6CB9100A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		311976DF2602BD4B006AC56C /* SitePluginsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsMapperTests.swift; sourceTree = "<group>"; };
 		31A451BC2786344B00FE81AA /* StripeRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeRemoteTests.swift; sourceTree = "<group>"; };
 		31D27C942602B737002EDB1D /* SitePluginsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginsRemoteTests.swift; sourceTree = "<group>"; };
@@ -478,7 +474,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26FB056C25F6CB9100A40B26 /* Fakes.framework in Frameworks */,
 				3F2B4ACE2DDC30F400E5E49C /* XcodeTarget_NetworkingTests in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,7 +493,6 @@
 		35C45CCE73A311BE252F6BF4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				26FB056B25F6CB9100A40B26 /* Fakes.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -578,7 +572,6 @@
 				DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */,
 				68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */,
 				68F48B0E28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift */,
-				0239306A291A96F800B2632F /* DomainRemoteTests.swift */,
 				02616F8B292132800095BC00 /* SiteRemoteTests.swift */,
 				02EF166D292F0C5800D90AD6 /* PaymentRemoteTests.swift */,
 				DE2E8EAC295418D8002E4B14 /* WordPressSiteRemoteTests.swift */,
@@ -991,7 +984,6 @@
 				68F48B0F28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift in Sources */,
 				EECDBEE029684AC500293C4E /* WordPressAPIVersionTests.swift in Sources */,
 				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
-				0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */,
 				262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */,
 				03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */,
 				AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */,

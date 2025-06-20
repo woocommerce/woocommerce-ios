@@ -7,11 +7,10 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(isEditable: Bool, viewModel: CustomFieldsListViewModel, analytics: Analytics = ServiceLocator.analytics) {
+    init(viewModel: CustomFieldsListViewModel, analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
         self.analytics = analytics
-        super.init(rootView: CustomFieldsListView(isEditable: isEditable,
-                                                  viewModel: viewModel)
+        super.init(rootView: CustomFieldsListView(viewModel: viewModel)
         )
     }
 
@@ -145,12 +144,9 @@ struct CustomFieldsListView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: CustomFieldsListViewModel
 
-    let isEditable: Bool
     var emptyStateButtonAction: (() -> Void)?
 
-    init(isEditable: Bool,
-         viewModel: CustomFieldsListViewModel) {
-        self.isEditable = isEditable
+    init(viewModel: CustomFieldsListViewModel) {
         self.viewModel = viewModel
     }
 
@@ -175,8 +171,7 @@ struct CustomFieldsListView: View {
 							viewModel.selectedCustomField = customField
 							viewModel.trackCustomFieldTapped()
 						}) {
-                            CustomFieldRow(isEditable: isEditable,
-                                           title: customField.key,
+                            CustomFieldRow(title: customField.key,
                                            content: customField.value.removedHTMLTags,
                                            contentURL: nil)
                         }
@@ -200,9 +195,6 @@ struct CustomFieldsListView: View {
 }
 
 private struct CustomFieldRow: View {
-    /// Determines if the row is editable
-    let isEditable: Bool
-
     /// Custom Field title
     ///
     let title: String
@@ -242,11 +234,11 @@ private struct CustomFieldRow: View {
                                 openURL(url) // Open in associated app for URL scheme
                             }
                         }
-                        .lineLimit(isEditable ? 2 : nil)
+                        .lineLimit(2)
                 } else { // Display content as plain text
                     Text(content)
                         .footnoteStyle()
-                        .lineLimit(isEditable ? 2 : nil)
+                        .lineLimit(2)
                 }
             }
         }
@@ -377,7 +369,6 @@ private extension CustomFieldRow {
 struct OrderCustomFieldsDetails_Previews: PreviewProvider {
     static var previews: some View {
         CustomFieldsListView(
-            isEditable: true,
             viewModel: CustomFieldsListViewModel(
                 customFields: [
                     CustomFieldViewModel(fieldID: 0, key: "First Title", value: "First Content"),

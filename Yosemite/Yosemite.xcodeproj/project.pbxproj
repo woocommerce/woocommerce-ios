@@ -93,7 +93,6 @@
 		265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */; };
 		2685C121263E064200D9EE97 /* AddOnGroupStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2685C120263E064200D9EE97 /* AddOnGroupStoreTests.swift */; };
 		26E5A09225A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */; };
-		26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26FB056925F6CB7600A40B26 /* Fakes.framework */; };
 		312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */; };
 		3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AD92DDC313E00E5E49C /* XcodeTarget_YosemiteTests */; };
 		3F7E6AC82DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */; };
@@ -286,7 +285,6 @@
 		265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryStoreTests.swift; sourceTree = "<group>"; };
 		2685C120263E064200D9EE97 /* AddOnGroupStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddOnGroupStoreTests.swift; sourceTree = "<group>"; };
 		26E5A09125A8A453000DF8F6 /* ProductAttributeTermStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAttributeTermStoreTests.swift; sourceTree = "<group>"; };
-		26FB056925F6CB7600A40B26 /* Fakes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Fakes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		312DB64C268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+CardReaderSettings.swift"; sourceTree = "<group>"; };
 		3F7E6AC72DDAD3C1008309F0 /* PointOfSalePopularPurchasableItemFetchStrategyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePopularPurchasableItemFetchStrategyTests.swift; sourceTree = "<group>"; };
 		3FAB48822E02D29700511E19 /* POSEligibilityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEligibilityServiceTests.swift; sourceTree = "<group>"; };
@@ -386,7 +384,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F2B4ADA2DDC313E00E5E49C /* XcodeTarget_YosemiteTests in Frameworks */,
-				26FB056A25F6CB7600A40B26 /* Fakes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,7 +692,6 @@
 		B5C4EB7720D17329002AC0AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				26FB056925F6CB7600A40B26 /* Fakes.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

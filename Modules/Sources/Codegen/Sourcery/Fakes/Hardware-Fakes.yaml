@@ -3,6 +3,6 @@ sources:
         - ../../../../../Modules/Sources/Hardware/
 templates:
     - Fakes.swifttemplate
-output: ../../../../../Fakes/Fakes/Hardware.generated.swift
+output: ../../../../../Modules/Sources/Fakes/Hardware.generated.swift
 args:
     moduleName: Hardware

@@ -16,6 +16,10 @@ let package = Package(
             targets: ["Codegen"]
         ),
         .library(
+            name: "Fakes",
+            targets: ["Fakes"]
+        ),
+        .library(
             name: "Experiments",
             targets: ["Experiments"]
         ),
@@ -105,6 +109,15 @@ let package = Package(
             name: "Experiments",
             dependencies: [
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+            ]
+        ),
+        .target(
+            name: "Fakes",
+            dependencies: [
+                "Codegen",
+                "Hardware",
+                "Networking",
+                "Yosemite"
             ]
         ),
         .target(
@@ -266,7 +279,6 @@ enum XcodeTargetNames {
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.fakes,
             XcodeTargetNames.hardwareTests,
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
@@ -287,15 +299,6 @@ enum XcodeSupport {
     static var targets: [Target] {
         [
             .xcodeTarget(
-                XcodeTargetNames.fakes,
-                dependencies: [
-                    "Codegen",
-                    "Hardware",
-                    "Networking",
-                    "Yosemite"
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.hardwareTests,
                 dependencies: [
                     "Hardware"
@@ -305,6 +308,7 @@ enum XcodeSupport {
                 XcodeTargetNames.networkingTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "Networking",
                     "TestKit",
                     "WooFoundation",
@@ -389,6 +393,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerceTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "TestKit",
                     "WordPressShared",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
@@ -442,6 +447,7 @@ enum XcodeSupport {
                 XcodeTargetNames.yosemiteTests,
                 dependencies: [
                     "Codegen",
+                    "Fakes",
                     "TestKit",
                     "WooFoundation",
                     "WordPressShared",

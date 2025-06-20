@@ -11,7 +11,6 @@
 		020D07C023D8587700FD9580 /* MediaRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */; };
 		020D0C03291504DE00BB3DCE /* UnauthenticatedRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */; };
 		0212683524C046CB00F8A892 /* MockNetwork+Path.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0212683424C046CB00F8A892 /* MockNetwork+Path.swift */; };
-		0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0239306A291A96F800B2632F /* DomainRemoteTests.swift */; };
 		025CA2C6238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */; };
 		025F9A252B020F1900B91F1D /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025F9A242B020F1900B91F1D /* MockURLProtocol.swift */; };
 		02616F8C292132800095BC00 /* SiteRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02616F8B292132800095BC00 /* SiteRemoteTests.swift */; };
@@ -247,7 +246,6 @@
 		020D07BF23D8587700FD9580 /* MediaRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaRemoteTests.swift; sourceTree = "<group>"; };
 		020D0C02291504DE00BB3DCE /* UnauthenticatedRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnauthenticatedRequestTests.swift; sourceTree = "<group>"; };
 		0212683424C046CB00F8A892 /* MockNetwork+Path.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MockNetwork+Path.swift"; sourceTree = "<group>"; };
-		0239306A291A96F800B2632F /* DomainRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemoteTests.swift; sourceTree = "<group>"; };
 		025CA2C5238F4F3500B05C81 /* ProductShippingClassRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassRemoteTests.swift; sourceTree = "<group>"; };
 		025F9A242B020F1900B91F1D /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
 		02616F8B292132800095BC00 /* SiteRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteRemoteTests.swift; sourceTree = "<group>"; };
@@ -574,7 +572,6 @@
 				DE34051E28BDFB0B00CF0D97 /* JetpackConnectionRemoteTests.swift */,
 				68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */,
 				68F48B0E28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift */,
-				0239306A291A96F800B2632F /* DomainRemoteTests.swift */,
 				02616F8B292132800095BC00 /* SiteRemoteTests.swift */,
 				02EF166D292F0C5800D90AD6 /* PaymentRemoteTests.swift */,
 				DE2E8EAC295418D8002E4B14 /* WordPressSiteRemoteTests.swift */,
@@ -987,7 +984,6 @@
 				68F48B0F28E3BB850045C15B /* WCAnalyticsCustomerRemoteTests.swift in Sources */,
 				EECDBEE029684AC500293C4E /* WordPressAPIVersionTests.swift in Sources */,
 				93D8BC01226BC20600AD2EB3 /* AccountSettingsRemoteTests.swift in Sources */,
-				0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */,
 				262E5AD5255ACD6F000B2416 /* PaymentGatewayListMapperTests.swift in Sources */,
 				03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */,
 				AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */,

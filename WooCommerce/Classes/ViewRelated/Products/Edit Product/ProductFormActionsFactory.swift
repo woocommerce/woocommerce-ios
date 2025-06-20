@@ -86,7 +86,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          variationsPrice: VariationsPrice = .unknown,
-         stores: StoresManager = ServiceLocator.stores,) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze

@@ -41,7 +41,7 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
         secondary.append(moreDetails)
         return secondary
     }
-    
+
     private var bulletPointWithLinkAccessibilityLabel: String {
         return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLink
     }
@@ -94,7 +94,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
                 "Tap on the keyboard icon to show it again.",
             comment: "Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again"
         )
-        
+
         // Accessibility-friendly versions without bullet points
         static let barcodeInfoPrimaryMessageAccessible = NSLocalizedString(
             "pos.barcodeInfoModal.primaryMessage.accessible",
@@ -102,7 +102,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             comment: "Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers"
         )
         static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
-            "pos.barcodeInfoModal.secondaryMessage.accessible", 
+            "pos.barcodeInfoModal.secondaryMessage.accessible",
             value: "Second: Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
             comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"
         )

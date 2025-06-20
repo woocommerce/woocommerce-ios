@@ -6,6 +6,8 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 struct Cart {
     var purchasableItems: [Cart.PurchasableItem] = []
     var coupons: [Cart.CouponItem] = []
+
+    var accessibilityFocusedItemID: UUID? = nil
 }
 
 protocol CartItem {

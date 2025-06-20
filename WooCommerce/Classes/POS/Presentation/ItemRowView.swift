@@ -6,6 +6,7 @@ struct ItemRowView: View {
     private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Binding private var showProductImage: Bool
 
     private var dimension: CGFloat {
@@ -23,40 +24,46 @@ struct ItemRowView: View {
     }
 
     var body: some View {
-        switch cartItem.state {
-        case .loaded, .error:
-            productRow
-                .frame(maxWidth: .infinity, idealHeight: dimension)
-                .background(Color.posSurfaceContainerLowest)
-                .posItemCardBorderStyles()
-                .padding(.horizontal, Constants.horizontalPadding)
-        case .loading:
-            GhostItemCardView(configuration: Constants.cartConfiguration,
-                              showProductImage: $showProductImage) {
-                if let onCancelLoading {
-                    CartRowRemoveButton {
-                        onCancelLoading()
+        Group {
+            switch cartItem.state {
+            case .loaded, .error:
+                productRow
+            case .loading:
+                GhostItemCardView(configuration: Constants.cartConfiguration,
+                                  showProductImage: $showProductImage) {
+                    if let onCancelLoading {
+                        CartRowRemoveButton {
+                            onCancelLoading()
+                        }
                     }
                 }
             }
-            .background(Color.posSurfaceContainerLowest)
-            .padding(.horizontal, Constants.horizontalPadding)
         }
+        .background(Color.posSurfaceContainerLowest)
+        .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
+        .posItemCardBorderStyles()
+        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
     private var productRow: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             productImage
+                .frame(width: dimension)
+                .frame(minHeight: dimension)
 
             VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(Constants.titleSubtitleLineLimit)
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
                         .foregroundColor(subtitleColor)
                         .font(Constants.itemSubtitleFont)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(Constants.titleSubtitleLineLimit)
                 }
 
                 if case .loaded(let item) = cartItem.state {
@@ -66,7 +73,8 @@ struct ItemRowView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding)
+            .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalPadding * (1 / scale))
             .accessibilityElement(children: .combine)
 
             if let onItemRemoveTapped {
@@ -86,13 +94,11 @@ struct ItemRowView: View {
             POSItemImageView(imageSource: item.productImageSource,
                              imageSize: dimension,
                              scale: 1)
-            .frame(width: dimension, height: dimension)
         } else if case .error = cartItem.state {
             POSItemImageView(imageSource: nil,
                              imageSize: dimension,
                              scale: 1,
                              state: .error)
-            .frame(width: dimension, height: dimension)
         }
     }
 
@@ -111,18 +117,21 @@ private extension ItemRowView {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
         static let horizontalPadding: CGFloat = POSPadding.medium
+        static let verticalPadding: CGFloat = POSPadding.small
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
         static let itemTitleFont: POSFontStyle = .posBodySmallBold
         static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
         static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+        static let titleSubtitleLineLimit: Int = 4
 
         static let cartConfiguration = GhostItemCardViewConfiguration(
             placeholderHeight: 24,
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
-            placeholderWidthMultiplier: 0.3
+            topPlaceholderWidthMultiplier: 0.4,
+            bottomPlaceholderWidthMultiplier: 0.35
         )
     }
 }

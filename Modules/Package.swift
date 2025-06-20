@@ -59,6 +59,10 @@ let package = Package(
             name: "WPMediaPicker",
             targets: ["WPMediaPicker"]
         ),
+        .library(
+            name: "Yosemite",
+            targets: ["Yosemite"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -181,6 +185,23 @@ let package = Package(
             name: "WPMediaPicker",
             resources: [.process("Resources")]
         ),
+        .target(
+            name: "Yosemite",
+            dependencies: [
+                "Codegen",
+                "Hardware",
+                "Networking",
+                "Storage",
+                "WooFoundation",
+                "WordPressShared",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "Aztec", package: "AztecEditor-iOS"),
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
+            ]
+        ),
         .testTarget(
             name: "ExperimentsTests",
             dependencies: [
@@ -239,7 +260,6 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
-    static let yosemite = "Yosemite"
     static let yosemiteTests = "YosemiteTests"
 }
 
@@ -260,7 +280,6 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
-            XcodeTargetNames.yosemite,
             XcodeTargetNames.yosemiteTests
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
@@ -273,6 +292,7 @@ enum XcodeSupport {
                     "Codegen",
                     "Hardware",
                     "Networking",
+                    "Yosemite"
                 ]
             ),
             .xcodeTarget(
@@ -297,6 +317,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Networking",
                     "WooFoundation",
+                    "Yosemite",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
@@ -335,6 +356,7 @@ enum XcodeSupport {
                     "WordPressShared",
                     "WordPressUI",
                     "WPMediaPicker",
+                    "Yosemite",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
@@ -417,30 +439,13 @@ enum XcodeSupport {
                 ]
             ),
             .xcodeTarget(
-                XcodeTargetNames.yosemite,
-                dependencies: [
-                    "Codegen",
-                    "Hardware",
-                    "Networking",
-                    "Storage",
-                    "WooFoundation",
-                    "WordPressShared",
-                    .product(name: "Alamofire", package: "Alamofire"),
-                    .product(name: "Aztec", package: "AztecEditor-iOS"),
-                    .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                    .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
-                    .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
-                ]
-            ),
-            .xcodeTarget(
                 XcodeTargetNames.yosemiteTests,
                 dependencies: [
                     "Codegen",
                     "TestKit",
                     "WooFoundation",
                     "WordPressShared",
-                    XcodeTargetNames.yosemite.asDependency
+                    "Yosemite"
                 ]
             )
         ]

@@ -85,20 +85,6 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
-    var sideBySideViewFeatureFlagEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
-    }
-
-    /// Indicates whether the cancel button is visible.
-    ///
-    var shouldShowCancelButton: Bool {
-        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
-        guard !sideBySideViewFeatureFlagEnabled else {
-            return false
-        }
-        return flow == .creation
-    }
-
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
@@ -2015,9 +2001,6 @@ private extension EditableOrderViewModel {
     }
 
     func evaluateSelectionSync() {
-        guard sideBySideViewFeatureFlagEnabled else {
-            return
-        }
         switch selectionSyncApproach {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
@@ -2031,10 +2014,7 @@ private extension EditableOrderViewModel {
     func forwardSyncApproachToSynchronizer() {
         $selectionSyncApproach
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
             }
             .store(in: &cancellables)
@@ -2044,10 +2024,7 @@ private extension EditableOrderViewModel {
         $selectionSyncApproach
             .removeDuplicates()
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
                     /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
                     /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when

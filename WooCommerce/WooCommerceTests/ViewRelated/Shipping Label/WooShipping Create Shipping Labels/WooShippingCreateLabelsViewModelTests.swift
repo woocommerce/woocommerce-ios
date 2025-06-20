@@ -540,8 +540,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
                                  "shipment_1": [WooShippingShipmentItem.fake()]]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
-                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
-                                                      shipmentID: "shipment_0")
+                    ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                              shipmentID: "shipment_0")
                 ])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
                                                                   shippingLabelData: shippingLabelData)))
@@ -611,8 +611,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
                                  "shipment_1": [WooShippingShipmentItem.fake()]]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
-                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
-                                                      shipmentID: "shipment_0")
+                    ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                              shipmentID: "shipment_0")
                 ])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
                                                                   shippingLabelData: shippingLabelData)))
@@ -660,8 +660,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
                                  "shipment_1": [WooShippingShipmentItem.fake()]]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
-                    ShippingLabelPurchase.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
-                                                      shipmentID: "shipment_0")
+                    ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
+                                              shipmentID: "shipment_0")
                 ])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
                                                                   shippingLabelData: shippingLabelData)))

@@ -65,10 +65,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:
             return true
-        case .backgroundTasks:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .viewEditCustomFieldsInProductsAndOrders:
-            return true
         case .blazeEvergreenCampaigns:
             return true
         case .revampedShippingLabelCreation:

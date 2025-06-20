@@ -7,7 +7,7 @@ struct ShippingLabelPrintingInstructionsView: View {
             VStack {
                 Spacer()
                     .frame(height: 20)
-                Image(.shippingLabelCreationInfoImage)
+                Image(uiImage: .shippingLabelCreationInfoImage)
                 Spacer()
                     .frame(height: 30)
                 ShippingLabelPrintingStepListView()

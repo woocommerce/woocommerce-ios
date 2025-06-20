@@ -112,10 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Payouts item in the Payments menu
-    ///
-    case wooPaymentsPayoutsOverviewInPaymentsMenu
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm

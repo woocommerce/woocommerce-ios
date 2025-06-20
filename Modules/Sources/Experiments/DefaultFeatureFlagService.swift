@@ -48,8 +48,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .giftCardInOrderForm:
             return true
-        case .wooPaymentsPayoutsOverviewInPaymentsMenu:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:

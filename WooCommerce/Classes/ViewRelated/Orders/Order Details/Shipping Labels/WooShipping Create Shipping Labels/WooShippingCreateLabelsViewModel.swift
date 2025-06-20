@@ -437,6 +437,9 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
+            if let data = config.shippingLabelData {
+                shippingLabels = data.currentOrderLabels
+            }
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,

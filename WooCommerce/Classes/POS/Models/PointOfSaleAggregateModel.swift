@@ -13,6 +13,7 @@ import protocol Yosemite.POSSearchHistoryProviding
 import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
+import UIKit
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -209,9 +210,16 @@ extension PointOfSaleAggregateModel {
                 }
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
-                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                if let errorItem = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                     // Only play a sound and track analytics if the item still exists in the cart.
-                    await soundPlayer.playSound(.barcodeScanFailure)
+                    await soundPlayer.playSound(.barcodeScanFailure, completion: {
+                        // Announce the error to VoiceOver after the failure sound finishes
+                        if let accessibilityLabel = errorItem.accessibilityLabel {
+                            DispatchQueue.main.async {
+                                UIAccessibility.post(notification: .announcement, argument: accessibilityLabel)
+                            }
+                        }
+                    })
 
                     analytics.track(
                         event: .PointOfSale.addItemToCart(

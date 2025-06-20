@@ -1061,6 +1061,75 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
         }
+
+        @available(iOS 17.0, *)
+        @Test func connectionSuccessAlert_is_filtered_when_waiting_to_start_payment_on_card_reader_connection() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                searchHistoryService: MockPOSSearchHistoryService(),
+                popularPurchasableItemsController: MockPointOfSaleItemsController(),
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
+
+            // Add item to cart and checkout to trigger payment waiting state
+            sut.addToCart(makePurchasableItem())
+            await sut.checkOut()
+
+            // Verify we're in finalizing stage and no alert is currently shown
+            try #require(sut.orderStage == .finalizing)
+            try #require(sut.cardPresentPaymentAlertViewModel == nil)
+
+            // When
+            // Simulate connection success event while waiting for payment
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .connectionSuccess(done: {}))
+
+            // Then
+            // The connection success alert should be filtered out and not shown
+            #expect(sut.cardPresentPaymentAlertViewModel == nil)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func connectionSuccessAlert_is_shown_when_not_waiting_to_start_payment() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = PointOfSaleAggregateModel(
+                itemsController: itemsController,
+                purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
+                couponsController: MockPointOfSaleCouponsController(),
+                couponsSearchController: MockPointOfSaleCouponsController(),
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+                collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
+                searchHistoryService: MockPOSSearchHistoryService(),
+                popularPurchasableItemsController: MockPointOfSaleItemsController(),
+                barcodeScanService: MockPointOfSaleBarcodeScanService(),
+                soundPlayer: MockPointOfSaleSoundPlayer())
+
+            // Verify we're in building stage and no alert is currently shown
+            try #require(sut.orderStage == .building)
+            try #require(sut.cardPresentPaymentAlertViewModel == nil)
+
+            // When
+            // Simulate connection success event when not waiting for payment
+            cardPresentPaymentService.paymentEvent = .show(eventDetails: .connectionSuccess(done: {}))
+
+            // Then
+            // The connection success alert should be shown
+            guard case .connectionSuccess = sut.cardPresentPaymentAlertViewModel else {
+                Issue.record("Expected cardPresentPaymentAlertViewModel to be connectionSuccess")
+                return
+            }
+        }
     }
 
     struct AnalyticsTests {

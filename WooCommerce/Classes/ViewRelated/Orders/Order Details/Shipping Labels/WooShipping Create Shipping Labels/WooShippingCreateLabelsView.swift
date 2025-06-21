@@ -23,6 +23,7 @@ struct WooShippingCreateLabelsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
 
     private var isiPhonePortrait: Bool {
         verticalSizeClass == .regular && horizontalSizeClass == .compact
@@ -544,6 +545,9 @@ private extension WooShippingCreateLabelsView {
         }
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
+        .renderedIf(
+            !sizeCategory.isAccessibilityCategory || viewModel.isPurchaseButtonEnabled
+        )
     }
 
     /// View showing the address verification status for a destination address.

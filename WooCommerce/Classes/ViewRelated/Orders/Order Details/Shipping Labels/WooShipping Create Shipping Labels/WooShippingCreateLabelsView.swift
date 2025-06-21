@@ -278,8 +278,8 @@ private extension WooShippingCreateLabelsView {
                 .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
-                // Unverified notice for origin address
                 if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    // Unverified notice for origin address
                     verificationNotice(with: originAddressUnverifiedNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
@@ -290,10 +290,8 @@ private extension WooShippingCreateLabelsView {
                                        onTap: {
                         viewModel.editSelectedOriginAddress()
                     })
-                }
-
-                // Verification notice for destination address
-                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                } else if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    // Verification notice for destination address
                     verificationNotice(with: destinationAddressStatusNoticeLabel,
                                        isVerified: isDestinationAddressVerified,
                                        onDismiss: {
@@ -306,10 +304,8 @@ private extension WooShippingCreateLabelsView {
                             viewModel.editDestinationAddress()
                         }
                     })
-                }
-
-                // Verification notice for missing ITN in customs form
-                if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                } else if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                    // Verification notice for missing ITN in customs form
                     verificationNotice(with: itnMissingNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {

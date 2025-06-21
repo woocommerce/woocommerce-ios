@@ -273,6 +273,9 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
+                .lineLimit(1)
+                .scaledToFill()
+                .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
                 // Unverified notice for origin address

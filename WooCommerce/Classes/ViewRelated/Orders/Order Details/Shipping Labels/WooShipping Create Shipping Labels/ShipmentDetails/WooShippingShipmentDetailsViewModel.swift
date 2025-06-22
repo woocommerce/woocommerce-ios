@@ -264,16 +264,21 @@ private extension WooShippingShipmentDetailsViewModel {
             .store(in: &subscriptions)
 
         $originAddress.combineLatest($destinationAddress)
-            .map { [weak self] originAddress, destinationAddress in
-                guard let self else { return nil }
-                return WooShippingServiceViewModel(order: order,
-                                                   originAddress: originAddress,
-                                                   destinationAddress: destinationAddress,
-                                                   stores: stores) { [weak self] selectedRate in
+            .sink { [weak self] originAddress, destinationAddress in
+                guard let self else { return }
+                // When the origin address changes, the old pricing based on the previous rate is no longer valid.
+                // We reset `selectedRate` here to stop displaying the stale price until a new rate is selected.
+                self.selectedRate = nil
+                self.shippingService = WooShippingServiceViewModel(
+                    order: self.order,
+                    originAddress: originAddress,
+                    destinationAddress: destinationAddress,
+                    stores: self.stores
+                ) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
                 }
             }
-            .assign(to: &$shippingService)
+            .store(in: &subscriptions)
 
         $originAddress.combineLatest($destinationAddress)
             .map { (originAddress, destinationAddress) -> Bool in

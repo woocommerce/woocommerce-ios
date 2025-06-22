@@ -615,6 +615,46 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedPackage?.name, updatedPackage.name)
     }
+
+    func test_changing_origin_address_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        originAddressSubject.send(sampleOriginAddress(country: "US", state: "FL"))
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+    }
+
+    func test_changing_destination_address_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        destinationAddressSubject.send(sampleDestinationAddress(country: "US", state: "FL"))
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModelTests {

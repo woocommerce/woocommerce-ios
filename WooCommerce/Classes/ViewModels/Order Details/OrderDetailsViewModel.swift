@@ -531,11 +531,9 @@ extension OrderDetailsViewModel {
                 CustomFieldViewModel(metadata: $0)
             }
 
-            let isEditable = featureFlagService.isFeatureFlagEnabled(.viewEditCustomFieldsInProductsAndOrders)
             let viewModel = CustomFieldsListViewModel(customFields: customFields, siteID: order.siteID, parentItemID: order.orderID, customFieldType: .order)
 
-            let customFieldsListViewController = CustomFieldsListHostingController(isEditable: isEditable,
-                                                                                   viewModel: viewModel)
+            let customFieldsListViewController = CustomFieldsListHostingController(viewModel: viewModel)
 
             viewController.navigationController?.pushViewController(customFieldsListViewController, animated: true)
 

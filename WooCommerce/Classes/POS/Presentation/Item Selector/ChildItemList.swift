@@ -92,7 +92,11 @@ private extension ChildItemList {
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
                     itemListType: .products(search: false),
-                    baseItem: node))
+                    baseItem: node)) {
+                Task {
+                    await itemsController.loadItems(base: node)
+                }
+            }
         }
     }
 

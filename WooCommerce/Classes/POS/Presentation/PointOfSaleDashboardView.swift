@@ -80,7 +80,7 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
-        .environment(\.posBackgroundAppearance, posModel.paymentState != .card(.processingPayment) ? .primary : .secondary)
+        .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: itemsViewState.containerState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
@@ -111,11 +111,7 @@ struct PointOfSaleDashboardView: View {
         .task {
             await posModel.purchasableItemsController.loadItems(base: .root)
             await posModel.couponsController.loadItems(base: .root)
-
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS),
-               ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOSPt2PopularProducts) {
-                await posModel.popularPurchasableItemsController.loadItems(base: .root)
-            }
+            await posModel.popularPurchasableItemsController.loadItems(base: .root)
         }
         .ignoresSafeArea(.keyboard)
     }
@@ -146,6 +142,10 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.shownFullScreen)
         }
+    }
+
+    private var backgroundAppearance: POSBackgroundAppearanceKey.Appearance {
+        posModel.paymentState.card != .processingPayment ? .primary : .secondary
     }
 }
 

@@ -14,7 +14,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        modelsInventory = try .from(packageName: "WooCommerce", bundle: Bundle(for: CoreDataManager.self))
+        modelsInventory = try .from(packageName: "WooCommerce", bundle: .storage)
     }
 
     override func tearDown() {

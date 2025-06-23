@@ -24,20 +24,6 @@ public protocol PaymentRemoteProtocol {
     /// - Returns: The remote response from creating a cart.
     func createCart(siteID: Int64, productID: Int64) async throws
 
-    /// Creates a cart with the given domain for the site ID.
-    /// - Parameters:
-    ///   - siteID: The ID of the site that the domain is being mapped to.
-    ///   - domain: The domain product to purchase.
-    ///   - isTemporary: Whether the cart is temporary.
-    ///   When the cart is being passed to a subsequent API request for checkout, this needs to be `true`.
-    ///   When it's necessary to create a persistent cart for later checkout, this is set to `false`. The default value is `true`.
-    /// - Returns: The remote response from creating a cart.
-    func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse
-
-    /// Checks out the given cart using domain credit as the payment method.
-    /// - Parameter cart: Cart generated from one of the `createCart` functions.
-    /// - Parameter contactInfo: Contact info for the domain that needs to be validated beforehand.
-    func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws
 }
 
 /// WPCOM Payment Endpoints
@@ -87,44 +73,6 @@ public class PaymentRemote: Remote, PaymentRemoteProtocol {
             throw CreateCartError.productNotInCart
         }
     }
-
-    public func createCart(siteID: Int64, domain: DomainToPurchase, isTemporary: Bool) async throws -> CartResponse {
-        let parameters: [String: Any] = [
-            "products": [
-                [
-                    "product_id": domain.productID,
-                    "volume": 1,
-                    "meta": domain.name,
-                    "extra": [
-                        "privacy": domain.supportsPrivacy
-                    ]
-                ] as [String: Any]
-            ],
-            "temporary": isTemporary
-        ]
-        let response: CartResponse = try await createCart(siteID: siteID, parameters: parameters, encoding: JSONEncoding.default)
-
-        // Casting the values of `[String: Any]` to fixed-size integer types like `Int64` results in `nil`.
-        // https://stackoverflow.com/questions/36786883/swift-cast-any-object-to-int64-nil
-        guard let productsInCart = response["products"]?.value as? [[String: Any]],
-              productsInCart.contains(where: { ($0["product_id"] as? Int) == Int(domain.productID) }) else {
-            throw CreateCartError.productNotInCart
-        }
-        return response
-    }
-
-    public func checkoutCartWithDomainCredit(cart: CartResponse, contactInfo: DomainContactInfo) async throws {
-        let path = "\(Path.cartCheckout)"
-        let cartDictionary = try cart.toDictionary()
-        let contactInformationDictionary = try contactInfo.toDictionary()
-        let parameters: [String: Any] = [
-            "cart": cartDictionary,
-            "domain_details": contactInformationDictionary,
-            "payment": ["payment_method": PaymentMethod.credit.rawValue]
-        ]
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters, encoding: JSONEncoding.default)
-        let _: DomainCreditCheckoutCartResponse = try await enqueue(request)
-    }
 }
 
 private extension PaymentRemote {
@@ -151,22 +99,6 @@ public struct WPComPlan: Decodable, Equatable {
         case productID = "product_id"
         case name = "product_name"
         case formattedPrice = "formatted_price"
-    }
-}
-
-/// Necessary data of a domain to create a cart. Contains a subset of properties of `PaidDomainSuggestion`.
-public struct DomainToPurchase: Equatable {
-    /// Domain name.
-    public let name: String
-    /// WPCOM product ID.
-    public let productID: Int64
-    /// Whether there is privacy support. Used when creating a cart with a domain product.
-    public let supportsPrivacy: Bool
-
-    public init(name: String, productID: Int64, supportsPrivacy: Bool) {
-        self.name = name
-        self.productID = productID
-        self.supportsPrivacy = supportsPrivacy
     }
 }
 

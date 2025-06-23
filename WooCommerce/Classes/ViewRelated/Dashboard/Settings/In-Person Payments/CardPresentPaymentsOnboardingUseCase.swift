@@ -435,7 +435,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     var storeCountryCode: CountryCode {
-        let siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager).siteSettings
+        let siteSettings = ServiceLocator.selectedSiteSettings.siteSettings
         let storeAddress = SiteAddress(siteSettings: siteSettings)
         return storeAddress.countryCode
     }

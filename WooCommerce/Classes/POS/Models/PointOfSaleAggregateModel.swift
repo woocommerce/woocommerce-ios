@@ -111,7 +111,7 @@ protocol PointOfSaleAggregateModelProtocol {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
+         paymentState: PointOfSalePaymentState = .idle) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
@@ -177,7 +177,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .card(.idle)
+        paymentState = .idle
         cardPresentPaymentInlineMessage = nil
     }
 }
@@ -337,20 +337,20 @@ extension PointOfSaleAggregateModel {
     func startCashPayment() async {
         analytics.track(.pointOfSaleCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
-        paymentState = .cash(.collectingCash)
+        paymentState.cash = .collectingCash
     }
 
     @MainActor
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
-        paymentState = .card(.idle)
+        paymentState.cash = .idle
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
         }
     }
 
     private func cashPaymentSuccess() {
-        paymentState = .cash(.paymentSuccess)
+        paymentState.cash = .paymentSuccess
         collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
     }
 
@@ -399,8 +399,15 @@ extension PointOfSaleAggregateModel {
 
     private func cancelCardReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
+        resetCardReaderObservation()
+    }
+
+    private func resetCardReaderObservation() {
+        // We set these to nil, so that we can check them when showing `Reader connected` on the Totals screen.
         startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
         cardReaderDisconnection?.cancel()
+        cardReaderDisconnection = nil
     }
 
     private func observeReaderReconnection() {
@@ -444,6 +451,13 @@ private extension PointOfSaleAggregateModel {
                 else {
                     return nil
                 }
+
+                // Filter connection success alerts when we're immediately starting a payment
+                if case .connectionSuccess = eventDetails,
+                   startPaymentOnCardReaderConnection != nil {
+                    return nil
+                }
+
                 return alertType
             }
             .sink(receiveValue: { [weak self] alertType in
@@ -461,24 +475,24 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+            .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
                 guard let self else { return nil }
 
-                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
-                                                              using: presentationStyleDeterminerDependencies)
+                let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
+                                                                      using: presentationStyleDeterminerDependencies)
 
-                if case .card(.acceptingCard) = newPaymentState {
+                if case .acceptingCard = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
                 }
 
-                if case .card(.processingPayment) = newPaymentState {
+                if case .processingPayment = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
                 }
 
-                return newPaymentState
+                return newCardPaymentState
             }
-            .sink(receiveValue: { [weak self] paymentState in
-                self?.paymentState = paymentState
+            .sink(receiveValue: { [weak self] cardPaymentState in
+                self?.paymentState.card = cardPaymentState
             })
             .store(in: &cancellables)
 
@@ -569,17 +583,13 @@ extension PointOfSaleAggregateModel {
             try await cardPresentPaymentService.cancelPayment()
         }
 
-        // Cancels payment task
-        cardPresentPaymentService.cancelPayment()
-
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
-        startPaymentOnCardReaderConnection?.cancel()
-        cardReaderDisconnection?.cancel()
+        resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
     }
 }

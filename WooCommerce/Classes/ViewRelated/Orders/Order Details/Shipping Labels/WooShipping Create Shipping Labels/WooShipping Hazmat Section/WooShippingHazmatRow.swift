@@ -19,7 +19,7 @@ struct WooShippingHazmatRow: View {
             Button(action: {
                 isShowingDetailView = true
             }) {
-                AdaptiveStack {
+                HStack {
                     Text(Localization.hazmatLabel)
                         .bodyStyle()
                     Spacer()

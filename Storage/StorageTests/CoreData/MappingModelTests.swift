@@ -20,7 +20,7 @@ final class MappingModelTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
-        mainBundle = Bundle(for: CoreDataManager.self)
+        mainBundle = Bundle.storage
         modelsInventory = try .from(packageName: "WooCommerce", bundle: mainBundle)
     }
 

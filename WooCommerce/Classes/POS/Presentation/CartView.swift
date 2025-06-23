@@ -97,7 +97,9 @@ struct CartView: View {
                             .padding(.bottom, Constants.cartLastItemBottomPadding)
                             .onChange(of: posModel.cart.accessibilityFocusedItemID) { itemID in
                                 if let itemID = itemID {
-                                    accessibilityFocusedItem = itemID
+                                    Task { @MainActor in
+                                        accessibilityFocusedItem = itemID
+                                    }
                                 }
                             }
                             .animation(Constants.cartAnimation, value: posModel.cart.purchasableItems.map(\.id))

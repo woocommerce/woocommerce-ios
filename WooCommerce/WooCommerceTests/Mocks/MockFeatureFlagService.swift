@@ -17,7 +17,6 @@ final class MockFeatureFlagService: FeatureFlagService {
     var blazeEvergreenCampaigns: Bool
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
-    var favoriteProducts: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
@@ -40,7 +39,6 @@ final class MockFeatureFlagService: FeatureFlagService {
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
-         favoriteProducts: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
@@ -61,7 +59,6 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
-        self.favoriteProducts = favoriteProducts
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
@@ -107,8 +104,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
-        case .favoriteProducts:
-            return favoriteProducts
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

@@ -46,6 +46,13 @@ struct WooShippingCreateLabelsView: View {
         viewModel.destinationAddressStatus == .verified
     }
 
+    /// Whether the "Purchase" button should be rendered
+    private var shouldShowPurchaseButton: Bool {
+        return isShipmentDetailsExpanded ||
+        !sizeCategory.isAccessibilityCategory ||
+        viewModel.isPurchaseButtonEnabled
+    }
+
     var body: some View {
         NavigationStack {
             Group {
@@ -335,7 +342,7 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                     }
-                    if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
+                    if shouldShowPurchaseButton || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
                     }
                 }
@@ -351,7 +358,10 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                         .fixedSize(horizontal: false, vertical: true)
-                        purchaseButton
+
+                        if shouldShowPurchaseButton {
+                            purchaseButton
+                        }
                     }
                 }
             }
@@ -544,9 +554,6 @@ private extension WooShippingCreateLabelsView {
         }
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
-        .renderedIf(
-            !sizeCategory.isAccessibilityCategory || viewModel.isPurchaseButtonEnabled
-        )
     }
 
     /// View showing the address verification status for a destination address.

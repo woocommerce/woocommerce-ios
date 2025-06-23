@@ -763,7 +763,7 @@
         <attribute name="rate" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="refundableAmount" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="serviceName" attributeType="String" defaultValueString=""/>
-        <attribute name="shipmentID" attributeType="String" defaultValueString="0"/>
+        <attribute name="shipmentID" optional="YES" attributeType="String"/>
         <attribute name="shippingLabelID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="status" attributeType="String" defaultValueString=""/>

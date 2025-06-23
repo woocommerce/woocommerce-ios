@@ -59,14 +59,10 @@ struct ItemRowView: View {
                 Text(cartItem.title)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(Constants.titleSubtitleLineLimit)
                 if let subtitle = cartItem.subtitle {
                     Text(subtitle)
                         .foregroundColor(subtitleColor)
                         .font(Constants.itemSubtitleFont)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(Constants.titleSubtitleLineLimit)
                 }
 
                 if case .loaded(let item) = cartItem.state {
@@ -75,6 +71,8 @@ struct ItemRowView: View {
                         .font(Constants.itemPriceFont)
                 }
             }
+            .multilineTextAlignment(.leading)
+            .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
             .padding(.vertical, Constants.verticalPadding * (1 / scale))

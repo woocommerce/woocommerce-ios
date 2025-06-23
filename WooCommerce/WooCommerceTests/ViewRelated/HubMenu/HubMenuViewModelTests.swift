@@ -595,7 +595,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
             .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
@@ -760,7 +759,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.InAppPurchases(),
             HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),

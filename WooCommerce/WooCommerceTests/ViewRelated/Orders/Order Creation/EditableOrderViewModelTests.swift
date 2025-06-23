@@ -297,8 +297,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .immediate
@@ -317,8 +316,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -340,8 +338,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_doneButtonType_when_custom_amount_using_onRecalculateButtonTap_sync_approach() throws {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -366,8 +363,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -396,8 +392,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onSelectorButtonTap

@@ -9,6 +9,7 @@
 - [***] POS: Barcode scanning using Bluetooth scanners in Point of Sale (HID-based scanners are supported) [https://github.com/woocommerce/woocommerce-ios/pull/15776]
 - [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
 - [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
+- [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
 
 22.6
 -----

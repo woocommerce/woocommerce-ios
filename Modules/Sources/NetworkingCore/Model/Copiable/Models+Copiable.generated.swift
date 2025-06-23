@@ -694,7 +694,7 @@ extension NetworkingCore.ShippingLabel {
         orderID: CopiableProp<Int64> = .copy,
         shippingLabelID: CopiableProp<Int64> = .copy,
         carrierID: CopiableProp<String> = .copy,
-        shipmentID: CopiableProp<String> = .copy,
+        shipmentID: NullableCopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         packageName: CopiableProp<String> = .copy,
         rate: CopiableProp<Double> = .copy,

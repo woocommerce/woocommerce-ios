@@ -17,7 +17,8 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
     public let carrierID: String
 
     /// ID of the shipment associated with this label
-    public let shipmentID: String
+    /// This is available only in the Woo Shipping plugin, not in the legacy Woo Tax plugin.
+    public let shipmentID: String?
 
     /// The date the shipping label was created.
     public let dateCreated: Date
@@ -74,7 +75,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
                 orderID: Int64,
                 shippingLabelID: Int64,
                 carrierID: String,
-                shipmentID: String,
+                shipmentID: String?,
                 dateCreated: Date,
                 packageName: String,
                 rate: Double,
@@ -136,7 +137,7 @@ extension ShippingLabel: Decodable {
         /// Using alternative type integer to support decoding both types.
         let shipmentID = container.failsafeDecodeIfPresent(targetType: String.self,
                                                            forKey: .shipmentID,
-                                                           alternativeTypes: [.integer(transform: { $0.description })]) ?? "0"
+                                                           alternativeTypes: [.integer(transform: { $0.description })])
 
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)

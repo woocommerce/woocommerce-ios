@@ -111,7 +111,7 @@ protocol PointOfSaleAggregateModelProtocol {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
-         paymentState: PointOfSalePaymentState = PointOfSalePaymentState()) {
+         paymentState: PointOfSalePaymentState = .idle) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
@@ -177,7 +177,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = PointOfSalePaymentState()
+        paymentState = .idle
         cardPresentPaymentInlineMessage = nil
     }
 }

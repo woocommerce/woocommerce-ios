@@ -4,9 +4,13 @@ struct PointOfSalePaymentState: Equatable {
     var card: PointOfSaleCardPaymentState
     var cash: PointOfSaleCashPaymentState
 
-    init(card: PointOfSaleCardPaymentState = .idle, cash: PointOfSaleCashPaymentState = .idle) {
+    init(card: PointOfSaleCardPaymentState, cash: PointOfSaleCashPaymentState) {
         self.card = card
         self.cash = cash
+    }
+
+    static var idle: PointOfSalePaymentState {
+        .init(card: .idle, cash: .idle)
     }
 
     var activePaymentMethod: PointOfSalePaymentMethod {

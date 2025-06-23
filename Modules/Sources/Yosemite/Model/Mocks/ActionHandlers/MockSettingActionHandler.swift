@@ -25,6 +25,12 @@ struct MockSettingActionHandler: MockActionHandler {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveTaxBasedOnSetting(_, let onCompletion):
             onCompletion(.success(objectGraph.taxBasedOnSetting))
+        case .isFeatureEnabled(_, let feature, let onCompletion):
+            switch feature {
+            case .pointOfSale:
+                // One of the requirements for the POS tab to show up.
+                onCompletion(.success(true))
+            }
         default: unimplementedAction(action: action)
         }
     }

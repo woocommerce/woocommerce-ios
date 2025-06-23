@@ -2,9 +2,11 @@ import Foundation
 
 struct TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState {
-        case .card(let cardPaymentState):
-            switch cardPaymentState {
+        switch paymentState.activePaymentMethod {
+        case .cash:
+            return false
+        case .card:
+            switch paymentState.card {
             case .idle,
                     .acceptingCard,
                     .cardInserted,
@@ -18,64 +20,90 @@ struct TotalsViewHelper {
                     .cardPaymentSuccessful:
                 return false
             }
-        case .cash:
-            return false
         }
     }
 
     func shouldShowDisconnectedMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                       paymentState: PointOfSaleCardPaymentState) -> Bool {
+                                       paymentState: PointOfSalePaymentState) -> Bool {
         guard readerConnectionStatus == .disconnected else {
             return false
         }
-        switch paymentState {
-        case .idle,
-                .acceptingCard,
-                .preparingReader:
-            return true
-        case .validatingOrder,
-                .validatingOrderError,
-                .paymentIntentCreationError,
-                .processingPayment,
-                .cardInserted,
-                .paymentError,
-                .cardPaymentSuccessful:
+
+        switch paymentState.activePaymentMethod {
+        case .cash:
             return false
+        case .card:
+            switch paymentState.card {
+            case .idle,
+                    .acceptingCard,
+                    .preparingReader:
+                return true
+            case .validatingOrder,
+                    .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .processingPayment,
+                    .cardInserted,
+                    .paymentError,
+                    .cardPaymentSuccessful:
+                return false
+            }
         }
     }
 
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
-        guard orderState != .syncing,
-              case .card(let cardState) = paymentState else {
+        guard orderState != .syncing else {
             return false
         }
 
-        if cardReaderConnectionStatus == .disconnected {
-            return true
-        }
-
-        if case let .loaded(totals) = orderState, totals.orderTotalDecimal.isZero {
-            return true
-        }
-
-        switch cardState {
-        case .validatingOrderError,
-                .paymentIntentCreationError,
-             .acceptingCard:
-            return true
-        default:
+        switch paymentState.activePaymentMethod {
+        case .cash:
             return false
+        case .card:
+            if cardReaderConnectionStatus == .disconnected {
+                return true
+            }
+
+            if case let .loaded(totals) = orderState, totals.orderTotalDecimal.isZero {
+                return true
+            }
+
+            switch paymentState.card {
+            case .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .acceptingCard:
+                return true
+            case .idle,
+                    .cardInserted,
+                    .validatingOrder,
+                    .preparingReader,
+                    .processingPayment,
+                    .paymentError,
+                    .cardPaymentSuccessful:
+                return false
+            }
         }
     }
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState {
-        case .card(.cardPaymentSuccessful), .cash(.paymentSuccess), .cash(.collectingCash), .card(.paymentError):
+        switch paymentState.activePaymentMethod {
+        case .cash:
             return false
-        default:
-            return true
+        case .card:
+            switch paymentState.card {
+            case .cardPaymentSuccessful, .paymentError:
+                return false
+            case .idle,
+                    .acceptingCard,
+                    .cardInserted,
+                    .validatingOrder,
+                    .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .preparingReader,
+                    .processingPayment:
+                return true
+            }
         }
     }
 

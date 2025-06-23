@@ -22,8 +22,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
-        case .inAppPurchasesDebugMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

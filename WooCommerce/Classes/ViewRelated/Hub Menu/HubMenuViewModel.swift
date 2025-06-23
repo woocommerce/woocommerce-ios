@@ -389,10 +389,6 @@ private extension HubMenuViewModel {
             items.append(Inbox())
         }
 
-        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            items.append(InAppPurchases())
-        }
-
         items.append(Customers())
 
         return items

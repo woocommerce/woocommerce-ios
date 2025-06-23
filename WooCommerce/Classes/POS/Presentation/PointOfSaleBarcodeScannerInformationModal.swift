@@ -43,7 +43,7 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
     }
 
     private var bulletPointWithLinkAccessibilityLabel: String {
-        return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLink
+        return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLinkAccessible
     }
 }
 
@@ -73,6 +73,11 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             value: "More details.",
             comment: "Link text in the barcode info modal in POS, leading to more details about barcode setup"
         )
+        static let barcodeInfoMoreDetailsLinkAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.moreDetailsLink.accessible",
+            value: "More details, link.",
+            comment: "Accessible version of more details link in barcode info modal, announcing it as a link for screen readers"
+        )
         static let barcodeInfoSecondaryMessage = NSLocalizedString(
             "pos.barcodeInfoModal.secondaryMessage",
             value: "• Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
@@ -98,12 +103,12 @@ private extension PointOfSaleBarcodeScannerInformationModal {
         // Accessibility-friendly versions without bullet points
         static let barcodeInfoPrimaryMessageAccessible = NSLocalizedString(
             "pos.barcodeInfoModal.primaryMessage.accessible",
-            value: "First: Set up barcodes in the \"GTIN, UPC, EAN, ISBN\" field in Products > Product Details > Inventory.",
+            value: "First: Set up barcodes in the \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" field by navigating to Products, then Product Details, then Inventory.",
             comment: "Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers"
         )
         static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
             "pos.barcodeInfoModal.secondaryMessage.accessible",
-            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
+            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set H-I-D mode.",
             comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"
         )
         static let barcodeInfoTertiaryMessageAccessible = NSLocalizedString(

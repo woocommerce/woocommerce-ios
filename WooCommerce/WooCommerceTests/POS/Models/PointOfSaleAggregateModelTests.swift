@@ -539,7 +539,35 @@ struct PointOfSaleAggregateModelTests {
                 soundPlayer: MockPointOfSaleSoundPlayer())
 
             // Then
-            #expect(sut.paymentState == .card(.idle))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
+            #expect(sut.paymentState.activePaymentMethod == .card)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_card_when_cash_is_idle() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .idle)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .card)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_cash_when_cash_is_not_idle() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .acceptingCard, cash: .collectingCash)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .cash)
+        }
+
+        @available(iOS 17.0, *)
+        @Test func activePaymentMethod_returns_cash_when_cash_is_paymentSuccess() async throws {
+            // Given
+            let paymentState = PointOfSalePaymentState(card: .idle, cash: .paymentSuccess)
+
+            // Then
+            #expect(paymentState.activePaymentMethod == .cash)
         }
 
         @available(iOS 17.0, *)
@@ -558,13 +586,13 @@ struct PointOfSaleAggregateModelTests {
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
                 barcodeScanService: MockPointOfSaleBarcodeScanService(),
                 soundPlayer: MockPointOfSaleSoundPlayer(),
-                paymentState: .card(.cardPaymentSuccessful))
+                paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle))
 
             // When
             sut.startNewCart()
 
             // Then
-            #expect(sut.paymentState == .card(.idle))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
         @available(iOS 17.0, *)
@@ -611,13 +639,13 @@ struct PointOfSaleAggregateModelTests {
                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
                 barcodeScanService: MockPointOfSaleBarcodeScanService(),
                 soundPlayer: MockPointOfSaleSoundPlayer(),
-                paymentState: .card(.cardPaymentSuccessful))
+                paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle))
 
             // When
             sut.addMoreToCart()
 
             // Then
-            #expect(sut.paymentState == .card(.idle))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
         @available(iOS 17.0, *)
@@ -675,7 +703,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cardPresentPaymentService.cancelPaymentCalled == true)
-            #expect(sut.paymentState == .cash(.collectingCash))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
         }
 
         @available(iOS 17.0, *)
@@ -700,7 +728,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.startCashPayment()
 
             // Then
-            #expect(sut.paymentState == .cash(.collectingCash))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
         }
 
         @available(iOS 17.0, *)
@@ -721,13 +749,13 @@ struct PointOfSaleAggregateModelTests {
                 barcodeScanService: MockPointOfSaleBarcodeScanService(),
                 soundPlayer: MockPointOfSaleSoundPlayer())
             await sut.startCashPayment()
-            #expect(sut.paymentState == .cash(.collectingCash))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
 
             // When
             await sut.cancelCashPayment()
 
             // Then
-            #expect(sut.paymentState == .card(.idle))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .idle))
         }
 
         @available(iOS 17.0, *)
@@ -753,7 +781,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.orderStage == .finalizing)
 
             await sut.startCashPayment()
-            #expect(sut.paymentState == .cash(.collectingCash))
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
 
             // When
             await sut.cancelCashPayment()

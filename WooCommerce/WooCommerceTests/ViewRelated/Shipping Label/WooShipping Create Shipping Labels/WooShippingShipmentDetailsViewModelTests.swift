@@ -57,8 +57,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
 
         // When
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
         viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
 
         // Then
         XCTAssertTrue(viewModel.isPurchaseButtonEnabled)

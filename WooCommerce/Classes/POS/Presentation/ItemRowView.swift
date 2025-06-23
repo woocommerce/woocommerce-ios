@@ -24,25 +24,28 @@ struct ItemRowView: View {
     }
 
     var body: some View {
-        Group {
-            switch cartItem.state {
-            case .loaded, .error:
-                productRow
-            case .loading:
-                GhostItemCardView(configuration: Constants.cartConfiguration,
-                                  showProductImage: $showProductImage) {
-                    if let onCancelLoading {
-                        CartRowRemoveButton {
-                            onCancelLoading()
-                        }
+        itemRow
+            .background(Color.posSurfaceContainerLowest)
+            .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
+            .posItemCardBorderStyles()
+            .padding(.horizontal, Constants.horizontalPadding)
+    }
+
+    @ViewBuilder
+    private var itemRow: some View {
+        switch cartItem.state {
+        case .loaded, .error:
+            productRow
+        case .loading:
+            GhostItemCardView(configuration: Constants.cartConfiguration,
+                              showProductImage: $showProductImage) {
+                if let onCancelLoading {
+                    CartRowRemoveButton {
+                        onCancelLoading()
                     }
                 }
             }
         }
-        .background(Color.posSurfaceContainerLowest)
-        .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
-        .posItemCardBorderStyles()
-        .padding(.horizontal, Constants.horizontalPadding)
     }
 
     @ViewBuilder
@@ -131,7 +134,8 @@ private extension ItemRowView {
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
             topPlaceholderWidthMultiplier: 0.4,
-            bottomPlaceholderWidthMultiplier: 0.35
+            bottomPlaceholderWidthMultiplier: 0.35,
+            backgroundColor: Color.posSurfaceContainerLowest
         )
     }
 }

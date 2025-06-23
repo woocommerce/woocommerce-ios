@@ -43,8 +43,6 @@
 		029B00A7230D64E800B0AE66 /* StatsTimeRangeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */; };
 		02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */; };
 		02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */; };
-		02DAE7F8291A9F11009342B7 /* DomainStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */; };
-		02DAE7FA291A9F36009342B7 /* MockDomainRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */; };
 		02DF98092A136BFB0009E2EA /* MockSitePluginsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */; };
 		02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262BF238CE80100B79588 /* StorageShippingSettingsServiceTests.swift */; };
 		02E3B62A290622DE007E0F13 /* AccountCreationStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E3B629290622DE007E0F13 /* AccountCreationStoreTests.swift */; };
@@ -235,8 +233,6 @@
 		029B00A6230D64E800B0AE66 /* StatsTimeRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeTests.swift; sourceTree = "<group>"; };
 		02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
 		02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ComparableTests.swift"; sourceTree = "<group>"; };
-		02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainStoreTests.swift; sourceTree = "<group>"; };
-		02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDomainRemote.swift; sourceTree = "<group>"; };
 		02DF98082A136BFB0009E2EA /* MockSitePluginsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSitePluginsRemote.swift; sourceTree = "<group>"; };
 		02E262BF238CE80100B79588 /* StorageShippingSettingsServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageShippingSettingsServiceTests.swift; sourceTree = "<group>"; };
 		02E3B629290622DE007E0F13 /* AccountCreationStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountCreationStoreTests.swift; sourceTree = "<group>"; };
@@ -560,7 +556,6 @@
 				D4CBAE5F26D440FA00BBE6D1 /* MockAnnouncementsRemote.swift */,
 				02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */,
 				029249E7274B8AEE002E9C34 /* MockMediaRemote.swift */,
-				02DAE7F9291A9F36009342B7 /* MockDomainRemote.swift */,
 				02616F932921E1CD0095BC00 /* MockSiteRemote.swift */,
 				02F2722E292F18FD00C36419 /* MockPaymentRemote.swift */,
 				EEB4E2CC29B04CE900371C3C /* MockStoreOnboardingTasksRemote.swift */,
@@ -666,7 +661,6 @@
 				DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */,
 				68BD37B828DB323D00C2A517 /* CustomerStoreTests.swift */,
 				02E3B629290622DE007E0F13 /* AccountCreationStoreTests.swift */,
-				02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */,
 				02616F912921E1530095BC00 /* SiteStoreTests.swift */,
 				02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */,
 				DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */,
@@ -922,7 +916,6 @@
 				206BFD582DF31432000BD68E /* POSProductOrVariationResolverTests.swift in Sources */,
 				025CA2D0238F54E800B05C81 /* ProductShippingClassStoreTests.swift in Sources */,
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
-				02DAE7F8291A9F11009342B7 /* DomainStoreTests.swift in Sources */,
 				DED91DF62AD67F8F00CDCC53 /* MockBlazeRemote.swift in Sources */,
 				20BCF6F52B0E57AB00954840 /* MockSystemStatusService.swift in Sources */,
 				D8652E322630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift in Sources */,
@@ -1020,7 +1013,6 @@
 				02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */,
 				02F2722F292F18FD00C36419 /* MockPaymentRemote.swift in Sources */,
 				FE28F6F2268462A6004465C7 /* UserStoreTests.swift in Sources */,
-				02DAE7FA291A9F36009342B7 /* MockDomainRemote.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockSiteStore.swift in Sources */,
 				20F616462CF4B4E500F9FA2A /* POSOrderServiceTests.swift in Sources */,

@@ -14,8 +14,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:Hardware.xcodeproj",
-        "identifier" : "D88FDB0725DD216B00CB0DBD",
+        "containerPath" : "container:",
+        "identifier" : "HardwareTests",
         "name" : "HardwareTests"
       }
     }

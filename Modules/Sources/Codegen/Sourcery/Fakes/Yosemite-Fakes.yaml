@@ -1,8 +1,8 @@
-project:
-    file: ../../../../../Yosemite/Yosemite.xcodeproj
-    target:
-        name: Yosemite
+sources:
+    include:
+        - ../../../../../Modules/Sources/Yosemite/
 templates:
     - Fakes.swifttemplate
-output: ../../../../../Fakes/Fakes/Yosemite.generated.swift
-
+output: ../../../../../Modules/Sources/Fakes/Yosemite.generated.swift
+args:
+    moduleName: Yosemite

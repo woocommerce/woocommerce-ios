@@ -11,14 +11,12 @@ final class MockFeatureFlagService: FeatureFlagService {
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
-    var sideBySideViewForOrderForm: Bool
     var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
     var blazeEvergreenCampaigns: Bool
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
-    var viewEditCustomFieldsInProductsAndOrders: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var notificationSettings: Bool
@@ -35,14 +33,12 @@ final class MockFeatureFlagService: FeatureFlagService {
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
-         sideBySideViewForOrderForm: Bool = false,
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
-         viewEditCustomFieldsInProductsAndOrders: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
@@ -57,14 +53,12 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
-        self.sideBySideViewForOrderForm = sideBySideViewForOrderForm
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
-        self.viewEditCustomFieldsInProductsAndOrders = viewEditCustomFieldsInProductsAndOrders
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.notificationSettings = notificationSettings
@@ -98,8 +92,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
-        case .sideBySideViewForOrderForm:
-            return sideBySideViewForOrderForm
         case .subscriptionsInOrderCreationCustomers:
             return isSubscriptionsInOrderCreationCustomersEnabled
         case .pointOfSale:
@@ -112,8 +104,6 @@ final class MockFeatureFlagService: FeatureFlagService {
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:
             return revampedShippingLabelCreation
-        case .viewEditCustomFieldsInProductsAndOrders:
-            return viewEditCustomFieldsInProductsAndOrders
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

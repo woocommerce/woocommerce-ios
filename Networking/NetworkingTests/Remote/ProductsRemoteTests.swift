@@ -253,6 +253,43 @@ final class ProductsRemoteTests: XCTestCase {
         XCTAssertEqual(result?.isFailure, true)
     }
 
+    // MARK: - Load products tests
+
+    func test_loadProducts_properly_returns_parsed_products() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        let products = try await remote.loadProducts(for: sampleSiteID, by: [6, 2])
+
+        // Then
+        XCTAssertEqual(products.count, 10)
+    }
+
+    func test_loadProducts_returns_empty_array_when_productIDs_is_empty() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        let products = try await remote.loadProducts(for: sampleSiteID, by: [])
+
+        // Then
+        XCTAssertEqual(products.count, 0)
+    }
+
+    func test_loadProducts_properly_relays_netwoking_errors() async {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        do {
+            _ = try await remote.loadProducts(for: sampleSiteID, by: [6, 2])
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .notFound())
+        }
+    }
+
     // MARK: - Load all products tests
 
     /// Verifies that loadAllProducts properly parses the `products-load-all` sample response.
@@ -413,127 +450,103 @@ final class ProductsRemoteTests: XCTestCase {
 
     /// Verifies that searchProducts properly parses the `products-load-all` sample response.
     ///
-    func test_searchProducts_properly_returns_parsed_products() throws {
+    func test_searchProducts_properly_returns_parsed_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
 
         // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProducts(for: self.sampleSiteID,
-                                  keyword: "photo",
-                                  pageNumber: 0,
-                                  pageSize: 100) { result in
-                promise(result)
-            }
-        }
+        let products = try await remote.searchProducts(for: sampleSiteID,
+                                                       keyword: "photo",
+                                                       pageNumber: 0,
+                                                       pageSize: 100)
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let products = try result.get()
         XCTAssertEqual(products.count, 2)
     }
 
     /// Verifies that searchProducts properly relays Networking Layer errors.
     ///
-    func test_searchProducts_properly_relays_networking_errors() {
+    func test_searchProducts_properly_relays_networking_errors() async {
         // Given
         let remote = ProductsRemote(network: network)
 
-        // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProducts(for: self.sampleSiteID,
-                                  keyword: String(),
-                                  pageNumber: 0,
-                                  pageSize: 100) { result in
-                promise(result)
-            }
+        // When & Then
+        do {
+            _ = try await remote.searchProducts(for: sampleSiteID,
+                                                keyword: String(),
+                                                pageNumber: 0,
+                                                pageSize: 100)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Expected error
         }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: - Search Products by SKU
 
-    func test_searchProductsBySKU_properly_returns_parsed_products() throws {
+    func test_searchProductsBySKU_properly_returns_parsed_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
 
         // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProductsBySKU(for: self.sampleSiteID,
-                                       keyword: "choco",
-                                       pageNumber: 0,
-                                       pageSize: 100) { result in
-                promise(result)
-            }
-        }
+        let products = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                            keyword: "choco",
+                                                            pageNumber: 0,
+                                                            pageSize: 100)
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let products = try result.get()
         XCTAssertEqual(products.count, 1)
     }
 
-    func test_searchProductsBySKU_properly_relays_networking_errors() {
+    func test_searchProductsBySKU_properly_relays_networking_errors() async {
         // Given
         let remote = ProductsRemote(network: network)
 
-        // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProductsBySKU(for: self.sampleSiteID,
-                                       keyword: String(),
-                                       pageNumber: 0,
-                                       pageSize: 100) { result in
-                promise(result)
-            }
+        // When & Then
+        do {
+            _ = try await remote.searchProductsBySKU(for: sampleSiteID,
+                                                     keyword: String(),
+                                                     pageNumber: 0,
+                                                     pageSize: 100)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Expected error
         }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
     }
 
     // MARK: - Search Products by Global Unique Identifier
 
-    func test_searchProductsByGlobalUniqueIdentifier_properly_returns_parsed_products() throws {
+    func test_searchProductsByGlobalUniqueIdentifier_properly_returns_parsed_products() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-sku-search")
 
         // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProductsByGlobalUniqueIdentifier(for: self.sampleSiteID,
-                                       keyword: "12345",
-                                       pageNumber: 0,
-                                       pageSize: 100) { result in
-                promise(result)
-            }
-        }
+        let products = try await remote.searchProductsByGlobalUniqueIdentifier(for: sampleSiteID,
+                                                                               keyword: "12345",
+                                                                               pageNumber: 0,
+                                                                               pageSize: 100)
 
         // Then
-        XCTAssertTrue(result.isSuccess)
-        let products = try result.get()
         XCTAssertEqual(products.count, 1)
     }
 
-    func test_searchProductsByGlobalUniqueIdentifier_properly_relays_networking_errors() {
+    func test_searchProductsByGlobalUniqueIdentifier_properly_relays_networking_errors() async {
         // Given
         let remote = ProductsRemote(network: network)
 
-        // When
-        let result: Result<[Product], Error> = waitFor { promise in
-            remote.searchProductsByGlobalUniqueIdentifier(for: self.sampleSiteID,
-                                       keyword: String(),
-                                       pageNumber: 0,
-                                       pageSize: 100) { result in
-                promise(result)
-            }
+        // When & Then
+        do {
+            _ = try await remote.searchProductsByGlobalUniqueIdentifier(for: sampleSiteID,
+                                                                        keyword: String(),
+                                                                        pageNumber: 0,
+                                                                        pageSize: 100)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Expected error
         }
-
-        // Then
-        XCTAssertTrue(result.isFailure)
     }
 
 

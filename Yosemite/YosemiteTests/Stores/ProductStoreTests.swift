@@ -1216,17 +1216,20 @@ final class ProductStoreTests: XCTestCase {
         let filteredProductCategory: Networking.ProductCategory = .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test")
 
         // When
-        let searchAction = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                        keyword: "hiii",
-                                                        pageNumber: defaultPageNumber,
-                                                        pageSize: defaultPageSize,
-                                                        stockStatus: filteredStockStatus,
-                                                        productStatus: filteredProductStatus,
-                                                        productType: filteredProductType,
-                                                        productCategory: filteredProductCategory,
-                                                        excludedProductIDs: [],
-                                                        onCompletion: { _ in })
-        productStore.onAction(searchAction)
+        waitFor { promise in
+            productStore.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                               keyword: "hiii",
+                                                               pageNumber: self.defaultPageNumber,
+                                                               pageSize: self.defaultPageSize,
+                                                               stockStatus: filteredStockStatus,
+                                                               productStatus: filteredProductStatus,
+                                                               productType: filteredProductType,
+                                                               productCategory: filteredProductCategory,
+                                                               excludedProductIDs: [],
+                                                               onCompletion: { _ in
+                promise(())
+            }))
+        }
 
         // Then
         XCTAssertTrue(remote.searchProductTriggered)
@@ -1705,8 +1708,14 @@ final class ProductStoreTests: XCTestCase {
         // Action
         let pageNumber = 6
         let pageSize = 36
-        let action = ProductAction.retrieveProducts(siteID: sampleSiteID, productIDs: [sampleProductID], pageNumber: pageNumber, pageSize: pageSize) { _ in }
-        productStore.onAction(action)
+        waitFor { promise in
+            productStore.onAction(ProductAction.retrieveProducts(siteID: self.sampleSiteID,
+                                                                 productIDs: [self.sampleProductID],
+                                                                 pageNumber: pageNumber,
+                                                                 pageSize: pageSize) { _ in
+                promise(())
+            })
+        }
 
         // Assert
         guard let queryParameters = network.queryParameters else {

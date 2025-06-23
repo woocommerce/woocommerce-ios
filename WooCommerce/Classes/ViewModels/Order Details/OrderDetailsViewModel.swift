@@ -712,13 +712,7 @@ extension OrderDetailsViewModel {
                         result: .success,
                         isRevampedFlow: true
                     ))
-                    continuation.resume(returning: shippingLabels.sorted(by: { label1, label2 in
-                        if let shipmentID1 = Int(label1.shipmentID),
-                           let shipmentID2 = Int(label2.shipmentID) {
-                            return shipmentID1 < shipmentID2
-                        }
-                        return label1.dateCreated < label2.dateCreated
-                    }))
+                    continuation.resume(returning: shippingLabels)
                 case .failure(let error):
                     ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                         result: .failed(error: error),

@@ -134,8 +134,8 @@ extension ShippingLabel: Decodable {
         let shipmentID = (try container.decodeIfPresent(String.self, forKey: .shipmentID)) ?? "0"
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
-        let rate = try container.decode(Double.self, forKey: .rate)
-        let currency = try container.decode(String.self, forKey: .currency)
+        let rate = (try container.decodeIfPresent(Double.self, forKey: .rate)) ?? 0 // not available for non-purchased labels
+        let currency = (try container.decodeIfPresent(String.self, forKey: .currency)) ?? "" // not available for non-purchased labels
         let trackingNumber = (try container.decodeIfPresent(String.self, forKey: .trackingNumber)) ?? ""
         let serviceName = try container.decodeIfPresent(String.self, forKey: .serviceName) ?? ""
         let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)

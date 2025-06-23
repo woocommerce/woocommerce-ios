@@ -436,7 +436,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
-            shippingLabels = config.shippingLabelData?.currentOrderLabels.filter { $0.refund == nil } ?? []
+            shippingLabels = config.shippingLabelData?.currentOrderLabels.filter { $0.refund == nil && $0.status == .purchased } ?? []
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,

@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 class WCAnalyticsCustomerMapperTests: XCTestCase {
     /// Dummy Site ID.

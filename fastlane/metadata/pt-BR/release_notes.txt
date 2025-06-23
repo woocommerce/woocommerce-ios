@@ -1,1 +1,0 @@
-Nesta atualização, corrigimos ícones de pagamento desfocados, otimizamos o tratamento de imagens, melhoramos a acessibilidade, adicionamos um tempo limite de pagamento com cartão e removemos funcionalidades de compra de domínio para promover uma experiência mais organizada. Também adicionamos novas melhorias aos recibos de PDV por e-mail (disponíveis no WooCommerce 10.0.0)

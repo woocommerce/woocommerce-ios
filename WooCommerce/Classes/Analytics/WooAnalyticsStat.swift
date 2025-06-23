@@ -348,13 +348,6 @@ enum WooAnalyticsStat: String {
     case notificationSettingsSavingSuccess = "notification_settings_saving_success"
     case notificationSettingsSavingFailed = "notification_settings_saving_failed"
 
-    // MARK: Domain Settings
-    //
-    case domainSettingsStep = "custom_domains_step"
-    case domainContactInfoValidationFailed = "domain_contact_info_validation_failed"
-    case domainSettingsCustomDomainPurchaseSuccess = "custom_domain_purchase_success"
-    case domainSettingsCustomDomainPurchaseFailed = "custom_domain_purchase_failed"
-
     // MARK: Card Reader Connection Events
     //
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
@@ -1276,6 +1269,8 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
+    case pointOfSaleTabSelected = "main_tab_pos_selected"
+    case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
     case pointOfSaleLoaded = "loaded"
     case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"

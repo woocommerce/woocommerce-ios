@@ -329,7 +329,7 @@ private extension CoreDataManagerTests {
     }
 
     func makeModelsInventory() throws -> ManagedObjectModelsInventory {
-        try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .init(for: CoreDataManager.self))
+        try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .storage)
     }
 
     func deleteStoreFiles(at storeURL: URL) throws {

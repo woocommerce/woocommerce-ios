@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// OrderStatsV4Mapper Unit Tests

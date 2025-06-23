@@ -187,14 +187,40 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
         Task {
-            let placeholderItemID = cart.addLoadingItem()
+            let placeholderItemID = cart.addLoadingItem().id
+
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    sourceViewType: .scanner,
+                    itemType: .loading
+                )
+            )
+
             do throws(PointOfSaleBarcodeScanError) {
                 let item = try await barcodeScanService.getItem(barcode: barcode)
-                cart.updateLoadingItem(id: placeholderItemID, with: item)
+                if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
+                    analytics.track(
+                        event: .PointOfSale.addItemToCart(
+                            sourceViewType: .scanner,
+                            itemType: .product,
+                            productType: .init(cartItem: cartItem)
+                        )
+                    )
+                }
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
-                cart.updateLoadingItem(id: placeholderItemID, with: error)
-                await soundPlayer.playSound(.barcodeScanFailure)
+                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                    // Only play a sound and track analytics if the item still exists in the cart.
+                    await soundPlayer.playSound(.barcodeScanFailure)
+
+                    analytics.track(
+                        event: .PointOfSale.addItemToCart(
+                            sourceViewType: .scanner,
+                            itemType: .error,
+                            error: error
+                        )
+                    )
+                }
             }
         }
     }
@@ -373,8 +399,15 @@ extension PointOfSaleAggregateModel {
 
     private func cancelCardReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
+        resetCardReaderObservation()
+    }
+
+    private func resetCardReaderObservation() {
+        // We set these to nil, so that we can check them when showing `Reader connected` on the Totals screen.
         startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
         cardReaderDisconnection?.cancel()
+        cardReaderDisconnection = nil
     }
 
     private func observeReaderReconnection() {
@@ -418,6 +451,13 @@ private extension PointOfSaleAggregateModel {
                 else {
                     return nil
                 }
+
+                // Filter connection success alerts when we're immediately starting a payment
+                if case .connectionSuccess = eventDetails,
+                   startPaymentOnCardReaderConnection != nil {
+                    return nil
+                }
+
                 return alertType
             }
             .sink(receiveValue: { [weak self] alertType in
@@ -543,17 +583,13 @@ extension PointOfSaleAggregateModel {
             try await cardPresentPaymentService.cancelPayment()
         }
 
-        // Cancels payment task
-        cardPresentPaymentService.cancelPayment()
-
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
-        startPaymentOnCardReaderConnection?.cancel()
-        cardReaderDisconnection?.cancel()
+        resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
     }
 }

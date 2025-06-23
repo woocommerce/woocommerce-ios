@@ -3,7 +3,7 @@
 Instantiating models for tests is not a simple task. Sometimes, the initializer has too many attributes and the test does not rely on the full set of attributes.
 This inconvenience hurts our ability to efficiently unit test our app, which could discourage members from writing them at all.
 
-To help with this, we have introduced a new framework called `Fakes.framework`. This framework defines `.fake()` functions for all of our networking models.
+To help with this, we have introduced a module called Fakes at `Modules/Sources/Fakes`. This module defines `.fake()` functions for all of our networking models.
 The `.fake()` function instantiates a type with fake values. As of now, we are [defining](https://github.com/woocommerce/woocommerce-ios/blob/trunk/Fakes/Fakes/Fake.swift) fake values as empty values.
 
 This, in conjunction with the [copiable pattern](https://github.com/woocommerce/woocommerce-ios/blob/trunk/docs/copiable.md) allow us to write tests like:
@@ -23,7 +23,7 @@ func test() {
 }
 ```
 
-**Note: This framework is meant to be used in test targets only!**
+**Note: This module is meant to be used in test targets only!**
 
 
 ## Generating Fake Methods
@@ -70,10 +70,10 @@ It uses a single template, [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fa
 
 Please refer to the [Sourcery reference](https://cdn.rawgit.com/krzysztofzablocki/Sourcery/master/docs/index.html) for more info about how to write templates.
 
-## Adding Fakeable to a New Xcode Framework
+## Adding `Fakeable` to a new module
 
-1. In Xcode target settings, add Codegen to the Xcode framework in General > Frameworks and Libraries.
-2. Add a new file `{{FrameworkName}}-Fakes.yaml` under [`CodeGeneration/Sourcery/Fakes`](../CodeGeneration/Sourcery/Fakes) similar to other yaml files in the same folder.
+1. Add `Codegen` to the `dependencies` in the module target definition in `Modules/Package.swift`
+2. Add a new file `{{ModuleName}}-Fakes.yaml` under [`CodeGeneration/Sourcery/Fakes`](../CodeGeneration/Sourcery/Fakes) similar to other yaml files in the same folder.
 3. In [`Fakes.swifttemplate`](../CodeGeneration/Sourcery/Fakes/Fakes.swifttemplate), add a line to import the new framework.
-4. In [`Rakefile`](../Rakefile) which includes the script for `rake generate` command, add the new framework to the list of frameworks for Fakeable generation similar to other frameworks.
+4. In [`Rakefile`](../Rakefile) which includes the script for `rake generate` command, add the new framework to the list of frameworks for `Fakeable` generation similar to other frameworks.
 5. Now you can try generating fake methods as instructed in an earlier section.

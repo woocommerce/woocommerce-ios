@@ -107,7 +107,15 @@ final class OrderDetailsResultsControllers {
 
     /// Shipping labels for an Order
     ///
-    private(set) var shippingLabels: [ShippingLabel] = []
+    var shippingLabels: [ShippingLabel] {
+        order.shippingLabels.sorted(by: { label1, label2 in
+            if let shipmentID1 = label1.shipmentID,
+               let shipmentID2 = label2.shipmentID {
+                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
+            }
+            return label1.dateCreated < label2.dateCreated
+        })
+    }
 
     /// Site's add-on groups.
     ///
@@ -138,13 +146,6 @@ final class OrderDetailsResultsControllers {
         self.order = order
         self.siteID = order.siteID
         self.storageManager = storageManager
-        self.shippingLabels = order.shippingLabels.sorted(by: { label1, label2 in
-            if let shipmentID1 = label1.shipmentID,
-               let shipmentID2 = label2.shipmentID {
-                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
-            }
-            return label1.dateCreated < label2.dateCreated
-        })
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
@@ -161,13 +162,6 @@ final class OrderDetailsResultsControllers {
 
     func update(order: Order) {
         self.order = order
-        self.shippingLabels = order.shippingLabels.sorted(by: { label1, label2 in
-            if let shipmentID1 = label1.shipmentID,
-               let shipmentID2 = label2.shipmentID {
-                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
-            }
-            return label1.dateCreated < label2.dateCreated
-        })
         // Product variation results controller depends on order items to load variations,
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()

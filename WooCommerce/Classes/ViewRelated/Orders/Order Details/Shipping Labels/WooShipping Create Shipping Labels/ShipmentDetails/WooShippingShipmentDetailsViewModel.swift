@@ -156,6 +156,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         observeCustomsForm()
         observeHAZMATChanges()
         observeShippingRates()
+        setupSelectedRateReset()
     }
 
     /// Handles package selection for the shipping label.
@@ -264,21 +265,16 @@ private extension WooShippingShipmentDetailsViewModel {
             .store(in: &subscriptions)
 
         $originAddress.combineLatest($destinationAddress)
-            .sink { [weak self] originAddress, destinationAddress in
-                guard let self else { return }
-                // When the origin address changes, the old pricing based on the previous rate is no longer valid.
-                // We reset `selectedRate` here to stop displaying the stale price until a new rate is selected.
-                self.selectedRate = nil
-                self.shippingService = WooShippingServiceViewModel(
-                    order: self.order,
-                    originAddress: originAddress,
-                    destinationAddress: destinationAddress,
-                    stores: self.stores
-                ) { [weak self] selectedRate in
+            .map { [weak self] originAddress, destinationAddress in
+                guard let self else { return nil }
+                return WooShippingServiceViewModel(order: order,
+                                                   originAddress: originAddress,
+                                                   destinationAddress: destinationAddress,
+                                                   stores: stores) { [weak self] selectedRate in
                     self?.selectedRate = selectedRate
                 }
             }
-            .store(in: &subscriptions)
+            .assign(to: &$shippingService)
 
         $originAddress.combineLatest($destinationAddress)
             .map { (originAddress, destinationAddress) -> Bool in
@@ -381,6 +377,23 @@ private extension WooShippingShipmentDetailsViewModel {
                 }
             }
             .assign(to: &$shippingRates)
+    }
+
+    /// Observes changes in shipment details and resets the selected rate.
+    /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
+    func setupSelectedRateReset() {
+        $destinationAddress
+            .combineLatest(
+                $originAddress,
+                $selectedPackage,
+                $shipmentWeight
+            )
+            // Drop the initial values set on initialization, so we only react to changes.
+            .dropFirst()
+            .sink { [weak self] _, _, _, _ in
+                self?.selectedRate = nil
+            }
+            .store(in: &subscriptions)
     }
 
     /// Converts the package data to a `ShippingLabelPackageSelected` object.

@@ -869,8 +869,20 @@ private extension OrderDetailsDataSource {
 
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
+        guard let aggregateItem = aggregateOrderItems[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid aggregate order item index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableAggregateItemsCount": aggregateOrderItems.count,
+                    "orderID": order.orderID
+                ],
+                level: .error
+            )
+            return
+        }
 
-        let aggregateItem = aggregateOrderItems[indexPath.row]
         let imageURL: URL? = {
             guard let imageURLString = aggregateItem.variationID != 0 ?
                     lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:

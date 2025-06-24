@@ -383,14 +383,14 @@ private extension WooShippingShipmentDetailsViewModel {
     /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
     func setupSelectedRateReset() {
         $destinationAddress
-            .combineLatest(
-                $originAddress,
-                $selectedPackage,
-                $shipmentWeight
-            )
+            .combineLatest($originAddress)
+            .combineLatest($selectedPackage)
+            .combineLatest($shipmentWeight)
+            .combineLatest($hazmatCategory)
+            .combineLatest($customsForm)
             // Drop the initial values set on initialization, so we only react to changes.
             .dropFirst()
-            .sink { [weak self] _, _, _, _ in
+            .sink { [weak self] _ in
                 self?.selectedRate = nil
             }
             .store(in: &subscriptions)

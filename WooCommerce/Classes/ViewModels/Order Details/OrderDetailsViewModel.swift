@@ -696,37 +696,25 @@ extension OrderDetailsViewModel {
 
     @discardableResult
     @MainActor func syncShippingLabels() async -> [ShippingLabel] {
-        guard await localRequirementsForShippingLabelsAreFulfilled() else {
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
+        guard isRevampedFlow else {
+            /// old logic for syncing labels
+            if await localRequirementsForShippingLabelsAreFulfilled() {
+                return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            }
             return []
         }
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
-        guard isRevampedFlow, await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) else {
-            return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+        guard !orderContainsOnlyVirtualProducts else {
+            return []
         }
 
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(WooShippingAction.syncShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
-                switch result {
-                case .success(let shippingLabels):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .success,
-                        isRevampedFlow: isRevampedFlow
-                    ))
-                    continuation.resume(returning: shippingLabels)
-                case .failure(let error):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .failed(error: error),
-                        isRevampedFlow: isRevampedFlow
-                    ))
-                    if error as? DotcomError == .noRestRoute {
-                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                    } else {
-                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                    }
-                    continuation.resume(returning: [])
-                }
-            })
+        if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
+            return await syncShippingLabelsForWooShipping()
+        } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
+            return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+        } else {
+            return []
         }
     }
 
@@ -961,6 +949,32 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+
+    @MainActor func syncShippingLabelsForWooShipping() async -> [ShippingLabel] {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(WooShippingAction.syncShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
+                switch result {
+                case .success(let shippingLabels):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .success,
+                        isRevampedFlow: true
+                    ))
+                    continuation.resume(returning: shippingLabels)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .failed(error: error),
+                        isRevampedFlow: true
+                    ))
+                    if error as? DotcomError == .noRestRoute {
+                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+                    } else {
+                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    }
+                    continuation.resume(returning: [])
+                }
+            })
+        }
+    }
 
     @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> [ShippingLabel] {
         await withCheckedContinuation { continuation in

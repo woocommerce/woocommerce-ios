@@ -634,6 +634,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
     }
 
     func test_changing_destination_address_resets_selected_rate() throws {
@@ -654,6 +655,71 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_shipment_weight_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.shipmentWeight = "10"
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_hazmat_category_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_customs_form_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.customsFormViewModel.returnToSenderIfNotDelivered = true
+        viewModel.customsFormViewModel.onDismiss()
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
     }
 }
 

@@ -55,6 +55,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_markComplete_dispatches_updateOrder_action() throws {
         // Given
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
@@ -78,6 +79,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_syncShippingLabels_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
+        storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When

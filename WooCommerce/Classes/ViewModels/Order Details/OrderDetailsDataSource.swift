@@ -1046,7 +1046,19 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
-        let shippingLine = shippingLines[indexPath.row]
+        guard let shippingLine = shippingLines[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid shipping line index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableShippingLinesCount": shippingLines.count,
+                    "orderID": order.orderID
+                ],
+                level: .error
+            )
+            return
+        }
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, currency: order.currency, shippingMethods: siteShippingMethods, editable: false)
         let view = ShippingLineRowView(viewModel: viewModel)
 

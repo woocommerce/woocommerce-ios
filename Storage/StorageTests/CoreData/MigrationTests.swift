@@ -3354,7 +3354,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertNotNil(migratedLabel.entity.attributesByName["shipmentID"])
 
         let savedShipmentID = migratedLabel.value(forKey: "shipmentID") as? String
-        XCTAssertEqual(savedShipmentID, "0") // default value
+        XCTAssertNil(savedShipmentID) // default value
 
         let id = "1"
         migratedLabel.setValue(id, forKey: "shipmentID")

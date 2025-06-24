@@ -101,22 +101,13 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.siteID = siteID
         self.analytics = analytics
 
-        if featureFlagService.isFeatureFlagEnabled(.favoriteProducts) {
-            self.filterTypeViewModels = [
-                stockStatusFilterViewModel,
-                productStatusFilterViewModel,
-                productTypeFilterViewModel,
-                productCategoryFilterViewModel,
-                productFavoriteFilterViewModel
-            ]
-        } else {
-            self.filterTypeViewModels = [
-                stockStatusFilterViewModel,
-                productStatusFilterViewModel,
-                productTypeFilterViewModel,
-                productCategoryFilterViewModel,
-            ]
-        }
+        self.filterTypeViewModels = [
+            stockStatusFilterViewModel,
+            productStatusFilterViewModel,
+            productTypeFilterViewModel,
+            productCategoryFilterViewModel,
+            productFavoriteFilterViewModel
+        ]
     }
 
     var criteria: Filters {

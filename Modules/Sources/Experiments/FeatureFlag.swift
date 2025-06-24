@@ -152,10 +152,6 @@ public enum FeatureFlag: Int {
     ///
     case blazeCampaignObjective
 
-    /// Allows marking product as favorite
-    ///
-    case favoriteProducts
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker

@@ -230,8 +230,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
-    private let featureFlagService: FeatureFlagService
-
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -240,8 +238,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -253,7 +250,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
-        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -316,9 +312,6 @@ extension ProductFormViewModel {
     }
 
     func canFavoriteProduct() -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
-            return false
-        }
         return formType != .add
     }
 

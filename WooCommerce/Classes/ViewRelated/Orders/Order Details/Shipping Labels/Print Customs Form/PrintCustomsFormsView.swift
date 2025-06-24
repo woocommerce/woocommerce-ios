@@ -23,7 +23,7 @@ struct PrintCustomsFormsView: View {
                     .bodyStyle()
                     .padding(.top, Constants.verticalSpacing)
                 VStack(spacing: Constants.verticalSpacing) {
-                    Image("woo-shipping-label-printing-instructions")
+                    Image(uiImage: .shippingLabelCreationInfoImage)
                     Text(invoiceURLs.count == 1 ? Localization.singlePrintingMessage : Localization.printingMessage)
                         .bodyStyle()
                         .multilineTextAlignment(.center)

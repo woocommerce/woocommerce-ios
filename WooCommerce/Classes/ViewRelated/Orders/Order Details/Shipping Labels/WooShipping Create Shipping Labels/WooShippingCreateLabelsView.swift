@@ -23,6 +23,7 @@ struct WooShippingCreateLabelsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
 
     private var isiPhonePortrait: Bool {
         verticalSizeClass == .regular && horizontalSizeClass == .compact
@@ -43,6 +44,13 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
+    }
+
+    /// Whether the "Purchase" button should be rendered
+    private var shouldShowPurchaseButton: Bool {
+        return isShipmentDetailsExpanded ||
+        !sizeCategory.isAccessibilityCategory ||
+        viewModel.isPurchaseButtonEnabled
     }
 
     var body: some View {
@@ -272,10 +280,13 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
+                .lineLimit(1)
+                .scaledToFill()
+                .minimumScaleFactor(0.5)
 
             if viewModel.shouldShowNotices {
-                // Unverified notice for origin address
                 if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    // Unverified notice for origin address
                     verificationNotice(with: originAddressUnverifiedNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
@@ -286,10 +297,8 @@ private extension WooShippingCreateLabelsView {
                                        onTap: {
                         viewModel.editSelectedOriginAddress()
                     })
-                }
-
-                // Verification notice for destination address
-                if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                } else if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    // Verification notice for destination address
                     verificationNotice(with: destinationAddressStatusNoticeLabel,
                                        isVerified: isDestinationAddressVerified,
                                        onDismiss: {
@@ -302,10 +311,8 @@ private extension WooShippingCreateLabelsView {
                             viewModel.editDestinationAddress()
                         }
                     })
-                }
-
-                // Verification notice for missing ITN in customs form
-                if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                } else if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                    // Verification notice for missing ITN in customs form
                     verificationNotice(with: itnMissingNoticeLabel,
                                        isVerified: false,
                                        onDismiss: {
@@ -335,7 +342,7 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                     }
-                    if isShipmentDetailsExpanded || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
+                    if shouldShowPurchaseButton || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
                     }
                 }
@@ -351,7 +358,10 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                         .fixedSize(horizontal: false, vertical: true)
-                        purchaseButton
+
+                        if shouldShowPurchaseButton {
+                            purchaseButton
+                        }
                     }
                 }
             }
@@ -541,6 +551,9 @@ private extension WooShippingCreateLabelsView {
             }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
+                .lineLimit(1)
+                .scaledToFill()
+                .minimumScaleFactor(0.5)
         }
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
@@ -569,6 +582,7 @@ private extension WooShippingCreateLabelsView {
             Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
             Text(label)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
                     .renderedIf(!isVerified)

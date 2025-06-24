@@ -10,36 +10,65 @@ struct WooShippingCustomsRow: View {
     @State private var showCustomsForm: Bool = false
 
     var body: some View {
-        AdaptiveStack {
-            Text(Localization.customsTitle)
-                .headlineStyle()
-                .foregroundColor(.primary)
-
-            Spacer()
-
-            Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
-                .foregroundColor(.black)
-                .captionStyle()
-                .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
-                .padding(.vertical, Layout.statusBadgeVerticalPadding)
-                .frame(height: Layout.statusBadgeHeight * scale)
-                .background(
-                    RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
-                        .fill(informationIsCompleted ?
-                              Color.withColorStudio(name: .green, shade: .shade5) :
-                                Color.withColorStudio(name: .red, shade: .shade10))
-                )
-
-            PencilEditButton {
-                showCustomsForm.toggle()
+        ViewThatFits(in: .horizontal) {
+            /// Layout option #1
+            /// View fits in a given width
+            HStack {
+                customsRowTitleView
+                Spacer()
+                customsRowStatusBadgeView
+                customsRowEditButtonView
             }
-            .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
+
+            /// Layout option #2 that fits in given width
+            /// View doesn't fit in a given width
+            HStack {
+                VStack(
+                    alignment: .center,
+                    spacing: Layout.customsRowVerticalLayoutSpacing
+                ) {
+                    customsRowTitleView
+                    customsRowStatusBadgeView
+                }
+                Spacer()
+                customsRowEditButtonView
+            }
         }
         .padding(Layout.borderPadding)
         .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
         .sheet(isPresented: $showCustomsForm) {
             WooShippingCustomsForm(viewModel: customsFormViewModel)
         }
+    }
+}
+
+private extension WooShippingCustomsRow {
+    var customsRowTitleView: some View {
+        Text(Localization.customsTitle)
+            .headlineStyle()
+            .foregroundColor(.primary)
+    }
+
+    var customsRowStatusBadgeView: some View {
+        Text(informationIsCompleted ? Localization.completedStatus : Localization.missingInfoStatus)
+            .foregroundColor(.black)
+            .captionStyle()
+            .padding(.horizontal, Layout.statusBadgeHorizontalPadding)
+            .padding(.vertical, Layout.statusBadgeVerticalPadding)
+            .frame(minHeight: Layout.statusBadgeHeight * scale)
+            .background(
+                RoundedRectangle(cornerRadius: Layout.statusBadgeCornerRadius)
+                    .fill(informationIsCompleted ?
+                          Color.withColorStudio(name: .green, shade: .shade5) :
+                            Color.withColorStudio(name: .red, shade: .shade10))
+            )
+    }
+
+    var customsRowEditButtonView: some View {
+        PencilEditButton {
+            showCustomsForm.toggle()
+        }
+        .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
     }
 }
 
@@ -52,6 +81,7 @@ private extension WooShippingCustomsRow {
         static let statusBadgeCornerRadius: CGFloat = 6
         static let statusBadgeHorizontalPadding: CGFloat = 12
         static let statusBadgeVerticalPadding: CGFloat = 4
+        static let customsRowVerticalLayoutSpacing: CGFloat = 6
         static let statusBadgeHeight: CGFloat = 24
         static let borderPadding: CGFloat = 16
     }

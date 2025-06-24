@@ -233,19 +233,20 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int, completion: @escaping (Result<[Product], Error>) -> Void) {
+    func loadProducts(for siteID: Int64, by productIDs: [Int64], pageNumber: Int, pageSize: Int) async throws -> [Product] {
         requestedProductIDsForLoading = productIDs
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
 
-            let key = ResultKey(siteID: siteID, productIDs: productIDs)
-            if let result = self.productsLoadingResults[key] {
-                completion(result)
-            } else {
-                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
-            }
+        let key = ResultKey(siteID: siteID, productIDs: productIDs)
+        guard let result = productsLoadingResults[key] else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            throw NetworkError.notFound()
+        }
+
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 
@@ -291,39 +292,52 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         productType: ProductType?,
                         productCategory: ProductCategory?,
-                        excludedProductIDs: [Int64],
-                        completion: @escaping (Result<[Product], Error>) -> Void) {
+                        excludedProductIDs: [Int64]) async throws -> [Product] {
         searchProductTriggered = true
         searchProductWithStockStatus = stockStatus
         searchProductWithProductType = productType
         searchProductWithProductStatus = productStatus
         searchProductWithProductCategory = productCategory
-        if let result = searchProductsResultsByQuery[keyword] {
-            completion(result)
+        guard let result = searchProductsResultsByQuery[keyword] else {
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 
     func searchProductsBySKU(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void) {
-        if let result = searchProductsBySKUResultsBySKU[keyword] {
-            completion(result)
-        } else {
+                             pageSize: Int) async throws -> [Product] {
+        guard let result = searchProductsBySKUResultsBySKU[keyword] else {
             XCTFail("\(String(describing: self)) Could not find result for SKU \(keyword)")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int,
-                             pageSize: Int,
-                             completion: @escaping (Result<[Product], Error>) -> Void) {
-        if let result = searchProductsByGlobalUniqueIdentifierResults[keyword] {
-            completion(result)
-        } else {
+                             pageSize: Int) async throws -> [Product] {
+        guard let result = searchProductsByGlobalUniqueIdentifierResults[keyword] else {
             XCTFail("\(String(describing: self)) Could not find result for Global Unique Identifier \(keyword)")
+            throw NetworkError.notFound()
+        }
+        switch result {
+        case let .success(products):
+            return products
+        case let .failure(error):
+            throw error
         }
     }
 

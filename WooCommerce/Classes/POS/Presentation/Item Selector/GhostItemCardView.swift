@@ -56,12 +56,12 @@ struct GhostItemCardView: View {
                 .renderedIf(showProductImage)
             VStack(alignment: .leading) {
                 Rectangle()
-                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier,
-                           maxHeight: configuration.placeholderHeight * scale)
+                    .frame(maxWidth: viewWidth * configuration.topPlaceholderWidthMultiplier,
+                           maxHeight: configuration.placeholderHeight * min(scale, 1.5))
                     .cornerRadius(Layout.cornerRadius)
                 Rectangle()
-                    .frame(maxWidth: viewWidth * configuration.placeholderWidthMultiplier * 0.2,
-                           maxHeight: configuration.placeholderHeight * scale)
+                    .frame(maxWidth: viewWidth * configuration.bottomPlaceholderWidthMultiplier,
+                           maxHeight: configuration.placeholderHeight * min(scale, 1.5))
                     .cornerRadius(Layout.cornerRadius)
             }
             .foregroundColor(.posOnSurfaceVariantLowest)
@@ -87,14 +87,16 @@ struct GhostItemCardViewConfiguration {
     let placeholderHeight: CGFloat
     let cardSize: CGFloat
     let maximumCardSize: CGFloat
-    let placeholderWidthMultiplier: CGFloat
+    let topPlaceholderWidthMultiplier: CGFloat
+    let bottomPlaceholderWidthMultiplier: CGFloat
     let backgroundColor: Color
 
     static let itemList = GhostItemCardViewConfiguration(
         placeholderHeight: 32,
         cardSize: Constants.productCardSize,
         maximumCardSize: Constants.maximumProductCardSize,
-        placeholderWidthMultiplier: 0.5,
+        topPlaceholderWidthMultiplier: 0.5,
+        bottomPlaceholderWidthMultiplier: 0.1,
         backgroundColor: Color.posSurfaceBright
     )
 }

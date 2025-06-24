@@ -875,8 +875,7 @@ private extension OrderDetailsDataSource {
                 properties: [
                     "row": indexPath.row,
                     "section": indexPath.section,
-                    "availableAggregateItemsCount": aggregateOrderItems.count,
-                    "orderID": order.orderID
+                    "availableAggregateItemsCount": aggregateOrderItems.count
                 ],
                 level: .error
             )
@@ -1064,8 +1063,7 @@ private extension OrderDetailsDataSource {
                 properties: [
                     "row": indexPath.row,
                     "section": indexPath.section,
-                    "availableShippingLinesCount": shippingLines.count,
-                    "orderID": order.orderID
+                    "availableShippingLinesCount": shippingLines.count
                 ],
                 level: .error
             )

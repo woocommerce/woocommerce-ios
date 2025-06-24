@@ -82,6 +82,7 @@ final class MockWooShippingRemote {
 
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCheckEligibility(siteID: Int64,
+                              orderID: Int64,
                               thenReturn result: Result<ShippingLabelCreationEligibilityResponse, Error>) {
         let key = ResultKey(siteID: siteID)
         checkEligibilityResults[key] = result

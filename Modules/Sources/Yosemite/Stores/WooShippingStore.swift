@@ -30,6 +30,8 @@ public final class WooShippingStore: Store {
         }
 
         switch action {
+        case let .checkCreationEligibility(siteID, orderID, onCompletion):
+            checkCreationEligibility(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
         case let .deletePackage(siteID, packageID, packageType, completion):
@@ -98,6 +100,34 @@ public final class WooShippingStore: Store {
 }
 
 private extension WooShippingStore {
+    /// Checks whether an order is eligible for shipping label creation.
+    ///
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  onCompletion: @escaping (_ isEligible: Bool) -> Void) {
+        remote.checkCreationEligibility(siteID: siteID,
+                                        orderID: orderID) { result in
+            switch result {
+            case .success(let eligibility):
+                if !eligibility.isEligible {
+                    if let reason = eligibility.reason {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation: \(reason)")
+                    } else {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation")
+                    }
+                }
+                onCompletion(eligibility.isEligible)
+            case .failure(let error):
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for shipping label creation eligibility is unreachable for order: \(orderID). WC Shipping plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
+                }
+                onCompletion(false)
+            }
+        }
+    }
+
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,

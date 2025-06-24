@@ -46,7 +46,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
-    private let currencySettings: CurrencySettings
     private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
@@ -55,7 +54,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
@@ -63,7 +61,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
-        self.currencySettings = currencySettings
         self.pluginsService = pluginsService
         self.eligibilityService = eligibilityService
         self.stores = stores
@@ -170,30 +167,17 @@ private extension POSTabEligibilityChecker {
 
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
-        let currencyCode = currencySettings.currencyCode
+        let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
-        var isFirstValue = true
-        for await streamSettings in siteSettings.settingsStream {
-            guard streamSettings.siteID == siteID else {
+        for await siteSettings in siteSettings.settingsStream {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
-
-            // Skips the first value (the initial value from storage, could be empty or not) and waits for the next one.
-            if isFirstValue {
-                isFirstValue = false
-                continue
-            }
-
-            // Returns the next non-empty value.
-            guard streamSettings.settings.isNotEmpty else {
-                continue
-            }
-
-            return streamSettings.settings
+            return siteSettings.settings
         }
         // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
         return []

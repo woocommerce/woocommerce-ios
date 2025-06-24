@@ -16,6 +16,7 @@ struct MockShippingLabelActionHandler: MockActionHandler {
                     orderID: 0,
                     shippingLabelID: 0,
                     carrierID: "",
+                    shipmentID: "0",
                     dateCreated: Date(),
                     packageName: "",
                     rate: 0.0,

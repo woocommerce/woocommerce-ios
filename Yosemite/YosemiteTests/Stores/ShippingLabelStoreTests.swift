@@ -70,6 +70,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                  orderID: orderID,
                                  shippingLabelID: 1149,
                                  carrierID: "usps",
+                                 shipmentID: "0",
                                  dateCreated: Date(timeIntervalSince1970: 1603716274.809),
                                  packageName: "box",
                                  rate: 58.81,

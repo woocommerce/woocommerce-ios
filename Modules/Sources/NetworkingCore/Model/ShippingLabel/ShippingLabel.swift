@@ -16,6 +16,10 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
     /// The remote ID of the shipping carrier.
     public let carrierID: String
 
+    /// ID of the shipment associated with this label
+    /// This is available only in the Woo Shipping plugin, not in the legacy Woo Tax plugin.
+    public let shipmentID: String?
+
     /// The date the shipping label was created.
     public let dateCreated: Date
 
@@ -71,6 +75,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
                 orderID: Int64,
                 shippingLabelID: Int64,
                 carrierID: String,
+                shipmentID: String?,
                 dateCreated: Date,
                 packageName: String,
                 rate: Double,
@@ -91,6 +96,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
         self.carrierID = carrierID
+        self.shipmentID = shipmentID
         self.dateCreated = dateCreated
         self.packageName = packageName
         self.rate = rate
@@ -126,10 +132,17 @@ extension ShippingLabel: Decodable {
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
         let carrierID = try container.decode(String.self, forKey: .carrierID)
+
+        /// `id` can be returned from the API as a string number or integer 0.
+        /// Using alternative type integer to support decoding both types.
+        let shipmentID = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                           forKey: .shipmentID,
+                                                           alternativeTypes: [.integer(transform: { $0.description })])
+
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let packageName = try container.decode(String.self, forKey: .packageName)
-        let rate = try container.decode(Double.self, forKey: .rate)
-        let currency = try container.decode(String.self, forKey: .currency)
+        let rate = (try container.decodeIfPresent(Double.self, forKey: .rate)) ?? 0 // not available for non-purchased labels
+        let currency = (try container.decodeIfPresent(String.self, forKey: .currency)) ?? "" // not available for non-purchased labels
         let trackingNumber = (try container.decodeIfPresent(String.self, forKey: .trackingNumber)) ?? ""
         let serviceName = try container.decodeIfPresent(String.self, forKey: .serviceName) ?? ""
         let refund = try container.decodeIfPresent(ShippingLabelRefund.self, forKey: .refund)
@@ -148,6 +161,7 @@ extension ShippingLabel: Decodable {
                   orderID: orderID,
                   shippingLabelID: shippingLabelID,
                   carrierID: carrierID,
+                  shipmentID: shipmentID,
                   dateCreated: dateCreated,
                   packageName: packageName,
                   rate: rate,
@@ -171,6 +185,7 @@ extension ShippingLabel: Decodable {
         case orderID
         case shippingLabelID = "label_id"
         case carrierID = "carrier_id"
+        case shipmentID = "id"
         case dateCreated = "created"
         case packageName = "package_name"
         case rate

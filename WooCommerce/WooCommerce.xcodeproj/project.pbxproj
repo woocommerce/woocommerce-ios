@@ -14487,6 +14487,7 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				3F1FA85028B60126009E246C /* Embed Foundation Extensions */,
 				26F81B232BE433A4009EC58E /* Embed Watch Content */,
+				3F76AD982E0A849700984880 /* Strip Wormholy from Release build */,
 			);
 			buildRules = (
 			);
@@ -15075,6 +15076,24 @@
 			shellPath = /bin/sh;
 			shellScript = "\"$SRCROOT/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		3F76AD982E0A849700984880 /* Strip Wormholy from Release build */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Wormholy from Release build";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "$SRCROOT/../Scripts/build-phases/strip-wormholy-from-release.sh\n";
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;

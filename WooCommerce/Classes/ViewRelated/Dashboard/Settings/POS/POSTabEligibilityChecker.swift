@@ -176,11 +176,24 @@ private extension POSTabEligibilityChecker {
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
-        for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty else {
+        var isFirstValue = true
+        for await streamSettings in siteSettings.settingsStream {
+            guard streamSettings.siteID == siteID else {
                 continue
             }
-            return siteSettings.settings
+
+            // Skips the first value (the initial value from storage, could be empty or not) and waits for the next one.
+            if isFirstValue {
+                isFirstValue = false
+                continue
+            }
+
+            // Returns the next non-empty value.
+            guard streamSettings.settings.isNotEmpty else {
+                continue
+            }
+
+            return streamSettings.settings
         }
         // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
         return []

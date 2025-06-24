@@ -189,8 +189,6 @@ private extension HubMenu {
                     .navigationTitle(Localization.reviews)
             case .coupons:
                 couponListView
-            case .inAppPurchase:
-                InAppPurchasesDebugView()
             case .subscriptions:
                 SubscriptionsView(viewModel: .init())
             case .customers:

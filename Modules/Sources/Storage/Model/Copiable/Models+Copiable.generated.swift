@@ -57,7 +57,6 @@ extension Storage.GeneralAppSettings {
         installationDate: NullableCopiableProp<Date> = .copy,
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
-        isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
@@ -69,7 +68,6 @@ extension Storage.GeneralAppSettings {
         let installationDate = installationDate ?? self.installationDate
         let feedbacks = feedbacks ?? self.feedbacks
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
-        let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -82,7 +80,6 @@ extension Storage.GeneralAppSettings {
             installationDate: installationDate,
             feedbacks: feedbacks,
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
-            isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,

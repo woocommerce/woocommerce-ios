@@ -15,8 +15,6 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
             switch betaFeature {
                 case .viewAddOns:
                     return true
-                case .inAppPurchases:
-                    return featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
             }
         }
     }

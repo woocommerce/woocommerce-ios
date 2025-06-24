@@ -438,6 +438,7 @@ extension NetworkingCore.ShippingLabel {
             orderID: .fake(),
             shippingLabelID: .fake(),
             carrierID: .fake(),
+            shipmentID: .fake(),
             dateCreated: .fake(),
             packageName: .fake(),
             rate: .fake(),

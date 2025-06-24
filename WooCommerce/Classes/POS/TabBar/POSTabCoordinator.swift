@@ -11,8 +11,8 @@ final class POSTabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tabBarItem.title = NSLocalizedString("pos.tab.title", value: "Point of Sale", comment: "Title for the Point of Sale tab.")
-        tabBarItem.image = .creditCardImage
+        tabBarItem.title = NSLocalizedString("pos.tab.title", value: "POS", comment: "Title for the Point of Sale tab.")
+        tabBarItem.image = UIImage(systemName: "cart")
         tabBarItem.accessibilityIdentifier = "tab-bar-pos-item"
     }
 }

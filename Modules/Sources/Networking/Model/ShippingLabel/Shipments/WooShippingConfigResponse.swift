@@ -58,15 +58,15 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
 
 public struct WooShippingLabelData: Decodable, Equatable {
     /// Labels purchased for the current order
-    public let currentOrderLabels: [ShippingLabelPurchase]
+    public let currentOrderLabels: [ShippingLabel]
 
-    public init(currentOrderLabels: [ShippingLabelPurchase]) {
+    public init(currentOrderLabels: [ShippingLabel]) {
         self.currentOrderLabels = currentOrderLabels
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let currentOrderLabels = try container.decodeIfPresent([ShippingLabelPurchase].self, forKey: .currentOrderLabels) ?? []
+        let currentOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
         self.init(currentOrderLabels: currentOrderLabels)
     }
 

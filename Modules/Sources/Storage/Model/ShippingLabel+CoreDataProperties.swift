@@ -11,6 +11,7 @@ extension ShippingLabel {
     @NSManaged public var siteID: Int64
     @NSManaged public var orderID: Int64
     @NSManaged public var shippingLabelID: Int64
+    @NSManaged public var shipmentID: String?
     @NSManaged public var carrierID: String
     @NSManaged public var dateCreated: Date?
     @NSManaged public var packageName: String

@@ -32,7 +32,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     ///
     private var products: [Product] {
         try? productResultsController.performFetch()
-        return productResultsController.fetchedObjects
+        return productResultsController.lightweightFetchedObjects
     }
 
     /// Stored product variations that match the items in the order.

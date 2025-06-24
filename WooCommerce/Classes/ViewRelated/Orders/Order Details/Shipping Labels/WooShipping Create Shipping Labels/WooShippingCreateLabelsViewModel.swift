@@ -207,7 +207,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.shippingLabels = order.shippingLabels.filter { $0.refund == nil }
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
@@ -437,6 +436,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
+            shippingLabels = config.shippingLabelData?.currentOrderLabels.filter { $0.refund == nil && $0.status == .purchased } ?? []
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,

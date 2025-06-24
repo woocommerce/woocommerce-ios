@@ -143,6 +143,12 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return controller.object(at: indexPath).toReadOnly()
     }
 
+    /// Returns the lightweight fetched object at a given indexPath.
+    ///
+    public func lightweightObject(at indexPath: IndexPath) -> T.ReadOnlyType {
+        return controller.object(at: indexPath).toLightweightReadOnly()
+    }
+
     /// Returns the fetched object at the given `indexPath`. Returns `nil` if the `indexPath`
     /// does not exist.
     ///
@@ -198,6 +204,17 @@ public class ResultsController<T: ResultsControllerMutableType> {
     public var fetchedObjects: [T.ReadOnlyType] {
         let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
             mutableObject.toReadOnly()
+        }
+
+        return readOnlyObjects ?? []
+    }
+
+    /// Returns an array of all of the (ReadOnly) Fetched Objects with no relationships populated.
+    /// Suitable for list views.
+    ///
+    public var lightweightFetchedObjects: [T.ReadOnlyType] {
+        let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            mutableObject.toLightweightReadOnly()
         }
 
         return readOnlyObjects ?? []

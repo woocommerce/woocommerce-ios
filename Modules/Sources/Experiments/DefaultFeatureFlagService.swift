@@ -22,8 +22,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
-        case .inAppPurchasesDebugMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -70,8 +68,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .revampedShippingLabelCreation:
             return true
         case .blazeCampaignObjective:
-            return true
-        case .favoriteProducts:
             return true
         case .hideSitesInStorePicker:
             return true

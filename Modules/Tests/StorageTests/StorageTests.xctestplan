@@ -14,8 +14,8 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:Storage.xcodeproj",
-        "identifier" : "B54CA5A120A4BBA600F38CD1",
+        "containerPath" : "container:",
+        "identifier" : "StorageTests",
         "name" : "StorageTests"
       }
     }

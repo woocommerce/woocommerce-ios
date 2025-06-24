@@ -315,6 +315,23 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.requiredInformationIsEntered)
     }
+
+    func test_init_when_shipment_has_items_then_prefills_item_details() {
+        // Given
+        let shipment = sampleShipment
+        let firstItem = shipment.items.first
+
+        // When
+        viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
+                                                    shipment: shipment,
+                                                    onCompletion: { _ in })
+        let firstItemViewModel = viewModel.itemsViewModels.first
+
+        // Then
+        XCTAssertEqual(firstItemViewModel?.description, firstItem?.name)
+        XCTAssertEqual(firstItemViewModel?.valuePerUnit, String(firstItem?.value ?? 0))
+        XCTAssertEqual(firstItemViewModel?.weightPerUnit, String(firstItem?.weight ?? 0))
+    }
 }
 
 private extension WooShippingCustomsFormViewModelTests {

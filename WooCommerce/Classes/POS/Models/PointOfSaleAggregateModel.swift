@@ -111,7 +111,7 @@ protocol PointOfSaleAggregateModelProtocol {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
+         paymentState: PointOfSalePaymentState = .idle) {
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
@@ -177,7 +177,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .card(.idle)
+        paymentState = .idle
         cardPresentPaymentInlineMessage = nil
     }
 }
@@ -337,20 +337,20 @@ extension PointOfSaleAggregateModel {
     func startCashPayment() async {
         analytics.track(.pointOfSaleCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
-        paymentState = .cash(.collectingCash)
+        paymentState.cash = .collectingCash
     }
 
     @MainActor
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
-        paymentState = .card(.idle)
+        paymentState.cash = .idle
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
         }
     }
 
     private func cashPaymentSuccess() {
-        paymentState = .cash(.paymentSuccess)
+        paymentState.cash = .paymentSuccess
         collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
     }
 
@@ -475,24 +475,24 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+            .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
                 guard let self else { return nil }
 
-                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
-                                                              using: presentationStyleDeterminerDependencies)
+                let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
+                                                                      using: presentationStyleDeterminerDependencies)
 
-                if case .card(.acceptingCard) = newPaymentState {
+                if case .acceptingCard = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
                 }
 
-                if case .card(.processingPayment) = newPaymentState {
+                if case .processingPayment = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
                 }
 
-                return newPaymentState
+                return newCardPaymentState
             }
-            .sink(receiveValue: { [weak self] paymentState in
-                self?.paymentState = paymentState
+            .sink(receiveValue: { [weak self] cardPaymentState in
+                self?.paymentState.card = cardPaymentState
             })
             .store(in: &cancellables)
 

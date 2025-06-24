@@ -26,6 +26,7 @@ struct WooShippingAddPackageView: View {
 
     @Environment(\.shippingWeightUnit) private var weightUnit
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
@@ -44,13 +45,7 @@ struct WooShippingAddPackageView: View {
     var body: some View {
         NavigationView {
             VStack {
-                Picker("", selection: $packagesViewModel.selectedPackageType) {
-                    ForEach(PackageProviderType.allCases, id: \.self) {
-                        Text($0.name)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding()
+                packageTypeSelectorView
                 selectedPackageTypeView
             }
             .toolbar {
@@ -70,6 +65,27 @@ struct WooShippingAddPackageView: View {
             await packagesViewModel.loadPackages()
         }
         .notice($packagesViewModel.notice)
+    }
+
+    // MARK: - Computed Properties
+
+    private var selectedPackageTypeIndex: Binding<Int> {
+        Binding(
+            get: {
+                PackageProviderType.allCases.firstIndex(of: packagesViewModel.selectedPackageType) ?? 0
+            },
+            set: { newIndex in
+                if let newType = PackageProviderType.allCases[safe: newIndex] {
+                    packagesViewModel.selectedPackageType = newType
+                }
+            }
+        )
+    }
+
+    private var packageTypeTabs: [TopTabItem<EmptyView>] {
+        PackageProviderType.allCases.map { packageType in
+            TopTabItem(name: packageType.name, content: { EmptyView() })
+        }
     }
 
     // MARK: UI components
@@ -92,6 +108,35 @@ struct WooShippingAddPackageView: View {
                                           addingCustomPackageHandler: {
                 packagesViewModel.selectedPackageType = .custom
             })
+        }
+    }
+
+    private var packageTypeSelectorView: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                TopTabView(
+                    tabs: packageTypeTabs,
+                    showContent: false,
+                    selectedTabIndex: selectedPackageTypeIndex,
+                    tabsContainerHorizontalPadding: nil,
+                    selectedStateColor: .accentColor,
+                    unselectedStateColor: .secondary,
+                    selectedTabIndicatorHeight: 3.0,
+                    tabPadding: 0,
+                    tabsNameFont: .subheadline.bold(),
+                    tabItemContentHorizontalPadding: 16.0,
+                    tabItemContentVerticalPadding: 9.0
+                )
+                .padding(.vertical)
+            } else {
+                Picker("", selection: $packagesViewModel.selectedPackageType) {
+                    ForEach(PackageProviderType.allCases, id: \.self) {
+                        Text($0.name)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding()
+            }
         }
     }
 }

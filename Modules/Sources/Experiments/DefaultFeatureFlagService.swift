@@ -71,8 +71,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .blazeCampaignObjective:
             return true
-        case .favoriteProducts:
-            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:

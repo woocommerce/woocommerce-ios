@@ -229,6 +229,14 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "StorageTests",
+            dependencies: [
+                "Storage",
+                "TestKit"
+            ],
+            resources: [.process("Resources")]
+        ),
+        .testTarget(
             name: "WooFoundationTests",
             dependencies: ["TestKit", .target(name: "WooFoundation")]
         ),
@@ -268,7 +276,6 @@ enum XcodeTargetNames {
     static let fakes = "Fakes"
     static let networkingTests = "NetworkingTests"
     static let notificationExtension = "NotificationExtension"
-    static let storageTests = "StorageTests"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let uiTestsFoundation = "UITestsFoundation"
     static let wooCommerce = "WooCommerce"
@@ -286,7 +293,6 @@ enum XcodeSupport {
         [
             XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
-            XcodeTargetNames.storageTests,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.uiTestsFoundation,
             XcodeTargetNames.wooCommerce,
@@ -321,13 +327,6 @@ enum XcodeSupport {
                     "WooFoundation",
                     "Yosemite",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.storageTests,
-                dependencies: [
-                    "Storage",
-                    "TestKit"
                 ]
             ),
             .xcodeTarget(

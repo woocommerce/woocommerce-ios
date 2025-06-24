@@ -8,7 +8,7 @@ import Yosemite
 struct POSTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
-    private var siteSettings: SelectedSiteSettings!
+    private var siteSettings: MockSelectedSiteSettings!
     private var pluginsService: MockPluginsService!
     private var eligibilityService: MockPOSEligibilityService!
     private let siteID: Int64 = 2
@@ -20,7 +20,7 @@ struct POSTabEligibilityCheckerTests {
         pluginsService = MockPluginsService()
         eligibilityService = MockPOSEligibilityService()
         setupWooCommerceVersion()
-        siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
+        siteSettings = MockSelectedSiteSettings()
     }
 
     @Test func is_eligible_when_all_conditions_satisfied() async throws {
@@ -308,6 +308,81 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func checkEligibility_skips_first_cached_settings_and_uses_fresh_settings() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+
+        // Initial settings (cached) - makes site eligible (US)
+        let cachedSettings = [
+            SiteSetting.fake().copy(siteID: siteID, settingID: "woocommerce_default_country", value: "US:CA", settingGroupKey: SiteSettingGroup.general.rawValue)
+        ]
+        // New settings - makes site ineligible (Canada).
+        let newSettings = [
+            SiteSetting.fake().copy(siteID: siteID, settingID: "woocommerce_default_country", value: "CA:NS", settingGroupKey: SiteSettingGroup.general.rawValue)
+        ]
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits cached settings first (should be skipped).
+            continuation.yield((siteID: siteID, settings: cachedSettings))
+            // Emits new settings (should be used for eligibility check).
+            continuation.yield((siteID: siteID, settings: newSettings))
+            continuation.finish()
+        }
+
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then - Should be ineligible because fresh settings show CA (not cached US)
+        #expect(result == .ineligible(reason: .unsupportedCountry))
+    }
+
+    @Test func checkEligibility_filters_by_correct_siteID_when_waiting_for_fresh_settings() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+
+        // Settings for a different site.
+        let wrongSiteSettings = [
+            SiteSetting.fake().copy(siteID: 999, settingID: "woocommerce_default_country", value: "CA:NS", settingGroupKey: SiteSettingGroup.general.rawValue)
+        ]
+        // Settings for correct site.
+        let correctSiteSettings = [
+            SiteSetting.fake().copy(siteID: siteID, settingID: "woocommerce_default_country", value: "US:CA", settingGroupKey: SiteSettingGroup.general.rawValue)
+        ]
+
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits settings for a different site (should be filtered out).
+            continuation.yield((siteID: 999, settings: wrongSiteSettings))
+            // Emits first settings for correct site (should be skipped).
+            continuation.yield((siteID: siteID, settings: [SiteSetting.fake().copy(siteID: siteID, settingID: "temp")]))
+            // Emits fresh settings for correct site (should be used).
+            continuation.yield((siteID: siteID, settings: correctSiteSettings))
+            continuation.finish()
+        }
+
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               currencySettings: Fixtures.usdCurrencySettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
@@ -319,8 +394,13 @@ private extension POSTabEligibilityCheckerTests {
                 value: country.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        siteSettings.refresh()
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits cached settings first (should be skipped).
+            continuation.yield((siteID: siteID, settings: []))
+            // Emits fresh settings (should be used for eligibility check).
+            continuation.yield((siteID: siteID, settings: [setting]))
+            continuation.finish()
+        }
     }
 
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
@@ -382,5 +462,18 @@ private final class MockPluginsService: PluginsServiceProtocol {
 
     func waitForPluginInStorage(siteID: Int64, pluginName: String, isActive: Bool) async -> SystemPlugin {
         pluginToReturn
+    }
+}
+
+private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
+    var mockSettingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting])>?
+    var siteSettings: [SiteSetting] = []
+
+    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting])> {
+        return mockSettingsStream ?? AsyncStream { _ in }
+    }
+
+    func refresh() {
+        // Mock implementation - no action needed.
     }
 }

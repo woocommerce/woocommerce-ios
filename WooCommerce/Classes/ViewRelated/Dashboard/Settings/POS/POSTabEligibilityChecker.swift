@@ -45,7 +45,7 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let siteSettings: SelectedSiteSettings
+    private let siteSettings: SelectedSiteSettingsProtocol
     private let currencySettings: CurrencySettings
     private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
@@ -54,7 +54,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
+         siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),

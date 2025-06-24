@@ -11,9 +11,16 @@ extension Notification.Name {
     public static let selectedSiteSettingsRefreshed = Notification.Name(rawValue: "selectedSiteSettingsRefreshed")
 }
 
+/// Protocol for accessing, refreshing, and observing site settings.
+protocol SelectedSiteSettingsProtocol {
+    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting])> { get }
+    var siteSettings: [SiteSetting] { get }
+    func refresh()
+}
+
 /// Settings for the selected Site
 ///
-final class SelectedSiteSettings: NSObject {
+final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 

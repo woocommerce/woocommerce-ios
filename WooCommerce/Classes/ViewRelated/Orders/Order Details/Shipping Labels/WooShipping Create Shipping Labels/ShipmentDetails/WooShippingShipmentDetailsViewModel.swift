@@ -392,6 +392,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .dropFirst()
             .sink { [weak self] _ in
                 self?.selectedRate = nil
+                self?.shippingService?.clearSelectedRate()
             }
             .store(in: &subscriptions)
     }

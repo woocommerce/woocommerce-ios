@@ -79,6 +79,11 @@ final class WooShippingServiceViewModel: ObservableObject {
         analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
     }
 
+    /// Clears the selected rate.
+    func clearSelectedRate() {
+        selectedRate = nil
+    }
+
     func refreshSelectedRate(from oldRate: WooShippingSelectedRate) -> WooShippingSelectedRate? {
         let updatedStandardRate = standardRates.first(where: {
             $0.serviceID == oldRate.rate.serviceID

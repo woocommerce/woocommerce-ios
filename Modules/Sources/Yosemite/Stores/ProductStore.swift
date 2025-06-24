@@ -231,35 +231,31 @@ private extension ProductStore {
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
                         onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        switch filter {
-        case .all:
-            remote.searchProducts(for: siteID,
-                                  keyword: keyword,
-                                  pageNumber: pageNumber,
-                                  pageSize: pageSize,
-                                  stockStatus: stockStatus,
-                                  productStatus: productStatus,
-                                  productType: productType,
-                                  productCategory: productCategory,
-                                  excludedProductIDs: excludedProductIDs) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          pageSize: pageSize,
-                                          result: result,
-                                          onCompletion: onCompletion)
-            }
-        case .sku:
-            remote.searchProductsBySKU(for: siteID,
-                                       keyword: keyword,
-                                       pageNumber: pageNumber,
-                                       pageSize: pageSize) { [weak self] result in
-                self?.handleSearchResults(siteID: siteID,
-                                          keyword: keyword,
-                                          filter: filter,
-                                          pageSize: pageSize,
-                                          result: result,
-                                          onCompletion: onCompletion)
+        Task { @MainActor in
+            do {
+                let products: [Product]
+                switch filter {
+                case .all:
+                    products = try await remote.searchProducts(for: siteID,
+                                                               keyword: keyword,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: stockStatus,
+                                                               productStatus: productStatus,
+                                                               productType: productType,
+                                                               productCategory: productCategory,
+                                                               excludedProductIDs: excludedProductIDs)
+                case .sku:
+                    products = try await remote.searchProductsBySKU(for: siteID,
+                                                                    keyword: keyword,
+                                                                    pageNumber: pageNumber,
+                                                                    pageSize: pageSize)
+                }
+                await upsertSearchResultsInBackground(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: products)
+                let hasNextPage = products.count == pageSize
+                onCompletion(.success(hasNextPage))
+            } catch {
+                onCompletion(.failure(error))
             }
         }
     }
@@ -340,13 +336,12 @@ private extension ProductStore {
             return
         }
 
-        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID, onCompletion: {
-                    onCompletion(nil)
-                })
-            case .failure(let error):
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadProducts(for: order.siteID, by: missingIDs)
+                await upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID)
+                onCompletion(nil)
+            } catch {
                 onCompletion(error)
             }
         }
@@ -365,14 +360,13 @@ private extension ProductStore {
             return
         }
 
-        remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .success(let products):
-                self?.upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID, onCompletion: {
-                    let hasNextPage = products.count == pageSize
-                    onCompletion(.success((products: products, hasNextPage: hasNextPage)))
-                })
-            case .failure(let error):
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize)
+                await upsertStoredProductsInBackground(readOnlyProducts: products, siteID: siteID)
+                let hasNextPage = products.count == pageSize
+                onCompletion(.success((products: products, hasNextPage: hasNextPage)))
+            } catch {
                 onCompletion(.failure(error))
             }
         }
@@ -1271,6 +1265,23 @@ private extension ProductStore {
         }, completion: onCompletion, on: .main)
     }
 
+    func upsertSearchResultsInBackground(siteID: Int64,
+                                         keyword: String,
+                                         filter: ProductSearchFilter,
+                                         readOnlyProducts: [Networking.Product]) async {
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+            upsertSearchResultsInBackground(siteID: siteID,
+                                            keyword: keyword,
+                                            filter: filter,
+                                            readOnlyProducts: readOnlyProducts) {
+                continuation.resume()
+            }
+        }
+    }
+
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
     ///
     private func upsertStoredResults(siteID: Int64,
@@ -1319,35 +1330,17 @@ private extension ProductStore {
     }
 
     func searchProductsBySKU(for siteID: Int64, keyword: String) async throws -> [Product] {
-        try await withCheckedThrowingContinuation { continuation in
-            remote.searchProductsBySKU(for: siteID,
-                                       keyword: keyword,
-                                       pageNumber: Remote.Default.firstPageNumber,
-                                       pageSize: ProductsRemote.Default.pageSize) { result in
-                switch result {
-                case let .success(products):
-                    continuation.resume(returning: products)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try await remote.searchProductsBySKU(for: siteID,
+                                             keyword: keyword,
+                                             pageNumber: Remote.Default.firstPageNumber,
+                                             pageSize: ProductsRemote.Default.pageSize)
     }
 
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64, keyword: String) async throws -> [Product] {
-        try await withCheckedThrowingContinuation { continuation in
-            remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
-                                                          keyword: keyword,
-                                                          pageNumber: Remote.Default.firstPageNumber,
-                                                          pageSize: ProductsRemote.Default.pageSize) { result in
-                switch result {
-                case let .success(products):
-                    continuation.resume(returning: products)
-                case let .failure(error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try await remote.searchProductsByGlobalUniqueIdentifier(for: siteID,
+                                                                keyword: keyword,
+                                                                pageNumber: Remote.Default.firstPageNumber,
+                                                                pageSize: ProductsRemote.Default.pageSize)
     }
 }
 

@@ -179,6 +179,16 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return nil
         }
     }
+
+    /// The lightweight version of `object(withID:)` method. Returns readonly objects without relationships.
+    ///
+    public func lightweightObject(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
+        if let storageOrder = storage.loadObject(ofType: MutableType.self, with: objectID) {
+            return storageOrder.toLightweightReadOnly()
+        } else {
+            return nil
+        }
+    }
 }
 
 // MARK: - FetchedResultsController Activation

@@ -34,11 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case searchProductsBySKU
 
-    /// Makes the Experimental Feature toggle for the Debug In-app purchases menu visible.
-    /// This should not be turned on in production builds. This doesn't make any difference to the availabliity of plan purchases via IAP.
-    ///
-    case inAppPurchasesDebugMenu
-
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
     /// so `.alpha` builds must be excluded.
@@ -156,10 +151,6 @@ public enum FeatureFlag: Int {
     /// Enables selecting objectives during Blaze campaign creation.
     ///
     case blazeCampaignObjective
-
-    /// Allows marking product as favorite
-    ///
-    case favoriteProducts
 
     /// Supports hiding sites from the store picker
     ///

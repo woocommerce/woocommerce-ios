@@ -299,7 +299,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard let firstProduct = resultsController.fetchedObjects.first else {
+        guard let firstProduct = resultsController.lightweightFetchedObjects.first else {
             return
         }
         didSelectProduct(product: firstProduct)
@@ -1026,7 +1026,7 @@ private extension ProductsViewController {
                     .map { $0.productOrVariationID.id }
 
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.fetchedObjects.enumerated() {
+                for (index, object) in resultsController.lightweightFetchedObjects.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
@@ -1114,7 +1114,7 @@ extension ProductsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.object(at: indexPath)
+        let product = resultsController.lightweightObject(at: indexPath)
 
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)

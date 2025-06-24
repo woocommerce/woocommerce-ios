@@ -219,7 +219,9 @@ final class MockWooShippingRemote {
 
 // MARK: - WooShippingRemoteProtocol
 extension MockWooShippingRemote: WooShippingRemoteProtocol {
-    func checkCreationEligibility(siteID: Int64, orderID: Int64, completion: @escaping (Result<Networking.ShippingLabelCreationEligibilityResponse, any Error>) -> Void) {
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<Networking.ShippingLabelCreationEligibilityResponse, any Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
 
@@ -231,7 +233,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             }
         }
     }
-    
+
     func createPackage(siteID: Int64,
                        customPackage: Networking.WooShippingCustomPackage?,
                        predefinedOption: Networking.WooShippingPredefinedSavedOption?,

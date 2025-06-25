@@ -19,15 +19,7 @@ steps:
   - label: ":hammer_and_wrench: Build Screenshots App"
     key: build-screenshots
     command: .buildkite/commands/build-screenshots.sh
-    plugins:
-      - cache#v1.7.0:
-          path: "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/"
-          manifest:
-            - "WooCommerce.xcodeproj/project.pbxproj"
-            - "Podfile.lock"
-          restore: file
-          save: file
-      - $CI_TOOLKIT
+    plugins: [$CI_TOOLKIT]
     if: build.pull_request.labels includes "generate screenshots"
     notify:
       - github_commit_status:

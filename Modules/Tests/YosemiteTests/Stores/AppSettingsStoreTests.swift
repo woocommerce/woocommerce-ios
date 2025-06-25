@@ -6,9 +6,9 @@ import XCTest
 /// Mock constants
 ///
 private struct TestConstants {
-    static let fileURL = Bundle(for: AppSettingsStoreTests.self)
+    static let fileURL = Bundle.module
         .url(forResource: "shipment-provider", withExtension: "plist")
-    static let customFileURL = Bundle(for: AppSettingsStoreTests.self)
+    static let customFileURL = Bundle.module
         .url(forResource: "custom-shipment-provider", withExtension: "plist")
     static let siteID: Int64 = 156590080
     static let providerName = "post.at"

@@ -14,14 +14,27 @@ echo "--- :writing_hand: Copy Files"
 mkdir -pv ~/.configure/woocommerce-ios/secrets
 cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
 
-echo "--- :hammer_and_wrench: Building Screenshots App"
-bundle exec fastlane build_screenshots
+# Check if cached apps exist
+if [ -d "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app" ] && \
+   [ -d "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app" ]; then
+  echo "--- :white_check_mark: Using Cached Screenshots App"
+else
+  echo "--- :hammer_and_wrench: Building Screenshots App"
+  bundle exec fastlane build_screenshots
+fi
 
-echo "--- :arrow_up: Upload Screenshot App Artifacts"
+echo "--- :package: Create Screenshot App Artifacts"
+# Ensure the build products directory exists
+if [ ! -d "fastlane/DerivedData/Build/Products/Debug-iphonesimulator" ]; then
+  echo "Error: Build products directory not found"
+  exit 1
+fi
+
 # Create a structured archive of the built apps
 tar -cf screenshot-artifacts.tar \
   -C fastlane/DerivedData/Build/Products/Debug-iphonesimulator \
   WooCommerce.app \
   WooCommerceScreenshots-Runner.app
 
+echo "--- :arrow_up: Upload Screenshot App Artifacts"
 buildkite-agent artifact upload screenshot-artifacts.tar

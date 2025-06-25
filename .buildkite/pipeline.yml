@@ -19,7 +19,7 @@ steps:
   - label: ":hammer_and_wrench: Build Screenshots App"
     key: build-screenshots
     command: .buildkite/commands/build-screenshots.sh
-    plugins: 
+    plugins:
       - cache#v1.7.0:
           path: "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/"
           manifest:
@@ -29,10 +29,6 @@ steps:
           save: file
       - $CI_TOOLKIT
     if: build.pull_request.labels includes "generate screenshots"
-    artifact_paths:
-      - "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app/**/*"
-      - "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app/**/*"
-      - "screenshot-artifacts.tar"
     notify:
       - github_commit_status:
           context: Build Screenshots App

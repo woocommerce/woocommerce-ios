@@ -540,7 +540,7 @@ private extension DashboardViewModel {
                 return
             }
 
-            guard ordersResultsController.lightweightFetchedObjects.isEmpty else {
+            guard ordersResultsController.fetchedObjects.isEmpty else {
                 hasOrders = true
                 return
             }

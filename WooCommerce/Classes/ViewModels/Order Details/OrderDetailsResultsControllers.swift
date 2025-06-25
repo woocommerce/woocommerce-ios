@@ -90,7 +90,7 @@ final class OrderDetailsResultsControllers {
     /// Products from an Order
     ///
     var products: [Product] {
-        return productResultsController.lightweightFetchedObjects
+        return productResultsController.fetchedObjects
     }
 
     /// ProductVariations from an Order
@@ -108,7 +108,13 @@ final class OrderDetailsResultsControllers {
     /// Shipping labels for an Order
     ///
     var shippingLabels: [ShippingLabel] {
-        return order.shippingLabels
+        order.shippingLabels.sorted(by: { label1, label2 in
+            if let shipmentID1 = label1.shipmentID,
+               let shipmentID2 = label2.shipmentID {
+                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
+            }
+            return label1.dateCreated < label2.dateCreated
+        })
     }
 
     /// Site's add-on groups.

@@ -989,7 +989,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(row)
     }
 
-    func test_purchased_shipping_labels_sections_are_ordered_and_have_correct_titles() async throws {
+    func test_purchased_shipping_labels_sections_are_ordered_and_have_correct_titles() throws {
         // Given
         var order = makeOrder()
         let shippingLabel1 = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, shipmentID: "1")
@@ -1006,7 +1006,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.configureResultsControllers { }
 
         // When
-        await dataSource.reloadSections()
+        dataSource.reloadSections()
 
         // Then
         // Get IndexPaths for all shipping label rows

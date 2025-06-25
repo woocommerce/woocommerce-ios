@@ -7,7 +7,4 @@
    <FileRef
       location = "group:Yosemite/Yosemite.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Networking/Networking.xcodeproj">
-   </FileRef>
 </Workspace>

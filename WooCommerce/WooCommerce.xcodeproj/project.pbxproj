@@ -5174,7 +5174,7 @@
 		B5F355F021CD504400A7077A /* SearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
 		B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsHeaderPlainTableViewCell.swift; sourceTree = "<group>"; };
 		B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailsHeaderPlainTableViewCell.xib; sourceTree = "<group>"; };
-		B5F571A821BEECA50010D1B8 /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Networking/NetworkingTests/Responses; sourceTree = "<group>"; };
+		B5F571A821BEECA50010D1B8 /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Modules/Tests/NetworkingTests/Responses; sourceTree = "<group>"; };
 		B5F571AA21BEECB60010D1B8 /* NoteWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteWooTests.swift; sourceTree = "<group>"; };
 		B5F571AF21BF149D0010D1B8 /* o.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = o.caf; sourceTree = "<group>"; };
 		B5F8B7DF2194759100DAB7E2 /* ReviewDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewDetailsViewController.swift; sourceTree = "<group>"; };

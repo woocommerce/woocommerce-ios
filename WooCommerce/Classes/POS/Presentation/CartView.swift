@@ -132,20 +132,6 @@ private extension CartView {
 
 @available(iOS 17.0, *)
 private extension CartView {
-    enum Constants {
-        static let primaryFont: POSFontStyle = .posHeadingBold
-        static let secondaryFont: POSFontStyle = .posBodyMediumRegular()
-        static let itemsFont: POSFontStyle = .posBodySmallRegular()
-        static let shoppingBagImageSize: CGFloat = 104
-        static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
-        static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
-        static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
-        static let cartAnimation: Animation = .spring(duration: 0.2)
-        static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
-        static let cartItemSpacing: CGFloat = POSSpacing.small
-        static let cartLastItemBottomPadding: CGFloat = POSPadding.large
-    }
-
     enum Localization {
         static let cartTitle = NSLocalizedString(
             "pos.cartView.cartTitle",
@@ -164,6 +150,20 @@ private extension CartView {
             value: "Check out",
             comment: "Title for the 'Checkout' button to process the Order.")
     }
+}
+
+private enum Constants {
+    static let primaryFont: POSFontStyle = .posHeadingBold
+    static let secondaryFont: POSFontStyle = .posBodyMediumRegular()
+    static let itemsFont: POSFontStyle = .posBodySmallRegular()
+    static let shoppingBagImageSize: CGFloat = 104
+    static let scrollViewCoordinateSpaceIdentifier: String = "CartScrollView"
+    static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
+    static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
+    static let cartAnimation: Animation = .spring(duration: 0.2)
+    static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
+    static let cartItemSpacing: CGFloat = POSSpacing.small
+    static let cartLastItemBottomPadding: CGFloat = POSPadding.large
 }
 
 /// View sub-components
@@ -234,18 +234,18 @@ private struct CartScrollViewContent: View {
     @State private var shouldShowItemImages: Bool = false
 
     private var coordinateSpace: CoordinateSpace {
-        .named(CartView.Constants.scrollViewCoordinateSpaceIdentifier)
+        .named(Constants.scrollViewCoordinateSpaceIdentifier)
     }
 
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(spacing: CartView.Constants.cartItemSpacing) {
+                VStack(spacing: Constants.cartItemSpacing) {
                     CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
 
                     PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
                 }
-                .padding(.bottom, CartView.Constants.cartLastItemBottomPadding)
+                .padding(.bottom, Constants.cartLastItemBottomPadding)
                 .background(GeometryReader { geometry in
                     Color.clear.preference(key: ScrollOffSetPreferenceKey.self,
                                            value: geometry.frame(in: coordinateSpace).origin.y)
@@ -279,7 +279,7 @@ private struct CartScrollViewContent: View {
             .onPreferenceChange(ScrollViewHeightPreferenceKey.self) { height in
                 scrollViewHeight = height
             }
-            .coordinateSpace(name: CartView.Constants.scrollViewCoordinateSpaceIdentifier)
+            .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
             .onChange(of: posModel.cart.purchasableItems.first?.id) { itemToScrollTo in
                 if posModel.orderStage == .building {
                     withAnimation {
@@ -288,6 +288,8 @@ private struct CartScrollViewContent: View {
                 }
             }
         }
+        .animation(Constants.cartAnimation, value: posModel.cart.purchasableItems.map(\.id))
+        .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
         .geometryGroup()
     }
 
@@ -334,7 +336,7 @@ private struct CouponsCartSection: View {
     private let viewHelper = CartViewHelper()
 
     var body: some View {
-        LazyVStack(spacing: CartView.Constants.cartItemSpacing) {
+        LazyVStack(spacing: Constants.cartItemSpacing) {
             ForEach(posModel.cart.coupons, id: \.id) { couponItem in
                 CouponRowView(
                     couponItem: couponItem,
@@ -367,7 +369,7 @@ private struct PurchasableItemsCartSection: View {
     @Binding var shouldShowItemImages: Bool
 
     var body: some View {
-        LazyVStack(spacing: CartView.Constants.cartItemSpacing) {
+        LazyVStack(spacing: Constants.cartItemSpacing) {
             ForEach(posModel.cart.purchasableItems, id: \.id) { cartItem in
                 ItemRowView(
                     cartItem: cartItem,

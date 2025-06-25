@@ -113,6 +113,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderHasLocalReceipt: Bool = false
 
+    /// Whether the order is eligible for backend receipt generation.
+    /// This is calculated during sync to avoid async calls during section building.
+    ///
+    var isEligibleForBackendReceipt: Bool = false
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -238,9 +243,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderSubscriptions: [Subscription] = [] {
         didSet {
-            Task { @MainActor in
-                await reloadSections()
-            }
+            reloadSections()
         }
     }
 
@@ -1204,8 +1207,7 @@ extension OrderDetailsDataSource {
     /// When: Customer Note == nil          >>> Hide Customer Note
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
-    @MainActor
-    func reloadSections() async {
+    func reloadSections() {
         // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
         refunds = resultsControllers.refunds
         customAmounts = resultsControllers.feeLines
@@ -1224,7 +1226,7 @@ extension OrderDetailsDataSource {
         )
 
         var sections = buildStaticSections().compactMap { $0 }
-        let paymentSection = await createPaymentSection()
+        let paymentSection = createPaymentSection()
 
         // Finds the position between shippingLines and customerInformation to inject the payment section,
         // otherwise will always appear last because of being async
@@ -1522,8 +1524,7 @@ extension OrderDetailsDataSource {
         ]
     }
 
-    @MainActor
-    private func createPaymentSection() async -> Section {
+    private func createPaymentSection() -> Section {
         var rows: [Row] = [.payment, .customerPaid]
         if condensedRefunds.isNotEmpty {
             rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
@@ -1534,7 +1535,7 @@ extension OrderDetailsDataSource {
         }
         if orderHasLocalReceipt {
             rows.append(.seeLegacyReceipt)
-        } else if await isEligibleForBackendReceipt() {
+        } else if isEligibleForBackendReceipt {
             rows.append(.seeReceipt)
         }
         if isEligibleForRefund {
@@ -1545,15 +1546,6 @@ extension OrderDetailsDataSource {
             title: Title.payment,
             rows: rows
         )
-    }
-
-    @MainActor
-    private func isEligibleForBackendReceipt() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForReceipt(order.status, onCompletion: { isEligible in
-                continuation.resume(returning: isEligible)
-            })
-        }
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {

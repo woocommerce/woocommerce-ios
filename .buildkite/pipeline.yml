@@ -20,10 +20,13 @@ steps:
     key: build-screenshots
     command: .buildkite/commands/build-screenshots.sh
     plugins: 
-      - cache#v1.1.0:
-          cache_key: "screenshots-build-v1-{{ checksum 'WooCommerce.xcodeproj/project.pbxproj' }}-{{ checksum 'Podfile.lock' }}"
-          restore: "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/"
-          save: "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/"
+      - cache#v1.7.0:
+          path: "fastlane/DerivedData/Build/Products/Debug-iphonesimulator/"
+          manifest:
+            - "WooCommerce.xcodeproj/project.pbxproj"
+            - "Podfile.lock"
+          restore: file
+          save: file
       - $CI_TOOLKIT
     if: build.pull_request.labels includes "generate screenshots"
     artifact_paths:

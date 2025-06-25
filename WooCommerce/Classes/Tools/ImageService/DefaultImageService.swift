@@ -59,7 +59,7 @@ struct DefaultImageService: ImageService {
         let targetSize: CGSize
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(
             .productImageOptimizedHandling
-        ) {
+        ) && !imageView.bounds.isEmpty {
             let scale = UIScreen.main.scale
             targetSize = CGSize(
                 width: imageView.bounds.width * scale,

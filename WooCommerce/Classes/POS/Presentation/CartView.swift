@@ -62,7 +62,7 @@ struct CartView: View {
                         scrollViewHeight: $scrollViewHeight
                     )
                 } else {
-                    Spacer().renderedIf(posModel.cart.isEmpty)
+                    Spacer()
                 }
 
                 if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {

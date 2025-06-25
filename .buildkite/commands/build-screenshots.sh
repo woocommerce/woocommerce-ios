@@ -18,10 +18,9 @@ echo "--- :hammer_and_wrench: Building Screenshots App"
 bundle exec fastlane build_screenshots
 
 echo "--- :arrow_up: Upload Screenshot App Artifacts"
-# Create a structured archive of the built apps
+# Create a structured archive of all build products (apps, frameworks, etc.)
 tar -cf screenshot-artifacts.tar \
   -C fastlane/DerivedData/Build/Products/Debug-iphonesimulator \
-  WooCommerce.app \
-  WooCommerceScreenshots-Runner.app
+  .
 
 buildkite-agent artifact upload screenshot-artifacts.tar

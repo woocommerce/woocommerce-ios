@@ -53,10 +53,10 @@ steps:
           # - sv
           # - tr
           # - zh-Hans
-          - zh-Hant
+          # - zh-Hant
         mode:
           - dark
-          - light
+          # - light
     env:
       SCREENSHOT_LANGUAGE: "{{matrix.language}}"
       SCREENSHOT_MODE: "{{matrix.mode}}"

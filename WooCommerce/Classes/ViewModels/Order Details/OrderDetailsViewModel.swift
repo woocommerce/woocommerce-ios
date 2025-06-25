@@ -126,9 +126,7 @@ final class OrderDetailsViewModel {
     var orderNotes: [OrderNote] = [] {
         didSet {
             dataSource.orderNotes = orderNotes
-            Task { @MainActor in
-                await dataSource.reloadSections()
-            }
+            dataSource.reloadSections()
         }
     }
 
@@ -321,6 +319,16 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        // Receipt eligibility need to be synced after the order but before we complete the order sync group,
+        // otherwise we risk to crash due out of bounds when rendering the rest of the rows that require reloading sections.
+        group.enter()
+        Task { @MainActor in
+            defer {
+                group.leave()
+            }
+            dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
+        }
+
         group.enter()
         checkOrderAddOnFeatureSwitchState {
             onReloadSections?()
@@ -462,8 +470,8 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
-    func reloadSections() async {
-        await dataSource.reloadSections()
+    func reloadSections() {
+        dataSource.reloadSections()
     }
 }
 
@@ -1057,6 +1065,15 @@ extension OrderDetailsViewModel {
                                                    orderID: order.orderID,
                                                    status: .pending, onCompletion: { _ in })
         stores.dispatch(action)
+    }
+
+    @MainActor
+    private func isEligibleForBackendReceipt() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status) { isEligible in
+                continuation.resume(returning: isEligible)
+            }
+        }
     }
 }
 

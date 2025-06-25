@@ -33,6 +33,7 @@ steps:
   # Generate Screenshots (Matrix)
   #################
   - label: ":camera: Generate Screenshots ({{matrix.language}} - {{matrix.mode}})"
+    key: "generate-screenshots"
     command: .buildkite/commands/take-screenshots.sh
     depends_on: build-screenshots
     plugins: [$CI_TOOLKIT]
@@ -74,9 +75,7 @@ steps:
   #################
   - label: ":framed_picture: Process Screenshots"
     command: .buildkite/commands/process-screenshots.sh
-    depends_on: 
-      - step: ":camera: Generate Screenshots ({{matrix.language}} - {{matrix.mode}})"
-        allow_failure: false
+    depends_on: generate-screenshots
     plugins: [$CI_TOOLKIT]
     if: build.pull_request.labels includes "generate screenshots"
     artifact_paths:

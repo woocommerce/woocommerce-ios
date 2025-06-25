@@ -186,7 +186,8 @@ extension PointOfSaleAggregateModel {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
-        Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             let placeholderItemID = cart.addLoadingItem().id
 
             analytics.track(

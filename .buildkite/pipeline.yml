@@ -60,6 +60,10 @@ steps:
     env:
       SCREENSHOT_LANGUAGE: "{{matrix.language}}"
       SCREENSHOT_MODE: "{{matrix.mode}}"
+      S3_BUCKET: $S3_BUCKET
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      BUILDKITE_BUILD_ID: $BUILDKITE_BUILD_ID
     artifact_paths:
       - "fastlane/logs/**/*"
     notify:

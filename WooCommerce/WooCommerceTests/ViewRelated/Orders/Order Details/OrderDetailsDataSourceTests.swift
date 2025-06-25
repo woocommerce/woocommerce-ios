@@ -988,6 +988,47 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let row = row(row: .shippingLine, in: shippingSection)
         XCTAssertNotNil(row)
     }
+
+    func test_purchased_shipping_labels_sections_are_ordered_and_have_correct_titles() async throws {
+        // Given
+        var order = makeOrder()
+        let shippingLabel1 = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, shipmentID: "1")
+        let shippingLabel2 = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, shipmentID: "0")
+        order = order.copy(shippingLabels: [shippingLabel1, shippingLabel2])
+        insert(shippingLabel: shippingLabel1, order: order)
+        insert(shippingLabel: shippingLabel2, order: order)
+
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.configureResultsControllers { }
+
+        // When
+        await dataSource.reloadSections()
+
+        // Then
+        // Get IndexPaths for all shipping label rows
+        var shippingLabelSectionsIndices: [IndexPath] = []
+        for (sectionIndex, section) in dataSource.sections.enumerated() {
+            for (rowIndex, row) in section.rows.enumerated() where row == .shippingLabelDetail {
+                shippingLabelSectionsIndices.append(IndexPath(row: rowIndex, section: sectionIndex))
+            }
+        }
+
+        XCTAssertEqual(shippingLabelSectionsIndices.count, 2)
+
+        let firstLabelSection = dataSource.sections[shippingLabelSectionsIndices[0].section]
+        XCTAssertEqual(firstLabelSection.title, "Package 1")
+        let firstLabel = dataSource.shippingLabel(at: shippingLabelSectionsIndices[0])
+        XCTAssertEqual(firstLabel, shippingLabel2)
+
+        let secondLabelSection = dataSource.sections[shippingLabelSectionsIndices[1].section]
+        XCTAssertEqual(secondLabelSection.title, "Package 2")
+        let secondLabel = dataSource.shippingLabel(at: shippingLabelSectionsIndices[1])
+        XCTAssertEqual(secondLabel, shippingLabel1)
+    }
 }
 
 // MARK: - Test Data

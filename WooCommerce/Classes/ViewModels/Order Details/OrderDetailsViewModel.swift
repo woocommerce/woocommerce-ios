@@ -958,11 +958,7 @@ private extension OrderDetailsViewModel {
         await withCheckedContinuation { continuation in
             stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
-                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus,
-                                                                    "is_revamped_flow": true])
-                }
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
                 continuation.resume(returning: isEligible)
             })
         }
@@ -972,13 +968,17 @@ private extension OrderDetailsViewModel {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
-                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus,
-                                                                    "is_revamped_flow": isRevampedFlow])
-                }
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: isRevampedFlow)
                 continuation.resume(returning: isEligible)
             })
+        }
+    }
+
+    func handleShippingLabelCreationEligibilityResult(isEligible: Bool, isRevampedFlow: Bool) {
+        if isEligible, let orderStatus = orderStatus?.status.rawValue {
+            ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                           withProperties: ["order_status": orderStatus,
+                                                            "is_revamped_flow": isRevampedFlow])
         }
     }
 

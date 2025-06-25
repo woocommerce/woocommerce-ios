@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:wordpress-mobile/release-toolkit
+  remote: https://github.com/wordpress-mobile/release-toolkit
   revision: 2d5c486c86a9dc2c6798e04880b4508ae37f2296
   ref: 2d5c486c86a9dc2c6798e04880b4508ae37f2296
   specs:

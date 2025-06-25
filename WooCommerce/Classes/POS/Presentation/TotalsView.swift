@@ -30,21 +30,15 @@ struct TotalsView: View {
 
                     VStack(alignment: .center, spacing: 0) {
                         if isShowingPaymentView {
-                            paymentView
-                                .font(.title)
-                                .if(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState)) {
-                                    $0.paymentViewPadding(layout: cardReaderViewLayout)
-                                }
-                                .transition(.opacity)
-                                .accessibilityShowsLargeContentViewer()
-                                .background(backgroundColor.ignoresSafeArea(.all))
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                                .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
-                                .geometryGroup()
+                            PaymentViewContent(
+                                cardReaderViewLayout: cardReaderViewLayout,
+                                isShowingTotalsFields: isShowingTotalsFields,
+                                backgroundColor: backgroundColor
+                            )
                         }
 
                         if isShowingTotalsFields {
-                            totalsFieldsView
+                            TotalsFieldsContent(totalsFieldAnimation: totalsFieldAnimation)
                                 .transition(.opacity)
                                 .animation(.default, value: posModel.orderState.isSyncing)
                                 .opacity(viewHelper.shouldShowTotalsFields(for: posModel.paymentState) ? 1 : 0)
@@ -56,22 +50,7 @@ struct TotalsView: View {
                     Spacer()
                         .renderedIf(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState))
 
-                    Button(action: {
-                        Task { @MainActor in
-                            await posModel.startCashPayment()
-                        }
-                    }, label: {
-                        Text(Localization.cashPaymentButtonTitle)
-                            .font(POSFontStyle.posBodyLargeBold)
-                    })
-                    .layoutPriority(1)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                    .padding(.horizontal, Constants.buttonHorizontalPadding)
-                    .safeAreaPadding(.bottom, Constants.cashButtonBottomPadding)
-                    .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(orderState: posModel.orderState,
-                                                                              paymentState: posModel.paymentState,
-                                                                              cardReaderConnectionStatus: posModel.cardReaderConnectionStatus))
+                    CashPaymentButton()
                 }
                 .animation(.default, value: isShowingPaymentView)
             case .error(.other(let message), let handler):
@@ -114,113 +93,6 @@ struct TotalsView: View {
 
 @available(iOS 17.0, *)
 private extension TotalsView {
-    var totalsFieldsView: some View {
-        HStack(alignment: .center) {
-            Spacer()
-            switch posModel.orderState {
-            case .idle,
-                    .syncing,
-                    .error:
-                totalsFields(orderTotals: nil)
-            case .loaded(let orderTotals):
-                totalsFields(orderTotals: orderTotals)
-            }
-            Spacer()
-        }
-    }
-
-    @ViewBuilder func totalsFields(orderTotals: PointOfSaleOrderTotals?) -> some View {
-        let totalsLoading = orderTotals == nil
-        VStack {
-            subtotalFieldView(title: Localization.subtotal,
-                              formattedPrice: orderTotals?.cartTotal,
-                              shimmeringActive: totalsLoading,
-                              matchedGeometryId: Constants.matchedGeometrySubtotalId)
-            Spacer().frame(height: Constants.subtotalsVerticalSpacing)
-
-            if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
-                subtotalFieldView(title: Localization.discountTotal,
-                                  formattedPrice: orderTotals?.discountTotal,
-                                  shimmeringActive: totalsLoading,
-                                  matchedGeometryId: Constants.matchedGeometryDiscountId)
-                Spacer().frame(height: Constants.subtotalsVerticalSpacing)
-            }
-
-            subtotalFieldView(title: Localization.taxes,
-                              formattedPrice: orderTotals?.taxTotal,
-                              shimmeringActive: totalsLoading,
-                              matchedGeometryId: Constants.matchedGeometryTaxId)
-            Spacer().frame(height: Constants.totalVerticalSpacing)
-            Divider()
-                .overlay(Constants.separatorColor)
-                .renderedIf(!totalsLoading)
-            Spacer().frame(height: Constants.totalVerticalSpacing)
-            totalFieldView(formattedPrice: orderTotals?.orderTotal,
-                           shimmeringActive: totalsLoading,
-                           matchedGeometryId: Constants.matchedGeometryTotalId)
-        }
-        .padding(Constants.totalsLineViewPadding)
-        .frame(minWidth: Constants.pricesIdealWidth)
-        .fixedSize(horizontal: true, vertical: false)
-    }
-
-    @ViewBuilder
-    func subtotalFieldView(title: String,
-                           formattedPrice: String?,
-                           shimmeringActive: Bool,
-                           matchedGeometryId: String) -> some View {
-        if shimmeringActive {
-            shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.subtotalsShimmeringHeight)
-                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        } else {
-            HStack(alignment: .top, spacing: .zero) {
-                Text(title)
-                    .font(Constants.subtotalTitleFont)
-                Spacer()
-                Text(formattedPrice ?? "")
-                    .font(Constants.subtotalAmountFont)
-                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
-            }
-            .accessibilityElement(children: .combine)
-            .foregroundColor(Color.posOnSurface)
-            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        }
-    }
-
-    @ViewBuilder
-    func totalFieldView(formattedPrice: String?,
-                        shimmeringActive: Bool,
-                        matchedGeometryId: String) -> some View {
-        if shimmeringActive {
-            shimmeringLineView(width: Constants.shimmeringWidth, height: Constants.totalShimmeringHeight)
-                .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        } else {
-            HStack(alignment: .top, spacing: .zero) {
-                Text(Localization.total)
-                    .font(Constants.totalTitleFont)
-                    .fontWeight(.semibold)
-                Spacer(minLength: Constants.totalsHorizontalSpacing)
-                Text(formattedPrice ?? "")
-                    .font(Constants.totalAmountFont)
-                    .redacted(reason: shimmeringActive ? [.placeholder] : [])
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityAddTraits(.isHeader)
-            .foregroundColor(Color.posOnSurface)
-            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
-        }
-    }
-
-    func shimmeringLineView(width: CGFloat, height: CGFloat) -> some View {
-        Color.posOnSurfaceVariantLowest
-            .frame(width: width, height: height)
-            .fixedSize(horizontal: true, vertical: true)
-            .shimmering(active: true)
-            .cornerRadius(Constants.shimmeringCornerRadius)
-    }
-
-    /// Hide totals fields with animation after a delay when starting to processing a payment
-    /// - Parameter isShowing
     private func hideTotalsFieldsWithDelay(_ isShowing: Bool) {
         guard !isShowing && posModel.paymentState.card == .processingPayment else {
             self.isShowingTotalsFields = isShowing
@@ -233,51 +105,6 @@ private extension TotalsView {
     }
 }
 
-@available(iOS 17.0, *)
-private extension TotalsView {
-
-    @ViewBuilder private var paymentView: some View {
-        switch posModel.paymentState.activePaymentMethod {
-        case .cash:
-            // Show cash payment UI when cash payment is active
-            switch posModel.paymentState.cash {
-            case .collectingCash:
-                if case .loaded(let total) = posModel.orderState {
-                    PointOfSaleCollectCashView(orderTotal: total.orderTotal)
-                        .transition(.move(edge: .trailing))
-                }
-            case .paymentSuccess:
-                if case .loaded(let total) = posModel.orderState {
-                    PointOfSaleCardPresentPaymentInLineMessage(
-                        messageType: .paymentSuccess(
-                            viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                             paymentMethod: PointOfSalePaymentMethod.cash)))
-                }
-            case .idle:
-                EmptyView()
-            }
-        case .card:
-            // Show card payment UI when card is the active payment method
-            if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
-                                                                paymentState: posModel.paymentState) {
-                PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
-                    posModel.connectCardReader()
-                }
-            } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
-                switch inlinePaymentMessage {
-                case .paymentSuccess:
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                default:
-                    HStack(alignment: .center) {
-                        Spacer()
-                        PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
-                        Spacer()
-                    }
-                }
-            }
-        }
-    }
-}
 
 @available(iOS 17.0, *)
 private extension TotalsView {
@@ -455,6 +282,266 @@ private extension TotalsView {
             "pos.totalsView.cash.button.title",
             value: "Cash payment",
             comment: "Title for the cash payment button title")
+    }
+}
+
+@available(iOS 17.0, *)
+private struct TotalsFieldsContent: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    let totalsFieldAnimation: Namespace.ID
+    private let viewHelper = TotalsViewHelper()
+
+    var body: some View {
+        HStack(alignment: .center) {
+            Spacer()
+            switch posModel.orderState {
+            case .idle, .syncing, .error:
+                totalsFields(orderTotals: nil)
+            case .loaded(let orderTotals):
+                totalsFields(orderTotals: orderTotals)
+            }
+            Spacer()
+        }
+    }
+
+    @ViewBuilder func totalsFields(orderTotals: PointOfSaleOrderTotals?) -> some View {
+        let totalsLoading = orderTotals == nil
+        VStack {
+            SubtotalFieldView(
+                title: TotalsView.Localization.subtotal,
+                formattedPrice: orderTotals?.cartTotal,
+                shimmeringActive: totalsLoading,
+                matchedGeometryId: TotalsView.Constants.matchedGeometrySubtotalId,
+                totalsFieldAnimation: totalsFieldAnimation
+            )
+            Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+
+            if viewHelper.shouldShowTotalDiscountField(cart: posModel.cart, orderTotals: orderTotals) {
+                SubtotalFieldView(
+                    title: TotalsView.Localization.discountTotal,
+                    formattedPrice: orderTotals?.discountTotal,
+                    shimmeringActive: totalsLoading,
+                    matchedGeometryId: TotalsView.Constants.matchedGeometryDiscountId,
+                    totalsFieldAnimation: totalsFieldAnimation
+                )
+                Spacer().frame(height: TotalsView.Constants.subtotalsVerticalSpacing)
+            }
+
+            SubtotalFieldView(
+                title: TotalsView.Localization.taxes,
+                formattedPrice: orderTotals?.taxTotal,
+                shimmeringActive: totalsLoading,
+                matchedGeometryId: TotalsView.Constants.matchedGeometryTaxId,
+                totalsFieldAnimation: totalsFieldAnimation
+            )
+            Spacer().frame(height: TotalsView.Constants.totalVerticalSpacing)
+            Divider()
+                .overlay(TotalsView.Constants.separatorColor)
+                .renderedIf(!totalsLoading)
+            Spacer().frame(height: TotalsView.Constants.totalVerticalSpacing)
+            TotalFieldView(
+                formattedPrice: orderTotals?.orderTotal,
+                shimmeringActive: totalsLoading,
+                matchedGeometryId: TotalsView.Constants.matchedGeometryTotalId,
+                totalsFieldAnimation: totalsFieldAnimation
+            )
+        }
+        .padding(TotalsView.Constants.totalsLineViewPadding)
+        .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+        .fixedSize(horizontal: true, vertical: false)
+    }
+}
+
+@available(iOS 17.0, *)
+private struct SubtotalFieldView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    let title: String
+    let formattedPrice: String?
+    let shimmeringActive: Bool
+    let matchedGeometryId: String
+    let totalsFieldAnimation: Namespace.ID
+
+    var body: some View {
+        if shimmeringActive {
+            ShimmeringLineView(
+                width: TotalsView.Constants.shimmeringWidth,
+                height: TotalsView.Constants.subtotalsShimmeringHeight
+            )
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        } else {
+            HStack(alignment: .top, spacing: .zero) {
+                Text(title)
+                    .font(TotalsView.Constants.subtotalTitleFont)
+                Spacer()
+                Text(formattedPrice ?? "")
+                    .font(TotalsView.Constants.subtotalAmountFont)
+            }
+            .accessibilityElement(children: .combine)
+            .foregroundColor(Color.posOnSurface)
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private struct TotalFieldView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    let formattedPrice: String?
+    let shimmeringActive: Bool
+    let matchedGeometryId: String
+    let totalsFieldAnimation: Namespace.ID
+
+    var body: some View {
+        if shimmeringActive {
+            ShimmeringLineView(
+                width: TotalsView.Constants.shimmeringWidth,
+                height: TotalsView.Constants.totalShimmeringHeight
+            )
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        } else {
+            HStack(alignment: .top, spacing: .zero) {
+                Text(TotalsView.Localization.total)
+                    .font(TotalsView.Constants.totalTitleFont)
+                    .fontWeight(.semibold)
+                Spacer(minLength: TotalsView.Constants.totalsHorizontalSpacing)
+                Text(formattedPrice ?? "")
+                    .font(TotalsView.Constants.totalAmountFont)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+            .foregroundColor(Color.posOnSurface)
+            .matchedGeometryEffect(id: matchedGeometryId, in: totalsFieldAnimation)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private struct ShimmeringLineView: View {
+    let width: CGFloat
+    let height: CGFloat
+
+    var body: some View {
+        Color.posOnSurfaceVariantLowest
+            .frame(width: width, height: height)
+            .fixedSize(horizontal: true, vertical: true)
+            .shimmering(active: true)
+            .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+    }
+}
+
+@available(iOS 17.0, *)
+private struct PaymentViewContent: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    let cardReaderViewLayout: TotalsView.PaymentViewLayout
+    let isShowingTotalsFields: Bool
+    let backgroundColor: Color
+
+    private let viewHelper = TotalsViewHelper()
+
+    var body: some View {
+        paymentView
+            .font(.title)
+            .if(viewHelper.shouldApplyPadding(paymentState: posModel.paymentState)) {
+                $0.paymentViewPadding(layout: cardReaderViewLayout)
+            }
+            .transition(.opacity)
+            .accessibilityShowsLargeContentViewer()
+            .background(backgroundColor.ignoresSafeArea(.all))
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
+            .geometryGroup()
+    }
+
+    @ViewBuilder private var paymentView: some View {
+        switch posModel.paymentState.activePaymentMethod {
+        case .cash:
+            CashPaymentView()
+        case .card:
+            CardPaymentView()
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private struct CashPaymentView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    var body: some View {
+        switch posModel.paymentState.cash {
+        case .collectingCash:
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                    .transition(.move(edge: .trailing))
+            }
+        case .paymentSuccess:
+            if case .loaded(let total) = posModel.orderState {
+                PointOfSaleCardPresentPaymentInLineMessage(
+                    messageType: .paymentSuccess(
+                        viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                         paymentMethod: PointOfSalePaymentMethod.cash)))
+            }
+        case .idle:
+            EmptyView()
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private struct CardPaymentView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    private let viewHelper = TotalsViewHelper()
+
+    var body: some View {
+        if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: posModel.cardReaderConnectionStatus,
+                                                   paymentState: posModel.paymentState) {
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                posModel.connectCardReader()
+            }
+        } else if let inlinePaymentMessage = posModel.cardPresentPaymentInlineMessage {
+            switch inlinePaymentMessage {
+            case .paymentSuccess:
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+            default:
+                HStack(alignment: .center) {
+                    Spacer()
+                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlinePaymentMessage)
+                    Spacer()
+                }
+            }
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private struct CashPaymentButton: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+
+    private let viewHelper = TotalsViewHelper()
+
+    var body: some View {
+        Button(action: {
+            Task { @MainActor in
+                await posModel.startCashPayment()
+            }
+        }, label: {
+            Text(TotalsView.Localization.cashPaymentButtonTitle)
+                .font(POSFontStyle.posBodyLargeBold)
+        })
+        .layoutPriority(1)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .padding(.horizontal, TotalsView.Constants.buttonHorizontalPadding)
+        .safeAreaPadding(.bottom, TotalsView.Constants.cashButtonBottomPadding)
+        .renderedIf(viewHelper.shouldShowCollectCashPaymentButton(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState,
+            cardReaderConnectionStatus: posModel.cardReaderConnectionStatus
+        ))
     }
 }
 

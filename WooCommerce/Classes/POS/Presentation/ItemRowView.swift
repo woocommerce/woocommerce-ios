@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
@@ -29,6 +30,7 @@ struct ItemRowView: View {
             .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
             .posItemCardBorderStyles()
             .padding(.horizontal, Constants.horizontalPadding)
+            .geometryGroup()
     }
 
     @ViewBuilder
@@ -113,6 +115,7 @@ struct ItemRowView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension ItemRowView {
     enum Constants {
         static let productCardSize: CGFloat = 96

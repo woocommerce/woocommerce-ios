@@ -101,6 +101,9 @@ extension ProductsTabProductTableViewCell {
             productImageView.layer.borderWidth = 0
         } else {
             configureProductImageViewForBigImages()
+            /// Make sure `productImageView` is laid out and gained bounds
+            productImageView.layoutIfNeeded()
+
             productImageView.image = .productsTabProductCellPlaceholderImage
             if let productURLString = viewModel.imageUrl {
                 imageService.downloadAndCacheImageForImageView(productImageView,

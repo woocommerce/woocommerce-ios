@@ -675,7 +675,7 @@ private extension WooShippingStore {
                                           orderID: Int64,
                                           shippingLabels: [ShippingLabel],
                                           onCompletion: @escaping () -> Void) {
-        guard shippingLabels.isEmpty == false else {
+        if shippingLabels.isEmpty {
             return onCompletion()
         }
 
@@ -694,7 +694,6 @@ private extension WooShippingStore {
                               shippingLabels: [ShippingLabel],
                               storageOrder: StorageOrder,
                               using storage: StorageType) {
-
         let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
         for shippingLabel in shippingLabels {
             let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
@@ -702,7 +701,7 @@ private extension WooShippingStore {
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
-            update(shippingLabel: storageShippingLabel, withRefund: shippingLabel.refund, using: storage)
+            update(storageShippingLabel: storageShippingLabel, refund: shippingLabel.refund, using: storage)
 
             let originAddress = storageShippingLabel.originAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             originAddress.update(with: shippingLabel.originAddress)
@@ -722,7 +721,9 @@ private extension WooShippingStore {
         }
     }
 
-    func update(shippingLabel storageShippingLabel: StorageShippingLabel, withRefund refund: ShippingLabelRefund?, using storage: StorageType) {
+    func update(storageShippingLabel: StorageShippingLabel,
+                refund: ShippingLabelRefund?,
+                using storage: StorageType) {
         if let refund {
             let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)

@@ -90,7 +90,7 @@ final class OrderDetailsResultsControllers {
     /// Products from an Order
     ///
     var products: [Product] {
-        return productResultsController.lightweightFetchedObjects
+        return productResultsController.fetchedObjects
     }
 
     /// ProductVariations from an Order

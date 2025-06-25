@@ -8,7 +8,7 @@ mkdir -pv ~/.configure/woocommerce-ios/secrets
 cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/project.env
 
 echo "--- :arrow_down: Download Screenshot App Artifacts"
-buildkite-agent artifact download screenshot-artifacts.tar .
+buildkite-agent artifact download screenshot-artifacts.tar . --job "build-app-for-screenshots"
 tar -xf screenshot-artifacts.tar -C fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
 
 echo "--- :gear: Setup Fastlane Dependencies"

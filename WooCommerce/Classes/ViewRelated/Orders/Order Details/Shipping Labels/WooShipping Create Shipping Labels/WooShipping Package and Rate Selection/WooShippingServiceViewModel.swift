@@ -42,6 +42,11 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Available shipping rates with adult signature required.
     private var adultSignatureRates: [ShippingLabelCarrierRate] = []
 
+    /// Additional rates
+    private var carbonNeutralRates: [ShippingLabelCarrierRate] = []
+    private var saturdayDeliveryRates: [ShippingLabelCarrierRate] = []
+    private var additionalHandlingRates: [ShippingLabelCarrierRate] = []
+
     /// Sort order for shipping services.
     @Published var sortOrder: SortOrder = .price
 
@@ -71,8 +76,18 @@ final class WooShippingServiceViewModel: ObservableObject {
     }
 
     /// Selects the rate with the given title and signature requirement.
-    func selectRate(_ rate: ShippingLabelCarrierRate, signatureRate: ShippingLabelCarrierRate?, adultSignatureRate: ShippingLabelCarrierRate?) {
-        let selectedRate = WooShippingSelectedRate(rate: rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
+    func selectRate(_ rate: ShippingLabelCarrierRate,
+                    signatureRate: ShippingLabelCarrierRate?,
+                    adultSignatureRate: ShippingLabelCarrierRate?,
+                    carbonNeutralRate: ShippingLabelCarrierRate?,
+                    saturdayDeliveryRate: ShippingLabelCarrierRate?,
+                    additionalHandlingRate: ShippingLabelCarrierRate?) {
+        let selectedRate = WooShippingSelectedRate(rate: rate,
+                                                   signatureRate: signatureRate,
+                                                   adultSignatureRate: adultSignatureRate,
+                                                   carbonNeutralRate: carbonNeutralRate,
+                                                   saturdayDeliveryRate: saturdayDeliveryRate,
+                                                   additionalHandlingRate: additionalHandlingRate)
         self.selectedRate = selectedRate
         generateServiceTabs()
         onSelectRate?(selectedRate)
@@ -94,12 +109,24 @@ final class WooShippingServiceViewModel: ObservableObject {
         let updatedAdultSignatureRate = adultSignatureRates.first(where: {
             $0.serviceID == oldRate.adultSignatureRate?.serviceID
         })
+        let updatedCarbonNeutralRate = carbonNeutralRates.first(where: {
+            $0.serviceID == oldRate.carbonNeutralRate?.serviceID
+        })
+        let updatedSaturdayDeliveryRate = saturdayDeliveryRates.first(where: {
+            $0.serviceID == oldRate.saturdayDeliveryRate?.serviceID
+        })
+        let updatedAdditionalHandlingRate = additionalHandlingRates.first(where: {
+            $0.serviceID == oldRate.additionalHandlingRate?.serviceID
+        })
         guard let updatedStandardRate else {
             return nil
         }
         let newSelectedRate = WooShippingSelectedRate(rate: updatedStandardRate,
                                                       signatureRate: updatedSignatureRate,
-                                                      adultSignatureRate: updatedAdultSignatureRate)
+                                                      adultSignatureRate: updatedAdultSignatureRate,
+                                                      carbonNeutralRate: updatedCarbonNeutralRate,
+                                                      saturdayDeliveryRate: updatedSaturdayDeliveryRate,
+                                                      additionalHandlingRate: updatedAdditionalHandlingRate)
         self.selectedRate = newSelectedRate
         generateServiceTabs()
         return newSelectedRate
@@ -150,6 +177,9 @@ final class WooShippingServiceViewModel: ObservableObject {
                 standardRates = rates.defaultRates
                 signatureRates = rates.signatureRequired
                 adultSignatureRates = rates.adultSignatureRequired
+                carbonNeutralRates = rates.carbonNeutral
+                saturdayDeliveryRates = rates.saturdayDelivery
+                additionalHandlingRates = rates.additionalHandling
                 updateLoadingState(to: .loaded)
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingSuccess))
                 onLoadingCompletion(.success(()))
@@ -236,7 +266,12 @@ private extension WooShippingServiceViewModel {
                             let signatureRate = signatureRequirement == .signatureRequired ? signatureRates.first(where: { $0.title == rateTitle }) : nil
                             let adultSignatureRate = signatureRequirement == .adultSignatureRequired ?
                                 adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
-                            selectRate(rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
+                            selectRate(rate,
+                                       signatureRate: signatureRate,
+                                       adultSignatureRate: adultSignatureRate,
+                                       carbonNeutralRate: nil,
+                                       saturdayDeliveryRate: nil,
+                                       additionalHandlingRate: nil)
                         }
                     }
                 return WooShippingServiceTab(id: carrier, cards: cards)

@@ -10,6 +10,15 @@ struct WooShippingSelectedRate {
 
     /// Rate for shipping with adult signature, if selected.
     let adultSignatureRate: ShippingLabelCarrierRate?
+
+    /// Rate for shipping with carbon neutral, if selected.
+    let carbonNeutralRate: ShippingLabelCarrierRate?
+
+    /// Rate for shipping with Saturday delivery, if selected.
+    let saturdayDeliveryRate: ShippingLabelCarrierRate?
+
+    /// Rate for shipping with additional handling, if selected.
+    let additionalHandlingRate: ShippingLabelCarrierRate?
 }
 
 extension WooShippingSelectedRate {

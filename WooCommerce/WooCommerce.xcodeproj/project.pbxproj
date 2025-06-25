@@ -14479,6 +14479,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
 			buildPhases = (
+				3F4278632E0BD6B700B11B9E /* Prevent Wormholy in non-Debug builds */,
 				57CCFFD4249D2A5700825FCF /* SwiftLint */,
 				3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
@@ -15056,6 +15057,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3F4278632E0BD6B700B11B9E /* Prevent Wormholy in non-Debug builds */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Prevent Wormholy in non-Debug builds";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${SRCROOT}/../Scripts/build-phases/fail-non-debug-build-if-wormholy-present.sh\n";
+		};
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;

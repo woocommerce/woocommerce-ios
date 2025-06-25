@@ -12,69 +12,76 @@ struct UPSTermsView: View {
     @State private var externalURL: URL?
 
     var body: some View {
-        ScrollableVStack(alignment: .leading,
-                         padding: Layout.contentPadding,
-                         spacing: Layout.sectionSpacing) {
-            Text(Localization.title)
-                .font(.title3)
-                .bold()
+        VStack(spacing: 0) {
+            ScrollableVStack(alignment: .leading,
+                             padding: Layout.contentPadding,
+                             spacing: Layout.sectionSpacing) {
+                Text(Localization.title)
+                    .font(.title3)
+                    .bold()
 
-            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                Text(Localization.shippingFrom)
-                    .headlineStyle()
-                Text(viewModel.displayedOriginAddress)
-                    .foregroundStyle(Color.primary)
-                    .subheadlineStyle()
+                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                    Text(Localization.shippingFrom)
+                        .headlineStyle()
+                    Text(viewModel.displayedOriginAddress)
+                        .foregroundStyle(Color.primary)
+                        .subheadlineStyle()
+                    Divider()
+                }
+                .accessibilityElement(children: .combine)
+
+                Text(Localization.message)
+
+                VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                    Toggle(isOn: $viewModel.isTOSAccepted) {
+                        Text(
+                            AttributedString.withEmbeddedLink(
+                                mainContent: Localization.checkbox1,
+                                linkText: Localization.termsOfService,
+                                link: Links.termsOfService
+                            )
+                        )
+                    }
+                    .toggleStyle(CheckboxToggleStyle())
+
+                    Toggle(isOn: $viewModel.isProhibitedItemsAccepted) {
+                        Text(
+                            AttributedString.withEmbeddedLink(
+                                mainContent: Localization.checkbox2,
+                                linkText: Localization.prohibitedItems,
+                                link: Links.prohibitedItems
+                            )
+                        )
+                    }
+                    .toggleStyle(CheckboxToggleStyle())
+
+                    Toggle(isOn: $viewModel.isTechnologyAgreementAccepted) {
+                        Text(
+                            AttributedString.withEmbeddedLink(
+                                mainContent: Localization.checkbox3,
+                                linkText: Localization.technologyAgreement,
+                                link: Links.techAgreement
+                            )
+                        )
+                    }
+                    .toggleStyle(CheckboxToggleStyle())
+                }
+
+                Spacer()
+            }
+
+            VStack(spacing: 0) {
                 Divider()
+
+                Button(Localization.confirmButton, action: {
+                    Task { @MainActor in
+                        await confirmAcceptance()
+                    }
+                })
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isConfirming))
+                .padding(Layout.contentPadding)
+                .disabled(!viewModel.shouldEnableConfirmButton)
             }
-            .accessibilityElement(children: .combine)
-
-            Text(Localization.message)
-
-            VStack(alignment: .leading, spacing: Layout.contentPadding) {
-                Toggle(isOn: $viewModel.isTOSAccepted) {
-                    Text(
-                        AttributedString.withEmbeddedLink(
-                            mainContent: Localization.checkbox1,
-                            linkText: Localization.termsOfService,
-                            link: Links.termsOfService
-                        )
-                    )
-                }
-                .toggleStyle(CheckboxToggleStyle())
-
-                Toggle(isOn: $viewModel.isProhibitedItemsAccepted) {
-                    Text(
-                        AttributedString.withEmbeddedLink(
-                            mainContent: Localization.checkbox2,
-                            linkText: Localization.prohibitedItems,
-                            link: Links.prohibitedItems
-                        )
-                    )
-                }
-                .toggleStyle(CheckboxToggleStyle())
-
-                Toggle(isOn: $viewModel.isTechnologyAgreementAccepted) {
-                    Text(
-                        AttributedString.withEmbeddedLink(
-                            mainContent: Localization.checkbox3,
-                            linkText: Localization.technologyAgreement,
-                            link: Links.techAgreement
-                        )
-                    )
-                }
-                .toggleStyle(CheckboxToggleStyle())
-            }
-
-            Spacer()
-
-            Button(Localization.confirmButton, action: {
-                Task { @MainActor in
-                    await confirmAcceptance()
-                }
-            })
-            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isConfirming))
-            .disabled(!viewModel.shouldEnableConfirmButton)
         }
         .padding(.top, Layout.contentPadding)
         .alert(Localization.errorTitle, isPresented: $didFailToConfirmAcceptance) {

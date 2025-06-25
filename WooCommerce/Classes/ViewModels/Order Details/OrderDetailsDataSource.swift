@@ -1331,7 +1331,13 @@ extension OrderDetailsDataSource {
             }
 
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
-                let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
+                let title = {
+                    guard let shipmentID = shippingLabel.shipmentID,
+                          let intID = Int(shipmentID) else {
+                        return String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
+                    }
+                    return String.localizedStringWithFormat(Title.shippingLabelPackageFormat, intID + 1)
+                }()
                 let isRefunded = shippingLabel.refund != nil
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle

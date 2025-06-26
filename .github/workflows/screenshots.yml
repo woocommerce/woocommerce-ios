@@ -40,7 +40,7 @@ jobs:
 
     strategy:
       matrix:
-        language: [en-US]
+        language: [en-US, zh-Hant]
         mode: [dark, light]
     steps:
     - uses: actions/checkout@v4

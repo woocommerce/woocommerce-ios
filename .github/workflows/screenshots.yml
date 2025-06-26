@@ -5,9 +5,6 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
 env:
-  S3_BUCKET: ${{ secrets.S3_BUCKET }}
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
 
 jobs:
@@ -73,9 +70,10 @@ jobs:
         path: fastlane/logs
 
     - name: Archive Generated Screenshots
-      run: |
-        cd fastlane && mkdir $GITHUB_RUN_ID && mv screenshots $GITHUB_RUN_ID
-        aws s3 cp $GITHUB_RUN_ID s3://$S3_BUCKET/$GITHUB_RUN_ID --recursive --exclude "*.html"
+      uses: actions/upload-artifact@v4
+      with:
+        name: "screenshots-${{ matrix.language }}-${{ matrix.mode }}"
+        path: fastlane/screenshots/
 
   process:
     name: "Process Screenshots"
@@ -102,14 +100,21 @@ jobs:
         run: bundle exec fastlane run configure_apply
 
       - name: Download Generated Screenshots
-        run: |
-          cd fastlane
-          aws s3 cp s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots screenshots/  --recursive --exclude "*.html"
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "screenshots-*"
+          path: fastlane/screenshots/
+          merge-multiple: true
 
-      - name: Generate and Upload Screenshot Summary
+      - name: Generate Screenshot Summary
         run: |
           bundle exec fastlane create_screenshot_summary
-          aws s3 cp fastlane/screenshots/screenshots.html s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots/screenshots.html
+      
+      - name: Upload Screenshot Summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot-summary
+          path: fastlane/screenshots/screenshots.html
 
       - name: Archive Raw Screenshots
         uses: actions/upload-artifact@v4
@@ -117,27 +122,26 @@ jobs:
           name: raw-screenshots
           path: fastlane/screenshots
 
-      - name: Install Promo Screenshot Fonts
+      - name: Setup Git LFS and Verify Fonts
         run: |
-          aws s3 cp s3://$S3_BUCKET/fonts.zip fonts.zip
-          unzip fonts.zip
-
-          mkdir -p ~/Library/Fonts
-          cp -v fonts/*.otf ~/Library/Fonts
-          ls ~/Library/Fonts
-
-          mkdir -p /Library/Fonts
-          cp -v fonts/*.otf /Library/Fonts
-          ls /Library/Fonts
-
-          # Reset the font server in order to use these fonts
-          atsutil databases -removeUser
-          atsutil server -shutdown
-          atsutil server -ping
+          # Install Git LFS if not available
+          if ! command -v git-lfs &> /dev/null; then
+            echo "Installing Git LFS..."
+            brew install git-lfs
+          fi
+          git lfs install && git lfs fetch && git lfs pull
+          
+          # Verify Proxima Nova is available (should be in macOS 15)
+          if system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
+            echo "✅ Proxima Nova font found - ready for promo screenshots"
+          else
+            echo "⚠️ Proxima Nova font not found - promo screenshots may not render correctly"
+            echo "Available fonts with 'nova' in name:"
+            system_profiler SPFontsDataType | grep -i "nova" | head -5 || echo "No fonts with 'nova' found"
+          fi
 
       - name: Generate Promo Screenshots
         run: |
-          git lfs install && git lfs fetch && git lfs pull
           bundle exec fastlane create_promo_screenshots force:true
 
       - name: Archive Promo Screenshots

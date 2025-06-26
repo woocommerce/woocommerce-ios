@@ -24,6 +24,7 @@ struct CartView: View {
     }
 
     @State private var shouldShowItemImages: Bool = false
+    @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
     private var shouldShowCoupons: Bool {
         posModel.cart.coupons.isNotEmpty
@@ -90,9 +91,17 @@ struct CartView: View {
                                     })
                                     .id(cartItem.id)
                                     .transition(.opacity)
+                                    .accessibilityFocused($accessibilityFocusedItem, equals: cartItem.id)
                                 }
                             }
                             .padding(.bottom, Constants.cartLastItemBottomPadding)
+                            .onChange(of: posModel.cart.accessibilityFocusedItemID) { itemID in
+                                if let itemID = itemID {
+                                    Task { @MainActor in
+                                        accessibilityFocusedItem = itemID
+                                    }
+                                }
+                            }
                             .animation(Constants.cartAnimation, value: posModel.cart.purchasableItems.map(\.id))
                             .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
                             .background(GeometryReader { geometry in

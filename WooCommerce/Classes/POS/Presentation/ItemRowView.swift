@@ -77,6 +77,10 @@ struct ItemRowView: View {
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
             .padding(.vertical, Constants.verticalPadding * (1 / scale))
             .accessibilityElement(children: .combine)
+            .if(cartItem.accessibilityLabel != nil) { view in
+                view
+                    .accessibilityLabel(cartItem.accessibilityLabel ?? "")
+            }
 
             if let onItemRemoveTapped {
                 CartRowRemoveButton {

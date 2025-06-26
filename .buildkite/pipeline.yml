@@ -26,6 +26,7 @@ steps:
   # Generate Screenshots (Matrix)
   #################
   - label: ":camera: Generate Screenshots ({{matrix.language}} - {{matrix.mode}})"
+    key: generate-screenshots
     command: .buildkite/commands/take-screenshots.sh "{{matrix.language}}" "{{matrix.mode}}"
     depends_on: build-screenshots
     plugins: [$CI_TOOLKIT]

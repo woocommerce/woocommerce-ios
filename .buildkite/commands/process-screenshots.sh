@@ -25,7 +25,7 @@ echo "--- :arrow_down: Download Generated Screenshots from CI Artifacts"
 cd fastlane
 mkdir -p screenshots
 # Download all screenshot artifacts from the take-screenshots jobs
-buildkite-agent artifact download "fastlane/screenshots-*/**/*" . --step "take-screenshots"
+buildkite-agent artifact download "fastlane/screenshots-*/**/*" . --step "generate-screenshots"
 
 echo "--- :chart_with_upwards_trend: Generate Screenshot Summary"
 bundle exec fastlane create_screenshot_summary

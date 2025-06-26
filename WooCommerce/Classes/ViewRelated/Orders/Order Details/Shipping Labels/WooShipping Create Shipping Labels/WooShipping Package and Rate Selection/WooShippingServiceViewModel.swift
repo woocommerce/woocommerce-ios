@@ -256,22 +256,36 @@ private extension WooShippingServiceViewModel {
                     .map { rate in
                         let signature = signatureRates.first { rate.title == $0.title }
                         let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                        return WooShippingServiceCardViewModel(selected: selectedRate?.rate.title == rate.title,
-                                                               signatureRequired: signature != nil && selectedRate?.signatureRate == signature,
-                                                               adultSignatureRequired: adultSignature != nil && selectedRate?.adultSignatureRate == adultSignature,
-                                                               rate: rate,
-                                                               signatureRate: signature,
-                                                               adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
+                        let carbonNeutral = carbonNeutralRates.first { rate.title == $0.title }
+                        let saturdayDelivery = saturdayDeliveryRates.first { rate.title == $0.title }
+                        let additionalHandling = additionalHandlingRates.first { rate.title == $0.title }
+                        return WooShippingServiceCardViewModel(
+                            selected: selectedRate?.rate.title == rate.title,
+                            signatureRequired: signature != nil && selectedRate?.signatureRate == signature,
+                            adultSignatureRequired: adultSignature != nil && selectedRate?.adultSignatureRate == adultSignature,
+                            carbonNeutralSelected: carbonNeutral != nil && selectedRate?.carbonNeutralRate == carbonNeutral,
+                            saturdayDeliverySelected: saturdayDelivery != nil && selectedRate?.saturdayDeliveryRate == saturdayDelivery,
+                            additionalHandlingSelected: additionalHandling != nil && selectedRate?.additionalHandlingRate == additionalHandling,
+                            rate: rate,
+                            signatureRate: signature,
+                            adultSignatureRate: adultSignature,
+                            carbonNeutralRate: carbonNeutral,
+                            saturdayDeliveryRate: saturdayDelivery,
+                            additionalHandlingRate: additionalHandling
+                        ) { [weak self] rateTitle, signatureRequirement, carbonNeutral, saturdayDelivery, additionalHandling in
                             guard let self, let rate = standardRates.first(where: { $0.title == rateTitle }) else { return }
                             let signatureRate = signatureRequirement == .signatureRequired ? signatureRates.first(where: { $0.title == rateTitle }) : nil
                             let adultSignatureRate = signatureRequirement == .adultSignatureRequired ?
-                                adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
+                            adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
+                            let carbonNeutralRate = carbonNeutral ? carbonNeutralRates.first(where: { $0.title == rateTitle }) : nil
+                            let saturdayDeliveryRate = saturdayDelivery ? saturdayDeliveryRates.first(where: { $0.title == rateTitle }) : nil
+                            let additionalHandlingRate = additionalHandling ? additionalHandlingRates.first(where: { $0.title == rateTitle }) : nil
                             selectRate(rate,
                                        signatureRate: signatureRate,
                                        adultSignatureRate: adultSignatureRate,
-                                       carbonNeutralRate: nil,
-                                       saturdayDeliveryRate: nil,
-                                       additionalHandlingRate: nil)
+                                       carbonNeutralRate: carbonNeutralRate,
+                                       saturdayDeliveryRate: saturdayDeliveryRate,
+                                       additionalHandlingRate: additionalHandlingRate)
                         }
                     }
                 return WooShippingServiceTab(id: carrier, cards: cards)

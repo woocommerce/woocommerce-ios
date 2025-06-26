@@ -60,6 +60,7 @@ struct POSFloatingControlView: View {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
                     Button {
                         showBarcodeScanningInformation = true
+                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
                     } label: {
                         Label(
                             title: { Text(Localization.barcodeScanning) },

@@ -1302,6 +1302,8 @@ enum WooAnalyticsStat: String {
     case pointOfSaleKeyboardDismissedInSearch = "keyboard_dismissed_in_search"
     case pointOfSaleItemsNextPageLoaded = "items_next_page_loaded"
     case pointOfSaleSearchRemoteResultsFetched = "search_remote_results_fetched"
+    case pointOfSaleBarcodeScanningMenuItemTapped = "barcode_scanning_menu_item_tapped"
+    case pointOfSaleBarcodeScanningExplanationDialogShown = "barcode_scanning_explanation_dialog_shown"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -504,8 +504,8 @@ final class MainTabBarControllerTests: XCTestCase {
             posTabContainerController.presentedViewController is UIHostingController<PointOfSaleEntryPointView>
         }
 
-        // When returning POS eligibility as ineligible
-        mockPOSEligibilityChecker.setEligibilityResult(.ineligible(reason: .featureFlagDisabled))
+        // When POS tab becomes invisible
+        mockPOSEligibilityChecker.setVisibilityResult(false)
 
         // Then POS tab is hidden
         waitUntil {
@@ -551,7 +551,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // When POS tab initial visibility is set to true
         stores.updateDefaultStore(storeID: 1216)
-        mockPOSEligibilityChecker.setEligibilityResult(.eligible)
+        mockPOSEligibilityChecker.setVisibilityResult(true)
 
         waitUntil {
             tabBarController.tabRootViewControllers.count == 5
@@ -642,9 +642,18 @@ extension MainTabBarController {
 
 private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
-    private var visibility: Bool = false
+    private var visibilityResult: Bool?
+    private var visibilityContinuation: CheckedContinuation<Bool, Never>?
     private var eligibilityResult: POSEligibilityState?
     private var eligibilityContinuation: CheckedContinuation<POSEligibilityState, Never>?
+
+    func setVisibilityResult(_ result: Bool) {
+        visibilityResult = result
+        if let continuation = visibilityContinuation {
+            visibilityContinuation = nil
+            continuation.resume(returning: result)
+        }
+    }
 
     func setEligibilityResult(_ result: POSEligibilityState) {
         eligibilityResult = result
@@ -659,7 +668,16 @@ private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityChec
     }
 
     func checkVisibility() async -> Bool {
-        visibility
+        if let visibilityResult {
+            return visibilityResult
+        }
+        return await withCheckedContinuation { continuation in
+            visibilityContinuation = continuation
+            // If we already have a result, return it immediately.
+            if visibilityContinuation == nil {
+                continuation.resume(returning: visibilityResult ?? true)
+            }
+        }
     }
 
     func checkEligibility() async -> POSEligibilityState {

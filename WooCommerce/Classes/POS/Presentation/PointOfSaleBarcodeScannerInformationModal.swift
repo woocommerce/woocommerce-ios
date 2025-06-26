@@ -26,6 +26,9 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
                 Text(AttributedString(Localization.barcodeInfoQuinaryMessage))
             }
         }
+        .onAppear(perform: {
+            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
+        })
     }
 
     private var bulletPointWithLink: AttributedString {

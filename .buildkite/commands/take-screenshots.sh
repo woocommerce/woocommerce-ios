@@ -28,15 +28,11 @@ bundle exec fastlane take_screenshots \
   languages:"${SCREENSHOT_LANGUAGE}" \
   mode:"${SCREENSHOT_MODE}"
 
-echo "--- :arrow_up: Upload Screenshots to S3"
+echo "--- :arrow_up: Upload Screenshots as CI Artifacts"
 # Create unique directory for this job's screenshots
 SCREENSHOT_DIR="fastlane/screenshots-${SCREENSHOT_LANGUAGE}-${SCREENSHOT_MODE}"
 if [ -d "fastlane/screenshots" ]; then
   mv fastlane/screenshots "${SCREENSHOT_DIR}"
-  # Check if S3_BUCKET is set before uploading
-  if [ -n "${S3_BUCKET:-}" ]; then
-    aws s3 cp "${SCREENSHOT_DIR}" "s3://${S3_BUCKET}/${BUILDKITE_BUILD_ID:-unknown}/screenshots-${SCREENSHOT_LANGUAGE}-${SCREENSHOT_MODE}/" --recursive --exclude "*.html"
-  else
-    echo "S3_BUCKET not set, skipping upload"
-  fi
+  # Upload as Buildkite artifacts for later processing
+  buildkite-agent artifact upload "${SCREENSHOT_DIR}/**/*" --job "${BUILDKITE_JOB_ID}"
 fi

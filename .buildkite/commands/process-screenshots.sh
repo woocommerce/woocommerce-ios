@@ -21,33 +21,40 @@ cp -v fastlane/env/project.env.example ~/.configure/woocommerce-ios/secrets/proj
 echo "--- :gear: Setup Fastlane Dependencies"
 bundle exec fastlane run configure_apply
 
-echo "--- :arrow_down: Download Generated Screenshots from S3"
+echo "--- :arrow_down: Download Generated Screenshots from CI Artifacts"
 cd fastlane
 mkdir -p screenshots
-aws s3 cp "s3://${S3_BUCKET}/${BUILDKITE_BUILD_ID}/" screenshots/ --recursive --exclude "*.html"
+# Download all screenshot artifacts from the take-screenshots jobs
+buildkite-agent artifact download "fastlane/screenshots-*/**/*" . --step "take-screenshots"
 
 echo "--- :chart_with_upwards_trend: Generate Screenshot Summary"
 bundle exec fastlane create_screenshot_summary
-aws s3 cp screenshots/screenshots.html "s3://${S3_BUCKET}/${BUILDKITE_BUILD_ID}/screenshots/screenshots.html"
 
 echo "--- :arrow_down: Install Promo Screenshot Fonts"
 cd ..
-aws s3 cp "s3://${S3_BUCKET}/fonts.zip" fonts.zip
-unzip fonts.zip
+# Download fonts from artifacts (assuming fonts are uploaded as artifacts in a separate step)
+buildkite-agent artifact download "fonts.zip" . --step "prepare-fonts" || echo "No fonts artifact found, continuing without promo fonts"
+if [ -f "fonts.zip" ]; then
+  unzip fonts.zip
+fi
 
-# Install fonts system-wide and user-level
-mkdir -p ~/Library/Fonts
-cp -v fonts/*.otf ~/Library/Fonts
-ls ~/Library/Fonts
+# Install fonts system-wide and user-level (only if fonts exist)
+if [ -d "fonts" ] && [ "$(ls -A fonts/*.otf 2>/dev/null)" ]; then
+  mkdir -p ~/Library/Fonts
+  cp -v fonts/*.otf ~/Library/Fonts
+  ls ~/Library/Fonts
 
-mkdir -p /Library/Fonts
-sudo cp -v fonts/*.otf /Library/Fonts
-ls /Library/Fonts
+  mkdir -p /Library/Fonts
+  sudo cp -v fonts/*.otf /Library/Fonts
+  ls /Library/Fonts
 
-# Reset the font server to recognize new fonts
-atsutil databases -removeUser
-atsutil server -shutdown
-atsutil server -ping
+  # Reset the font server to recognize new fonts
+  atsutil databases -removeUser
+  atsutil server -shutdown
+  atsutil server -ping
+else
+  echo "No fonts found, skipping font installation"
+fi
 
 echo "--- :art: Generate Promo Screenshots"
 git lfs install && git lfs fetch && git lfs pull

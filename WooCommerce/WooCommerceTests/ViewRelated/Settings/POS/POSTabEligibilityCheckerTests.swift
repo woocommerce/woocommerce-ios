@@ -89,7 +89,7 @@ struct POSTabEligibilityCheckerTests {
         (country: Country.gb, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: true),
         (country: Country.gb, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: false)
     ])
-    fileprivate func is_eligible_when_country_and_currency_are_supported(country: Country, currency: CurrencyCode, isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    fileprivate func is_eligible_when_country_and_currency_supported(country: Country, currency: CurrencyCode, isPointOfSaleAsATabi2Enabled: Bool) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
         setupCountry(country: country, currency: currency)

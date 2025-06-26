@@ -1,5 +1,9 @@
 #!/bin/bash -eu
 
+# Get matrix values from command arguments
+SCREENSHOT_LANGUAGE="${1:-en-US}"
+SCREENSHOT_MODE="${2:-light}"
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
 
@@ -15,19 +19,24 @@ tar -xf screenshot-artifacts.tar -C fastlane/DerivedData/Build/Products/Debug-ip
 echo "--- :gear: Setup Fastlane Dependencies"
 bundle exec fastlane run configure_apply
 
-echo "--- :information_source: Debug Environment Variables"
-echo "SCREENSHOT_LANGUAGE: '${SCREENSHOT_LANGUAGE:-NOT_SET}'"
-echo "SCREENSHOT_MODE: '${SCREENSHOT_MODE:-NOT_SET}'"
+echo "--- :information_source: Screenshot Configuration"
+echo "SCREENSHOT_LANGUAGE: '${SCREENSHOT_LANGUAGE}'"
+echo "SCREENSHOT_MODE: '${SCREENSHOT_MODE}'"
 
-echo "--- :camera: Generate Screenshots for ${SCREENSHOT_LANGUAGE:-unknown} (${SCREENSHOT_MODE:-unknown} mode)"
+echo "--- :camera: Generate Screenshots for ${SCREENSHOT_LANGUAGE} (${SCREENSHOT_MODE} mode)"
 bundle exec fastlane take_screenshots \
-  languages:"${SCREENSHOT_LANGUAGE:-en-US}" \
-  mode:"${SCREENSHOT_MODE:-light}"
+  languages:"${SCREENSHOT_LANGUAGE}" \
+  mode:"${SCREENSHOT_MODE}"
 
 echo "--- :arrow_up: Upload Screenshots to S3"
 # Create unique directory for this job's screenshots
-SCREENSHOT_DIR="fastlane/screenshots-${SCREENSHOT_LANGUAGE:-en-US}-${SCREENSHOT_MODE:-light}"
+SCREENSHOT_DIR="fastlane/screenshots-${SCREENSHOT_LANGUAGE}-${SCREENSHOT_MODE}"
 if [ -d "fastlane/screenshots" ]; then
   mv fastlane/screenshots "${SCREENSHOT_DIR}"
-  aws s3 cp "${SCREENSHOT_DIR}" "s3://${S3_BUCKET}/${BUILDKITE_BUILD_ID}/screenshots-${SCREENSHOT_LANGUAGE:-en-US}-${SCREENSHOT_MODE:-light}/" --recursive --exclude "*.html"
+  # Check if S3_BUCKET is set before uploading
+  if [ -n "${S3_BUCKET:-}" ]; then
+    aws s3 cp "${SCREENSHOT_DIR}" "s3://${S3_BUCKET}/${BUILDKITE_BUILD_ID:-unknown}/screenshots-${SCREENSHOT_LANGUAGE}-${SCREENSHOT_MODE}/" --recursive --exclude "*.html"
+  else
+    echo "S3_BUCKET not set, skipping upload"
+  fi
 fi

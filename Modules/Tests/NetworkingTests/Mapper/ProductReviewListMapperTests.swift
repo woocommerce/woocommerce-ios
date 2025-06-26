@@ -74,13 +74,13 @@ private extension ProductReviewListMapperTests {
         return try! ProductReviewListMapper(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the ProductListMapper output upon receiving `reviews-all`
+    /// Returns the ProductReviewListMapper output upon receiving `reviews-all`
     ///
     func mapLoadAllProductReviewsResponse() -> [ProductReview] {
         return mapProductReviews(from: "reviews-all")
     }
 
-    /// Returns the ProductListMapper output upon receiving `reviews-all-without-data`
+    /// Returns the ProductReviewListMapper output upon receiving `reviews-all-without-data`
     ///
     func mapLoadAllProductReviewsResponseWithoutDataEnvelope() -> [ProductReview] {
         return mapProductReviews(from: "reviews-all-without-data")

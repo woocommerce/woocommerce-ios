@@ -333,7 +333,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         self.date = date
     }
 
-    /// Maps the given locale to an appropriate country value for the site setting.
+    /// Maps the given locale to an appropriate country value for the site setting for all locales in Fastfile IOS_LOCALES.
     /// Uses the same format as WooCommerce's default country setting: "COUNTRY:STATE".
     private static func countryValue(for locale: String) -> String {
         // Map locales to country values based on IOS_LOCALES from Fastfile
@@ -356,10 +356,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
             "zh-Hans": "CN", // China (Simplified Chinese)
             "zh-Hant": "TW" // Taiwan (Traditional Chinese)
         ]
-        return localeToCountryMap[locale] ?? "US:CA" // Default to US:CA
+        return localeToCountryMap[locale] ?? "US:CA" // Default to US:CA.
     }
 
-    /// Maps the given locale to an appropriate currency code for the site setting.
+    /// Maps the given locale to an appropriate currency code for the site setting for all locales in Fastfile IOS_LOCALES.
     /// Uses the CurrencyCode enum rawValues.
     private static func currencyCode(for locale: String) -> String {
         // Map locales to currency codes based on IOS_LOCALES from Fastfile

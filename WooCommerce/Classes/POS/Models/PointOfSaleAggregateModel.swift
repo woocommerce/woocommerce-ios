@@ -34,7 +34,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
     var cart: Cart { get }
-    func barcodeScanned(_ barcode: String)
+    func barcodeScanned(_ result: Result<String, Error>)
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart(types: [CartItemType])
@@ -185,45 +185,75 @@ extension PointOfSaleAggregateModel {
 // MARK: - Barcode Scanning
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
-    func barcodeScanned(_ barcode: String) {
+    func barcodeScanned(_ result: Result<String, Error>) {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let placeholderItemID = cart.addLoadingItem().id
-
-            analytics.track(
-                event: .PointOfSale.addItemToCart(
-                    sourceViewType: .scanner,
-                    itemType: .loading
-                )
-            )
-
-            do throws(PointOfSaleBarcodeScanError) {
-                let item = try await barcodeScanService.getItem(barcode: barcode)
-                if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
-                    analytics.track(
-                        event: .PointOfSale.addItemToCart(
-                            sourceViewType: .scanner,
-                            itemType: .product,
-                            productType: .init(cartItem: cartItem)
-                        )
-                    )
-                }
-            } catch {
-                DDLogInfo("Failed to find item by barcode: \(error)")
-                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
-                    // Only play a sound and track analytics if the item still exists in the cart.
-                    await soundPlayer.playSound(.barcodeScanFailure)
-
-                    analytics.track(
-                        event: .PointOfSale.addItemToCart(
-                            sourceViewType: .scanner,
-                            itemType: .error,
-                            error: error
-                        )
-                    )
-                }
+            switch result {
+            case .success(let barcode):
+                await handleSuccessfulScan(barcode: barcode)
+            case .failure(let error):
+                await handleFailedScan(error: error)
             }
         }
+    }
+
+    @MainActor
+    private func handleSuccessfulScan(barcode: String) async {
+        let placeholderItemID = cart.addLoadingItem().id
+
+        analytics.track(
+            event: .PointOfSale.addItemToCart(
+                sourceViewType: .scanner,
+                itemType: .loading
+            )
+        )
+
+        do throws(PointOfSaleBarcodeScanError) {
+            let item = try await barcodeScanService.getItem(barcode: barcode)
+            if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
+                analytics.track(
+                    event: .PointOfSale.addItemToCart(
+                        sourceViewType: .scanner,
+                        itemType: .product,
+                        productType: .init(cartItem: cartItem)
+                    )
+                )
+            }
+        } catch {
+            DDLogInfo("Failed to find item by barcode: \(error)")
+            if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                await handleErrorItemAdded(error)
+            }
+        }
+    }
+
+    @MainActor
+    private func handleFailedScan(error: Error) async {
+        let scanError = switch error {
+        case HIDBarcodeParserError.scanTooShort(let barcode):
+            PointOfSaleBarcodeScanError.scanTooShort(scannedCode: barcode)
+        case HIDBarcodeParserError.timedOut(let barcode):
+            PointOfSaleBarcodeScanError.timedOut(scannedCode: barcode)
+        default:
+            PointOfSaleBarcodeScanError.parsingError(underlyingError: error)
+        }
+
+        cart.addErrorItem(error: scanError)
+        await handleErrorItemAdded(scanError)
+    }
+
+    @MainActor
+    private func handleErrorItemAdded(_ error: PointOfSaleBarcodeScanError) async {
+        // Only play a sound and track analytics if the item still exists in the cart.
+        await soundPlayer.playSound(.barcodeScanFailure)
+
+        analytics.track(
+            event: .PointOfSale.addItemToCart(
+                sourceViewType: .scanner,
+                itemType: .error,
+                error: error
+            )
+        )
     }
 }
 

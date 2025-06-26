@@ -6,15 +6,26 @@ extension Cart {
     mutating func updateLoadingItem(id: UUID, with error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem? {
         guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
-        purchasableItems[index] = Cart.PurchasableItem(
+        purchasableItems[index] = errorItem(id: id, error: error)
+
+        return purchasableItems[index]
+    }
+
+    @discardableResult
+    mutating func addErrorItem(error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem {
+        let errorItem = errorItem(id: UUID(), error: error)
+        purchasableItems.insert(errorItem, at: purchasableItems.startIndex)
+        return errorItem
+    }
+
+    private func errorItem(id: UUID, error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem {
+        Cart.PurchasableItem(
             id: id,
             title: title(for: error),
             subtitle: subtitle(for: error),
             quantity: 1,
             state: .error
         )
-
-        return purchasableItems[index]
     }
 
     private func title(for error: PointOfSaleBarcodeScanError) -> String {
@@ -24,11 +35,15 @@ extension Cart {
                 .variationCouldNotBeConverted(let scannedCode),
                 .notFound(let scannedCode),
                 .loadingError(let scannedCode, _),
-                .mappingError(let scannedCode, _):
+                .mappingError(let scannedCode, _),
+                .scanTooShort(let scannedCode),
+                .timedOut(let scannedCode):
             return scannedCode
         case .unsupportedProductType(_, let productName, _),
                 .downloadableProduct(_, let productName):
             return productName
+        case .parsingError:
+            return Localization.scanFailed
         }
     }
 
@@ -52,6 +67,12 @@ extension PointOfSaleBarcodeScanError {
             } else {
                 return Localization.networkRequestFailed
             }
+        case .scanTooShort:
+            return Localization.barcodeTooShort
+        case .timedOut:
+            return Localization.incompleteScan
+        case .parsingError:
+            return Localization.parsingError
         }
     }
 
@@ -84,6 +105,34 @@ extension PointOfSaleBarcodeScanError {
             "pointOfSale.barcodeScan.error.noParentProduct",
             value: "Parent product not found for variation",
             comment: "Error message shown when parent product is not found for a variation."
+        )
+
+        static let barcodeTooShort = NSLocalizedString(
+            "pointOfSale.barcodeScan.error.barcodeTooShort",
+            value: "Barcode too short",
+            comment: "Error message shown when scan is too short."
+        )
+
+        static let incompleteScan = NSLocalizedString(
+            "pointOfSale.barcodeScan.error.incompleteScan",
+            value: "Partial barcode scan",
+            comment: "Error message shown when scan is incomplete."
+        )
+
+        static let parsingError = NSLocalizedString(
+            "pointOfSale.barcodeScan.error.parsingError",
+            value: "Couldn't read barcode",
+            comment: "Error message shown when parsing barcode data fails."
+        )
+    }
+}
+
+private extension Cart {
+    enum Localization {
+        static let scanFailed = NSLocalizedString(
+            "pointOfSale.barcodeScan.error.scanFailed",
+            value: "Scan failed",
+            comment: "Error message when scanning a barcode fails for an unknown reason, before lookup."
         )
     }
 }

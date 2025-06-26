@@ -14,7 +14,7 @@ jobs:
   build:
     name: Build Application
     if: contains(github.event.pull_request.labels.*.name, 'generate screenshots')
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
     - name: "Check out Project"
@@ -45,12 +45,12 @@ jobs:
   capture:
     name: Capture
     needs: build
-    runs-on: macos-latest
+    runs-on: macos-15
 
     strategy:
       matrix:
-        language: [ar, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
-        mode: [dark, light]
+        language: [en-US]
+        mode: [dark]
     steps:
     - uses: actions/checkout@v4
     - name: "Set up Ruby"
@@ -92,7 +92,7 @@ jobs:
   process:
     name: "Process Screenshots"
     needs: capture
-    runs-on: macos-latest
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v4

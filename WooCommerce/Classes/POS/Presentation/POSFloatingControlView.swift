@@ -97,7 +97,7 @@ struct POSFloatingControlView: View {
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
-        .posShadow(.large)
+        .posShadow(.large, cornerRadius: Constants.cornerRadius)
     }
 }
 

@@ -8,7 +8,7 @@ import Yosemite
 struct POSTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
-    private var siteSettings: SelectedSiteSettings!
+    private var siteSettings: MockSelectedSiteSettings!
     private var pluginsService: MockPluginsService!
     private var eligibilityService: MockPOSEligibilityService!
     private let siteID: Int64 = 2
@@ -20,7 +20,7 @@ struct POSTabEligibilityCheckerTests {
         pluginsService = MockPluginsService()
         eligibilityService = MockPOSEligibilityService()
         setupWooCommerceVersion()
-        siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager)
+        siteSettings = MockSelectedSiteSettings()
     }
 
     @Test func is_eligible_when_all_conditions_satisfied() async throws {
@@ -31,7 +31,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -51,7 +50,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -71,7 +69,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .phone,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -87,17 +84,11 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_eligible_when_country_and_currency_are_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: country)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let currencySettings = CurrencySettings(currencyCode: currency,
-                                                currencyPosition: .leftSpace,
-                                                thousandSeparator: "",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 3)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: currencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -113,17 +104,11 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_ineligible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: country)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let currencySettings = CurrencySettings(currencyCode: currency,
-                                                currencyPosition: .leftSpace,
-                                                thousandSeparator: "",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 3)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: currencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -142,17 +127,11 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func is_ineligible_when_currency_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
-        setupCountry(country: country)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let currencySettings = CurrencySettings(currencyCode: currency,
-                                                currencyPosition: .leftSpace,
-                                                thousandSeparator: "",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 3)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: currencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -173,7 +152,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -195,7 +173,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -217,7 +194,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -239,7 +215,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -261,7 +236,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               currencySettings: Fixtures.usdCurrencySettings,
                                                pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
@@ -308,19 +282,124 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func checkEligibility_skips_settings_from_initialLoad() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+
+        // Initial settings (cached) - makes site eligible (US)
+        let initialSettings = [
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_default_country", value: Country.us.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            ),
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        ]
+        // New settings - makes site ineligible (Canada).
+        let newSettings = [
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_default_country", value: Country.ca.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            ),
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        ]
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits cached settings first (should be skipped).
+            continuation.yield((siteID: siteID, settings: initialSettings, source: .initialLoad))
+            // Emits new settings (should be used for eligibility check).
+            continuation.yield((siteID: siteID, settings: newSettings, source: .storageChange))
+            continuation.finish()
+        }
+
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then - Should be ineligible because fresh settings show CA (not cached US)
+        #expect(result == .ineligible(reason: .unsupportedCountry))
+    }
+
+    @Test func checkEligibility_filters_by_correct_siteID() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleEnabled: true)
+
+        // Settings for a different site.
+        let wrongSiteSettings = [
+            SiteSetting.fake().copy(
+                siteID: 999, settingID: "woocommerce_default_country", value: Country.ca.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            ),
+            SiteSetting.fake().copy(
+                siteID: 999, settingID: "woocommerce_currency", value: CurrencyCode.CAD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        ]
+        // Settings for correct site.
+        let correctSiteSettings = [
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_default_country", value: Country.us.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            ),
+            SiteSetting.fake().copy(
+                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        ]
+
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits settings for a different site (should be filtered out).
+            continuation.yield((siteID: 999, settings: wrongSiteSettings, source: .storageChange))
+            // Emits first settings for correct site (should be skipped).
+            continuation.yield((siteID: siteID, settings: [SiteSetting.fake().copy(siteID: siteID, settingID: "temp")], source: .initialLoad))
+            // Emits fresh settings for correct site (should be used).
+            continuation.yield((siteID: siteID, settings: correctSiteSettings, source: .storageChange))
+            continuation.finish()
+        }
+
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
-    func setupCountry(country: Country) {
-        let setting = SiteSetting.fake()
+    func setupCountry(country: Country, currency: CurrencyCode = .USD) {
+        let countrySetting = SiteSetting.fake()
             .copy(
                 siteID: siteID,
                 settingID: "woocommerce_default_country",
                 value: country.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
-        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        siteSettings.refresh()
+        let currencySetting = SiteSetting.fake()
+            .copy(
+                siteID: siteID,
+                settingID: "woocommerce_currency",
+                value: currency.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+        siteSettings.mockSettingsStream = AsyncStream { continuation in
+            // Emits cached settings first (should be skipped).
+            continuation.yield((siteID: siteID, settings: [], source: .storageChange))
+            // Emits fresh settings (should be used for eligibility check).
+            continuation.yield((siteID: siteID, settings: [countrySetting, currencySetting], source: .refresh))
+            continuation.finish()
+        }
     }
 
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
@@ -356,19 +435,6 @@ private extension POSTabEligibilityCheckerTests {
         eligibilityService.cachedTabVisibility[siteID] = isVisible
     }
 
-    enum Fixtures {
-        static let usdCurrencySettings = CurrencySettings(currencyCode: .USD,
-                                                          currencyPosition: .leftSpace,
-                                                          thousandSeparator: "",
-                                                          decimalSeparator: ".",
-                                                          numberOfDecimals: 3)
-        static let nonUSDCurrencySettings = CurrencySettings(currencyCode: .CAD,
-                                                             currencyPosition: .leftSpace,
-                                                             thousandSeparator: "",
-                                                             decimalSeparator: ".",
-                                                             numberOfDecimals: 3)
-    }
-
     enum Country: String {
         case us = "US:CA"
         case ca = "CA:NS"
@@ -382,5 +448,18 @@ private final class MockPluginsService: PluginsServiceProtocol {
 
     func waitForPluginInStorage(siteID: Int64, pluginName: String, isActive: Bool) async -> SystemPlugin {
         pluginToReturn
+    }
+}
+
+private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
+    var mockSettingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>?
+    var siteSettings: [SiteSetting] = []
+
+    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)> {
+        return mockSettingsStream ?? AsyncStream { _ in }
+    }
+
+    func refresh() {
+        // Mock implementation - no action needed.
     }
 }

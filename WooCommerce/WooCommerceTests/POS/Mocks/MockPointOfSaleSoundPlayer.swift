@@ -7,4 +7,8 @@ final class MockPointOfSaleSoundPlayer: PointOfSaleSoundPlayerProtocol {
     func playSound(_ sound: PointOfSaleSound) {
         onPlaySound?(sound)
     }
+
+    func playSound(_ sound: WooCommerce.PointOfSaleSound, completion: @escaping () -> Void) async {
+        onPlaySound?(sound)
+    }
 }

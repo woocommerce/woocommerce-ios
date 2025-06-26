@@ -218,6 +218,8 @@ extension PointOfSaleAggregateModel {
                         productType: .init(cartItem: cartItem)
                     )
                 )
+
+                cart.accessibilityFocusedItemID = cartItem.id
             }
         } catch {
             DDLogInfo("Failed to find item by barcode: \(error)")

@@ -45,6 +45,15 @@ extension Cart {
             }
         }
 
+        var formattedPrice: String? {
+            switch state {
+            case .loaded(let item):
+                return item.formattedPrice
+            case .loading, .error:
+                return nil
+            }
+        }
+
         init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState, accessibilityLabel: String? = nil) {
             self.id = id
             self.title = title

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var viewWidth: CGFloat = 0.0
@@ -46,6 +47,7 @@ struct GhostItemCardView: View {
         .frame(maxWidth: .infinity, idealHeight: dimension)
         .background(configuration.backgroundColor)
         .posItemCardBorderStyles()
+        .geometryGroup()
     }
 
     @ViewBuilder var placeholders: some View {
@@ -101,6 +103,7 @@ struct GhostItemCardViewConfiguration {
     )
 }
 
+@available(iOS 17.0, *)
 #Preview {
     VStack(spacing: 20) {
         GhostItemCardView(configuration: .itemList) {

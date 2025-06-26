@@ -42,7 +42,10 @@ else
 fi
 
 echo "--- :package: Setup Git LFS"
+cd ..  # Make sure we're in the repo root
+pwd
 git lfs install && git lfs fetch && git lfs pull
+git config --get-regex lfs || echo "No LFS config found"
 
 echo "--- :art: Generate Promo Screenshots"
 bundle exec fastlane create_promo_screenshots force:true

@@ -87,6 +87,7 @@ jobs:
         run: |
           brew install imagemagick@7
           brew link imagemagick@7 --force
+          brew install automattic/build-tools/drawText
 
       - name: "Set up Ruby"
         uses: ruby/setup-ruby@v1

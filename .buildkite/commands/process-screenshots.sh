@@ -11,6 +11,12 @@ if ! command -v magick &> /dev/null; then
   brew link imagemagick@7 --force
 fi
 
+# Install drawText for promo screenshots
+if ! command -v drawText &> /dev/null; then
+  echo "Installing drawText..."
+  brew install automattic/build-tools/drawText
+fi
+
 echo "--- :gem: Install Screenshot Gems"
 bundle install --with screenshots
 

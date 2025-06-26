@@ -3638,18 +3638,18 @@ extension Networking.WooShippingPackagePurchase {
     public func copy(
         shipmentID: CopiableProp<String> = .copy,
         package: CopiableProp<ShippingLabelPackageSelected> = .copy,
-        rate: CopiableProp<ShippingLabelCarrierRate> = .copy,
+        selectedRate: CopiableProp<WooShippingSelectedRate> = .copy,
         productIDs: CopiableProp<[Int64]> = .copy
     ) -> Networking.WooShippingPackagePurchase {
         let shipmentID = shipmentID ?? self.shipmentID
         let package = package ?? self.package
-        let rate = rate ?? self.rate
+        let selectedRate = selectedRate ?? self.selectedRate
         let productIDs = productIDs ?? self.productIDs
 
         return Networking.WooShippingPackagePurchase(
             shipmentID: shipmentID,
             package: package,
-            rate: rate,
+            selectedRate: selectedRate,
             productIDs: productIDs
         )
     }

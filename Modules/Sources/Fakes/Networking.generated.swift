@@ -2406,7 +2406,7 @@ extension Networking.WooShippingPackagePurchase {
         .init(
             shipmentID: .fake(),
             package: .fake(),
-            rate: .fake(),
+            selectedRate: .fake(),
             productIDs: .fake()
         )
     }

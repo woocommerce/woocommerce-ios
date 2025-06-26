@@ -12,20 +12,71 @@ public struct WooShippingPackagePurchase: Equatable, GeneratedFakeable, Generate
     public let package: ShippingLabelPackageSelected
 
     /// Selected rate for the shipping label
-    public let rate: ShippingLabelCarrierRate
+    public let selectedRate: WooShippingSelectedRate
 
     /// IDs for the products to be shipped
     public let productIDs: [Int64]
 
-    public init(shipmentID: String, package: ShippingLabelPackageSelected, rate: ShippingLabelCarrierRate, productIDs: [Int64]) {
+    public init(shipmentID: String,
+                package: ShippingLabelPackageSelected,
+                selectedRate: WooShippingSelectedRate,
+                productIDs: [Int64]) {
         self.shipmentID = shipmentID
         self.package = package
-        self.rate = rate
+        self.selectedRate = selectedRate
         self.productIDs = productIDs
     }
 }
 
-// MARK: Codable
+// MARK: Helpers
+
+extension WooShippingPackagePurchase {
+
+    var rate: ShippingLabelCarrierRate {
+        selectedRate.purchaseRate
+    }
+
+    var selectedRateOptions: [String: Any] {
+        var rates: [String: Any] = [:]
+        if selectedRate.signatureRate != nil {
+            rates[CodingKeys.signature.rawValue] = [
+                ParameterKeys.value: Values.yes,
+                ParameterKeys.surcharge: selectedRate.surchargeForSignatureRequirement
+            ]
+        } else if selectedRate.adultSignatureRate != nil {
+            rates[CodingKeys.signature.rawValue] = [
+                ParameterKeys.value: Values.adult,
+                ParameterKeys.surcharge: selectedRate.surchargeForAdultSignatureRequirement
+            ]
+        }
+
+        if selectedRate.carbonNeutralRate != nil {
+            rates[CodingKeys.carbonNeutral.rawValue] = [
+                ParameterKeys.value: true,
+                ParameterKeys.surcharge: selectedRate.surchargeForCarbonNeutralRate
+            ]
+        }
+
+        if selectedRate.saturdayDeliveryRate != nil {
+            rates[CodingKeys.saturdayDelivery.rawValue] = [
+                ParameterKeys.value: true,
+                ParameterKeys.surcharge: selectedRate.surchargeForSaturdayDeliveryRate
+            ]
+        }
+
+        if selectedRate.additionalHandlingRate != nil {
+            rates[CodingKeys.additionalHandling.rawValue] = [
+                ParameterKeys.value: true,
+                ParameterKeys.surcharge: selectedRate.surchargeForAdditionalHandlingRate
+            ]
+        }
+
+        return rates
+    }
+}
+
+// MARK: Enodable
+
 extension WooShippingPackagePurchase: Encodable {
 
     public func encode(to encoder: Encoder) throws {
@@ -44,6 +95,24 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
         try container.encode(productIDs, forKey: .products)
+
+        if selectedRate.signatureRate != nil {
+            try container.encode(Values.yes, forKey: .signature)
+        } else if selectedRate.adultSignatureRate != nil {
+            try container.encode(Values.adult, forKey: .signature)
+        }
+
+        if selectedRate.carbonNeutralRate != nil {
+            try container.encode(true, forKey: .carbonNeutral)
+        }
+
+        if selectedRate.saturdayDeliveryRate != nil {
+            try container.encode(true, forKey: .saturdayDelivery)
+        }
+
+        if selectedRate.additionalHandlingRate != nil {
+            try container.encode(true, forKey: .additionalHandling)
+        }
     }
 
     /// Converts the shipment rate to a dictionary as the API expects it.
@@ -93,6 +162,10 @@ extension WooShippingPackagePurchase: Encodable {
         case carrierID = "carrier_id"
         case serviceName = "service_name"
         case products
+        case signature
+        case carbonNeutral = "carbon_neutral"
+        case saturdayDelivery = "saturday_delivery"
+        case additionalHandling = "additional_handling"
     }
 
     private enum ParameterKeys {
@@ -106,5 +179,12 @@ extension WooShippingPackagePurchase: Encodable {
         static let isReturnToSender = "isReturnToSender"
         static let itn = "itn"
         static let items = "items"
+        static let value = "value"
+        static let surcharge = "surcharge"
+    }
+
+    private enum Values {
+        static let yes = "yes"
+        static let adult = "adult"
     }
 }

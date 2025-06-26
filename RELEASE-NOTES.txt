@@ -12,6 +12,7 @@
 - [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
 - [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
 - [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]
+- [internal] Optimized image handling with a fallback thumbnail size for image views that have empty bounds, preventing high memory usage. [https://github.com/woocommerce/woocommerce-ios/pull/15815]
 
 22.5
 -----

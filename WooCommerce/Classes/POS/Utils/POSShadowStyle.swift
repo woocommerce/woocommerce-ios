@@ -98,15 +98,15 @@ extension View {
  UIKit Implementation for POS Shadows
  -----------------------------------
 
- Instead of stacking multiple SwiftUI `.shadow` modifiers (which each trigger a separate offscreen
- render pass and can be very expensive in lists or scrolling views), this approach uses a custom UIView (`MultiShadowView`)
- that adds multiple CALayer sublayers, each with its own shadow configuration.
+ Instead of stacking multiple SwiftUI `.shadow` modifiers (which each require separate blur calculations
+ and compositing operations, which can be costly in lists or scrolling views), this approach uses a
+ custom `UIView` (`MultiShadowView`) that composes multiple `CALayer` sublayers, each with its own shadow configuration.
 
  Performance Benefits:
- - All shadows are rasterized and composited in a single view hierarchy, reducing the number of offscreen passes.
- - CALayer shadows are highly optimized in UIKit, especially when `shouldRasterize` is enabled.
- - This approach is much more efficient for complex shadows in scrolling or frequently updated views.
- - The shadow path is explicitly set, further improving rendering performance and avoiding unnecessary alpha blending.
+ - All shadow operations are rasterized and composited using multiple `CALayer`s within a single view hierarchy.
+ - Avoids SwiftUI’s per-shadow blur and composition cost, which can accumulate in scroll views or complex layouts.
+ - `CALayer` shadows are GPU-accelerated and benefit from `shouldRasterize`, enabling efficient reuse of cached shadow bitmaps.
+ - Explicit `shadowPath` avoids expensive runtime shape calculations and improves rendering performance.
 */
 
 private class MultiShadowView: UIView {

@@ -2,6 +2,12 @@ import Foundation
 import Networking
 
 public enum WooShippingAction: Action {
+    /// Checks whether an order is eligible for shipping label creation.
+    ///
+    case checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  onCompletion: (_ isEligible: Bool) -> Void)
+
     /// Creates a custom package or activated a carrier package with provided package details.
     ///
     case createPackage(siteID: Int64,

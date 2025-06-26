@@ -32,22 +32,8 @@
     {
       "target" : {
         "containerPath" : "container:..\/Modules",
-        "identifier" : "WooFoundationTests",
-        "name" : "WooFoundationTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "NetworkingTests",
-        "name" : "NetworkingTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "ExperimentsTests",
-        "name" : "ExperimentsTests"
+        "identifier" : "WordPressSharedTests",
+        "name" : "WordPressSharedTests"
       }
     },
     {
@@ -60,8 +46,8 @@
     {
       "target" : {
         "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedTests",
-        "name" : "WordPressSharedTests"
+        "identifier" : "WordPressSharedObjCTests",
+        "name" : "WordPressSharedObjCTests"
       }
     },
     {
@@ -77,13 +63,6 @@
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "3F0904072D26A40800D8ACCE",
         "name" : "WordPressAuthenticatorTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedObjCTests",
-        "name" : "WordPressSharedObjCTests"
       }
     },
     {
@@ -110,8 +89,29 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
-        "identifier" : "B5C9DDFD2087FEC0006B910A",
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WooFoundationTests",
+        "name" : "WooFoundationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "NetworkingTests",
+        "name" : "NetworkingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "ExperimentsTests",
+        "name" : "ExperimentsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "YosemiteTests",
         "name" : "YosemiteTests"
       }
     }

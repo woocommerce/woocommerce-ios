@@ -31,6 +31,7 @@ struct ItemRowView: View {
             .posItemCardBorderStyles()
             .padding(.horizontal, Constants.horizontalPadding)
             .geometryGroup()
+            .accessibilityLabel(accessibilityLabel)
     }
 
     @ViewBuilder
@@ -78,8 +79,6 @@ struct ItemRowView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
             .padding(.vertical, Constants.verticalPadding * (1 / scale))
-            .accessibilityElement(children: .combine)
-
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
                     onItemRemoveTapped()
@@ -111,6 +110,16 @@ struct ItemRowView: View {
             return PointOfSaleItemListCardConstants.detailColor
         case .error:
             return .posError
+        }
+    }
+
+    private var accessibilityLabel: String {
+        if let accessibilityLabel = cartItem.accessibilityLabel {
+            accessibilityLabel
+        } else {
+            [cartItem.title, cartItem.subtitle, cartItem.formattedPrice]
+                .compactMap { $0 }
+                .joined(separator: ",")
         }
     }
 }

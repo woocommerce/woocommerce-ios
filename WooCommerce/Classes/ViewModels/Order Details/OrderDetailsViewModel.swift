@@ -780,20 +780,24 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
-        guard await localRequirementsForShippingLabelsAreFulfilled() else {
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
+        guard isRevampedFlow else {
+            if await localRequirementsForShippingLabelsAreFulfilled() {
+                return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            }
             return false
         }
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
-                                                                         orderID: order.orderID) { [weak self] isEligible in
-                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus,
-                                                                    "is_revamped_flow": isRevampedFlow])
-                }
-                continuation.resume(returning: isEligible)
-            })
+
+        guard !orderContainsOnlyVirtualProducts else {
+            return false
+        }
+
+        if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
+            return await checkShippingLabelCreationEligibilityForWooShipping()
+        } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
+            return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+        } else {
+            return false
         }
     }
 
@@ -957,6 +961,34 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+
+    @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { [weak self] isEligible in
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
+                continuation.resume(returning: isEligible)
+            })
+        }
+    }
+
+    @MainActor func checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: Bool) async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { [weak self] isEligible in
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: isRevampedFlow)
+                continuation.resume(returning: isEligible)
+            })
+        }
+    }
+
+    func handleShippingLabelCreationEligibilityResult(isEligible: Bool, isRevampedFlow: Bool) {
+        if isEligible, let orderStatus = orderStatus?.status.rawValue {
+            ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                           withProperties: ["order_status": orderStatus,
+                                                            "is_revamped_flow": isRevampedFlow])
+        }
+    }
 
     @MainActor func syncShippingLabelsForWooShipping() async -> [ShippingLabel] {
         await withCheckedContinuation { continuation in

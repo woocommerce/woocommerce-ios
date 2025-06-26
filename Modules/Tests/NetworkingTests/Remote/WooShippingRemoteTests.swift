@@ -23,6 +23,45 @@ final class WooShippingRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    func test_checkCreationEligibility_returns_true_on_success() throws {
+        // Given
+        let orderID: Int64 = 321
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "eligibility/\(orderID)", filename: "shipping-label-eligibility-success")
+
+        // When
+        let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
+            remote.checkCreationEligibility(siteID: self.sampleSiteID,
+                                            orderID: orderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.isEligible, true)
+    }
+
+    func test_checkCreationEligibility_returns_reason_on_failure() throws {
+        // Given
+        let orderID: Int64 = 321
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "eligibility/\(orderID)", filename: "shipping-label-eligibility-failure")
+
+        // When
+        let result: Result<ShippingLabelCreationEligibilityResponse, Error> = waitFor { promise in
+            remote.checkCreationEligibility(siteID: self.sampleSiteID,
+                                            orderID: orderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.isEligible, false)
+        XCTAssertEqual(response.reason, "no_selected_payment_method_and_user_cannot_manage_payment_methods")
+    }
+
     func test_createPackage_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)

@@ -186,7 +186,8 @@ extension PointOfSaleAggregateModel {
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func barcodeScanned(_ barcode: String) {
-        Task {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             let placeholderItemID = cart.addLoadingItem().id
 
             analytics.track(
@@ -206,12 +207,16 @@ extension PointOfSaleAggregateModel {
                             productType: .init(cartItem: cartItem)
                         )
                     )
+
+                    cart.accessibilityFocusedItemID = cartItem.id
                 }
             } catch {
                 DDLogInfo("Failed to find item by barcode: \(error)")
-                if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                if let errorItem = cart.updateLoadingItem(id: placeholderItemID, with: error) {
                     // Only play a sound and track analytics if the item still exists in the cart.
-                    await soundPlayer.playSound(.barcodeScanFailure)
+                    await soundPlayer.playSound(.barcodeScanFailure, completion: { [weak self] in
+                        self?.cart.accessibilityFocusedItemID = errorItem.id
+                    })
 
                     analytics.track(
                         event: .PointOfSale.addItemToCart(

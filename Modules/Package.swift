@@ -89,6 +89,7 @@ let package = Package(
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
         .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.0"),
         .package(url: "https://github.com/onevcat/Kingfisher", from: "7.6.2"),
+        .package(url: "https://github.com/pmusolino/Wormholy", from: "2.0.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
@@ -266,6 +267,21 @@ let package = Package(
             dependencies: [.target(name: "WordPressShared")],
             resources: [.process("Resources")]
         ),
+        .testTarget(
+            name: "YosemiteTests",
+            dependencies: [
+                "Codegen",
+                "Fakes",
+                "TestKit",
+                "WooFoundation",
+                "WordPressShared",
+                "Yosemite"
+            ],
+            resources: [
+                .process("Resources"),
+                .process("../NetworkingTests/Responses")
+            ]
+        )
     ]
 )
 
@@ -297,7 +313,6 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
-    static let yosemiteTests = "YosemiteTests"
 }
 
 enum XcodeSupport {
@@ -313,7 +328,6 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
-            XcodeTargetNames.yosemiteTests
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
 
@@ -374,6 +388,7 @@ enum XcodeSupport {
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                     .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                     .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
+                    .product(name: "Wormholy", package: "Wormholy"),
                     .product(name: "ZendeskSupportSDK", package: "support_sdk_ios"),
                 ]
             ),
@@ -439,17 +454,6 @@ enum XcodeSupport {
                     XcodeTargetNames.wordPressAuthenticator.asDependency,
                 ]
             ),
-            .xcodeTarget(
-                XcodeTargetNames.yosemiteTests,
-                dependencies: [
-                    "Codegen",
-                    "Fakes",
-                    "TestKit",
-                    "WooFoundation",
-                    "WordPressShared",
-                    "Yosemite"
-                ]
-            )
         ]
     }
 }

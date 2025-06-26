@@ -367,6 +367,7 @@ private struct CouponsCartSection: View {
 private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var shouldShowItemImages: Bool
+    @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
     var body: some View {
         LazyVStack(spacing: Constants.cartItemSpacing) {
@@ -379,7 +380,15 @@ private struct PurchasableItemsCartSection: View {
                 )
                 .id(cartItem.id)
                 .transition(.opacity)
+                .accessibilityFocused($accessibilityFocusedItem, equals: cartItem.id)
             }
+            .onChange(of: posModel.cart.accessibilityFocusedItemID) { itemID in
+                 if let itemID = itemID {
+                     Task { @MainActor in
+                         accessibilityFocusedItem = itemID
+                     }
+                 }
+             }
         }
     }
 

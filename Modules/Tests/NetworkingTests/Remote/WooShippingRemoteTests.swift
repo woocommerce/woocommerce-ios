@@ -342,7 +342,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
-        
+
         let selectedRateOptions = try XCTUnwrap(request.parameters["selected_rate_options"] as? [String: Any])
         let signatureObject = try XCTUnwrap(selectedRateOptions["signature"] as? [String: Any])
         XCTAssertEqual(signatureObject["value"] as? String, "adult")

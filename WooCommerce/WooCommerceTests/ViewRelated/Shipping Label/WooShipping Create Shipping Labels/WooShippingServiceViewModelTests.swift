@@ -145,6 +145,9 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.selectedRate?.signatureRate)
         XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertNil(viewModel.selectedRate?.carbonNeutralRate)
+        XCTAssertNil(viewModel.selectedRate?.saturdayDeliveryRate)
+        XCTAssertNil(viewModel.selectedRate?.additionalHandlingRate)
         XCTAssertEqual(viewModel.selectedRate?.rate.title, standardRate.title)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
@@ -191,6 +194,32 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.selectedRate?.signatureRate)
         XCTAssertNotNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
+    }
+
+    func test_selecting_service_card_extra_rate_updates_expected_values() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+        viewModel.selectRate(sampleStandardRates()[1],
+                             signatureRate: nil,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                             saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 22.4),
+                             additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 20.53))
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.selectedRate?.signatureRate)
+        XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertNotNil(viewModel.selectedRate?.carbonNeutralRate)
+        XCTAssertNotNil(viewModel.selectedRate?.saturdayDeliveryRate)
+        XCTAssertNotNil(viewModel.selectedRate?.additionalHandlingRate)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 

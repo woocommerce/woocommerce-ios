@@ -85,6 +85,38 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.signatureRequirement, .none)
     }
 
+    func test_handleTap_toggles_extra_rates() {
+        // Given
+        let viewModel = WooShippingServiceCardViewModel(adultSignatureRequired: true,
+                                                        rate: MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100"),
+                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+                                                        carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                                                        saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 22.4),
+                                                        additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 20.53))
+        XCTAssertFalse(viewModel.carbonNeutralSelected)
+        XCTAssertFalse(viewModel.saturdayDeliverySelected)
+        XCTAssertFalse(viewModel.additionalHandlingSelected)
+
+        // When
+        viewModel.handleTap(on: .carbonNeutral)
+
+        // Then
+        XCTAssertTrue(viewModel.carbonNeutralSelected)
+
+        // When
+        viewModel.handleTap(on: .saturdayDelivery)
+
+        // Then
+        XCTAssertTrue(viewModel.saturdayDeliverySelected)
+
+        // When
+        viewModel.handleTap(on: .additionalHandling)
+
+        // Then
+        XCTAssertTrue(viewModel.additionalHandlingSelected)
+    }
+
     func test_selectRate_calls_completion_block_with_rate_title_and_signature_requirement_and_extra_services() {
         // Given
         let rate = MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100")

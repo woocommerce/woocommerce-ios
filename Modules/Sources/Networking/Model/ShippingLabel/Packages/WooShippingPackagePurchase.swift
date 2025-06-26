@@ -119,7 +119,17 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded rate.
     ///
     public func encodedShipmentRate() throws -> [String: Any] {
-        var rates = [ParameterKeys.rate: try selectedRate.purchaseRate.toDictionary()]
+        var purchaseRate = try selectedRate.purchaseRate.toDictionary()
+
+        // Extra `type` param if a signature rate was selected
+        if selectedRate.adultSignatureRate != nil {
+            purchaseRate[ParameterKeys.type] = Values.adultSignatureRequired
+        } else if selectedRate.signatureRate != nil {
+            purchaseRate[ParameterKeys.type] = Values.signatureRequired
+        }
+
+        var rates = [ParameterKeys.rate: purchaseRate]
+
         // If a signature rate was selected, send the standard rate as the parent rate.
         if selectedRate.purchaseRate != selectedRate.rate {
             rates[ParameterKeys.parent] = try selectedRate.rate.toDictionary()
@@ -187,10 +197,13 @@ extension WooShippingPackagePurchase: Encodable {
         static let items = "items"
         static let value = "value"
         static let surcharge = "surcharge"
+        static let type = "type"
     }
 
     private enum Values {
         static let yes = "yes"
         static let adult = "adult"
+        static let signatureRequired = "signatureRequired"
+        static let adultSignatureRequired = "adultSignatureRequired"
     }
 }

@@ -373,6 +373,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         let childValue = try XCTUnwrap(selectedRateParam["rate"] as? [String: Any])
         XCTAssertEqual(childValue["rate"] as? Double, package.selectedRate.adultSignatureRate?.rate)
+        XCTAssertEqual(childValue["type"] as? String, "adultSignatureRequired")
 
         let labels = try XCTUnwrap(result.get())
         XCTAssertEqual(labels.count, 1)

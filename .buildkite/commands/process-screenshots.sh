@@ -41,8 +41,10 @@ else
   echo "Warning: Proxima Nova font not found - promo screenshots may not render correctly"
 fi
 
-echo "--- :art: Generate Promo Screenshots"
+echo "--- :package: Setup Git LFS"
 git lfs install && git lfs fetch && git lfs pull
+
+echo "--- :art: Generate Promo Screenshots"
 bundle exec fastlane create_promo_screenshots force:true
 
 echo "--- :arrow_up: Upload Final Screenshots"

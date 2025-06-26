@@ -119,7 +119,12 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded rate.
     ///
     public func encodedShipmentRate() throws -> [String: Any] {
-        [shipmentID: [ParameterKeys.rate: try rate.toDictionary()]]
+        var rates = [ParameterKeys.rate: try selectedRate.purchaseRate.toDictionary()]
+        // If a signature rate was selected, send the standard rate as the parent rate.
+        if selectedRate.purchaseRate != selectedRate.rate {
+            rates[ParameterKeys.parent] = try selectedRate.rate.toDictionary()
+        }
+        return rates
     }
 
     /// Converts the hazmat settings to a dictionary as the API expects it.
@@ -170,6 +175,7 @@ extension WooShippingPackagePurchase: Encodable {
 
     private enum ParameterKeys {
         static let rate = "rate"
+        static let parent = "parent"
         static let isHazmat = "isHazmat"
         static let category = "category"
         static let contentsType = "contentsType"

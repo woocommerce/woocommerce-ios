@@ -30,17 +30,11 @@ jobs:
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
 
-    - name: Archive App
+    - name: Archive Build Products
       uses: actions/upload-artifact@v4
       with:
-        name: screenshot-app
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
-
-    - name: Archive Runner
-      uses: actions/upload-artifact@v4
-      with:
-        name: screenshot-runner
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+        name: screenshot-build-products
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
 
   capture:
     name: Capture
@@ -61,17 +55,11 @@ jobs:
     - name: Install Fastlane Dependencies
       run: bundle exec fastlane run configure_apply
     
-    - name: Download Screenshot App
+    - name: Download Build Products
       uses: actions/download-artifact@v4
       with:
-        name: screenshot-app
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
-
-    - name: Download Screenshot Runner
-      uses: actions/download-artifact@v4
-      with:
-        name: screenshot-runner
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+        name: screenshot-build-products
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
 
     - name: Generate Screenshots
       run: |

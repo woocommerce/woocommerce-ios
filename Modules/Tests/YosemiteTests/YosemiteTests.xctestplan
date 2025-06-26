@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "8DE1C0FE-4F0F-4DFD-81F2-488314FE5B8B",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "YosemiteTests",
+        "name" : "YosemiteTests"
+      }
+    }
+  ],
+  "version" : 1
+}

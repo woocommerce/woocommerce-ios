@@ -267,6 +267,21 @@ let package = Package(
             dependencies: [.target(name: "WordPressShared")],
             resources: [.process("Resources")]
         ),
+        .testTarget(
+            name: "YosemiteTests",
+            dependencies: [
+                "Codegen",
+                "Fakes",
+                "TestKit",
+                "WooFoundation",
+                "WordPressShared",
+                "Yosemite"
+            ],
+            resources: [
+                .process("Resources"),
+                .process("../NetworkingTests/Responses")
+            ]
+        )
     ]
 )
 
@@ -298,7 +313,6 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
-    static let yosemiteTests = "YosemiteTests"
 }
 
 enum XcodeSupport {
@@ -314,7 +328,6 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
-            XcodeTargetNames.yosemiteTests
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
 
@@ -441,17 +454,6 @@ enum XcodeSupport {
                     XcodeTargetNames.wordPressAuthenticator.asDependency,
                 ]
             ),
-            .xcodeTarget(
-                XcodeTargetNames.yosemiteTests,
-                dependencies: [
-                    "Codegen",
-                    "Fakes",
-                    "TestKit",
-                    "WooFoundation",
-                    "WordPressShared",
-                    "Yosemite"
-                ]
-            )
         ]
     }
 }

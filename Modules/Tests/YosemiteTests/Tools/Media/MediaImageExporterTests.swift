@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 final class MediaImageExporterTests: XCTestCase {
     func testExportingAnImageWithTypeHint() throws {
         // Loads the test image into png data.
-        let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
+        let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()
         let filename = "test"
         let typeHint = UTType.jpeg.identifier
         let mockImageSourceWriter = MockImageSourceWriter()
@@ -33,7 +33,7 @@ final class MediaImageExporterTests: XCTestCase {
 
     func testExportingAnImageWithAnUnknownTypeHintUsesTheImageDataType() throws {
         // Loads the test image into png data.
-        let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
+        let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()
         let filename = "test"
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
@@ -81,7 +81,7 @@ final class MediaImageExporterTests: XCTestCase {
 
     func test_export_sets_filename_and_altText_in_output_media() throws {
         // Loads the test image into png data.
-        let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
+        let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: "test.png",
                                           altText: "cool-image",

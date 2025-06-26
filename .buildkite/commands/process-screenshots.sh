@@ -30,30 +30,15 @@ buildkite-agent artifact download "fastlane/screenshots-*/**/*" . --step "take-s
 echo "--- :chart_with_upwards_trend: Generate Screenshot Summary"
 bundle exec fastlane create_screenshot_summary
 
-echo "--- :arrow_down: Install Promo Screenshot Fonts"
+echo "--- :information_source: Check Font Availability"
 cd ..
-# Download fonts from artifacts (assuming fonts are uploaded as artifacts in a separate step)
-buildkite-agent artifact download "fonts.zip" . --step "prepare-fonts" || echo "No fonts artifact found, continuing without promo fonts"
-if [ -f "fonts.zip" ]; then
-  unzip fonts.zip
-fi
-
-# Install fonts system-wide and user-level (only if fonts exist)
-if [ -d "fonts" ] && [ "$(ls -A fonts/*.otf 2>/dev/null)" ]; then
-  mkdir -p ~/Library/Fonts
-  cp -v fonts/*.otf ~/Library/Fonts
-  ls ~/Library/Fonts
-
-  mkdir -p /Library/Fonts
-  sudo cp -v fonts/*.otf /Library/Fonts
-  ls /Library/Fonts
-
-  # Reset the font server to recognize new fonts
-  atsutil databases -removeUser
-  atsutil server -shutdown
-  atsutil server -ping
+# Check if Proxima Nova is available (should be included in macOS Sonoma and above)
+if fc-list | grep -i "proxima" > /dev/null 2>&1; then
+  echo "Proxima Nova font found"
+elif system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
+  echo "Proxima Nova font found via system_profiler"
 else
-  echo "No fonts found, skipping font installation"
+  echo "Warning: Proxima Nova font not found - promo screenshots may not render correctly"
 fi
 
 echo "--- :art: Generate Promo Screenshots"

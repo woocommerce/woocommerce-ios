@@ -817,6 +817,9 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                                              isSelected: false,
                                                              isPickupFree: true,
                                                              deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil)
+                                                             deliveryDateGuaranteed: false) : nil,
+                                carbonNeutralRate: nil,
+                                saturdayDeliveryRate: nil,
+                                additionalHandlingRate: nil)
     }
 }

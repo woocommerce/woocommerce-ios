@@ -85,17 +85,25 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.signatureRequirement, .none)
     }
 
-    func test_selectRate_calls_completion_block_with_rate_title_and_signature_requirement() {
+    func test_selectRate_calls_completion_block_with_rate_title_and_signature_requirement_and_extra_services() {
         // Given
         let rate = MockShippingLabelCarrierRate.makeRate(rate: 40.33, insurance: "100")
         var completionRateTitle: String? = nil
         var completionSignatureRequirement: WooShippingServiceCardViewModel.SignatureRequirement? = nil
-        let viewModel = WooShippingServiceCardViewModel(adultSignatureRequired: true,
-                                                        rate: rate,
-                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
-                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33)) { title, signature in
+        var completionSaturdayDelivery = false
+        var completionCarbonNeutral = false
+        var completionAdditionalHandling = false
+        let viewModel = WooShippingServiceCardViewModel(
+            adultSignatureRequired: true,
+            rate: rate,
+            signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+            adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 51.33),
+        ) { title, signature, carbonNeutral, saturdayDelivery, additionalHandling in
             completionRateTitle = title
             completionSignatureRequirement = signature
+            completionCarbonNeutral = carbonNeutral
+            completionSaturdayDelivery = saturdayDelivery
+            completionAdditionalHandling = additionalHandling
         }
 
         // When
@@ -104,6 +112,9 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(completionRateTitle, rate.title)
         XCTAssertEqual(completionSignatureRequirement, .adultSignatureRequired)
+        XCTAssertFalse(completionCarbonNeutral)
+        XCTAssertFalse(completionSaturdayDelivery)
+        XCTAssertFalse(completionAdditionalHandling)
     }
 
 }

@@ -152,6 +152,9 @@ final class WooShippingRemoteTests: XCTestCase {
 
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)
+        XCTAssertEqual(successResponse.first?.carbonNeutral.count, 4)
+        XCTAssertEqual(successResponse.first?.saturdayDelivery.count, 3)
+        XCTAssertEqual(successResponse.first?.additionalHandling.count, 4)
     }
 
     func test_loadLabelRates_returns_error_on_failure() throws {

@@ -55,9 +55,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .splitViewInProductsTab:
             return true
         case .subscriptionsInOrderCreationUI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // Feature paused pdqJU4-4mn-p2#comment-2067
+            return false
         case .subscriptionsInOrderCreationCustomers:
-            // Feature paused pfoUAQ-zw-p2#comment-510.
+            // Feature paused pdqJU4-4mn-p2#comment-2067
             return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha

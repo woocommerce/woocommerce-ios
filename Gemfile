@@ -15,8 +15,11 @@ gem 'fastlane-plugin-sentry', '~> 1.0'
 # This comment avoids typing to switch to a development version for testing.
 #
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
-gem 'fastlane-plugin-wpmreleasetoolkit', git: 'https://github.com/wordpress-mobile/release-toolkit', ref: '2d5c486c86a9dc2c6798e04880b4508ae37f2296'
-# gem 'fastlane-plugin-wpmreleasetoolkit', '~> 13.0'
+#
+# The '>= 13.3.1' aftre '~> 13.3' ensures that we resolve to any version compatible with 13.3 starting from 13.3.1
+# Using '~> 13.3.1' would constrain us to 13.3.2, 13.3.3, etc. without ever going up to 13.4
+# We need 13.3.1 because of a fix in screenshots generation we depend upon.
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 13.3', '>= 13.3.1'
 gem 'rake', '~> 12.3'
 gem 'rubocop', '~> 1.65'
 gem 'rubocop-rake', '~> 0.6'

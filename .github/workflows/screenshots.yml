@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         language: [en-US]
-        mode: [dark]
+        mode: [dark, light]
     steps:
     - uses: actions/checkout@v4
     - name: "Set up Ruby"

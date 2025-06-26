@@ -12,6 +12,7 @@
 - [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
 - [*] Shipping Labels: Fixed mismatched indices of purchased labels on the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/15800]
 - [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
+- [internal] POS: Improved scrolling and animation performance by refactoring the shadow implementation and updating the cart and checkout views. [https://github.com/woocommerce/woocommerce-ios/pull/15817]
 
 22.6
 -----

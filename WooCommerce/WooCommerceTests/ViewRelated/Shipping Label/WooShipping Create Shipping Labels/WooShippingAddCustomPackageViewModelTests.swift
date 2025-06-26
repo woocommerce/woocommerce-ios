@@ -187,6 +187,43 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(updatedPackageData.id, "a")
     }
 
+    func test_packageData_does_not_show_height_if_height_is_unavailable() throws {
+        // Given
+        let dimensionUnit = "cm"
+        let weightUnit = "kg"
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID,
+                                                             stores: mockStores)
+        let length = "1"
+        let width = "2"
+        let height = "0"
+        let weight = "4"
+
+        let expectedDimensions = "\(length) x \(width) \(dimensionUnit)"
+        let expectedWeight = "\(weight) \(weightUnit)"
+
+        // When
+        viewModel.fieldValues[.length] = length
+        viewModel.fieldValues[.width] = width
+        viewModel.fieldValues[.height] = height
+        viewModel.fieldValues[.weight] = weight
+
+        // Then
+        let packageData = try XCTUnwrap(viewModel.packageData)
+        XCTAssertEqual(packageData.dimensionsDescription(unit: dimensionUnit), expectedDimensions)
+        XCTAssertEqual(packageData.weightDescription(unit: weightUnit), expectedWeight)
+        XCTAssertEqual(packageData.id, "custom_box")
+
+        // When: selecting a template
+        viewModel.showSaveTemplate = true
+        viewModel.packageTemplateName = "a"
+
+        // Then
+        let updatedPackageData = try XCTUnwrap(viewModel.packageData)
+        XCTAssertEqual(updatedPackageData.id, "a")
+    }
+
     @MainActor
     func test_save_package_as_template_action() async {
         // Given

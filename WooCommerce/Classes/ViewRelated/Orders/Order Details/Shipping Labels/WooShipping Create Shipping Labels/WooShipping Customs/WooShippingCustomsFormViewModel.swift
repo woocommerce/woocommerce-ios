@@ -31,7 +31,10 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
-    init(order: Order, shipment: Shipment, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
+    init(order: Order,
+         shipment: Shipment,
+         originCountryCode: AnyPublisher<String?, Never>? = nil,
+         onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
 
         itemsViewModels = shipment.items.map {
@@ -40,7 +43,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itemQuantity: $0.quantity,
                                             itemValue: $0.value,
                                             itemWeight: $0.weight,
-                                            currencySymbol: currencySymbol(from: order))
+                                            currencySymbol: currencySymbol(from: order),
+                                            originCountryCode: originCountryCode)
         }
 
         listenToItemsRequiredInformationValues()

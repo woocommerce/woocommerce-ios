@@ -64,9 +64,13 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     @Published private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
-        WooShippingCustomsFormViewModel(order: order, shipment: shipment, onCompletion: { [weak self] form in
+        return WooShippingCustomsFormViewModel(
+            order: order,
+            shipment: shipment,
+            originCountryCode: originCountryCodePublisher()
+        ) { [weak self] form in
             self?.customsForm = form
-        })
+        }
     }()
 
     /// Whether the custom information is completed or not.
@@ -452,6 +456,12 @@ private extension WooShippingShipmentDetailsViewModel {
             }
         }
         return foundCarrierPackage
+    }
+
+    func originCountryCodePublisher() -> AnyPublisher<String?, Never> {
+        $originAddress
+            .map(\.?.country)
+            .eraseToAnyPublisher()
     }
 }
 

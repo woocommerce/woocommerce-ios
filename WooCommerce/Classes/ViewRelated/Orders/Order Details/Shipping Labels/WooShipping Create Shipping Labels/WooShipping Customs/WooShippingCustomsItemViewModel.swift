@@ -12,6 +12,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     // Useful to determine externally if the shipping requires an ITN
     @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
+    @Published private var originCountryCode: String?
+
     private let storageManager: StorageManagerType
     private let stores: StoresManager
     private let siteID: Int64
@@ -29,9 +31,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     @Published private(set) var selectedCountry: Country?
 
-    var countries: [Country] {
-        resultsController.fetchedObjects
-    }
+    @Published private(set) var countries: [Country] = []
 
     var totalValue: Decimal {
         guard currencySymbol == "$",
@@ -74,6 +74,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemValue: Double,
          itemWeight: Double,
          currencySymbol: String,
+         originCountryCode: AnyPublisher<String?, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = itemName
@@ -87,20 +88,38 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.stores = stores
         self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
 
+        originCountryCode?
+            .assign(to: &$originCountryCode)
+
         fetchCountries()
+        
+        combineToPreselectCountry()
         combineRequiredInformationIsEntered()
         combineHSTariffNumberTotalValue()
     }
 }
 
 private extension WooShippingCustomsItemViewModel {
+    func combineToPreselectCountry() {
+        $originCountryCode
+            .first() /// Make sure to only handle the initial value
+            .combineLatest($countries)
+            .map { code, countries in
+                return countries.first(where: { $0.code == code })
+            }
+            .assign(to: &$selectedCountry)
+    }
+
     func fetchCountries() {
         try? resultsController.performFetch()
+        countries = resultsController.fetchedObjects
+
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
             guard let self = self else { return }
             switch result {
             case .success:
                 try? self.resultsController.performFetch()
+                self.countries = self.resultsController.fetchedObjects
             case .failure:
                 break
             }

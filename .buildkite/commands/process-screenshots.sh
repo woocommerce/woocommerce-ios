@@ -31,7 +31,6 @@ echo "--- :chart_with_upwards_trend: Generate Screenshot Summary"
 bundle exec fastlane create_screenshot_summary
 
 echo "--- :information_source: Check Font Availability"
-cd ..
 # Check if Proxima Nova is available (should be included in macOS Sonoma and above)
 if system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
   echo "Proxima Nova font found"
@@ -42,7 +41,7 @@ else
 fi
 
 echo "--- :package: Setup Git LFS"
-cd ..  # Make sure we're in the repo root
+cd ..  # Go back to repo root from fastlane directory
 # Install Git LFS if not available
 if ! command -v git-lfs &> /dev/null; then
   echo "Installing Git LFS..."
@@ -51,8 +50,6 @@ fi
 git lfs install && git lfs fetch && git lfs pull
 
 echo "--- :art: Generate Promo Screenshots"
-# Re-setup gems in repo root
-install_gems
 bundle exec fastlane create_promo_screenshots force:true
 
 echo "--- :arrow_up: Upload Final Screenshots"

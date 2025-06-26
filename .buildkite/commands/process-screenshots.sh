@@ -33,21 +33,26 @@ bundle exec fastlane create_screenshot_summary
 echo "--- :information_source: Check Font Availability"
 cd ..
 # Check if Proxima Nova is available (should be included in macOS Sonoma and above)
-if fc-list | grep -i "proxima" > /dev/null 2>&1; then
+if system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
   echo "Proxima Nova font found"
-elif system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
-  echo "Proxima Nova font found via system_profiler"
 else
   echo "Warning: Proxima Nova font not found - promo screenshots may not render correctly"
+  echo "Checking available fonts with 'nova' in name:"
+  system_profiler SPFontsDataType | grep -i "nova" | head -5 || echo "No fonts with 'nova' found"
 fi
 
 echo "--- :package: Setup Git LFS"
 cd ..  # Make sure we're in the repo root
-pwd
+# Install Git LFS if not available
+if ! command -v git-lfs &> /dev/null; then
+  echo "Installing Git LFS..."
+  brew install git-lfs
+fi
 git lfs install && git lfs fetch && git lfs pull
-git config --get-regex lfs || echo "No LFS config found"
 
 echo "--- :art: Generate Promo Screenshots"
+# Re-setup gems in repo root
+install_gems
 bundle exec fastlane create_promo_screenshots force:true
 
 echo "--- :arrow_up: Upload Final Screenshots"

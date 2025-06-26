@@ -3,7 +3,7 @@ import XCTest
 @testable import NetworkingCore
 
 
-/// ProductListMapper Unit Tests
+/// ListMapper<Product> Unit Tests
 ///
 final class ProductListMapperTests: XCTestCase {
     private enum ProductListMapperTestsError: Error {
@@ -230,17 +230,17 @@ final class ProductListMapperTests: XCTestCase {
 ///
 private extension ProductListMapperTests {
 
-    /// Returns the ProductListMapper output upon receiving `filename` (Data Encoded)
+    /// Returns the ListMapper<Product> output upon receiving `filename` (Data Encoded)
     ///
     func mapProducts(from filename: String) throws -> [Product] {
         guard let response = Loader.contentsOf(filename) else {
             throw ProductListMapperTestsError.unableToLoadFile
         }
 
-        return try ProductListMapper(siteID: dummySiteID).map(response: response)
+        return try ListMapper<Product>(siteID: dummySiteID).map(response: response)
     }
 
-    /// Returns the ProductListMapper output upon receiving `products-load-all` and `products-load-all-without-data`
+    /// Returns the ListMapper<Product> output upon receiving `products-load-all` and `products-load-all-without-data`
     ///
     func mapLoadAllProductsResponse() throws -> [[Product]] {
         let products = try mapProducts(from: "products-load-all")

@@ -16,9 +16,13 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 
             PointOfSaleInformationModalParagraphView {
                 Text(bulletPointWithLink)
+                    .accessibilityLabel(bulletPointWithLinkAccessibilityLabel)
                 Text(AttributedString(Localization.barcodeInfoSecondaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoSecondaryMessageAccessible)
                 Text(AttributedString(Localization.barcodeInfoTertiaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoTertiaryMessageAccessible)
                 Text(AttributedString(Localization.barcodeInfoQuaternaryMessage))
+                    .accessibilityLabel(Localization.barcodeInfoQuaternaryMessageAccessible)
             }
             .padding(.leading, POSSpacing.medium)
 
@@ -36,6 +40,10 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
         moreDetails.underlineStyle = .single
         secondary.append(moreDetails)
         return secondary
+    }
+
+    private var bulletPointWithLinkAccessibilityLabel: String {
+        return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLinkAccessible
     }
 }
 
@@ -65,6 +73,11 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             value: "More details.",
             comment: "Link text in the barcode info modal in POS, leading to more details about barcode setup"
         )
+        static let barcodeInfoMoreDetailsLinkAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.moreDetailsLink.accessible",
+            value: "More details, link.",
+            comment: "Accessible version of more details link in barcode info modal, announcing it as a link for screen readers"
+        )
         static let barcodeInfoSecondaryMessage = NSLocalizedString(
             "pos.barcodeInfoModal.secondaryMessage",
             value: "• Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
@@ -85,6 +98,28 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             value: "The scanner emulates a keyboard, so sometimes it will prevent the software keyboard from showing, e.g. in search. " +
                 "Tap on the keyboard icon to show it again.",
             comment: "Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again"
+        )
+
+        // Accessibility-friendly versions without bullet points
+        static let barcodeInfoPrimaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.primaryMessage.accessible",
+            value: "First: Set up barcodes in the \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" field by navigating to Products, then Product Details, then Inventory.",
+            comment: "Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.secondaryMessage.accessible",
+            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set H-I-D mode.",
+            comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoTertiaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.tertiaryMessage.accessible",
+            value: "Third: Connect your barcode scanner in iOS Bluetooth settings.",
+            comment: "Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers"
+        )
+        static let barcodeInfoQuaternaryMessageAccessible = NSLocalizedString(
+            "pos.barcodeInfoModal.quaternaryMessage.accessible",
+            value: "Fourth: Scan barcodes while on the item list to add products to the cart.",
+            comment: "Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers"
         )
     }
 }

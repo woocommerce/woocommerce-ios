@@ -19,6 +19,10 @@ import class Yosemite.ScreenshotStoresManager
 // In that way, Inject will be available in the entire target.
 @_exported import Inject
 
+#if DEBUG
+import WormholySwift
+#endif
+
 // MARK: - Woo's App Delegate!
 //
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -77,6 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupLogLevel(.verbose)
         setupPushNotificationsManagerIfPossible(pushNotesManager, stores: stores)
         setupAppRatingManager()
+        setupWormholy()
         setupKeyboardStateProvider()
         handleLaunchArguments()
         setupUserNotificationCenter()
@@ -405,6 +410,15 @@ private extension AppDelegate {
         appRating.register(section: "notifications", significantEventCount: WooConstants.notificationEventCount)
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
+    }
+
+    /// Set up Wormholy only in Debug build configuration
+    ///
+    func setupWormholy() {
+#if DEBUG
+        // We want to activate it programmatically, not using the shake.
+        Wormholy.shakeEnabled = false
+#endif
     }
 
     /// Set up `KeyboardStateProvider`

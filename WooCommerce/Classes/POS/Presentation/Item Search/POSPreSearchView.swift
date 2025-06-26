@@ -87,7 +87,7 @@ struct POSPreSearchView: View {
                         .frame(height: chipHeight)
                         .background(Color.posSurfaceBright)
                         .cornerRadius(POSCornerRadiusStyle.medium.value)
-                        .posShadow(.medium)
+                        .posShadow(.medium, cornerRadius: POSCornerRadiusStyle.medium.value)
                     }
                 }
             }

@@ -11,7 +11,8 @@ extension Cart {
             title: title(for: error),
             subtitle: subtitle(for: error),
             quantity: 1,
-            state: .error
+            state: .error,
+            accessibilityLabel: accessibilityLabel(for: error)
         )
 
         return purchasableItems[index]
@@ -34,6 +35,12 @@ extension Cart {
 
     private func subtitle(for error: PointOfSaleBarcodeScanError) -> String {
         return error.localizedDescription
+    }
+
+    private func accessibilityLabel(for error: PointOfSaleBarcodeScanError) -> String {
+        let errorDescription = error.localizedDescription
+        let scannedValue = title(for: error)
+        return "\(errorDescription). \(scannedValue)"
     }
 }
 

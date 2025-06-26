@@ -45,8 +45,7 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let siteSettings: SelectedSiteSettings
-    private let currencySettings: CurrencySettings
+    private let siteSettings: SelectedSiteSettingsProtocol
     private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
@@ -54,8 +53,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
@@ -63,7 +61,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
-        self.currencySettings = currencySettings
         self.pluginsService = pluginsService
         self.eligibilityService = eligibilityService
         self.stores = stores
@@ -170,14 +167,14 @@ private extension POSTabEligibilityChecker {
 
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
-        let currencyCode = currencySettings.currencyCode
+        let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty else {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
             return siteSettings.settings

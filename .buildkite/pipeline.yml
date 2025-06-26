@@ -17,7 +17,7 @@ steps:
     key: build-screenshots
     command: .buildkite/commands/build-screenshots.sh
     plugins: [$CI_TOOLKIT]
-    if: build.pull_request.labels includes "generate screenshots"
+    # if: build.pull_request.labels includes "generate screenshots"
     notify:
       - github_commit_status:
           context: Build Screenshots App

@@ -53,7 +53,7 @@ steps:
           # - zh-Hant
         mode:
           - dark
-          # - light
+          - light
     artifact_paths:
       - "fastlane/logs/**/*"
     notify:

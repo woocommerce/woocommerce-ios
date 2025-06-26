@@ -6,9 +6,6 @@ agents:
 
 env:
   IMAGE_ID: $IMAGE_ID
-  S3_BUCKET: $S3_BUCKET
-  AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
   CONFIGURE_ENCRYPTION_KEY: $CONFIGURE_ENCRYPTION_KEY
 
 # TEMPORARY: Screenshots pipeline only - other jobs commented out
@@ -56,10 +53,6 @@ steps:
         mode:
           - dark
           # - light
-    env:
-      S3_BUCKET: $S3_BUCKET
-      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
     artifact_paths:
       - "fastlane/logs/**/*"
     notify:

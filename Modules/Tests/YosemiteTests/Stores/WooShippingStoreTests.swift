@@ -37,6 +37,54 @@ final class WooShippingStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    // MARK: `checkCreationEligibility`
+
+    func test_checkCreationEligibility_returns_eligibility_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let orderID: Int64 = 22
+        let expectedEligibility = true
+        remote.whenCheckEligibility(siteID: sampleSiteID,
+                                    orderID: orderID,
+                                    thenReturn: .success(ShippingLabelCreationEligibilityResponse(isEligible: expectedEligibility, reason: nil)))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = WooShippingAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                    orderID: orderID) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
+    }
+
+    func test_checkCreationEligibility_returns_false_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let orderID: Int64 = 22
+        let expectedEligibility = false
+        remote.whenCheckEligibility(siteID: sampleSiteID,
+                                    orderID: orderID,
+                                    thenReturn: .failure(NetworkError.notFound()))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let isEligibleForCreation: Bool = waitFor { promise in
+            let action = WooShippingAction.checkCreationEligibility(siteID: self.sampleSiteID,
+                                                                      orderID: orderID) { isEligible in
+                promise(isEligible)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(isEligibleForCreation, expectedEligibility)
+    }
+
     // MARK: `createPackage`
 
     func test_createPackage_returns_success_response() throws {

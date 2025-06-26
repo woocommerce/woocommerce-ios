@@ -76,7 +76,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Hides POS tab.
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .ineligible(reason: .featureFlagDisabled)
+        mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         // Reset `receivedActions`
@@ -567,7 +567,7 @@ final class MainTabBarControllerTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .eligible
+        mockPOSEligibilityChecker.visibility = true
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
@@ -642,6 +642,7 @@ extension MainTabBarController {
 
 private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
+    private var visibility: Bool = false
     private var eligibilityResult: POSEligibilityState?
     private var eligibilityContinuation: CheckedContinuation<POSEligibilityState, Never>?
 
@@ -655,6 +656,10 @@ private final class MockAsyncPOSEligibilityChecker: POSEntryPointEligibilityChec
 
     func checkInitialVisibility() -> Bool {
         initialVisibility
+    }
+
+    func checkVisibility() async -> Bool {
+        visibility
     }
 
     func checkEligibility() async -> POSEligibilityState {

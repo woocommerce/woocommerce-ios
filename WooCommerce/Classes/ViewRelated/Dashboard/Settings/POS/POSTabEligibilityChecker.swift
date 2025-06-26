@@ -76,12 +76,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        guard #available(iOS 17.0, *) else {
-            return .ineligible(reason: .unsupportedIOSVersion)
-        }
-
-        guard userInterfaceIdiom == .pad else {
-            return .ineligible(reason: .notTablet)
+        switch checkDeviceEligibility() {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
@@ -125,15 +124,35 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 }
 
 private extension POSTabEligibilityChecker {
+    func checkDeviceEligibility() -> POSEligibilityState {
+        guard #available(iOS 17.0, *) else {
+            return .ineligible(reason: .unsupportedIOSVersion)
+        }
+
+        guard userInterfaceIdiom == .pad else {
+            return .ineligible(reason: .notTablet)
+        }
+
+        return .eligible
+    }
+
     func checkVisibilityBasedOnCountryAndRemoteFeatureFlag() async -> Bool {
+        guard checkDeviceEligibility() == .eligible else {
+            return false
+        }
+
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
         switch await siteSettingsEligibility {
         case .eligible:
             break
-        case .ineligible:
-            return false
+        case let .ineligible(reason):
+            if reason == .unsupportedCurrency {
+                break
+            } else {
+                return false
+            }
         }
 
         switch await featureFlagEligibility {

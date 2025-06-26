@@ -2458,6 +2458,54 @@ extension Networking.ShippingLabelAccountSettings {
     }
 }
 
+extension Networking.ShippingLabelCarrierRate {
+    public func copy(
+        title: CopiableProp<String> = .copy,
+        insurance: CopiableProp<String> = .copy,
+        retailRate: CopiableProp<Double> = .copy,
+        rate: CopiableProp<Double> = .copy,
+        rateID: CopiableProp<String> = .copy,
+        serviceID: CopiableProp<String> = .copy,
+        carrierID: CopiableProp<String> = .copy,
+        shipmentID: CopiableProp<String> = .copy,
+        hasTracking: CopiableProp<Bool> = .copy,
+        isSelected: CopiableProp<Bool> = .copy,
+        isPickupFree: CopiableProp<Bool> = .copy,
+        deliveryDays: NullableCopiableProp<Int64> = .copy,
+        deliveryDateGuaranteed: CopiableProp<Bool> = .copy
+    ) -> Networking.ShippingLabelCarrierRate {
+        let title = title ?? self.title
+        let insurance = insurance ?? self.insurance
+        let retailRate = retailRate ?? self.retailRate
+        let rate = rate ?? self.rate
+        let rateID = rateID ?? self.rateID
+        let serviceID = serviceID ?? self.serviceID
+        let carrierID = carrierID ?? self.carrierID
+        let shipmentID = shipmentID ?? self.shipmentID
+        let hasTracking = hasTracking ?? self.hasTracking
+        let isSelected = isSelected ?? self.isSelected
+        let isPickupFree = isPickupFree ?? self.isPickupFree
+        let deliveryDays = deliveryDays ?? self.deliveryDays
+        let deliveryDateGuaranteed = deliveryDateGuaranteed ?? self.deliveryDateGuaranteed
+
+        return Networking.ShippingLabelCarrierRate(
+            title: title,
+            insurance: insurance,
+            retailRate: retailRate,
+            rate: rate,
+            rateID: rateID,
+            serviceID: serviceID,
+            carrierID: carrierID,
+            shipmentID: shipmentID,
+            hasTracking: hasTracking,
+            isSelected: isSelected,
+            isPickupFree: isPickupFree,
+            deliveryDays: deliveryDays,
+            deliveryDateGuaranteed: deliveryDateGuaranteed
+        )
+    }
+}
+
 extension Networking.ShippingLabelCustomsForm {
     public func copy(
         packageID: CopiableProp<String> = .copy,

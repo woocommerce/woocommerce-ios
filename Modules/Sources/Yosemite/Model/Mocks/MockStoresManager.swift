@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Storage
 
 public class MockStoresManager: StoresManager {
@@ -165,8 +166,11 @@ public class MockStoresManager: StoresManager {
         case let action as FeatureFlagAction:
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, completion):
-                // One of the requirements for the POS tab to show up.
-                completion(true)
+                // Only enables POS feature for eligible countries from locale.
+                let locale = Locale.current
+                let countryCode = locale.region?.identifier ?? ""
+                let isEligibleCountry = countryCode == "US" || countryCode == "GB"
+                completion(isEligibleCountry)
             }
         default:
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")

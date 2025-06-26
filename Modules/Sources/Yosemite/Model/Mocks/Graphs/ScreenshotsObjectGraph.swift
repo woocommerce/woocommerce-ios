@@ -72,12 +72,12 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         createSiteSetting(settingID: "woocommerce_default_country",
                           label: "Country and State",
                           settingDescription: "The country and state or province, if any, in which your business is located.",
-                          value: Self.countryValue(for: Locale.current.identifier),
+                          value: "US:CA",
                           settingGroupKey: "general"),
         createSiteSetting(settingID: "woocommerce_currency",
                           label: "Currency",
                           settingDescription: "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
-                          value: Self.currencyCode(for: Locale.current.identifier),
+                          value: CurrencyCode.USD.rawValue,
                           settingGroupKey: "general")
     ]
 
@@ -331,58 +331,6 @@ struct ScreenshotObjectGraph: MockObjectGraph {
 
     init(date: Date = .init()) {
         self.date = date
-    }
-
-    /// Maps the given locale to an appropriate country value for the site setting for all locales in Fastfile IOS_LOCALES.
-    /// Uses the same format as WooCommerce's default country setting: "COUNTRY:STATE".
-    private static func countryValue(for locale: String) -> String {
-        // Map locales to country values based on IOS_LOCALES from Fastfile
-        let localeToCountryMap: [String: String] = [
-            "ar-SA": "SA", // Saudi Arabia
-            "de-DE": "DE", // Germany
-            "en-US": "US:CA", // United States, California
-            "es-ES": "ES", // Spain
-            "fr-FR": "FR", // France
-            "he": "IL", // Israel (Hebrew)
-            "id": "ID", // Indonesia
-            "it": "IT", // Italy
-            "ja": "JP", // Japan
-            "ko": "KR", // South Korea
-            "nl-NL": "NL", // Netherlands
-            "pt-BR": "BR", // Brazil
-            "ru": "RU", // Russia
-            "sv": "SE", // Sweden
-            "tr": "TR", // Turkey
-            "zh-Hans": "CN", // China (Simplified Chinese)
-            "zh-Hant": "TW" // Taiwan (Traditional Chinese)
-        ]
-        return localeToCountryMap[locale] ?? "US:CA" // Default to US:CA.
-    }
-
-    /// Maps the given locale to an appropriate currency code for the site setting for all locales in Fastfile IOS_LOCALES.
-    /// Uses the CurrencyCode enum rawValues.
-    private static func currencyCode(for locale: String) -> String {
-        // Map locales to currency codes based on IOS_LOCALES from Fastfile
-        let localeToCurrencyMap: [String: CurrencyCode] = [
-            "ar-SA": .SAR, // Saudi Riyal
-            "de-DE": .EUR, // Euro
-            "en-US": .USD, // US Dollar
-            "es-ES": .EUR, // Euro
-            "fr-FR": .EUR, // Euro
-            "he": .ILS, // Israeli Shekel
-            "id": .IDR, // Indonesian Rupiah
-            "it": .EUR, // Euro
-            "ja": .JPY, // Japanese Yen
-            "ko": .KRW, // South Korean Won
-            "nl-NL": .EUR, // Euro
-            "pt-BR": .BRL, // Brazilian Real
-            "ru": .RUB, // Russian Ruble
-            "sv": .SEK, // Swedish Krona
-            "tr": .TRY, // Turkish Lira
-            "zh-Hans": .CNY, // Chinese Yuan
-            "zh-Hant": .TWD // Taiwan Dollar
-        ]
-        return localeToCurrencyMap[locale]?.rawValue ?? CurrencyCode.USD.rawValue // Default to USD.
     }
 }
 

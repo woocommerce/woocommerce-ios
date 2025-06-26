@@ -38,6 +38,8 @@ enum POSEligibilityState: Equatable {
 protocol POSEntryPointEligibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
     func checkInitialVisibility() -> Bool
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
@@ -110,7 +112,40 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .ineligible(reason: reason)
         }
     }
+
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool {
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+            return await checkVisibilityBasedOnCountryAndRemoteFeatureFlag()
+        } else {
+            let eligibility = await checkEligibility()
+            return eligibility == .eligible
+        }
+    }
 }
+
+private extension POSTabEligibilityChecker {
+    func checkVisibilityBasedOnCountryAndRemoteFeatureFlag() async -> Bool {
+        async let siteSettingsEligibility = checkSiteSettingsEligibility()
+        async let featureFlagEligibility = checkRemoteFeatureEligibility()
+
+        switch await siteSettingsEligibility {
+        case .eligible:
+            break
+        case .ineligible:
+            return false
+        }
+
+        switch await featureFlagEligibility {
+        case .eligible:
+            return true
+        case .ineligible:
+            return false
+        }
+    }
+}
+
+// MARK: - WC Plugin Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
     func checkPluginEligibility() async -> POSEligibilityState {
@@ -157,6 +192,8 @@ private extension POSTabEligibilityChecker {
     }
 }
 
+// MARK: - Site Settings Related Eligibility Check
+
 private extension POSTabEligibilityChecker {
     func checkSiteSettingsEligibility() async -> POSEligibilityState {
         // Waits for the first site settings that matches the given site ID.
@@ -201,6 +238,8 @@ private extension POSTabEligibilityChecker {
         }
     }
 }
+
+// MARK: - Remote Feature Flag Eligibility Check
 
 private extension POSTabEligibilityChecker {
     @MainActor

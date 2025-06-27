@@ -1374,7 +1374,7 @@ struct PointOfSaleAggregateModelTests {
                                                 popularPurchasableItemsController: MockPointOfSaleItemsController(),
                                                 barcodeScanService: barcodeScanService,
                                                 soundPlayer: soundPlayer)
-            barcodeScanService.errorToThrow = .notFound(scannedCode: "123")
+            barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
 
             // When & Then
             await withCheckedContinuation { continuation in
@@ -1382,7 +1382,7 @@ struct PointOfSaleAggregateModelTests {
                     #expect(sound == .barcodeScanFailure)
                     continuation.resume()
                 }
-                sut.barcodeScanned("123")
+                sut.barcodeScanned(.success("123456"))
             }
         }
     }

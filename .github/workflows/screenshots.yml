@@ -123,7 +123,7 @@ jobs:
           name: raw-screenshots
           path: fastlane/screenshots
 
-      - name: Setup Git LFS and Verify Fonts
+      - name: Setup Git LFS
         run: |
           # Install Git LFS if not available
           if ! command -v git-lfs &> /dev/null; then
@@ -131,15 +131,6 @@ jobs:
             brew install git-lfs
           fi
           git lfs install && git lfs fetch && git lfs pull
-          
-          # Verify Proxima Nova is available (should be in macOS 15)
-          if system_profiler SPFontsDataType | grep -i "proxima" > /dev/null 2>&1; then
-            echo "✅ Proxima Nova font found - ready for promo screenshots"
-          else
-            echo "⚠️ Proxima Nova font not found - promo screenshots may not render correctly"
-            echo "Available fonts with 'nova' in name:"
-            system_profiler SPFontsDataType | grep -i "nova" | head -5 || echo "No fonts with 'nova' found"
-          fi
 
       - name: Generate Promo Screenshots
         run: |

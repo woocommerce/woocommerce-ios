@@ -113,6 +113,11 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderHasLocalReceipt: Bool = false
 
+    /// Whether the order is eligible for backend receipt generation.
+    /// This is calculated during sync to avoid async calls during section building.
+    ///
+    var isEligibleForBackendReceipt: Bool = false
+
     /// Closure to be executed when the cell was tapped.
     ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
@@ -136,27 +141,23 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Order shipment tracking list
     ///
-    var orderTracking: [ShipmentTracking] {
-        return resultsControllers.orderTracking
-    }
+    var orderTracking: [ShipmentTracking] = []
 
     /// Order statuses list
     ///
-    var currentSiteStatuses: [OrderStatus] {
-        return resultsControllers.currentSiteStatuses
-    }
+    var currentSiteStatuses: [OrderStatus] = []
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return resultsControllers.products
-    }
+    var products: [Product] = []
+
+    /// Product variations from an order
+    ///
+    var productVariations: [ProductVariation] = []
 
     /// Custom amounts (fees) from an Order
     ///
-    var customAmounts: [OrderFeeLine] {
-        return resultsControllers.feeLines
-    }
+    var customAmounts: [OrderFeeLine] = []
 
     /// OrderItemsRefund Count
     ///
@@ -166,19 +167,13 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Refunds on an Order
     ///
-    var refunds: [Refund] {
-        return resultsControllers.refunds
-    }
+    var refunds: [Refund] = []
 
-    var addOnGroups: [AddOnGroup] {
-        resultsControllers.addOnGroups
-    }
+    var addOnGroups: [AddOnGroup] = []
 
     /// Shipping Methods list
     ///
-    var siteShippingMethods: [ShippingMethod] {
-        resultsControllers.siteShippingMethods
-    }
+    var siteShippingMethods: [ShippingMethod] = []
 
     /// Shipping Labels for an Order
     ///
@@ -248,9 +243,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderSubscriptions: [Subscription] = [] {
         didSet {
-            Task { @MainActor in
-                await reloadSections()
-            }
+            reloadSections()
         }
     }
 
@@ -879,8 +872,19 @@ private extension OrderDetailsDataSource {
 
     private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
+        guard let aggregateItem = aggregateOrderItems[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid aggregate order item index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableAggregateItemsCount": aggregateOrderItems.count
+                ],
+                level: .error
+            )
+            return
+        }
 
-        let aggregateItem = aggregateOrderItems[indexPath.row]
         let imageURL: URL? = {
             guard let imageURLString = aggregateItem.variationID != 0 ?
                     lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
@@ -1056,7 +1060,18 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
-        let shippingLine = shippingLines[indexPath.row]
+        guard let shippingLine = shippingLines[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid shipping line index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableShippingLinesCount": shippingLines.count
+                ],
+                level: .error
+            )
+            return
+        }
         let viewModel = ShippingLineRowViewModel(shippingLine: shippingLine, currency: order.currency, shippingMethods: siteShippingMethods, editable: false)
         let view = ShippingLineRowView(viewModel: viewModel)
 
@@ -1171,7 +1186,7 @@ extension OrderDetailsDataSource {
     }
 
     private func lookUpProductVariation(productID: Int64, variationID: Int64) -> ProductVariation? {
-        return resultsControllers.productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
+        return productVariations.filter({ $0.productID == productID && $0.productVariationID == variationID }).first
     }
 
     func lookUpRefund(by refundID: Int64) -> Refund? {
@@ -1192,19 +1207,26 @@ extension OrderDetailsDataSource {
     /// When: Customer Note == nil          >>> Hide Customer Note
     /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
-    @MainActor
-    func reloadSections() async {
+    func reloadSections() {
         // Freezes any data that require lookup after the sections are reloaded, in case the data from a ResultsController changes before the next reload.
+        refunds = resultsControllers.refunds
+        customAmounts = resultsControllers.feeLines
+        orderTracking = resultsControllers.orderTracking
+        currentSiteStatuses = resultsControllers.currentSiteStatuses
+        products = resultsControllers.products
+        addOnGroups = resultsControllers.addOnGroups
+        siteShippingMethods = resultsControllers.siteShippingMethods
+        productVariations = resultsControllers.productVariations
         shippingLabels = resultsControllers.shippingLabels
         shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
             shippingLabels: shippingLabels,
             orderItems: items,
             products: products,
-            productVariations: resultsControllers.productVariations
+            productVariations: productVariations
         )
 
         var sections = buildStaticSections().compactMap { $0 }
-        let paymentSection = await createPaymentSection()
+        let paymentSection = createPaymentSection()
 
         // Finds the position between shippingLines and customerInformation to inject the payment section,
         // otherwise will always appear last because of being async
@@ -1309,7 +1331,13 @@ extension OrderDetailsDataSource {
             }
 
             let sections = shippingLabels.enumerated().map { index, shippingLabel -> Section in
-                let title = String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
+                let title = {
+                    guard let shipmentID = shippingLabel.shipmentID,
+                          let intID = Int(shipmentID) else {
+                        return String.localizedStringWithFormat(Title.shippingLabelPackageFormat, index + 1)
+                    }
+                    return String.localizedStringWithFormat(Title.shippingLabelPackageFormat, intID + 1)
+                }()
                 let isRefunded = shippingLabel.refund != nil
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
@@ -1502,8 +1530,7 @@ extension OrderDetailsDataSource {
         ]
     }
 
-    @MainActor
-    private func createPaymentSection() async -> Section {
+    private func createPaymentSection() -> Section {
         var rows: [Row] = [.payment, .customerPaid]
         if condensedRefunds.isNotEmpty {
             rows.append(contentsOf: Array(repeating: .refund, count: condensedRefunds.count))
@@ -1514,7 +1541,7 @@ extension OrderDetailsDataSource {
         }
         if orderHasLocalReceipt {
             rows.append(.seeLegacyReceipt)
-        } else if await isEligibleForBackendReceipt() {
+        } else if isEligibleForBackendReceipt {
             rows.append(.seeReceipt)
         }
         if isEligibleForRefund {
@@ -1525,15 +1552,6 @@ extension OrderDetailsDataSource {
             title: Title.payment,
             rows: rows
         )
-    }
-
-    @MainActor
-    private func isEligibleForBackendReceipt() async -> Bool {
-        return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForReceipt(order.status, onCompletion: { isEligible in
-                continuation.resume(returning: isEligible)
-            })
-        }
     }
 
     func refund(at indexPath: IndexPath) -> Refund? {

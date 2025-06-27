@@ -301,12 +301,6 @@ extension UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
     }
 
-    /// Domain credit image.
-    ///
-    static var domainCreditImage: UIImage {
-        return UIImage(named: "domain-credit")!
-    }
-
     /// Domain purchase success image.
     ///
     static var domainPurchaseSuccessImage: UIImage {

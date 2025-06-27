@@ -22,10 +22,6 @@ public enum FeatureFlag: Int {
     ///
     case showInboxCTA
 
-    /// Displays the OrderForm side by side with the Product Selector
-    ///
-    case sideBySideViewForOrderForm
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -37,11 +33,6 @@ public enum FeatureFlag: Int {
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
-
-    /// Makes the Experimental Feature toggle for the Debug In-app purchases menu visible.
-    /// This should not be turned on in production builds. This doesn't make any difference to the availabliity of plan purchases via IAP.
-    ///
-    case inAppPurchasesDebugMenu
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
@@ -116,14 +107,6 @@ public enum FeatureFlag: Int {
     ///
     case giftCardInOrderForm
 
-    /// Enables the Woo Payments Payouts item in the Payments menu
-    ///
-    case wooPaymentsPayoutsOverviewInPaymentsMenu
-
-    /// Enables Tap to Pay for UK Woo Payments stores
-    ///
-    case tapToPayOnIPhoneInUK
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm
@@ -153,21 +136,9 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSale
 
-    /// Enables coupons in Point of Sale
-    ///
-    case enableCouponsInPointOfSale
-
     /// Enables Google ads campaign creation on web view
     ///
     case googleAdsCampaignCreationOnWebView
-
-    /// Code hidden while the background tasks feature is developed
-    ///
-    case backgroundTasks
-
-    /// Enables view/editing of custom fields (metadata) in both Products and Orders
-    ///
-    case viewEditCustomFieldsInProductsAndOrders
 
     /// Supports evergreen campaigns for Blaze
     ///
@@ -180,10 +151,6 @@ public enum FeatureFlag: Int {
     /// Enables selecting objectives during Blaze campaign creation.
     ///
     case blazeCampaignObjective
-
-    /// Allows marking product as favorite
-    ///
-    case favoriteProducts
 
     /// Supports hiding sites from the store picker
     ///
@@ -205,18 +172,6 @@ public enum FeatureFlag: Int {
     ///
     case allowMerchantAIAPIKey
 
-    /// Allows searching products in POS
-    ///
-    case searchProductsInPOS
-
-    /// Shows popular products in the pre-search UI in POS, along with using final designs.
-    ///
-    case searchProductsInPOSPt2PopularProducts
-
-    /// Allows searching coupons in POS
-    ///
-    case searchCouponsInPOS
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
@@ -236,4 +191,8 @@ public enum FeatureFlag: Int {
     /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
     ///
     case showPointOfSaleBarcodeSimulator
+
+    /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
+    ///
+    case pointOfSaleAsATabi1
 }

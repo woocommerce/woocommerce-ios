@@ -5,9 +5,10 @@ import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
+import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
+import class Yosemite.POSEligibilityService
 import struct Yosemite.SystemPlugin
-import enum Yosemite.SystemStatusAction
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
@@ -35,6 +36,8 @@ enum POSEligibilityState: Equatable {
 }
 
 protocol POSEntryPointEligibilityCheckerProtocol {
+    /// Checks the initial visibility of the POS tab.
+    func checkInitialVisibility() -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
@@ -42,26 +45,31 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
-    private let siteSettings: SelectedSiteSettings
-    private let currencySettings: CurrencySettings
+    private let siteSettings: SelectedSiteSettingsProtocol
     private let pluginsService: PluginsServiceProtocol
+    private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
-         siteSettings: SelectedSiteSettings = ServiceLocator.selectedSiteSettings,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
-        self.currencySettings = currencySettings
         self.pluginsService = pluginsService
+        self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+    }
+
+    /// Checks the initial visibility of the POS tab without dependance on network requests.
+    func checkInitialVisibility() -> Bool {
+        eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
@@ -159,14 +167,14 @@ private extension POSTabEligibilityChecker {
 
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
-        let currencyCode = currencySettings.currencyCode
+        let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty else {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
             return siteSettings.settings

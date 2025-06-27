@@ -169,7 +169,6 @@ private struct WooShippingServiceCardListView: View {
         VStack {
             ForEach(cards) { card in
                 WooShippingServiceCardView(viewModel: card)
-                    .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
             }
         }
         .padding()

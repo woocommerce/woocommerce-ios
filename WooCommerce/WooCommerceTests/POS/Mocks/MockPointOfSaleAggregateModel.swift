@@ -45,7 +45,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
+         paymentState: PointOfSalePaymentState = .idle) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
         self.purchasableItemsController = purchasableItemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -62,7 +62,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var cart: Cart = .init()
 
-    func barcodeScanned(_ barcode: String) { }
+    func barcodeScanned(_ result: Result<String, Error>) { }
 
     func addToCart(_ item: POSItem) { }
 

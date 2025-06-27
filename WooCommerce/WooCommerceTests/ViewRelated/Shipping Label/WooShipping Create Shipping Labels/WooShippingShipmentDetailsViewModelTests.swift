@@ -57,8 +57,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
 
         // When
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
         viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
 
         // Then
         XCTAssertTrue(viewModel.isPurchaseButtonEnabled)
@@ -325,7 +325,14 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_changing_customs_form_loads_new_label_rates_with_updated_customs_form() {
         // Given
-        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(quantity: 2, productID: 1)
+        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(
+            description: "Shirt",
+            quantity: 2,
+            value: 9.99,
+            weight: 0.5,
+            productID: 1
+        )
+
         let expectedCustomsForm = ShippingLabelCustomsForm.fake().copy(contentsType: .gift,
                                                                        restrictionType: .quarantine,
                                                                        nonDeliveryOption: .abandon,
@@ -414,18 +421,23 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
-        // When
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
                                                             shipment: sampleShipment,
                                                             shippingLabel: nil,
                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+        let rate = WooShippingSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(rate: 12.2),
+                                           signatureRate: nil,
+                                           adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 40.06),
+                                           carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 32.34),
+                                           saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 22.77),
+                                           additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 18.12))
 
         // When
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        viewModel.shippingService?.onSelectRate?(rate)
 
         // Then
-        XCTAssertEqual(viewModel.totalCost, "$40.06")
+        XCTAssertEqual(viewModel.totalCost, "$76.69")
     }
 
     func test_shouldShowCustomsForm_when_origin_and_destination_in_US_then_returns_false() {
@@ -572,7 +584,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_refreshPackagesAndShippingRates_updates_selected_package() async {
+    func test_refreshPackagesAndShippingRates_updates_selected_package_and_rate() async throws {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
@@ -586,12 +598,19 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             stores: stores)
         let package = samplePackageData()
         viewModel.selectPackage(package)
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        let rate = ShippingLabelCarrierRate.fake().copy(
+            title: "Rate",
+            rate: 20.11,
+            serviceID: "test_rate"
+        )
+        viewModel.shippingService?.onSelectRate?(WooShippingSelectedRate(rate: rate))
 
         // Confidence check
         XCTAssertEqual(viewModel.selectedPackage?.id, package.id)
+        XCTAssertEqual(viewModel.selectedRate?.rate.rate, rate.rate)
 
         // When: package is refreshed
+        let expectedRate = rate.copy(rate: 22.11)
         let updatedPackage = WooShippingCustomPackage(id: "small_flat_box",
                                                       name: "custom",
                                                       rawType: "box",
@@ -605,15 +624,131 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                                 savedPredefinedPackages: [],
                                                                 allPredefinedOptions: [])))
             case let .loadLabelRates(_, _, _, _, packages, completion):
-                completion(packages, .success([]))
+                let result = ShippingLabelCarriersAndRates(
+                    packageID: "0",
+                    defaultRates: [expectedRate],
+                    signatureRequired: [expectedRate.copy(rate: 23.33)],
+                    adultSignatureRequired: [expectedRate.copy(rate: 25.78)],
+                    carbonNeutral: [],
+                    saturdayDelivery: [],
+                    additionalHandling: []
+                )
+                completion(packages, .success([result]))
             default:
                 break
             }
         }
-        try? await viewModel.refreshPackagesAndShippingRates() // ignoring failure in refreshing rate for simplicity
+        try await viewModel.refreshPackagesAndShippingRates()
 
         // Then
         XCTAssertEqual(viewModel.selectedPackage?.name, updatedPackage.name)
+        XCTAssertEqual(viewModel.selectedRate?.rate.rate, expectedRate.rate)
+    }
+
+    func test_changing_origin_address_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        originAddressSubject.send(sampleOriginAddress(country: "US", state: "FL"))
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_destination_address_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        destinationAddressSubject.send(sampleDestinationAddress(country: "US", state: "FL"))
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_shipment_weight_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.shipmentWeight = "10"
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_hazmat_category_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.hazmatCategory = .class1
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    func test_changing_customs_form_resets_selected_rate() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        XCTAssertNotNil(viewModel.selectedRate, "Precondition failed: selectedRate should not be nil")
+
+        // When
+        viewModel.customsFormViewModel.returnToSenderIfNotDelivered = true
+        viewModel.customsFormViewModel.onDismiss()
+
+        // Then
+        XCTAssertNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.shippingService?.selectedRate)
     }
 }
 
@@ -711,6 +846,9 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                                              isSelected: false,
                                                              isPickupFree: true,
                                                              deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil)
+                                                             deliveryDateGuaranteed: false) : nil,
+                                carbonNeutralRate: nil,
+                                saturdayDeliveryRate: nil,
+                                additionalHandlingRate: nil)
     }
 }

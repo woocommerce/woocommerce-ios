@@ -38,28 +38,35 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Hardware\/Hardware.xcodeproj",
-        "identifier" : "D88FDB0725DD216B00CB0DBD",
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "HardwareTests",
         "name" : "HardwareTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Storage\/Storage.xcodeproj",
-        "identifier" : "B54CA5A120A4BBA600F38CD1",
-        "name" : "StorageTests"
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WordPressSharedObjCTests",
+        "name" : "WordPressSharedObjCTests"
       }
     },
     {
       "target" : {
         "containerPath" : "container:..\/Modules",
-        "identifier" : "WooFoundationTests",
-        "name" : "WooFoundationTests"
+        "identifier" : "StorageTests",
+        "name" : "StorageTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
+        "name" : "WordPressAuthenticatorTests"
       }
     },
     {
       "skippedTests" : [
-        "CardReaderConnectionControllerTests",
         "InAppPurchaseStoreTests",
         "InAppPurchaseStoreTests\/test_iap_supported_in_canada()",
         "InAppPurchaseStoreTests\/test_iap_supported_in_us()",
@@ -82,15 +89,15 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
-        "identifier" : "B5C9DDFD2087FEC0006B910A",
-        "name" : "YosemiteTests"
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WooFoundationTests",
+        "name" : "WooFoundationTests"
       }
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Networking\/Networking.xcodeproj",
-        "identifier" : "B557D9EB209753AA005962F4",
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "NetworkingTests",
         "name" : "NetworkingTests"
       }
     },
@@ -102,18 +109,10 @@
       }
     },
     {
-      "enabled" : false,
-      "target" : {
-        "containerPath" : "container:WooCommerce.xcodeproj",
-        "identifier" : "3F0904072D26A40800D8ACCE",
-        "name" : "WordPressAuthenticatorTests"
-      }
-    },
-    {
       "target" : {
         "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedObjCTests",
-        "name" : "WordPressSharedObjCTests"
+        "identifier" : "YosemiteTests",
+        "name" : "YosemiteTests"
       }
     }
   ],

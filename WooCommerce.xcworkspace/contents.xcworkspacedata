@@ -4,19 +4,4 @@
    <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Yosemite/Yosemite.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Storage/Storage.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Networking/Networking.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Hardware/Hardware.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Fakes/Fakes.xcodeproj">
-   </FileRef>
 </Workspace>

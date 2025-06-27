@@ -142,7 +142,7 @@ struct ItemList<HeaderView: View>: View {
 
 private enum Constants {
     static let itemListPadding: CGFloat = POSPadding.medium
-    static let itemSpacing: CGFloat = POSSpacing.small
+    static let itemSpacing: CGFloat = POSSpacing.medium
 }
 
 @available(iOS 17.0, *)

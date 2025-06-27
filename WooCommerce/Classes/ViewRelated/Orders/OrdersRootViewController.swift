@@ -140,9 +140,6 @@ final class OrdersRootViewController: UIViewController {
             command: OrderSearchUICommand(siteID: siteID,
                                           onSelectSearchResult: { [weak self] order, viewController in
                                               guard let self else { return }
-                                              guard featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-                                                  return presentOrder(order, from: viewController)
-                                              }
                                               navigateToOrderDetail(order)
                                               viewController.dismiss(animated: true)
                                           }),
@@ -230,13 +227,8 @@ final class OrdersRootViewController: UIViewController {
             }
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            viewController.modalPresentationStyle = .overFullScreen
-            navigationController.present(viewController, animated: true)
-        } else {
-            let newOrderNavigationController = WooNavigationController(rootViewController: viewController)
-            navigationController.present(newOrderNavigationController, animated: true)
-        }
+        viewController.modalPresentationStyle = .overFullScreen
+        navigationController.present(viewController, animated: true)
 
         analytics.track(event: .Orders.orderAddNew())
         orderDurationRecorder.startRecording()

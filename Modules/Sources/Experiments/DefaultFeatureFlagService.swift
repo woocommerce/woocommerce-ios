@@ -15,8 +15,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .showInboxCTA:
             return true
-        case .sideBySideViewForOrderForm:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
@@ -24,8 +22,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
-        case .inAppPurchasesDebugMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -50,10 +46,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .giftCardInOrderForm:
             return true
-        case .wooPaymentsPayoutsOverviewInPaymentsMenu:
-            return true
-        case .tapToPayOnIPhoneInUK:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
@@ -63,27 +55,20 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .splitViewInProductsTab:
             return true
         case .subscriptionsInOrderCreationUI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // Feature paused pdqJU4-4mn-p2#comment-2067
+            return false
         case .subscriptionsInOrderCreationCustomers:
-            // Feature paused pfoUAQ-zw-p2#comment-510.
+            // Feature paused pdqJU4-4mn-p2#comment-2067
             return false
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .enableCouponsInPointOfSale:
-            return true
         case .googleAdsCampaignCreationOnWebView:
-            return true
-        case .backgroundTasks:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .viewEditCustomFieldsInProductsAndOrders:
             return true
         case .blazeEvergreenCampaigns:
             return true
         case .revampedShippingLabelCreation:
             return true
         case .blazeCampaignObjective:
-            return true
-        case .favoriteProducts:
             return true
         case .hideSitesInStorePicker:
             return true
@@ -95,12 +80,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .allowMerchantAIAPIKey:
             return false
-        case .searchProductsInPOS:
-            return true
-        case .searchProductsInPOSPt2PopularProducts:
-            return true
-        case .searchCouponsInPOS:
-            return true
         case .inventoryProductLabelsInPOS:
             return false
         case .pointOfSaleReceipts:
@@ -108,10 +87,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productImageOptimizedHandling:
             return true
         case .pointOfSaleBarcodeScanningi1:
-            return false
+            return true
         case .showPointOfSaleBarcodeSimulator:
             // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
+        case .pointOfSaleAsATabi1:
+            return true
         default:
             return true
         }

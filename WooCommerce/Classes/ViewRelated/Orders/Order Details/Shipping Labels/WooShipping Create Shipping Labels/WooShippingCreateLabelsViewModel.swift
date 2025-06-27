@@ -48,6 +48,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             observeHAZMATNotices()
             observeSelectedPackage()
             observeSelectedRates()
+            observeShippingRates()
         }
     }
 
@@ -139,9 +140,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let shippingLines: [WooShipping_ShippingLineViewModel]
 
     /// Shipping rates for the purchased label, with formatted amount.
-    var shippingRates: [(title: String, amount: String)] {
-        currentShipmentDetailsViewModel.shippingRates
-    }
+    @Published private(set) var shippingRates: [(title: String, amount: String)] = []
 
     /// Total cost of the shipping label, formatted for display.
     var totalCost: String? {
@@ -207,7 +206,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.shippingLabels = order.shippingLabels.filter { $0.refund == nil }
         self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
         self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
         self.onLabelPurchase = onLabelPurchase
@@ -437,6 +435,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
+            shippingLabels = config.shippingLabelData?.currentOrderLabels.filter { $0.refund == nil && $0.status == .purchased } ?? []
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,
@@ -488,6 +487,11 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$selectedRate)
     }
 
+    func observeShippingRates() {
+        currentShipmentDetailsViewModel.$shippingRates
+            .assign(to: &$shippingRates)
+    }
+
     func updateShipmentDetailsViewModels() {
         shipmentDetailViewModels = shipments.map { shipment in
             let matchingShippingLabel = shippingLabels.first(where: { $0.shippingLabelID == shipment.purchasedLabelID })
@@ -510,6 +514,7 @@ private extension WooShippingCreateLabelsViewModel {
         observeHAZMATNotices()
         observeSelectedPackage()
         observeSelectedRates()
+        observeShippingRates()
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {

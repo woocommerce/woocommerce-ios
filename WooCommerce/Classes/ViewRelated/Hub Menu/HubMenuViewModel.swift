@@ -26,7 +26,6 @@ enum HubMenuNavigationDestination: Hashable {
     case inbox
     case reviews
     case coupons
-    case inAppPurchase
     case subscriptions
     case customers
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
@@ -309,11 +308,16 @@ private extension HubMenuViewModel {
     func createCardPresentPaymentService() {
         Task {
             self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
+                                                                             stores: stores,
                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
     }
 
     func setupPOSElement() {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) == false else {
+            return
+        }
+
         posEligibilityChecker.isEligible.map { isEligibleForPOS in
             if isEligibleForPOS {
                 return PointOfSaleEntryPoint()
@@ -382,10 +386,6 @@ private extension HubMenuViewModel {
 
         if eligibleForInbox {
             items.append(Inbox())
-        }
-
-        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            items.append(InAppPurchases())
         }
 
         items.append(Customers())
@@ -692,19 +692,6 @@ extension HubMenuViewModel {
         let trackingOption: String = "reviews"
         let iconBadge: HubMenuBadgeType? = nil
         let navigationDestination: HubMenuNavigationDestination? = .reviews
-    }
-
-    struct InAppPurchases: HubMenuItem {
-        static var id = "iap"
-
-        let title: String = "[Debug] IAP"
-        let description: String = "Debug your inApp Purchases"
-        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
-        let iconColor: UIColor = .red
-        let accessibilityIdentifier: String = "menu-iap"
-        let trackingOption: String = "debug-iap"
-        let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .inAppPurchase
     }
 
     struct PointOfSaleEntryPoint: HubMenuItem {

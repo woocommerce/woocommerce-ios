@@ -19,6 +19,8 @@ struct WooShippingServiceCardView: View {
                     Text(viewModel.rateLabel)
                         .bold()
                 }
+                .fixedSize(horizontal: false, vertical: true)
+
                 if viewModel.selected {
                     VStack(alignment: .leading) {
                         if let daysToDelivery = viewModel.daysToDeliveryLabel {
@@ -47,6 +49,8 @@ struct WooShippingServiceCardView: View {
                                     }
                                 }
                             }
+                            .fixedSize(horizontal: false, vertical: true)
+
                             if let signatureRequired = viewModel.signatureRequiredLabel {
                                 HStack {
                                     selectionCircle(selected: viewModel.signatureRequirement == .signatureRequired)
@@ -67,8 +71,39 @@ struct WooShippingServiceCardView: View {
                                     viewModel.handleTap(on: .adultSignatureRequired)
                                 }
                             }
+                            if let carbonNeutralLabel = viewModel.carbonNeutralLabel {
+                                HStack {
+                                    selectionCircle(selected: viewModel.carbonNeutralSelected)
+                                    Text(carbonNeutralLabel)
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    viewModel.handleTap(on: .carbonNeutral)
+                                }
+                            }
+                            if let additionalHandlingLabel = viewModel.additionalHandlingLabel {
+                                HStack {
+                                    selectionCircle(selected: viewModel.additionalHandlingSelected)
+                                    Text(additionalHandlingLabel)
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    viewModel.handleTap(on: .additionalHandling)
+                                }
+                            }
+                            if let saturdayDeliveryLabel = viewModel.saturdayDeliveryLabel {
+                                HStack {
+                                    selectionCircle(selected: viewModel.saturdayDeliverySelected)
+                                    Text(saturdayDeliveryLabel)
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    viewModel.handleTap(on: .saturdayDelivery)
+                                }
+                            }
                         }
                         .font(.subheadline)
+                        .fixedSize(horizontal: false, vertical: true)
                     }
                 } else {
                     Group {
@@ -82,6 +117,7 @@ struct WooShippingServiceCardView: View {
                         }
                     }
                     .font(.footnote)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -92,6 +128,7 @@ struct WooShippingServiceCardView: View {
         .roundedBorder(cornerRadius: 8,
                        lineColor: viewModel.selected ? Color(.primary) : Color(.separator),
                        lineWidth: viewModel.selected ? 2 : 1)
+        .contentShape(Rectangle())
         .onTapGesture {
             viewModel.selectRate()
         }
@@ -127,7 +164,10 @@ struct WooShippingServiceCardView: View {
                                                                           insuranceLabel: nil,
                                                                           hasFreePickup: true,
                                                                           signatureRequiredLabel: nil,
-                                                                          adultSignatureRequiredLabel: nil))
+                                                                          adultSignatureRequiredLabel: nil,
+                                                                          carbonNeutralLabel: nil,
+                                                                          saturdayDeliveryLabel: nil,
+                                                                          additionalHandlingLabel: nil))
 }
 
 #Preview {
@@ -142,5 +182,8 @@ struct WooShippingServiceCardView: View {
                                                                           insuranceLabel: "Insurance (up to $100.00)",
                                                                           hasFreePickup: true,
                                                                           signatureRequiredLabel: "Signature Required (+$3.70)",
-                                                                          adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)"))
+                                                                          adultSignatureRequiredLabel: "Adult Signature Required (+$9.35)",
+                                                                          carbonNeutralLabel: "Carbon Neutral (+$4.45)",
+                                                                          saturdayDeliveryLabel: "Saturday Delivery (+$5.22)",
+                                                                          additionalHandlingLabel: nil))
 }

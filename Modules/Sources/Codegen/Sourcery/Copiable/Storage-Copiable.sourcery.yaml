@@ -1,7 +1,8 @@
-project: 
-    file: ../../../../../Storage/Storage.xcodeproj
-    target: 
-        name: Storage
+sources:
+    include:
+        - ../../../../../Modules/Sources/Storage/
 templates:
     - Models+Copiable.swifttemplate
-output: ../../../../../Storage/Storage/Model/Copiable/
+output: ../../../../../Modules/Sources/Storage/Model/Copiable/
+args:
+    moduleName: Storage

@@ -168,6 +168,7 @@ private extension WooShippingRefundView {
             orderID: 456,
             shippingLabelID: 789,
             carrierID: "usps",
+            shipmentID: "0",
             dateCreated: Date(),
             packageName: "unknown",
             rate: 12.11,

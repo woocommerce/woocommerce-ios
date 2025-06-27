@@ -1,5 +1,5 @@
 {
-  "originHash" : "db213abf864107f30f3a2cce9fe3ec5df5cbc822b1e21108607e19c074b5d965",
+  "originHash" : "3f91f4fe3ba570ba7c5696a40578f1e68793bb8d4e40f77bf2820c3a626465df",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -33,8 +33,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/wordpress-mobile/AztecEditor-iOS",
       "state" : {
-        "revision" : "f20f4102aab2dd9a14dffe5d42af069dcb08538f",
-        "version" : "1.20.0"
+        "revision" : "d741e3cfaa74c99ef092e5fddb87d4314b63e3ed"
       }
     },
     {
@@ -349,6 +348,15 @@
       "state" : {
         "revision" : "788e7879d38a839c4e348ab0762dcc0364e646a2",
         "version" : "0.10.1"
+      }
+    },
+    {
+      "identity" : "wormholy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pmusolino/Wormholy",
+      "state" : {
+        "revision" : "54fdf4d01ccffc8276faf9be32d7d375a0321cab",
+        "version" : "2.1.1"
       }
     },
     {

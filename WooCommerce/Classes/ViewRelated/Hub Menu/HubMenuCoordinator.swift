@@ -42,9 +42,9 @@ final class HubMenuCoordinator {
     }
 
     convenience init(tabContainerController: TabContainerController,
+                     storesManager: StoresManager = ServiceLocator.stores,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
                      willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
-        let storesManager = ServiceLocator.stores
         self.init(tabContainerController: tabContainerController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
@@ -60,6 +60,7 @@ final class HubMenuCoordinator {
     ///
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
+                                                  stores: storesManager,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController = hubMenuController {
             let navigationController = UINavigationController(rootViewController: hubMenuController)

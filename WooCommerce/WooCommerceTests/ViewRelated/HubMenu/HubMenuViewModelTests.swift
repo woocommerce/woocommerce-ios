@@ -568,7 +568,7 @@ final class HubMenuViewModelTests: XCTestCase {
     @MainActor
     func test_navigateToDestination_replaces_navigationPath_with_specified_destination() throws {
         // Given
-        let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
+        let generalAppSettings = try mockGeneralAppSettingsStorage()
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
@@ -595,7 +595,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
             .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
@@ -760,7 +759,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.InAppPurchases(),
             HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),
@@ -784,11 +782,10 @@ final class HubMenuViewModelTests: XCTestCase {
 }
 
 private extension HubMenuViewModelTests {
-    func mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: Bool) throws -> GeneralAppSettingsStorage {
+    func mockGeneralAppSettingsStorage() throws -> GeneralAppSettingsStorage {
         let fileStorage = MockInMemoryStorage()
         let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
         var settings = GeneralAppSettings.default
-        settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
         try storage.saveSettings(settings)
         return storage
     }

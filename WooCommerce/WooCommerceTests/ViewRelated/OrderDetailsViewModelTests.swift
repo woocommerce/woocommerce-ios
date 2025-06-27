@@ -89,7 +89,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_syncShippingLabels_with_a_non_virtual_product_dispatches_actions_correctly() async throws {
+    func test_syncShippingLabels_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
 
@@ -97,8 +97,68 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(thenReturn: plugin)
+        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, thenReturn: plugin)
+        whenSyncingLegacyShippingLabels(thenReturn: .success([]))
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        await viewModel.syncShippingLabels()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 3)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
+            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
+
+        // ShippingLabelAction.synchronizeShippingLabels
+        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
+        guard case let ShippingLabelAction.synchronizeShippingLabels(siteID, orderID, _) = thirdAction else {
+            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
+
+    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+        // Given
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
         whenSyncingShippingLabels(thenReturn: .success([]))
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
 
         // When
         await viewModel.syncShippingLabels()
@@ -107,7 +167,51 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 2)
 
         // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
+            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
+        // WooShippingAction.syncShippingLabels
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+        guard case let WooShippingAction.syncShippingLabels(siteID, orderID, _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(WooShippingAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
+
+    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_disabled_dispatches_actions_correctly() async throws {
+        // Given
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
+        whenSyncingLegacyShippingLabels(thenReturn: .success([]))
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        await viewModel.syncShippingLabels()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 3)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
         guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
@@ -116,10 +220,20 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
 
+        // SystemStatusAction.fetchSystemPlugin
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
         // ShippingLabelAction.synchronizeShippingLabels
-        let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
-        guard case let ShippingLabelAction.synchronizeShippingLabels(siteID, orderID, _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(ShippingLabelAction.self)")
+        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
+        guard case let ShippingLabelAction.synchronizeShippingLabels(siteID, orderID, _) = thirdAction else {
+            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
             return
         }
 
@@ -132,6 +246,12 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_without_a_non_virtual_product_returns_false() async throws {
         // Given
         storesManager.reset()
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -147,6 +267,12 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
 
@@ -159,6 +285,12 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
 
@@ -166,7 +298,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_checkShippingLabelCreationEligibility_with_a_non_virtual_product_dispatches_actions_correctly() async throws {
+    func test_checkShippingLabelCreationEligibility_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
 
@@ -176,8 +308,70 @@ final class OrderDetailsViewModelTests: XCTestCase {
         // Make sure the are plugins synced
         let path = SitePlugin.SupportedPluginPath.LegacyWCShip
         let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(thenReturn: plugin)
+        whenFetchingSystemPlugin(path: path, thenReturn: plugin)
+        whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        _ = await viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 3)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
+            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
+
+        // WooShippingAction.checkCreationEligibility
+        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID, orderID, _) = thirdAction else {
+            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
+
+    func test_checkShippingLabelCreationEligibility_with_wooshipping_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+        // Given
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // Make sure the are plugins synced
+        let path = SitePlugin.SupportedPluginPath.WooShipping
+        let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: path, thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -186,7 +380,53 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 2)
 
         // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
+            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
+        // WooShippingAction.checkCreationEligibility
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+        guard case let WooShippingAction.checkCreationEligibility(siteID, orderID, _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(WooShippingAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(orderID, order.orderID)
+    }
+
+    func test_checkShippingLabelCreationEligibility_when_feature_flag_disabled_dispatches_actions_correctly() async throws {
+        // Given
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+
+        storesManager.reset()
+        XCTAssertEqual(storesManager.receivedActions.count, 0)
+
+        // Make sure the are plugins synced
+        let path = SitePlugin.SupportedPluginPath.WooShipping
+        let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: path, thenReturn: plugin)
+        whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
+
+        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              featureFlagService: featureFlagService)
+
+        // When
+        _ = await viewModel.checkShippingLabelCreationEligibility()
+
+        // Then
+        XCTAssertEqual(storesManager.receivedActions.count, 3)
+
+        // SystemStatusAction.fetchSystemPlugin
+        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
         guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
@@ -195,10 +435,20 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(siteID, order.siteID)
         XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
 
-        // ShippingLabelAction.synchronizeShippingLabels
-        let secondAction = try XCTUnwrap(storesManager.receivedActions.last as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID, orderID, _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(ShippingLabelAction.self)")
+        // SystemStatusAction.fetchSystemPlugin
+        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
+        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = secondAction else {
+            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
+            return
+        }
+
+        XCTAssertEqual(siteID, order.siteID)
+        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+
+        // WooShippingAction.checkCreationEligibility
+        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
+        guard case let ShippingLabelAction.checkCreationEligibility(siteID, orderID, _) = thirdAction else {
+            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
             return
         }
 
@@ -509,22 +759,26 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
-    func whenFetchingSystemPlugin(thenReturn plugin: SystemPlugin?) {
+    func whenFetchingSystemPlugin(path: String? = nil, thenReturn plugin: SystemPlugin?) {
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .fetchSystemPlugin(_, _, onCompletion):
                 onCompletion(plugin)
             case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
                 onCompletion(plugin)
-            case let .fetchSystemPluginWithPath(_, _, onCompletion):
-                onCompletion(plugin)
+            case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion):
+                if let path, path != pluginPath {
+                    onCompletion(nil)
+                } else {
+                    onCompletion(plugin)
+                }
             default:
                 break
             }
         }
     }
 
-    func whenSyncingShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
+    func whenSyncingLegacyShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
                 case let .synchronizeShippingLabels(_, _, completion):
@@ -535,8 +789,30 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
-    func whenCheckingShippingLabelCreationEligibility(thenReturn isEligible: Bool) {
+    func whenSyncingShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
+        storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+                case let .syncShippingLabels(_, _, completion):
+                    completion(result)
+                default:
+                    break
+            }
+        }
+    }
+
+    func whenCheckingLegacyShippingLabelCreationEligibility(thenReturn isEligible: Bool) {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
+            switch action {
+                case let .checkCreationEligibility(_, _, onCompletion):
+                    onCompletion(isEligible)
+                default:
+                    break
+            }
+        }
+    }
+
+    func whenCheckingShippingLabelCreationEligibility(thenReturn isEligible: Bool) {
+        storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
                 case let .checkCreationEligibility(_, _, onCompletion):
                     onCompletion(isEligible)

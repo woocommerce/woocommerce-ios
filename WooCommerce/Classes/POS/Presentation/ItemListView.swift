@@ -50,18 +50,6 @@ struct ItemListView: View {
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
 
-    private var isCouponsFeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.enableCouponsInPointOfSale)
-    }
-
-    private var isSearchProductsFeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsInPOS)
-    }
-
-    private var isSearchCouponsFeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchCouponsInPOS)
-    }
-
     private var isBarcodeScani1FeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
     }
@@ -74,15 +62,6 @@ struct ItemListView: View {
         guard case .coupons = selectedItemListType else { return false }
         let itemListState = itemListState(selectedItemListType)
         return itemListState.isLoaded || itemListState.isEmpty
-    }
-
-    private var isSearchAllowed: Bool {
-        switch selectedItemListType {
-        case .products:
-            return isSearchProductsFeatureEnabled
-        case .coupons:
-            return isSearchCouponsFeatureEnabled
-        }
     }
 
     private var shouldShowHeaderItems: Bool {
@@ -114,9 +93,7 @@ struct ItemListView: View {
 
             TabView(selection: $selectedItemListType) {
                 itemListTabContent(.products(search: false))
-                if isCouponsFeatureEnabled {
-                    itemListTabContent(.coupons(search: false))
-                }
+                itemListTabContent(.coupons(search: false))
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
@@ -252,35 +229,30 @@ private extension ItemListView {
         VStack {
             POSPageHeaderView(items: headerViewItems, trailingContent: {
                 HStack {
-                    if isSearchAllowed {
-                        if isSearching {
-                            POSSearchField(
-                                searchTerm: $searchTerm,
-                                searchable: POSProductSearchable(itemListType: selectedItemListType,
-                                                                 itemsController: searchItemsController,
-                                                                 searchHistoryProvider: posModel.searchHistoryService),
-                                onBack: {
-                                    setSearch(false)
-                                }
-                            )
-                            .transition(.opacity.combined(with: .move(edge: .trailing)))
-                        } else {
-                            createCouponButton
-                                .renderedIf(isCouponsFeatureEnabled)
-
-                            simulatedScanButton
-                                .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
-
-                            POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                                analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
-                                setSearch(true)
+                    if isSearching {
+                        POSSearchField(
+                            searchTerm: $searchTerm,
+                            searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                             itemsController: searchItemsController,
+                                                             searchHistoryProvider: posModel.searchHistoryService),
+                            onBack: {
+                                setSearch(false)
                             }
-                            .transition(.opacity.combined(with: .scale))
-                        }
+                        )
+                        .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
                         createCouponButton
-                            .renderedIf(isCouponsFeatureEnabled)
+
+                        simulatedScanButton
+                            .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
+
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
+                            setSearch(true)
+                        }
+                        .transition(.opacity.combined(with: .scale))
                     }
+
                 }
             })
 
@@ -306,17 +278,15 @@ private extension ItemListView {
             )
         ]
 
-        if isCouponsFeatureEnabled {
-            items.append(
-                POSPageHeaderItem(
-                    title: Localization.couponsTitle,
-                    isSelected: selectedItemListType.isCoupons,
-                    action: {
-                        displayItemListType(.coupons(search: false))
-                    }
-                )
+        items.append(
+            POSPageHeaderItem(
+                title: Localization.couponsTitle,
+                isSelected: selectedItemListType.isCoupons,
+                action: {
+                    displayItemListType(.coupons(search: false))
+                }
             )
-        }
+        )
 
         return items
     }
@@ -352,7 +322,7 @@ private extension ItemListView {
             }
 
             Button {
-                posModel.barcodeScanned(barcodeScanSimulatorText)
+                posModel.barcodeScanned(.success(barcodeScanSimulatorText))
             } label: {
                 Text("Scan!")
             }
@@ -368,7 +338,11 @@ private extension ItemListView {
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
                     itemListType: selectedItemListType,
-                    baseItem: .root))
+                    baseItem: .root)) {
+                Task {
+                    await itemsController(selectedItemListType).loadItems(base: .root)
+                }
+            }
         case .coupons:
             PointOfSaleItemListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(

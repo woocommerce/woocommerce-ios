@@ -12,7 +12,7 @@ struct CartViewHelper {
 
     func shouldPreventCartEditing(orderState: PointOfSaleOrderState,
                                   paymentState: PointOfSalePaymentState) -> Bool {
-        guard paymentState.allowsCartEditing else {
+        guard paymentState.card.allowsCartEditing else {
             return true
         }
         return orderState.isSyncing
@@ -40,26 +40,21 @@ struct CartViewHelper {
     }
 }
 
-private extension PointOfSalePaymentState {
+private extension PointOfSaleCardPaymentState {
     var allowsCartEditing: Bool {
         switch self {
-        case .card(let cardPaymentState):
-            switch cardPaymentState {
-            case .processingPayment,
-                    .paymentError,
-                    .cardPaymentSuccessful,
-                    .validatingOrder,
-                    .preparingReader,
-                    .cardInserted:
-                return false
-            case .idle,
-                    .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .acceptingCard:
-                return true
-            }
-        case .cash:
+        case .processingPayment,
+                .paymentError,
+                .cardPaymentSuccessful,
+                .validatingOrder,
+                .preparingReader,
+                .cardInserted:
             return false
+        case .idle,
+                .validatingOrderError,
+                .paymentIntentCreationError,
+                .acceptingCard:
+            return true
         }
     }
 }

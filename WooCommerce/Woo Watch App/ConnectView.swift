@@ -1,5 +1,5 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
 
 /// View that instructs the user how to connect to the phone.
 ///

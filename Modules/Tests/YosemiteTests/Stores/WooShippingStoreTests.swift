@@ -1231,7 +1231,10 @@ private extension WooShippingStoreTests {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [sampleLabelRate()],
                                               signatureRequired: [],
-                                              adultSignatureRequired: [])]
+                                              adultSignatureRequired: [],
+                                              carbonNeutral: [],
+                                              saturdayDelivery: [],
+                                              additionalHandling: [])]
     }
 
     func sampleLabelRate() -> ShippingLabelCarrierRate {

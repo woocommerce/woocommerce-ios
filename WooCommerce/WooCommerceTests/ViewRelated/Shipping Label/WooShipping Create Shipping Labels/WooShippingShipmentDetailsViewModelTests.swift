@@ -414,18 +414,23 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
 
-        // When
         let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
                                                             shipment: sampleShipment,
                                                             shippingLabel: nil,
                                                             originAddress: originAddressSubject.eraseToAnyPublisher(),
                                                             destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+        let rate = WooShippingSelectedRate(rate: MockShippingLabelCarrierRate.makeRate(rate: 12.2),
+                                           signatureRate: nil,
+                                           adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 40.06),
+                                           carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 32.34),
+                                           saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 22.77),
+                                           additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 18.12))
 
         // When
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        viewModel.shippingService?.onSelectRate?(rate)
 
         // Then
-        XCTAssertEqual(viewModel.totalCost, "$40.06")
+        XCTAssertEqual(viewModel.totalCost, "$76.69")
     }
 
     func test_shouldShowCustomsForm_when_origin_and_destination_in_US_then_returns_false() {
@@ -817,6 +822,9 @@ private extension WooShippingShipmentDetailsViewModelTests {
                                                              isSelected: false,
                                                              isPickupFree: true,
                                                              deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil)
+                                                             deliveryDateGuaranteed: false) : nil,
+                                carbonNeutralRate: nil,
+                                saturdayDeliveryRate: nil,
+                                additionalHandlingRate: nil)
     }
 }

@@ -11,6 +11,12 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
     /// The selected signature requirement for this service rate.
     @Published var signatureRequirement: SignatureRequirement = .none
 
+    @Published private(set) var carbonNeutralSelected: Bool
+
+    @Published private(set) var saturdayDeliverySelected: Bool
+
+    @Published private(set) var additionalHandlingSelected: Bool
+
     /// Carrier logo for the service rate.
     let carrierLogo: UIImage?
 
@@ -41,14 +47,26 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
     /// Label if there is an option to require an adult signature.
     let adultSignatureRequiredLabel: String?
 
+    let carbonNeutralLabel: String?
+
+    let saturdayDeliveryLabel: String?
+
+    let additionalHandlingLabel: String?
+
     /// Completion callback
     typealias Completion = (_ rateTitle: String,
-                            _ signatureRequirement: SignatureRequirement) -> Void
+                            _ signatureRequirement: SignatureRequirement,
+                            _ carbonNeutral: Bool,
+                            _ saturdayDelivery: Bool,
+                            _ additionalHandling: Bool) -> Void
     private let onCompletion: Completion?
 
     init(id: String = UUID().uuidString,
          selected: Bool = false,
          signatureRequirement: SignatureRequirement = .none,
+         carbonNeutralSelected: Bool = false,
+         saturdayDeliverySelected: Bool = false,
+         additionalHandlingSelected: Bool = false,
          carrierLogo: UIImage?,
          title: String,
          rateLabel: String,
@@ -59,10 +77,16 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
          hasFreePickup: Bool,
          signatureRequiredLabel: String?,
          adultSignatureRequiredLabel: String?,
+         carbonNeutralLabel: String?,
+         saturdayDeliveryLabel: String?,
+         additionalHandlingLabel: String?,
          completion: Completion? = nil) {
         self.id = id
         self.selected = selected
         self.signatureRequirement = signatureRequirement
+        self.carbonNeutralSelected = carbonNeutralSelected
+        self.saturdayDeliverySelected = saturdayDeliverySelected
+        self.additionalHandlingSelected = additionalHandlingSelected
         self.carrierLogo = carrierLogo
         self.title = title
         self.rateLabel = rateLabel
@@ -73,15 +97,24 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         self.freePickupLabel = hasFreePickup ? Localization.freePickup : nil
         self.signatureRequiredLabel = signatureRequiredLabel
         self.adultSignatureRequiredLabel = adultSignatureRequiredLabel
+        self.carbonNeutralLabel = carbonNeutralLabel
+        self.saturdayDeliveryLabel = saturdayDeliveryLabel
+        self.additionalHandlingLabel = additionalHandlingLabel
         self.onCompletion = completion
     }
 
     convenience init(selected: Bool = false,
                      signatureRequired: Bool = false,
                      adultSignatureRequired: Bool = false,
+                     carbonNeutralSelected: Bool = false,
+                     saturdayDeliverySelected: Bool = false,
+                     additionalHandlingSelected: Bool = false,
                      rate: ShippingLabelCarrierRate,
                      signatureRate: ShippingLabelCarrierRate? = nil,
                      adultSignatureRate: ShippingLabelCarrierRate? = nil,
+                     carbonNeutralRate: ShippingLabelCarrierRate? = nil,
+                     saturdayDeliveryRate: ShippingLabelCarrierRate? = nil,
+                     additionalHandlingRate: ShippingLabelCarrierRate? = nil,
                      currencySettings: CurrencySettings = ServiceLocator.currencySettings,
                      completion: Completion? = nil) {
 
@@ -97,14 +130,15 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         }()
 
         let rateLabel = {
-            switch (signatureRequirement, signatureRate, adultSignatureRate) {
-            case (.signatureRequired, .some(let signatureRate), _):
-                currencyFormatter.formatAmount(Decimal(signatureRate.rate)) ?? ""
-            case (.adultSignatureRequired, _, .some(let adultSignatureRate)):
-                currencyFormatter.formatAmount(Decimal(adultSignatureRate.rate)) ?? ""
-            default:
-                currencyFormatter.formatAmount(Decimal(rate.rate)) ?? ""
-            }
+            let selectedRate = WooShippingSelectedRate(
+                rate: rate,
+                signatureRate: signatureRequirement == .signatureRequired ? signatureRate : nil,
+                adultSignatureRate: signatureRequirement == .adultSignatureRequired ? adultSignatureRate : nil,
+                carbonNeutralRate: carbonNeutralSelected ? carbonNeutralRate : nil,
+                saturdayDeliveryRate: saturdayDeliverySelected ? saturdayDeliveryRate : nil,
+                additionalHandlingRate: additionalHandlingSelected ? additionalHandlingRate : nil
+            )
+            return currencyFormatter.formatAmount(Decimal(selectedRate.totalRate)) ?? ""
         }()
 
         let daysToDeliveryLabel: String? = {
@@ -150,8 +184,35 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             return String(format: Localization.adultSignatureRequired, amount)
         }()
 
+        let carbonNeutralLabel: String? = {
+            guard let carbonNeutralRate else {
+                return nil
+            }
+            let amount = currencyFormatter.formatAmount(Decimal(carbonNeutralRate.rate - rate.rate)) ?? ""
+            return String(format: Localization.carbonNeural, amount)
+        }()
+
+        let saturdayDeliveryLabel: String? = {
+            guard let saturdayDeliveryRate else {
+                return nil
+            }
+            let amount = currencyFormatter.formatAmount(Decimal(saturdayDeliveryRate.rate - rate.rate)) ?? ""
+            return String(format: Localization.saturdayDelivery, amount)
+        }()
+
+        let additionalHandlingLabel: String? = {
+            guard let additionalHandlingRate else {
+                return nil
+            }
+            let amount = currencyFormatter.formatAmount(Decimal(additionalHandlingRate.rate - rate.rate)) ?? ""
+            return String(format: Localization.additionalHandling, amount)
+        }()
+
         self.init(selected: selected,
                   signatureRequirement: signatureRequirement,
+                  carbonNeutralSelected: carbonNeutralSelected,
+                  saturdayDeliverySelected: saturdayDeliverySelected,
+                  additionalHandlingSelected: additionalHandlingSelected,
                   carrierLogo: WooShippingCarrier(rawValue: rate.carrierID)?.logo,
                   title: rate.title,
                   rateLabel: rateLabel,
@@ -162,12 +223,19 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
                   hasFreePickup: rate.isPickupFree,
                   signatureRequiredLabel: signatureRequiredLabel,
                   adultSignatureRequiredLabel: adultSignatureRequiredLabel,
+                  carbonNeutralLabel: carbonNeutralLabel,
+                  saturdayDeliveryLabel: saturdayDeliveryLabel,
+                  additionalHandlingLabel: additionalHandlingLabel,
                   completion: completion)
     }
 
     /// Calls the completion callback with the rate title and signature requirement.
     func selectRate() {
-        onCompletion?(title, signatureRequirement)
+        onCompletion?(title,
+                      signatureRequirement,
+                      carbonNeutralSelected,
+                      saturdayDeliverySelected,
+                      additionalHandlingSelected)
     }
 
     /// Sets `signatureRequirement` when a signature option is tapped.
@@ -179,6 +247,18 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         }
         selectRate()
     }
+
+    func handleTap(on extraRate: ExtraRate) {
+        switch extraRate {
+        case .carbonNeutral:
+            carbonNeutralSelected.toggle()
+        case .saturdayDelivery:
+            saturdayDeliverySelected.toggle()
+        case .additionalHandling:
+            additionalHandlingSelected.toggle()
+        }
+        selectRate()
+    }
 }
 
 extension WooShippingServiceCardViewModel {
@@ -187,6 +267,12 @@ extension WooShippingServiceCardViewModel {
         case none
         case signatureRequired
         case adultSignatureRequired
+    }
+
+    enum ExtraRate {
+        case carbonNeutral
+        case saturdayDelivery
+        case additionalHandling
     }
 }
 
@@ -225,5 +311,23 @@ private extension WooShippingServiceCardViewModel {
                                                               value: "Adult Signature Required (+%1$@)",
                                                               comment: "Label when shipping rate has option to require an adult signature in " +
                                                               "Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)'")
+        static let carbonNeural = NSLocalizedString(
+            "wooShipping.createLabels.shippingService.carbonNeural",
+            value: "Carbon Neutral (+%1$@)",
+            comment: "Label when shipping rate has option for carbon neutral delivery in " +
+            "Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)'"
+        )
+        static let saturdayDelivery = NSLocalizedString(
+            "wooShipping.createLabels.shippingService.saturdayDelivery",
+            value: "Saturday Delivery (+%1$@)",
+            comment: "Label when shipping rate has option for Saturday delivery in " +
+            "Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)'"
+        )
+        static let additionalHandling = NSLocalizedString(
+            "wooShipping.createLabels.shippingService.additionalHandling",
+            value: "Additional Handling (+%1$@)",
+            comment: "Label when shipping rate has option for additional handling in " +
+            "Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)'"
+        )
     }
 }

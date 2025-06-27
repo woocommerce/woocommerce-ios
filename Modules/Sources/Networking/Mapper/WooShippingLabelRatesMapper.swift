@@ -41,7 +41,10 @@ private struct ShippingLabelDefaultBoxEnvelope: Decodable {
             return ShippingLabelCarriersAndRates(packageID: key,
                                                  defaultRates: value.defaultRates,
                                                  signatureRequired: value.signatureRequired,
-                                                 adultSignatureRequired: value.adultSignatureRequired)
+                                                 adultSignatureRequired: value.adultSignatureRequired,
+                                                 carbonNeutral: value.carbonNeutral,
+                                                 saturdayDelivery: value.saturdayDelivery,
+                                                 additionalHandling: value.additionalHandling)
         }
     }
 }

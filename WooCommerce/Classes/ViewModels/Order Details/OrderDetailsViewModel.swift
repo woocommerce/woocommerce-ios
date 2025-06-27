@@ -126,9 +126,7 @@ final class OrderDetailsViewModel {
     var orderNotes: [OrderNote] = [] {
         didSet {
             dataSource.orderNotes = orderNotes
-            Task { @MainActor in
-                await dataSource.reloadSections()
-            }
+            dataSource.reloadSections()
         }
     }
 
@@ -321,6 +319,16 @@ extension OrderDetailsViewModel {
             group.leave()
         }
 
+        // Receipt eligibility need to be synced after the order but before we complete the order sync group,
+        // otherwise we risk to crash due out of bounds when rendering the rest of the rows that require reloading sections.
+        group.enter()
+        Task { @MainActor in
+            defer {
+                group.leave()
+            }
+            dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
+        }
+
         group.enter()
         checkOrderAddOnFeatureSwitchState {
             onReloadSections?()
@@ -462,8 +470,8 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
-    func reloadSections() async {
-        await dataSource.reloadSections()
+    func reloadSections() {
+        dataSource.reloadSections()
     }
 }
 
@@ -696,32 +704,25 @@ extension OrderDetailsViewModel {
 
     @discardableResult
     @MainActor func syncShippingLabels() async -> [ShippingLabel] {
-        guard await localRequirementsForShippingLabelsAreFulfilled() else {
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
+        guard isRevampedFlow else {
+            /// old logic for syncing labels
+            if await localRequirementsForShippingLabelsAreFulfilled() {
+                return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            }
             return []
         }
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
-                switch result {
-                case .success(let shippingLabels):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .success,
-                        isRevampedFlow: isRevampedFlow
-                    ))
-                    continuation.resume(returning: shippingLabels)
-                case .failure(let error):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .failed(error: error),
-                        isRevampedFlow: isRevampedFlow
-                    ))
-                    if error as? DotcomError == .noRestRoute {
-                        DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-                    } else {
-                        DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-                    }
-                    continuation.resume(returning: [])
-                }
-            })
+
+        guard !orderContainsOnlyVirtualProducts else {
+            return []
+        }
+
+        if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
+            return await syncShippingLabelsForWooShipping()
+        } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
+            return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+        } else {
+            return []
         }
     }
 
@@ -779,20 +780,24 @@ extension OrderDetailsViewModel {
 
     @MainActor
     func checkShippingLabelCreationEligibility() async -> Bool {
-        guard await localRequirementsForShippingLabelsAreFulfilled() else {
+        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
+        guard isRevampedFlow else {
+            if await localRequirementsForShippingLabelsAreFulfilled() {
+                return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            }
             return false
         }
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
-                                                                         orderID: order.orderID) { [weak self] isEligible in
-                if isEligible, let orderStatus = self?.orderStatus?.status.rawValue {
-                    ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
-                                                   withProperties: ["order_status": orderStatus,
-                                                                    "is_revamped_flow": isRevampedFlow])
-                }
-                continuation.resume(returning: isEligible)
-            })
+
+        guard !orderContainsOnlyVirtualProducts else {
+            return false
+        }
+
+        if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
+            return await checkShippingLabelCreationEligibilityForWooShipping()
+        } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
+            return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+        } else {
+            return false
         }
     }
 
@@ -956,6 +961,75 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
+
+    @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { [weak self] isEligible in
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
+                continuation.resume(returning: isEligible)
+            })
+        }
+    }
+
+    @MainActor func checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: Bool) async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { [weak self] isEligible in
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: isRevampedFlow)
+                continuation.resume(returning: isEligible)
+            })
+        }
+    }
+
+    func handleShippingLabelCreationEligibilityResult(isEligible: Bool, isRevampedFlow: Bool) {
+        if isEligible, let orderStatus = orderStatus?.status.rawValue {
+            ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
+                                           withProperties: ["order_status": orderStatus,
+                                                            "is_revamped_flow": isRevampedFlow])
+        }
+    }
+
+    @MainActor func syncShippingLabelsForWooShipping() async -> [ShippingLabel] {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(WooShippingAction.syncShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
+                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: true) ?? []
+                continuation.resume(returning: labels)
+            })
+        }
+    }
+
+    @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> [ShippingLabel] {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
+                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: isRevampedFlow) ?? []
+                continuation.resume(returning: labels)
+            })
+        }
+    }
+
+    func handleShippingLabelSyncingResult(result: Result<[ShippingLabel], Error>, isRevampedFlow: Bool) -> [ShippingLabel] {
+        switch result {
+        case .success(let shippingLabels):
+            ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                result: .success,
+                isRevampedFlow: isRevampedFlow
+            ))
+            return shippingLabels
+        case .failure(let error):
+            ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                result: .failed(error: error),
+                isRevampedFlow: isRevampedFlow
+            ))
+            if error as? DotcomError == .noRestRoute {
+                DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
+            } else {
+                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+            }
+            return []
+        }
+    }
+
     @MainActor
     func isPluginActive(_ plugin: String) async -> Bool {
         return await isPluginActive([plugin])
@@ -991,6 +1065,15 @@ extension OrderDetailsViewModel {
                                                    orderID: order.orderID,
                                                    status: .pending, onCompletion: { _ in })
         stores.dispatch(action)
+    }
+
+    @MainActor
+    private func isEligibleForBackendReceipt() async -> Bool {
+        return await withCheckedContinuation { continuation in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status) { isEligible in
+                continuation.resume(returning: isEligible)
+            }
+        }
     }
 }
 

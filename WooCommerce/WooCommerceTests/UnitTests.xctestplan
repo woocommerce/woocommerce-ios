@@ -31,9 +31,9 @@
   "testTargets" : [
     {
       "target" : {
-        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
-        "identifier" : "B5C9DDFD2087FEC0006B910A",
-        "name" : "YosemiteTests"
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WordPressSharedTests",
+        "name" : "WordPressSharedTests"
       }
     },
     {
@@ -41,6 +41,28 @@
         "containerPath" : "container:..\/Modules",
         "identifier" : "HardwareTests",
         "name" : "HardwareTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "WordPressSharedObjCTests",
+        "name" : "WordPressSharedObjCTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "StorageTests",
+        "name" : "StorageTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "3F0904072D26A40800D8ACCE",
+        "name" : "WordPressAuthenticatorTests"
       }
     },
     {
@@ -67,13 +89,6 @@
     },
     {
       "target" : {
-        "containerPath" : "container:..\/Networking\/Networking.xcodeproj",
-        "identifier" : "B557D9EB209753AA005962F4",
-        "name" : "NetworkingTests"
-      }
-    },
-    {
-      "target" : {
         "containerPath" : "container:..\/Modules",
         "identifier" : "WooFoundationTests",
         "name" : "WooFoundationTests"
@@ -82,22 +97,8 @@
     {
       "target" : {
         "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedObjCTests",
-        "name" : "WordPressSharedObjCTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:",
-        "identifier" : "StorageTests",
-        "name" : "StorageTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:..\/Modules",
-        "identifier" : "WordPressSharedTests",
-        "name" : "WordPressSharedTests"
+        "identifier" : "NetworkingTests",
+        "name" : "NetworkingTests"
       }
     },
     {
@@ -108,11 +109,10 @@
       }
     },
     {
-      "enabled" : false,
       "target" : {
-        "containerPath" : "container:WooCommerce.xcodeproj",
-        "identifier" : "3F0904072D26A40800D8ACCE",
-        "name" : "WordPressAuthenticatorTests"
+        "containerPath" : "container:..\/Modules",
+        "identifier" : "YosemiteTests",
+        "name" : "YosemiteTests"
       }
     }
   ],

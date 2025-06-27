@@ -89,6 +89,7 @@ let package = Package(
         .package(url: "https://github.com/markiv/SwiftUI-Shimmer", from: "1.0.0"),
         .package(url: "https://github.com/nalexn/ViewInspector", from: "0.10.0"),
         .package(url: "https://github.com/onevcat/Kingfisher", from: "7.6.2"),
+        .package(url: "https://github.com/pmusolino/Wormholy", from: "2.0.0"),
         .package(url: "https://github.com/pavolkmet/ScrollViewSectionKit", from: "1.2.0"),
         .package(url: "https://github.com/Quick/Nimble.git", from: "13.0.0"),
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
@@ -166,6 +167,13 @@ let package = Package(
             dependencies: ["Difference", "Nimble"]
         ),
         .target(
+            name: "UITestsFoundation",
+            dependencies: [
+                .product(name: "ScreenObject", package: "ScreenObject"),
+                .product(name: "XCUITestHelpers", package: "ScreenObject"),
+            ]
+        ),
+        .target(
             name: "WooFoundation",
             dependencies: ["WooFoundationCore"]
         ),
@@ -229,6 +237,19 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: "NetworkingTests",
+            dependencies: [
+                "Codegen",
+                "Fakes",
+                "Networking",
+                "TestKit",
+                "WooFoundation",
+                "WordPressShared",
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
+            ],
+            resources: [.process("Responses")]
+        ),
+        .testTarget(
             name: "StorageTests",
             dependencies: [
                 "Storage",
@@ -253,6 +274,21 @@ let package = Package(
             dependencies: [.target(name: "WordPressShared")],
             resources: [.process("Resources")]
         ),
+        .testTarget(
+            name: "YosemiteTests",
+            dependencies: [
+                "Codegen",
+                "Fakes",
+                "TestKit",
+                "WooFoundation",
+                "WordPressShared",
+                "Yosemite"
+            ],
+            resources: [
+                .process("Resources"),
+                .process("../NetworkingTests/Responses")
+            ]
+        )
     ]
 )
 
@@ -274,10 +310,8 @@ let package = Package(
 
 enum XcodeTargetNames {
     static let fakes = "Fakes"
-    static let networkingTests = "NetworkingTests"
     static let notificationExtension = "NotificationExtension"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
-    static let uiTestsFoundation = "UITestsFoundation"
     static let wooCommerce = "WooCommerce"
     static let wooCommerceScreenshots = "WooCommerceScreenshots"
     static let wooCommerceTests = "WooCommerceTests"
@@ -285,16 +319,13 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
-    static let yosemiteTests = "YosemiteTests"
 }
 
 enum XcodeSupport {
     static var products: [Product] {
         [
-            XcodeTargetNames.networkingTests,
             XcodeTargetNames.notificationExtension,
             XcodeTargetNames.storeWidgetsExtension,
-            XcodeTargetNames.uiTestsFoundation,
             XcodeTargetNames.wooCommerce,
             XcodeTargetNames.wooCommerceScreenshots,
             XcodeTargetNames.wooCommerceTests,
@@ -302,24 +333,11 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
-            XcodeTargetNames.yosemiteTests
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
 
     static var targets: [Target] {
         [
-            .xcodeTarget(
-                XcodeTargetNames.networkingTests,
-                dependencies: [
-                    "Codegen",
-                    "Fakes",
-                    "Networking",
-                    "TestKit",
-                    "WooFoundation",
-                    "WordPressShared",
-                    .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
             .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
@@ -336,13 +354,6 @@ enum XcodeSupport {
                     "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.uiTestsFoundation,
-                dependencies: [
-                    .product(name: "ScreenObject", package: "ScreenObject"),
-                    .product(name: "XCUITestHelpers", package: "ScreenObject"),
                 ]
             ),
             .xcodeTarget(
@@ -375,12 +386,14 @@ enum XcodeSupport {
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                     .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                     .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
+                    .product(name: "Wormholy", package: "Wormholy"),
                     .product(name: "ZendeskSupportSDK", package: "support_sdk_ios"),
                 ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceScreenshots,
                 dependencies: [
+                    "UITestsFoundation",
                     .product(name: "Embassy", package: "Embassy"),
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency
@@ -404,6 +417,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceUITests,
                 dependencies: [
+                    "UITestsFoundation",
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]
@@ -440,17 +454,6 @@ enum XcodeSupport {
                     XcodeTargetNames.wordPressAuthenticator.asDependency,
                 ]
             ),
-            .xcodeTarget(
-                XcodeTargetNames.yosemiteTests,
-                dependencies: [
-                    "Codegen",
-                    "Fakes",
-                    "TestKit",
-                    "WooFoundation",
-                    "WordPressShared",
-                    "Yosemite"
-                ]
-            )
         ]
     }
 }

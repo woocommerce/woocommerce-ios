@@ -7,8 +7,6 @@ import ViewControllerPresentationSpy
 @testable import WooCommerce
 
 final class OrderDetailsViewControllerTests: XCTestCase {
-
-
     @MainActor
     func test_products_cell_is_not_visible_on_order_with_no_items() throws {
         // Given
@@ -31,7 +29,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
     }
 
     @MainActor
-    func test_products_cell_is_visible_on_order_with_items() async throws {
+    func test_products_cell_is_visible_on_order_with_items() throws {
         // Given
         let storageManager = MockStorageManager()
         let order = MockOrders().sampleOrderWithItems()
@@ -43,7 +41,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         // When
         _ = try XCTUnwrap(viewController.view)
         viewController.viewWillAppear(false)
-        await viewModel.reloadSections()
+        viewModel.reloadSections()
 
         // Then
         let mirror = try Self.mirror(of: viewController)
@@ -53,7 +51,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
     }
 
     @MainActor
-    func test_tapping_products_cell_presents_product_loader() async throws {
+    func test_tapping_products_cell_presents_product_loader() throws {
         // Given
         let presentationVerifier = PresentationVerifier()
         let storageManager = MockStorageManager()
@@ -66,7 +64,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         // When
         _ = try XCTUnwrap(viewController.view)
         viewController.viewWillAppear(false)
-        await viewModel.reloadSections()
+        viewModel.reloadSections()
 
         let mirror = try Self.mirror(of: viewController)
         let (_, indexPath) = try XCTUnwrap(Self.findCell(type: ProductDetailsTableViewCell.self, on: mirror.tableView))

@@ -2,6 +2,12 @@ import Foundation
 import Networking
 
 public enum WooShippingAction: Action {
+    /// Checks whether an order is eligible for shipping label creation.
+    ///
+    case checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  onCompletion: (_ isEligible: Bool) -> Void)
+
     /// Creates a custom package or activated a carrier package with provided package details.
     ///
     case createPackage(siteID: Int64,
@@ -98,6 +104,14 @@ public enum WooShippingAction: Action {
     case loadConfig(siteID: Int64,
                     orderID: Int64,
                     completion: (Result<WooShippingConfig, Error>) -> Void)
+
+    /// Sync shipping labels for a given order.
+    /// This uses the same endpoint as `loadConfig` but also stores shipping labels to the storage
+    /// and returns them in the completion closure.
+    ///
+    case syncShippingLabels(siteID: Int64,
+                            orderID: Int64,
+                            completion: (Result<[ShippingLabel], Error>) -> Void)
 
     /// Updates shipments for given order
     ///

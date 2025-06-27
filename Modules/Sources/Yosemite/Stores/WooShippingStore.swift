@@ -30,6 +30,8 @@ public final class WooShippingStore: Store {
         }
 
         switch action {
+        case let .checkCreationEligibility(siteID, orderID, onCompletion):
+            checkCreationEligibility(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .createPackage(let siteID, let customPackage, let predefinedOption, let completion):
             createPackage(siteID: siteID, customPackage: customPackage, predefinedOption: predefinedOption, completion: completion)
         case let .deletePackage(siteID, packageID, packageType, completion):
@@ -82,6 +84,8 @@ public final class WooShippingStore: Store {
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
+        case let .syncShippingLabels(siteID, orderID, completion):
+            syncShippingLabels(siteID: siteID, orderID: orderID, completion: completion)
         case let .updateShipment(siteID, orderID, shipmentToUpdate, completion):
             updateShipment(siteID: siteID,
                            orderID: orderID,
@@ -96,6 +100,34 @@ public final class WooShippingStore: Store {
 }
 
 private extension WooShippingStore {
+    /// Checks whether an order is eligible for shipping label creation.
+    ///
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  onCompletion: @escaping (_ isEligible: Bool) -> Void) {
+        remote.checkCreationEligibility(siteID: siteID,
+                                        orderID: orderID) { result in
+            switch result {
+            case .success(let eligibility):
+                if !eligibility.isEligible {
+                    if let reason = eligibility.reason {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation: \(reason)")
+                    } else {
+                        DDLogError("Order \(orderID) not eligible for shipping label creation")
+                    }
+                }
+                onCompletion(eligibility.isEligible)
+            case .failure(let error):
+                if error as? DotcomError == .noRestRoute {
+                    DDLogError("⚠️ Endpoint for shipping label creation eligibility is unreachable for order: \(orderID). WC Shipping plugin may be missing.")
+                } else {
+                    DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
+                }
+                onCompletion(false)
+            }
+        }
+    }
+
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage? = nil,
                        predefinedOption: WooShippingPredefinedSavedOption? = nil,
@@ -246,6 +278,28 @@ private extension WooShippingStore {
                                  originAddress: WooShippingAddress,
                                  completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
+    }
+
+    func syncShippingLabels(siteID: Int64,
+                            orderID: Int64,
+                            completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
+        remote.loadConfig(siteID: siteID, orderID: orderID, completion: { [weak self] result in
+            guard let self else { return }
+
+            switch result {
+            case .failure(let error):
+                completion(.failure(error))
+            case .success(let config):
+                guard let labels = config.shippingLabelData?.currentOrderLabels else {
+                    return completion(.success([]))
+                }
+                upsertShippingLabelsInBackground(siteID: siteID,
+                                                 orderID: orderID,
+                                                 shippingLabels: labels) {
+                    completion(.success(labels))
+                }
+            }
+        })
     }
 }
 
@@ -602,7 +656,7 @@ private extension WooShippingStore {
 
     /// Updates order's `dateModified` locally
     /// Used as temp workaround to reflect that the order instance was updated
-    private func setLastModifiedDateForOrder(siteID: Int64, orderID: Int64) {
+    func setLastModifiedDateForOrder(siteID: Int64, orderID: Int64) {
         storageManager.performAndSave({ derivedStorage in
             guard let storedOrder = derivedStorage.loadOrder(
                 siteID: siteID,
@@ -613,6 +667,70 @@ private extension WooShippingStore {
 
             storedOrder.dateModified = Date()
         }, completion: nil, on: .main)
+    }
+
+    /// Updates/inserts the specified readonly shipping label entities *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func upsertShippingLabelsInBackground(siteID: Int64,
+                                          orderID: Int64,
+                                          shippingLabels: [ShippingLabel],
+                                          onCompletion: @escaping () -> Void) {
+        if shippingLabels.isEmpty {
+            return onCompletion()
+        }
+
+        storageManager.performAndSave ({ [weak self] storage in
+            guard let self else { return }
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
+    func upsertShippingLabels(siteID: Int64,
+                              orderID: Int64,
+                              shippingLabels: [ShippingLabel],
+                              storageOrder: StorageOrder,
+                              using storage: StorageType) {
+        let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
+        for shippingLabel in shippingLabels {
+            let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
+            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
+            storageShippingLabel.update(with: shippingLabel)
+            storageShippingLabel.order = storageOrder
+
+            update(storageShippingLabel: storageShippingLabel, refund: shippingLabel.refund, using: storage)
+
+            let originAddress = storageShippingLabel.originAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            originAddress.update(with: shippingLabel.originAddress)
+            storageShippingLabel.originAddress = originAddress
+
+            let destinationAddress = storageShippingLabel.destinationAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
+            destinationAddress.update(with: shippingLabel.destinationAddress)
+            storageShippingLabel.destinationAddress = destinationAddress
+        }
+
+        // Now, remove any objects that exist in storage but not in shippingLabels
+        let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
+        storedLabels.filter {
+            !shippingLabelIDs.contains($0.shippingLabelID)
+        }.forEach {
+            storage.deleteObject($0)
+        }
+    }
+
+    func update(storageShippingLabel: StorageShippingLabel,
+                refund: ShippingLabelRefund?,
+                using storage: StorageType) {
+        if let refund {
+            let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
+            storageRefund.update(with: refund)
+            storageShippingLabel.refund = storageRefund
+        } else {
+            storageShippingLabel.refund = nil
+        }
     }
 }
 

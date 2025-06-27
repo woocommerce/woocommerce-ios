@@ -3,15 +3,18 @@
 
 22.7
 -----
+- [*] Shipping Labels: Fixed an issue where the purchase button would display a stale price after changing the origin address. [https://github.com/woocommerce/woocommerce-ios/pull/15795]
 - [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
 - [*] Shipping Labels: Improved shipment management UI by hiding remove/merge options instead of disabling them, hiding merge option for orders with 2 or fewer unfulfilled shipments, and hiding the ellipsis menu when no remove/merge actions are available [https://github.com/woocommerce/woocommerce-ios/pull/15760]
 - [**] POS: a POS tab in the tab bar is now available in the app for stores eligible for Point of Sale, instead of the previous entry point in the Menu tab. [https://github.com/woocommerce/woocommerce-ios/pull/15766]
 - [***] POS: Barcode scanning using Bluetooth scanners in Point of Sale (HID-based scanners are supported) [https://github.com/woocommerce/woocommerce-ios/pull/15776]
 - [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
 - [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
+- [*] Shipping Labels: Fixed mismatched indices of purchased labels on the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/15800]
 - [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
 - [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]
 - [*] Shipping Labels: Pre-fill custom forms with item description, value, and weight [https://github.com/woocommerce/woocommerce-ios/pull/15811]
+- [internal] POS: Improved scrolling and animation performance by refactoring the shadow implementation and updating the cart and checkout views. [https://github.com/woocommerce/woocommerce-ios/pull/15817]
 
 22.6
 -----

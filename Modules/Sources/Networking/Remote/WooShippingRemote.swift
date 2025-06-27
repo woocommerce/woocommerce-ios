@@ -8,6 +8,9 @@ public enum WooShippingPackageType: String {
 /// Protocol for `WooShippingRemote` mainly used for mocking.
 ///
 public protocol WooShippingRemoteProtocol {
+    func checkCreationEligibility(siteID: Int64,
+                                  orderID: Int64,
+                                  completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void)
     func createPackage(siteID: Int64,
                        customPackage: WooShippingCustomPackage?,
                        predefinedOption: WooShippingPredefinedSavedOption?,
@@ -81,6 +84,25 @@ public protocol WooShippingRemoteProtocol {
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
 ///
 public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
+
+    /// Checks eligibility for shipping label creation.
+    /// - Parameters:
+    ///     - siteID: Remote ID of the site.
+    ///     - orderID: Remote ID of the order that owns the shipping labels.
+    ///     - completion: Closure to be executed upon completion.
+    public func checkCreationEligibility(siteID: Int64,
+                                         orderID: Int64,
+                                         completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
+        let path = "\(Path.eligibility)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = ShippingLabelCreationEligibilityMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 
     /// Creates a new custom package.
     /// - Parameters:
@@ -270,8 +292,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
                 ParameterKey.packages: [ try package.toDictionary() ],
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
-                // TODO: `selected_rate_options` will be updated while adding UPS support PaJDVv-2Gf-p2
-                ParameterKey.selectedRateOptions: [:],
+                ParameterKey.selectedRateOptions: package.selectedRateOptions,
                 ParameterKey.featuresSupported: [Values.upsdap],
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
@@ -564,6 +585,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
 // MARK: Constants
 private extension WooShippingRemote {
     enum Path {
+        static let eligibility = "eligibility"
         static let packages = "packages"
         static let rates = "label/rate"
         static let accountSettings = "account/settings"

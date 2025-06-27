@@ -11,15 +11,29 @@ extension Notification.Name {
     public static let selectedSiteSettingsRefreshed = Notification.Name(rawValue: "selectedSiteSettingsRefreshed")
 }
 
+/// Source of site settings update.
+enum SettingsUpdateSource {
+    case initialLoad
+    case storageChange
+    case refresh
+}
+
+/// Protocol for accessing, refreshing, and observing site settings.
+protocol SelectedSiteSettingsProtocol {
+    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)> { get }
+    var siteSettings: [SiteSetting] { get }
+    func refresh()
+}
+
 /// Settings for the selected Site
 ///
-final class SelectedSiteSettings: NSObject {
+final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
     /// Async stream for observing site settings changes.
-    private let settingsContinuation: AsyncStream<(siteID: Int64, settings: [SiteSetting])>.Continuation
-    public let settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting])>
+    private let settingsContinuation: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>.Continuation
+    public let settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>
 
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
@@ -35,7 +49,7 @@ final class SelectedSiteSettings: NSObject {
         self.storageManager = storageManager
 
         // Sets up async stream with buffering to ensure current value is sent.
-        let (stream, continuation) = AsyncStream<(siteID: Int64, settings: [SiteSetting])>.makeStream(
+        let (stream, continuation) = AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>.makeStream(
             bufferingPolicy: .bufferingNewest(1)
         )
         self.settingsStream = stream
@@ -57,7 +71,7 @@ extension SelectedSiteSettings {
     /// Refreshes the currency settings for the current default site
     ///
     func refresh() {
-        refreshResultsPredicate()
+        refreshResultsPredicate(source: .refresh)
     }
 
     /// Setup: ResultsController
@@ -71,12 +85,12 @@ extension SelectedSiteSettings {
                 DDLogError("Error: no siteID found when setting site settings results.")
                 return
             }
-            settingsContinuation.yield((siteID: siteID, settings: siteSettings))
+            settingsContinuation.yield((siteID: siteID, settings: siteSettings, source: .storageChange))
         }
-        refreshResultsPredicate()
+        refreshResultsPredicate(source: .initialLoad)
     }
 
-    private func refreshResultsPredicate() {
+    private func refreshResultsPredicate(source: SettingsUpdateSource) {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             DDLogError("Error: no siteID found when attempting to refresh CurrencySettings results predicate.")
             return
@@ -92,7 +106,7 @@ extension SelectedSiteSettings {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
 
-        settingsContinuation.yield((siteID: siteID, settings: fetchedObjects))
+        settingsContinuation.yield((siteID: siteID, settings: fetchedObjects, source: source))
 
         NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
 

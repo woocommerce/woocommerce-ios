@@ -102,23 +102,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     }
 
     /// Shipping rates for the purchased label, with formatted amount.
-    var shippingRates: [(title: String, amount: String)] {
-        if let shippingLabel {
-            return [formatShippingRate(name: shippingLabel.serviceName, rate: shippingLabel.rate)]
-        } else if let selectedRate {
-            let baseRate = selectedRate.rate.rate
-            let formattedBaseRate = formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
-            let formattedSignatureRate = [
-                selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
-                selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
-                                                                              rate: $0.rate,
-                                                                              basedOn: baseRate) }
-            ].compacted()
-            return [formattedBaseRate] + formattedSignatureRate
-        } else {
-            return []
-        }
-    }
+    @Published private(set) var shippingRates: [(title: String, amount: String)] = []
 
     var currentPackage: ShippingLabelPackageSelected? {
         guard let selectedPackage else {
@@ -171,6 +155,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         observeLabelRates()
         observeCustomsForm()
         observeHAZMATChanges()
+        observeShippingRates()
+        setupSelectedRateReset()
     }
 
     /// Handles package selection for the shipping label.
@@ -225,7 +211,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.purchaseStep(state: .started))
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.index.description,
                                                          package: package,
-                                                         rate: selectedRate.purchaseRate,
+                                                         selectedRate: selectedRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
@@ -368,6 +354,47 @@ private extension WooShippingShipmentDetailsViewModel {
                 requiredInfoIsEntered && customsFormRequired
             }
             .assign(to: &$customsInformationIsCompleted)
+    }
+
+    private func observeShippingRates() {
+        $shippingLabel.combineLatest($selectedRate)
+            .map { [weak self] shippingLabel, selectedRate -> [(title: String, amount: String)] in
+                guard let self else { return [] }
+                if let shippingLabel {
+                    return [self.formatShippingRate(name: shippingLabel.serviceName, rate: shippingLabel.rate)]
+                } else if let selectedRate {
+                    let baseRate = selectedRate.rate.rate
+                    let formattedBaseRate = self.formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
+                    let formattedSignatureRate = [
+                        selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
+                        selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
+                                                                                      rate: $0.rate,
+                                                                                      basedOn: baseRate) }
+                    ].compacted()
+                    return [formattedBaseRate] + formattedSignatureRate
+                } else {
+                    return []
+                }
+            }
+            .assign(to: &$shippingRates)
+    }
+
+    /// Observes changes in shipment details and resets the selected rate.
+    /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
+    func setupSelectedRateReset() {
+        $destinationAddress
+            .combineLatest($originAddress)
+            .combineLatest($selectedPackage)
+            .combineLatest($shipmentWeight)
+            .combineLatest($hazmatCategory)
+            .combineLatest($customsForm)
+            // Drop the initial values set on initialization, so we only react to changes.
+            .dropFirst()
+            .sink { [weak self] _ in
+                self?.selectedRate = nil
+                self?.shippingService?.clearSelectedRate()
+            }
+            .store(in: &subscriptions)
     }
 
     /// Converts the package data to a `ShippingLabelPackageSelected` object.

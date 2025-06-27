@@ -23,6 +23,6 @@ import protocol Experiments.FeatureFlagService
 
     @MainActor
     func refreshEligibility() async throws {
-        // TODO: WOOMOB-720 - refresh eligibility refresh
+        // TODO: WOOMOB-720 - refresh eligibility
     }
 }

@@ -602,6 +602,7 @@
 		02E4A0832BFB1C4F006D4F87 /* POSEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */; };
 		02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */; };
 		02E4E7442E0EEF80003A31E7 /* POSIneligibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4E7432E0EEF76003A31E7 /* POSIneligibleView.swift */; };
+		02E4E7462E0EF84B003A31E7 /* POSEntryPointController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
 		02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */; };
@@ -3751,6 +3752,7 @@
 		02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEligibilityChecker.swift; sourceTree = "<group>"; };
 		02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewFromNoteParcelFactory.swift; sourceTree = "<group>"; };
 		02E4E7432E0EEF76003A31E7 /* POSIneligibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSIneligibleView.swift; sourceTree = "<group>"; };
+		02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEntryPointController.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
 		02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
@@ -8065,6 +8067,7 @@
 		200BA1572CF092150006DC5B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */,
 				68B681152D92577F0098D5CD /* PointOfSaleCouponsController.swift */,
 				200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */,
 				20CF75B92CF4E69000ACCF4A /* PointOfSaleOrderController.swift */,
@@ -15261,6 +15264,7 @@
 				0245465F24EE9106004F531C /* ProductVariationFormEventLogger.swift in Sources */,
 				269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */,
 				CE852E1F2D2EDC5400C7DBB6 /* WooShippingEditAddressView.swift in Sources */,
+				02E4E7462E0EF84B003A31E7 /* POSEntryPointController.swift in Sources */,
 				DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */,
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,

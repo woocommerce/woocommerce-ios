@@ -211,7 +211,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.purchaseStep(state: .started))
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.index.description,
                                                          package: package,
-                                                         rate: selectedRate.purchaseRate,
+                                                         selectedRate: selectedRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,

@@ -1,27 +1,42 @@
-import Yosemite
+import Codegen
 
 /// Represents a selected shipping rate with the Woo Shipping extension.
-struct WooShippingSelectedRate {
+public struct WooShippingSelectedRate: Equatable, GeneratedFakeable {
+
     /// Basic rate for the selected carrier without additional service.
-    let rate: ShippingLabelCarrierRate
+    public let rate: ShippingLabelCarrierRate
 
     /// Rate for shipping with signature, if selected.
-    let signatureRate: ShippingLabelCarrierRate?
+    public let signatureRate: ShippingLabelCarrierRate?
 
     /// Rate for shipping with adult signature, if selected.
-    let adultSignatureRate: ShippingLabelCarrierRate?
+    public let adultSignatureRate: ShippingLabelCarrierRate?
 
     /// Rate for shipping with carbon neutral, if selected.
-    let carbonNeutralRate: ShippingLabelCarrierRate?
+    public let carbonNeutralRate: ShippingLabelCarrierRate?
 
     /// Rate for shipping with Saturday delivery, if selected.
-    let saturdayDeliveryRate: ShippingLabelCarrierRate?
+    public let saturdayDeliveryRate: ShippingLabelCarrierRate?
 
     /// Rate for shipping with additional handling, if selected.
-    let additionalHandlingRate: ShippingLabelCarrierRate?
+    public let additionalHandlingRate: ShippingLabelCarrierRate?
+
+    public init(rate: ShippingLabelCarrierRate,
+                signatureRate: ShippingLabelCarrierRate? = nil,
+                adultSignatureRate: ShippingLabelCarrierRate? = nil,
+                carbonNeutralRate: ShippingLabelCarrierRate? = nil,
+                saturdayDeliveryRate: ShippingLabelCarrierRate? = nil,
+                additionalHandlingRate: ShippingLabelCarrierRate? = nil) {
+        self.rate = rate
+        self.signatureRate = signatureRate
+        self.adultSignatureRate = adultSignatureRate
+        self.carbonNeutralRate = carbonNeutralRate
+        self.saturdayDeliveryRate = saturdayDeliveryRate
+        self.additionalHandlingRate = additionalHandlingRate
+    }
 }
 
-extension WooShippingSelectedRate {
+public extension WooShippingSelectedRate {
     var purchaseRate: ShippingLabelCarrierRate {
         if let signatureRate = signatureRate {
             return signatureRate
@@ -50,7 +65,21 @@ extension WooShippingSelectedRate {
     }
 }
 
-private extension WooShippingSelectedRate {
+extension WooShippingSelectedRate {
+    var surchargeForSignatureRequirement: Double {
+        guard let signatureRate else {
+            return 0
+        }
+        return signatureRate.rate - rate.rate
+    }
+
+    var surchargeForAdultSignatureRequirement: Double {
+        guard let adultSignatureRate else {
+            return 0
+        }
+        return adultSignatureRate.rate - rate.rate
+    }
+
     var surchargeForCarbonNeutralRate: Double {
         guard let carbonNeutralRate else {
             return 0

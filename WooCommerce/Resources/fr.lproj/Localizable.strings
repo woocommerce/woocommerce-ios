@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-03 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-06-17 14:54:22+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -8907,6 +8907,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
 "blazeBudgetSettingView.dailySpend" = "Dépense quotidienne";
 
+/* Value format for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpendValue" = "%d $";
+
 /* Subtitle of the Blaze budget setting screen */
 "blazeBudgetSettingView.description" = "Combien souhaitez-vous dépenser pour votre campagne et combien de temps doit-elle durer ?";
 
@@ -8934,6 +8937,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "Planifier";
 
+/* Accessibility hint for the schedule section on the Blaze budget setting screen */
+"blazeBudgetSettingView.scheduleAccessibilityHint" = "Ouvre les réglages du calendrier de la campagne";
+
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Définir votre budget";
 
@@ -8945,6 +8951,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
 "blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ jusqu’au %2$@";
+
+/* The label for failed to load impressions */
+"blazeBudgetSettingViewModel.impressionsFailure" = "Échec du chargement des impressions";
+
+/* The label for loading impressions */
+"blazeBudgetSettingViewModel.impressionsLoading" = "Chargement…";
+
+/* The formatted estimated impression range for a Blaze campaign. Reads like: Estimated total impressions range is from 26100 to 35300 */
+"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "La plage d’impressions totales estimées va de %1$lld à %2$lld";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d jours";
@@ -9136,11 +9151,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@, %2$d jour à partir du %3$@";
 
+/* Text that will become a hyperlink in the second line of the terms of service checkbox text. */
+"blazeCampaignCreationFormViewModel.campaignDetailsLinkText" = "Je peux annuler à tout moment.";
+
 /* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
 "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "%1$@ par semaine à partir du %2$@";
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Partout";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "J’accepte des frais récurrents pouvant aller jusqu’à **$%1$.0f par semaine** à partir du **%2$@**. Les frais peuvent survenir à divers moments pendant la campagne.";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "J’accepte d’être facturé(e) jusqu’à **$%1$.0f** à partir du **%2$@**. Des frais peuvent survenir sous la forme d’un ou plusieurs paiements pendant que la campagne est active.";
+
+/* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "J’accepte des **frais hebdomadaires récurrents jusqu’à %1$.0f** à partir du **%2$@**. Les frais peuvent survenir à divers moments pendant la campagne.";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@ ; je ne paierai que les publicités livrées jusqu’à la résiliation.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "%.0f $ USD";
@@ -9507,6 +9537,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDate" = "Date de début";
+
+/* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDateAccessibilityHint" = "Appuyez deux fois pour modifier la date de début de la campagne";
+
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "La date de début de la campagne est le %@";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "Tous les appareils";
@@ -11304,6 +11340,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
 "payouts.currency.overview.pendingFunds" = "Fonds en attente";
 
+/* Accessibility label for the button to edit */
+"pencilEditButton.accessibility.editButtonAccessibilityLabel" = "Modifier";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "plan ayant expiré";
 
@@ -11312,6 +11351,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Extensions";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "Échec de la demande réseau";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "Aucune connexion internet";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "Produit parent introuvable pour la variante";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "Article scanné inconnu";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "Type d’article non pris en charge";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Paiement annulé sur le lecteur";
@@ -11685,6 +11739,9 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "Supprimer";
 
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "En cours de chargement…";
+
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "Modifier la commande";
 
@@ -11903,6 +11960,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "Pourquoi ne puis-je pas voir mes produits ?";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "%1$@ en stock";
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "Rupture de stock";
@@ -12418,6 +12478,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "Annuler";
 
+/* Label indicating the expiry date of a credit/debit card. The placeholder is the date. Reads like: Expire 08/26 */
+"shippingLabelPaymentMethod.expiry" = "Expirent le %1$@";
+
 /* Badge wording when the customs information is completed */
 "shippingLabels.customs.completedBadge" = "Terminé";
 
@@ -12880,6 +12943,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "Voir les détails du produit";
+
+/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.cancel" = "Annuler";
+
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "J’accepte le %1$@.";
+
+/* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
+"upsTermsView.checkbox2" = "Je n’expédierai pas d’%1$@ non autorisés par UPS®, ni aucun article réglementé sans les autorisations requises.";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "J’accepte également le %1$@.";
+
+/* Button to confirm all agreements on the UPS Terms and Conditions view */
+"upsTermsView.confirmButton" = "Confirmer et continuer";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorMessage" = "Une erreur inattendue s’est produite lors de la confirmation de votre acceptation. Veuillez réessayer.";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorTitle" = "Erreur lors de la confirmation de l’acceptation";
+
+/* Message on the UPS Terms and Conditions view */
+"upsTermsView.message" = "Pour commencer à expédier depuis cette adresse avec UPS®, vous devez accepter les conditions générales suivantes :";
+
+/* Link to the prohibited items on the UPS Terms and Conditions view */
+"upsTermsView.prohibitedItems" = "Articles interdits";
+
+/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.retry" = "Réessayer";
+
+/* Title label for the origin address on the UPS Terms and Conditions view */
+"upsTermsView.shippingFrom" = "Expédition depuis";
+
+/* Link to the technology agreement on the UPS Terms and Conditions view */
+"upsTermsView.technologyAgreement" = "Contrat relatif aux technologies UPS®";
+
+/* Link to the terms of service on the UPS Terms and Conditions view */
+"upsTermsView.termsOfService" = "Conditions d’utilisation d’UPS®";
+
+/* Title of the UPS Terms and Conditions view */
+"upsTermsView.title" = "Conditions générales d’UPS®";
 
 /* Label displayed on video media items. */
 "video" = "vidéo";
@@ -13391,6 +13496,15 @@ which should be translated separately and considered part of this sentence. */
 /* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
 "wooShipping.createLabels.splitShipment.movingCompletionFormat" = "%1$@ déplacé(s) vers %2$@";
 
+/* Cancel button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.cancel" = "Annuler";
+
+/* Retry button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "Réessayer";
+
+/* Title of the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.title" = "Impossible d’enregistrer les modifications. Veuillez réessayer.";
+
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.splitShipment.shipmentFormat" = "Envoi %1$d";
 
@@ -13640,6 +13754,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "Expédiez-vous des marchandises ou matières dangereuses ?";
 
+/* Button to dismiss the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.doneButton" = "Terminé";
+
+/* Notice displayed after adding a new payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.methodAddedNotice" = "Moyen de paiement ajouté";
+
+/* Title of the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.webViewTitle" = "Ajouter un moyen de paiement";
+
+/* Button to confirm a credit/debit for purchasing a shipping label */
+"wooShippingPaymentMethodsView.confirmButton" = "Utiliser cette carte";
+
+/* Button to dismiss an error alert on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.cancel" = "Annuler";
+
+/* Button to retry an action on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.retry" = "Réessayer";
+
+/* Title of the error alert when confirming a payment method for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.confirmErrorTitle" = "Impossible de confirmer le moyen de paiement";
+
+/* Label of the toggle to enable emailing receipt upon purchasing a shipping label */
+"wooShippingPaymentMethodsView.emailReceipt" = "Envoyer le reçu par e-mail";
+
 /* Action button on the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.actionButton" = "Carte de crédit ou de débit";
 
@@ -13648,6 +13786,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.title" = "Ajouter un moyen de paiement";
+
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
+"wooShippingPaymentMethodsView.noteWithUsername" = "Les cartes de crédit sont récupérées à partir du compte WordPress.com suivant : %1$@<@%2$@>.";
+
+/* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
+"wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "Seul le propriétaire du site peut gérer les moyens de paiement des étiquettes d’expédition. Veuillez contacter le propriétaire de la boutique %1$@ (%2$@) pour gérer les moyens de paiement";
+
+/* Title of the error alert when refresh payment methods for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.refreshErrorTitle" = "Impossible d’actualiser vos moyens de paiement";
 
 /* Subtitle of the payment method sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.subtitle" = "Choisissez un moyen de paiement.";

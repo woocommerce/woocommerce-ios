@@ -201,6 +201,7 @@ public typealias WooShippingConfig = Networking.WooShippingConfig
 public typealias WooShippingUpdateShipment = Networking.WooShippingUpdateShipment
 public typealias WooShippingShipmentItem = Networking.WooShippingShipmentItem
 public typealias WooShippingShipments = Networking.WooShippingShipments
+public typealias WooShippingSelectedRate = Networking.WooShippingSelectedRate
 public typealias WPComPlan = Networking.WPComPlan
 public typealias WPComSitePlan = Networking.WPComSitePlan
 public typealias LoadSiteCurrentPlanError = Networking.LoadSiteCurrentPlanError

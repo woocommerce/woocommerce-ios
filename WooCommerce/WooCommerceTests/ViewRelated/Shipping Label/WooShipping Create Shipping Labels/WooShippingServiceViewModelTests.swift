@@ -134,12 +134,20 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
         // When
         viewModel.loadLabelRates(for: samplePackage)
-        viewModel.selectRate(standardRate, signatureRate: nil, adultSignatureRate: nil)
+        viewModel.selectRate(standardRate,
+                             signatureRate: nil,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: nil,
+                             saturdayDeliveryRate: nil,
+                             additionalHandlingRate: nil)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.selectedRate?.signatureRate)
         XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertNil(viewModel.selectedRate?.carbonNeutralRate)
+        XCTAssertNil(viewModel.selectedRate?.saturdayDeliveryRate)
+        XCTAssertNil(viewModel.selectedRate?.additionalHandlingRate)
         XCTAssertEqual(viewModel.selectedRate?.rate.title, standardRate.title)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
@@ -152,7 +160,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
         // When
         viewModel.loadLabelRates(for: samplePackage)
-        viewModel.selectRate(sampleStandardRates()[1], signatureRate: sampleSignatureRates().first, adultSignatureRate: nil)
+        viewModel.selectRate(sampleStandardRates()[1],
+                             signatureRate: sampleSignatureRates().first,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: nil,
+                             saturdayDeliveryRate: nil,
+                             additionalHandlingRate: nil)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
@@ -170,12 +183,43 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
         // When
         viewModel.loadLabelRates(for: samplePackage)
-        viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: sampleAdultSignatureRates().first)
+        viewModel.selectRate(sampleStandardRates()[1],
+                             signatureRate: nil,
+                             adultSignatureRate: sampleAdultSignatureRates().first,
+                             carbonNeutralRate: nil,
+                             saturdayDeliveryRate: nil,
+                             additionalHandlingRate: nil)
 
         // Then
         XCTAssertNotNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.selectedRate?.signatureRate)
         XCTAssertNotNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
+    }
+
+    func test_selecting_service_card_extra_rate_updates_expected_values() {
+        // Given
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+        viewModel.selectRate(sampleStandardRates()[1],
+                             signatureRate: nil,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 45.99),
+                             saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 22.4),
+                             additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 20.53))
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedRate)
+        XCTAssertNil(viewModel.selectedRate?.signatureRate)
+        XCTAssertNil(viewModel.selectedRate?.adultSignatureRate)
+        XCTAssertNotNil(viewModel.selectedRate?.carbonNeutralRate)
+        XCTAssertNotNil(viewModel.selectedRate?.saturdayDeliveryRate)
+        XCTAssertNotNil(viewModel.selectedRate?.additionalHandlingRate)
         XCTAssertEqual(viewModel.serviceTabs[0].cards[1].selected, true)
     }
 
@@ -191,7 +235,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
 
         // When
         viewModel.loadLabelRates(for: samplePackage)
-        viewModel.selectRate(sampleStandardRates()[1], signatureRate: nil, adultSignatureRate: nil)
+        viewModel.selectRate(sampleStandardRates()[1],
+                             signatureRate: nil,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: nil,
+                             saturdayDeliveryRate: nil,
+                             additionalHandlingRate: nil)
 
         // Then
         XCTAssertEqual(selectedRate?.rate, sampleStandardRates()[1])
@@ -274,7 +323,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let emptyRates = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                                         defaultRates: [],
                                                         signatureRequired: [],
-                                                        adultSignatureRequired: [])]
+                                                        adultSignatureRequired: [],
+                                                        carbonNeutral: [],
+                                                        saturdayDelivery: [],
+                                                        additionalHandling: [])]
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .loadLabelRates(_, _, _, _, packages, completion):
@@ -358,7 +410,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let updatedRates = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                                           defaultRates: [newRate],
                                                           signatureRequired: [],
-                                                          adultSignatureRequired: [])]
+                                                          adultSignatureRequired: [],
+                                                          carbonNeutral: [],
+                                                          saturdayDelivery: [],
+                                                          additionalHandling: [])]
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .loadLabelRates(_, _, _, _, packages, completion):
@@ -374,7 +429,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
                                                     stores: stores)
 
         viewModel.loadLabelRates(for: samplePackage)
-        viewModel.selectRate(oldStandardRate, signatureRate: nil, adultSignatureRate: nil)
+        viewModel.selectRate(oldStandardRate,
+                             signatureRate: nil,
+                             adultSignatureRate: nil,
+                             carbonNeutralRate: nil,
+                             saturdayDeliveryRate: nil,
+                             additionalHandlingRate: nil)
         let oldSelectedRate = try XCTUnwrap(viewModel.selectedRate)
 
         // When
@@ -402,7 +462,10 @@ private extension WooShippingServiceViewModelTests {
         [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                        defaultRates: sampleStandardRates(),
                                        signatureRequired: sampleSignatureRates(),
-                                       adultSignatureRequired: sampleAdultSignatureRates())]
+                                       adultSignatureRequired: sampleAdultSignatureRates(),
+                                       carbonNeutral: [],
+                                       saturdayDelivery: [],
+                                       additionalHandling: [])]
     }
 
     func sampleStandardRates() -> [ShippingLabelCarrierRate] {

@@ -14,12 +14,22 @@ struct MockSystemStatusActionHandler: MockActionHandler {
             synchronizeSystemPlugins(siteID: siteID) { result in
                 onCompletion(result.map { SystemInformation(systemPlugins: $0) })
             }
+        case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
+            let systemPlugins = objectGraph.systemPlugins(for: siteID)
+            let filteredSystemPlugin = systemPlugins.first { $0.name == systemPluginName }
+            let matchingPlugin = systemPlugins.first { $0.name == systemPluginName && $0.active } ?? filteredSystemPlugin
+            onCompletion(matchingPlugin)
         case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
             let systemPlugins = objectGraph.systemPlugins(for: siteID)
             let filteredSystemPlugins = systemPlugins.first { systemPluginNameList.contains($0.name) }
             onCompletion(filteredSystemPlugins)
-        default:
-            break
+        case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
+            let systemPlugins = objectGraph.systemPlugins(for: siteID)
+            let matchingPlugin = systemPlugins.first { $0.plugin == pluginPath }
+            onCompletion(matchingPlugin)
+        case .fetchSystemStatusReport(_, let onCompletion):
+            // For now, returns a failure since this mock doesn't implement system status report fetching.
+            onCompletion(.failure(NSError(domain: "MockSystemStatusActionHandler", code: 1, userInfo: [:])))
         }
     }
 

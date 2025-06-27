@@ -1027,9 +1027,12 @@ private extension ShippingLabelStoreTests {
 
     func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
-                                             defaultRates: [sampleShippingLabelCarrierRate()],
-                                             signatureRequired: [],
-                                             adultSignatureRequired: [])]
+                                              defaultRates: [sampleShippingLabelCarrierRate()],
+                                              signatureRequired: [],
+                                              adultSignatureRequired: [],
+                                              carbonNeutral: [],
+                                              saturdayDelivery: [],
+                                              additionalHandling: [])]
     }
 
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {

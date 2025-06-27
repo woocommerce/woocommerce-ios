@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-06-17 14:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -9164,13 +9164,13 @@ If your translation of that term also happens to contains a hyphen, please be su
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "Accetto un addebito ricorrente che non superi un importo di **$%1$.0f a settimana**, a partire dal giorno **%2$@**. Il momento in cui avvengono gli addebiti può variare durante la campagna.";
 
 /* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
-"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "Accetto un addebito che non superi un importo di **$%1$.0f**, a partire da giorno **%2$@**. Durante il periodo in cui la campagna è attiva, gli addebiti possono essere corrisposti in uno o più pagamenti.";
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "Accetto un addebito che non superi un importo di **$%1$.0f**, a partire dal giorno **%2$@**. Durante il periodo in cui la campagna è attiva, gli addebiti possono essere corrisposti in uno o più pagamenti.";
 
 /* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "Accetto un addebito **settimanale ricorrente che non superi un importo di $%1$.0f**, a partire dal giorno **%2$@**. Il momento in cui avvengono gli addebiti può variare durante la campagna.";
 
 /* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
-"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@. Corrisponderò solo l'importo degli annunci pubblicitari consegnati prima della cancellazione.";
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@. Corrisponderò solo l'importo degli annunci pubblicitari inviati prima della cancellazione.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$ %.0f";

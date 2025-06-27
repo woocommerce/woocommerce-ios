@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-06-19 14:48:10+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -8959,7 +8959,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "blazeBudgetSettingViewModel.impressionsLoading" = "Загрузка…";
 
 /* The formatted estimated impression range for a Blaze campaign. Reads like: Estimated total impressions range is from 26100 to 35300 */
-"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "Предполагаемый общий объём показов — от %1$lld до %2$lld";
+"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "Предполагаемый общий объём показов — от %1$lld до %2$lld";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d дн.";
@@ -12966,7 +12966,7 @@ which should be translated separately and considered part of this sentence. */
 "upsTermsView.errorTitle" = "Ошибка при подтверждении согласия";
 
 /* Message on the UPS Terms and Conditions view */
-"upsTermsView.message" = "Чтобы приступить к доставке с этого адреса посредством UPS®, нам необходимо получить ваше согласие со следующими правилами и условиями:";
+"upsTermsView.message" = "Чтобы приступить к доставке с этого адреса посредством UPS®, нам необходимо получить ваше согласие со следующими правилами и условиями.";
 
 /* Link to the prohibited items on the UPS Terms and Conditions view */
 "upsTermsView.prohibitedItems" = "Предметы, запрещённые к пересылке";
@@ -13788,7 +13788,7 @@ which should be translated separately and considered part of this sentence. */
 "wooShippingPaymentMethodsView.emptyView.title" = "Добавить способ оплаты";
 
 /* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
-"wooShippingPaymentMethodsView.noteWithUsername" = "Сведения о кредитных картах получены из следующей учётной записи WordPress.com: %1$@.<@%2$@>";
+"wooShippingPaymentMethodsView.noteWithUsername" = "Сведения о кредитных картах получены из следующей учётной записи WordPress.com: %1$@ <@%2$@>.";
 
 /* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
 "wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "Только владелец сайта может управлять способами оплаты транспортных этикеток. Чтобы управлять способами оплаты, свяжитесь с владельцем магазина %1$@ (%2$@).";

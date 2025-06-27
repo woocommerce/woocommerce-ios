@@ -92,6 +92,9 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
 extension WooShippingPackageDataRepresentable {
     func dimensionsDescription(unit: String) -> String {
+        guard height.isNotEmpty, let numericHeight = Int(height), numericHeight > 0 else {
+            return "\(length) x \(width) \( unit)"
+        }
         return "\(length) x \(width) x \(height) \( unit)"
     }
 

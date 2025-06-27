@@ -8,6 +8,7 @@ struct HIDBarcodeParserTests {
     func testDefaultConfiguration() {
         let configuration = HIDBarcodeParserConfiguration.default
         #expect(configuration.terminatingStrings == ["\r", "\n"])
+        #expect(configuration.minimumBarcodeLength == 6)
     }
 
     @Test("Custom configuration uses specified terminating strings")
@@ -21,11 +22,11 @@ struct HIDBarcodeParserTests {
 
     @Test("Parser processes complete barcode scan")
     func testCompleteScan() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let parser = HIDBarcodeParser(
             configuration: testConfiguration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -35,16 +36,21 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "3"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes == ["123"])
+        #expect(results.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123")
+        } else {
+            Issue.record("Expected success result")
+        }
     }
 
     @Test("Parser processes multiple scans")
     func testMultipleScans() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let parser = HIDBarcodeParser(
             configuration: testConfiguration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -60,16 +66,26 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "6"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes == ["123", "456"])
+        #expect(results.count == 2)
+        if case .success(let barcode1) = results[0] {
+            #expect(barcode1 == "123")
+        } else {
+            Issue.record("Expected success result for first scan")
+        }
+        if case .success(let barcode2) = results[1] {
+            #expect(barcode2 == "456")
+        } else {
+            Issue.record("Expected success result for second scan")
+        }
     }
 
     @Test("Parser handles cancelled scan")
     func testCancelledScan() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let parser = HIDBarcodeParser(
             configuration: testConfiguration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -87,12 +103,17 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "6"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes == ["456"])
+        #expect(results.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "456")
+        } else {
+            Issue.record("Expected success result")
+        }
     }
 
-    @Test("Parser ignores scans below minimum length")
+    @Test("Parser notifies of scans below minimum length")
     func testMinimumLength() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r"],
             minimumBarcodeLength: 4,
@@ -100,8 +121,8 @@ struct HIDBarcodeParserTests {
         )
         let parser = HIDBarcodeParser(
             configuration: configuration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -111,18 +132,27 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "3"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes.isEmpty)
+        #expect(results.count == 1)
+        if case .failure(let error) = results.first {
+            if case HIDBarcodeParserError.scanTooShort(let barcode) = error {
+                #expect(barcode == "123")
+            } else {
+                Issue.record("Expected scanTooShort error")
+            }
+        } else {
+            Issue.record("Expected failure result")
+        }
     }
 
-    @Test("Parser ignores slow typing")
+    @Test("Parser notifies of slow typing timeout")
     func testSlowTyping() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let configuration = HIDBarcodeParserConfiguration.default
         let mockTimeProvider = MockTimeProvider()
         let parser = HIDBarcodeParser(
             configuration: configuration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             },
             timeProvider: mockTimeProvider
         )
@@ -135,18 +165,27 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "4"))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes.isEmpty)
+        #expect(results.count == 2)
+        if case .failure(let error) = results.first {
+            if case HIDBarcodeParserError.timedOut(let barcode) = error {
+                #expect(barcode == "123")
+            } else {
+                Issue.record("Expected timedOut error")
+            }
+        } else {
+            Issue.record("Expected failure result")
+        }
     }
 
     @Test("Parser accepts slowish scans")
     func testSlowScans() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let configuration = HIDBarcodeParserConfiguration.default
         let mockTimeProvider = MockTimeProvider()
         let parser = HIDBarcodeParser(
             configuration: configuration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             },
             timeProvider: mockTimeProvider
         )
@@ -160,14 +199,23 @@ struct HIDBarcodeParserTests {
         mockTimeProvider.advance(by: 0.199)
         parser.processKeyPress(MockUIKey(character: "4"))
         mockTimeProvider.advance(by: 0.199)
+        parser.processKeyPress(MockUIKey(character: "5"))
+        mockTimeProvider.advance(by: 0.199)
+        parser.processKeyPress(MockUIKey(character: "6"))
+        mockTimeProvider.advance(by: 0.199)
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes == ["1234"])
+        #expect(results.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123456")
+        } else {
+            Issue.record("Expected success result")
+        }
     }
 
     @Test("Parser handles multiple terminating strings")
     func testMultipleTerminatingStrings() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let configuration = HIDBarcodeParserConfiguration(
             terminatingStrings: ["\r", "\n", "\t"],
             minimumBarcodeLength: 4,
@@ -175,8 +223,8 @@ struct HIDBarcodeParserTests {
         )
         let parser = HIDBarcodeParser(
             configuration: configuration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -193,16 +241,26 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "8"))
         parser.processKeyPress(MockUIKey(character: "\t"))
 
-        #expect(scannedCodes == ["1234", "5678"])
+        #expect(results.count == 2)
+        if case .success(let barcode1) = results[0] {
+            #expect(barcode1 == "1234")
+        } else {
+            Issue.record("Expected success result for first scan")
+        }
+        if case .success(let barcode2) = results[1] {
+            #expect(barcode2 == "5678")
+        } else {
+            Issue.record("Expected success result for second scan")
+        }
     }
 
     @Test("Parser ignores excluded keys as input")
     func testExcludedKeysInput() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let parser = HIDBarcodeParser(
             configuration: testConfiguration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -215,16 +273,21 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "6", keyCode: .keyboardDownArrow))
         parser.processKeyPress(MockUIKey(character: "\r"))
 
-        #expect(scannedCodes == ["123"])
+        #expect(results.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123")
+        } else {
+            Issue.record("Expected success result")
+        }
     }
 
     @Test("Parser allows excluded keys as terminators")
     func testExcludedKeysTerminators() {
-        var scannedCodes: [String] = []
+        var results: [Result<String, Error>] = []
         let parser = HIDBarcodeParser(
             configuration: testConfiguration,
-            onScan: { code in
-                scannedCodes.append(code)
+            onScan: { result in
+                results.append(result)
             }
         )
 
@@ -234,7 +297,42 @@ struct HIDBarcodeParserTests {
         parser.processKeyPress(MockUIKey(character: "3"))
         parser.processKeyPress(MockUIKey(character: "\n", keyCode: .keyboardDownArrow))
 
-        #expect(scannedCodes == ["123"])
+        #expect(results.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123")
+        } else {
+            Issue.record("Expected success result")
+        }
+    }
+
+    @Test("Parser handles scan too short error with default configuration")
+    func testScanTooShortWithDefaultConfiguration() {
+        var results: [Result<String, Error>] = []
+        let parser = HIDBarcodeParser(
+            configuration: .default,
+            onScan: { result in
+                results.append(result)
+            }
+        )
+
+        // Try to scan a barcode that's too short for default config (min length 6)
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "4"))
+        parser.processKeyPress(MockUIKey(character: "5"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
+
+        #expect(results.count == 1)
+        if case .failure(let error) = results.first {
+            if case HIDBarcodeParserError.scanTooShort(let barcode) = error {
+                #expect(barcode == "12345")
+            } else {
+                Issue.record("Expected scanTooShort error")
+            }
+        } else {
+            Issue.record("Expected failure result")
+        }
     }
 }
 

@@ -265,4 +265,40 @@ final class DefaultImageServiceTests: XCTestCase {
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+
+    func testDownloadAndCacheImageForImageView_withEmptyBounds_usesDefaultThumbnailSize() {
+        // Given
+        let originalFeatureFlagService = ServiceLocator.featureFlagService
+        defer {
+            ServiceLocator.setFeatureFlagService(originalFeatureFlagService)
+        }
+
+        ServiceLocator.setFeatureFlagService(
+            MockFeatureFlagService(
+                isProductImageOptimizedHandlingEnabled: true
+            )
+        )
+
+        let mockImageView = UIImageView(frame: .zero)
+        let mockCache = MockImageCache(name: "Testing")
+        let mockDownloader = MockKingfisherImageDownloader(imagesByKey: [url.absoluteString: testImage])
+        imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
+
+        // When
+        imageService.downloadAndCacheImageForImageView(
+            mockImageView,
+            with: url.absoluteString,
+            placeholder: nil,
+            progressBlock: nil,
+            completion: nil
+        )
+
+        // Then
+        guard let downsamplingProcessor = mockDownloader.capturedProcessor as? DownsamplingImageProcessor else {
+            XCTFail("DownsamplingImageProcessor not found or not the correct type")
+            return
+        }
+
+        XCTAssertEqual(downsamplingProcessor.size, CGSize(width: 800, height: 800))
+    }
 }

@@ -45,6 +45,9 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    private var siteSettingsEligibility: POSEligibilityState?
+    private var featureFlagEligibility: POSEligibilityState?
+
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -144,6 +147,7 @@ private extension POSTabEligibilityChecker {
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
+        self.siteSettingsEligibility = await siteSettingsEligibility
         switch await siteSettingsEligibility {
         case .eligible:
             break
@@ -155,6 +159,7 @@ private extension POSTabEligibilityChecker {
             }
         }
 
+        self.featureFlagEligibility = await featureFlagEligibility
         switch await featureFlagEligibility {
         case .eligible:
             return true
@@ -215,6 +220,10 @@ private extension POSTabEligibilityChecker {
 
 private extension POSTabEligibilityChecker {
     func checkSiteSettingsEligibility() async -> POSEligibilityState {
+        if let siteSettingsEligibility {
+            return siteSettingsEligibility
+        }
+
         // Waits for the first site settings that matches the given site ID.
         let siteSettings = await waitForSiteSettingsRefresh()
         guard siteSettings.isNotEmpty else {
@@ -263,9 +272,13 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     @MainActor
     func checkRemoteFeatureEligibility() async -> POSEligibilityState {
+        if let featureFlagEligibility {
+            return featureFlagEligibility
+        }
+
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        await withCheckedContinuation { [weak self] continuation in
+        return await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
             }

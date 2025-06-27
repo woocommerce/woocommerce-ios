@@ -529,6 +529,33 @@ struct POSTabEligibilityCheckerTests {
         // Then
         #expect(result == false)
     }
+
+    @Test func checkEligibility_uses_cached_values_after_checkVisibility_when_i2_feature_is_enabled() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When checkVisibility first (which caches siteSettingsEligibility and featureFlagEligibility)
+        let visibilityResult = await checker.checkVisibility()
+
+        // And site settings and feature flag eligibility changes
+        setupCountry(country: .ca, currency: .AMD)
+        accountWhitelistedInBackend(false)
+
+        // Then checkEligibility should use cached values for site settings and feature flags
+        let eligibilityResult = await checker.checkEligibility()
+
+        // Then - both should return the expected results, demonstrating caching works
+        #expect(visibilityResult == true)
+        #expect(eligibilityResult == .eligible)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {

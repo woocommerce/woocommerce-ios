@@ -82,6 +82,39 @@ final class WooShippingServiceCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.additionalHandlingLabel, "Additional Handling (+$3.89)")
     }
 
+    func test_it_inits_with_expected_values_with_extra_services_negative_surcharge() {
+        // Given
+        let viewModel = WooShippingServiceCardViewModel(selected: true,
+                                                        signatureRequired: true,
+                                                        carbonNeutralSelected: true,
+                                                        saturdayDeliverySelected: false,
+                                                        additionalHandlingSelected: true,
+                                                        rate: MockShippingLabelCarrierRate.makeRate(rate: 25.95, insurance: "100"),
+                                                        signatureRate: MockShippingLabelCarrierRate.makeRate(rate: 25.69),
+                                                        adultSignatureRate: MockShippingLabelCarrierRate.makeRate(rate: 33.05),
+                                                        carbonNeutralRate: MockShippingLabelCarrierRate.makeRate(rate: 26.15),
+                                                        saturdayDeliveryRate: MockShippingLabelCarrierRate.makeRate(rate: 25.69),
+                                                        additionalHandlingRate: MockShippingLabelCarrierRate.makeRate(rate: 38.9),
+                                                        currencySettings: CurrencySettings())
+
+        // Then
+        XCTAssertEqual(viewModel.selected, true)
+        XCTAssertEqual(viewModel.signatureRequirement, .signatureRequired)
+        XCTAssertEqual(viewModel.title, "USPS - Parcel Select Mail")
+        XCTAssertEqual(viewModel.daysToDeliveryLabel, "2 business days")
+        XCTAssertEqual(viewModel.rateLabel, "$38.84")
+        XCTAssertEqual(viewModel.carrierLogo, UIImage(named: "shipping-label-usps-logo"))
+        XCTAssertEqual(viewModel.trackingLabel, "Tracking")
+        XCTAssertEqual(viewModel.insuranceLabel, "Insurance (up to $100.00)")
+        XCTAssertEqual(viewModel.freePickupLabel, "Free pickup")
+        XCTAssertEqual(viewModel.extraInfoLabel, "Includes tracking, insurance (up to $100.00), free pickup")
+        XCTAssertEqual(viewModel.signatureRequiredLabel, "Signature Required (-$0.26)")
+        XCTAssertEqual(viewModel.adultSignatureRequiredLabel, "Adult Signature Required (+$7.10)")
+        XCTAssertEqual(viewModel.carbonNeutralLabel, "Carbon Neutral (+$0.20)")
+        XCTAssertEqual(viewModel.saturdayDeliveryLabel, "Saturday Delivery (-$0.26)")
+        XCTAssertEqual(viewModel.additionalHandlingLabel, "Additional Handling (+$12.95)")
+    }
+
     func test_insuranceLabel_shows_expected_value_for_non_number_insurance() {
         // Given
         let viewModel = WooShippingServiceCardViewModel(rate: MockShippingLabelCarrierRate.makeRate(insurance: "limited"))

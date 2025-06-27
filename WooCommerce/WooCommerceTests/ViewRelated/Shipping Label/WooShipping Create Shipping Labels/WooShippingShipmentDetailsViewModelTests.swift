@@ -325,7 +325,14 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
     func test_changing_customs_form_loads_new_label_rates_with_updated_customs_form() {
         // Given
-        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(quantity: 2, productID: 1)
+        let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(
+            description: "Shirt",
+            quantity: 2,
+            value: 9.99,
+            weight: 0.5,
+            productID: 1
+        )
+
         let expectedCustomsForm = ShippingLabelCustomsForm.fake().copy(contentsType: .gift,
                                                                        restrictionType: .quarantine,
                                                                        nonDeliveryOption: .abandon,

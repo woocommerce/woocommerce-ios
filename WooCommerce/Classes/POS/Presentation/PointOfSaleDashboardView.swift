@@ -119,7 +119,7 @@ struct PointOfSaleDashboardView: View {
     private var contentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
-            HStack {
+            HStack(spacing: 0) {
                 if posModel.orderStage == .building {
                     ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                                  searchTerm: $viewStateCoordinator.searchTerm)

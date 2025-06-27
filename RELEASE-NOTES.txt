@@ -10,6 +10,8 @@
 - [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
 - [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
 - [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
+- [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]
+- [*] Shipping Labels: Pre-fill custom forms with item description, value, and weight [https://github.com/woocommerce/woocommerce-ios/pull/15811]
 
 22.6
 -----

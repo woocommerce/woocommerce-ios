@@ -19,6 +19,8 @@ struct WooShippingServiceCardView: View {
                     Text(viewModel.rateLabel)
                         .bold()
                 }
+                .fixedSize(horizontal: false, vertical: true)
+
                 if viewModel.selected {
                     VStack(alignment: .leading) {
                         if let daysToDelivery = viewModel.daysToDeliveryLabel {
@@ -29,26 +31,28 @@ struct WooShippingServiceCardView: View {
                         Group {
                             VStack(alignment: .leading, spacing: 0) {
                                 if let tracking = viewModel.trackingLabel {
-                                    HStack {
+                                    HStack(alignment: .firstTextBaseline) {
                                         checkmark
                                         Text(tracking)
                                     }
                                 }
                                 if let insurance = viewModel.insuranceLabel {
-                                    HStack {
+                                    HStack(alignment: .firstTextBaseline) {
                                         checkmark
                                         Text(insurance)
                                     }
                                 }
                                 if let freePickup = viewModel.freePickupLabel {
-                                    HStack {
+                                    HStack(alignment: .firstTextBaseline) {
                                         checkmark
                                         Text(freePickup)
                                     }
                                 }
                             }
+                            .fixedSize(horizontal: false, vertical: true)
+
                             if let signatureRequired = viewModel.signatureRequiredLabel {
-                                HStack {
+                                HStack(alignment: .firstTextBaseline) {
                                     selectionCircle(selected: viewModel.signatureRequirement == .signatureRequired)
                                     Text(signatureRequired)
                                 }
@@ -58,7 +62,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let adultSignatureRequired = viewModel.adultSignatureRequiredLabel {
-                                HStack {
+                                HStack(alignment: .firstTextBaseline) {
                                     selectionCircle(selected: viewModel.signatureRequirement == .adultSignatureRequired)
                                     Text(adultSignatureRequired)
                                 }
@@ -68,7 +72,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let carbonNeutralLabel = viewModel.carbonNeutralLabel {
-                                HStack {
+                                HStack(alignment: .firstTextBaseline) {
                                     selectionCircle(selected: viewModel.carbonNeutralSelected)
                                     Text(carbonNeutralLabel)
                                 }
@@ -78,7 +82,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let saturdayDeliveryLabel = viewModel.saturdayDeliveryLabel {
-                                HStack {
+                                HStack(alignment: .firstTextBaseline) {
                                     selectionCircle(selected: viewModel.saturdayDeliverySelected)
                                     Text(saturdayDeliveryLabel)
                                 }
@@ -88,7 +92,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let additionalHandlingLabel = viewModel.additionalHandlingLabel {
-                                HStack {
+                                HStack(alignment: .firstTextBaseline) {
                                     selectionCircle(selected: viewModel.additionalHandlingSelected)
                                     Text(additionalHandlingLabel)
                                 }
@@ -99,6 +103,7 @@ struct WooShippingServiceCardView: View {
                             }
                         }
                         .font(.subheadline)
+                        .fixedSize(horizontal: false, vertical: true)
                     }
                 } else {
                     Group {
@@ -112,6 +117,7 @@ struct WooShippingServiceCardView: View {
                         }
                     }
                     .font(.footnote)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -122,6 +128,7 @@ struct WooShippingServiceCardView: View {
         .roundedBorder(cornerRadius: 8,
                        lineColor: viewModel.selected ? Color(.primary) : Color(.separator),
                        lineWidth: viewModel.selected ? 2 : 1)
+        .contentShape(Rectangle())
         .onTapGesture {
             viewModel.selectRate()
         }

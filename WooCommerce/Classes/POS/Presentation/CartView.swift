@@ -32,7 +32,7 @@ struct CartView: View {
                 POSPageHeaderView(title: Localization.cartTitle,
                                   backButtonConfiguration: backButtonConfiguration,
                                   trailingContent: {
-                    DynamicHStack(horizontalAlignment: .trailing, verticalAlignment: .center, spacing: Constants.cartHeaderElementSpacing) {
+                    HStack(spacing: Constants.cartHeaderElementSpacing) {
                         if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.purchasableItems.count) {
                             Text(itemsInCartLabel)
                                 .font(Constants.itemsFont)
@@ -42,13 +42,9 @@ struct CartView: View {
                                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                         }
 
-                        Button {
+                        CartClearMenuButton(removeAllItemsFromCart: {
                             posModel.removeAllItemsFromCart()
-                            ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
-                        } label: {
-                            Text(Localization.clearButtonTitle)
-                        }
-                        .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                        })
                         .renderedIf(shouldShowClearCartButton)
                     }
                 })
@@ -137,10 +133,6 @@ private extension CartView {
             "pos.cartView.cartTitle",
             value: "Cart",
             comment: "Title at the header for the Cart view.")
-        static let clearButtonTitle = NSLocalizedString(
-            "pos.cartView.clearButtonTitle",
-            value: "Clear",
-            comment: "Title for the 'Clear' button to remove all products from the Cart.")
         static let addItemsToCartHint = NSLocalizedString(
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
@@ -219,6 +211,37 @@ private extension CartView {
         .background(backgroundColor.ignoresSafeArea(.all))
     }
 
+}
+
+@available(iOS 17.0, *)
+private struct CartClearMenuButton: View {
+    let removeAllItemsFromCart: () -> Void
+
+    var body: some View {
+        Menu {
+            Button(role: .destructive,
+                   action: {
+                removeAllItemsFromCart()
+                ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
+            }) {
+                Text(Localization.clearButtonTitle)
+            }
+
+        } label: {
+            Image(systemName: "trash")
+                .font(.posButtonSymbolMedium)
+                .foregroundStyle(Color.posOnSurface)
+                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                .accessibilityLabel(Localization.clearButtonTitle)
+        }
+    }
+
+    enum Localization {
+        static let clearButtonTitle = NSLocalizedString(
+            "pos.cartView.clearButtonTitle.1",
+            value: "Clear cart",
+            comment: "Title for the 'Clear cart' confirmation button to remove all products from the Cart.")
+    }
 }
 
 @available(iOS 17.0, *)

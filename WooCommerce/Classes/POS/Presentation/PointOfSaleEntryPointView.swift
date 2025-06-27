@@ -1,11 +1,40 @@
 import SwiftUI
+import protocol Experiments.FeatureFlagService
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+
+@available(iOS 17.0, *)
+@Observable final class POSEntryPointController {
+    private(set) var eligibilityState: POSEligibilityState?
+    private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let featureFlagService: FeatureFlagService
+
+    init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.posEligibilityChecker = eligibilityChecker
+        self.featureFlagService = featureFlagService
+
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) else {
+            self.eligibilityState = .eligible
+            return
+        }
+        Task { @MainActor in
+            eligibilityState = await posEligibilityChecker.checkEligibility()
+        }
+    }
+
+    @MainActor
+    func refreshEligibility() async throws {
+        // TODO: WOOMOB-720 - reason based eligibility refresh
+        eligibilityState = await posEligibilityChecker.checkEligibility()
+    }
+}
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
+    @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -30,7 +59,8 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol) {
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -43,15 +73,25 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
     }
 
     var body: some View {
         Group {
-            if let posModel = posModel {
-                PointOfSaleDashboardView()
-                    .environment(posModel)
-            } else {
+            switch posEntryPointController.eligibilityState {
+            case .none:
                 PointOfSaleLoadingView()
+            case .eligible:
+                if let posModel = posModel {
+                    PointOfSaleDashboardView()
+                        .environment(posModel)
+                } else {
+                    PointOfSaleLoadingView()
+                }
+            case let .ineligible(reason):
+                POSIneligibleView(reason: reason, onRefresh: {
+                    try await posEntryPointController.refreshEligibility()
+                })
             }
         }
         .task {
@@ -96,7 +136,8 @@ struct PointOfSaleEntryPointView: View {
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
-                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
+                              barcodeScanService: PointOfSalePreviewBarcodeScanService(),
+                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0))
 }
 
 #endif

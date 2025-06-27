@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// A view that displays when the Point of Sale (POS) feature is not available for the current store.
+/// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
 struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void

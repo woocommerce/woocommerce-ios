@@ -746,7 +746,8 @@ private extension MainTabBarController {
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
-            storesManager: stores
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

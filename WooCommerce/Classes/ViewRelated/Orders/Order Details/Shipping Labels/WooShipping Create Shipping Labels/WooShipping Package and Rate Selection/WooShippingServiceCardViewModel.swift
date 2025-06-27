@@ -168,11 +168,19 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
         let extras = [trackingLabel, insuranceLabel?.localizedLowercase, freePickupLabel].compactMap { $0 }
         let extraInfoLabel = extras.isNotEmpty ? extras.joined(separator: ", ") : nil
 
+        func formatSurcharge(serviceRate: Double) -> String {
+            let amount = Decimal(serviceRate - rate.rate)
+            let isNegative = amount < 0
+            let formattedAmount = currencyFormatter.formatAmount(amount, isNegative: isNegative) ?? ""
+            let prefix = isNegative ? "" : "+"
+            return prefix + formattedAmount
+        }
+
         let signatureRequiredLabel: String? = {
             guard let signatureRate else {
                 return nil
             }
-            let amount = currencyFormatter.formatAmount(Decimal(signatureRate.rate - rate.rate)) ?? ""
+            let amount = formatSurcharge(serviceRate: signatureRate.rate)
             return String(format: Localization.signatureRequired, amount)
         }()
 
@@ -180,7 +188,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             guard let adultSignatureRate else {
                 return nil
             }
-            let amount = currencyFormatter.formatAmount(Decimal(adultSignatureRate.rate - rate.rate)) ?? ""
+            let amount = formatSurcharge(serviceRate: adultSignatureRate.rate)
             return String(format: Localization.adultSignatureRequired, amount)
         }()
 
@@ -188,7 +196,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             guard let carbonNeutralRate else {
                 return nil
             }
-            let amount = currencyFormatter.formatAmount(Decimal(carbonNeutralRate.rate - rate.rate)) ?? ""
+            let amount = formatSurcharge(serviceRate: carbonNeutralRate.rate)
             return String(format: Localization.carbonNeural, amount)
         }()
 
@@ -196,7 +204,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             guard let saturdayDeliveryRate else {
                 return nil
             }
-            let amount = currencyFormatter.formatAmount(Decimal(saturdayDeliveryRate.rate - rate.rate)) ?? ""
+            let amount = formatSurcharge(serviceRate: saturdayDeliveryRate.rate)
             return String(format: Localization.saturdayDelivery, amount)
         }()
 
@@ -204,7 +212,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             guard let additionalHandlingRate else {
                 return nil
             }
-            let amount = currencyFormatter.formatAmount(Decimal(additionalHandlingRate.rate - rate.rate)) ?? ""
+            let amount = formatSurcharge(serviceRate: additionalHandlingRate.rate)
             return String(format: Localization.additionalHandling, amount)
         }()
 
@@ -303,29 +311,29 @@ private extension WooShippingServiceCardViewModel {
         static let freePickup = NSLocalizedString("wooShipping.createLabels.shippingService.freePickup",
                                                   value: "Free pickup",
                                                   comment: "Label when shipping rate includes free pickup in Woo Shipping label creation flow.")
-        static let signatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.signatureRequired",
-                                                         value: "Signature Required (+%1$@)",
+        static let signatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.signatureRequiredLabel",
+                                                         value: "Signature Required (%1$@)",
                                                          comment: "Label when shipping rate has option to require a signature in " +
                                                          "Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)'")
-        static let adultSignatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.adultSignatureRequired",
-                                                              value: "Adult Signature Required (+%1$@)",
+        static let adultSignatureRequired = NSLocalizedString("wooShipping.createLabels.shippingService.adultSignatureRequiredLabel",
+                                                              value: "Adult Signature Required (%1$@)",
                                                               comment: "Label when shipping rate has option to require an adult signature in " +
                                                               "Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)'")
         static let carbonNeural = NSLocalizedString(
             "wooShipping.createLabels.shippingService.carbonNeural",
-            value: "Carbon Neutral (+%1$@)",
+            value: "Carbon Neutral (%1$@)",
             comment: "Label when shipping rate has option for carbon neutral delivery in " +
             "Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)'"
         )
         static let saturdayDelivery = NSLocalizedString(
             "wooShipping.createLabels.shippingService.saturdayDelivery",
-            value: "Saturday Delivery (+%1$@)",
+            value: "Saturday Delivery (%1$@)",
             comment: "Label when shipping rate has option for Saturday delivery in " +
             "Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)'"
         )
         static let additionalHandling = NSLocalizedString(
             "wooShipping.createLabels.shippingService.additionalHandling",
-            value: "Additional Handling (+%1$@)",
+            value: "Additional Handling (%1$@)",
             comment: "Label when shipping rate has option for additional handling in " +
             "Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)'"
         )

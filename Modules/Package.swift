@@ -167,6 +167,13 @@ let package = Package(
             dependencies: ["Difference", "Nimble"]
         ),
         .target(
+            name: "UITestsFoundation",
+            dependencies: [
+                .product(name: "ScreenObject", package: "ScreenObject"),
+                .product(name: "XCUITestHelpers", package: "ScreenObject"),
+            ]
+        ),
+        .target(
             name: "WooFoundation",
             dependencies: ["WooFoundationCore"]
         ),
@@ -305,7 +312,6 @@ enum XcodeTargetNames {
     static let fakes = "Fakes"
     static let notificationExtension = "NotificationExtension"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
-    static let uiTestsFoundation = "UITestsFoundation"
     static let wooCommerce = "WooCommerce"
     static let wooCommerceScreenshots = "WooCommerceScreenshots"
     static let wooCommerceTests = "WooCommerceTests"
@@ -320,7 +326,6 @@ enum XcodeSupport {
         [
             XcodeTargetNames.notificationExtension,
             XcodeTargetNames.storeWidgetsExtension,
-            XcodeTargetNames.uiTestsFoundation,
             XcodeTargetNames.wooCommerce,
             XcodeTargetNames.wooCommerceScreenshots,
             XcodeTargetNames.wooCommerceTests,
@@ -349,13 +354,6 @@ enum XcodeSupport {
                     "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
-                ]
-            ),
-            .xcodeTarget(
-                XcodeTargetNames.uiTestsFoundation,
-                dependencies: [
-                    .product(name: "ScreenObject", package: "ScreenObject"),
-                    .product(name: "XCUITestHelpers", package: "ScreenObject"),
                 ]
             ),
             .xcodeTarget(
@@ -395,6 +393,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceScreenshots,
                 dependencies: [
+                    "UITestsFoundation",
                     .product(name: "Embassy", package: "Embassy"),
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency
@@ -418,6 +417,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceUITests,
                 dependencies: [
+                    "UITestsFoundation",
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency
                 ]

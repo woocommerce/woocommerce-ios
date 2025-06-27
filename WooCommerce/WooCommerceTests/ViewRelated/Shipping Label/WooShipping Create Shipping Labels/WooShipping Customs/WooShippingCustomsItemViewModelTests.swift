@@ -9,6 +9,8 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
                                                     itemProductID: 22,
                                                     itemQuantity: 1,
+                                                    itemValue: 0,
+                                                    itemWeight: 0,
                                                     currencySymbol: "$")
     }
 
@@ -52,11 +54,12 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
                                                     itemProductID: 22,
                                                     itemQuantity: 1,
+                                                    itemValue: 0,
+                                                    itemWeight: 0,
                                                     currencySymbol: "$")
 
         // Then
         XCTAssertNil(viewModel.hsTariffNumberTotalValue)
-
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_hsTariffNumber_is_empty_returns_nil() {
@@ -64,6 +67,8 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
                                                     itemProductID: 22,
                                                     itemQuantity: 1,
+                                                    itemValue: 0,
+                                                    itemWeight: 0,
                                                     currencySymbol: "$")
 
         // When
@@ -72,7 +77,6 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.hsTariffNumberTotalValue)
-
     }
 
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_$_but_invalid_hs_tariff_number_returns_nil() {
@@ -80,10 +84,11 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
                                                     itemProductID: 22,
                                                     itemQuantity: 1,
+                                                    itemValue: 0,
+                                                    itemWeight: 0,
                                                     currencySymbol: "$")
         viewModel.hsTariffNumber = "123"
         viewModel.valuePerUnit = "1000"
-
 
         // Then
         XCTAssertNil(viewModel.hsTariffNumberTotalValue)
@@ -94,6 +99,8 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",
                                                     itemProductID: 22,
                                                     itemQuantity: 2,
+                                                    itemValue: 0,
+                                                    itemWeight: 0,
                                                     currencySymbol: "$")
         viewModel.valuePerUnit = "3000"
         viewModel.hsTariffNumber = "123456"

@@ -10,12 +10,12 @@ import SwiftUI
 struct BarcodeScannerContainer: View {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
-    /// Callback that is triggered when a barcode is successfully scanned
-    let onScan: (String) -> Void
+    /// Callback that is triggered when a barcode scan completes (success or failure)
+    let onScan: (Result<String, Error>) -> Void
 
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
-        onScan: @escaping (String) -> Void
+        onScan: @escaping (Result<String, Error>) -> Void
     ) {
         self.configuration = configuration
         self.onScan = onScan
@@ -37,7 +37,7 @@ struct BarcodeScannerContainer: View {
 /// keyboard input for barcode scanning.
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let configuration: HIDBarcodeParserConfiguration
-    let onScan: (String) -> Void
+    let onScan: (Result<String, Error>) -> Void
 
     func makeUIViewController(context: Context) -> BarcodeScannerHostingController {
         let controller = BarcodeScannerHostingController(
@@ -47,28 +47,23 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
         return controller
     }
 
-    func updateUIViewController(_ uiViewController: BarcodeScannerHostingController, context: Context) {
-        uiViewController.configuration = configuration
-        uiViewController.onScan = onScan
-    }
+    func updateUIViewController(_ uiViewController: BarcodeScannerHostingController, context: Context) {}
 }
 
 /// A UIHostingController that handles keyboard input events for barcode scanning.
 /// This controller captures keyboard input and interprets it as barcode data when a terminating
 /// character is detected.
 class BarcodeScannerHostingController: UIHostingController<EmptyView> {
-    var configuration: HIDBarcodeParserConfiguration
-    var onScan: (String) -> Void
-
+    private let configuration: HIDBarcodeParserConfiguration
     private let scanner: HIDBarcodeParser
 
     init(
         configuration: HIDBarcodeParserConfiguration,
-        onScan: @escaping (String) -> Void
+        onScan: @escaping (Result<String, Error>) -> Void
     ) {
         self.configuration = configuration
-        self.onScan = onScan
-        self.scanner = HIDBarcodeParser(configuration: configuration, onScan: onScan)
+        self.scanner = HIDBarcodeParser(configuration: configuration,
+                                        onScan: onScan)
         super.init(rootView: EmptyView())
     }
 

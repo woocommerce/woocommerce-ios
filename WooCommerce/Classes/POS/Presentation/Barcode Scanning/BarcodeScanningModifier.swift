@@ -7,7 +7,7 @@ struct BarcodeScanningModifier: ViewModifier {
     /// Whether barcode scanning is enabled
     @Binding var enabled: Bool
     /// Callback that is triggered when a barcode is successfully scanned
-    let onScan: (String) -> Void
+    let onScan: (Result<String, Error>) -> Void
 
     private var isBarcodeScani1FeatureEnabled: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
@@ -18,9 +18,7 @@ struct BarcodeScanningModifier: ViewModifier {
             content
 
             if enabled && isBarcodeScani1FeatureEnabled {
-                BarcodeScannerContainer() { scannedCode in
-                    onScan(scannedCode)
-                }
+                BarcodeScannerContainer(onScan: onScan)
             }
         }
     }
@@ -33,7 +31,8 @@ extension View {
     ///   - enabled: A binding to control whether barcode scanning is enabled. Defaults to a constant true binding.
     ///   - onScan: Callback that is triggered when a barcode is successfully scanned.
     /// - Returns: A view with barcode scanning capability.
-    func barcodeScanning(enabled: Binding<Bool> = .constant(true), onScan: @escaping (String) -> Void) -> some View {
+    func barcodeScanning(enabled: Binding<Bool> = .constant(true),
+                         onScan: @escaping (Result<String, Error>) -> Void) -> some View {
         modifier(BarcodeScanningModifier(enabled: enabled, onScan: onScan))
     }
 }

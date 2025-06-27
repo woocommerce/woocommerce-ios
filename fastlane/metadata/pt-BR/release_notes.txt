@@ -1,0 +1,1 @@
+O Shipping acaba de receber um upgrade importante. Com nosso fluxo renovado, ficou mais fácil do que nunca criar e gerenciar etiquetas de envio para lojas que usam o WooCommerce Shipping. Melhoramos alguns ícones e corrigimos um problema de exibição da hora da última atualização da lista de pedidos. Esta versão inclui algumas melhorias no desempenho também.

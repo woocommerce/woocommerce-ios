@@ -28,8 +28,14 @@ struct MockSettingActionHandler: MockActionHandler {
         case .isFeatureEnabled(_, let feature, let onCompletion):
             switch feature {
             case .pointOfSale:
-                // One of the requirements for the POS tab to show up.
-                onCompletion(.success(true))
+                // Only enables POS feature for eligible locales (US and UK variants).
+                let locale = Locale.current
+                let localeIdentifier = locale.identifier
+                let isEligibleCountry = localeIdentifier.hasPrefix("en_US") ||
+                                       localeIdentifier.hasPrefix("en_GB") ||
+                                       localeIdentifier == "en-US" ||
+                                       localeIdentifier == "en-GB"
+                onCompletion(.success(isEligibleCountry))
             }
         default: unimplementedAction(action: action)
         }

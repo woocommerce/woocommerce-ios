@@ -276,6 +276,10 @@ extension PointOfSaleBarcodeScanError: @retroactive Equatable {
             return lhsScannedCode == rhsScannedCode
         case let (.mappingError(lhsScannedCode, _), .mappingError(rhsScannedCode, _)):
             return lhsScannedCode == rhsScannedCode
+        case let (.scanTooShort(lhsScannedCode), .scanTooShort(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
+        case let (.timedOut(lhsScannedCode), .timedOut(rhsScannedCode)):
+            return lhsScannedCode == rhsScannedCode
         default:
             return false
         }

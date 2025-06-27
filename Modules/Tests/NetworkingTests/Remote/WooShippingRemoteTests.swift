@@ -172,6 +172,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/rate", filename: "wooshipping-get-label-rates-success")
         let expectedDefaultRate = sampleLabelRate()
+        let expectedPackage = ShippingLabelPackageSelected.fake().copy(length: 12, width: 20, height: 0)
 
         // When
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
@@ -179,7 +180,7 @@ final class WooShippingRemoteTests: XCTestCase {
                                   orderID: self.sampleOrderID,
                                   originAddress: WooShippingAddress.fake(),
                                   destinationAddress: WooShippingAddress.fake(),
-                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                  packages: [expectedPackage]) { (result) in
                 promise(result)
             }
         }
@@ -188,9 +189,15 @@ final class WooShippingRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
         XCTAssertEqual(featuresParam, ["upsdap"])
+        let packagesParam = try XCTUnwrap(request.parameters["packages"] as? [[String: Any]])
+        let package = try XCTUnwrap(packagesParam.first)
+        XCTAssertEqual(package["height"] as? Double, 0.25)
 
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)
+        XCTAssertEqual(successResponse.first?.carbonNeutral.count, 1)
+        XCTAssertEqual(successResponse.first?.saturdayDelivery.count, 1)
+        XCTAssertEqual(successResponse.first?.additionalHandling.count, 2)
     }
 
     func test_loadLabelRates_returns_error_on_failure() throws {
@@ -350,6 +357,69 @@ final class WooShippingRemoteTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(result.failure)
+    }
+
+    func test_purchaseShippingLabel_sends_correct_parameters() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "wooshipping-purchase-success")
+
+        let package = WooShippingPackagePurchase.fake().copy(selectedRate: WooShippingSelectedRate(
+            rate: ShippingLabelCarrierRate.fake().copy(rate: 12.32),
+            adultSignatureRate: ShippingLabelCarrierRate.fake().copy(rate: 22.33),
+            carbonNeutralRate: ShippingLabelCarrierRate.fake().copy(rate: 18.02),
+            saturdayDeliveryRate: ShippingLabelCarrierRate.fake().copy(rate: 25.42),
+            additionalHandlingRate: ShippingLabelCarrierRate.fake().copy(rate: 20.01)
+        ))
+
+        // When
+        let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
+            remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                         orderID: self.sampleOrderID,
+                                         originAddress: WooShippingAddress.fake(),
+                                         destinationAddress: WooShippingAddress.fake(),
+                                         package: package) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+
+        let selectedRateOptions = try XCTUnwrap(request.parameters["selected_rate_options"] as? [String: Any])
+        let signatureObject = try XCTUnwrap(selectedRateOptions["signature"] as? [String: Any])
+        XCTAssertEqual(signatureObject["value"] as? String, "adult")
+        XCTAssertEqual(signatureObject["surcharge"] as? Double, package.selectedRate.surchargeForAdultSignatureRequirement)
+
+        let carbonNeutralObject = try XCTUnwrap(selectedRateOptions["carbon_neutral"] as? [String: Any])
+        XCTAssertEqual(carbonNeutralObject["value"] as? Bool, true)
+        XCTAssertEqual(carbonNeutralObject["surcharge"] as? Double, package.selectedRate.surchargeForCarbonNeutralRate)
+
+        let saturdayDeliveryObject = try XCTUnwrap(selectedRateOptions["saturday_delivery"] as? [String: Any])
+        XCTAssertEqual(saturdayDeliveryObject["value"] as? Bool, true)
+        XCTAssertEqual(saturdayDeliveryObject["surcharge"] as? Double, package.selectedRate.surchargeForSaturdayDeliveryRate)
+
+        let additionalHandlingObject = try XCTUnwrap(selectedRateOptions["additional_handling"] as? [String: Any])
+        XCTAssertEqual(additionalHandlingObject["value"] as? Bool, true)
+        XCTAssertEqual(additionalHandlingObject["surcharge"] as? Double, package.selectedRate.surchargeForAdditionalHandlingRate)
+
+        let packagesParam = try XCTUnwrap(request.parameters["packages"] as? [[String: Any]])
+        let firstPackage = try XCTUnwrap(packagesParam.first)
+        XCTAssertEqual(firstPackage["signature"] as? String, "adult")
+        XCTAssertEqual(firstPackage["carbon_neutral"] as? Bool, true)
+        XCTAssertEqual(firstPackage["saturday_delivery"] as? Bool, true)
+        XCTAssertEqual(firstPackage["additional_handling"] as? Bool, true)
+
+        let selectedRateParam = try XCTUnwrap(request.parameters["selected_rate"] as? [String: Any])
+        let parentValue = try XCTUnwrap(selectedRateParam["parent"] as? [String: Any])
+        XCTAssertEqual(parentValue["rate"] as? Double, package.selectedRate.rate.rate)
+
+        let childValue = try XCTUnwrap(selectedRateParam["rate"] as? [String: Any])
+        XCTAssertEqual(childValue["rate"] as? Double, package.selectedRate.adultSignatureRate?.rate)
+        XCTAssertEqual(childValue["type"] as? String, "adultSignatureRequired")
+
+        let labels = try XCTUnwrap(result.get())
+        XCTAssertEqual(labels.count, 1)
     }
 
     func test_purchaseShippingLabel_parses_success_response() throws {

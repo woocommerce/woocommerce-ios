@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.8
+-----
+
+
 22.7
 -----
 - [*] Shipping Labels: Fixed an issue where the purchase button would display a stale price after changing the origin address. [https://github.com/woocommerce/woocommerce-ios/pull/15795]
@@ -12,6 +16,9 @@
 - [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
 - [*] Shipping Labels: Fixed mismatched indices of purchased labels on the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/15800]
 - [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
+- [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]
+- [*] Shipping Labels: Pre-fill custom forms with item description, value, and weight [https://github.com/woocommerce/woocommerce-ios/pull/15811]
+- [internal] POS: Improved scrolling and animation performance by refactoring the shadow implementation and updating the cart and checkout views. [https://github.com/woocommerce/woocommerce-ios/pull/15817]
 
 22.6
 -----
@@ -20,6 +27,7 @@
 - [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
 - [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
 - [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]
+- [internal] Optimized image handling with a fallback thumbnail size for image views that have empty bounds, preventing high memory usage. [https://github.com/woocommerce/woocommerce-ios/pull/15815]
 
 22.5
 -----

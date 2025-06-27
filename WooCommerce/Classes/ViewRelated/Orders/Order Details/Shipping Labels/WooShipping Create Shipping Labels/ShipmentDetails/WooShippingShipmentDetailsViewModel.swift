@@ -174,7 +174,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     ///
     @MainActor
     func refreshPackagesAndShippingRates() async throws {
-        guard let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+        guard let selectedRate, let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
         }
         self.selectedPackage = updatedPackage
@@ -185,7 +185,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                 hazmatCategory: hazmatCategory,
                                                 customsForm: customsForm)
 
-        guard let shippingService, let selectedRate else {
+        guard let shippingService else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedRate
         }
         try await withCheckedThrowingContinuation { continuation in
@@ -211,7 +211,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         analytics.track(event: .WooShipping.purchaseStep(state: .started))
         let packagePurchase = WooShippingPackagePurchase(shipmentID: shipment.index.description,
                                                          package: package,
-                                                         rate: selectedRate.purchaseRate,
+                                                         selectedRate: selectedRate,
                                                          productIDs: shipment.items.map(\.productOrVariationID))
         let purchasedLabel = try await withCheckedThrowingContinuation { continuation in
             let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,

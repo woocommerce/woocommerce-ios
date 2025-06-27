@@ -322,7 +322,7 @@ private extension ItemListView {
             }
 
             Button {
-                posModel.barcodeScanned(barcodeScanSimulatorText)
+                posModel.barcodeScanned(.success(barcodeScanSimulatorText))
             } label: {
                 Text("Scan!")
             }

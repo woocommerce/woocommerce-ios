@@ -162,7 +162,7 @@ private enum Constants {
     static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
     static let cartAnimation: Animation = .spring(duration: 0.2)
     static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
-    static let cartItemSpacing: CGFloat = POSSpacing.small
+    static let cartItemSpacing: CGFloat = POSSpacing.medium
     static let cartLastItemBottomPadding: CGFloat = POSPadding.large
 }
 

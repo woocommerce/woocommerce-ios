@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-03 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-06-18 14:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -8907,6 +8907,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title label for the daily spend amount on the Blaze ads campaign budget settings screen. */
 "blazeBudgetSettingView.dailySpend" = "每日花費";
 
+/* Value format for the daily spend amount on the Blaze ads campaign budget settings screen. */
+"blazeBudgetSettingView.dailySpendValue" = "$%d";
+
 /* Subtitle of the Blaze budget setting screen */
 "blazeBudgetSettingView.description" = "你想要在行銷活動上花費多少費用，希望活動持續多長時間？";
 
@@ -8934,6 +8937,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "排程";
 
+/* Accessibility hint for the schedule section on the Blaze budget setting screen */
+"blazeBudgetSettingView.scheduleAccessibilityHint" = "開啟行銷活動排程設定";
+
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "設定預算";
 
@@ -8945,6 +8951,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
 "blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@至 %2$@止";
+
+/* The label for failed to load impressions */
+"blazeBudgetSettingViewModel.impressionsFailure" = "無法載入曝光數";
+
+/* The label for loading impressions */
+"blazeBudgetSettingViewModel.impressionsLoading" = "正在載入...";
+
+/* The formatted estimated impression range for a Blaze campaign. Reads like: Estimated total impressions range is from 26100 to 35300 */
+"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "預計曝光總數範圍為 %1$lld 到 %2$lld";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d 天";
@@ -9136,11 +9151,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Blaze campaign budget details with duration in singular form. Reads like: $35, 1 day from Dec 31 */
 "blazeCampaignCreationFormViewModel.budgetSingleDay" = "%1$@，自 %3$@ 起 %2$d 天";
 
+/* Text that will become a hyperlink in the second line of the terms of service checkbox text. */
+"blazeCampaignCreationFormViewModel.campaignDetailsLinkText" = "我隨時皆可取消";
+
 /* The formatted weekly budget for an evergreen Blaze campaign with a starting date. Reads as $11 USD weekly starting from May 11 2024. */
 "blazeCampaignCreationFormViewModel.evergreenCampaignWeeklyBudget" = "從 %2$@起，每週 %1$@";
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "所有地區";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "我同意從 **%2$@* 起，支付 **每週 $%1$.0f** 的定期費用。 行銷活動期間，可能會在不同時間收取費用。";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "我同意從 **%2$@** 起，每次支付最多 **$%1$.0f** 的費用。 行銷活動啟用時，可能會產生一筆或多筆費用。";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@；我只會支付廣告費用直到取消行銷活動為止。";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f 美元";
@@ -9507,6 +9534,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDate" = "開始日期";
+
+/* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDateAccessibilityHint" = "點選兩下以編輯行銷活動開始日期";
+
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "行銷活動開始日期：%@";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "所有裝置";
@@ -11304,6 +11337,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for pending funds overview in WooPayments Payouts view. This shows the balance which will be made available for pay out later. */
 "payouts.currency.overview.pendingFunds" = "待確認款項";
 
+/* Accessibility label for the button to edit */
+"pencilEditButton.accessibility.editButtonAccessibilityLabel" = "編輯";
+
 /* Shown with a 'Current:' label, but when we don't know what the plan that ended was */
 "plan ended" = "方案已結束";
 
@@ -11312,6 +11348,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "外掛程式";
+
+/* Error message shown when there is an unknown networking error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.network" = "網路要求失敗";
+
+/* Error message shown when there is an internet connection error while scanning a barcode. */
+"pointOfSale.barcodeScan.error.noInternetConnection" = "沒有網際網路連線";
+
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "找不到該款式的上層商品";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "不明的掃描商品";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "不支援的商品類別";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "讀卡機付款取消";
@@ -11685,6 +11736,9 @@ which should be translated separately and considered part of this sentence. */
 /* The accessibility label for the `x` button next to each item in the Point of Sale cart.The button removes the item. The translation should be short, to make it quick to navigate by voice. */
 "pointOfSale.item.removeFromCart.button.accessibilityLabel" = "移除";
 
+/* Loading item accessibility label in POS */
+"pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "載入中";
+
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "編輯訂單";
 
@@ -11903,6 +11957,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the simple products information modal in POS */
 "pos.simpleProductsModal.title" = "為什麼我無法查看自己的商品？";
+
+/* Label to be displayed in the product's card when there's stock of a given product */
+"pos.stockStatusLabel.inStockWithQuantity" = "「%1$@」尚有庫存";
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "沒有庫存";
@@ -12418,6 +12475,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title for the Shipping Label purchase flow, shown in the nav bar */
 "shipping.label.navigationBar.cancel.button.title" = "取消";
 
+/* Label indicating the expiry date of a credit/debit card. The placeholder is the date. Reads like: Expire 08/26 */
+"shippingLabelPaymentMethod.expiry" = "於 %1$@ 到期";
+
 /* Badge wording when the customs information is completed */
 "shippingLabels.customs.completedBadge" = "已完成";
 
@@ -12880,6 +12940,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product detailsl button title. */
 "updateProductInventoryView.viewProductDetailsButtonTitle" = "檢視產品詳細資訊";
+
+/* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.cancel" = "取消";
+
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "我同意 %1$@。";
+
+/* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
+"upsTermsView.checkbox2" = "我不會運送任何未經 UPS® 許可的%1$@，也不會在未取得必要權限的情況下運送任何管制商品。";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "我也同意 %1$@。";
+
+/* Button to confirm all agreements on the UPS Terms and Conditions view */
+"upsTermsView.confirmButton" = "確認並繼續";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorMessage" = "確認同意時，發生不明錯誤。 請再試一次。";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorTitle" = "確認同意時發生錯誤";
+
+/* Message on the UPS Terms and Conditions view */
+"upsTermsView.message" = "若要採用 UPS® 服務從這個地址開始送貨，請同意以下條款與條件：";
+
+/* Link to the prohibited items on the UPS Terms and Conditions view */
+"upsTermsView.prohibitedItems" = "禁運物品";
+
+/* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.retry" = "重試";
+
+/* Title label for the origin address on the UPS Terms and Conditions view */
+"upsTermsView.shippingFrom" = "送件地址";
+
+/* Link to the technology agreement on the UPS Terms and Conditions view */
+"upsTermsView.technologyAgreement" = "UPS® 技術協議";
+
+/* Link to the terms of service on the UPS Terms and Conditions view */
+"upsTermsView.termsOfService" = "UPS® 服務條款";
+
+/* Title of the UPS Terms and Conditions view */
+"upsTermsView.title" = "UPS® 條款與條件";
 
 /* Label displayed on video media items. */
 "video" = "影片";
@@ -13391,6 +13493,15 @@ which should be translated separately and considered part of this sentence. */
 /* Message to be displayed after moving items between shipments in the shipping label creation flow. The placeholders are the number of items and shipment index respectively. Reads as: 'Moved 3 items to Shipment 2'. */
 "wooShipping.createLabels.splitShipment.movingCompletionFormat" = "已將 %1$@移至 %2$@";
 
+/* Cancel button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.cancel" = "取消";
+
+/* Retry button title on the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "重試";
+
+/* Title of the error alert when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.title" = "無法儲存變更。 請再試一次。";
+
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.splitShipment.shipmentFormat" = "貨件 %1$d";
 
@@ -13640,6 +13751,30 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the HAZMAT detail view in the shipping label creation flow */
 "wooShippingHazmatDetailView.title" = "你要寄送的貨件，是否包含有害或危險物品？";
 
+/* Button to dismiss the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.doneButton" = "完成";
+
+/* Notice displayed after adding a new payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.methodAddedNotice" = "已新增付款方式";
+
+/* Title of the web view to add payment method for shipping label purchase */
+"wooShippingPaymentMethodsView.addPaymentMethod.webViewTitle" = "新增付款方式";
+
+/* Button to confirm a credit/debit for purchasing a shipping label */
+"wooShippingPaymentMethodsView.confirmButton" = "使用這張卡";
+
+/* Button to dismiss an error alert on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.cancel" = "取消";
+
+/* Button to retry an action on the shipping label payment method sheet */
+"wooShippingPaymentMethodsView.confirmError.retry" = "重試";
+
+/* Title of the error alert when confirming a payment method for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.confirmErrorTitle" = "無法確認付款方式";
+
+/* Label of the toggle to enable emailing receipt upon purchasing a shipping label */
+"wooShippingPaymentMethodsView.emailReceipt" = "以電子郵件傳送收據";
+
 /* Action button on the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.actionButton" = "新增信用卡或簽帳金融卡";
 
@@ -13648,6 +13783,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.title" = "新增付款方式";
+
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
+"wooShippingPaymentMethodsView.noteWithUsername" = "從以下 WordPress.com 帳號擷取信用卡資訊：%1$@ <@%2$@>。";
+
+/* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
+"wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "僅限網站擁有者能管理運送標籤付款方式。 請聯絡商店擁有者「%1$@」(%2$@) 以管理付款方式。";
+
+/* Title of the error alert when refresh payment methods for purchasing shipping label fails */
+"wooShippingPaymentMethodsView.refreshErrorTitle" = "無法重新整理付款方式";
 
 /* Subtitle of the payment method sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.subtitle" = "選擇付款方式。";

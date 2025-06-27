@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-13 17:26:49+0000 */
+/* Translation-Revision-Date: 2025-06-18 14:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -8937,6 +8937,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the campaign schedule on the Blaze budget setting screen */
 "blazeBudgetSettingView.schedule" = "Schema";
 
+/* Accessibility hint for the schedule section on the Blaze budget setting screen */
+"blazeBudgetSettingView.scheduleAccessibilityHint" = "Öppnar inställningar för kampanjschema";
+
 /* Title of the Blaze budget setting screen */
 "blazeBudgetSettingView.title" = "Ställ in din budget";
 
@@ -8949,8 +8952,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The duration for a Blaze campaign with an end date. Placeholders are day count and formatted end date.Reads like: 10 days to Dec 19, 2024 */
 "blazeBudgetSettingViewModel.dayCountToEndDate" = "%1$@ till %2$@";
 
+/* The label for failed to load impressions */
+"blazeBudgetSettingViewModel.impressionsFailure" = "Det gick inte att ladda visningar";
+
 /* The label for loading impressions */
 "blazeBudgetSettingViewModel.impressionsLoading" = "Laddar in …";
+
+/* The formatted estimated impression range for a Blaze campaign. Reads like: Estimated total impressions range is from 26100 to 35300 */
+"blazeBudgetSettingViewModel.impressionsSectionAccessibility" = "Det uppskattade totala visningsintervallet är från %1$lld till %2$lld";
 
 /* The duration for a Blaze campaign in plural form. Reads like: 10 days */
 "blazeBudgetSettingViewModel.multipleDays" = "%1$d dagar";
@@ -9150,6 +9159,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "Överallt";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "Jag godkänner en återkommande avgift på upp till **$%1$.0f per vecka** med start **%2$@**. Avgifter kan förekomma vid olika tidpunkter under kampanjen.";
+
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "Jag samtycker till att debiteras upp till **$%1$.0f** med start **%2$@**. Avgifter kan uppstå i en eller flera betalningar medan kampanjen är aktiv.";
+
+/* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "Jag godkänner en återkommande **veckovis debitering på upp till %1$.0f** USD med start **%2$@**. Avgifter kan förekomma vid olika tidpunkter under kampanjen.";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@; jag betalar endast för annonser som har levererats fram till avbokningen.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f USD";
@@ -9516,6 +9537,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label of the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDate" = "Startdatum";
+
+/* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
+"blazeScheduleSettingView.startDateAccessibilityHint" = "Dubbeltryck för att redigera kampanjens startdatum";
+
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "Kampanjens startdatum är %@";
 
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "Alla enheter";
@@ -11331,6 +11358,15 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when there is an internet connection error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.noInternetConnection" = "Ingen internetanslutning";
 
+/* Error message shown when parent product is not found for a variation. */
+"pointOfSale.barcodeScan.error.noParentProduct" = "Överordnad produkt hittades inte för variationen";
+
+/* Error message shown when a scanned item is not found in the store. */
+"pointOfSale.barcodeScan.error.notFound" = "Okänt skannat objekt";
+
+/* Error message shown when a scanned item is of an unsupported type. */
+"pointOfSale.barcodeScan.error.unsupportedProductType" = "Objekttypen stöds inte";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Betalning avbruten på läsare";
 
@@ -12911,11 +12947,44 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
 "upsTermsView.cancel" = "Avbryt";
 
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "Jag godkänner %1$@.";
+
+/* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
+"upsTermsView.checkbox2" = "Jag kommer inte att skicka några %1$@ som UPS® inte godkänner, eller några reglerade varor utan nödvändiga tillstånd.";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "Jag godkänner också %1$@.";
+
 /* Button to confirm all agreements on the UPS Terms and Conditions view */
 "upsTermsView.confirmButton" = "Bekräfta och fortsätt";
 
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorMessage" = "Ett oväntat fel uppstod när ditt godkännande skulle bekräftas. Försök igen.";
+
+/* Title of the alert when confirming all agreements on the UPS Terms and Conditions view fails */
+"upsTermsView.errorTitle" = "Det gick inte att bekräfta godkännande";
+
+/* Message on the UPS Terms and Conditions view */
+"upsTermsView.message" = "Om du vill börja skicka från den här adressen med UPS® måste du godkänna följande villkor:";
+
+/* Link to the prohibited items on the UPS Terms and Conditions view */
+"upsTermsView.prohibitedItems" = "Förbjudna varor";
+
 /* Button to retry confirming all agreements on the UPS Terms and Conditions view fails */
 "upsTermsView.retry" = "Försök igen";
+
+/* Title label for the origin address on the UPS Terms and Conditions view */
+"upsTermsView.shippingFrom" = "Skickar från";
+
+/* Link to the technology agreement on the UPS Terms and Conditions view */
+"upsTermsView.technologyAgreement" = "UPS® teknikavtal";
+
+/* Link to the terms of service on the UPS Terms and Conditions view */
+"upsTermsView.termsOfService" = "UPS® användarvillkor";
+
+/* Title of the UPS Terms and Conditions view */
+"upsTermsView.title" = "UPS® villkor";
 
 /* Label displayed on video media items. */
 "video" = "video";
@@ -13706,6 +13775,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error alert when confirming a payment method for purchasing shipping label fails */
 "wooShippingPaymentMethodsView.confirmErrorTitle" = "Kan inte bekräfta betalningsmetoden";
 
+/* Label of the toggle to enable emailing receipt upon purchasing a shipping label */
+"wooShippingPaymentMethodsView.emailReceipt" = "Kvitto via e-post";
+
 /* Action button on the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.actionButton" = "Nytt kredit- eller betalkort";
 
@@ -13714,6 +13786,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the payment method empty sheet in the Shipping Label purchase flow */
 "wooShippingPaymentMethodsView.emptyView.title" = "Lägg till en betalningsmetod";
+
+/* Note of the payment method sheet in the Shipping Label purchase flow. Placeholders are the name and username of an associated WordPress account. Please keep the `@` in front of the second placeholder. */
+"wooShippingPaymentMethodsView.noteWithUsername" = "Kreditkort hämtas från följande WordPress.com-konto: @%1$@ <@%2$@>.";
+
+/* Note for users without permission to manage payment methods for shipping label purchase. The placeholders are the store owner name and username respectively. */
+"wooShippingPaymentMethodsView.paymentMethodsNotEditableNote" = "Det är bara webbplatsens ägare som kan hantera betalningsmetoderna för fraktetiketter. Kontakta butiksägaren %1$@ (%2$@) för att hantera betalningsmetoder";
 
 /* Title of the error alert when refresh payment methods for purchasing shipping label fails */
 "wooShippingPaymentMethodsView.refreshErrorTitle" = "Kan inte uppdatera dina betalningsmetoder";

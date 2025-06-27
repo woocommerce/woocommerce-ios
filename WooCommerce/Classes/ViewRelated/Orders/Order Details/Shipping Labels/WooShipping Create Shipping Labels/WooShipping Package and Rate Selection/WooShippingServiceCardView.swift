@@ -31,19 +31,19 @@ struct WooShippingServiceCardView: View {
                         Group {
                             VStack(alignment: .leading, spacing: 0) {
                                 if let tracking = viewModel.trackingLabel {
-                                    HStack(alignment: .firstTextBaseline) {
+                                    HStack {
                                         checkmark
                                         Text(tracking)
                                     }
                                 }
                                 if let insurance = viewModel.insuranceLabel {
-                                    HStack(alignment: .firstTextBaseline) {
+                                    HStack {
                                         checkmark
                                         Text(insurance)
                                     }
                                 }
                                 if let freePickup = viewModel.freePickupLabel {
-                                    HStack(alignment: .firstTextBaseline) {
+                                    HStack {
                                         checkmark
                                         Text(freePickup)
                                     }
@@ -52,7 +52,7 @@ struct WooShippingServiceCardView: View {
                             .fixedSize(horizontal: false, vertical: true)
 
                             if let signatureRequired = viewModel.signatureRequiredLabel {
-                                HStack(alignment: .firstTextBaseline) {
+                                HStack {
                                     selectionCircle(selected: viewModel.signatureRequirement == .signatureRequired)
                                     Text(signatureRequired)
                                 }
@@ -62,7 +62,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let adultSignatureRequired = viewModel.adultSignatureRequiredLabel {
-                                HStack(alignment: .firstTextBaseline) {
+                                HStack {
                                     selectionCircle(selected: viewModel.signatureRequirement == .adultSignatureRequired)
                                     Text(adultSignatureRequired)
                                 }
@@ -72,7 +72,7 @@ struct WooShippingServiceCardView: View {
                                 }
                             }
                             if let carbonNeutralLabel = viewModel.carbonNeutralLabel {
-                                HStack(alignment: .firstTextBaseline) {
+                                HStack {
                                     selectionCircle(selected: viewModel.carbonNeutralSelected)
                                     Text(carbonNeutralLabel)
                                 }
@@ -81,24 +81,24 @@ struct WooShippingServiceCardView: View {
                                     viewModel.handleTap(on: .carbonNeutral)
                                 }
                             }
-                            if let saturdayDeliveryLabel = viewModel.saturdayDeliveryLabel {
-                                HStack(alignment: .firstTextBaseline) {
-                                    selectionCircle(selected: viewModel.saturdayDeliverySelected)
-                                    Text(saturdayDeliveryLabel)
-                                }
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    viewModel.handleTap(on: .saturdayDelivery)
-                                }
-                            }
                             if let additionalHandlingLabel = viewModel.additionalHandlingLabel {
-                                HStack(alignment: .firstTextBaseline) {
+                                HStack {
                                     selectionCircle(selected: viewModel.additionalHandlingSelected)
                                     Text(additionalHandlingLabel)
                                 }
                                 .contentShape(Rectangle())
                                 .onTapGesture {
                                     viewModel.handleTap(on: .additionalHandling)
+                                }
+                            }
+                            if let saturdayDeliveryLabel = viewModel.saturdayDeliveryLabel {
+                                HStack {
+                                    selectionCircle(selected: viewModel.saturdayDeliverySelected)
+                                    Text(saturdayDeliveryLabel)
+                                }
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    viewModel.handleTap(on: .saturdayDelivery)
                                 }
                             }
                         }

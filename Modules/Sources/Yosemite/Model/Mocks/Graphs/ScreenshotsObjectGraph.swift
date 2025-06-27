@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import enum WooFoundation.CurrencyCode
 
 struct Defaults {
     struct Account {
@@ -72,13 +73,22 @@ struct ScreenshotObjectGraph: MockObjectGraph {
                           label: "Country and State",
                           settingDescription: "The country and state or province, if any, in which your business is located.",
                           value: "US:CA",
+                          settingGroupKey: "general"),
+        createSiteSetting(settingID: "woocommerce_currency",
+                          label: "Currency",
+                          settingDescription: "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.",
+                          value: CurrencyCode.USD.rawValue,
                           settingGroupKey: "general")
     ]
 
     var systemPlugins: [SystemPlugin] = [
         createSystemPlugin(plugin: "woocommerce-payments",
                            name: "WooCommerce Payments",
-                           version: "3.2.1")
+                           version: "3.2.1"),
+        // One of the requirements for the POS tab to show up.
+        createSystemPlugin(plugin: "woocommerce",
+                           name: "WooCommerce",
+                           version: "10.0.0")
     ]
 
     var paymentGatewayAccounts: [PaymentGatewayAccount] = [

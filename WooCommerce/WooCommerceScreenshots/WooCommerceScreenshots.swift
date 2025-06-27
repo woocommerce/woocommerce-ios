@@ -42,6 +42,10 @@ class WooCommerceScreenshots: XCTestCase {
             return false
         }
 
+        // Triggers any pending system dialogs (like push notification permissions).
+        // The interruption monitor above only activates when the app receives user interaction.
+        app.tap()
+
         // My Store
         try TabNavComponent()
             .goToMyStoreScreen()

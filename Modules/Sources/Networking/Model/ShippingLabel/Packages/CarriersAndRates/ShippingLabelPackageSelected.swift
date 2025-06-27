@@ -46,7 +46,10 @@ extension ShippingLabelPackageSelected: Encodable {
         try container.encode(boxID.isEmpty ? "0" : boxID, forKey: .boxID)
         try container.encode(length, forKey: .length)
         try container.encode(width, forKey: .width)
-        try container.encode(height, forKey: .height)
+
+        // workaround because 0 would cause an error for the API request
+        try container.encode(height > 0 ? height : 0.25, forKey: .height)
+
         try container.encode(weight, forKey: .weight)
         try container.encode(isLetter, forKey: .isLetter)
         try container.encodeIfPresent(hazmatCategory, forKey: .hazmatCategory)

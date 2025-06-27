@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-06-17 14:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -8908,7 +8908,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "blazeBudgetSettingView.dailySpend" = "Ausgaben für einen Tag";
 
 /* Value format for the daily spend amount on the Blaze ads campaign budget settings screen. */
-"blazeBudgetSettingView.dailySpendValue" = "USD%d";
+"blazeBudgetSettingView.dailySpendValue" = "%d USD";
 
 /* Subtitle of the Blaze budget setting screen */
 "blazeBudgetSettingView.description" = "Wie viel Geld willst du für deine Kampagne ausgeben und wie lange soll sie laufen?";
@@ -9161,13 +9161,13 @@ If your translation of that term also happens to contains a hyphen, please be su
 "blazeCampaignCreationFormViewModel.everywhere" = "Überall";
 
 /* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
-"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "Ich stimme einer wiederkehrenden Abbuchung in Höhe von **$%1$.0f\/Woche** ab dem **%2$@** zu. Die Abbuchungen können zu verschiedenen Zeiten während der Kampagne erfolgen.";
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "Ich stimme einer wiederkehrenden Abbuchung in Höhe von bis zu **$%1$.0f\/Woche** ab dem **%2$@** zu. Die Abbuchungen können zu verschiedenen Zeiten während der Kampagne erfolgen.";
 
 /* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
-"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "Ich stimme zu, dass mir die entstehenden Kosten in Höhe von **$%1$.0f** ab dem **%2$@** in Rechnung gestellt werden. Solange die Kampagne aktiv ist, können eine oder mehrere Zahlungen fällig werden.";
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "Ich stimme zu, dass mir die entstehenden Kosten in Höhe von bis zu **$%1$.0f** ab dem **%2$@** in Rechnung gestellt werden. Solange die Kampagne aktiv ist, können eine oder mehrere Zahlungen fällig werden.";
 
 /* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
-"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "Ich stimme einer wiederkehrenden **wöchentlichen Abbuchung in Höhe von $%1$.0f** ab dem **%2$@** zu. Die Abbuchungen können zu verschiedenen Zeiten während der Kampagne erfolgen.";
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "Ich stimme einer wiederkehrenden **wöchentlichen Abbuchung in Höhe von bis zu $%1$.0f** ab dem **%2$@** zu. Die Abbuchungen können zu verschiedenen Zeiten während der Kampagne erfolgen.";
 
 /* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
 "blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@; ich bezahle nur für Werbung, die bis zur Kündigung geschaltet wurde.";

@@ -172,6 +172,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/rate", filename: "wooshipping-get-label-rates-success")
         let expectedDefaultRate = sampleLabelRate()
+        let expectedPackage = ShippingLabelPackageSelected.fake().copy(length: 12, width: 20, height: 0)
 
         // When
         let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
@@ -179,7 +180,7 @@ final class WooShippingRemoteTests: XCTestCase {
                                   orderID: self.sampleOrderID,
                                   originAddress: WooShippingAddress.fake(),
                                   destinationAddress: WooShippingAddress.fake(),
-                                  packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                  packages: [expectedPackage]) { (result) in
                 promise(result)
             }
         }
@@ -188,6 +189,9 @@ final class WooShippingRemoteTests: XCTestCase {
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
         XCTAssertEqual(featuresParam, ["upsdap"])
+        let packagesParam = try XCTUnwrap(request.parameters["packages"] as? [[String: Any]])
+        let package = try XCTUnwrap(packagesParam.first)
+        XCTAssertEqual(package["height"] as? Double, 0.25)
 
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.first?.defaultRates.first, expectedDefaultRate)

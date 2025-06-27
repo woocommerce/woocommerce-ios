@@ -71,12 +71,17 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     init(itemName: String,
          itemProductID: Int64,
          itemQuantity: Decimal,
+         itemValue: Double,
+         itemWeight: Double,
          currencySymbol: String,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores) {
         self.title = itemName
+        self.description = itemName
         self.itemProductID = itemProductID
         self.itemQuantity = itemQuantity
+        self.valuePerUnit = String(itemValue)
+        self.weightPerUnit = String(itemWeight)
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
         self.stores = stores

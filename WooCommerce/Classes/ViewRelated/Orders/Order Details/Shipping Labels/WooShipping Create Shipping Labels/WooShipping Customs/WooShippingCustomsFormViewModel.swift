@@ -38,6 +38,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
             WooShippingCustomsItemViewModel(itemName: $0.name,
                                             itemProductID: $0.productOrVariationID,
                                             itemQuantity: $0.quantity,
+                                            itemValue: $0.value,
+                                            itemWeight: $0.weight,
                                             currencySymbol: currencySymbol(from: order))
         }
 

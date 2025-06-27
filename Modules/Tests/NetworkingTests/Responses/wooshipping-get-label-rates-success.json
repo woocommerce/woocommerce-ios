@@ -202,7 +202,94 @@
                     }
                 ],
                 "errors": []
-            }
+            },
+            "carbon_neutral": {
+                  "rates": [
+                    {
+                      "rate_id": "rate_91baa7176a004a1093f6e0041f6130fd",
+                      "service_id": "2ndDayAir",
+                      "carrier_id": "upsdap",
+                      "title": "UPS 2nd Day Air®",
+                      "rate": 23.21,
+                      "retail_rate": 68.58,
+                      "list_rate": 77.09,
+                      "is_selected": false,
+                      "tracking": true,
+                      "insurance": 100,
+                      "free_pickup": false,
+                      "caveats": [],
+                      "shipment_id": "shp_43d9931be5ef4a6a802e4c80c3478acd",
+                      "delivery_days": 2,
+                      "delivery_date_guaranteed": false,
+                      "delivery_date": "2025-06-26T23:00:00.000Z"
+                    }
+                  ],
+                  "errors": []
+                },
+                "additional_handling": {
+                  "rates": [
+                    {
+                      "rate_id": "rate_94066e39fb684518ba0b703625ed7881",
+                      "service_id": "2ndDayAir",
+                      "carrier_id": "upsdap",
+                      "title": "UPS 2nd Day Air®",
+                      "rate": 35.96,
+                      "retail_rate": 105.78,
+                      "list_rate": 114.31,
+                      "is_selected": false,
+                      "tracking": true,
+                      "insurance": 100,
+                      "free_pickup": false,
+                      "caveats": [],
+                      "shipment_id": "shp_dd87ece33f7e4e8db360339fcb3af033",
+                      "delivery_days": 2,
+                      "delivery_date_guaranteed": false,
+                      "delivery_date": "2025-06-26T23:00:00.000Z"
+                    },
+                    {
+                      "rate_id": "rate_5204f3dc16f845debb910b71ce52cce6",
+                      "service_id": "NextDayAirSaver",
+                      "carrier_id": "upsdap",
+                      "title": "UPS Next Day Air Saver®",
+                      "rate": 59.9,
+                      "retail_rate": 170.13,
+                      "list_rate": 187.76,
+                      "is_selected": false,
+                      "tracking": true,
+                      "insurance": 100,
+                      "free_pickup": false,
+                      "caveats": [],
+                      "shipment_id": "shp_dd87ece33f7e4e8db360339fcb3af033",
+                      "delivery_days": 1,
+                      "delivery_date_guaranteed": true,
+                      "delivery_date": "2025-06-25T23:00:00.000Z"
+                    }
+                  ],
+                  "errors": []
+                },
+                "saturday_delivery": {
+                  "rates": [
+                    {
+                      "rate_id": "rate_16aa2b9dc43442039a94b1fdafbb0c95",
+                      "service_id": "2ndDayAir",
+                      "carrier_id": "upsdap",
+                      "title": "UPS 2nd Day Air®",
+                      "rate": 39.01,
+                      "retail_rate": 87.38,
+                      "list_rate": 95.9,
+                      "is_selected": false,
+                      "tracking": true,
+                      "insurance": 100,
+                      "free_pickup": false,
+                      "caveats": [],
+                      "shipment_id": "shp_6ba05ebf4ad0482b9e77d2923070f316",
+                      "delivery_days": 2,
+                      "delivery_date_guaranteed": false,
+                      "delivery_date": "2025-06-26T23:00:00.000Z"
+                    }
+                  ],
+                  "errors": []
+                }
         }
     }
 }

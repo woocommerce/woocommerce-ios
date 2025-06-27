@@ -18,6 +18,9 @@ public enum PointOfSaleBarcodeScanError: Error {
     case notFound(scannedCode: String)
     case loadingError(scannedCode: String, underlyingError: Error)
     case mappingError(scannedCode: String, underlyingError: Error)
+    case scanTooShort(scannedCode: String)
+    case timedOut(scannedCode: String)
+    case parsingError(underlyingError: Error)
 }
 
 /// Service for handling barcode scanning in Point of Sale

@@ -7,8 +7,8 @@ import UIKit
 final class HIDBarcodeParser {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
-    /// Callback that is triggered when a barcode is successfully scanned
-    let onScan: (String) -> Void
+    /// Callback that is triggered when a barcode scan completes (success or failure)
+    let onScan: (Result<String, Error>) -> Void
 
     private let timeProvider: TimeProvider
 
@@ -16,7 +16,7 @@ final class HIDBarcodeParser {
     private var lastKeyPressTime: Date?
 
     init(configuration: HIDBarcodeParserConfiguration,
-         onScan: @escaping (String) -> Void,
+         onScan: @escaping (Result<String, Error>) -> Void,
          timeProvider: TimeProvider = DefaultTimeProvider()) {
         self.configuration = configuration
         self.onScan = onScan
@@ -31,6 +31,7 @@ final class HIDBarcodeParser {
         // If characters are entered too slowly, it's probably typing and we should ignore it
         if let lastTime = lastKeyPressTime,
            currentTime.timeIntervalSince(lastTime) > configuration.maximumInterCharacterTime {
+            onScan(.failure(HIDBarcodeParserError.timedOut(barcode: buffer)))
             resetScan()
         }
 
@@ -138,7 +139,9 @@ final class HIDBarcodeParser {
 
     private func processScan() {
         if buffer.count >= configuration.minimumBarcodeLength {
-            onScan(buffer)
+            onScan(.success(buffer))
+        } else {
+            onScan(.failure(HIDBarcodeParserError.scanTooShort(barcode: buffer)))
         }
         resetScan()
     }
@@ -159,7 +162,12 @@ struct HIDBarcodeParserConfiguration {
     /// Default configuration suitable for most barcode scanners
     static let `default` = HIDBarcodeParserConfiguration(
         terminatingStrings: ["\r", "\n"],
-        minimumBarcodeLength: 4,
+        minimumBarcodeLength: 6,
         maximumInterCharacterTime: 0.2
     )
+}
+
+enum HIDBarcodeParserError: Error {
+    case scanTooShort(barcode: String)
+    case timedOut(barcode: String)
 }

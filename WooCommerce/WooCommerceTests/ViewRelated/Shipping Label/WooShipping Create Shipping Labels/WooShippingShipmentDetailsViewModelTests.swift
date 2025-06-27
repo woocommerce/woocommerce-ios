@@ -584,7 +584,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_refreshPackagesAndShippingRates_updates_selected_package() async {
+    func test_refreshPackagesAndShippingRates_updates_selected_package_and_rate() async throws {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
         let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
@@ -598,12 +598,19 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                             stores: stores)
         let package = samplePackageData()
         viewModel.selectPackage(package)
-        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+        let rate = ShippingLabelCarrierRate.fake().copy(
+            title: "Rate",
+            rate: 20.11,
+            serviceID: "test_rate"
+        )
+        viewModel.shippingService?.onSelectRate?(WooShippingSelectedRate(rate: rate))
 
         // Confidence check
         XCTAssertEqual(viewModel.selectedPackage?.id, package.id)
+        XCTAssertEqual(viewModel.selectedRate?.rate.rate, rate.rate)
 
         // When: package is refreshed
+        let expectedRate = rate.copy(rate: 22.11)
         let updatedPackage = WooShippingCustomPackage(id: "small_flat_box",
                                                       name: "custom",
                                                       rawType: "box",
@@ -617,15 +624,25 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                                 savedPredefinedPackages: [],
                                                                 allPredefinedOptions: [])))
             case let .loadLabelRates(_, _, _, _, packages, completion):
-                completion(packages, .success([]))
+                let result = ShippingLabelCarriersAndRates(
+                    packageID: "0",
+                    defaultRates: [expectedRate],
+                    signatureRequired: [expectedRate.copy(rate: 23.33)],
+                    adultSignatureRequired: [expectedRate.copy(rate: 25.78)],
+                    carbonNeutral: [],
+                    saturdayDelivery: [],
+                    additionalHandling: []
+                )
+                completion(packages, .success([result]))
             default:
                 break
             }
         }
-        try? await viewModel.refreshPackagesAndShippingRates() // ignoring failure in refreshing rate for simplicity
+        try await viewModel.refreshPackagesAndShippingRates()
 
         // Then
         XCTAssertEqual(viewModel.selectedPackage?.name, updatedPackage.name)
+        XCTAssertEqual(viewModel.selectedRate?.rate.rate, expectedRate.rate)
     }
 
     func test_changing_origin_address_resets_selected_rate() throws {

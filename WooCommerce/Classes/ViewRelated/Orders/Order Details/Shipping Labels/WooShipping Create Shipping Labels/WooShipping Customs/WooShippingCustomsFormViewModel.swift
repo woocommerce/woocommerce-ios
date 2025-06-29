@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 import Combine
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
     enum ITNValidationError {
@@ -34,6 +35,8 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     init(order: Order,
          shipment: Shipment,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onCompletion = onCompletion
 
@@ -44,7 +47,9 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itemValue: $0.value,
                                             itemWeight: $0.weight,
                                             currencySymbol: currencySymbol(from: order),
-                                            originCountryCode: originCountryCode)
+                                            originCountryCode: originCountryCode,
+                                            storageManager: storageManager,
+                                            stores: stores)
         }
 
         listenToItemsRequiredInformationValues()

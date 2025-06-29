@@ -2,11 +2,13 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
+import protocol Storage.StorageManagerType
 
 final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     private let order: Order
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let onLabelPurchase: ((ShippingLabel) -> Void)?
     private let onLabelRefund: ((Int64) -> Void)?
@@ -67,7 +69,9 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         return WooShippingCustomsFormViewModel(
             order: order,
             shipment: shipment,
-            originCountryCode: originCountryCodePublisher()
+            originCountryCode: originCountryCodePublisher(),
+            stores: stores,
+            storageManager: storageManager
         ) { [weak self] form in
             self?.customsForm = form
         }
@@ -134,6 +138,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          originAddress: AnyPublisher<WooShippingAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
@@ -141,6 +146,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          onLabelRefund: ((Int64) -> Void)? = nil) {
         self.order = order
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
         self.shipment = shipment
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)

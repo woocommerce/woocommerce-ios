@@ -92,7 +92,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
             .assign(to: &$originCountryCode)
 
         fetchCountries()
-        
+
         combineToPreselectCountry()
         combineRequiredInformationIsEntered()
         combineHSTariffNumberTotalValue()
@@ -102,6 +102,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 private extension WooShippingCustomsItemViewModel {
     func combineToPreselectCountry() {
         $originCountryCode
+            .compactMap { $0 }
             .first() /// Make sure to only handle the initial value
             .combineLatest($countries)
             .map { code, countries in

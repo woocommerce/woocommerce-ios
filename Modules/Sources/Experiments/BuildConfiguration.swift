@@ -12,20 +12,20 @@ public enum BuildConfiguration: String {
     case appStore
 
     public static var current: BuildConfiguration {
-        #if DEBUG
-        return testingOverride ?? .localDeveloper
-        #elseif ALPHA
-        return .alpha
-        #else
-        return .appStore
-        #endif
+        let appConfigName = Bundle.main.object(forInfoDictionaryKey: "BuildConfigurationName") as? String
+        if appConfigName == "Debug" {
+            return testingOverride ?? .localDeveloper
+        } else if appConfigName == "Release-Alpha" {
+            return .alpha
+        } else {
+            return .appStore
+        }
     }
 
     static func ~=(a: BuildConfiguration, b: Set<BuildConfiguration>) -> Bool {
         return b.contains(a)
     }
 
-    #if DEBUG
     private static var testingOverride: BuildConfiguration?
 
     func test(_ closure: () -> ()) {
@@ -33,5 +33,4 @@ public enum BuildConfiguration: String {
         closure()
         BuildConfiguration.testingOverride = nil
     }
-    #endif
 }

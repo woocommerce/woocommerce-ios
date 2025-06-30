@@ -3363,6 +3363,41 @@ final class MigrationTests: XCTestCase {
         let updatedShipmentID = migratedLabel.value(forKey: "shipmentID") as? String
         XCTAssertEqual(updatedShipmentID, id)
     }
+
+    func test_migrating_from_122_to_123_adds_new_attribute_createdVia_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 122")
+        let sourceContext = sourceContainer.viewContext
+
+        let object = sourceContext.insert(entityName: "Order", properties: [
+            "orderID": 123,
+            "statusKey": "" // statusKey is a required value, unrelated to this migration
+        ])
+        try sourceContext.save()
+
+        // `createdVia` should not be present in model 122
+        XCTAssertNil(object.entity.attributesByName["createdVia"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 123")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedObject = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `createdVia` should be present in model 123
+        XCTAssertNotNil(migratedObject.entity.attributesByName["createdVia"])
+
+        // `createdVia` value should default as nil in model 123
+        let value = migratedObject.value(forKey: "createdVia") as? String
+        XCTAssertNil(value)
+
+        // `createdVia` must be settable
+        migratedObject.setValue("pos-rest-api", forKey: "createdVia")
+        try targetContext.save()
+        let updatedValue = migratedObject.value(forKey: "createdVia") as? String
+        XCTAssertEqual(updatedValue, "pos-rest-api")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -95,6 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleAsATabi2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .pointOfSaleOrdersi1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

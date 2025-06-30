@@ -20,6 +20,7 @@ extension Order {
     @NSManaged public var billingPostcode: String?
     @NSManaged public var billingState: String?
     @NSManaged public var chargeID: String?
+    @NSManaged public var createdVia: String?
     @NSManaged public var currency: String?
     @NSManaged public var customerID: Int64
     @NSManaged public var customerNote: String?

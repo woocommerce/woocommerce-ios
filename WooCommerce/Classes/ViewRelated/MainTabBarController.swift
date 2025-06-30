@@ -671,7 +671,7 @@ private extension MainTabBarController {
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
             let eligibility = await posEligibilityChecker.checkEligibility()
-            DDLogInfo("🟣 POS Eligibility for site \(siteID): \(eligibility)")
+            DDLogInfo("🟣 POS Eligibility for site \(siteID): \(eligibility) / build config: \(BuildConfiguration.current)")
             let isPOSTabVisible = eligibility == .eligible
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)

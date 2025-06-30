@@ -330,6 +330,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             quantity: 2,
             value: 9.99,
             weight: 0.5,
+            originCountry: "US",
             productID: 1
         )
 
@@ -339,6 +340,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                                        items: [expectedItem])
         var sentCustomsForm: ShippingLabelCustomsForm?
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .loadLabelRates(_, _, _, _, packages, _):
@@ -352,16 +355,37 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             }
         }
 
-        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
-        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
-        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
-                                                            shipment: sampleShipment,
-                                                            shippingLabel: nil,
-                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
-                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
-                                                            stores: stores,
-                                                            debounceDuration: 0)
+        let countries = [
+            Country(code: "US", name: "United States", states: []),
+            Country(code: "CA", name: "Canada", states: [])
+        ]
 
+        stores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case let .synchronizeCountries(_, onCompletion):
+                storageManager.insertSampleCountries(readOnlyCountries: countries)
+                onCompletion(.success(countries))
+            }
+        }
+
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleOriginAddress(country: "US", state: "NY")
+        )
+
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA")
+        )
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager,
+            debounceDuration: 0
+        )
 
         // When
         viewModel.selectPackage(samplePackageData())
@@ -749,6 +773,49 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.shippingService?.selectedRate)
+    }
+
+    // MARK: - Customs
+    func test_preselects_customs_origin_country() throws {
+        // Setup
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        // Given
+        let expectedCountry = "US"
+
+        let countries = [
+            Country(code: "US", name: "United States", states: []),
+            Country(code: "CA", name: "Canada", states: [])
+        ]
+
+        stores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case let .synchronizeCountries(_, onCompletion):
+                storageManager.insertSampleCountries(readOnlyCountries: countries)
+                onCompletion(.success(countries))
+            }
+        }
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        let customsItemViewModel = try XCTUnwrap(viewModel.customsFormViewModel.itemsViewModels.first)
+
+        // When
+        originAddressSubject.send(sampleOriginAddress(country: expectedCountry, state: ""))
+
+        // Then
+        XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
     }
 }
 

@@ -785,14 +785,15 @@ platform :ios do
     update_certs_and_profiles_enterprise if fetch_code_signing
 
     build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
-    pr_or_branch = pull_request_number&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
 
     gym(
       scheme: 'WooCommerce Alpha',
       workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,
-      xcargs: { BUILD_CODE_KEY => build_number, 'VERSION_SHORT' => pr_or_branch }.compact,
+      # Note that we don't want to override the `VERSION_SHORT` (with `PR #nn` or something) because that's the `.marketingVersion` and is used in API calls
+      # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the Buildkite build in Firebase.
+      xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       export_options: {

@@ -91,11 +91,6 @@ struct WooShippingEditAddressView: View {
                 previousFocusedField = newField
             }
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        dismiss()
-                    }
-                }
                 ToolbarItemGroup(placement: .keyboard) {
                     Button(action: {
                         focusPreviousField()
@@ -118,36 +113,11 @@ struct WooShippingEditAddressView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isPresentingCountrySelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.countrySelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingCountrySelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
-                }
-            }
-            .sheet(isPresented: $isPresentingStateSelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.stateSelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingStateSelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancel) {
+                    dismiss()
                 }
             }
         }
@@ -159,6 +129,38 @@ struct WooShippingEditAddressView: View {
         .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
             NavigationStack {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
+            }
+        }
+        .sheet(isPresented: $isPresentingCountrySelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.countrySelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingCountrySelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $isPresentingStateSelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.stateSelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingStateSelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
             }
         }
         .alert(

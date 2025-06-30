@@ -412,10 +412,17 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing the destination ("Ship To") address.
     var shipToAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipTo)
                 .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
-            VStack(alignment: .leading) {
+            VStack(
+                alignment: .leading,
+                spacing: Layout.verticalSpacing
+            ) {
                 if let addressLines = viewModel.destinationAddressLines {
                     AddressLinesView(addressLines: addressLines)
                 }

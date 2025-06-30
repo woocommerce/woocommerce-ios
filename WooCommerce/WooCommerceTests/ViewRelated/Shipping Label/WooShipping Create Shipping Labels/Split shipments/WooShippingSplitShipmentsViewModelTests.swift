@@ -1100,6 +1100,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isShipmentDeleteOptionAvailable(for: unfulfilledShipment))
     }
 
+    // MARK: - `instructions`
+
     func test_instructions_is_nil_when_there_exists_more_than_one_shipment() {
         // Given
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
@@ -1147,6 +1149,43 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.instructions)
+    }
+
+    // MARK: - `revertChanges`
+
+    func test_revertChanges_restores_shipments_and_resets_selected_index() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // Store the initial state
+        let initialShipmentCount = viewModel.shipments.count
+        let initialFirstShipmentContentsCount = viewModel.shipments.first?.contents.count
+
+        // When - Make changes to shipments
+        viewModel.shipments.first?.contents.first?.childItemRows.first?.handleTap()
+        viewModel.moveSelectedItems(to: .newShipment)
+        viewModel.selectedShipmentIndex = 1
+
+        // Verify changes were made
+        XCTAssertEqual(viewModel.shipments.count, 2)
+        XCTAssertEqual(viewModel.selectedShipmentIndex, 1)
+
+        // When - Revert changes
+        viewModel.revertChanges()
+
+        // Then - Verify state is restored
+        XCTAssertEqual(viewModel.shipments.count, initialShipmentCount)
+        XCTAssertEqual(viewModel.shipments.first?.contents.count, initialFirstShipmentContentsCount)
+        XCTAssertEqual(viewModel.selectedShipmentIndex, 0)
     }
 
     // MARK: - `isMergeAllUnfulfilledAvailable`

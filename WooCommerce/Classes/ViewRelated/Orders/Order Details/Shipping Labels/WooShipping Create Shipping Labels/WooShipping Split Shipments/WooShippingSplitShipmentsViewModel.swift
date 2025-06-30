@@ -154,6 +154,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
+    func revertChanges() {
+        shipments = shipmentsSavedInRemote
+        selectedShipmentIndex = 0
+    }
+
     func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {
         let currentShipment = shipments[shipmentIndex]
         let updatedContents = currentShipment.contents.map {

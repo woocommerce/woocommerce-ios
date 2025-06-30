@@ -205,10 +205,12 @@ private extension WooSavedPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }

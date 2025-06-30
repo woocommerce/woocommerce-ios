@@ -202,10 +202,13 @@ private extension WooCarrierPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }

@@ -3,6 +3,7 @@
 
 22.8
 -----
+- [*] Shipping Labels: Improve UI of Split shipments screen. [https://github.com/woocommerce/woocommerce-ios/pull/15838]
 
 
 22.7

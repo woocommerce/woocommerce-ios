@@ -3,6 +3,7 @@ import Yosemite
 
 struct WooShippingSplitShipmentsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @ObservedObject var viewModel: ViewModel
 
@@ -17,7 +18,7 @@ struct WooShippingSplitShipmentsView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
                 if viewModel.shipments.count > 1 {
                     VStack(spacing: 0) {
                         topTabView
@@ -44,14 +45,20 @@ struct WooShippingSplitShipmentsView: View {
                                 CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
+
+                        if sizeCategory.isAccessibilityCategory {
+                            Spacer()
+                            noticeStack
+                        }
                     }
                     .padding(Layout.contentPadding)
                 }
 
-                Spacer()
-
-                noticeStack
-                    .padding(Layout.contentPadding)
+                if !sizeCategory.isAccessibilityCategory {
+                    Spacer()
+                    noticeStack
+                        .padding(Layout.contentPadding)
+                }
             }
             .disabled(viewModel.isSavingShipmentInfo)
             .navigationBarTitleDisplayMode(.inline)

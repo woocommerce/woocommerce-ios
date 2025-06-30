@@ -76,6 +76,13 @@ struct OrderListCellViewModel {
         return order.status.localizedName
     }
 
+    /// Textual representation of the sales channel
+    ///
+    var salesChannel: String {
+        // Temporarily hardcoded. Will be handled on WOOMOB-661
+        return "POS"
+    }
+
     /// The localized unabbreviated total for a given order item, which includes the currency.
     ///
     /// Example: $48,415,504.20

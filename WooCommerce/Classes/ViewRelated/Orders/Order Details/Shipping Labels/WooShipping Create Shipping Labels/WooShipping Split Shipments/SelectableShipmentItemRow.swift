@@ -83,7 +83,7 @@ private extension SelectableShipmentItemRow {
         static let imageSize: CGFloat = 56.0
         static let imageCornerRadius: CGFloat = 4.0
         static let badgeOffset: CGFloat = 8.0
-        static let disabledOpacity: CGFloat = 0.7
+        static let disabledOpacity: CGFloat = 0.5
     }
 }
 

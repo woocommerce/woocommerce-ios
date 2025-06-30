@@ -25,6 +25,18 @@ struct MockSettingActionHandler: MockActionHandler {
             synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveTaxBasedOnSetting(_, let onCompletion):
             onCompletion(.success(objectGraph.taxBasedOnSetting))
+        case .isFeatureEnabled(_, let feature, let onCompletion):
+            switch feature {
+            case .pointOfSale:
+                // Only enables POS feature for eligible locales (US and UK variants).
+                let locale = Locale.current
+                let localeIdentifier = locale.identifier
+                let isEligibleCountry = localeIdentifier.hasPrefix("en_US") ||
+                                       localeIdentifier.hasPrefix("en_GB") ||
+                                       localeIdentifier == "en-US" ||
+                                       localeIdentifier == "en-GB"
+                onCompletion(.success(isEligibleCountry))
+            }
         default: unimplementedAction(action: action)
         }
     }

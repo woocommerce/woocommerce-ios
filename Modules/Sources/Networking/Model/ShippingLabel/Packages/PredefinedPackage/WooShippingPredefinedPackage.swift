@@ -38,7 +38,7 @@ public struct WooShippingPredefinedPackage: Equatable, GeneratedFakeable, Identi
     }
 
     public func getLength() -> Double {
-        let firstComponent = dimensions.components(separatedBy: " x ").first ?? ""
+        let firstComponent = dimensions.components(separatedBy: " x ")[safe: 0] ?? ""
         return Double(firstComponent) ?? 0
     }
 
@@ -48,7 +48,7 @@ public struct WooShippingPredefinedPackage: Equatable, GeneratedFakeable, Identi
     }
 
     public func getHeight() -> Double {
-        let lastComponent = dimensions.components(separatedBy: " x ").last ?? ""
+        let lastComponent = dimensions.components(separatedBy: " x ")[safe: 2] ?? ""
         return Double(lastComponent) ?? 0
     }
 }

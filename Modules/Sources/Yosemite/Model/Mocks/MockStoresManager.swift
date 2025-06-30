@@ -162,6 +162,11 @@ public class MockStoresManager: StoresManager {
             shippingMethodActionHandler.handle(action: action)
         case let action as CouponAction:
             couponActionHandler.handle(action: action)
+        case let action as FeatureFlagAction:
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+                completion(true)
+            }
         default:
             fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
         }

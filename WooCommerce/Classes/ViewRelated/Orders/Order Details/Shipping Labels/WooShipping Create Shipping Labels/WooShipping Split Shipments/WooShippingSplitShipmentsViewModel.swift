@@ -137,7 +137,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func onAppear() {
-        showInstructionsNotice()
+        if shipments.isEmpty {
+            showInstructionsNotice()
+        }
         updateMoveToNotice()
     }
 

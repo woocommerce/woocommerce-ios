@@ -21,6 +21,7 @@ struct PointOfSaleLoadingView: View {
         .onDisappear {
             trackElapsedTimeOnDisappear()
         }
+        .background(Color.posSurface)
     }
 }
 

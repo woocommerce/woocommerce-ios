@@ -26,6 +26,14 @@ final class HIDBarcodeParser {
     /// Process a key press event
     /// - Parameter key: The key that was pressed
     func processKeyPress(_ key: UIKey) {
+        guard key.characters.isNotEmpty else {
+            // This was added to prevent a double-trigger-pull on a Star scanner from adding an error row –
+            // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE,
+            // which is undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
+            // There seems to be no reason to handle empty input when considering scans.
+            return
+        }
+
         let currentTime = timeProvider.now()
 
         // If characters are entered too slowly, it's probably typing and we should ignore it

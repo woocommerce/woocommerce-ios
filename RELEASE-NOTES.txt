@@ -4,6 +4,7 @@
 22.8
 -----
 - [*] POS: icon button with confirmation step used for clearing the cart [https://github.com/woocommerce/woocommerce-ios/pull/15829]
+- [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
 
 22.7
 -----

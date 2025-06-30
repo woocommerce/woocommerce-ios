@@ -38,6 +38,8 @@ enum POSEligibilityState: Equatable {
 protocol POSEntryPointEligibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
     func checkInitialVisibility() -> Bool
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
 }
@@ -74,12 +76,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        guard #available(iOS 17.0, *) else {
-            return .ineligible(reason: .unsupportedIOSVersion)
-        }
-
-        guard userInterfaceIdiom == .pad else {
-            return .ineligible(reason: .notTablet)
+        switch checkDeviceEligibility() {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
@@ -110,7 +111,60 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .ineligible(reason: reason)
         }
     }
+
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool {
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+            return await checkVisibilityBasedOnCountryAndRemoteFeatureFlag()
+        } else {
+            let eligibility = await checkEligibility()
+            return eligibility == .eligible
+        }
+    }
 }
+
+private extension POSTabEligibilityChecker {
+    func checkDeviceEligibility() -> POSEligibilityState {
+        guard #available(iOS 17.0, *) else {
+            return .ineligible(reason: .unsupportedIOSVersion)
+        }
+
+        guard userInterfaceIdiom == .pad else {
+            return .ineligible(reason: .notTablet)
+        }
+
+        return .eligible
+    }
+
+    func checkVisibilityBasedOnCountryAndRemoteFeatureFlag() async -> Bool {
+        guard checkDeviceEligibility() == .eligible else {
+            return false
+        }
+
+        async let siteSettingsEligibility = checkSiteSettingsEligibility()
+        async let featureFlagEligibility = checkRemoteFeatureEligibility()
+
+        switch await siteSettingsEligibility {
+        case .eligible:
+            break
+        case let .ineligible(reason):
+            if reason == .unsupportedCurrency {
+                break
+            } else {
+                return false
+            }
+        }
+
+        switch await featureFlagEligibility {
+        case .eligible:
+            return true
+        case .ineligible:
+            return false
+        }
+    }
+}
+
+// MARK: - WC Plugin Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
     func checkPluginEligibility() async -> POSEligibilityState {
@@ -157,6 +211,8 @@ private extension POSTabEligibilityChecker {
     }
 }
 
+// MARK: - Site Settings Related Eligibility Check
+
 private extension POSTabEligibilityChecker {
     func checkSiteSettingsEligibility() async -> POSEligibilityState {
         // Waits for the first site settings that matches the given site ID.
@@ -201,6 +257,8 @@ private extension POSTabEligibilityChecker {
         }
     }
 }
+
+// MARK: - Remote Feature Flag Eligibility Check
 
 private extension POSTabEligibilityChecker {
     @MainActor

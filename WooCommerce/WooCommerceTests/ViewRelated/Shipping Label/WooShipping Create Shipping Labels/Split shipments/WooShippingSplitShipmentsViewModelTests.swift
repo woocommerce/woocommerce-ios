@@ -1100,6 +1100,55 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isShipmentDeleteOptionAvailable(for: unfulfilledShipment))
     }
 
+    func test_instructions_is_nil_when_there_exists_more_than_one_shipment() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+
+        let config = WooShippingConfig(
+            siteID: 123,
+            shipments: [
+                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
+                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+            ],
+            shippingLabelData: WooShippingLabelData(currentOrderLabels: [])
+        )
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: config,
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertNil(viewModel.instructions)
+    }
+
+    func test_instructions_is_not_nil_when_there_exists_only_one_shipment() {
+        // Given
+        let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
+                     sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
+
+        let viewModel = WooShippingSplitShipmentsViewModel(
+            order: sampleOrder,
+            config: WooShippingConfig.fake(),
+            items: items,
+            currencySettings: currencySettings,
+            shippingSettingsService: shippingSettingsService
+        )
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertNotNil(viewModel.instructions)
+    }
+
     // MARK: - `isMergeAllUnfulfilledAvailable`
 
     func test_isMergeAllUnfulfilledAvailable_returns_false_when_no_unfulfilled_shipments() throws {

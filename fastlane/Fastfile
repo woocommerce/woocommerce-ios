@@ -790,6 +790,7 @@ platform :ios do
     gym(
       scheme: 'WooCommerce Alpha',
       workspace: WORKSPACE_PATH,
+      configuration: 'Release-Alpha',
       export_method: 'enterprise',
       clean: true,
       xcargs: { BUILD_CODE_KEY => build_number, 'VERSION_SHORT' => pr_or_branch }.compact,

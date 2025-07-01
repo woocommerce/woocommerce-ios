@@ -101,6 +101,9 @@ struct WooShippingSplitShipmentsView: View {
             Button(Localization.SaveShipmentError.retry) {
                 saveShipmentInfoAndDismiss()
             }
+            Button(Localization.SaveShipmentError.revertChanges) {
+                viewModel.revertChanges()
+            }
         }
     }
 }
@@ -494,6 +497,11 @@ fileprivate extension WooShippingSplitShipmentsView {
                 "wooShipping.createLabels.splitShipment.saveShipmentError.cancel",
                 value: "Cancel",
                 comment: "Cancel button title on the error alert when saving split shipment changes fails"
+            )
+            static let revertChanges = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges",
+                value: "Revert changes",
+                comment: "Button on the error alert to revert changes when saving split shipment changes fails"
             )
         }
     }

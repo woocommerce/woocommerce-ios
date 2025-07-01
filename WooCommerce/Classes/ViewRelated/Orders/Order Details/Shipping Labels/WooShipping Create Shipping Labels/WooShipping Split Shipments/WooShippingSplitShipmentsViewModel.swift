@@ -137,7 +137,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func onAppear() {
-        showInstructionsNotice()
+        if shipments.count == 1 {
+            showInstructionsNotice()
+        }
         updateMoveToNotice()
     }
 
@@ -150,6 +152,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     func dismissInstructions() {
         instructions = nil
         dismissedInstructions = true
+    }
+
+    func revertChanges() {
+        shipments = shipmentsSavedInRemote
+        selectedShipmentIndex = 0
     }
 
     func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {

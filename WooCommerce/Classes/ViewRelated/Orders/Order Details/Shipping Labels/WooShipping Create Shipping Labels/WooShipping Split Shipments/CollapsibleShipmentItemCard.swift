@@ -60,7 +60,6 @@ private extension CollapsibleShipmentItemCard {
                         .foregroundColor(Color(.accent))
                 }
             })
-            .buttonStyle(PlainButtonStyle())
         }
     }
 

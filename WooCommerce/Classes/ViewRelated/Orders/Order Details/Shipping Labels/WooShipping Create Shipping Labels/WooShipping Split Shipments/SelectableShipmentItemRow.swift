@@ -4,6 +4,7 @@ import SwiftUI
 /// Row for a selectable shipment item to ship with the Woo Shipping extension.
 struct SelectableShipmentItemRow: View {
     @ObservedObject private var viewModel: SelectableShipmentItemRowViewModel
+    @Environment(\.isEnabled) private var isEnabled
 
     init(viewModel: SelectableShipmentItemRowViewModel) {
         self.viewModel = viewModel
@@ -50,6 +51,7 @@ struct SelectableShipmentItemRow: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .opacity(isEnabled ? 1 : Layout.disabledOpacity)
     }
 }
 
@@ -81,6 +83,7 @@ private extension SelectableShipmentItemRow {
         static let imageSize: CGFloat = 56.0
         static let imageCornerRadius: CGFloat = 4.0
         static let badgeOffset: CGFloat = 8.0
+        static let disabledOpacity: CGFloat = 0.5
     }
 }
 

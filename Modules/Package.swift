@@ -2,8 +2,6 @@
 
 import PackageDescription
 
-// Dummy change to force Prototype build
-
 let package = Package(
     name: "Modules",
     platforms: [

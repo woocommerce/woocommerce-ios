@@ -789,6 +789,7 @@ platform :ios do
 
     gym(
       scheme: 'WooCommerce Alpha',
+      configuration: 'Release-Alpha',
       workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,

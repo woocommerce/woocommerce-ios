@@ -151,5 +151,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>BuildConfigurationName</key>
+	<string>$(CONFIGURATION)</string>
 </dict>
 </plist>

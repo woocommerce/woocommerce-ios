@@ -3,8 +3,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel: Identifiable {
     let title: String = Localization.title
-    private let progress: Float
-    let image: Image
+    let progress: Float
     let progressTitle: String
     let progressSubtitle: String = Localization.messageRequired
     let cancelButtonTitle: String
@@ -13,8 +12,11 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
     // This relies on the closures being immutable
     let id = UUID()
 
+    var isComplete: Bool {
+        progress >= 1.0
+    }
+
     init(progress: Float, cancel: (() -> Void)?) {
-        self.image = Image(uiImage: .posSoftwareUpdateProgress(progress: CGFloat(progress)))
         self.progress = progress
         self.progressTitle = String(format: Localization.percentCompleteFormat, 100 * progress)
 

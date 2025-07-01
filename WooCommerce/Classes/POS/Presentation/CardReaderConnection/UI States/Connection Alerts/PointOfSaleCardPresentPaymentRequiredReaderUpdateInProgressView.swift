@@ -14,10 +14,12 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
             Spacer()
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-                viewModel.image
-                    .accessibilityHidden(true)
-                    .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
-                    .animation(nil, value: viewModel.image)
+                PointOfSaleCardPresentPaymentReaderUpdateProgressView(
+                    progress: CGFloat(viewModel.progress),
+                    isComplete: viewModel.isComplete
+                )
+                .accessibilityHidden(true)
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)

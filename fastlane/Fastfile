@@ -785,8 +785,8 @@ platform :ios do
     update_certs_and_profiles_enterprise if fetch_code_signing
 
     pr_prefix = pull_request_number&.then { |num| "pr#{num}" }
-    buildkite_build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
-    build_number = [pr_prefix, buildkite_build_number].compact.join('-')
+    commit_short_hash = ENV.fetch('BUILDKITE_COMMIT', '0')[0...7]
+    build_number = [pr_prefix, commit_short_hash].compact.join('-')
 
     gym(
       scheme: 'WooCommerce Alpha',

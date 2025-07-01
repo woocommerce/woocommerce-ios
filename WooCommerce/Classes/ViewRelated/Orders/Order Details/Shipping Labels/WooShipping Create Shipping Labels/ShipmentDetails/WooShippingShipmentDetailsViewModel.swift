@@ -369,7 +369,22 @@ private extension WooShippingShipmentDetailsViewModel {
                         selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
                         selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
                                                                                       rate: $0.rate,
-                                                                                      basedOn: baseRate) }
+                                                                                      basedOn: baseRate) },
+                        selectedRate.carbonNeutralRate.map {
+                            self.formatShippingRate(name: Localization.carbonNeutral,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.additionalHandlingRate.map {
+                            self.formatShippingRate(name: Localization.additionalHandling,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.saturdayDeliveryRate.map {
+                            self.formatShippingRate(name: Localization.saturdayDelivery,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        }
                     ].compacted()
                     return [formattedBaseRate] + formattedSignatureRate
                 } else {
@@ -499,5 +514,23 @@ private extension WooShippingShipmentDetailsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+        static let carbonNeutral = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.carbonNeutral",
+            value: "Carbon Neutral",
+            comment: "Label for row showing the additional cost to require carbon neutral delivery " +
+            "on the shipping label creation screen"
+        )
+        static let additionalHandling = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.additionalHandling",
+            value: "Additional Handling",
+            comment: "Label for row showing the additional cost to require additional handling " +
+            "on the shipping label creation screen"
+        )
+        static let saturdayDelivery = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.saturdayDelivery",
+            value: "Saturday Delivery",
+            comment: "Label for row showing the additional cost to require Saturday delivery " +
+            "on the shipping label creation screen"
+        )
     }
 }

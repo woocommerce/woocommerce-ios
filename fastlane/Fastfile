@@ -794,7 +794,7 @@ platform :ios do
       export_method: 'enterprise',
       clean: true,
       # Note that we don't want to override the `VERSION_SHORT` (with `PR #nn` or something) because that's the `.marketingVersion` and is used in API calls
-      # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the Buildkite build in Firebase.
+      # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
       xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),

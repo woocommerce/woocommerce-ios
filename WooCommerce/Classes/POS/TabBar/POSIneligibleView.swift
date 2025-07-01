@@ -34,6 +34,11 @@ struct POSIneligibleView: View {
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.posOnSurface)
 
+                Text(suggestionText)
+                    .font(POSFontStyle.posCaptionRegular.font())
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(Color.posOnSurface)
+
                 Button {
                     Task { @MainActor in
                         do {
@@ -41,7 +46,7 @@ struct POSIneligibleView: View {
                             try await onRefresh()
                             isLoading = false
                         } catch {
-                            // TODO-jc: handle error if needed, e.g., show an error message
+                            // TODO: WOOMOB-720 - handle error if needed, e.g., show an error message
                             print("Error refreshing eligibility: \(error)")
                             isLoading = false
                         }
@@ -101,6 +106,57 @@ struct POSIneligibleView: View {
                                      comment: "Ineligible reason: feature flag disabled")
         case .selfDeallocated:
             return Localization.defaultReason
+        }
+    }
+
+    private var suggestionText: String {
+        switch reason {
+        case .notTablet:
+            return NSLocalizedString("pos.ineligible.suggestion.notTablet",
+                                     value: "Please use an iPad to access POS features.",
+                                     comment: "Suggestion for not tablet: use iPad")
+        case .unsupportedIOSVersion:
+            return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
+                                     value: "Update your device to iOS 17 or later in Settings > General > Software Update.",
+                                     comment: "Suggestion for unsupported iOS version: update iOS")
+        case .unsupportedWooCommerceVersion:
+            return NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
+                                     value: "Go to your WordPress admin and update WooCommerce to the latest version.",
+                                     comment: "Suggestion for unsupported WooCommerce version: update plugin")
+        case .wooCommercePluginNotFound:
+            return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound",
+                                     value: "Install and activate the WooCommerce plugin from your WordPress admin.",
+                                     comment: "Suggestion for missing WooCommerce plugin: install plugin")
+        case .featureSwitchDisabled:
+            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",
+                                     value: "Enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
+                                     comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
+        case .featureSwitchSyncFailure:
+            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
+                                     value: "Try relaunching the app or check your internet connection and try again.",
+                                     comment: "Suggestion for feature switch sync failure: relaunch or check connection")
+        case .unsupportedCountry:
+            // TODO: DI countries
+            return NSLocalizedString("pos.ineligible.suggestion.unsupportedCountry",
+                                     value: "POS is currently only available in select countries. Check back later for availability in your region.",
+                                     comment: "Suggestion for unsupported country: check back later")
+        case .unsupportedCurrency:
+            // TODO: DI currencies
+            return NSLocalizedString("pos.ineligible.suggestion.unsupportedCurrency",
+                                     value: "Change your store's currency to USD, EUR, GBP, or CAD in WooCommerce settings.",
+                                     comment: "Suggestion for unsupported currency: change currency")
+        case .siteSettingsNotAvailable:
+            return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
+                                     value: "Check your internet connection and try relaunching the app. If the issue persists, please contact support.",
+                                     comment: "Suggestion for site settings unavailable: check connection or contact support")
+        case .featureFlagDisabled:
+            return NSLocalizedString("pos.ineligible.suggestion.featureFlagDisabled",
+                                     value: "POS is currently disabled.",
+                                     comment: "Suggestion for disabled feature flag: notify that POS is disabled remotely")
+        case .selfDeallocated:
+            return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
+                                     value: "Try relaunching the app to resolve this issue.",
+                                     comment: "Suggestion for self deallocated: relaunch")
         }
     }
 }

@@ -720,6 +720,8 @@ platform :ios do
   lane :build_for_app_store_connect do |fetch_code_signing: true|
     update_certs_and_profiles_app_store if fetch_code_signing
 
+    remove_wormholy_dependency_from_package_swift
+
     gym(
       scheme: 'WooCommerce',
       workspace: WORKSPACE_PATH,
@@ -783,6 +785,8 @@ platform :ios do
   desc 'Builds a prototype build (Enterprise build)'
   lane :build_for_prototype_build do |fetch_code_signing: true|
     update_certs_and_profiles_enterprise if fetch_code_signing
+
+    remove_wormholy_dependency_from_package_swift
 
     build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
     pr_or_branch = pull_request_number&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
@@ -1554,4 +1558,33 @@ def report_milestone_error(error_title:)
   UI.error(error_message)
 
   buildkite_annotate(style: 'warning', context: 'error-with-milestone', message: error_message) if is_ci
+end
+
+# Removes all Wormholy entries from a given `Package.swift`
+#
+# Wormholy is a library we only need in Debug builds.
+# We don't want to bloat other builds with it, despite how small it might be.
+#
+# Thanks to all our Swift dependencies being declared in `Modules/Package.swift`, removing Wormholy from the file safely removes if from Xcode.
+# No need to edit the Xcode project.
+#
+# See counterpart build phase script fail-non-debug-build-if-wormholy-present.sh
+def remove_wormholy_dependency_from_package_swift(
+  package_path: File.join(PROJECT_ROOT_FOLDER, 'Modules', 'Package.swift')
+)
+  content = File.read(package_path)
+
+  # Remove any line containing Wormholy.
+  #
+  # This relies on Package.swift being straightforward in how it defines dependencies.
+  # Given the code is only for usage in this repo at this time, it seems safe to do.
+  #
+  # This also assumes no other dependency, target, etc. includes "Wormholy" in its name.
+  # That also seem safe.
+  cleaned_content = content.lines.reject do |line|
+    line.include? 'Wormholy'
+  end.join
+
+  File.write(package_path, cleaned_content)
+  UI.success("Stripped Wormholy from #{package_path}")
 end

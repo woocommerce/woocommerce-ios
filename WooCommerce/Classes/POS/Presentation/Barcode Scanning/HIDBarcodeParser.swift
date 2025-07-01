@@ -26,11 +26,7 @@ final class HIDBarcodeParser {
     /// Process a key press event
     /// - Parameter key: The key that was pressed
     func processKeyPress(_ key: UIKey) {
-        guard key.characters.isNotEmpty else {
-            // This was added to prevent a double-trigger-pull on a Star scanner from adding an error row –
-            // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE,
-            // which is undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
-            // There seems to be no reason to handle empty input when considering scans.
+        guard shouldRecogniseAsScanKeystroke(key) else {
             return
         }
 
@@ -52,6 +48,23 @@ final class HIDBarcodeParser {
             guard !excludedKeys.contains(key.keyCode) else { return }
             buffer.append(character)
         }
+    }
+
+    private func shouldRecogniseAsScanKeystroke(_ key: UIKey) -> Bool {
+        guard key.characters.isNotEmpty else {
+            // This prevents a double-trigger-pull on a Star scanner from adding an error row –
+            // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE, which is
+            // undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
+            // There seems to be no reason to handle empty input when considering scans.
+            return false
+        }
+
+        if buffer.isEmpty && configuration.terminatingStrings.contains(key.characters) {
+            // We prefer to show all partial scans, but if we just get an enter with no numbers, ignoring it makes testing easier
+            return false
+        }
+
+        return true
     }
 
     private let excludedKeys: [UIKeyboardHIDUsage] = [

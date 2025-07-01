@@ -275,6 +275,7 @@ private extension WooShippingSplitShipmentsView {
                                     Text(otherShipment.itemsDetailLabel)
                                 }
                                 .font(.subheadline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                         .padding(Layout.contentPadding)

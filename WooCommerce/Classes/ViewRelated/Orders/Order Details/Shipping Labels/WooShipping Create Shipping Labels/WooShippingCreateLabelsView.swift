@@ -370,7 +370,11 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing the origin ("Ship From") address.
     var shipFromAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
 
@@ -379,7 +383,10 @@ private extension WooShippingCreateLabelsView {
                 AddressLinesView(addressLines: addressLines)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                VStack(alignment: .leading) {
+                VStack(
+                    alignment: .leading,
+                    spacing: Layout.verticalSpacing
+                ) {
                     Button {
                         isOriginAddressListPresented = true
                     } label: {

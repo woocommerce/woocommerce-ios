@@ -43,26 +43,16 @@ extension UIImage {
     }
 
     static func softwareUpdateProgress(progress: CGFloat) -> UIImage {
-        let symbol: UIImage = progress == 1 ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow
-
-        return .composite(images: [
-            .cardReaderUpdateProgressBackground,
-            .softwareUpdateProgressFill(progress: progress),
-            symbol
-        ].compactMap { $0 }) ?? .init()
-    }
-
-    static func posSoftwareUpdateProgress(progress: CGFloat) -> UIImage {
         let symbol: UIImage =
             progress == 1 ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow
         let backgroundImage = UIImage.cardReaderUpdateProgressBackground
             .withRenderingMode(.alwaysTemplate)
-            .withTintColor(UIColor(.posSecondary))
+            .withTintColor(.accent.withAlphaComponent(0.5))
         return .composite(
             images: [
                 backgroundImage,
-                .softwareUpdateProgressFill(progress: progress, fillColor: UIColor(.posPrimary)),
-                symbol.withTintColor(UIColor(.posOnPrimary)),
+                .softwareUpdateProgressFill(progress: progress, fillColor: .accent),
+                symbol
             ].compactMap { $0 }) ?? .init()
     }
 }
@@ -83,12 +73,6 @@ struct UpdateProgressImage_Previews: PreviewProvider {
                     Text("Default Style")
                         .font(.headline)
                     Image(uiImage: UIImage.softwareUpdateProgress(progress: complete))
-                }
-
-                VStack {
-                    Text("POS Style")
-                        .font(.headline)
-                    Image(uiImage: UIImage.posSoftwareUpdateProgress(progress: complete))
                 }
 
                 Slider(value: $complete, in: 0...1)

@@ -1533,6 +1533,7 @@
 		6818E7C12D93C76700677C16 /* PointOfSaleCouponsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6818E7C02D93C76200677C16 /* PointOfSaleCouponsControllerTests.swift */; };
 		681BB5FC2D676047008AF8BB /* POSSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681BB5FB2D676043008AF8BB /* POSSpacing.swift */; };
 		681BB5FE2D676061008AF8BB /* POSPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681BB5FD2D676060008AF8BB /* POSPadding.swift */; };
+		682140AF2E125437005E86AB /* UILabel+SalesChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */; };
 		682210ED2909666600814E14 /* CustomerSearchUICommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */; };
 		6827140F28A3988300E6E3F6 /* DismissableNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */; };
 		6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */; };
@@ -4663,6 +4664,7 @@
 		6818E7C02D93C76200677C16 /* PointOfSaleCouponsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCouponsControllerTests.swift; sourceTree = "<group>"; };
 		681BB5FB2D676043008AF8BB /* POSSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSpacing.swift; sourceTree = "<group>"; };
 		681BB5FD2D676060008AF8BB /* POSPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPadding.swift; sourceTree = "<group>"; };
+		682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+SalesChannel.swift"; sourceTree = "<group>"; };
 		682210EC2909666600814E14 /* CustomerSearchUICommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommandTests.swift; sourceTree = "<group>"; };
 		6827140E28A3988300E6E3F6 /* DismissableNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissableNoticeView.swift; sourceTree = "<group>"; };
 		6832C7C926DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabeledTextViewTableViewCell.swift; sourceTree = "<group>"; };
@@ -11925,6 +11927,7 @@
 				459097F723CDE47F00DEA9E0 /* UIAlertController+Helpers.swift */,
 				B5AA7B3E20ED81C2004DA14F /* UserDefaults+Woo.swift */,
 				B59D49CC219B587E006BF0AD /* UILabel+OrderStatus.swift */,
+				682140AE2E125430005E86AB /* UILabel+SalesChannel.swift */,
 				B53B3F38219C817800DF1EB6 /* UIStoryboard+Woo.swift */,
 				B586906521A5F4B1001F1EFC /* UINavigationController+Woo.swift */,
 				D88CA755237CE515005D2F44 /* UITabBar+Appearance.swift */,
@@ -16128,6 +16131,7 @@
 				2004E2CE2C077B0B00D62521 /* CardPresentPaymentCardReader.swift in Sources */,
 				26B233D12A14208800926EAD /* PrivacyBannerPresenter.swift in Sources */,
 				CE55F2D62B23941D005D53D7 /* CollapsibleProductCardPriceSummary.swift in Sources */,
+				682140AF2E125437005E86AB /* UILabel+SalesChannel.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
 				B958A7C928B3D47B00823EEF /* Route.swift in Sources */,
 				01309A812DC4F45300B77527 /* CardPresentModalCardInserted.swift in Sources */,

@@ -195,4 +195,12 @@ public enum FeatureFlag: Int {
     /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
     ///
     case pointOfSaleAsATabi1
+
+    /// Enables displaying POS as a tab in the tab bar for stores in eligible countries
+    ///
+    case pointOfSaleAsATabi2
+
+    /// Enables displaying Point Of Sale details in order list and order details
+    ///
+    case pointOfSaleOrdersi1
 }

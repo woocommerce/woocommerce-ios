@@ -174,10 +174,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     ///
     @MainActor
     func refreshPackagesAndShippingRates() async throws {
-        guard let selectedRate, let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+        let currentShipmentWeight = shipmentWeight
+
+        guard let selectedRate, let selectedPackage,
+              let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
         }
         self.selectedPackage = updatedPackage
+
+        /// If the shipment weight was manually entered, reuse it.
+        if currentShipmentWeight != shipmentWeight {
+            self.shipmentWeight = currentShipmentWeight
+        }
 
         let finalPackage = buildSelectedPackage(updatedPackage,
                                                 weight: Double(shipmentWeight) ?? 0,

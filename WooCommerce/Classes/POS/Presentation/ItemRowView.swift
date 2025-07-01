@@ -26,9 +26,6 @@ struct ItemRowView: View {
 
     var body: some View {
         itemRow
-            .background(Color.posSurfaceContainerLowest)
-            .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
-            .posItemCardBorderStyles()
             .padding(.horizontal, Constants.horizontalPadding)
             .geometryGroup()
             .accessibilityLabel(accessibilityLabel)
@@ -86,6 +83,9 @@ struct ItemRowView: View {
             }
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .frame(maxWidth: .infinity, minHeight: dimension, alignment: .leading)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
     }
 
     @ViewBuilder
@@ -152,39 +152,84 @@ private extension ItemRowView {
 
 #if DEBUG
 @available(iOS 17.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
-                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                               title: "Item Title",
-                                               subtitle: "Item Subtitle",
-                                               quantity: 2),
-                onItemRemoveTapped: { })
-}
+#Preview {
+    ScrollView {
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Item Title",
+                subtitle: "Item Subtitle",
+                quantity: 2
+            ),
+            onItemRemoveTapped: { }
+        )
 
-@available(iOS 17.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: Cart.PurchasableItem(id: UUID(),
-                                               item: PointOfSalePreviewItemService().providePointOfSaleItem(),
-                                               title: "Item Title",
-                                               subtitle: nil,
-                                               quantity: 2),
-                onItemRemoveTapped: { })
-}
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Item Title With incredible long title that goes incredibly far and beyond",
+                subtitle: "Item Subtitle",
+                quantity: 2
+            ),
+            onItemRemoveTapped: { }
+        )
 
-@available(iOS 17.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView(cartItem: Cart.PurchasableItem.loading(id: UUID()),
-                onCancelLoading: { })
-}
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Item Title",
+                subtitle: nil,
+                quantity: 2
+            ),
+            onItemRemoveTapped: { }
+        )
 
-@available(iOS 17.0, *)
-#Preview(traits: .sizeThatFitsLayout) {
-    ItemRowView.init(cartItem: Cart.PurchasableItem(
-        id: UUID(),
-        title: "123-123-123",
-        subtitle: "Unspported product type",
-        quantity: 1,
-        state: .error
-    ))
+        ItemRowView(
+            cartItem: Cart.PurchasableItem.loading(id: UUID()),
+            onCancelLoading: { }
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                title: "123-123-123",
+                subtitle: "Unspported product type",
+                quantity: 1,
+                state: .error
+            )
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                title: "123-123-123",
+                subtitle: "Unspported product type with an incredibly long error message that goes on and on",
+                quantity: 1,
+                state: .error
+            )
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Item Title",
+                subtitle: nil,
+                quantity: 2
+            ),
+            showImage: .constant(false),
+            onItemRemoveTapped: { }
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem.loading(id: UUID()),
+            showImage: .constant(false),
+            onCancelLoading: { }
+        )
+    }
+    .frame(width: 400)
 }
 #endif

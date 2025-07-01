@@ -30,16 +30,9 @@ final class HIDBarcodeParser {
             return
         }
 
-        let currentTime = timeProvider.now()
-
-        // If characters are entered too slowly, it's probably typing and we should ignore it
-        if let lastTime = lastKeyPressTime,
-           currentTime.timeIntervalSince(lastTime) > configuration.maximumInterCharacterTime {
-            onScan(.failure(HIDBarcodeParserError.timedOut(barcode: buffer)))
-            resetScan()
-        }
-
-        lastKeyPressTime = currentTime
+        // If characters are entered too slowly, it's probably typing and we should ignore the old input.
+        // The key we just recieved is still considered for adding to the buffer – we may simply reset the buffer first.
+        checkForTimeoutBetweenKeystrokes()
 
         let character = key.characters
         if configuration.terminatingStrings.contains(character) {
@@ -65,6 +58,18 @@ final class HIDBarcodeParser {
         }
 
         return true
+    }
+
+    private func checkForTimeoutBetweenKeystrokes() {
+        let currentTime = timeProvider.now()
+
+        if let lastTime = lastKeyPressTime,
+           currentTime.timeIntervalSince(lastTime) > configuration.maximumInterCharacterTime {
+            onScan(.failure(HIDBarcodeParserError.timedOut(barcode: buffer)))
+            resetScan()
+        }
+
+        lastKeyPressTime = currentTime
     }
 
     private let excludedKeys: [UIKeyboardHIDUsage] = [

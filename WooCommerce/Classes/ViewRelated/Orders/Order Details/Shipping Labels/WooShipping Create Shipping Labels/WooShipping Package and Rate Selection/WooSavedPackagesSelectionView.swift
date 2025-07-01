@@ -157,6 +157,7 @@ struct WooSavedPackagesSelectionView: View {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
+            .renderedIf(viewModel.hasSavedPackages)
             .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
             }
@@ -205,14 +206,16 @@ private extension WooSavedPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     var selectionButtonDisabled: Bool {

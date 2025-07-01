@@ -136,6 +136,7 @@ struct WooCarrierPackagesSelectionView: View {
             Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
+            .renderedIf(viewModel.carrierTabs.isNotEmpty)
             .disabled(selectionButtonDisabled)
             .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
@@ -202,14 +203,17 @@ private extension WooCarrierPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     func addPackageButtonTapped() {

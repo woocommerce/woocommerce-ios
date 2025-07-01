@@ -816,6 +816,10 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
+
+        waitUntil {
+            viewModel.customsForm?.items.first?.originCountry == expectedCountry
+        }
     }
 }
 

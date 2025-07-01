@@ -66,6 +66,8 @@ extension Storage.Order: ReadOnlyConvertible {
             shippingPhone = shippingAddress.phone
             shippingEmail = shippingAddress.email
         }
+
+        createdVia = order.createdVia
     }
 
     /// Returns a ReadOnly version of the receiver.

@@ -358,6 +358,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
                     "WooFoundationCore",
+                    .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "Sentry", package: "sentry-cocoa"),

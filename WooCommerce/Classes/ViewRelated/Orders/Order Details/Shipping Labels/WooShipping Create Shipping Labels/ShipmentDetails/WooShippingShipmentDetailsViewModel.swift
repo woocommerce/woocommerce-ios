@@ -405,12 +405,18 @@ private extension WooShippingShipmentDetailsViewModel {
     /// Observes changes in shipment details and resets the selected rate.
     /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
     func setupSelectedRateReset() {
-        $destinationAddress
-            .combineLatest($originAddress)
-            .combineLatest($selectedPackage)
-            .combineLatest($shipmentWeight)
-            .combineLatest($hazmatCategory)
-            .combineLatest($customsForm)
+        $destinationAddress.removeDuplicates()
+            .combineLatest($originAddress.removeDuplicates())
+            .combineLatest(
+                $selectedPackage.removeDuplicates(by: { $0?.id == $1?.id })
+            )
+            .combineLatest(
+                $shipmentWeight
+                    .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+                    .removeDuplicates()
+            )
+            .combineLatest($hazmatCategory.removeDuplicates())
+            .combineLatest($customsForm.removeDuplicates())
             // Drop the initial values set on initialization, so we only react to changes.
             .dropFirst()
             .sink { [weak self] _ in

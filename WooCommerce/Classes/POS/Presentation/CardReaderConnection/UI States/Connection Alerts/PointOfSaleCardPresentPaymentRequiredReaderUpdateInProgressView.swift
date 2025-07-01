@@ -17,6 +17,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressView: View {
                 viewModel.image
                     .accessibilityHidden(true)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                    .animation(nil, value: viewModel.image)
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                     Text(viewModel.title)

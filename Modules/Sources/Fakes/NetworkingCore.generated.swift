@@ -185,7 +185,8 @@ extension NetworkingCore.Order {
             renewalSubscriptionID: .fake(),
             appliedGiftCards: .fake(),
             attributionInfo: .fake(),
-            shippingLabels: .fake()
+            shippingLabels: .fake(),
+            createdVia: .fake()
         )
     }
 }

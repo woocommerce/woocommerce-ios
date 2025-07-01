@@ -119,7 +119,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      renewalSubscriptionID: renewalSubscriptionID,
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),
-                     shippingLabels: orderShippingLabels)
+                     shippingLabels: orderShippingLabels,
+                     createdVia: createdVia)
 
     }
 

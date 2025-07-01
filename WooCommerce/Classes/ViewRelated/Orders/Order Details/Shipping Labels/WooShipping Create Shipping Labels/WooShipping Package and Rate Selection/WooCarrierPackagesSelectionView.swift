@@ -212,7 +212,7 @@ private extension WooCarrierPackagesSelectionView {
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     func addPackageButtonTapped() {

@@ -214,7 +214,7 @@ private extension WooSavedPackagesSelectionView {
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     var selectionButtonDisabled: Bool {

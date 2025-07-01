@@ -59,7 +59,7 @@ final class HIDBarcodeParser {
 
     private func checkForTimeoutBetweenKeystrokes() {
         // If characters are entered too slowly, it's probably typing and we should ignore the old input.
-        // The key we just recieved is still considered for adding to the buffer – we may simply reset the buffer first.
+        // The key we just received is still considered for adding to the buffer – we may simply reset the buffer first.
         let currentTime = timeProvider.now()
 
         if let lastTime = lastKeyPressTime,

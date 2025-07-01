@@ -8,7 +8,7 @@ extension UIImage {
         }
         let size = firstImage.size
         let rect = CGRect(origin: .zero, size: size)
-        UIGraphicsBeginImageContext(size)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 
         for image in images {
             image.draw(in: rect)
@@ -28,7 +28,7 @@ extension UIImage {
 
         let rect = CGRect(x: 0, y: 0, width: Constants.size, height: Constants.size)
         let clippingRect = CGRect(x: 0, y: (1 - progress) * Constants.size, width: Constants.size, height: Constants.size)
-        UIGraphicsBeginImageContext(rect.size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
         defer { UIGraphicsEndImageContext() }
 
         guard let context = UIGraphicsGetCurrentContext() else {

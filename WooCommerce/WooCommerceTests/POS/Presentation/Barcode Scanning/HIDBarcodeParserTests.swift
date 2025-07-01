@@ -334,6 +334,65 @@ struct HIDBarcodeParserTests {
             Issue.record("Expected failure result")
         }
     }
+
+    @Test("Parser does not show an error row for empty scan")
+    func testEmptyScanDoesntError() {
+        var results: [Result<String, Error>] = []
+        let parser = HIDBarcodeParser(
+            configuration: testConfiguration,
+            onScan: { result in
+                results.append(result)
+            }
+        )
+
+        // Just send the terminator, no scan input
+        parser.processKeyPress(MockUIKey(character: "\r"))
+
+        #expect(results.isEmpty)
+    }
+
+    @Test("Parser does not start a timeout for an ignored character")
+    func testEmptyScanDoesntStartTimeoutForIgnoredCharacter() {
+        var results: [Result<String, Error>] = []
+        let mockTimeProvider = MockTimeProvider()
+        let parser = HIDBarcodeParser(
+            configuration: testConfiguration,
+            onScan: { result in
+                results.append(result)
+            },
+            timeProvider: mockTimeProvider
+        )
+
+        // Scan a barcode with two terminators, then scan another barcode – only the two codes should be parsed
+        parser.processKeyPress(MockUIKey(character: "1"))
+        parser.processKeyPress(MockUIKey(character: "2"))
+        parser.processKeyPress(MockUIKey(character: "3"))
+        parser.processKeyPress(MockUIKey(character: "\r")) // Scan is recognised here
+        parser.processKeyPress(MockUIKey(character: "\n", keyCode: .keyboardDownArrow)) // This is ignored
+
+        // Time between scans
+        mockTimeProvider.advance(by: 1.5)
+
+        // Scan the second barcode
+        parser.processKeyPress(MockUIKey(character: "4")) // Risk of an error row here if `\n` isn't ignored
+        parser.processKeyPress(MockUIKey(character: "5"))
+        parser.processKeyPress(MockUIKey(character: "6"))
+        parser.processKeyPress(MockUIKey(character: "\r"))
+        parser.processKeyPress(MockUIKey(character: "\n", keyCode: .keyboardDownArrow))
+
+
+        #expect(results.count == 2)
+        if case .success(let barcode1) = results[0] {
+            #expect(barcode1 == "123")
+        } else {
+            Issue.record("Expected success result for first scan")
+        }
+        if case .success(let barcode2) = results[1] {
+            #expect(barcode2 == "456")
+        } else {
+            Issue.record("Expected success result for second scan")
+        }
+    }
 }
 
 // MARK: - Test Helpers

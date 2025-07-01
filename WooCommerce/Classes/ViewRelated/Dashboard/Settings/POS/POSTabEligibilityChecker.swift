@@ -45,6 +45,10 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    private var siteSettingsEligibility: POSEligibilityState?
+    private var featureFlagEligibility: POSEligibilityState?
+    private var siteSettingsTask: Task<[SiteSetting], Never>?
+
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -144,6 +148,7 @@ private extension POSTabEligibilityChecker {
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
+        self.siteSettingsEligibility = await siteSettingsEligibility
         switch await siteSettingsEligibility {
         case .eligible:
             break
@@ -155,6 +160,7 @@ private extension POSTabEligibilityChecker {
             }
         }
 
+        self.featureFlagEligibility = await featureFlagEligibility
         switch await featureFlagEligibility {
         case .eligible:
             return true
@@ -215,6 +221,10 @@ private extension POSTabEligibilityChecker {
 
 private extension POSTabEligibilityChecker {
     func checkSiteSettingsEligibility() async -> POSEligibilityState {
+        if let siteSettingsEligibility {
+            return siteSettingsEligibility
+        }
+
         // Waits for the first site settings that matches the given site ID.
         let siteSettings = await waitForSiteSettingsRefresh()
         guard siteSettings.isNotEmpty else {
@@ -229,14 +239,28 @@ private extension POSTabEligibilityChecker {
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
-        for await siteSettings in siteSettings.settingsStream {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
-                continue
-            }
-            return siteSettings.settings
+        // Uses a shared task so that multiple calls can await the same result since site settings can be emitted only once.
+        if let existingTask = siteSettingsTask {
+            return await existingTask.value
         }
-        // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
-        return []
+
+        let task = Task<[SiteSetting], Never> { [weak self] in
+            guard let self else { return [] }
+
+            for await siteSettings in siteSettings.settingsStream {
+                guard siteSettings.siteID == self.siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
+                    continue
+                }
+                siteSettingsTask = nil
+                return siteSettings.settings
+            }
+            // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
+            siteSettingsTask = nil
+            return []
+        }
+
+        siteSettingsTask = task
+        return await task.value
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {
@@ -263,9 +287,13 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     @MainActor
     func checkRemoteFeatureEligibility() async -> POSEligibilityState {
+        if let featureFlagEligibility {
+            return featureFlagEligibility
+        }
+
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        await withCheckedContinuation { [weak self] continuation in
+        return await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
             }

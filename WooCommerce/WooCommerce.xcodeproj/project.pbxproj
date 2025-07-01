@@ -601,6 +601,9 @@
 		02E493EF245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */; };
 		02E4A0832BFB1C4F006D4F87 /* POSEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */; };
 		02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */; };
+		02E4E7442E0EEF80003A31E7 /* POSIneligibleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4E7432E0EEF76003A31E7 /* POSIneligibleView.swift */; };
+		02E4E7462E0EF84B003A31E7 /* POSEntryPointController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */; };
+		02E4F2702E0F2C75003A31E7 /* POSEntryPointControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4F26F2E0F2C75003A31E7 /* POSEntryPointControllerTests.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
 		02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */; };
@@ -3751,6 +3754,9 @@
 		02E493EE245C1087000AEA9E /* ProductFormBottomSheetListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormBottomSheetListSelectorCommandTests.swift; sourceTree = "<group>"; };
 		02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEligibilityChecker.swift; sourceTree = "<group>"; };
 		02E4AF7026FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewFromNoteParcelFactory.swift; sourceTree = "<group>"; };
+		02E4E7432E0EEF76003A31E7 /* POSIneligibleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSIneligibleView.swift; sourceTree = "<group>"; };
+		02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEntryPointController.swift; sourceTree = "<group>"; };
+		02E4F26F2E0F2C75003A31E7 /* POSEntryPointControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEntryPointControllerTests.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
 		02E6B97623853D81000A36F0 /* TitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
@@ -7492,6 +7498,7 @@
 		02ABF9B92DF7F8E200348186 /* TabBar */ = {
 			isa = PBXGroup;
 			children = (
+				02E4E7432E0EEF76003A31E7 /* POSIneligibleView.swift */,
 				02ABF9BA2DF7F8EF00348186 /* POSTabCoordinator.swift */,
 			);
 			path = TabBar;
@@ -8066,6 +8073,7 @@
 		200BA1572CF092150006DC5B /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				02E4E7452E0EF847003A31E7 /* POSEntryPointController.swift */,
 				68B681152D92577F0098D5CD /* PointOfSaleCouponsController.swift */,
 				200BA1582CF092280006DC5B /* PointOfSaleItemsController.swift */,
 				20CF75B92CF4E69000ACCF4A /* PointOfSaleOrderController.swift */,
@@ -8079,6 +8087,7 @@
 				6818E7C02D93C76200677C16 /* PointOfSaleCouponsControllerTests.swift */,
 				20DB185C2CF5E7560018D3E1 /* PointOfSaleOrderControllerTests.swift */,
 				200BA15D2CF0A9EB0006DC5B /* PointOfSaleItemsControllerTests.swift */,
+				02E4F26F2E0F2C75003A31E7 /* POSEntryPointControllerTests.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -15264,6 +15273,7 @@
 				0245465F24EE9106004F531C /* ProductVariationFormEventLogger.swift in Sources */,
 				269A2F47295CC683000828A8 /* GenerateVariationsSelectorCommand.swift in Sources */,
 				CE852E1F2D2EDC5400C7DBB6 /* WooShippingEditAddressView.swift in Sources */,
+				02E4E7462E0EF84B003A31E7 /* POSEntryPointController.swift in Sources */,
 				DE19BB1826C3B5C300AB70D9 /* ShippingLabelCustomsFormItemDetails.swift in Sources */,
 				DE1B0310268EB2FB00804330 /* ReviewOrderViewModel.swift in Sources */,
 				02DC2ED2242061BF002F9676 /* ProductPriceSettingsViewModel.swift in Sources */,
@@ -16571,6 +16581,7 @@
 				B9B7E37E2AF105EF00A959CA /* PencilEditButton.swift in Sources */,
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
 				0313651728ACE9F400EEE571 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.swift in Sources */,
+				02E4E7442E0EEF80003A31E7 /* POSIneligibleView.swift in Sources */,
 				571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */,
 				DE7E5E7D2B4BB617002E28D2 /* BlazeTargetLanguagePickerView.swift in Sources */,
 				029149782D26658A00F7B3B3 /* VariationCardView.swift in Sources */,
@@ -17226,6 +17237,7 @@
 				0246405F258B122100C10A7D /* PrintShippingLabelCoordinatorTests.swift in Sources */,
 				314DC4C3268D2F1000444C9E /* MockAppSettingsStoresManager.swift in Sources */,
 				9379E1A6225537D0006A6BE4 /* TestingAppDelegate.swift in Sources */,
+				02E4F2702E0F2C75003A31E7 /* POSEntryPointControllerTests.swift in Sources */,
 				02B8E4192DFBC218001D01FD /* MainTabBarController+TabsTests.swift in Sources */,
 				453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorCommandTests.swift in Sources */,
 				DA25ADDF2C87403900AE81FE /* PushNotificationTests.swift in Sources */,

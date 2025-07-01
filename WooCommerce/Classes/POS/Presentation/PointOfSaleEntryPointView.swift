@@ -6,6 +6,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
+    @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -30,7 +31,8 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol) {
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -43,15 +45,25 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
     }
 
     var body: some View {
         Group {
-            if let posModel = posModel {
-                PointOfSaleDashboardView()
-                    .environment(posModel)
-            } else {
+            switch posEntryPointController.eligibilityState {
+            case .none:
                 PointOfSaleLoadingView()
+            case .eligible:
+                if let posModel = posModel {
+                    PointOfSaleDashboardView()
+                        .environment(posModel)
+                } else {
+                    PointOfSaleLoadingView()
+                }
+            case let .ineligible(reason):
+                POSIneligibleView(reason: reason, onRefresh: {
+                    try await posEntryPointController.refreshEligibility()
+                })
             }
         }
         .task {
@@ -96,7 +108,8 @@ struct PointOfSaleEntryPointView: View {
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
-                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
+                              barcodeScanService: PointOfSalePreviewBarcodeScanService(),
+                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0))
 }
 
 #endif

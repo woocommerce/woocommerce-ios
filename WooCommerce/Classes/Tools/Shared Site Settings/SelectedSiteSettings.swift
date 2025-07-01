@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -20,7 +21,7 @@ enum SettingsUpdateSource {
 
 /// Protocol for accessing, refreshing, and observing site settings.
 protocol SelectedSiteSettingsProtocol {
-    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)> { get }
+    var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> { get }
     var siteSettings: [SiteSetting] { get }
     func refresh()
 }
@@ -31,9 +32,11 @@ final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
 
-    /// Async stream for observing site settings changes.
-    private let settingsContinuation: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>.Continuation
-    public let settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>
+    /// CurrentValueSubject for observing site settings changes with current value behavior.
+    private let settingsSubject = CurrentValueSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)?, Never>(nil)
+    public var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> {
+        settingsSubject.compactMap { $0 }.eraseToAnyPublisher()
+    }
 
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
@@ -48,19 +51,8 @@ final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
         self.stores = stores
         self.storageManager = storageManager
 
-        // Sets up async stream with buffering to ensure current value is sent.
-        let (stream, continuation) = AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>.makeStream(
-            bufferingPolicy: .bufferingNewest(1)
-        )
-        self.settingsStream = stream
-        self.settingsContinuation = continuation
-
         super.init()
         configureResultsController()
-    }
-
-    deinit {
-        settingsContinuation.finish()
     }
 }
 
@@ -85,7 +77,7 @@ extension SelectedSiteSettings {
                 DDLogError("Error: no siteID found when setting site settings results.")
                 return
             }
-            settingsContinuation.yield((siteID: siteID, settings: siteSettings, source: .storageChange))
+            settingsSubject.send((siteID: siteID, settings: siteSettings, source: .storageChange))
         }
         refreshResultsPredicate(source: .initialLoad)
     }
@@ -106,7 +98,7 @@ extension SelectedSiteSettings {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
 
-        settingsContinuation.yield((siteID: siteID, settings: fetchedObjects, source: source))
+        settingsSubject.send((siteID: siteID, settings: fetchedObjects, source: source))
 
         NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
 

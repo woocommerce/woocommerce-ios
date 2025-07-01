@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import UIKit
 import class WooFoundation.CurrencySettings
@@ -47,7 +48,6 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private var siteSettingsEligibility: POSEligibilityState?
     private var featureFlagEligibility: POSEligibilityState?
-    private var siteSettingsTask: Task<[SiteSetting], Never>?
 
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
@@ -239,28 +239,14 @@ private extension POSTabEligibilityChecker {
     }
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
-        // Uses a shared task so that multiple calls can await the same result since site settings can be emitted only once.
-        if let existingTask = siteSettingsTask {
-            return await existingTask.value
-        }
-
-        let task = Task<[SiteSetting], Never> { [weak self] in
-            guard let self else { return [] }
-
-            for await siteSettings in siteSettings.settingsStream {
-                guard siteSettings.siteID == self.siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
-                    continue
-                }
-                siteSettingsTask = nil
-                return siteSettings.settings
+        for await siteSettings in siteSettings.settingsStream.values {
+            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
+                continue
             }
-            // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
-            siteSettingsTask = nil
-            return []
+            return siteSettings.settings
         }
-
-        siteSettingsTask = task
-        return await task.value
+        // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
+        return []
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {

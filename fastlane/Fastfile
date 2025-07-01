@@ -784,7 +784,9 @@ platform :ios do
   lane :build_for_prototype_build do |fetch_code_signing: true|
     update_certs_and_profiles_enterprise if fetch_code_signing
 
-    build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
+    pr_prefix = pull_request_number&.then { |num| "pr#{num}" }
+    buildkite_build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
+    build_number = [pr_prefix, buildkite_build_number].compact.join('-')
 
     gym(
       scheme: 'WooCommerce Alpha',

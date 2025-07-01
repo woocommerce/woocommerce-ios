@@ -157,6 +157,7 @@ struct WooSavedPackagesSelectionView: View {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
+            .renderedIf(viewModel.hasSavedPackages)
             .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
             }

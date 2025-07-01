@@ -136,6 +136,7 @@ struct WooCarrierPackagesSelectionView: View {
             Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
+            .renderedIf(viewModel.carrierTabs.isNotEmpty)
             .disabled(selectionButtonDisabled)
             .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())

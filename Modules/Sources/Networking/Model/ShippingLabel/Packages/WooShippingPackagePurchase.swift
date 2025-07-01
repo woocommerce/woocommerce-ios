@@ -86,7 +86,11 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(package.boxID, forKey: .boxID)
         try container.encode(package.length, forKey: .length)
         try container.encode(package.width, forKey: .width)
-        try container.encode(package.height, forKey: .height)
+
+        // workaround because 0 would cause an error for the API request
+        let packageHeight = package.height > 0 ? package.height : 0.25
+        try container.encode(packageHeight, forKey: .height)
+
         try container.encode(package.weight, forKey: .weight)
         try container.encode(package.isLetter, forKey: .isLetter)
         try container.encode(rate.shipmentID, forKey: .shipmentID)

@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import Testing
 import WooFoundation
@@ -314,29 +315,20 @@ struct POSTabEligibilityCheckerTests {
 
         // Initial settings (cached) - makes site eligible (US)
         let initialSettings = [
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_default_country", value: Country.us.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            ),
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            )
+            mockCountrySetting(country: .us),
+            mockCurrencySetting(currency: .USD)
         ]
         // New settings - makes site ineligible (Canada).
         let newSettings = [
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_default_country", value: Country.ca.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            ),
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            )
+            mockCountrySetting(country: .ca),
+            mockCurrencySetting(currency: .USD)
         ]
-        siteSettings.mockSettingsStream = AsyncStream { continuation in
+        siteSettings.mockSettingsStream = [
             // Emits cached settings first (should be skipped).
-            continuation.yield((siteID: siteID, settings: initialSettings, source: .initialLoad))
+            (siteID: siteID, settings: initialSettings, source: .initialLoad),
             // Emits new settings (should be used for eligibility check).
-            continuation.yield((siteID: siteID, settings: newSettings, source: .storageChange))
-            continuation.finish()
-        }
+            (siteID: siteID, settings: newSettings, source: .storageChange)
+        ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
         let checker = POSTabEligibilityChecker(siteID: siteID,
@@ -360,32 +352,23 @@ struct POSTabEligibilityCheckerTests {
 
         // Settings for a different site.
         let wrongSiteSettings = [
-            SiteSetting.fake().copy(
-                siteID: 999, settingID: "woocommerce_default_country", value: Country.ca.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            ),
-            SiteSetting.fake().copy(
-                siteID: 999, settingID: "woocommerce_currency", value: CurrencyCode.CAD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            )
+            mockCountrySetting(country: .ca, siteID: 999),
+            mockCurrencySetting(currency: .CAD, siteID: 999)
         ]
         // Settings for correct site.
         let correctSiteSettings = [
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_default_country", value: Country.us.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            ),
-            SiteSetting.fake().copy(
-                siteID: siteID, settingID: "woocommerce_currency", value: CurrencyCode.USD.rawValue, settingGroupKey: SiteSettingGroup.general.rawValue
-            )
+            mockCountrySetting(country: .us),
+            mockCurrencySetting(currency: .USD)
         ]
 
-        siteSettings.mockSettingsStream = AsyncStream { continuation in
+        siteSettings.mockSettingsStream = [
             // Emits settings for a different site (should be filtered out).
-            continuation.yield((siteID: 999, settings: wrongSiteSettings, source: .storageChange))
+            (siteID: 999, settings: wrongSiteSettings, source: .storageChange),
             // Emits first settings for correct site (should be skipped).
-            continuation.yield((siteID: siteID, settings: [SiteSetting.fake().copy(siteID: siteID, settingID: "temp")], source: .initialLoad))
+            (siteID: siteID, settings: [SiteSetting.fake().copy(siteID: siteID, settingID: "temp")], source: .initialLoad),
             // Emits fresh settings for correct site (should be used).
-            continuation.yield((siteID: siteID, settings: correctSiteSettings, source: .storageChange))
-            continuation.finish()
-        }
+            (siteID: siteID, settings: correctSiteSettings, source: .storageChange)
+        ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
         let checker = POSTabEligibilityChecker(siteID: siteID,
@@ -556,31 +539,54 @@ struct POSTabEligibilityCheckerTests {
         #expect(visibilityResult == true)
         #expect(eligibilityResult == .eligible)
     }
+
+    @Test func checkVisibility_and_checkEligibility_return_expected_result_after_site_settings_available() async throws {
+        // Given - no site settings are immediately available (empty stream that will emit values later)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        accountWhitelistedInBackend(true)
+
+        // Creates a publisher that will emit values after a delay to simulate site settings loading
+        let countrySetting = mockCountrySetting(country: .us)
+        let currencySetting = mockCurrencySetting(currency: .USD)
+        let settingsSubject = PassthroughSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>()
+        siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
+
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When - Call checkVisibility and checkEligibility concurrently before site settings are available
+        async let visibilityTask = checker.checkVisibility()
+        async let eligibilityTask = checker.checkEligibility()
+
+        // Simulate site settings becoming available after methods are called
+        Task {
+            settingsSubject.send((siteID: siteID, settings: [countrySetting, currencySetting], source: .refresh))
+            settingsSubject.send(completion: .finished)
+        }
+
+        let visibilityResult = await visibilityTask
+        let eligibilityResult = await eligibilityTask
+
+        // Then - both methods should wait for site settings and return expected results.
+        #expect(visibilityResult == true)
+        #expect(eligibilityResult == .eligible)
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
     func setupCountry(country: Country, currency: CurrencyCode = .USD) {
-        let countrySetting = SiteSetting.fake()
-            .copy(
-                siteID: siteID,
-                settingID: "woocommerce_default_country",
-                value: country.rawValue,
-                settingGroupKey: SiteSettingGroup.general.rawValue
-            )
-        let currencySetting = SiteSetting.fake()
-            .copy(
-                siteID: siteID,
-                settingID: "woocommerce_currency",
-                value: currency.rawValue,
-                settingGroupKey: SiteSettingGroup.general.rawValue
-            )
-        siteSettings.mockSettingsStream = AsyncStream { continuation in
+        let countrySetting = mockCountrySetting(country: country)
+        let currencySetting = mockCurrencySetting(currency: currency)
+        siteSettings.mockSettingsStream = [
             // Emits cached settings first (should be skipped).
-            continuation.yield((siteID: siteID, settings: [], source: .storageChange))
+            (siteID: siteID, settings: [], source: .storageChange),
             // Emits fresh settings (should be used for eligibility check).
-            continuation.yield((siteID: siteID, settings: [countrySetting, currencySetting], source: .refresh))
-            continuation.finish()
-        }
+            (siteID: siteID, settings: [countrySetting, currencySetting], source: .refresh)
+        ].publisher.eraseToAnyPublisher()
     }
 
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
@@ -622,6 +628,26 @@ private extension POSTabEligibilityCheckerTests {
         case gb = "GB"
         case es = "ES"
     }
+
+    func mockCountrySetting(country: Country, siteID: Int64? = nil) -> SiteSetting {
+        SiteSetting.fake()
+            .copy(
+                siteID: siteID ?? siteID,
+                settingID: "woocommerce_default_country",
+                value: country.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+    }
+
+    func mockCurrencySetting(currency: CurrencyCode, siteID: Int64? = nil) -> SiteSetting {
+        SiteSetting.fake()
+            .copy(
+                siteID: siteID ?? siteID,
+                settingID: "woocommerce_currency",
+                value: currency.rawValue,
+                settingGroupKey: SiteSettingGroup.general.rawValue
+            )
+    }
 }
 
 private final class MockPluginsService: PluginsServiceProtocol {
@@ -633,11 +659,11 @@ private final class MockPluginsService: PluginsServiceProtocol {
 }
 
 private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
-    var mockSettingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)>?
+    var mockSettingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>?
     var siteSettings: [SiteSetting] = []
 
-    var settingsStream: AsyncStream<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)> {
-        return mockSettingsStream ?? AsyncStream { _ in }
+    var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> {
+        return mockSettingsStream ?? Empty().eraseToAnyPublisher()
     }
 
     func refresh() {

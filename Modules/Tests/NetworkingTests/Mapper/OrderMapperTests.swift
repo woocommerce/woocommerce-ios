@@ -43,6 +43,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.total, "31.20")
         XCTAssertEqual(order.totalTax, "1.20")
         XCTAssertEqual(order.paymentURL, URL(string: "http://www.automattic.com"))
+        XCTAssertEqual(order.createdVia, "rest-api")
     }
 
     /// Verifies that all of the Order Fields are parsed correctly when response has no data envelope.
@@ -75,6 +76,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.total, "31.20")
         XCTAssertEqual(order.totalTax, "1.20")
         XCTAssertEqual(order.paymentURL, URL(string: "http://www.automattic.com"))
+        XCTAssertEqual(order.createdVia, "rest-api")
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.

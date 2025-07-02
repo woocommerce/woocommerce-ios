@@ -78,9 +78,17 @@ struct OrderListCellViewModel {
 
     /// Textual representation of the sales channel
     ///
-    var salesChannel: String {
-        // Temporarily hardcoded. Will be handled on WOOMOB-661
-        return "POS"
+    var salesChannel: String? {
+        guard let createdVia = order.createdVia else {
+            return nil
+        }
+
+        switch createdVia {
+        case "pos-rest-api":
+            return "POS"
+        default:
+            return nil
+        }
     }
 
     /// The localized unabbreviated total for a given order item, which includes the currency.

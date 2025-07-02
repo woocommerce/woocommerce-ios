@@ -7,6 +7,7 @@
     "number": "963",
     "status": "processing",
     "order_key": "abc123",
+    "created_via": "rest-api",
     "currency": "USD",
     "currency_symbol": "$",
     "date_created_gmt": "2018-04-03T23:05:12",

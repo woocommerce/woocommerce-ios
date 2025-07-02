@@ -2,6 +2,7 @@ import SwiftUI
 
 /// A view that displays when the Point of Sale (POS) feature is not available for the current store.
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
+@available(iOS 17.0, *)
 struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
@@ -37,32 +38,34 @@ struct POSIneligibleView: View {
                 Spacer()
                     .frame(height: POSSpacing.large)
 
-                Button {
-                    Task { @MainActor in
-                        do {
-                            isLoading = true
-                            try await onRefresh()
-                            isLoading = false
-                        } catch {
-                            // TODO: WOOMOB-720 - handle error if needed, e.g., show an error message
-                            print("Error refreshing eligibility: \(error)")
-                            isLoading = false
+                VStack(spacing: POSSpacing.medium) {
+                    Button {
+                        Task { @MainActor in
+                            do {
+                                isLoading = true
+                                try await onRefresh()
+                                isLoading = false
+                            } catch {
+                                // TODO: WOOMOB-720 - handle error if needed, e.g., show an error message
+                                print("Error refreshing eligibility: \(error)")
+                                isLoading = false
+                            }
                         }
+                    } label: {
+                        Text(Localization.refreshEligibility)
                     }
-                } label: {
-                    Text(Localization.refreshEligibility)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
 
-                Spacer()
-                    .frame(height: POSSpacing.medium)
-
-                Button {
-                    dismiss()
-                } label: {
-                    Text(Localization.dismiss)
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text(Localization.dismiss)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .containerRelativeFrame(.horizontal) { length, _ in
+                    length * 0.5
+                }
             }
 
             Spacer()
@@ -134,6 +137,7 @@ struct POSIneligibleView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private extension POSIneligibleView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -159,73 +163,93 @@ private extension POSIneligibleView {
 #if DEBUG
 
 #Preview("Unsupported currency") {
-    POSIneligibleView(
-        reason: .unsupportedCurrency(supportedCurrencies: [.USD]),
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .unsupportedCurrency(supportedCurrencies: [.USD]),
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Unsupported country") {
-    POSIneligibleView(
-        reason: .unsupportedCountry(supportedCountries: [.US, .GB]),
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .unsupportedCountry(supportedCountries: [.US, .GB]),
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Not a tablet") {
-    POSIneligibleView(
-        reason: .notTablet,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .notTablet,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Unsupported iOS version") {
-    POSIneligibleView(
-        reason: .unsupportedIOSVersion,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .unsupportedIOSVersion,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("WooCommerce plugin not found") {
-    POSIneligibleView(
-        reason: .wooCommercePluginNotFound,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .wooCommercePluginNotFound,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Feature flag disabled") {
-    POSIneligibleView(
-        reason: .featureFlagDisabled,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .featureFlagDisabled,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Feature switch disabled") {
-    POSIneligibleView(
-        reason: .featureSwitchDisabled,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .featureSwitchDisabled,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Site settings unavailable") {
-    POSIneligibleView(
-        reason: .siteSettingsNotAvailable,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .siteSettingsNotAvailable,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Feature switch sync failure") {
-    POSIneligibleView(
-        reason: .featureSwitchSyncFailure,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .featureSwitchSyncFailure,
+            onRefresh: {}
+        )
+    }
 }
 
 #Preview("Unsupported WooCommerce version") {
-    POSIneligibleView(
-        reason: .unsupportedWooCommerceVersion,
-        onRefresh: {}
-    )
+    if #available(iOS 17.0, *) {
+        POSIneligibleView(
+            reason: .unsupportedWooCommerceVersion,
+            onRefresh: {}
+        )
+    }
 }
 
 #endif

@@ -113,15 +113,17 @@ struct POSIneligibleView: View {
         switch reason {
         case .notTablet:
             return NSLocalizedString("pos.ineligible.suggestion.notTablet",
-                                     value: "Please use an iPad to access POS features.",
+                                     value: "Please use a tablet to access POS features.",
                                      comment: "Suggestion for not tablet: use iPad")
         case .unsupportedIOSVersion:
             return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
-                                     value: "Update your device to iOS 17 or later in Settings > General > Software Update.",
+                                     value: "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
                                      comment: "Suggestion for unsupported iOS version: update iOS")
         case .unsupportedWooCommerceVersion:
+            // TODO: DI min WC version
             return NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
-                                     value: "Go to your WordPress admin and update WooCommerce to the latest version.",
+                                     value: "Your WooCommerce version is not supported. " +
+                                     "The POS system requires WooCommerce version ### or above. Please update WooCommerce to the latest version.",
                                      comment: "Suggestion for unsupported WooCommerce version: update plugin")
         case .wooCommercePluginNotFound:
             return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound",
@@ -129,7 +131,7 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",
-                                     value: "Enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
+                                     value: "The POS core feature must be enabled to proceed. Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
         case .featureSwitchSyncFailure:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
@@ -175,7 +177,7 @@ private extension POSIneligibleView {
     enum Localization {
         static let refreshEligibility = NSLocalizedString(
             "pos.ineligible.refresh.button.title",
-            value: "Check Eligibility Again",
+            value: "Retry",
             comment: "Button title to refresh POS eligibility check"
         )
 

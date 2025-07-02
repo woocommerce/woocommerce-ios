@@ -410,11 +410,7 @@ private extension WooShippingShipmentDetailsViewModel {
             .combineLatest(
                 $selectedPackage.removeDuplicates(by: { $0?.id == $1?.id })
             )
-            .combineLatest(
-                $shipmentWeight
-                    .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-                    .removeDuplicates()
-            )
+            .combineLatest($shipmentWeight.removeDuplicates())
             .combineLatest($hazmatCategory.removeDuplicates())
             .combineLatest($customsForm.removeDuplicates())
             // Drop the initial values set on initialization, so we only react to changes.
@@ -509,7 +505,11 @@ private extension WooShippingShipmentDetailsViewModel {
             comment: "Button to undo a change on the shipping label creation screen"
         )
         static func baseRateLabel(for selectedRate: WooShippingSelectedRate) -> String {
-            if selectedRate.signatureRate == nil && selectedRate.adultSignatureRate == nil {
+            if selectedRate.signatureRate == nil &&
+                selectedRate.adultSignatureRate == nil &&
+                selectedRate.carbonNeutralRate == nil &&
+                selectedRate.additionalHandlingRate == nil &&
+                selectedRate.saturdayDeliveryRate == nil {
                 return selectedRate.rate.title
             } else {
                 return String.localizedStringWithFormat(baseFeeFormat, selectedRate.rate.title)

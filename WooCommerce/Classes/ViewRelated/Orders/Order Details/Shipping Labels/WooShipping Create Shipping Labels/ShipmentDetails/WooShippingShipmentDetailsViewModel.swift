@@ -63,7 +63,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     /// Selected shipping rate when creating a shipping label.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
 
-    @Published private(set) var customsForm: ShippingLabelCustomsForm?
+    @Published private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
         return WooShippingCustomsFormViewModel(

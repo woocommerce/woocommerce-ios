@@ -83,12 +83,13 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
                                      value: "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
                                      comment: "Suggestion for unsupported iOS version: update iOS")
-        case .unsupportedWooCommerceVersion:
-            // TODO: DI min WC version
-            return NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
+        case let .unsupportedWooCommerceVersion(minimumVersion):
+            let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
                                      value: "Your WooCommerce version is not supported. " +
-                                     "The POS system requires WooCommerce version ### or above. Please update WooCommerce to the latest version.",
-                                     comment: "Suggestion for unsupported WooCommerce version: update plugin")
+                                     "The POS system requires WooCommerce version %1$@ or above. Please update WooCommerce to the latest version.",
+                                     comment: "Suggestion for unsupported WooCommerce version: update plugin. " +
+                                     "%1$@ is a placeholder for the minimum required version.")
+            return String.localizedStringWithFormat(format, minimumVersion)
         case .wooCommercePluginNotFound:
             return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound",
                                      value: "Install and activate the WooCommerce plugin from your WordPress admin.",
@@ -248,7 +249,7 @@ private extension POSIneligibleView {
 #Preview("Unsupported WooCommerce version") {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
-            reason: .unsupportedWooCommerceVersion,
+            reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
             onRefresh: {}
         )
     }

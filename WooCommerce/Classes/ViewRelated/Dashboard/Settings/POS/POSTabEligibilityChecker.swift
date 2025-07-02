@@ -19,7 +19,7 @@ import class Yosemite.PluginsService
 enum POSIneligibleReason: Equatable {
     case notTablet
     case unsupportedIOSVersion
-    case unsupportedWooCommerceVersion
+    case unsupportedWooCommerceVersion(minimumVersion: String)
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureFlagDisabled
@@ -178,7 +178,7 @@ private extension POSTabEligibilityChecker {
 
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                 minimumRequired: Constants.wcPluginMinimumVersion) else {
-            return .ineligible(reason: .unsupportedWooCommerceVersion)
+            return .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: Constants.wcPluginMinimumVersion))
         }
 
         // For versions below 10.0.0, the feature is enabled by default.

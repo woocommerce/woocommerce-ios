@@ -184,7 +184,7 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion))
+        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
     }
 
     @Test(arguments: [true, false])

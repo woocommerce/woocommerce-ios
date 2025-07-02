@@ -95,7 +95,8 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",
-                                     value: "The POS core feature must be enabled to proceed. Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
+                                     value: "The POS core feature must be enabled to proceed. " +
+                                     "Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
         case .featureSwitchSyncFailure:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
@@ -116,7 +117,8 @@ struct POSIneligibleView: View {
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
             let format = NSLocalizedString(
                 "pos.ineligible.suggestion.unsupportedCurrency",
-                value: "The POS system is not available for your store’s currency. It currently supports only %1$@. Please check your store currency settings or contact support for assistance.",
+                value: "The POS system is not available for your store’s currency. It currently supports only %1$@. " +
+                "Please check your store currency settings or contact support for assistance.",
                 comment: "Suggestion for unsupported currency with list of supported currencies. " +
                 "%1$@ is a placeholder for the localized list of supported currency codes."
             )

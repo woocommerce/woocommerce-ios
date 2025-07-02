@@ -12,7 +12,7 @@ final class SummaryTableViewCell: UITableViewCell {
     ///
     @IBOutlet private weak var subtitleLabel: UILabel!
 
-    ///
+    /// Shows the sales channel if appropiate, at the moment only Point of Sale
     ///
     @IBOutlet private weak var salesChannelLabel: UILabel!
 
@@ -105,7 +105,7 @@ private extension SummaryTableViewCell {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) {
             salesChannelLabel.isHidden = false
             salesChannelLabel.applyFootnoteStyle()
-            salesChannelLabel.accessibilityIdentifier = ""
+            salesChannelLabel.accessibilityIdentifier = "summary-table-view-cell-sales-channel-label"
         } else {
             salesChannelLabel.isHidden = true
         }

@@ -49,7 +49,7 @@ struct SummaryTableViewCellViewModel {
         return formatter.string(from: dateCreated)
     }
 
-    ///
+    /// Textual representation of the sales channel
     ///
     var formattedSalesChannel: String? {
         guard let salesChannel = salesChannel else {

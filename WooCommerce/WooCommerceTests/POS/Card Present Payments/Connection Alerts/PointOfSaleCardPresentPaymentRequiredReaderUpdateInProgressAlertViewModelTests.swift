@@ -9,7 +9,7 @@ final class PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertView
             cancel: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 8,
+                               expectedCount: 7,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 
@@ -19,7 +19,7 @@ final class PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertView
             cancel: {})
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 8,
+                               expectedCount: 7,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
 

@@ -22,18 +22,20 @@ struct POSIneligibleView: View {
                 Spacer()
                     .frame(height: POSSpacing.medium)
 
-                Text(Localization.title)
-                    .font(POSFontStyle.posHeadingBold.font())
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color.posOnSurface)
+                VStack(spacing: POSSpacing.small) {
+                    Text(Localization.title)
+                        .font(POSFontStyle.posHeadingBold.font())
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color.posOnSurface)
 
-                Spacer()
-                    .frame(height: POSSpacing.small)
-
-                Text(suggestionText)
-                    .font(POSFontStyle.posBodyLargeRegular().font())
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color.posOnSurface)
+                    Text(suggestionText)
+                        .font(POSFontStyle.posBodyLargeRegular().font())
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color.posOnSurface)
+                }
+                .containerRelativeFrame(.horizontal) { length, _ in
+                    length * 0.5
+                }
 
                 Spacer()
                     .frame(height: POSSpacing.large)
@@ -64,7 +66,7 @@ struct POSIneligibleView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
                 .containerRelativeFrame(.horizontal) { length, _ in
-                    length * 0.5
+                    length * 0.5 - 132
                 }
             }
 

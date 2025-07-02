@@ -131,20 +131,23 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedCountry))
+        #expect(result == .ineligible(reason: .unsupportedCountry(supportedCountries: [.US, .GB])))
     }
 
     @Test(arguments: [
-        (country: Country.us, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.us, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: false),
-        (country: Country.us, currency: CurrencyCode.CAD, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.us, currency: CurrencyCode.CAD, isPointOfSaleAsATabi2Enabled: false),
-        (country: Country.gb, currency: CurrencyCode.EUR, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.gb, currency: CurrencyCode.EUR, isPointOfSaleAsATabi2Enabled: false),
-        (country: Country.gb, currency: CurrencyCode.USD, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.gb, currency: CurrencyCode.USD, isPointOfSaleAsATabi2Enabled: false)
+        (country: Country.us, currency: CurrencyCode.GBP, expectedSupportedCurrencies: [CurrencyCode.USD], isPointOfSaleAsATabi2Enabled: true),
+        (country: Country.us, currency: CurrencyCode.GBP, expectedSupportedCurrencies: [CurrencyCode.USD], isPointOfSaleAsATabi2Enabled: false),
+        (country: Country.us, currency: CurrencyCode.CAD, expectedSupportedCurrencies: [CurrencyCode.USD], isPointOfSaleAsATabi2Enabled: true),
+        (country: Country.us, currency: CurrencyCode.CAD, expectedSupportedCurrencies: [CurrencyCode.USD], isPointOfSaleAsATabi2Enabled: false),
+        (country: Country.gb, currency: CurrencyCode.EUR, expectedSupportedCurrencies: [CurrencyCode.GBP], isPointOfSaleAsATabi2Enabled: true),
+        (country: Country.gb, currency: CurrencyCode.EUR, expectedSupportedCurrencies: [CurrencyCode.GBP], isPointOfSaleAsATabi2Enabled: false),
+        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP], isPointOfSaleAsATabi2Enabled: true),
+        (country: Country.gb, currency: CurrencyCode.USD, expectedSupportedCurrencies: [CurrencyCode.GBP], isPointOfSaleAsATabi2Enabled: false)
     ])
-    fileprivate func is_ineligible_when_currency_is_not_supported(country: Country, currency: CurrencyCode, isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    fileprivate func is_ineligible_when_currency_is_not_supported(country: Country,
+                                                                  currency: CurrencyCode,
+                                                                  expectedSupportedCurrencies: [CurrencyCode],
+                                                                  isPointOfSaleAsATabi2Enabled: Bool) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
         setupCountry(country: country, currency: currency)
@@ -160,7 +163,7 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedCurrency))
+        #expect(result == .ineligible(reason: .unsupportedCurrency(supportedCurrencies: expectedSupportedCurrencies)))
     }
 
     @Test(arguments: [true, false])
@@ -342,7 +345,7 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then - Should be ineligible because fresh settings show CA (not cached US)
-        #expect(result == .ineligible(reason: .unsupportedCountry))
+        #expect(result == .ineligible(reason: .unsupportedCountry(supportedCountries: [.US, .GB])))
     }
 
     @Test(arguments: [true, false])

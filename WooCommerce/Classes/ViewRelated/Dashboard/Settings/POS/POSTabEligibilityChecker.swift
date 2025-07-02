@@ -25,8 +25,8 @@ enum POSIneligibleReason: Equatable {
     case featureFlagDisabled
     case featureSwitchDisabled
     case featureSwitchSyncFailure
-    case unsupportedCountry
-    case unsupportedCurrency
+    case unsupportedCountry(supportedCountries: [CountryCode])
+    case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }
 
@@ -153,7 +153,7 @@ private extension POSTabEligibilityChecker {
         case .eligible:
             break
         case let .ineligible(reason):
-            if reason == .unsupportedCurrency {
+            if case .unsupportedCurrency = reason {
                 break
             } else {
                 return false
@@ -250,21 +250,20 @@ private extension POSTabEligibilityChecker {
     }
 
     func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {
+        let supportedCountries: [CountryCode] = [.US, .GB]
+        let supportedCurrencies: [CountryCode: [CurrencyCode]] = [.US: [.USD],
+                                                                  .GB: [.GBP]]
+
         // Checks country first.
-        switch countryCode {
-        case .US, .GB:
-            break
-        default:
-            return .ineligible(reason: .unsupportedCountry)
+        guard supportedCountries.contains(countryCode) else {
+            return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
         }
 
-        // Then checks currency based on the country.
-        switch (countryCode, currencyCode) {
-        case (.US, .USD), (.GB, .GBP):
-            return .eligible
-        default:
-            return .ineligible(reason: .unsupportedCurrency)
+        let supportedCurrenciesForCountry = supportedCurrencies[countryCode] ?? []
+        guard supportedCurrenciesForCountry.contains(currencyCode) else {
+            return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrenciesForCountry))
         }
+        return .eligible
     }
 }
 

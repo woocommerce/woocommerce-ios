@@ -135,16 +135,26 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
                                      value: "Try relaunching the app or check your internet connection and try again.",
                                      comment: "Suggestion for feature switch sync failure: relaunch or check connection")
-        case .unsupportedCountry:
-            // TODO: DI countries
-            return NSLocalizedString("pos.ineligible.suggestion.unsupportedCountry",
-                                     value: "POS is currently only available in select countries. Check back later for availability in your region.",
-                                     comment: "Suggestion for unsupported country: check back later")
-        case .unsupportedCurrency:
-            // TODO: DI currencies
-            return NSLocalizedString("pos.ineligible.suggestion.unsupportedCurrency",
-                                     value: "Change your store's currency to USD, EUR, GBP, or CAD in WooCommerce settings.",
-                                     comment: "Suggestion for unsupported currency: change currency")
+        case let .unsupportedCountry(supportedCountries):
+            let countryNames = supportedCountries.map { $0.readableCountry }
+            let formattedCountryList = ListFormatter.localizedString(byJoining: countryNames)
+            let format = NSLocalizedString(
+                "pos.ineligible.suggestion.unsupportedCountry",
+                value: "POS is currently only available in %1$@. Check back later for availability in your region.",
+                comment: "Suggestion for unsupported country with list of supported countries. " +
+                "%1$@ is a placeholder for the localized list of supported country names."
+            )
+            return String.localizedStringWithFormat(format, formattedCountryList)
+        case let .unsupportedCurrency(supportedCurrencies):
+            let currencyList = supportedCurrencies.map { $0.rawValue }
+            let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
+            let format = NSLocalizedString(
+                "pos.ineligible.suggestion.unsupportedCurrency",
+                value: "The POS system is not available for your store’s currency. It currently supports only %1$@. Please check your store currency settings or contact support for assistance.",
+                comment: "Suggestion for unsupported currency with list of supported currencies. " +
+                "%1$@ is a placeholder for the localized list of supported currency codes."
+            )
+            return String.localizedStringWithFormat(format, formattedCurrencyList)
         case .siteSettingsNotAvailable:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
                                      value: "Check your internet connection and try relaunching the app. If the issue persists, please contact support.",
@@ -178,9 +188,76 @@ private extension POSIneligibleView {
     }
 }
 
-#Preview {
+#if DEBUG
+
+#Preview("Unsupported currency") {
     POSIneligibleView(
-        reason: .unsupportedCurrency,
+        reason: .unsupportedCurrency(supportedCurrencies: [.USD]),
         onRefresh: {}
     )
 }
+
+#Preview("Unsupported country") {
+    POSIneligibleView(
+        reason: .unsupportedCountry(supportedCountries: [.US, .GB]),
+        onRefresh: {}
+    )
+}
+
+#Preview("Not a tablet") {
+    POSIneligibleView(
+        reason: .notTablet,
+        onRefresh: {}
+    )
+}
+
+#Preview("Unsupported iOS version") {
+    POSIneligibleView(
+        reason: .unsupportedIOSVersion,
+        onRefresh: {}
+    )
+}
+
+#Preview("WooCommerce plugin not found") {
+    POSIneligibleView(
+        reason: .wooCommercePluginNotFound,
+        onRefresh: {}
+    )
+}
+
+#Preview("Feature flag disabled") {
+    POSIneligibleView(
+        reason: .featureFlagDisabled,
+        onRefresh: {}
+    )
+}
+
+#Preview("Feature switch disabled") {
+    POSIneligibleView(
+        reason: .featureSwitchDisabled,
+        onRefresh: {}
+    )
+}
+
+#Preview("Site settings unavailable") {
+    POSIneligibleView(
+        reason: .siteSettingsNotAvailable,
+        onRefresh: {}
+    )
+}
+
+#Preview("Feature switch sync failure") {
+    POSIneligibleView(
+        reason: .featureSwitchSyncFailure,
+        onRefresh: {}
+    )
+}
+
+#Preview("Unsupported WooCommerce version") {
+    POSIneligibleView(
+        reason: .unsupportedWooCommerceVersion,
+        onRefresh: {}
+    )
+}
+
+#endif

@@ -1,6 +1,20 @@
 import Foundation
 import Codegen
 
+// TODO: consider moving to a separate file, it can be shared with Product in the future
+public enum SalesChannel {
+    case pointOfSale
+
+    init?(createdVia: String?) {
+        switch createdVia {
+        case "pos-rest-api":
+            self = .pointOfSale
+        default:
+            return nil
+        }
+    }
+}
+
 /// Represents an Order Entity.
 ///
 public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
@@ -68,6 +82,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// Set to orders created via specific sources (e.g. checkout, store-api, Point of Sale, ...)
     ///
     public let createdVia: String?
+
+    public var salesChannel: SalesChannel? {
+        SalesChannel(createdVia: createdVia)
+    }
 
     /// Order struct initializer.
     ///

@@ -79,12 +79,12 @@ struct OrderListCellViewModel {
     /// Textual representation of the sales channel
     ///
     var salesChannel: String? {
-        guard let createdVia = order.createdVia else {
+        guard let salesChannel = order.salesChannel else {
             return nil
         }
 
-        switch createdVia {
-        case "pos-rest-api":
+        switch salesChannel {
+        case .pointOfSale:
             return "POS"
         default:
             return nil

@@ -9,35 +9,33 @@ struct POSIneligibleView: View {
     @State private var isLoading: Bool = false
 
     var body: some View {
-        VStack(spacing: POSSpacing.large) {
-            HStack {
-                Spacer()
-                Button {
-                    dismiss()
-                } label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(POSFontStyle.posButtonSymbolLarge.font())
-                }
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
-            }
-
+        VStack(spacing: 0) {
             Spacer()
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(alignment: .center, spacing: 0) {
                 Image(PointOfSaleAssets.exclamationMark.imageName)
                     .resizable()
                     .frame(width: POSErrorAndAlertIconSize.large.dimension,
                            height: POSErrorAndAlertIconSize.large.dimension)
 
-                Text(reasonText)
+                Spacer()
+                    .frame(height: POSSpacing.medium)
+
+                Text(Localization.title)
                     .font(POSFontStyle.posHeadingBold.font())
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.posOnSurface)
 
+                Spacer()
+                    .frame(height: POSSpacing.small)
+
                 Text(suggestionText)
-                    .font(POSFontStyle.posCaptionRegular.font())
+                    .font(POSFontStyle.posBodyLargeRegular().font())
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color.posOnSurface)
+
+                Spacer()
+                    .frame(height: POSSpacing.large)
 
                 Button {
                     Task { @MainActor in
@@ -55,58 +53,21 @@ struct POSIneligibleView: View {
                     Text(Localization.refreshEligibility)
                 }
                 .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+
+                Spacer()
+                    .frame(height: POSSpacing.medium)
+
+                Button {
+                    dismiss()
+                } label: {
+                    Text(Localization.dismiss)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
 
             Spacer()
         }
         .padding(POSPadding.large)
-    }
-
-    private var reasonText: String {
-        switch reason {
-        case .notTablet:
-            return NSLocalizedString("pos.ineligible.reason.notTablet",
-                                     value: "POS is only available on iPad.",
-                                     comment: "Ineligible reason: not a tablet")
-        case .unsupportedIOSVersion:
-            return NSLocalizedString("pos.ineligible.reason.unsupportedIOSVersion",
-                                     value: "POS requires a newer version of iOS 17 and above.",
-                                     comment: "Ineligible reason: iOS version too low")
-        case .unsupportedWooCommerceVersion:
-            return NSLocalizedString("pos.ineligible.reason.unsupportedWooCommerceVersion",
-                                     value: "Please update WooCommerce plugin to use POS.",
-                                     comment: "Ineligible reason: WooCommerce version too low")
-        case .wooCommercePluginNotFound:
-            return NSLocalizedString("pos.ineligible.reason.wooCommercePluginNotFound",
-                                     value: "WooCommerce plugin not found.",
-                                     comment: "Ineligible reason: plugin missing")
-        case .featureSwitchDisabled:
-            return NSLocalizedString("pos.ineligible.reason.featureSwitchDisabled",
-                                     value: "POS feature is not enabled for your store.",
-                                     comment: "Ineligible reason: feature switch off")
-        case .featureSwitchSyncFailure:
-            return NSLocalizedString("pos.ineligible.reason.featureSwitchSyncFailure",
-                                     value: "Could not verify POS feature status.",
-                                     comment: "Ineligible reason: feature switch sync failed")
-        case .unsupportedCountry:
-            return NSLocalizedString("pos.ineligible.reason.unsupportedCountry",
-                                     value: "POS is not available in your country.",
-                                     comment: "Ineligible reason: country not supported")
-        case .unsupportedCurrency:
-            return NSLocalizedString("pos.ineligible.reason.unsupportedCurrency",
-                                     value: "POS is not available for your store's currency.",
-                                     comment: "Ineligible reason: currency not supported")
-        case .siteSettingsNotAvailable:
-            return NSLocalizedString("pos.ineligible.reason.siteSettingsNotAvailable",
-                                     value: "Unable to load store settings for POS.",
-                                     comment: "Ineligible reason: site settings unavailable")
-        case .featureFlagDisabled:
-            return NSLocalizedString("pos.ineligible.reason.featureFlagDisabled",
-                                     value: "POS feature is currently disabled.",
-                                     comment: "Ineligible reason: feature flag disabled")
-        case .selfDeallocated:
-            return Localization.defaultReason
-        }
     }
 
     private var suggestionText: String {
@@ -175,17 +136,22 @@ struct POSIneligibleView: View {
 
 private extension POSIneligibleView {
     enum Localization {
+        static let title = NSLocalizedString(
+            "pos.ineligible.title",
+            value: "Unable to load",
+            comment: "Title shown in POS ineligible view"
+        )
+
         static let refreshEligibility = NSLocalizedString(
             "pos.ineligible.refresh.button.title",
             value: "Retry",
             comment: "Button title to refresh POS eligibility check"
         )
 
-        /// Default message shown when POS eligibility reason is not available.
-        static let defaultReason = NSLocalizedString(
-            "pos.ineligible.default.reason",
-            value: "Your store is not eligible for POS at this time.",
-            comment: "Default message shown when POS eligibility reason is not available"
+        static let dismiss = NSLocalizedString(
+            "pos.ineligible.dismiss.button.title",
+            value: "Exit POS",
+            comment: "Button title to dismiss POS ineligible view"
         )
     }
 }

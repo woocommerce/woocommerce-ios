@@ -74,13 +74,7 @@ class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
     var userHasOptedOut: Bool = false
 
     var buildType: String {
-#if DEBUG
-        "localDeveloper"
-#elseif ALPHA
-        "alpha"
-#else
-        "appStore"
-#endif
+        BuildConfiguration.current.rawValue
     }
 
     var currentUser: TracksUser?

@@ -1,3 +1,5 @@
+import enum WooFoundationCore.BuildConfiguration
+
 public struct DefaultFeatureFlagService: FeatureFlagService {
     public init() {}
 

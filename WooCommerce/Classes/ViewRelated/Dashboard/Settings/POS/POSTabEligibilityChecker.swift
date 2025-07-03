@@ -136,6 +136,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
     }
 
+    /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
         let eligibility = await checkI1Eligibility()
         return eligibility == .eligible

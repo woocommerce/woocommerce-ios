@@ -167,6 +167,18 @@ public extension UIColor {
         dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
+    /// App Tab Bar Badge Background.
+    ///
+    static var appTabBarBadgeBackgroundColor: UIColor {
+        UIColor(light: .withColorStudio(.green, shade: .shade0), dark: .withColorStudio(.green, shade: .shade80))
+    }
+
+    /// App Tab Bar Badge Text.
+    ///
+    static var appTabBarBadgeTextColor: UIColor {
+        UIColor(light: .withColorStudio(.green, shade: .shade50), dark: .withColorStudio(.green, shade: .shade30))
+    }
+
     /// Divider.
     ///
     static var divider: UIColor {

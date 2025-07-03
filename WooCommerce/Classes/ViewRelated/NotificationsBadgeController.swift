@@ -6,12 +6,7 @@ enum NotificationBadgeType {
     case secondary
 
     var color: UIColor {
-        switch self {
-        case .primary:
-            return .accent
-        case .secondary:
-            return .primary
-        }
+        .appTabBarBadgeBackgroundColor
     }
 }
 

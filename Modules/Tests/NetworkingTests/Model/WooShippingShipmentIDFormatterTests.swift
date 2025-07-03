@@ -41,4 +41,4 @@ final class WooShippingShipmentIDFormatterTests: XCTestCase {
         // Then
         XCTAssertEqual(formattedID, id)
     }
-} 
+}

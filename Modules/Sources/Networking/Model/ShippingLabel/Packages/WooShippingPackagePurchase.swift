@@ -163,7 +163,7 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded customs form.
     public func encodedCustomsForm() throws -> [String: Any] {
         guard let form = package.customsForm else {
-            return [shipmentID: [:]]
+            return [formattedShipmentID: [:]]
         }
         return [formattedShipmentID: [
             ParameterKeys.items: try form.items.map { try $0.toDictionary() },

@@ -15,33 +15,6 @@ import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PluginsService
 
-/// Represents the reasons why a site may be ineligible for POS.
-enum POSIneligibleReason: Equatable {
-    case unsupportedIOSVersion
-    case unsupportedWooCommerceVersion(minimumVersion: String)
-    case siteSettingsNotAvailable
-    case wooCommercePluginNotFound
-    case featureSwitchDisabled
-    case featureSwitchSyncFailure
-    case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
-    case selfDeallocated
-}
-
-/// Represents the eligibility state for POS.
-enum POSEligibilityState: Equatable {
-    case eligible
-    case ineligible(reason: POSIneligibleReason)
-}
-
-protocol POSEntryPointEligibilityCheckerProtocol {
-    /// Checks the initial visibility of the POS tab.
-    func checkInitialVisibility() -> Bool
-    /// Checks the final visibility of the POS tab.
-    func checkVisibility() async -> Bool
-    /// Determines whether the site is eligible for POS.
-    func checkEligibility() async -> POSEligibilityState
-}
-
 /// Legacy enum containing POS invisible reasons + POSIneligibleReason cases for i1.
 private enum LegacyPOSIneligibleReason: Equatable {
     case notTablet
@@ -63,8 +36,10 @@ private enum LegacyPOSEligibilityState: Equatable {
     case ineligible(reason: LegacyPOSIneligibleReason)
 }
 
-/// POS tab eligibility checker for i1. Will be replaced by `POSTabEligibilityCheckerI2` when removing `pointOfSaleAsATabi2` feature flag.
-final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+final class POSTabEligibilityCheckerI2: POSEntryPointEligibilityCheckerProtocol {
+    private var siteSettingsEligibility: POSEligibilityState?
+    private var featureFlagEligibility: POSEligibilityState?
+
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -96,13 +71,59 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        .eligible
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) else {
+            // For i1, POS tab visibility check is equal to eligibility check.
+            return .eligible
+        }
+
+        guard #available(iOS 17.0, *) else {
+            return .ineligible(reason: .unsupportedIOSVersion)
+        }
+
+        async let siteSettingsEligibility = checkSiteSettingsEligibility()
+        async let pluginEligibility = checkPluginEligibility()
+
+        // Checks site settings first since it's likely to complete fastest.
+        switch await siteSettingsEligibility {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
+
+        // Finally checks plugin eligibility.
+        switch await pluginEligibility {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
     }
 
-    private func checkI1Eligibility() async -> LegacyPOSEligibilityState {
-        async let siteSettingsEligibility = checkSiteSettingsEligibility()
-        async let featureFlagEligibility = checkRemoteFeatureEligibility()
-        async let pluginEligibility = checkPluginEligibility()
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool {
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+            return await checkVisibilityBasedOnCountryAndRemoteFeatureFlag()
+        } else {
+            let eligibility = await checkEligibilityForI1()
+            return eligibility == .eligible
+        }
+    }
+}
+
+private extension POSTabEligibilityCheckerI2 {
+    /// Determines whether the site is eligible for POS checking all conditions.
+    func checkEligibilityForI1() async -> LegacyPOSEligibilityState {
+        switch checkDeviceEligibilityForI1() {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
+
+        async let siteSettingsEligibility = checkSiteSettingsEligibilityForI1()
+        async let featureFlagEligibility = checkRemoteFeatureEligibility().toLegacyPOSEligibilityState
+        async let pluginEligibility = checkPluginEligibility().toLegacyPOSEligibilityState
 
         // Checks site settings first since it's likely to complete fastest.
         switch await siteSettingsEligibility {
@@ -129,14 +150,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
     }
 
-    func checkVisibility() async -> Bool {
-        let eligibility = await checkI1Eligibility()
-        return eligibility == .eligible
-    }
-}
-
-private extension POSTabEligibilityChecker {
-    func checkDeviceEligibility() -> LegacyPOSEligibilityState {
+    func checkDeviceEligibilityForI1() -> LegacyPOSEligibilityState {
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
         }
@@ -149,10 +163,35 @@ private extension POSTabEligibilityChecker {
     }
 }
 
+private extension POSTabEligibilityCheckerI2 {
+    func checkVisibilityBasedOnCountryAndRemoteFeatureFlag() async -> Bool {
+        guard userInterfaceIdiom == .pad else {
+            return false
+        }
+
+        async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
+        async let featureFlagEligibility = checkRemoteFeatureEligibility()
+
+        switch await siteSettingsEligibility {
+        case .ineligible(.unsupportedCountry):
+            return false
+        default:
+            break
+        }
+
+        switch await featureFlagEligibility {
+        case .eligible:
+            return true
+        case .ineligible:
+            return false
+        }
+    }
+}
+
 // MARK: - WC Plugin Related Eligibility Check
 
-private extension POSTabEligibilityChecker {
-    func checkPluginEligibility() async -> LegacyPOSEligibilityState {
+private extension POSTabEligibilityCheckerI2 {
+    func checkPluginEligibility() async -> POSEligibilityState {
         let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
 
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
@@ -178,7 +217,7 @@ private extension POSTabEligibilityChecker {
     }
 
     @MainActor
-    func checkFeatureSwitchEnabled(siteID: Int64) async -> LegacyPOSEligibilityState {
+    func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
@@ -198,8 +237,54 @@ private extension POSTabEligibilityChecker {
 
 // MARK: - Site Settings Related Eligibility Check
 
-private extension POSTabEligibilityChecker {
-    func checkSiteSettingsEligibility() async -> LegacyPOSEligibilityState {
+private extension POSTabEligibilityCheckerI2 {
+    enum SiteSettingsEligibilityState {
+        case eligible
+        case ineligible(reason: SiteSettingsIneligibleReason)
+    }
+
+    enum SiteSettingsIneligibleReason {
+        case siteSettingsNotAvailable
+        case unsupportedCountry(supportedCountries: [CountryCode])
+        case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
+    }
+
+    func checkSiteSettingsEligibility() async -> POSEligibilityState {
+        let siteSettingsEligibility = await waitAndCheckSiteSettingsEligibility()
+        switch siteSettingsEligibility {
+        case .eligible:
+            return .eligible
+        case .ineligible(reason: let reason):
+            switch reason {
+            case .siteSettingsNotAvailable, .unsupportedCountry:
+                // This is an edge case where the store country is expected to be eligible from the visilibity check, but site settings might have
+                // changed to an unsupported country during the session. In this case, we return an ineligible reason that prompts the merchant to
+                // relaunch the app.
+                return .ineligible(reason: .siteSettingsNotAvailable)
+            case let .unsupportedCurrency(supportedCurrencies: supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrencies))
+            }
+        }
+    }
+
+    func checkSiteSettingsEligibilityForI1() async -> LegacyPOSEligibilityState {
+        let siteSettingsEligibility = await waitAndCheckSiteSettingsEligibility()
+        switch siteSettingsEligibility {
+        case .eligible:
+            return .eligible
+        case .ineligible(reason: let reason):
+            switch reason {
+            case .siteSettingsNotAvailable:
+                return .ineligible(reason: .siteSettingsNotAvailable)
+            case let .unsupportedCountry(supportedCountries: supportedCountries):
+                return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
+            case let .unsupportedCurrency(supportedCurrencies: supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrencies))
+            }
+        }
+    }
+
+    func waitAndCheckSiteSettingsEligibility() async -> SiteSettingsEligibilityState {
         // Waits for the first site settings that matches the given site ID.
         let siteSettings = await waitForSiteSettingsRefresh()
         guard siteSettings.isNotEmpty else {
@@ -224,7 +309,7 @@ private extension POSTabEligibilityChecker {
         return []
     }
 
-    func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> LegacyPOSEligibilityState {
+    func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let supportedCountries: [CountryCode] = [.US, .GB]
         let supportedCurrencies: [CountryCode: [CurrencyCode]] = [.US: [.USD],
                                                                   .GB: [.GBP]]
@@ -244,9 +329,19 @@ private extension POSTabEligibilityChecker {
 
 // MARK: - Remote Feature Flag Eligibility Check
 
-private extension POSTabEligibilityChecker {
+private extension POSTabEligibilityCheckerI2 {
+    enum RemoteFeatureFlagEligibilityState {
+        case eligible
+        case ineligible(reason: RemoteFeatureFlagIneligibleReason)
+    }
+
+    enum RemoteFeatureFlagIneligibleReason {
+        case selfDeallocated
+        case featureFlagDisabled
+    }
+
     @MainActor
-    func checkRemoteFeatureEligibility() async -> LegacyPOSEligibilityState {
+    func checkRemoteFeatureEligibility() async -> RemoteFeatureFlagEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
         await withCheckedContinuation { [weak self] continuation in
@@ -272,10 +367,60 @@ private extension POSTabEligibilityChecker {
     }
 }
 
-private extension POSTabEligibilityChecker {
+private extension POSTabEligibilityCheckerI2 {
     enum Constants {
         static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
+    }
+}
+
+private extension POSIneligibleReason {
+    var toLegacyPOSIneligibilityReason: LegacyPOSIneligibleReason {
+        switch self {
+        case .unsupportedIOSVersion:
+            return .unsupportedIOSVersion
+        case .unsupportedWooCommerceVersion(let minimumVersion):
+            return .unsupportedWooCommerceVersion(minimumVersion: minimumVersion)
+        case .siteSettingsNotAvailable:
+            return .siteSettingsNotAvailable
+        case .wooCommercePluginNotFound:
+            return .wooCommercePluginNotFound
+        case .featureSwitchDisabled:
+            return .featureSwitchDisabled
+        case .featureSwitchSyncFailure:
+            return .featureSwitchSyncFailure
+        case .unsupportedCurrency(let supportedCurrencies):
+            return .unsupportedCurrency(supportedCurrencies: supportedCurrencies)
+        case .selfDeallocated:
+            return .selfDeallocated
+        }
+    }
+}
+
+private extension POSEligibilityState {
+    var toLegacyPOSEligibilityState: LegacyPOSEligibilityState {
+        switch self {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            return .ineligible(reason: reason.toLegacyPOSIneligibilityReason)
+        }
+    }
+}
+
+private extension POSTabEligibilityCheckerI2.RemoteFeatureFlagEligibilityState {
+    var toLegacyPOSEligibilityState: LegacyPOSEligibilityState {
+        switch self {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            switch reason {
+            case .selfDeallocated:
+                return .ineligible(reason: .selfDeallocated)
+            case .featureFlagDisabled:
+                return .ineligible(reason: .featureFlagDisabled)
+            }
+        }
     }
 }

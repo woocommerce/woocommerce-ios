@@ -234,7 +234,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         try await viewModel.purchaseLabel()
 
         // Then
-        let shipmentDetails = encodedHazmat?[viewModel.shipment.index.description] as? [String: Any]
+        let index = "shipment_" + viewModel.shipment.index.description
+        let shipmentDetails = encodedHazmat?[index] as? [String: Any]
         XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }

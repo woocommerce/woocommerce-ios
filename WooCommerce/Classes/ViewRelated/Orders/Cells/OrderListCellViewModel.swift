@@ -79,16 +79,7 @@ struct OrderListCellViewModel {
     /// Textual representation of the sales channel
     ///
     var salesChannel: String? {
-        guard let createdVia = order.createdVia else {
-            return nil
-        }
-
-        switch createdVia {
-        case "pos-rest-api":
-            return Localization.salesChannelPOSText
-        default:
-            return nil
-        }
+        order.salesChannel?.description
     }
 
     /// The localized unabbreviated total for a given order item, which includes the currency.
@@ -128,9 +119,5 @@ extension OrderListCellViewModel {
             "orderlistcellviewmodel.customerName.guestName",
             value: "Guest",
             comment: "In Order List, the name of the billed person when there are no first and last name.")
-        static let salesChannelPOSText = NSLocalizedString(
-            "orderlistcellviewmodel.salesChannel.salesChannelPOSText",
-            value: "POS",
-            comment: "In Order List, the acronym for 'Point of Sale' that is shown as a badge for certain orders.")
     }
 }

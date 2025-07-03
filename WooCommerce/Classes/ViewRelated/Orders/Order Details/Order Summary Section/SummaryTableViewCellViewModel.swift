@@ -14,10 +14,14 @@ struct SummaryTableViewCellViewModel {
     let presentation: OrderStatusPresentation
 
     private let calendar: Calendar
+    
+    private let order: Order
 
     init(order: Order,
          status: OrderStatus?,
          calendar: Calendar = .current) {
+        
+        self.order = order
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
@@ -52,15 +56,7 @@ struct SummaryTableViewCellViewModel {
     /// Textual representation of the sales channel
     ///
     var formattedSalesChannel: String? {
-        guard let salesChannel = salesChannel else {
-            return nil
-        }
-        switch salesChannel {
-        case "pos-rest-api":
-            return "POS"
-        default:
-            return nil
-        }
+        order.salesChannel?.description
     }
 }
 

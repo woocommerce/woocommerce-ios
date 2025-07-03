@@ -10,10 +10,10 @@ struct POSIneligibleView: View {
     @State private var isLoading: Bool = false
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: POSSpacing.none) {
             Spacer()
 
-            VStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .center, spacing: POSSpacing.none) {
                 Image(PointOfSaleAssets.exclamationMark.imageName)
                     .resizable()
                     .frame(width: POSErrorAndAlertIconSize.large.dimension,

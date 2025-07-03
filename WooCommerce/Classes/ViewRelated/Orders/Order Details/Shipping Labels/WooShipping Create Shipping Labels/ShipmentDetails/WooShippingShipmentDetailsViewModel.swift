@@ -373,7 +373,7 @@ private extension WooShippingShipmentDetailsViewModel {
                 } else if let selectedRate {
                     let baseRate = selectedRate.rate.rate
                     let formattedBaseRate = self.formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
-                    let formattedSignatureRate = [
+                    let formattedAdditionalRates = [
                         selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
                         selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
                                                                                       rate: $0.rate,
@@ -394,7 +394,7 @@ private extension WooShippingShipmentDetailsViewModel {
                                                     basedOn: baseRate)
                         }
                     ].compacted()
-                    return [formattedBaseRate] + formattedSignatureRate
+                    return [formattedBaseRate] + formattedAdditionalRates
                 } else {
                     return []
                 }

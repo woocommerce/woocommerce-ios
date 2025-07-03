@@ -34,7 +34,7 @@ struct POSIneligibleView: View {
                         .foregroundColor(Color.posOnSurface)
                 }
                 .containerRelativeFrame(.horizontal) { length, _ in
-                    length * 0.5
+                    max(length * 0.5, 300)
                 }
 
                 Spacer()
@@ -66,7 +66,7 @@ struct POSIneligibleView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
                 .containerRelativeFrame(.horizontal) { length, _ in
-                    length * 0.5 - 132
+                    max(length * 0.5 - 132, 300)
                 }
             }
 

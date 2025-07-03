@@ -5707,7 +5707,7 @@
 		DE02ABBD2B578D0E008E0AC4 /* CreditCardType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreditCardType.swift; sourceTree = "<group>"; };
 		DE02ABBF2B57D333008E0AC4 /* BlazeConfirmPaymentViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeConfirmPaymentViewModelTests.swift; sourceTree = "<group>"; };
 		DE02ABC12B5903AB008E0AC4 /* BlazeCampaignCreationErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignCreationErrorView.swift; sourceTree = "<group>"; };
-		DE02B64E2E12766B00B79E0D /* CollapsibleShipmentItemCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CollapsibleShipmentItemCardViewModelTests.swift; path = "WooCommerceTests/ViewRelated/Shipping Label/WooShipping Create Shipping Labels/Split shipments/CollapsibleShipmentItemCardViewModelTests.swift"; sourceTree = "<group>"; };
+		DE02B64E2E12766B00B79E0D /* CollapsibleShipmentItemCardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleShipmentItemCardViewModelTests.swift; sourceTree = "<group>"; };
 		DE02C65B2D5A0B9F0089850D /* FailedProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FailedProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		DE02C65D2D5A0C5D0089850D /* FailedProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FailedProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		DE06D65F2D64699D00419FFA /* AuthenticatedWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedWebViewModelTests.swift; sourceTree = "<group>"; };
@@ -10557,7 +10557,6 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
-				DE02B64E2E12766B00B79E0D /* CollapsibleShipmentItemCardViewModelTests.swift */,
 				3F3689E22DCB1B470065B48F /* Modules */,
 				D8FBFF1622D4CC2F006E3336 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
@@ -13980,6 +13979,7 @@
 		EEBB9B3E2D8FE5AC008D6CE5 /* Split shipments */ = {
 			isa = PBXGroup;
 			children = (
+				DE02B64E2E12766B00B79E0D /* CollapsibleShipmentItemCardViewModelTests.swift */,
 				EEBB9B3F2D8FE5B4008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift */,
 			);
 			path = "Split shipments";

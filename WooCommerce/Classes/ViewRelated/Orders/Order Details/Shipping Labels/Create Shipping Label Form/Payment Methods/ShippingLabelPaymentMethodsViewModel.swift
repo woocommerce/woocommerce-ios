@@ -16,7 +16,7 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
     /// Shipping Label account settings from the remote API
     ///
-    private var accountSettings: ShippingLabelAccountSettings
+    private(set) var accountSettings: ShippingLabelAccountSettings
 
     @Published var selectedPaymentMethodID: Int64
     @Published var isEmailReceiptsEnabled: Bool

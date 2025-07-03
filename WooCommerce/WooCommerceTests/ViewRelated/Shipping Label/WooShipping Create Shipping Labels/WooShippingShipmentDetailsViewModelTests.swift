@@ -817,6 +817,66 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
     }
+
+    func test_package_contains_complete_customs_form_when_required_data_is_prefilled() throws {
+        // Setup
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        // Given
+        let originCountry = Country(code: "US", name: "United States", states: [])
+        let destinationCountry = Country(code: "CA", name: "Canada", states: [])
+
+        let countries = [
+            originCountry,
+            destinationCountry
+        ]
+
+        stores.whenReceivingAction(ofType: DataAction.self) { action in
+            switch action {
+            case let .synchronizeCountries(_, onCompletion):
+                storageManager.insertSampleCountries(readOnlyCountries: countries)
+                onCompletion(.success(countries))
+            }
+        }
+
+        let shipment = sampleShipment
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: shipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        // When
+        destinationAddressSubject.send(sampleDestinationAddress(country: destinationCountry.code, state: ""))
+        originAddressSubject.send(sampleOriginAddress(country: originCountry.code, state: ""))
+
+        viewModel.selectPackage(samplePackageData())
+
+        // Then
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+
+        waitUntil {
+            guard let customsForm = viewModel.currentPackage?.customsForm else {
+                return false
+            }
+
+            let customsFormItem = customsForm.items[0]
+            let shipmentItem = shipment.items[0]
+
+            return customsFormItem.description == shipmentItem.name &&
+            customsFormItem.value == shipmentItem.value &&
+            customsFormItem.weight == shipmentItem.weight &&
+            customsFormItem.originCountry == originCountry.code
+        }
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModelTests {

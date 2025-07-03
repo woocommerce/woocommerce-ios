@@ -10,7 +10,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
     }
 
     override func tearDown() {
@@ -25,7 +25,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         var passedForm: ShippingLabelCustomsForm?
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: shipment,
-                                                    onCompletion: { form in
+                                                    onFormReady: { form in
             passedForm = form
         })
 
@@ -66,7 +66,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         var passedForm: ShippingLabelCustomsForm?
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { form in
+                                                    onFormReady: { form in
             passedForm = form
         })
 
@@ -84,7 +84,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         var passedForm: ShippingLabelCustomsForm?
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { form in
+                                                    onFormReady: { form in
             passedForm = form
         })
 
@@ -109,7 +109,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         var passedForm: ShippingLabelCustomsForm?
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { form in
+                                                    onFormReady: { form in
             passedForm = form
         })
 
@@ -127,7 +127,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         let order = Order.fake().copy(currency: "USD")
         viewModel = WooShippingCustomsFormViewModel(order: order,
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // Then
         XCTAssertEqual(viewModel.itemsViewModels.first?.currencySymbol, "$")
@@ -153,7 +153,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD"),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.forEach { item in
@@ -176,7 +176,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.first?.hsTariffNumberTotalValue = ("123456", 1000)
@@ -189,7 +189,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels[0].requiredInformationIsEntered = true
@@ -216,7 +216,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         let requiredDestinations = ["IR", "SY", "KP", "CU", "SD"]
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
         viewModel.itemsViewModels.forEach { item in
             item.hsTariffNumber = ""
             item.valuePerUnit = "1000"
@@ -241,7 +241,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
@@ -255,7 +255,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.internationalTransactionNumber = "NOEEI 30.37(a)"
@@ -269,7 +269,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
@@ -285,7 +285,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
@@ -301,7 +301,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: sampleShipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
 
         // When
         viewModel.itemsViewModels.first?.requiredInformationIsEntered = true
@@ -324,7 +324,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // When
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
                                                     shipment: shipment,
-                                                    onCompletion: { _ in })
+                                                    onFormReady: { _ in })
         let firstItemViewModel = viewModel.itemsViewModels.first
 
         // Then

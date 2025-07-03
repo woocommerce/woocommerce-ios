@@ -6,7 +6,7 @@ struct POSEntryPointControllerTests {
     @Test func eligibilityState_is_set_to_eligible_when_i2_feature_is_disabled() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
-        mockEligibilityChecker.eligibility = .ineligible(reason: .notTablet)
+        mockEligibilityChecker.eligibility = .ineligible(reason: .unsupportedIOSVersion)
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
 
         // When
@@ -23,7 +23,7 @@ struct POSEntryPointControllerTests {
     @Test func eligibilityState_is_set_to_ineligible_when_i2_feature_is_enabled_and_checker_returns_ineligible() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
-        let expectedState = POSEligibilityState.ineligible(reason: .notTablet)
+        let expectedState = POSEligibilityState.ineligible(reason: .unsupportedIOSVersion)
         mockEligibilityChecker.eligibility = expectedState
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
 

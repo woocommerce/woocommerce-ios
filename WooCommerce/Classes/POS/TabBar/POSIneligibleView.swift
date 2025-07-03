@@ -83,7 +83,7 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for not tablet: use iPad")
         case .unsupportedIOSVersion:
             return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
-                                     value: "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
+                                     value: "Point of Sale requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
                                      comment: "Suggestion for unsupported iOS version: update iOS")
         case let .unsupportedWooCommerceVersion(minimumVersion):
             let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
@@ -98,7 +98,7 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",
-                                     value: "The POS core feature must be enabled to proceed. " +
+                                     value: "Point of Sale must be enabled to proceed. " +
                                      "Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
         case .featureSwitchSyncFailure:

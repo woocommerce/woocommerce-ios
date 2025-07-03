@@ -100,6 +100,13 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     }
 
     private func checkI1Eligibility() async -> LegacyPOSEligibilityState {
+        switch checkDeviceEligibility() {
+        case .eligible:
+            break
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        }
+
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
         async let pluginEligibility = checkPluginEligibility()

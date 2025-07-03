@@ -16,9 +16,6 @@ import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PluginsService
 
 final class POSTabEligibilityCheckerI2: POSEntryPointEligibilityCheckerProtocol {
-    private var siteSettingsEligibility: POSEligibilityState?
-    private var featureFlagEligibility: POSEligibilityState?
-
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol

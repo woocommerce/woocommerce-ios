@@ -32,7 +32,7 @@ final class SummaryTableViewCell: UITableViewCell {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
         salesChannelLabel.text = viewModel.formattedSalesChannel
-
+        salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         display(presentation: viewModel.presentation)
     }
 

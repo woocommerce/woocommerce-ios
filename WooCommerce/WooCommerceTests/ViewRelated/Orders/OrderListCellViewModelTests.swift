@@ -70,7 +70,7 @@ final class OrderListCellViewModelTests: XCTestCase {
         let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
-        XCTAssertEqual(viewModel.salesChannel, "POS")
+        XCTAssertEqual(viewModel.salesChannel, OrderListCellViewModel.Localization.salesChannelPOSText)
     }
 
     func test_salesChannel_when_createdVia_is_nil_then_returns_nil() {

@@ -364,13 +364,16 @@ final class WooShippingRemoteTests: XCTestCase {
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "wooshipping-purchase-success")
 
-        let package = WooShippingPackagePurchase.fake().copy(selectedRate: WooShippingSelectedRate(
-            rate: ShippingLabelCarrierRate.fake().copy(rate: 12.32),
-            adultSignatureRate: ShippingLabelCarrierRate.fake().copy(rate: 22.33),
-            carbonNeutralRate: ShippingLabelCarrierRate.fake().copy(rate: 18.02),
-            saturdayDeliveryRate: ShippingLabelCarrierRate.fake().copy(rate: 25.42),
-            additionalHandlingRate: ShippingLabelCarrierRate.fake().copy(rate: 20.01)
-        ))
+        let package = WooShippingPackagePurchase.fake().copy(
+            package: ShippingLabelPackageSelected.fake().copy(height: 0),
+            selectedRate: WooShippingSelectedRate(
+                rate: ShippingLabelCarrierRate.fake().copy(rate: 12.32),
+                adultSignatureRate: ShippingLabelCarrierRate.fake().copy(rate: 22.33),
+                carbonNeutralRate: ShippingLabelCarrierRate.fake().copy(rate: 18.02),
+                saturdayDeliveryRate: ShippingLabelCarrierRate.fake().copy(rate: 25.42),
+                additionalHandlingRate: ShippingLabelCarrierRate.fake().copy(rate: 20.01)
+            )
+        )
 
         // When
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
@@ -405,6 +408,7 @@ final class WooShippingRemoteTests: XCTestCase {
 
         let packagesParam = try XCTUnwrap(request.parameters["packages"] as? [[String: Any]])
         let firstPackage = try XCTUnwrap(packagesParam.first)
+        XCTAssertEqual(firstPackage["height"] as? Double, 0.25)
         XCTAssertEqual(firstPackage["signature"] as? String, "adult")
         XCTAssertEqual(firstPackage["carbon_neutral"] as? Bool, true)
         XCTAssertEqual(firstPackage["saturday_delivery"] as? Bool, true)

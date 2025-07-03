@@ -85,7 +85,7 @@ struct OrderListCellViewModel {
 
         switch createdVia {
         case "pos-rest-api":
-            return "POS"
+            return Localization.salesChannelPOSText
         default:
             return nil
         }
@@ -113,18 +113,24 @@ struct OrderListCellViewModel {
 #endif
 }
 
-// MARK: - Constants
-
-private extension OrderListCellViewModel {
+extension OrderListCellViewModel {
     enum Localization {
         static func title(orderNumber: String, customerName: String) -> String {
-            let format = NSLocalizedString("#%@ %@", comment: "In Order List,"
+            let format = NSLocalizedString(
+                "orderlistcellviewmodel.cell.title",
+                value: "#%@ %@",
+                comment: "In Order List,"
                 + " the pattern to show the order number. For example, “#123456”."
                 + " The %@ placeholder is the order number.")
-
             return String.localizedStringWithFormat(format, orderNumber, customerName)
         }
-
-        static let guestName = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no first and last name.")
+        static let guestName = NSLocalizedString(
+            "orderlistcellviewmodel.customerName.guestName",
+            value: "Guest",
+            comment: "In Order List, the name of the billed person when there are no first and last name.")
+        static let salesChannelPOSText = NSLocalizedString(
+            "orderlistcellviewmodel.salesChannel.salesChannelPOSText",
+            value: "POS",
+            comment: "In Order List, the acronym for 'Point of Sale' that is shown as a badge for certain orders.")
     }
 }

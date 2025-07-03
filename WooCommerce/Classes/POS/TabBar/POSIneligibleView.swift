@@ -49,7 +49,7 @@ struct POSIneligibleView: View {
                                 isLoading = false
                             } catch {
                                 // TODO: WOOMOB-720 - handle error if needed, e.g., show an error message
-                                print("Error refreshing eligibility: \(error)")
+                                DDLogError("Error refreshing eligibility: \(error)")
                                 isLoading = false
                             }
                         }

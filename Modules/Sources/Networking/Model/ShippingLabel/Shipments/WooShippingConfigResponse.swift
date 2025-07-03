@@ -74,11 +74,19 @@ public struct WooShippingLabelData: Decodable, Equatable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let currentOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
         let storedData = try container.decodeIfPresent(StoredData.self, forKey: .storedData)
+        let decodedOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
+
+        /// Inject destination addresses into labels if present
+        let orderLabels: [ShippingLabel]
+        if let destinations = storedData?.selectedDestinations, !destinations.isEmpty {
+            orderLabels = WooShippingLabelData.mapDestinations(destinations, into: decodedOrderLabels)
+        } else {
+            orderLabels = decodedOrderLabels
+        }
 
         self.init(
-            currentOrderLabels: currentOrderLabels,
+            currentOrderLabels: orderLabels,
             storedData: storedData
         )
     }
@@ -86,6 +94,26 @@ public struct WooShippingLabelData: Decodable, Equatable {
     private enum CodingKeys: String, CodingKey {
         case currentOrderLabels
         case storedData
+    }
+}
+
+private extension WooShippingLabelData {
+    static func mapDestinations(
+        _ destinations: WooShippingLabelDestinations,
+        into labels: [ShippingLabel]
+    ) -> [ShippingLabel] {
+        return labels.map { label in
+            guard
+                let shipmentID = label.shipmentID,
+                let destinationAddress = destinations[
+                    WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
+                ]
+            else {
+                return label
+            }
+
+            return label.copy(destinationAddress: destinationAddress.toShippingLabelAddress())
+        }
     }
 }
 

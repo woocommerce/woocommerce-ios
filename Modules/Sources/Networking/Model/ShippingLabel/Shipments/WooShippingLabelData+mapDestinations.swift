@@ -10,7 +10,7 @@ extension WooShippingLabelData {
                 let shipmentID = label.shipmentID,
                 let destinationAddress = destinations[
                     WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
-                ]
+                ] ?? destinations[shipmentID] /// Fallback for ids previously submitted without `shipment_<id>` formatting
             else {
                 return label
             }

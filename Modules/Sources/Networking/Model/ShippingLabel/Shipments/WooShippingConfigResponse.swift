@@ -65,7 +65,7 @@ public struct WooShippingLabelData: Decodable, Equatable {
 
     public init(
         currentOrderLabels: [ShippingLabel],
-        storedData: StoredData?
+        storedData: StoredData? = nil
     ) {
         self.currentOrderLabels = currentOrderLabels
         self.storedData = storedData

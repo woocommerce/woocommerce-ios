@@ -855,6 +855,63 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
+    // MARK: - Load Config With Destinations
+
+    func test_loadConfig_withDestinations_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-destinations")
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let config = try XCTUnwrap(result.get())
+        let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
+        XCTAssertNotNil(label.destinationAddress)
+        XCTAssertEqual(label.destinationAddress.address1, "200 N SPRING ST")
+    }
+
+    func test_loadConfig_withoutDestinations_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-without-destinations")
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let config = try XCTUnwrap(result.get())
+        let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
+        XCTAssertTrue(label.destinationAddress.isEmpty)
+    }
+
+    func test_loadConfig_withInvalidDestinations_parses_success_response() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-invalid-destinations")
+
+        // When
+        let result: Result<WooShippingConfig, Error> = waitFor { promise in
+            remote.loadConfig(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let config = try XCTUnwrap(result.get())
+        let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
+        XCTAssertTrue(label.destinationAddress.isEmpty)
+    }
+
     // MARK: Update shipment
 
     func test_updateShipment_parses_success_response() throws {

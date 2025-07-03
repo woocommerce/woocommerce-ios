@@ -73,6 +73,11 @@ extension WooShippingPackagePurchase {
 
         return rates
     }
+
+    /// shipment ID to set for hazmat and customs form
+    var formattedShipmentID: String {
+        Values.shipmentIDPrefix + shipmentID
+    }
 }
 
 // MARK: Enodable
@@ -99,6 +104,10 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
         try container.encode(productIDs, forKey: .products)
+
+        if let hazmat = package.hazmatCategory {
+            try container.encode(package.hazmatCategory, forKey: .hazmat)
+        }
 
         if selectedRate.signatureRate != nil {
             try container.encode(Values.yes, forKey: .signature)
@@ -144,7 +153,7 @@ extension WooShippingPackagePurchase: Encodable {
     /// Converts the hazmat settings to a dictionary as the API expects it.
     /// Includes the shipment ID if there are hazmat settings to report.
     public func encodedHazmat() -> [String: Any] {
-        [shipmentID: [
+        [formattedShipmentID: [
             ParameterKeys.isHazmat: package.hazmatCategory != nil,
             ParameterKeys.category: package.hazmatCategory ?? String()
         ]]
@@ -156,7 +165,7 @@ extension WooShippingPackagePurchase: Encodable {
         guard let form = package.customsForm else {
             return [shipmentID: [:]]
         }
-        return [shipmentID: [
+        return [formattedShipmentID: [
             ParameterKeys.items: try form.items.map { try $0.toDictionary() },
             ParameterKeys.contentsType: form.contentsType.rawValue,
             ParameterKeys.contentsExplanation: form.contentExplanation,
@@ -185,6 +194,7 @@ extension WooShippingPackagePurchase: Encodable {
         case carbonNeutral = "carbon_neutral"
         case saturdayDelivery = "saturday_delivery"
         case additionalHandling = "additional_handling"
+        case hazmat
     }
 
     private enum ParameterKeys {
@@ -209,5 +219,6 @@ extension WooShippingPackagePurchase: Encodable {
         static let adult = "adult"
         static let signatureRequired = "signatureRequired"
         static let adultSignatureRequired = "adultSignatureRequired"
+        static let shipmentIDPrefix = "shipment_"
     }
 }

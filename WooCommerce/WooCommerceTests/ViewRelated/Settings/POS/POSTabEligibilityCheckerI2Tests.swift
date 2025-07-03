@@ -27,87 +27,10 @@ struct POSTabEligibilityCheckerI2Tests {
     // MARK: `checkVisibility`
 
     @Test(arguments: [
-        (country: Country.us, currency: CurrencyCode.USD, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.us, currency: CurrencyCode.USD, isPointOfSaleAsATabi2Enabled: false),
-        (country: Country.gb, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.gb, currency: CurrencyCode.GBP, isPointOfSaleAsATabi2Enabled: false)
+        (country: Country.us, currency: CurrencyCode.USD),
+        (country: Country.gb, currency: CurrencyCode.GBP)
     ])
-    fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode, isPointOfSaleAsATabi2Enabled: Bool) async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
-        setupCountry(country: country, currency: currency)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == true)
-    }
-
-    @Test(arguments: [
-        (country: Country.ca, currency: CurrencyCode.CAD, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.ca, currency: CurrencyCode.CAD, isPointOfSaleAsATabi2Enabled: false),
-        (country: Country.es, currency: CurrencyCode.EUR, isPointOfSaleAsATabi2Enabled: true),
-        (country: Country.es, currency: CurrencyCode.EUR, isPointOfSaleAsATabi2Enabled: false)
-    ])
-    fileprivate func is_invisible_when_country_is_not_supported(country: Country, currency: CurrencyCode, isPointOfSaleAsATabi2Enabled: Bool) async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
-        setupCountry(country: country, currency: currency)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    @Test(arguments: [
-        (country: Country.us, currency: CurrencyCode.GBP),
-        (country: Country.us, currency: CurrencyCode.CAD),
-        (country: Country.gb, currency: CurrencyCode.EUR),
-        (country: Country.gb, currency: CurrencyCode.USD)
-    ])
-    fileprivate func is_invisible_when_currency_is_not_supported_for_i1(country: Country, currency: CurrencyCode) async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
-        setupCountry(country: country, currency: currency)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    @Test(arguments: [
-        (country: Country.us, currency: CurrencyCode.GBP),
-        (country: Country.us, currency: CurrencyCode.CAD),
-        (country: Country.gb, currency: CurrencyCode.EUR),
-        (country: Country.gb, currency: CurrencyCode.USD)
-    ])
-    fileprivate func is_visible_when_currency_is_not_supported_for_i2(country: Country, currency: CurrencyCode) async throws {
+    fileprivate func is_visible_when_all_conditions_satisfied(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
@@ -126,12 +49,15 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    func is_invisible_when_woocommerce_version_is_below_minimum_for_i1() async throws {
+    @Test(arguments: [
+        (country: Country.ca, currency: CurrencyCode.CAD),
+        (country: Country.es, currency: CurrencyCode.EUR)
+    ])
+    fileprivate func is_invisible_when_country_is_not_supported(country: Country, currency: CurrencyCode) async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
-        setupCountry(country: .us)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("9.5.0")
         let checker = POSTabEligibilityCheckerI2(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
@@ -146,7 +72,34 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == false)
     }
 
-    func is_visible_when_woocommerce_version_is_below_minimum_for_i2() async throws {
+
+    @Test(arguments: [
+        (country: Country.us, currency: CurrencyCode.GBP),
+        (country: Country.us, currency: CurrencyCode.CAD),
+        (country: Country.gb, currency: CurrencyCode.EUR),
+        (country: Country.gb, currency: CurrencyCode.USD)
+    ])
+    fileprivate func is_visible_when_currency_is_not_supported(country: Country, currency: CurrencyCode) async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        setupCountry(country: country, currency: currency)
+        accountWhitelistedInBackend(true)
+        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+
+    func is_visible_when_woocommerce_version_is_below_minimum() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
@@ -166,10 +119,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    @Test(arguments: [true, false])
-    func is_visible_when_core_version_is_10_0_0_and_POS_feature_enabled(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func is_visible_when_core_version_is_10_0_0_and_POS_feature_enabled() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0")
@@ -188,28 +140,8 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    func is_invisible_when_core_version_is_10_0_0_and_POS_feature_disabled_for_i1() async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.success(false))
-        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
 
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    func is_visible_when_core_version_is_10_0_0_and_POS_feature_disabled_for_i2() async throws {
+    func is_visible_when_core_version_is_10_0_0_and_POS_feature_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
@@ -230,28 +162,8 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    func is_invisible_when_core_version_is_10_0_0_and_POS_feature_check_fails_for_i1() async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
-        let checker = POSTabEligibilityCheckerI2(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
 
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    func is_visible_when_core_version_is_10_0_0_and_POS_feature_check_fails_for_i2() async throws {
+    func is_visible_when_core_version_is_10_0_0_and_POS_feature_check_fails() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
@@ -272,10 +184,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    @Test(arguments: [true, false])
-    func is_visible_when_core_version_is_below_10_0_0_and_POS_feature_disabled(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func is_visible_when_core_version_is_below_10_0_0_and_POS_feature_disabled() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.9.9")
@@ -294,10 +205,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == true)
     }
 
-    @Test(arguments: [true, false])
-    func is_visible_when_site_settings_are_from_correct_siteID(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func is_visible_when_site_settings_are_from_correct_siteID() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
 
         // Settings for a different site.
         let wrongSiteSettings = [
@@ -334,10 +244,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == .eligible)
     }
 
-    @Test(arguments: [true, false])
-    func is_invisible_when_remote_feature_flag_disabled(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func is_invisible_when_remote_feature_flag_disabled() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSTabEligibilityCheckerI2(siteID: siteID,
@@ -354,10 +263,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == false)
     }
 
-    @Test(arguments: [true, false])
-    func checkVisibility_skips_settings_from_initialLoad(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func checkVisibility_skips_settings_from_initialLoad() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
 
         // Initial settings (cached) - makes site eligible (US)
         let initialSettings = [
@@ -391,10 +299,9 @@ struct POSTabEligibilityCheckerI2Tests {
         #expect(result == false)
     }
 
-    @Test(arguments: [true, false])
-    func is_invisible_when_device_is_not_iPad(isPointOfSaleAsATabi2Enabled: Bool) async throws {
+    @Test func is_invisible_when_device_is_not_iPad() async throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: isPointOfSaleAsATabi2Enabled)
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSTabEligibilityCheckerI2(siteID: siteID,

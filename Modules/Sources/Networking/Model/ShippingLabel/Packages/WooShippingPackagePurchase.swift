@@ -76,7 +76,7 @@ extension WooShippingPackagePurchase {
 
     /// shipment ID to set for hazmat and customs form
     var formattedShipmentID: String {
-        Values.shipmentIDPrefix + shipmentID
+        return WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
     }
 }
 

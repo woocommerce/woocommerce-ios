@@ -10,6 +10,8 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     /// Current WatchKit Session
     private let watchSession: WCSession
 
+    private let analytics: Analytics
+
     /// Subscriptions store for combine publishers
     ///
     private var subscriptions = Set<AnyCancellable>()
@@ -42,8 +44,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published private var syncTrigger = false
 
-    init(watchSession: WCSession = WCSession.default, storedDependencies: WatchDependencies?) {
+    init(watchSession: WCSession = WCSession.default,
+         storedDependencies: WatchDependencies?,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.watchSession = watchSession
+        self.analytics = analytics
         super.init()
 
         self.storeID = storedDependencies?.storeID
@@ -81,6 +86,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
                 let (enablesCrashReports, account) = configuration
 
                 guard let storeID, let storeName, let credentials else {
+                    analytics.track(.watchSyncingFailed, withError: SyncError.missingStoreDetailsOrCredentials)
                     return nil
                 }
 
@@ -99,12 +105,16 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .sink { [watchSession] dependencies, isSessionActive, forceSync in
 
                 // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
-                guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else { return }
+                guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else {
+                    analytics.track(.watchSyncingFailed, withError: SyncError.watchSessionInactiveOrNotPaired)
+                    return
+                }
 
                 do {
 
                     // If dependencies is nil, send an empty dictionary. This is most likely a logged out state
                     guard let dependencies else {
+                        analytics.track(.watchSyncingFailed, withError: SyncError.noDependenciesFound)
                         return try watchSession.updateApplicationContext([:])
                     }
 
@@ -118,9 +128,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
                         try watchSession.updateApplicationContext(jsonObject)
                     } else {
+                        analytics.track(.watchSyncingFailed, withError: SyncError.encodingApplicationContextFailed)
                         DDLogError("⛔️ Unable to encode watch dependencies for synchronization. Resulting object is not a dictionary")
                     }
                 } catch {
+                    analytics.track(.watchSyncingFailed, withError: error)
                     DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
                 }
             }
@@ -175,5 +187,15 @@ extension WatchDependenciesSynchronizer {
         }
 
         syncTrigger.toggle()
+    }
+}
+
+extension WatchDependenciesSynchronizer {
+    enum SyncError: Error {
+        case missingStoreDetailsOrCredentials
+        case watchSessionInactiveOrNotPaired
+        case noDependenciesFound
+        case invalidApplicationContext
+        case encodingApplicationContextFailed
     }
 }

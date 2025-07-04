@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import UIKit
 import class WooFoundation.CurrencySettings

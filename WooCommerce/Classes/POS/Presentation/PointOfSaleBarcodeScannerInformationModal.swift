@@ -82,8 +82,8 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             comment: "Accessible version of more details link in barcode info modal, announcing it as a link for screen readers"
         )
         static let barcodeInfoSecondaryMessage = NSLocalizedString(
-            "pos.barcodeInfoModal.secondaryMessage",
-            value: "• Refer to your Bluetooth barcode scanner's instructions to set HID mode.",
+            "pos.barcodeInfoModal.secondaryMessage.2",
+            value: "• Refer to your Bluetooth barcode scanner's instructions to set HID mode. This usually requires scanning a special barcode in the manual.",
             comment: "Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode"
         )
         static let barcodeInfoTertiaryMessage = NSLocalizedString(
@@ -111,7 +111,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
         )
         static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
             "pos.barcodeInfoModal.secondaryMessage.accessible",
-            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set H-I-D mode.",
+            value: "Second: Refer to your Bluetooth barcode scanner's instructions to set H-I-D mode. This usually requires scanning a special barcode in the manual.",
             comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"
         )
         static let barcodeInfoTertiaryMessageAccessible = NSLocalizedString(

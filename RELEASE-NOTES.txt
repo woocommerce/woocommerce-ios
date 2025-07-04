@@ -7,6 +7,7 @@
 - [*] POS: icon button with confirmation step used for clearing the cart [https://github.com/woocommerce/woocommerce-ios/pull/15829]
 - [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
 - [*] Shipping Labels: Enable the confirm button on the payment method sheet even when there are no changes. [https://github.com/woocommerce/woocommerce-ios/pull/15856]
+- [*] POS: start a new cart by scanning a barcode on the payment success screen [https://github.com/woocommerce/woocommerce-ios/pull/15870]
 
 22.7
 -----

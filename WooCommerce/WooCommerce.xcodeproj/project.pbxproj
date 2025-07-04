@@ -295,8 +295,6 @@
 		025678052575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */; };
 		025678C125773236009D7E6C /* Collection+ShippingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C025773236009D7E6C /* Collection+ShippingLabel.swift */; };
 		025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */; };
-		0256DD0A2E1706B5002FB998 /* POSTabEligibilityCheckerI2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0256DD092E1706B2002FB998 /* POSTabEligibilityCheckerI2.swift */; };
-		0256DD0C2E170C46002FB998 /* POSTabEligibilityCheckerI2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0256DD0B2E170C42002FB998 /* POSTabEligibilityCheckerI2Tests.swift */; };
 		02577A7F2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */; };
 		0258B4D82B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B4D72B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift */; };
 		0258B4DA2B159A0F008FEA07 /* Publisher+WithPrevious.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0258B4D92B159A0F008FEA07 /* Publisher+WithPrevious.swift */; };
@@ -3453,8 +3451,6 @@
 		025678042575EA1B009D7E6C /* ProductDetailsCellViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsCellViewModelTests.swift; sourceTree = "<group>"; };
 		025678C025773236009D7E6C /* Collection+ShippingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabel.swift"; sourceTree = "<group>"; };
 		025678C625773399009D7E6C /* Collection+ShippingLabelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+ShippingLabelTests.swift"; sourceTree = "<group>"; };
-		0256DD092E1706B2002FB998 /* POSTabEligibilityCheckerI2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTabEligibilityCheckerI2.swift; sourceTree = "<group>"; };
-		0256DD0B2E170C42002FB998 /* POSTabEligibilityCheckerI2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTabEligibilityCheckerI2Tests.swift; sourceTree = "<group>"; };
 		02577A7E2BFC4BB300B63FE6 /* PaymentMethodsWrapperHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsWrapperHostingController.swift; sourceTree = "<group>"; };
 		0258B4D72B1590A3008FEA07 /* ConfigurableBundleNoticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleNoticeView.swift; sourceTree = "<group>"; };
 		0258B4D92B159A0F008FEA07 /* Publisher+WithPrevious.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithPrevious.swift"; sourceTree = "<group>"; };
@@ -6796,7 +6792,6 @@
 			children = (
 				023BD58A2BFDCFCB00A10D7B /* POSEligibilityCheckerTests.swift */,
 				0277889D2DF928E3006F5B8C /* POSTabEligibilityCheckerTests.swift */,
-				0256DD0B2E170C42002FB998 /* POSTabEligibilityCheckerI2Tests.swift */,
 				02B881842E18586B009375F5 /* LegacyPOSTabEligibilityCheckerTests.swift */,
 			);
 			path = POS;
@@ -7763,7 +7758,6 @@
 		02E4A0842BFB1D1F006D4F87 /* POS */ = {
 			isa = PBXGroup;
 			children = (
-				0256DD092E1706B2002FB998 /* POSTabEligibilityCheckerI2.swift */,
 				026B2D162DF92290005B8CAA /* POSTabEligibilityChecker.swift */,
 				02E4A0822BFB1C4F006D4F87 /* POSEligibilityChecker.swift */,
 				02B881822E1857DF009375F5 /* LegacyPOSTabEligibilityChecker.swift */,
@@ -15963,7 +15957,6 @@
 				CE35F11B2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift in Sources */,
 				B9D19A422AE7B4AD00D944D8 /* CustomAmountRowViewModel.swift in Sources */,
 				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
-				0256DD0A2E1706B5002FB998 /* POSTabEligibilityCheckerI2.swift in Sources */,
 				09468D9027D5014E0054A751 /* BulkUpdatePriceViewController.swift in Sources */,
 				024124842AC54C3D0035A247 /* ConfigurableBundleItemView.swift in Sources */,
 				0279F0DA252DB4BE0098D7DE /* ProductVariationDetailsFactory.swift in Sources */,
@@ -17332,7 +17325,6 @@
 				26B3EC622744772A0075EAE6 /* SimplePaymentsSummaryViewModelTests.swift in Sources */,
 				D85DD1D7257F359800861AA8 /* NotWPErrorViewModelTests.swift in Sources */,
 				DE3877E4283E35E80075D87E /* DiscountTypeBottomSheetListSelectorCommandTests.swift in Sources */,
-				0256DD0C2E170C46002FB998 /* POSTabEligibilityCheckerI2Tests.swift in Sources */,
 				025678C725773399009D7E6C /* Collection+ShippingLabelTests.swift in Sources */,
 				02BC5AA624D27F8900C43326 /* ProductVariationFormViewModel+ChangesTests.swift in Sources */,
 				02CD3BFE2C35D04C00E575C4 /* MockCardPresentPaymentService.swift in Sources */,

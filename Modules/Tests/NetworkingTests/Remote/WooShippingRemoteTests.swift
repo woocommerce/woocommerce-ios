@@ -364,8 +364,17 @@ final class WooShippingRemoteTests: XCTestCase {
         let remote = WooShippingRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "label/purchase/\(sampleOrderID)", filename: "wooshipping-purchase-success")
 
+        let shipmentID = "1"
+        let hazmatCategory = "test-hazmat"
+        let customsForm = ShippingLabelCustomsForm.fake().copy(items: [.fake(), .fake()])
+
         let package = WooShippingPackagePurchase.fake().copy(
-            package: ShippingLabelPackageSelected.fake().copy(height: 0),
+            shipmentID: shipmentID,
+            package: ShippingLabelPackageSelected.fake().copy(
+                height: 0,
+                hazmatCategory: hazmatCategory,
+                customsForm: customsForm
+            ),
             selectedRate: WooShippingSelectedRate(
                 rate: ShippingLabelCarrierRate.fake().copy(rate: 12.32),
                 adultSignatureRate: ShippingLabelCarrierRate.fake().copy(rate: 22.33),
@@ -413,6 +422,7 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(firstPackage["carbon_neutral"] as? Bool, true)
         XCTAssertEqual(firstPackage["saturday_delivery"] as? Bool, true)
         XCTAssertEqual(firstPackage["additional_handling"] as? Bool, true)
+        XCTAssertEqual(firstPackage["hazmat"] as? String, hazmatCategory)
 
         let selectedRateParam = try XCTUnwrap(request.parameters["selected_rate"] as? [String: Any])
         let parentValue = try XCTUnwrap(selectedRateParam["parent"] as? [String: Any])
@@ -421,6 +431,14 @@ final class WooShippingRemoteTests: XCTestCase {
         let childValue = try XCTUnwrap(selectedRateParam["rate"] as? [String: Any])
         XCTAssertEqual(childValue["rate"] as? Double, package.selectedRate.adultSignatureRate?.rate)
         XCTAssertEqual(childValue["type"] as? String, "adultSignatureRequired")
+
+        let hazmatValue = try XCTUnwrap(request.parameters["hazmat"] as? [String: Any])
+        let hazmatShipment = try XCTUnwrap(hazmatValue["shipment_" + shipmentID] as? [String: Any])
+        XCTAssertEqual(hazmatShipment["category"] as? String, hazmatCategory)
+
+        let customsValue = try XCTUnwrap(request.parameters["customs"] as? [String: Any])
+        let customsShipment = try XCTUnwrap(customsValue["shipment_" + shipmentID] as? [String: Any])
+        XCTAssertEqual((try XCTUnwrap(customsShipment["items"] as? [Any])).count, 2)
 
         let labels = try XCTUnwrap(result.get())
         XCTAssertEqual(labels.count, 1)

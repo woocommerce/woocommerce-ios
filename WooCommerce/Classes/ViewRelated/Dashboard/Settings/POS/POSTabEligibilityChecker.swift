@@ -17,15 +17,12 @@ import class Yosemite.PluginsService
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
-    case notTablet
     case unsupportedIOSVersion
     case unsupportedWooCommerceVersion(minimumVersion: String)
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
-    case featureFlagDisabled
     case featureSwitchDisabled
     case featureSwitchSyncFailure
-    case unsupportedCountry(supportedCountries: [CountryCode])
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }

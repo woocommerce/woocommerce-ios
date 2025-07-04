@@ -44,9 +44,10 @@ extension ConnectView {
 
     private enum Localization {
         static let connectMessage = AppLocalizedString(
-            "watch.connect.message",
-            value: "Open Woo on your iPhone, connect your store, and hold your Watch nearby",
-            comment: "Info message when connecting your watch to the phone for the first time."
+            "watch.connect.messageWithWorkaround",
+            value: "Open Woo on your iPhone, log into your store, and hold your Watch nearby. " +
+            "If the issue persists, relaunch the app.",
+            comment: "Info message when connecting your watch to the phone for the first time with a workaround option."
         )
         static let itsNotWorking = AppLocalizedString(
             "watch.connect.notworking.title",

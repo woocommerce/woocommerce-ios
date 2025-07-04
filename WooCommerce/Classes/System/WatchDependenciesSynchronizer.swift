@@ -81,15 +81,12 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         let configurationDependencies = Publishers.CombineLatest($enablesCrashReports, $account)
 
         let watchDependencies = Publishers.CombineLatest(requiredDependencies, configurationDependencies)
-            .map { [weak self] (required, configuration) -> WatchDependencies? in
+            .map { (required, configuration) -> WatchDependencies? in
 
                 let (storeID, storeName, credentials, currencySettings) = required
                 let (enablesCrashReports, account) = configuration
 
-                guard let storeID, let storeName, let credentials else {
-                    self?.analytics.track(.watchSyncingFailed, withError: SyncError.missingStoreDetailsOrCredentials)
-                    return nil
-                }
+                guard let storeID, let storeName, let credentials else { return nil }
 
                 return .init(storeID: storeID,
                              storeName: storeName,
@@ -107,7 +104,15 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
                 // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
                 guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else {
-                    self?.analytics.track(.watchSyncingFailed, withError: SyncError.watchSessionInactiveOrNotPaired)
+                    self?.analytics.track(
+                        .watchSyncingFailed,
+                        properties: [
+                            "session_active": isSessionActive,
+                            "session_paired": watchSession.isPaired,
+                            "watch_app_installed": watchSession.isWatchAppInstalled
+                        ],
+                        error: SyncError.watchSessionInactiveOrNotPaired
+                    )
                     return
                 }
 
@@ -140,11 +145,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .store(in: &subscriptions)
     }
 
-    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        DDLogInfo("🔵 WatchSession activated \(activationState)")
-        self.isSessionActive = activationState == .activated
-    }
-
     func sessionDidBecomeInactive(_ session: WCSession) {
         // No op
     }
@@ -162,7 +162,6 @@ extension WatchDependenciesSynchronizer {
     /// This is in order to not duplicate tracks configuration which involve quite a lot of information to be transmitted to the watch.
     ///
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
-
         // The user info could contain a track event. Send it if we found one.
         guard let rawEvent = userInfo[WooConstants.watchTracksKey] as? String,
               let analyticEvent = WooAnalyticsStat(rawValue: rawEvent) else {
@@ -183,11 +182,14 @@ extension WatchDependenciesSynchronizer {
     /// When one is identified we should try to re-sync credentials.
     ///
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        guard message[WooConstants.watchSyncKey] as? Bool == true else {
+        if message[WooConstants.watchSyncKey] as? Bool == true {
+            syncTrigger.toggle()
+        } else if message[WooConstants.watchSessionActivatedKey] as? Bool == true {
+            self.isSessionActive = true
+            DDLogInfo("🔵 WatchSession activated)")
+        } else {
             return DDLogError("⛔️ Unsupported sync request message: \(message)")
         }
-
-        syncTrigger.toggle()
     }
 }
 

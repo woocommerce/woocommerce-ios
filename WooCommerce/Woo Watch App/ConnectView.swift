@@ -18,6 +18,10 @@ struct ConnectView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
 
+                Text(Localization.workaroundTip)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 Image(systemName: "bolt.fill")
                     .renderingMode(.original)
                     .resizable()
@@ -44,10 +48,14 @@ extension ConnectView {
 
     private enum Localization {
         static let connectMessage = AppLocalizedString(
-            "watch.connect.messageWithWorkaround",
-            value: "Open Woo on your iPhone, log into your store, and hold your Watch nearby. " +
-            "If the issue persists, relaunch the app.",
-            comment: "Info message when connecting your watch to the phone for the first time with a workaround option."
+            "watch.connect.messageUpdated",
+            value: "Open Woo on your iPhone, log into your store, and hold your Watch nearby.",
+            comment: "Info message when connecting your watch to the phone for the first time."
+        )
+        static let workaroundTip = AppLocalizedString(
+            "watch.connect.workaround",
+            value: "If the error persists, relaunch the app.",
+            comment: "Workaround when connecting the watch to the phone fails."
         )
         static let itsNotWorking = AppLocalizedString(
             "watch.connect.notworking.title",

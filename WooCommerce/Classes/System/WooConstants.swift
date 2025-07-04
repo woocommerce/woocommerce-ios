@@ -85,6 +85,10 @@ public enum WooConstants {
     ///
     static let watchTracksKey = "watch-tracks-event"
 
+    /// Key used to identify when session is activated on the watch.
+    ///
+    static let watchSessionActivatedKey = "watch_session_activated"
+
     /// Key used to identify sync request attempt from the watch.
     ///
     static let watchSyncKey = "watch-sync-event"

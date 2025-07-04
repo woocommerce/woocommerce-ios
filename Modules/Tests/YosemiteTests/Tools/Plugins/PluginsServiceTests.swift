@@ -18,11 +18,11 @@ struct PluginsServiceTests {
         storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "1.0.0")
 
         // When
-        let result = await sut.waitForPluginInStorage(siteID: siteID, pluginName: PluginConstants.pluginName, isActive: true)
+        let result = await sut.waitForPluginInStorage(siteID: siteID, plugin: PluginConstants.plugin, isActive: true)
 
         // Then
         #expect(result.siteID == siteID)
-        #expect(result.name == PluginConstants.pluginName)
+        #expect(result.plugin == PluginConstants.plugin)
         #expect(result.active == true)
         #expect(result.version == "1.0.0")
     }
@@ -33,7 +33,7 @@ struct PluginsServiceTests {
         await storageManager.reset()
 
         // When
-        async let plugin = sut.waitForPluginInStorage(siteID: siteID, pluginName: PluginConstants.pluginName, isActive: true)
+        async let plugin = sut.waitForPluginInStorage(siteID: siteID, plugin: PluginConstants.plugin, isActive: true)
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 0)
         storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "2.0.0")
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 1)
@@ -41,6 +41,7 @@ struct PluginsServiceTests {
         // Then
         let result = await plugin
         #expect(result.siteID == siteID)
+        #expect(result.plugin == PluginConstants.plugin)
         #expect(result.name == PluginConstants.pluginName)
         #expect(result.active == true)
         #expect(result.version == "2.0.0")
@@ -50,7 +51,11 @@ struct PluginsServiceTests {
 private extension MockStorageManager {
     func insertWCPlugin(siteID: Int64, isActive: Bool, version: String? = nil) {
         performAndSave({ storage in
-            let plugin = SystemPlugin.fake().copy(siteID: siteID, name: PluginConstants.pluginName, version: version, active: isActive)
+            let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                  plugin: PluginConstants.plugin,
+                                                  name: PluginConstants.pluginName,
+                                                  version: version,
+                                                  active: isActive)
             let newPlugin = storage.insertNewObject(ofType: StorageSystemPlugin.self)
             newPlugin.update(with: plugin)
         }, completion: nil, on: .main)
@@ -67,5 +72,6 @@ private extension MockStorageManager {
 
 // MARK: - Constants
 private enum PluginConstants {
+    static let plugin = "example-plugin/example-plugin.php"
     static let pluginName = "Example Plugin"
 }

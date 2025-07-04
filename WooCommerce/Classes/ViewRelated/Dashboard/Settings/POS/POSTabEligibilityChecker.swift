@@ -195,7 +195,7 @@ private extension POSTabEligibilityChecker {
 
     @MainActor
     func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
-        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginName: Constants.wcPluginName, isActive: true)
+        await pluginsService.waitForPluginInStorage(siteID: siteID, plugin: Constants.wcPlugin, isActive: true)
     }
 
     @MainActor
@@ -304,6 +304,7 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     enum Constants {
         static let wcPluginName = "WooCommerce"
+        static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
     }

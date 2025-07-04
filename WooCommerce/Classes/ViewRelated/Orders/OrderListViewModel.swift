@@ -7,6 +7,37 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+final class SalesChannelEligibilityChecker {
+    private(set) static var isEligible: Bool = false
+
+    static func checkEligibility() async {
+        let checker = SalesChannelEligibilityChecker()
+        isEligible = await checker.performEligibilityCheck()
+    }
+
+    private func performEligibilityCheck() async -> Bool {
+        guard checkFeatureFlagEligibility(), await checkPluginEligibility() else {
+            return false
+        }
+        return true
+    }
+
+    private func checkPluginEligibility() async -> Bool {
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+        let pluginsService = PluginsService(storageManager: ServiceLocator.storageManager)
+        let wcPlugin = await pluginsService.waitForPluginInStorage(siteID: siteID, pluginName: "WooCommerce", isActive: true)
+
+        guard VersionHelpers.isVersionSupported(version: wcPlugin.version, minimumRequired: "9.9.0") else {
+            return false
+        }
+        return true
+    }
+
+    private func checkFeatureFlagEligibility() -> Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1)
+    }
+}
+
 /// ViewModel for `OrderListViewController`.
 ///
 /// This is an incremental WIP. Eventually, we should move all the data loading in here.

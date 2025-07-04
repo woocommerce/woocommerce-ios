@@ -31,8 +31,12 @@ final class SummaryTableViewCell: UITableViewCell {
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
-        salesChannelLabel.text = viewModel.formattedSalesChannel
-        salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
+        if SalesChannelEligibilityChecker.isEligible {
+            salesChannelLabel.text = viewModel.formattedSalesChannel
+            salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
+        } else {
+            salesChannelLabel.isHidden = true
+        }
         display(presentation: viewModel.presentation)
     }
 
@@ -102,7 +106,7 @@ private extension SummaryTableViewCell {
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) {
+        if SalesChannelEligibilityChecker.isEligible {
             salesChannelLabel.isHidden = false
             salesChannelLabel.applyFootnoteStyle()
             salesChannelLabel.accessibilityIdentifier = "summary-table-view-cell-sales-channel-label"

@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import UIKit
 import class WooFoundation.CurrencySettings
@@ -17,15 +16,12 @@ import class Yosemite.PluginsService
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
-    case notTablet
     case unsupportedIOSVersion
     case unsupportedWooCommerceVersion(minimumVersion: String)
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
-    case featureFlagDisabled
     case featureSwitchDisabled
     case featureSwitchSyncFailure
-    case unsupportedCountry(supportedCountries: [CountryCode])
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }
@@ -46,9 +42,6 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    private var siteSettingsEligibility: POSEligibilityState?
-    private var featureFlagEligibility: POSEligibilityState?
-
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -80,18 +73,13 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        switch checkDeviceEligibility() {
-        case .eligible:
-            break
-        case .ineligible(let reason):
-            return .ineligible(reason: reason)
+        guard #available(iOS 17.0, *) else {
+            return .ineligible(reason: .unsupportedIOSVersion)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
-        async let featureFlagEligibility = checkRemoteFeatureEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
-        // Checks site settings first since it's likely to complete fastest.
         switch await siteSettingsEligibility {
         case .eligible:
             break
@@ -99,15 +87,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .ineligible(reason: reason)
         }
 
-        // Then checks feature flag.
-        switch await featureFlagEligibility {
-        case .eligible:
-            break
-        case .ineligible(let reason):
-            return .ineligible(reason: reason)
-        }
-
-        // Finally checks plugin eligibility.
         switch await pluginEligibility {
         case .eligible:
             return .eligible
@@ -118,55 +97,21 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-            return await checkVisibilityBasedOnCountryAndRemoteFeatureFlag()
-        } else {
-            let eligibility = await checkEligibility()
-            return eligibility == .eligible
-        }
-    }
-}
-
-private extension POSTabEligibilityChecker {
-    func checkDeviceEligibility() -> POSEligibilityState {
-        guard #available(iOS 17.0, *) else {
-            return .ineligible(reason: .unsupportedIOSVersion)
-        }
-
         guard userInterfaceIdiom == .pad else {
-            return .ineligible(reason: .notTablet)
-        }
-
-        return .eligible
-    }
-
-    func checkVisibilityBasedOnCountryAndRemoteFeatureFlag() async -> Bool {
-        guard checkDeviceEligibility() == .eligible else {
             return false
         }
 
-        async let siteSettingsEligibility = checkSiteSettingsEligibility()
+        async let siteSettingsEligibility = waitAndCheckSiteSettingsEligibility()
         async let featureFlagEligibility = checkRemoteFeatureEligibility()
 
-        self.siteSettingsEligibility = await siteSettingsEligibility
         switch await siteSettingsEligibility {
-        case .eligible:
+        case .ineligible(.unsupportedCountry):
+            return false
+        default:
             break
-        case let .ineligible(reason):
-            if case .unsupportedCurrency = reason {
-                break
-            } else {
-                return false
-            }
         }
 
-        self.featureFlagEligibility = await featureFlagEligibility
-        switch await featureFlagEligibility {
-        case .eligible:
-            return true
-        case .ineligible:
-            return false
-        }
+        return await featureFlagEligibility == .eligible
     }
 }
 
@@ -220,11 +165,36 @@ private extension POSTabEligibilityChecker {
 // MARK: - Site Settings Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
-    func checkSiteSettingsEligibility() async -> POSEligibilityState {
-        if let siteSettingsEligibility {
-            return siteSettingsEligibility
-        }
+    enum SiteSettingsEligibilityState {
+        case eligible
+        case ineligible(reason: SiteSettingsIneligibleReason)
+    }
 
+    enum SiteSettingsIneligibleReason {
+        case siteSettingsNotAvailable
+        case unsupportedCountry(supportedCountries: [CountryCode])
+        case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
+    }
+
+    func checkSiteSettingsEligibility() async -> POSEligibilityState {
+        let siteSettingsEligibility = await waitAndCheckSiteSettingsEligibility()
+        switch siteSettingsEligibility {
+        case .eligible:
+            return .eligible
+        case .ineligible(reason: let reason):
+            switch reason {
+            case .siteSettingsNotAvailable, .unsupportedCountry:
+                // This is an edge case where the store country is expected to be eligible from the visilibity check, but site settings might have
+                // changed to an unsupported country during the session. In this case, we return an ineligible reason that prompts the merchant to
+                // relaunch the app.
+                return .ineligible(reason: .siteSettingsNotAvailable)
+            case let .unsupportedCurrency(supportedCurrencies: supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrencies))
+            }
+        }
+    }
+
+    func waitAndCheckSiteSettingsEligibility() async -> SiteSettingsEligibilityState {
         // Waits for the first site settings that matches the given site ID.
         let siteSettings = await waitForSiteSettingsRefresh()
         guard siteSettings.isNotEmpty else {
@@ -249,7 +219,7 @@ private extension POSTabEligibilityChecker {
         return []
     }
 
-    func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> POSEligibilityState {
+    func isEligibleFromCountryAndCurrencyCode(countryCode: CountryCode, currencyCode: CurrencyCode) -> SiteSettingsEligibilityState {
         let supportedCountries: [CountryCode] = [.US, .GB]
         let supportedCurrencies: [CountryCode: [CurrencyCode]] = [.US: [.USD],
                                                                   .GB: [.GBP]]
@@ -270,15 +240,21 @@ private extension POSTabEligibilityChecker {
 // MARK: - Remote Feature Flag Eligibility Check
 
 private extension POSTabEligibilityChecker {
-    @MainActor
-    func checkRemoteFeatureEligibility() async -> POSEligibilityState {
-        if let featureFlagEligibility {
-            return featureFlagEligibility
-        }
+    enum RemoteFeatureFlagEligibilityState: Equatable {
+        case eligible
+        case ineligible(reason: RemoteFeatureFlagIneligibleReason)
+    }
 
+    enum RemoteFeatureFlagIneligibleReason: Equatable {
+        case selfDeallocated
+        case featureFlagDisabled
+    }
+
+    @MainActor
+    func checkRemoteFeatureEligibility() async -> RemoteFeatureFlagEligibilityState {
         // Only whitelisted accounts in WPCOM have the Point of Sale remote feature flag enabled. These can be found at D159901-code
         // If the account is whitelisted, then the remote value takes preference over the local feature flag configuration
-        return await withCheckedContinuation { [weak self] continuation in
+        await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
             }

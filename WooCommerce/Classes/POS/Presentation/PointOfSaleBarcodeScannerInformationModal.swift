@@ -111,7 +111,7 @@ private extension PointOfSaleBarcodeScannerInformationModal {
             comment: "Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers"
         )
         static let barcodeInfoSecondaryMessageAccessible = NSLocalizedString(
-            "pos.barcodeInfoModal.secondaryMessage.accessible",
+            "pos.barcodeInfoModal.secondaryMessage.accessible.2",
             value: "Second: Refer to your Bluetooth barcode scanner's instructions to set H-I-D mode. This usually " +
             "requires scanning a special barcode in the manual.",
             comment: "Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers"

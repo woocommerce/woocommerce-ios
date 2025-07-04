@@ -42,10 +42,6 @@ final class PhoneDependenciesSynchronizer: NSObject, ObservableObject, WCSession
     /// Get the latest application context when the session activates
     ///
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        if error == nil {
-            WCSession.default.sendMessage([WooConstants.watchSessionActivatedKey: true], replyHandler: nil)
-        }
-
         DispatchQueue.main.async {
             self.storeDependencies(appContext: session.receivedApplicationContext)
             self.reloadDependencies()

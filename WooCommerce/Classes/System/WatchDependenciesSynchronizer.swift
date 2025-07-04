@@ -147,6 +147,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
+        analytics.track(
+            .watchActivationCompleted,
+            properties: ["state": activationState.rawValue],
+            error: error
+        )
         self.isSessionActive = activationState == .activated
     }
 
@@ -187,14 +192,10 @@ extension WatchDependenciesSynchronizer {
     /// When one is identified we should try to re-sync credentials.
     ///
     func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        if message[WooConstants.watchSyncKey] as? Bool == true {
-            syncTrigger.toggle()
-        } else if message[WooConstants.watchSessionActivatedKey] as? Bool == true {
-            self.isSessionActive = true
-            DDLogInfo("🔵 WatchSession activated)")
-        } else {
+        guard message[WooConstants.watchSyncKey] as? Bool == true else {
             return DDLogError("⛔️ Unsupported sync request message: \(message)")
         }
+        syncTrigger.toggle()
     }
 }
 

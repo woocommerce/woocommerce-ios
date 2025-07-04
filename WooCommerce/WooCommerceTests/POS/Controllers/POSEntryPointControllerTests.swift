@@ -3,7 +3,7 @@ import Testing
 
 struct POSEntryPointControllerTests {
     @available(iOS 17.0, *)
-    @Test func eligibilityState_is_set_to_eligible_when_i2_feature_is_disabled() async throws {
+    @Test func eligibilityState_is_always_eligible_when_i2_feature_is_disabled_regardless_of_eligibility_checker() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
         mockEligibilityChecker.eligibility = .ineligible(reason: .unsupportedIOSVersion)

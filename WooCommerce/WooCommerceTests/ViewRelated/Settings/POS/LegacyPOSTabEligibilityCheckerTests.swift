@@ -33,7 +33,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -52,7 +52,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -71,7 +71,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .phone,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -94,7 +94,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -120,7 +120,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -140,7 +140,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.5.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -161,7 +161,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0")
         setupPOSFeatureEnabled(.success(true))
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -182,7 +182,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0")
         setupPOSFeatureEnabled(.success(false))
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -203,7 +203,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0")
         setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -224,7 +224,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.9.9")
         setupPOSFeatureEnabled(.success(false))
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -240,7 +240,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
 
         // When
@@ -252,7 +252,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
 
         // When
@@ -264,7 +264,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: nil)
 
         // When
@@ -296,7 +296,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,
@@ -335,7 +335,7 @@ struct LegacyPOSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = LegacyPOSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                pluginsService: pluginsService,

@@ -23,7 +23,7 @@ private extension UILabel {
     enum Layout {
         static let borderWidth = CGFloat(0.0)
         static let cornerRadius = CGFloat(4.0)
-        static let salesChannelLabelTextColor = UIColor(named: "posPrimary")
-        static let salesChannelLabelBackgroundColor = UIColor(named: "posSecondary")
+        static let salesChannelLabelTextColor = UIColor(.posPrimary)
+        static let salesChannelLabelBackgroundColor = UIColor(.posSecondary)
     }
 }

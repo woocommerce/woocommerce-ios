@@ -1,6 +1,7 @@
 import WatchConnectivity
 import Combine
 import Networking
+import protocol WooFoundation.Analytics
 import class WooFoundation.CurrencySettings
 
 /// Type that syncs the necessary dependencies to the watch session.
@@ -80,13 +81,13 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         let configurationDependencies = Publishers.CombineLatest($enablesCrashReports, $account)
 
         let watchDependencies = Publishers.CombineLatest(requiredDependencies, configurationDependencies)
-            .map { (required, configuration) -> WatchDependencies? in
+            .map { [weak self] (required, configuration) -> WatchDependencies? in
 
                 let (storeID, storeName, credentials, currencySettings) = required
                 let (enablesCrashReports, account) = configuration
 
                 guard let storeID, let storeName, let credentials else {
-                    analytics.track(.watchSyncingFailed, withError: SyncError.missingStoreDetailsOrCredentials)
+                    self?.analytics.track(.watchSyncingFailed, withError: SyncError.missingStoreDetailsOrCredentials)
                     return nil
                 }
 
@@ -102,11 +103,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
         // Syncs the dependencies to the paired counterpart when the session becomes available.
         Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
-            .sink { [watchSession] dependencies, isSessionActive, forceSync in
+            .sink { [weak self, watchSession] dependencies, isSessionActive, forceSync in
 
                 // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
                 guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else {
-                    analytics.track(.watchSyncingFailed, withError: SyncError.watchSessionInactiveOrNotPaired)
+                    self?.analytics.track(.watchSyncingFailed, withError: SyncError.watchSessionInactiveOrNotPaired)
                     return
                 }
 
@@ -114,7 +115,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
                     // If dependencies is nil, send an empty dictionary. This is most likely a logged out state
                     guard let dependencies else {
-                        analytics.track(.watchSyncingFailed, withError: SyncError.noDependenciesFound)
+                        self?.analytics.track(.watchSyncingFailed, withError: SyncError.noDependenciesFound)
                         return try watchSession.updateApplicationContext([:])
                     }
 
@@ -128,11 +129,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
                         try watchSession.updateApplicationContext(jsonObject)
                     } else {
-                        analytics.track(.watchSyncingFailed, withError: SyncError.encodingApplicationContextFailed)
+                        self?.analytics.track(.watchSyncingFailed, withError: SyncError.encodingApplicationContextFailed)
                         DDLogError("⛔️ Unable to encode watch dependencies for synchronization. Resulting object is not a dictionary")
                     }
                 } catch {
-                    analytics.track(.watchSyncingFailed, withError: error)
+                    self?.analytics.track(.watchSyncingFailed, withError: error)
                     DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
                 }
             }
@@ -167,7 +168,7 @@ extension WatchDependenciesSynchronizer {
               let analyticEvent = WooAnalyticsStat(rawValue: rawEvent) else {
             return DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
         }
-        ServiceLocator.analytics.track(analyticEvent)
+        analytics.track(analyticEvent)
     }
 }
 

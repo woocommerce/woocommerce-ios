@@ -149,20 +149,29 @@ final class MainTabBarController: UITabBarController {
         self.analytics = analytics
         self.stores = stores
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityCheckerI2(siteID: siteID)
+            } else {
+                POSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = posEligibilityService
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
-        self.featureFlagService = ServiceLocator.featureFlagService
+        let featureFlagService = ServiceLocator.featureFlagService
+        self.featureFlagService = featureFlagService
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
         self.posEligibilityCheckerFactory = { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityCheckerI2(siteID: siteID)
+            } else {
+                POSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = POSEligibilityService()
         super.init(coder: coder)

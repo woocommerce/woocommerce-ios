@@ -145,6 +145,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .store(in: &subscriptions)
     }
 
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        DDLogInfo("🔵 WatchSession activated \(activationState)")
+        self.isSessionActive = activationState == .activated
+    }
+
     func sessionDidBecomeInactive(_ session: WCSession) {
         // No op
     }

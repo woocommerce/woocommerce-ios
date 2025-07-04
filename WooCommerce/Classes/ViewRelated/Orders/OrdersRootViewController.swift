@@ -89,11 +89,6 @@ final class OrdersRootViewController: UIViewController {
         super.init(nibName: Self.nibName, bundle: nil)
 
         configureTitle()
-
-        Task {
-            // WIP: Call the static check before rendering the cells
-            await SalesChannelEligibilityChecker.checkEligibility()
-        }
     }
 
     required init?(coder: NSCoder) {

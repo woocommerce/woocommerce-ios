@@ -10,24 +10,27 @@ import protocol WooFoundation.Analytics
 final class SalesChannelEligibilityChecker {
     private(set) static var isEligible: Bool = false
 
-    static func checkEligibility() async {
+    static func checkEligibility(siteID: Int64) async {
         let checker = SalesChannelEligibilityChecker()
-        isEligible = await checker.performEligibilityCheck()
+        isEligible = await checker.performEligibilityCheck(siteID: siteID)
     }
 
-    private func performEligibilityCheck() async -> Bool {
-        guard checkFeatureFlagEligibility(), await checkPluginEligibility() else {
+    private func performEligibilityCheck(siteID: Int64) async -> Bool {
+        guard checkFeatureFlagEligibility(), await checkPluginEligibility(siteID: siteID) else {
             return false
         }
         return true
     }
 
-    private func checkPluginEligibility() async -> Bool {
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0
+    private func checkPluginEligibility(siteID: Int64) async -> Bool {
         let pluginsService = PluginsService(storageManager: ServiceLocator.storageManager)
-        let wcPlugin = await pluginsService.waitForPluginInStorage(siteID: siteID, pluginName: "WooCommerce", isActive: true)
+        let pluginName = "WooCommerce"
+        let pluginMinimumVersion = "9.9.0"
+        let wcPlugin = await pluginsService.waitForPluginInStorage(siteID: siteID,
+                                                                   pluginName: pluginName ,
+                                                                   isActive: true)
 
-        guard VersionHelpers.isVersionSupported(version: wcPlugin.version, minimumRequired: "9.9.0") else {
+        guard VersionHelpers.isVersionSupported(version: wcPlugin.version, minimumRequired: pluginMinimumVersion) else {
             return false
         }
         return true
@@ -173,6 +176,11 @@ final class OrderListViewModel {
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
                                                                                                     filters: filters))
+        
+        Task {
+            // TODO: Pass feature flag
+            await SalesChannelEligibilityChecker.checkEligibility(siteID: siteID)
+        }
     }
 
     deinit {

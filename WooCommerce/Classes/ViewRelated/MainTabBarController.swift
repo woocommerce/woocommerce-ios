@@ -150,9 +150,9 @@ final class MainTabBarController: UITabBarController {
         self.stores = stores
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityCheckerI2(siteID: siteID)
-            } else {
                 POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
             }
         }
         self.posEligibilityService = posEligibilityService
@@ -168,9 +168,9 @@ final class MainTabBarController: UITabBarController {
         self.stores = ServiceLocator.stores
         self.posEligibilityCheckerFactory = { siteID in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityCheckerI2(siteID: siteID)
-            } else {
                 POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
             }
         }
         self.posEligibilityService = POSEligibilityService()

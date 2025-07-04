@@ -7,6 +7,8 @@ struct ConnectView: View {
 
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
 
+    @State private var didRequestSyncing = false
+
     let synchronizer: PhoneDependenciesSynchronizer
 
     let message: String = Localization.connectMessage
@@ -18,9 +20,11 @@ struct ConnectView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(Localization.workaroundTip)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                if didRequestSyncing {
+                    Text(Localization.workaroundTip)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
 
                 Image(systemName: "bolt.fill")
                     .renderingMode(.original)
@@ -30,6 +34,7 @@ struct ConnectView: View {
 
                 Button(Localization.itsNotWorking) {
                     synchronizer.requestCredentialSync()
+                    didRequestSyncing = true
                 }
             }
         }

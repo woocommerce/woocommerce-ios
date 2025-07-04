@@ -37,10 +37,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published var account: Account?
 
-    /// Tracks if the current watch session is active or not
-    ///
-    @Published private var isSessionActive: Bool = false
-
     /// Toggle this value to force a credentials sync.
     ///
     @Published private var syncTrigger = false
@@ -99,15 +95,17 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
 
         // Syncs the dependencies to the paired counterpart when the session becomes available.
-        Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
-            .sink { [weak self, watchSession] dependencies, isSessionActive, forceSync in
+        watchDependencies.combineLatest($syncTrigger)
+            .sink { [weak self, watchSession] dependencies, forceSync in
 
                 // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
-                guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else {
+                guard watchSession.activationState == .activated,
+                      watchSession.isPaired,
+                      watchSession.isWatchAppInstalled else {
                     self?.analytics.track(
                         .watchSyncingFailed,
                         properties: [
-                            "session_active": isSessionActive,
+                            "session_active": watchSession.activationState == .activated,
                             "session_paired": watchSession.isPaired,
                             "watch_app_installed": watchSession.isWatchAppInstalled
                         ],
@@ -147,12 +145,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
-        analytics.track(
-            .watchActivationCompleted,
-            properties: ["state": activationState.rawValue],
-            error: error
-        )
-        self.isSessionActive = activationState == .activated
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {
@@ -161,7 +153,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     func sessionDidDeactivate(_ session: WCSession) {
         // Try to guarantee an active session
-        self.isSessionActive = false
         watchSession.activate()
     }
 }
@@ -201,10 +192,8 @@ extension WatchDependenciesSynchronizer {
 
 extension WatchDependenciesSynchronizer {
     enum SyncError: Error {
-        case missingStoreDetailsOrCredentials
         case watchSessionInactiveOrNotPaired
         case noDependenciesFound
-        case invalidApplicationContext
         case encodingApplicationContextFailed
     }
 }

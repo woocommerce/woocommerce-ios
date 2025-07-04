@@ -68,7 +68,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// Set to orders created via specific sources (e.g. checkout, store-api, Point of Sale, ...)
     ///
     public let createdVia: String?
-    
+
     public var salesChannel: SalesChannelType? {
         guard let createdVia else { return nil }
         return SalesChannelType(rawValue: createdVia)

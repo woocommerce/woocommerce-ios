@@ -14,13 +14,11 @@ struct SummaryTableViewCellViewModel {
     let presentation: OrderStatusPresentation
 
     private let calendar: Calendar
-    
     private let order: Order
 
     init(order: Order,
          status: OrderStatus?,
          calendar: Calendar = .current) {
-        
         self.order = order
 
         billingAddress = order.billingAddress

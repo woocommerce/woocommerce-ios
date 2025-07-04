@@ -219,6 +219,5 @@ extension WooShippingPackagePurchase: Encodable {
         static let adult = "adult"
         static let signatureRequired = "signatureRequired"
         static let adultSignatureRequired = "adultSignatureRequired"
-        static let shipmentIDPrefix = "shipment_"
     }
 }

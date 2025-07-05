@@ -1248,6 +1248,7 @@ enum WooAnalyticsStat: String {
     case watchAppOpened = "watch_app_opened"
     case watchStoreDataSynced = "watch_store_data_synced"
     case watchConnectingOpened = "watch_connecting_opened"
+    case watchSyncingFailed = "watch_syncing_failed"
     case watchMyStoreOpened = "watch_my_store_opened"
     case watchOrdersListOpened = "watch_orders_list_opened"
     case watchPushNotificationTapped = "watch_push_notification_tapped"

@@ -1,21 +1,24 @@
 import Foundation
 
 extension WooShippingLabelData {
-    static func mapDestinations(
-        _ destinations: WooShippingLabelDestinations,
+    static func mapAddresses(
+        origins:  WooShippingLabelAddressMap?,
+        destinations:  WooShippingLabelAddressMap?,
         into labels: [ShippingLabel]
     ) -> [ShippingLabel] {
         return labels.map { label in
-            guard
-                let shipmentID = label.shipmentID,
-                let destinationAddress = destinations[
-                    WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
-                ] ?? destinations[shipmentID] /// Fallback for ids previously submitted without `shipment_<id>` formatting
-            else {
+            guard let shipmentID = label.shipmentID else {
                 return label
             }
 
-            return label.copy(destinationAddress: destinationAddress.toShippingLabelAddress())
+            let formattedID = WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
+            let originAddress = origins?[formattedID] ?? origins?[shipmentID]
+            let destinationAddress = destinations?[formattedID] ?? destinations?[shipmentID]
+
+            return label.copy(
+                originAddress: originAddress?.toShippingLabelAddress() ?? .copy,
+                destinationAddress: destinationAddress?.toShippingLabelAddress() ?? .copy
+            )
         }
     }
 }

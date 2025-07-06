@@ -79,8 +79,16 @@ public struct WooShippingLabelData: Decodable, Equatable {
 
         /// Inject destination addresses into labels if present
         let orderLabels: [ShippingLabel]
-        if let destinations = storedData?.selectedDestinations, !destinations.isEmpty {
-            orderLabels = WooShippingLabelData.mapDestinations(destinations, into: decodedOrderLabels)
+
+        let destinations = storedData?.selectedDestinations
+        let origins = storedData?.selectedOrigins
+
+        if destinations?.isEmpty == false || origins?.isEmpty == false {
+            orderLabels = WooShippingLabelData.mapAddresses(
+                origins: origins,
+                destinations: destinations,
+                into: decodedOrderLabels
+            )
         } else {
             orderLabels = decodedOrderLabels
         }
@@ -98,20 +106,26 @@ public struct WooShippingLabelData: Decodable, Equatable {
 }
 
 public extension WooShippingLabelData {
-    typealias WooShippingLabelDestinations = [String: WooShippingAddress]
+    typealias WooShippingLabelAddressMap = [String: WooShippingAddress]
 
     struct StoredData: Decodable, Equatable {
-        let selectedDestinations: WooShippingLabelDestinations?
+        let selectedDestinations: WooShippingLabelAddressMap?
+        let selectedOrigins: WooShippingLabelAddressMap?
 
         public enum CodingKeys: String, CodingKey {
             case selectedDestination = "selected_destination"
+            case selectedOrigin = "selected_origin"
         }
 
         public init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            self.selectedDestinations = try? container.decodeIfPresent(
-                WooShippingLabelDestinations.self,
+            selectedDestinations = try? container.decodeIfPresent(
+                WooShippingLabelAddressMap.self,
                 forKey: CodingKeys.selectedDestination
+            )
+            selectedOrigins = try? container.decodeIfPresent(
+                WooShippingLabelAddressMap.self,
+                forKey: CodingKeys.selectedOrigin
             )
         }
     }

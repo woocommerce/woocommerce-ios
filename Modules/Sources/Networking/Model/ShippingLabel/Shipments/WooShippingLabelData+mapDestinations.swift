@@ -2,8 +2,8 @@ import Foundation
 
 extension WooShippingLabelData {
     static func mapAddresses(
-        origins:  WooShippingLabelAddressMap?,
-        destinations:  WooShippingLabelAddressMap?,
+        origins: WooShippingLabelAddressMap?,
+        destinations: WooShippingLabelAddressMap?,
         into labels: [ShippingLabel]
     ) -> [ShippingLabel] {
         return labels.map { label in

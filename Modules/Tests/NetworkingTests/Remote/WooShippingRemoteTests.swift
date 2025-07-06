@@ -857,10 +857,10 @@ final class WooShippingRemoteTests: XCTestCase {
 
     // MARK: - Load Config With Destinations
 
-    func test_loadConfig_withDestinations_parses_success_response() throws {
+    func test_load_config_with_addresses_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-destinations")
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-addresses")
 
         // When
         let result: Result<WooShippingConfig, Error> = waitFor { promise in
@@ -874,12 +874,14 @@ final class WooShippingRemoteTests: XCTestCase {
         let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
         XCTAssertNotNil(label.destinationAddress)
         XCTAssertEqual(label.destinationAddress.address1, "200 N SPRING ST")
+        XCTAssertNotNil(label.originAddress)
+        XCTAssertEqual(label.originAddress.address1, "Test origin address line")
     }
 
-    func test_loadConfig_withoutDestinations_parses_success_response() throws {
+    func test_load_config_without_addresses_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-without-destinations")
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-without-addresses")
 
         // When
         let result: Result<WooShippingConfig, Error> = waitFor { promise in
@@ -892,12 +894,13 @@ final class WooShippingRemoteTests: XCTestCase {
         let config = try XCTUnwrap(result.get())
         let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
         XCTAssertTrue(label.destinationAddress.isEmpty)
+        XCTAssertTrue(label.originAddress.isEmpty)
     }
 
-    func test_loadConfig_withInvalidDestinations_parses_success_response() throws {
+    func test_load_config_with_invalid_addresses_parses_success_response() throws {
         // Given
         let remote = WooShippingRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-invalid-destinations")
+        network.simulateResponse(requestUrlSuffix: "config/label-purchase/\(sampleOrderID)", filename: "wooshipping-config-with-invalid-addresses")
 
         // When
         let result: Result<WooShippingConfig, Error> = waitFor { promise in
@@ -910,6 +913,7 @@ final class WooShippingRemoteTests: XCTestCase {
         let config = try XCTUnwrap(result.get())
         let label = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels.first)
         XCTAssertTrue(label.destinationAddress.isEmpty)
+        XCTAssertTrue(label.originAddress.isEmpty)
     }
 
     // MARK: Update shipment

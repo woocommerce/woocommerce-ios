@@ -374,10 +374,13 @@ private extension WooShippingCreateLabelsView {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
 
-            if viewModel.canViewLabel,
-               let addressLines = viewModel.originAddressLines {
-                AddressLinesView(addressLines: addressLines)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            if viewModel.canViewLabel {
+                AddressLinesView(
+                    addressLines: viewModel.originAddressLines ??
+                    /// Fallback to `originAddress` in case if `originAddressLines` are missing
+                    [viewModel.originAddress]
+                )
+                .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 VStack(alignment: .leading) {
                     Button {

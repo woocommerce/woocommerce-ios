@@ -628,22 +628,19 @@ private extension WooShippingEditAddressViewModel {
 // MARK: Remote
 private extension WooShippingEditAddressViewModel {
     func fetchCountries() {
-        refreshCountriesAndUpdateSelections()
-        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                refreshCountriesAndUpdateSelections()
-            case .failure:
-                break
-            }
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.refreshCountriesAndUpdateSelections()
         }
 
-        stores.dispatch(action)
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.refreshCountriesAndUpdateSelections()
+        }
+
+        try? resultsController.performFetch()
+        refreshCountriesAndUpdateSelections()
     }
 
     func refreshCountriesAndUpdateSelections() {
-        try? resultsController.performFetch()
         // Updating the selected country clears the selected state.
         // We track the initial state code so we can set the correct selected state.
         let stateCode = state.value

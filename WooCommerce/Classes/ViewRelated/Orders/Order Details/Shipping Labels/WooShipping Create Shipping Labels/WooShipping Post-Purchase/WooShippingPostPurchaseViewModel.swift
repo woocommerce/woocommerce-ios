@@ -3,9 +3,11 @@ import Foundation
 import UIKit
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 final class WooShippingPostPurchaseViewModel: ObservableObject {
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let siteID: Int64
     private let labelID: Int64
 
@@ -26,6 +28,13 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     /// Customs form URL for the shipping label
     let commercialInvoiceURL: URL?
 
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }()
+
     init(siteID: Int64,
          labelID: Int64,
          labelSizes: [ShippingLabelPaperSize],
@@ -33,7 +42,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
          trackingURL: URL?,
          pickupURL: URL?,
          commercialInvoiceURL: URL?,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.labelID = labelID
         self.labelSizes = labelSizes
@@ -42,11 +52,15 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
         self.pickupURL = pickupURL
         self.commercialInvoiceURL = commercialInvoiceURL
         self.stores = stores
+        self.storageManager = storageManager
+
+        configureAccountSettingsResultsController()
     }
 
     convenience init(shippingLabel: ShippingLabel,
                      siteAddress: SiteAddress = SiteAddress(),
-                     stores: StoresManager = ServiceLocator.stores) {
+                     stores: StoresManager = ServiceLocator.stores,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager) {
         // Label sizes aren't provided by the API, so we can hard-code them to match the extension behavior:
         let labelSizes = {
             var availableLabelSizes: [ShippingLabelPaperSize] = [.label, .letter]
@@ -71,7 +85,8 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
                   trackingURL: trackingURL,
                   pickupURL: pickupURL,
                   commercialInvoiceURL: commercialInvoiceURL,
-                  stores: stores)
+                  stores: stores,
+                  storageManager: storageManager)
     }
 
     /// Fetches the shipping label in the selected paper size and presents the print dialog.
@@ -89,6 +104,26 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
 }
 
 private extension WooShippingPostPurchaseViewModel {
+    /// Shipping Label Account Settings ResultsController monitoring
+    ///
+    func configureAccountSettingsResultsController() {
+        accountSettingsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSelectedLabelSize()
+        }
+
+        accountSettingsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSelectedLabelSize()
+        }
+
+        try? accountSettingsResultsController.performFetch()
+        updateSelectedLabelSize()
+    }
+
+    func updateSelectedLabelSize() {
+        guard let fetchedAccountSettings = accountSettingsResultsController.fetchedObjects.first else { return }
+        selectedLabelSize = fetchedAccountSettings.paperSize
+    }
+
     /// Requests the shipping label data for printing.
     @MainActor
     func requestPrintData() async throws -> ShippingLabelPrintData {

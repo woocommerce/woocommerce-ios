@@ -4,6 +4,13 @@ import Yosemite
 
 final class WooShippingPostPurchaseViewModelTests: XCTestCase {
 
+    private var storageManager: MockStorageManager!
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+    }
+
     func test_inits_with_provided_properties() {
         // Given
         let labelSizes: [ShippingLabelPaperSize] = [.label, .letter, .a4]
@@ -110,5 +117,38 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(printData)
+    }
+
+    func test_selectedLabelSize_defaults_to_label() {
+        // Given & When
+        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedLabelSize, .label)
+    }
+
+    func test_selectedLabelSize_initialized_from_account_settings() {
+        // Given
+        let siteID: Int64 = 123
+
+        // Insert account settings with A4 paper size
+        let settings = ShippingLabelAccountSettings.fake().copy(siteID: siteID, paperSize: .a4)
+        insertShippingLabelAccountSettings(readonlySettings: settings)
+
+        // When
+        let viewModel = WooShippingPostPurchaseViewModel(
+            shippingLabel: ShippingLabel.fake().copy(siteID: siteID),
+            storageManager: storageManager
+        )
+
+        // Then
+        XCTAssertEqual(viewModel.selectedLabelSize, .a4)
+    }
+}
+
+private extension WooShippingPostPurchaseViewModelTests {
+    func insertShippingLabelAccountSettings(readonlySettings: ShippingLabelAccountSettings) {
+        let storageSettings = storageManager.viewStorage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
+        storageSettings.update(with: readonlySettings)
     }
 }

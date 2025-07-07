@@ -15,8 +15,6 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published private var originCountryCode: String?
 
     private let storageManager: StorageManagerType
-    private let stores: StoresManager
-    private let siteID: Int64
     let currencySymbol: String
 
     let itemProductID: Int64
@@ -75,8 +73,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemWeight: Double,
          currencySymbol: String,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
         self.itemProductID = itemProductID
@@ -85,8 +82,6 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.weightPerUnit = String(itemWeight)
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
-        self.stores = stores
-        self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
 
         originCountryCode?
             .assign(to: &$originCountryCode)
@@ -113,21 +108,20 @@ private extension WooShippingCustomsItemViewModel {
     }
 
     func fetchCountries() {
-        try? resultsController.performFetch()
-        countries = resultsController.fetchedObjects
-
-        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                try? self.resultsController.performFetch()
-                self.countries = self.resultsController.fetchedObjects
-            case .failure:
-                break
-            }
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateCountries()
         }
 
-        stores.dispatch(action)
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateCountries()
+        }
+
+        try? resultsController.performFetch()
+        updateCountries()
+    }
+
+    func updateCountries() {
+        countries = resultsController.fetchedObjects
     }
 
     func combineRequiredInformationIsEntered() {

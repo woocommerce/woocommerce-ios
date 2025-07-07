@@ -632,7 +632,7 @@ private extension WooShippingEditAddressViewModel {
             self?.refreshCountriesAndUpdateSelections()
         }
 
-        resultsController.onDidChangeContent = { [weak self] in
+        resultsController.onDidResetContent = { [weak self] in
             self?.refreshCountriesAndUpdateSelections()
         }
 

@@ -112,7 +112,7 @@ private extension WooShippingCustomsItemViewModel {
             self?.updateCountries()
         }
 
-        resultsController.onDidChangeContent = { [weak self] in
+        resultsController.onDidResetContent = { [weak self] in
             self?.updateCountries()
         }
 

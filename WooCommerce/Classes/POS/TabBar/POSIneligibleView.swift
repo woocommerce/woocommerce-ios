@@ -77,10 +77,6 @@ struct POSIneligibleView: View {
 
     private var suggestionText: String {
         switch reason {
-        case .notTablet:
-            return NSLocalizedString("pos.ineligible.suggestion.notTablet",
-                                     value: "Please use a tablet to access POS features.",
-                                     comment: "Suggestion for not tablet: use iPad")
         case .unsupportedIOSVersion:
             return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
                                      value: "Point of Sale requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
@@ -105,16 +101,6 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
                                      value: "Try relaunching the app or check your internet connection and try again.",
                                      comment: "Suggestion for feature switch sync failure: relaunch or check connection")
-        case let .unsupportedCountry(supportedCountries):
-            let countryNames = supportedCountries.map { $0.readableCountry }
-            let formattedCountryList = ListFormatter.localizedString(byJoining: countryNames)
-            let format = NSLocalizedString(
-                "pos.ineligible.suggestion.unsupportedCountry",
-                value: "POS is currently only available in %1$@. Check back later for availability in your region.",
-                comment: "Suggestion for unsupported country with list of supported countries. " +
-                "%1$@ is a placeholder for the localized list of supported country names."
-            )
-            return String.localizedStringWithFormat(format, formattedCountryList)
         case let .unsupportedCurrency(supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
@@ -130,10 +116,6 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
                                      value: "Check your internet connection and try relaunching the app. If the issue persists, please contact support.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
-        case .featureFlagDisabled:
-            return NSLocalizedString("pos.ineligible.suggestion.featureFlagDisabled",
-                                     value: "POS is currently disabled.",
-                                     comment: "Suggestion for disabled feature flag: notify that POS is disabled remotely")
         case .selfDeallocated:
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
                                      value: "Try relaunching the app to resolve this issue.",
@@ -176,24 +158,6 @@ private extension POSIneligibleView {
     }
 }
 
-#Preview("Unsupported country") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .unsupportedCountry(supportedCountries: [.US, .GB]),
-            onRefresh: {}
-        )
-    }
-}
-
-#Preview("Not a tablet") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .notTablet,
-            onRefresh: {}
-        )
-    }
-}
-
 #Preview("Unsupported iOS version") {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
@@ -207,15 +171,6 @@ private extension POSIneligibleView {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
             reason: .wooCommercePluginNotFound,
-            onRefresh: {}
-        )
-    }
-}
-
-#Preview("Feature flag disabled") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .featureFlagDisabled,
             onRefresh: {}
         )
     }

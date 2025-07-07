@@ -1,6 +1,7 @@
 import WatchConnectivity
 import Combine
 import Networking
+import protocol WooFoundation.Analytics
 import class WooFoundation.CurrencySettings
 
 /// Type that syncs the necessary dependencies to the watch session.
@@ -9,6 +10,8 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     /// Current WatchKit Session
     private let watchSession: WCSession
+
+    private let analytics: Analytics
 
     /// Subscriptions store for combine publishers
     ///
@@ -34,16 +37,15 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
     ///
     @Published var account: Account?
 
-    /// Tracks if the current watch session is active or not
-    ///
-    @Published private var isSessionActive: Bool = false
-
     /// Toggle this value to force a credentials sync.
     ///
     @Published private var syncTrigger = false
 
-    init(watchSession: WCSession = WCSession.default, storedDependencies: WatchDependencies?) {
+    init(watchSession: WCSession = WCSession.default,
+         storedDependencies: WatchDependencies?,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.watchSession = watchSession
+        self.analytics = analytics
         super.init()
 
         self.storeID = storedDependencies?.storeID
@@ -80,9 +82,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
                 let (storeID, storeName, credentials, currencySettings) = required
                 let (enablesCrashReports, account) = configuration
 
-                guard let storeID, let storeName, let credentials else {
-                    return nil
-                }
+                guard let storeID, let storeName, let credentials else { return nil }
 
                 return .init(storeID: storeID,
                              storeName: storeName,
@@ -95,16 +95,30 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
             .debounce(for: 0.5, scheduler: DispatchQueue.main)
 
         // Syncs the dependencies to the paired counterpart when the session becomes available.
-        Publishers.CombineLatest3(watchDependencies, $isSessionActive, $syncTrigger)
-            .sink { [watchSession] dependencies, isSessionActive, forceSync in
+        watchDependencies.combineLatest($syncTrigger)
+            .sink { [weak self, watchSession] dependencies, forceSync in
 
                 // Do not update the context if the session is not active, the watch is not paired or the watch app is not installed.
-                guard isSessionActive, watchSession.isPaired, watchSession.isWatchAppInstalled else { return }
+                guard watchSession.activationState == .activated,
+                      watchSession.isPaired,
+                      watchSession.isWatchAppInstalled else {
+                    self?.analytics.track(
+                        .watchSyncingFailed,
+                        properties: [
+                            "session_active": watchSession.activationState == .activated,
+                            "session_paired": watchSession.isPaired,
+                            "watch_app_installed": watchSession.isWatchAppInstalled
+                        ],
+                        error: SyncError.watchSessionInactiveOrNotPaired
+                    )
+                    return
+                }
 
                 do {
 
                     // If dependencies is nil, send an empty dictionary. This is most likely a logged out state
                     guard let dependencies else {
+                        self?.analytics.track(.watchSyncingFailed, withError: SyncError.noDependenciesFound)
                         return try watchSession.updateApplicationContext([:])
                     }
 
@@ -118,9 +132,11 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
                         try watchSession.updateApplicationContext(jsonObject)
                     } else {
+                        self?.analytics.track(.watchSyncingFailed, withError: SyncError.encodingApplicationContextFailed)
                         DDLogError("⛔️ Unable to encode watch dependencies for synchronization. Resulting object is not a dictionary")
                     }
                 } catch {
+                    self?.analytics.track(.watchSyncingFailed, withError: error)
                     DDLogError("⛔️ Error synchronizing credentials into watch session: \(error)")
                 }
             }
@@ -129,7 +145,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DDLogInfo("🔵 WatchSession activated \(activationState)")
-        self.isSessionActive = activationState == .activated
     }
 
     func sessionDidBecomeInactive(_ session: WCSession) {
@@ -138,7 +153,6 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
 
     func sessionDidDeactivate(_ session: WCSession) {
         // Try to guarantee an active session
-        self.isSessionActive = false
         watchSession.activate()
     }
 }
@@ -149,13 +163,12 @@ extension WatchDependenciesSynchronizer {
     /// This is in order to not duplicate tracks configuration which involve quite a lot of information to be transmitted to the watch.
     ///
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
-
         // The user info could contain a track event. Send it if we found one.
         guard let rawEvent = userInfo[WooConstants.watchTracksKey] as? String,
               let analyticEvent = WooAnalyticsStat(rawValue: rawEvent) else {
             return DDLogError("⛔️ Unsupported watch tracks event: \(userInfo)")
         }
-        ServiceLocator.analytics.track(analyticEvent)
+        analytics.track(analyticEvent)
     }
 }
 
@@ -173,7 +186,14 @@ extension WatchDependenciesSynchronizer {
         guard message[WooConstants.watchSyncKey] as? Bool == true else {
             return DDLogError("⛔️ Unsupported sync request message: \(message)")
         }
-
         syncTrigger.toggle()
+    }
+}
+
+extension WatchDependenciesSynchronizer {
+    enum SyncError: Error {
+        case watchSessionInactiveOrNotPaired
+        case noDependenciesFound
+        case encodingApplicationContextFailed
     }
 }

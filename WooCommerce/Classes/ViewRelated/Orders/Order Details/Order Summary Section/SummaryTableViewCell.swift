@@ -31,7 +31,7 @@ final class SummaryTableViewCell: UITableViewCell {
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
-        salesChannelLabel.text = viewModel.formattedSalesChannel
+        salesChannelLabel.text = viewModel.salesChannel
         salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         display(presentation: viewModel.presentation)
     }

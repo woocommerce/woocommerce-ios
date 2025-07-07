@@ -1550,6 +1550,7 @@
 		683988A72C7D82E70084B85A /* POSHeaderLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683988A62C7D82E60084B85A /* POSHeaderLayoutConstants.swift */; };
 		683AA9D62A303CB70099F7BA /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */; };
 		683AC4AC2CEF019A00FF0A5E /* POSSendReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AC4AB2CEF019700FF0A5E /* POSSendReceiptView.swift */; };
+		683CE98A2E1B826D00AD52B8 /* OrderSalesChannelEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683CE9892E1B826C00AD52B8 /* OrderSalesChannelEligibilityChecker.swift */; };
 		683DF5FF2C6AF46500A5CDC6 /* POSHeaderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */; };
 		684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */; };
 		684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */; };
@@ -4689,6 +4690,7 @@
 		683988A62C7D82E60084B85A /* POSHeaderLayoutConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHeaderLayoutConstants.swift; sourceTree = "<group>"; };
 		683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
 		683AC4AB2CEF019700FF0A5E /* POSSendReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSendReceiptView.swift; sourceTree = "<group>"; };
+		683CE9892E1B826C00AD52B8 /* OrderSalesChannelEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSalesChannelEligibilityChecker.swift; sourceTree = "<group>"; };
 		683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHeaderTitleView.swift; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsView.swift; sourceTree = "<group>"; };
 		684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModel.swift; sourceTree = "<group>"; };
@@ -11890,6 +11892,7 @@
 				57A49127250A7EB2000FEF21 /* OrderListViewController.swift */,
 				DE653EAC2A70D09F00937C78 /* CreateTestOrderView.swift */,
 				57C5FF7D250925000074EC26 /* OrderListViewModel.swift */,
+				683CE9892E1B826C00AD52B8 /* OrderSalesChannelEligibilityChecker.swift */,
 				DE6906E427D7439B00735E3B /* OrdersSplitViewWrapperController.swift */,
 				4546E095271F08CD003836F3 /* Order Filters */,
 				B946881329B8DD6A000646B0 /* OrderListViewController+Activity.swift */,
@@ -15976,6 +15979,7 @@
 				CC857C7729B25FAF00E19D1E /* FooterNotice.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				2677B559299F322300862180 /* SupportForm+Presentation.swift in Sources */,
+				683CE98A2E1B826D00AD52B8 /* OrderSalesChannelEligibilityChecker.swift in Sources */,
 				D8B4D5F426C30E7C00F34E94 /* InPersonPaymentsStripeRejectedView.swift in Sources */,
 				DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */,
 				2026ECE92C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift in Sources */,

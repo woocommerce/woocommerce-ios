@@ -282,6 +282,14 @@ extension OrderDetailsViewModel {
 
                     taskGroup.addTask { [weak self] in
                         guard let self else { return }
+                        // Check sales channel eligibility
+                        let checker = OrderSalesChannelEligibilityChecker()
+                        let isEligible = await checker.performEligibilityCheck(siteID: order.siteID)
+                        dataSource.isEligibleForDisplayingSalesChannelPOSBadge = isEligible
+                    }
+
+                    taskGroup.addTask { [weak self] in
+                        guard let self else { return }
                         // Sync shipping labels and update order with the result if available
                         let shippingLabels = await syncShippingLabels()
                         // Update the order with the newly synced shipping labels

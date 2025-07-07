@@ -19,9 +19,14 @@ struct OrderListCellViewModel {
     private let order: Order
     private let currencyFormatter: CurrencyFormatter
 
-    init(order: Order, currencySettings: CurrencySettings) {
+    /// Whether the order is eligible for displaying sales channel POS badge
+    ///
+    let isEligibleForDisplayingSalesChannelPOSBadge: Bool
+
+    init(order: Order, currencySettings: CurrencySettings, isEligibleForDisplayingSalesChannelPOSBadge: Bool = false) {
         self.order = order
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.isEligibleForDisplayingSalesChannelPOSBadge = isEligibleForDisplayingSalesChannelPOSBadge
     }
 
     /// For example, #560 Pamela Nguyen

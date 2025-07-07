@@ -57,7 +57,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
 
-        if SalesChannelEligibilityChecker.isEligible, let salesChannel = viewModel.salesChannel {
+        if viewModel.isEligibleForDisplayingSalesChannelPOSBadge, let salesChannel = viewModel.salesChannel {
                 salesChannelLabel.isHidden = false
                 salesChannelLabel.applySalesChannelStyle()
                 salesChannelLabel.text = salesChannel

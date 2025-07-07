@@ -45,6 +45,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForWooShipping: Bool = false
 
+    /// Whether the order is eligible for displaying sales channel POS badge
+    ///
+    var isEligibleForDisplayingSalesChannelPOSBadge: Bool = false
+
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {
@@ -1088,7 +1092,8 @@ private extension OrderDetailsDataSource {
     private func configureSummary(cell: SummaryTableViewCell) {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
-            status: lookUpOrderStatus(for: order)
+            status: lookUpOrderStatus(for: order),
+            isEligibleForDisplayingSalesChannelPOSBadge: isEligibleForDisplayingSalesChannelPOSBadge
         )
 
         cell.configure(cellViewModel)

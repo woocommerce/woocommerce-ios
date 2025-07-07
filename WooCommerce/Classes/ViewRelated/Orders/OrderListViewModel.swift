@@ -7,40 +7,6 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
-final class SalesChannelEligibilityChecker {
-    private(set) static var isEligible: Bool = false
-
-    static func checkEligibility(siteID: Int64) async {
-        let checker = SalesChannelEligibilityChecker()
-        isEligible = await checker.performEligibilityCheck(siteID: siteID)
-    }
-
-    private func performEligibilityCheck(siteID: Int64) async -> Bool {
-        guard checkFeatureFlagEligibility(), await checkPluginEligibility(siteID: siteID) else {
-            return false
-        }
-        return true
-    }
-
-    private func checkPluginEligibility(siteID: Int64) async -> Bool {
-        let pluginsService = PluginsService(storageManager: ServiceLocator.storageManager)
-        let pluginName = "WooCommerce"
-        let pluginMinimumVersion = "9.9.0"
-        let wcPlugin = await pluginsService.waitForPluginInStorage(siteID: siteID,
-                                                                   pluginName: pluginName ,
-                                                                   isActive: true)
-
-        guard VersionHelpers.isVersionSupported(version: wcPlugin.version, minimumRequired: pluginMinimumVersion) else {
-            return false
-        }
-        return true
-    }
-
-    private func checkFeatureFlagEligibility() -> Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1)
-    }
-}
-
 /// ViewModel for `OrderListViewController`.
 ///
 /// This is an incremental WIP. Eventually, we should move all the data loading in here.
@@ -53,6 +19,10 @@ final class OrderListViewModel {
     private let notificationCenter: NotificationCenter
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
     private let featureFlagService: FeatureFlagService
+
+    /// Whether orders are eligible for displaying sales channel POS badge
+    ///
+    private var isEligibleForDisplayingSalesChannelPOSBadge: Bool = false
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -176,10 +146,9 @@ final class OrderListViewModel {
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
                                                                                                     filters: filters))
-        
         Task {
-            // TODO: Pass feature flag
-            await SalesChannelEligibilityChecker.checkEligibility(siteID: siteID)
+            let checker = OrderSalesChannelEligibilityChecker(featureFlagService: featureFlagService, storageManager: storageManager)
+            self.isEligibleForDisplayingSalesChannelPOSBadge = await checker.performEligibilityCheck(siteID: siteID)
         }
     }
 
@@ -369,7 +338,9 @@ extension OrderListViewModel {
             return nil
         }
 
-        return OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
+        return OrderListCellViewModel(order: order,
+                                      currencySettings: ServiceLocator.currencySettings,
+                                      isEligibleForDisplayingSalesChannelPOSBadge: isEligibleForDisplayingSalesChannelPOSBadge)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.

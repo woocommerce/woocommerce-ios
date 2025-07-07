@@ -11,17 +11,23 @@ struct SummaryTableViewCellViewModel {
     private let dateCreated: Date
     private(set) var salesChannel: String?
 
+    /// Whether the order is eligible for displaying sales channel POS badge
+    ///
+    let isEligibleForDisplayingSalesChannelPOSBadge: Bool
+
     let presentation: OrderStatusPresentation
 
     private let calendar: Calendar
 
     init(order: Order,
          status: OrderStatus?,
+         isEligibleForDisplayingSalesChannelPOSBadge: Bool = false,
          calendar: Calendar = .current) {
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
         salesChannel = order.salesChannel?.description
+        self.isEligibleForDisplayingSalesChannelPOSBadge = isEligibleForDisplayingSalesChannelPOSBadge
 
         presentation = OrderStatusPresentation(
             style: status?.status ?? order.status,

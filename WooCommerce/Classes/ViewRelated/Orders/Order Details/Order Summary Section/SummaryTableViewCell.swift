@@ -31,7 +31,7 @@ final class SummaryTableViewCell: UITableViewCell {
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
-        if SalesChannelEligibilityChecker.isEligible {
+        if viewModel.isEligibleForDisplayingSalesChannelPOSBadge {
             salesChannelLabel.text = viewModel.salesChannel
             salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         } else {
@@ -106,12 +106,9 @@ private extension SummaryTableViewCell {
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
 
-        if SalesChannelEligibilityChecker.isEligible {
-            salesChannelLabel.isHidden = false
-            configureSalesChannelLabel()
-        } else {
-            salesChannelLabel.isHidden = true
-        }
+        // Hide label by default, it will be toggled in configure as needed
+        salesChannelLabel.isHidden = true
+        configureSalesChannelLabel()
     }
 
     func configureIcon() {

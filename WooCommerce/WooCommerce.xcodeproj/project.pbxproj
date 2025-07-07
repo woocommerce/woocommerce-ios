@@ -46,6 +46,8 @@
 		016C6B972C74AB17000D86FD /* POSConnectivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016C6B962C74AB17000D86FD /* POSConnectivityView.swift */; };
 		0174DDBB2CE5FD60005D20CA /* ReceiptEmailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0174DDBA2CE5FD5D005D20CA /* ReceiptEmailViewModel.swift */; };
 		0174DDBF2CE600C5005D20CA /* ReceiptEmailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */; };
+		0177250C2E1CFF7F00016148 /* GameControllerBarcodeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */; };
+		0177250E2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */; };
 		0182C8BE2CE3B11300474355 /* MockReceiptEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */; };
 		0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertReceiptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */; };
 		0182C8C22CE4F0DB00474355 /* ReceiptEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */; };
@@ -3202,6 +3204,8 @@
 		016C6B962C74AB17000D86FD /* POSConnectivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSConnectivityView.swift; sourceTree = "<group>"; };
 		0174DDBA2CE5FD5D005D20CA /* ReceiptEmailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailViewModel.swift; sourceTree = "<group>"; };
 		0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailViewModelTests.swift; sourceTree = "<group>"; };
+		0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerBarcodeParser.swift; sourceTree = "<group>"; };
+		0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerBarcodeParserTests.swift; sourceTree = "<group>"; };
 		0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptEligibilityUseCase.swift; sourceTree = "<group>"; };
 		0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderTransactionAlertReceiptState.swift; sourceTree = "<group>"; };
 		0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailView.swift; sourceTree = "<group>"; };
@@ -8298,6 +8302,7 @@
 		20D557572DF9D57800D9EC8B /* Barcode Scanning */ = {
 			isa = PBXGroup;
 			children = (
+				0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */,
 				202235F02DFAEAE500E13DE9 /* HIDBarcodeParser.swift */,
 				20CEBF222E02C760001F3300 /* TimeProvider.swift */,
 				20D5575C2DFADF5400D9EC8B /* BarcodeScannerContainer.swift */,
@@ -8309,6 +8314,7 @@
 		20D5575E2DFAE3D500D9EC8B /* Barcode Scanning */ = {
 			isa = PBXGroup;
 			children = (
+				0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */,
 				202235F22DFAEC2700E13DE9 /* HIDBarcodeParserTests.swift */,
 				20CEBF242E02C7E6001F3300 /* MockTimeProvider.swift */,
 			);
@@ -15306,6 +15312,7 @@
 				026A50282D2F6BD1002C42C2 /* InfiniteScrollTriggerDeterminable.swift in Sources */,
 				2004E2CA2C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift in Sources */,
 				860B85F12ADE3A0E00E85884 /* BulletPointView.swift in Sources */,
+				0177250C2E1CFF7F00016148 /* GameControllerBarcodeParser.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
 				022F7A0324A05F6400012601 /* LinkedProductsListSelectorViewController.swift in Sources */,
 				2602A63F27BD880A00B347F1 /* NewOrderInitialStatusResolver.swift in Sources */,
@@ -17429,6 +17436,7 @@
 				02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */,
 				EEBB9B402D8FE5B6008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift in Sources */,
 				571FDDAE24C768DC00D486A5 /* MockZendeskManager.swift in Sources */,
+				0177250E2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift in Sources */,
 				01AB2D122DDC7AD300AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift in Sources */,
 				45FBDF3C238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift in Sources */,
 				2609797C2A13D31500442249 /* PrivacyBannerPresentationUseCaseTests.swift in Sources */,

@@ -8,6 +8,7 @@
 - [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
 - [*] Shipping Labels: Enable the confirm button on the payment method sheet even when there are no changes. [https://github.com/woocommerce/woocommerce-ios/pull/15856]
 - [*] Watch app: Fixed connection issue upon fresh install [https://github.com/woocommerce/woocommerce-ios/pull/15867]
+- [Internal] Shipping Labels: Optimize requests for syncing countries [https://github.com/woocommerce/woocommerce-ios/pull/15875]
 
 22.7
 -----

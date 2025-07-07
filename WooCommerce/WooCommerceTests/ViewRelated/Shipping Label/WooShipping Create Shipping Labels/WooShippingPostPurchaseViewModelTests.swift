@@ -34,30 +34,40 @@ final class WooShippingPostPurchaseViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.commercialInvoiceURL, customsFormURL)
     }
 
-    func test_labelSizes_includes_expected_default_values() {
-        // Given
-        let countrySetting = SiteSetting.fake().copy(settingID: "woocommerce_default_country",
-                                                  value: "GB")
-        let siteAddress = SiteAddress(siteSettings: [countrySetting])
+    func test_labelSizes_excludes_a4_for_north_american_countries() {
+        let northAmericanCountries = ["US", "CA", "MX", "DO"]
 
-        // When
-        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), siteAddress: siteAddress)
+        for countryCode in northAmericanCountries {
+            // Given
+            let countrySetting = SiteSetting.fake().copy(settingID: "woocommerce_default_country",
+                                                      value: countryCode)
+            let siteAddress = SiteAddress(siteSettings: [countrySetting])
 
-        // Then
-        assertEqual([.label, .letter], viewModel.labelSizes)
+            // When
+            let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(),
+                                                             siteAddress: siteAddress)
+
+            // Then
+            assertEqual([.label, .letter], viewModel.labelSizes)
+        }
     }
 
-    func test_labelSizes_includes_expected_values_for_country_with_a4_label_size() {
-        // Given
-        let countrySetting = SiteSetting.fake().copy(settingID: "woocommerce_default_country",
-                                                  value: "US:NY")
-        let siteAddress = SiteAddress(siteSettings: [countrySetting])
+    func test_labelSizes_includes_a4_for_non_north_american_countries() {
+        let nonNorthAmericanCountries = ["GB", "FR", "DE", "IT", "ES", "NL", "AU", "JP"]
 
-        // When
-        let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(), siteAddress: siteAddress)
+        for countryCode in nonNorthAmericanCountries {
+            // Given
+            let countrySetting = SiteSetting.fake().copy(settingID: "woocommerce_default_country",
+                                                      value: countryCode)
+            let siteAddress = SiteAddress(siteSettings: [countrySetting])
 
-        // Then
-        assertEqual([.label, .letter, .a4], viewModel.labelSizes)
+            // When
+            let viewModel = WooShippingPostPurchaseViewModel(shippingLabel: ShippingLabel.fake(),
+                                                             siteAddress: siteAddress)
+
+            // Then
+            assertEqual([.label, .letter, .a4], viewModel.labelSizes)
+        }
     }
 
     func test_trackingURL_parsed_from_shipping_label() {

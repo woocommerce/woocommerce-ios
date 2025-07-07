@@ -62,9 +62,10 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager) {
         // Label sizes aren't provided by the API, so we can hard-code them to match the extension behavior:
+        // Ref: https://github.com/woocommerce/woocommerce-shipping/blob/trunk/client/components/label-purchase/label/utils.ts
         let labelSizes = {
             var availableLabelSizes: [ShippingLabelPaperSize] = [.label, .letter]
-            if [.US, .CA, .MX, .DO].contains(siteAddress.countryCode) {
+            if [.US, .CA, .MX, .DO].contains(siteAddress.countryCode) == false {
                 availableLabelSizes.append(.a4)
             }
             return availableLabelSizes

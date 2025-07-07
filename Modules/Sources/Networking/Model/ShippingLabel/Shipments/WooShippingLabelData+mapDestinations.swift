@@ -21,4 +21,11 @@ extension WooShippingLabelData {
             )
         }
     }
+
+    static func formattedShipmentIDFromArrayIndex(_ index: Int) -> String {
+        /// ID indexing starts from `1`. So the ID would be the index incremented by `1`.
+        return WooShippingShipmentIDFormatter.formattedShipmentID(
+            String(index + 1)
+        )
+    }
 }

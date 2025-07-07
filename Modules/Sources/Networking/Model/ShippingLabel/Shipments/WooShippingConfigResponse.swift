@@ -107,6 +107,7 @@ public struct WooShippingLabelData: Decodable, Equatable {
 
 public extension WooShippingLabelData {
     typealias WooShippingLabelAddressMap = [String: WooShippingAddress]
+    typealias WooShippingLabelAddressArray = [WooShippingAddress]
 
     struct StoredData: Decodable, Equatable {
         let selectedDestinations: WooShippingLabelAddressMap?
@@ -119,14 +120,37 @@ public extension WooShippingLabelData {
 
         public init(from decoder: any Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            selectedDestinations = try? container.decodeIfPresent(
-                WooShippingLabelAddressMap.self,
-                forKey: CodingKeys.selectedDestination
+            selectedDestinations = Self.decodeAddresses(
+                from: container,
+                for: .selectedDestination
             )
-            selectedOrigins = try? container.decodeIfPresent(
-                WooShippingLabelAddressMap.self,
-                forKey: CodingKeys.selectedOrigin
+
+            selectedOrigins = Self.decodeAddresses(
+                from: container,
+                for: .selectedOrigin
             )
+        }
+
+        private static func decodeAddresses(
+            from container: KeyedDecodingContainer<CodingKeys>,
+            for key: CodingKeys
+        ) -> WooShippingLabelAddressMap? {
+            if let addressesMap = try? container.decodeIfPresent(
+                WooShippingLabelAddressMap.self,
+                forKey: key
+            ) {
+                return addressesMap
+            } else if let addressesArray = try? container.decodeIfPresent(
+                WooShippingLabelAddressArray.self,
+                forKey: key
+            ) {
+                return addressesArray.enumerated().reduce(into: [:]) { result, address in
+                    let formattedIDKey = WooShippingLabelData.formattedShipmentIDFromArrayIndex(address.offset)
+                    result[formattedIDKey] = address.element
+                }
+            }
+
+            return nil
         }
     }
 }

@@ -1,10 +1,10 @@
 import Foundation
 
-public enum SalesChannelType {
+public enum SalesChannel {
     case pointOfSale
 }
 
-extension SalesChannelType: RawRepresentable {
+extension SalesChannel: RawRepresentable {
     public init?(rawValue: String) {
         switch rawValue {
         case "pos-rest-api":
@@ -24,7 +24,7 @@ extension SalesChannelType: RawRepresentable {
     public var description: String {
         switch self {
         case .pointOfSale:
-            return NSLocalizedString("saleschanneltype.pos.description",
+            return NSLocalizedString("salesChannel.pos.description",
                                      value: "POS",
                                      comment: "The acronym for 'Point of Sale'.")
         }

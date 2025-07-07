@@ -69,9 +69,9 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let createdVia: String?
 
-    public var salesChannel: SalesChannelType? {
+    public var salesChannel: SalesChannel? {
         guard let createdVia else { return nil }
-        return SalesChannelType(rawValue: createdVia)
+        return SalesChannel(rawValue: createdVia)
     }
 
     /// Order struct initializer.

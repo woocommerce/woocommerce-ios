@@ -9,21 +9,19 @@ struct SummaryTableViewCellViewModel {
 
     private let billingAddress: Address?
     private let dateCreated: Date
-    private let salesChannel: String?
+    private(set) var salesChannel: String?
 
     let presentation: OrderStatusPresentation
 
     private let calendar: Calendar
-    private let order: Order
 
     init(order: Order,
          status: OrderStatus?,
          calendar: Calendar = .current) {
-        self.order = order
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
-        salesChannel = order.createdVia
+        salesChannel = order.salesChannel?.description
 
         presentation = OrderStatusPresentation(
             style: status?.status ?? order.status,
@@ -49,12 +47,6 @@ struct SummaryTableViewCellViewModel {
         let formatter = DateFormatter.dateAndTimeFormatter
         formatter.timeZone = .siteTimezone
         return formatter.string(from: dateCreated)
-    }
-
-    /// Textual representation of the sales channel
-    ///
-    var formattedSalesChannel: String? {
-        order.salesChannel?.description
     }
 }
 

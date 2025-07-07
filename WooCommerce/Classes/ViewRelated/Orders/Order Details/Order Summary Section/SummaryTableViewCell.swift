@@ -14,7 +14,7 @@ final class SummaryTableViewCell: UITableViewCell {
 
     /// Shows the sales channel if appropiate, at the moment only Point of Sale
     ///
-    @IBOutlet private weak var salesChannelLabel: UILabel!
+    @IBOutlet private weak var salesChannelLabel: PaddedLabel!
 
     /// Label: Payment Status
     ///
@@ -32,7 +32,7 @@ final class SummaryTableViewCell: UITableViewCell {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
         if SalesChannelEligibilityChecker.isEligible {
-            salesChannelLabel.text = viewModel.formattedSalesChannel
+            salesChannelLabel.text = viewModel.salesChannel
             salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         } else {
             salesChannelLabel.isHidden = true
@@ -108,8 +108,7 @@ private extension SummaryTableViewCell {
 
         if SalesChannelEligibilityChecker.isEligible {
             salesChannelLabel.isHidden = false
-            salesChannelLabel.applyFootnoteStyle()
-            salesChannelLabel.accessibilityIdentifier = "summary-table-view-cell-sales-channel-label"
+            configureSalesChannelLabel()
         } else {
             salesChannelLabel.isHidden = true
         }
@@ -121,6 +120,13 @@ private extension SummaryTableViewCell {
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
 
         configureIconForVoiceOver()
+    }
+
+    func configureSalesChannelLabel() {
+        salesChannelLabel.numberOfLines = 1
+        salesChannelLabel.textInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        salesChannelLabel.applySalesChannelStyle()
+        salesChannelLabel.accessibilityIdentifier = "summary-table-view-cell-sales-channel-label"
     }
 
     @objc func editWasTapped() {

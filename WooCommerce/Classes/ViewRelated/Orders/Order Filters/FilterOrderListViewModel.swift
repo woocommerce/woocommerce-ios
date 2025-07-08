@@ -379,7 +379,7 @@ extension FilterOrderListViewModel {
         var description: String {
             switch self {
             case .pointOfSale:
-                return "pos"
+                return "POS"
             }
         }
 

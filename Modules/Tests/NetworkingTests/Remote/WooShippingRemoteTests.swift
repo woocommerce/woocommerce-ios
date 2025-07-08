@@ -366,7 +366,15 @@ final class WooShippingRemoteTests: XCTestCase {
 
         let shipmentID = "1"
         let hazmatCategory = "test-hazmat"
-        let customsForm = ShippingLabelCustomsForm.fake().copy(items: [.fake(), .fake()])
+        let customsForm = ShippingLabelCustomsForm(packageID: "test",
+                                                   packageName: "ups-test",
+                                                   contentsType: .merchandise,
+                                                   contentExplanation: "",
+                                                   restrictionType: .none,
+                                                   restrictionComments: "",
+                                                   nonDeliveryOption: .return,
+                                                   itn: "",
+                                                   items: [.fake(), .fake()])
 
         let package = WooShippingPackagePurchase.fake().copy(
             shipmentID: shipmentID,
@@ -423,6 +431,14 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(firstPackage["saturday_delivery"] as? Bool, true)
         XCTAssertEqual(firstPackage["additional_handling"] as? Bool, true)
         XCTAssertEqual(firstPackage["hazmat"] as? String, hazmatCategory)
+
+        /// customs form details need to be present in package
+        XCTAssertEqual(try XCTUnwrap(firstPackage["items"] as? [Any]).count, 2)
+        XCTAssertEqual(firstPackage["contents_type"] as? String, "merchandise")
+        XCTAssertEqual(firstPackage["restriction_type"] as? String, "none")
+        XCTAssertEqual(firstPackage["non_delivery_option"] as? String, "return")
+        XCTAssertEqual(firstPackage["restriction_comments"] as? String, "")
+        XCTAssertEqual(firstPackage["contents_explanation"] as? String, "")
 
         let selectedRateParam = try XCTUnwrap(request.parameters["selected_rate"] as? [String: Any])
         let parentValue = try XCTUnwrap(selectedRateParam["parent"] as? [String: Any])

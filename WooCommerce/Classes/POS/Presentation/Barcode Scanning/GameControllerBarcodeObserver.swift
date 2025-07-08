@@ -21,6 +21,9 @@ final class GameControllerBarcodeObserver {
     private var barcodeParser: GameControllerBarcodeParser?
     private let configuration: HIDBarcodeParserConfiguration
 
+    /// Tracks current shift state to be applied to the next character key
+    private var isShiftPressed: Bool = false
+
     /// Initializes a new barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
@@ -89,11 +92,16 @@ final class GameControllerBarcodeObserver {
         barcodeParser = GameControllerBarcodeParser(configuration: configuration, onScan: onScan)
 
         keyboard.keyboardInput?.keyChangedHandler = { [weak self] _, _, keyCode, pressed in
-            guard let self = self, pressed else { return }
-            let leftShiftPressed = keyboard.keyboardInput?.button(forKeyCode: .leftShift)?.isPressed == true
-            let rightShiftPressed = keyboard.keyboardInput?.button(forKeyCode: .rightShift)?.isPressed == true
-            let shiftPressed = leftShiftPressed || rightShiftPressed
-            self.barcodeParser?.processKeyPress(keyCode, isShiftPressed: shiftPressed)
+            guard let self = self else { return }
+
+            if keyCode == .leftShift || keyCode == .rightShift {
+                self.isShiftPressed = pressed
+                return
+            }
+
+            guard pressed else { return }
+
+            self.barcodeParser?.processKeyPress(keyCode, isShiftPressed: isShiftPressed)
         }
     }
 
@@ -103,5 +111,6 @@ final class GameControllerBarcodeObserver {
         barcodeParser?.cancel()
         coalescedKeyboard = nil
         barcodeParser = nil
+        isShiftPressed = false
     }
 }

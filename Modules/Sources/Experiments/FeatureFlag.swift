@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables displaying Point Of Sale details in order list and order details
     ///
     case pointOfSaleOrdersi1
+
+    /// Enables displaying Point Of Sale as a filter in order list
+    ///
+    case pointOfSaleOrdersi2
 }

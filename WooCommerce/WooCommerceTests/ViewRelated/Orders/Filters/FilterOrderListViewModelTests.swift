@@ -15,6 +15,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                                 dateRange: nil,
                                                                 product: nil,
                                                                 customer: nil,
+                                                                salesChannel: nil,
                                                                 numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
@@ -25,6 +26,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
 
         // When
@@ -41,6 +43,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .last7Days),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
 
         // When
@@ -52,6 +55,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                                 dateRange: nil,
                                                                 product: nil,
                                                                 customer: nil,
+                                                                salesChannel: nil,
                                                                 numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
     }
@@ -64,6 +68,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
 
         // When
@@ -100,6 +105,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
         let viewModel = FilterOrderListViewModel(filters: filters,
                                                  allowedStatuses: [],
@@ -116,11 +122,13 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                              dateRange: result1.dateRangeFilter,
                                              product: result1.productFilter,
                                              customer: result1.customerFilter,
+                                             salesChannel: nil,
                                              numberOfActiveFilters: result1.numberOfActiveFilters()),
             FilterOrderListViewModel.Filters(orderStatus: result2.orderStatusesFilter,
                                              dateRange: result2.dateRangeFilter,
                                              product: result2.productFilter,
                                              customer: result2.customerFilter,
+                                             salesChannel: nil,
                                              numberOfActiveFilters: result2.numberOfActiveFilters())
         ])
     }
@@ -144,6 +152,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
         let viewModel = FilterOrderListViewModel(filters: filters,
                                                  allowedStatuses: [],
@@ -179,6 +188,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 4)
         let viewModel = FilterOrderListViewModel(filters: filters,
                                                  allowedStatuses: [],

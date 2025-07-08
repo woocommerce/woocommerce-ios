@@ -76,7 +76,9 @@ private extension CollapsibleShipmentItemCardViewModel {
             $0.onSelectedChange = { [weak self] row in
                 guard let self else { return }
 
-                mainItemRow.setSelected(false)
+                // Check if all child items are selected
+                let allChildrenSelected = childItemRows.allSatisfy { $0.selected }
+                mainItemRow.setSelected(allChildrenSelected)
                 onSelectionChange?()
             }
         })

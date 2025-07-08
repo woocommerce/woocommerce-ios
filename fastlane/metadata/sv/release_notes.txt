@@ -1,1 +1,0 @@
-Frakt har precis fått en stor uppgradering! Vårt moderniserade flöde gör det enklare än någonsin att skapa och hantera fraktetiketter för butiker med WooCommerce Shipping. Vi har även förbättrat några ikoner och åtgärdat ett visningsproblem med beställningslistans senast uppdaterade tid. Den här versionen inkluderar även ett antal förbättringar bakom kulisserna.

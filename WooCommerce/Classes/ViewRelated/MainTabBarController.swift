@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Experiments
+import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 
 
@@ -148,20 +149,29 @@ final class MainTabBarController: UITabBarController {
         self.analytics = analytics
         self.stores = stores
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = posEligibilityService
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
-        self.featureFlagService = ServiceLocator.featureFlagService
+        let featureFlagService = ServiceLocator.featureFlagService
+        self.featureFlagService = featureFlagService
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
         self.posEligibilityCheckerFactory = { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = POSEligibilityService()
         super.init(coder: coder)
@@ -746,7 +756,8 @@ private extension MainTabBarController {
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
-            storesManager: stores
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

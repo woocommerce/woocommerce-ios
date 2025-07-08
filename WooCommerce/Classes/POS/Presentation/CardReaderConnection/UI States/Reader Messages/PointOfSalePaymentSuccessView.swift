@@ -4,6 +4,7 @@ import SwiftUI
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
@@ -24,6 +25,10 @@ struct PointOfSalePaymentSuccessView: View {
                 }
                 .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
+                .barcodeScanning { barcode in
+                    posModel.startNewCart()
+                    posModel.barcodeScanned(barcode)
+                }
             }
         }
         .onAppear {

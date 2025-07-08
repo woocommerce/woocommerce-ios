@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 @testable import Networking
 import protocol Storage.StorageType
+import class Storage.ShippingLabelPaymentMethod
 
 final class WooShippingStoreTests: XCTestCase {
 
@@ -363,6 +364,90 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Then
         XCTAssertEqual(receivedValue, [samplePackage])
+    }
+
+    // MARK: `loadAccountSettings`
+
+    func test_loadAccountSettings_returns_success_response() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedSettings = WooShippingAccountSettings.fake()
+        remote.whenLoadAccountSettings(siteID: sampleSiteID, thenReturn: .success(expectedSettings))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+            let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let actualSettings = try result.get()
+        XCTAssertEqual(actualSettings, expectedSettings)
+    }
+
+    func test_loadAccountSettings_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.notFound()
+        remote.whenLoadAccountSettings(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<WooShippingAccountSettings, Error> = waitFor { promise in
+            let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_loadAccountSettings_when_successful_then_upserts_settings_into_storage() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let paymentMethod = Yosemite.ShippingLabelPaymentMethod(
+            paymentMethodID: 1434,
+            name: "James Dean",
+            cardType: .visa,
+            cardDigits: "2352",
+            expiry: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2030-12-31")
+        )
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(
+            siteID: sampleSiteID,
+            paymentMethods: [paymentMethod],
+            isEmailReceiptsEnabled: true,
+            paperSize: .a4
+        )
+        let expectedSettings = WooShippingAccountSettings.fake().copy(accountSettings: accountSettings)
+        remote.whenLoadAccountSettings(siteID: sampleSiteID, thenReturn: .success(expectedSettings))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Confidence check
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageShippingLabelAccountSettings.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.loadAccountSettings(siteID: self.sampleSiteID) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(onSuccess)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageShippingLabelAccountSettings.self), 1)
+        let storedSettings = try XCTUnwrap(storageManager.viewStorage.loadShippingLabelAccountSettings(siteID: sampleSiteID))
+        XCTAssertEqual(storedSettings.siteID, sampleSiteID)
+        XCTAssertEqual(storedSettings.toReadOnly(), accountSettings)
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.ShippingLabelPaymentMethod.self), 1)
     }
 
     // MARK: `loadPackages`

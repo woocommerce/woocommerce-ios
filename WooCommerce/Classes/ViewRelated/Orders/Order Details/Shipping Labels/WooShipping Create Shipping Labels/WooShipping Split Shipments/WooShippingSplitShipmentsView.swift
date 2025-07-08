@@ -3,6 +3,7 @@ import Yosemite
 
 struct WooShippingSplitShipmentsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @ObservedObject var viewModel: ViewModel
 
@@ -17,7 +18,7 @@ struct WooShippingSplitShipmentsView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack(spacing: 0) {
                 if viewModel.shipments.count > 1 {
                     VStack(spacing: 0) {
                         topTabView
@@ -44,14 +45,20 @@ struct WooShippingSplitShipmentsView: View {
                                 CollapsibleShipmentItemCard(viewModel: item)
                             }
                         }
+
+                        if sizeCategory.isAccessibilityCategory {
+                            Spacer()
+                            noticeStack
+                        }
                     }
                     .padding(Layout.contentPadding)
                 }
 
-                Spacer()
-
-                noticeStack
-                    .padding(Layout.contentPadding)
+                if !sizeCategory.isAccessibilityCategory {
+                    Spacer()
+                    noticeStack
+                        .padding(Layout.contentPadding)
+                }
             }
             .disabled(viewModel.isSavingShipmentInfo)
             .navigationBarTitleDisplayMode(.inline)
@@ -100,6 +107,9 @@ struct WooShippingSplitShipmentsView: View {
             }
             Button(Localization.SaveShipmentError.retry) {
                 saveShipmentInfoAndDismiss()
+            }
+            Button(Localization.SaveShipmentError.revertChanges) {
+                viewModel.revertChanges()
             }
         }
     }
@@ -268,6 +278,7 @@ private extension WooShippingSplitShipmentsView {
                                     Text(otherShipment.itemsDetailLabel)
                                 }
                                 .font(.subheadline)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                         .padding(Layout.contentPadding)
@@ -494,6 +505,11 @@ fileprivate extension WooShippingSplitShipmentsView {
                 "wooShipping.createLabels.splitShipment.saveShipmentError.cancel",
                 value: "Cancel",
                 comment: "Cancel button title on the error alert when saving split shipment changes fails"
+            )
+            static let revertChanges = NSLocalizedString(
+                "wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges",
+                value: "Revert changes",
+                comment: "Button on the error alert to revert changes when saving split shipment changes fails"
             )
         }
     }

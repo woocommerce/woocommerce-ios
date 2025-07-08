@@ -109,6 +109,7 @@ let package = Package(
         .target(
             name: "Experiments",
             dependencies: [
+                "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ]
         ),

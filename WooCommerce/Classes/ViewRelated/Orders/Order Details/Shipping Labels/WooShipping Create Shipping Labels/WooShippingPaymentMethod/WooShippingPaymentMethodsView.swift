@@ -62,12 +62,15 @@ struct WooShippingPaymentMethodsView: View {
                     .toggleStyle(.switch)
 
                     Button(Localization.confirmButton) {
-                        Task {
-                            await confirmPaymentMethod()
+                        if viewModel.isDoneButtonEnabled() {
+                            Task {
+                                await confirmPaymentMethod()
+                            }
+                        } else {
+                            onAccountSettingsUpdate(viewModel.accountSettings)
                         }
                     }
                     .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isUpdating))
-                    .disabled(viewModel.isDoneButtonEnabled() == false)
                 }
             }
         }

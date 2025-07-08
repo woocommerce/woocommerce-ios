@@ -1,5 +1,20 @@
 import SwiftUI
 
+// MARK: - Data Models
+struct ScannerOption: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let destination: SetupDestination
+}
+
+enum SetupDestination {
+    case socketS720
+    case starBSH20B
+    case tbcScanner
+    case other
+}
+
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetUpFlow: View {
     @Binding var isPresented: Bool
@@ -15,14 +30,14 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
                                        title: .constant(AttributedString(Localization.setupHeading)))
 
                 VStack {
-                    ScannerSelectionView(isPresented: $isPresented)
+                    ScannerSelectionView(options: scannerOptions, isPresented: $isPresented)
                     Spacer()
                 }
                 .scrollVerticallyIfNeeded()
             }
             .toolbar(.hidden, for: .navigationBar)
+            .padding(POSPadding.xxLarge)
         }
-        .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
         .containerRelativeFrame([.horizontal, .vertical]) { length, _ in
             max(length * 0.75, Constants.modalFrameMaxSmallDimension)
@@ -31,12 +46,39 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
             ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
         }
     }
+
+    private var scannerOptions: [ScannerOption] {
+        [
+            ScannerOption(
+                title: Localization.socketS720Title,
+                subtitle: Localization.socketS720Subtitle,
+                destination: .socketS720
+            ),
+            ScannerOption(
+                title: Localization.starBSH20BTitle,
+                subtitle: Localization.starBSH20BSubtitle,
+                destination: .starBSH20B
+            ),
+            ScannerOption(
+                title: Localization.tbcScannerTitle,
+                subtitle: Localization.tbcScannerSubtitle,
+                destination: .tbcScanner
+            ),
+            ScannerOption(
+                title: Localization.otherTitle,
+                subtitle: Localization.otherSubtitle,
+                destination: .other
+            )
+        ]
+    }
 }
 
 struct ScannerSelectionView: View {
+    let options: [ScannerOption]
     @Binding var isPresented: Bool
+
     var body: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.setupIntroMessage)
                 .font(.posBodyLargeRegular())
                 .foregroundStyle(Color.posOnSurface)
@@ -44,42 +86,31 @@ struct ScannerSelectionView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: POSSpacing.small) {
-                // Socket S720
-                NavigationLink(destination: EmptyView()) {
-                    ScannerOptionView(
-                        title: Localization.socketS720Title,
-                        subtitle: Localization.socketS720Subtitle
-                    )
+                ForEach(options) { option in
+                    NavigationLink(destination: destinationView(for: option.destination)) {
+                        ScannerOptionView(
+                            title: option.title,
+                            subtitle: option.subtitle
+                        )
+                    }
+                    .buttonStyle(PlainButtonStyle())
                 }
-                .buttonStyle(PlainButtonStyle())
-
-                // Star BSH-20B
-                NavigationLink(destination: EmptyView()) {
-                    ScannerOptionView(
-                        title: Localization.starBSH20BTitle,
-                        subtitle: Localization.starBSH20BSubtitle
-                    )
-                }
-                .buttonStyle(PlainButtonStyle())
-
-                // TBC Scanner
-                NavigationLink(destination: EmptyView()) {
-                    ScannerOptionView(
-                        title: Localization.tbcScannerTitle,
-                        subtitle: Localization.tbcScannerSubtitle
-                    )
-                }
-                .buttonStyle(PlainButtonStyle())
-
-                // Other
-                NavigationLink(destination: BarcodeScannerInformationView(isPresented: $isPresented)) {
-                    ScannerOptionView(
-                        title: Localization.otherTitle,
-                        subtitle: Localization.otherSubtitle
-                    )
-                }
-                .buttonStyle(PlainButtonStyle())
             }
+        }
+    }
+
+    @ViewBuilder
+    private func destinationView(for destination: SetupDestination) -> some View {
+        switch destination {
+        case .socketS720:
+            EmptyView() // TODO: Implement Socket S720 setup flow WOOMOB-698
+        case .starBSH20B:
+            EmptyView() // TODO: Implement Star BSH-20B setup flow WOOMOB-696
+        case .tbcScanner:
+            EmptyView() // TODO: Implement TBC scanner setup flow WOOMOB-699
+        case .other:
+            BarcodeScannerInformationView(isPresented: $isPresented)
+                .padding(POSPadding.xxLarge)
         }
     }
 }

@@ -5,18 +5,17 @@ import GameController
 /// and parse their input into barcode strings.
 ///
 /// This class handles the low-level details of observing keyboard connections, processing raw `GCKeyCode` inputs,
-/// and using the `GameControllerBarcodeParser` to produce a final barcode. It is designed to be a modern,
-/// reliable replacement for HID-based scanning that can be affected by international keyboard layouts.
+/// and using the `GameControllerBarcodeParser` to produce a final barcode.
 ///
-/// Note: According to Apple's documentation, all connected keyboards are coalesced into one keyboard object
-/// (GCKeyboard.coalesced), so notification about connection/disconnection will only be delivered once
-/// until the last keyboard disconnects. This simplifies our implementation to handle just one keyboard object.
 final class GameControllerBarcodeObserver {
     /// A closure that is called when a barcode scan is completed.
     /// The result will be a `success` with the barcode string or a `failure` with an error.
     let onScan: (Result<String, Error>) -> Void
 
     /// Track the coalesced keyboard and its parser
+    /// According to Apple's documentation, all connected keyboards are coalesced into one keyboard object
+    /// (GCKeyboard.coalesced), so notification about connection/disconnection will only be delivered once
+    /// until the last keyboard disconnects.
     private var coalescedKeyboard: GCKeyboard?
     private var barcodeParser: GameControllerBarcodeParser?
     private let configuration: HIDBarcodeParserConfiguration

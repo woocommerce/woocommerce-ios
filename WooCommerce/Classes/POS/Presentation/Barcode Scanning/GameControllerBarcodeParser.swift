@@ -152,7 +152,6 @@ final class GameControllerBarcodeParser {
     }
 
     /// Key codes that should be excluded from barcode processing
-    /// This list matches exactly the excludedKeys from HIDBarcodeParser to ensure identical behavior
     private let excludedKeyCodes: Set<GCKeyCode> = [
         .capsLock,
         .leftShift,

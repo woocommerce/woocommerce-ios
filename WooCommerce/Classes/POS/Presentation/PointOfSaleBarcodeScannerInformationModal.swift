@@ -58,7 +58,7 @@ struct BarcodeScannerInformationContent: View {
     }
 }
 
-private extension PointOfSaleBarcodeScannerInformationModal {
+extension PointOfSaleBarcodeScannerInformationModal {
     enum Localization {
         static let barcodeInfoHeading = NSLocalizedString(
             "pos.barcodeInfoModal.heading",

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetUpFlow: View {
     @Binding var isPresented: Bool
 
@@ -9,7 +10,22 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
 
     var body: some View {
         NavigationStack {
-            ScannerSelectionView(isPresented: $isPresented)
+            VStack(spacing: POSSpacing.xxLarge) {
+                PointOfSaleModalHeader(isPresented: $isPresented,
+                                       title: .constant(AttributedString(Localization.setupHeading)))
+
+                VStack {
+                    ScannerSelectionView(isPresented: $isPresented)
+                    Spacer()
+                }
+                .scrollVerticallyIfNeeded()
+            }
+            .toolbar(.hidden, for: .navigationBar)
+        }
+        .padding(POSPadding.xxLarge)
+        .background(Color.posSurfaceBright)
+        .containerRelativeFrame([.horizontal, .vertical]) { length, _ in
+            max(length * 0.75, Constants.modalFrameMaxSmallDimension)
         }
         .onAppear {
             ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
@@ -19,53 +35,50 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
 
 struct ScannerSelectionView: View {
     @Binding var isPresented: Bool
-
     var body: some View {
-        PointOfSaleInformationModal(isPresented: $isPresented, title: AttributedString(Localization.setupHeading)) {
-            VStack(spacing: POSSpacing.medium) {
-                Text(AttributedString(Localization.setupIntroMessage))
-                    .font(.posBodyLargeRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+        VStack(spacing: POSSpacing.medium) {
+            Text(Localization.setupIntroMessage)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
 
-                VStack(spacing: POSSpacing.small) {
-                    // Socket S720
-                    NavigationLink(destination: EmptyView()) {
-                        ScannerOptionView(
-                            title: Localization.socketS720Title,
-                            subtitle: Localization.socketS720Subtitle
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-
-                    // Star BSH-20B
-                    NavigationLink(destination: EmptyView()) {
-                        ScannerOptionView(
-                            title: Localization.starBSH20BTitle,
-                            subtitle: Localization.starBSH20BSubtitle
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-
-                    // TBC Scanner
-                    NavigationLink(destination: EmptyView()) {
-                        ScannerOptionView(
-                            title: Localization.tbcScannerTitle,
-                            subtitle: Localization.tbcScannerSubtitle
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-
-                    // Other
-                    NavigationLink(destination: BarcodeScannerInformationView()) {
-                        ScannerOptionView(
-                            title: Localization.otherTitle,
-                            subtitle: Localization.otherSubtitle
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
+            VStack(spacing: POSSpacing.small) {
+                // Socket S720
+                NavigationLink(destination: EmptyView()) {
+                    ScannerOptionView(
+                        title: Localization.socketS720Title,
+                        subtitle: Localization.socketS720Subtitle
+                    )
                 }
+                .buttonStyle(PlainButtonStyle())
+
+                // Star BSH-20B
+                NavigationLink(destination: EmptyView()) {
+                    ScannerOptionView(
+                        title: Localization.starBSH20BTitle,
+                        subtitle: Localization.starBSH20BSubtitle
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
+
+                // TBC Scanner
+                NavigationLink(destination: EmptyView()) {
+                    ScannerOptionView(
+                        title: Localization.tbcScannerTitle,
+                        subtitle: Localization.tbcScannerSubtitle
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
+
+                // Other
+                NavigationLink(destination: BarcodeScannerInformationView(isPresented: $isPresented)) {
+                    ScannerOptionView(
+                        title: Localization.otherTitle,
+                        subtitle: Localization.otherSubtitle
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
             }
         }
     }
@@ -86,7 +99,7 @@ struct ScannerOptionView: View {
                     .foregroundColor(.posOnSurfaceVariantHighest)
             }
             Spacer()
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.posBodyMediumBold)
                 .foregroundColor(.posOnSurfaceVariantHighest)
         }
@@ -97,27 +110,25 @@ struct ScannerOptionView: View {
 }
 
 struct BarcodeScannerInformationView: View {
-    @Environment(\.dismiss) private var dismiss
+    @Binding var isPresented: Bool
 
     var body: some View {
-        PointOfSaleBarcodeScannerInformationModal(isPresented: .constant(true))
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    HStack(spacing: POSSpacing.xSmall) {
-                        Image(systemName: "chevron.left")
-                            .font(.posBodyMediumBold)
-                        Text(Localization.backButtonTitle)
-                            .font(.posBodyMediumBold)
-                    }
-                    .foregroundColor(.posOnSurface)
-                }
+        VStack(spacing: POSSpacing.xxLarge) {
+            PointOfSaleModalHeader(isPresented: $isPresented,
+                                   title: .constant(AttributedString(PointOfSaleBarcodeScannerInformationModal.Localization.barcodeInfoHeading)))
+            VStack {
+                BarcodeScannerInformationContent()
+                Spacer()
             }
+            .scrollVerticallyIfNeeded()
         }
+        .toolbar(.hidden, for: .navigationBar)
     }
+}
+
+
+private enum Constants {
+    static var modalFrameMaxSmallDimension: CGFloat { 752 }
 }
 
 // MARK: - Localization
@@ -139,7 +150,7 @@ private enum Localization {
     )
     static let socketS720Subtitle = NSLocalizedString(
         "pos.barcodeScannerSetup.socketS720.subtitle",
-        value: "Recommended scanner",
+        value: "Small handheld scanner with a charging dock or stand",
         comment: "Subtitle for Socket S720 scanner option in barcode scanner setup"
     )
     static let starBSH20BTitle = NSLocalizedString(
@@ -149,7 +160,7 @@ private enum Localization {
     )
     static let starBSH20BSubtitle = NSLocalizedString(
         "pos.barcodeScannerSetup.starBSH20B.subtitle",
-        value: "Recommended scanner",
+        value: "Ergonomic scanner with a stand",
         comment: "Subtitle for Star BSH-20B scanner option in barcode scanner setup"
     )
     static let tbcScannerTitle = NSLocalizedString(
@@ -169,7 +180,7 @@ private enum Localization {
     )
     static let otherSubtitle = NSLocalizedString(
         "pos.barcodeScannerSetup.other.subtitle",
-        value: "General setup instructions",
+        value: "General scanner setup instructions",
         comment: "Subtitle for other scanner option in barcode scanner setup"
     )
     static let backButtonTitle = NSLocalizedString(
@@ -179,6 +190,7 @@ private enum Localization {
     )
 }
 
+@available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerSetUpFlow(isPresented: .constant(true))
 }

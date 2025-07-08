@@ -80,48 +80,32 @@ class SetupFlowManager {
     }
 
     func nextStep() {
-        switch currentState {
-        case .scannerSelection:
-            break
-        case .setupFlow(let scannerType, let stepIndex):
-            let steps = getSteps(for: scannerType)
-            if stepIndex < steps.count - 1 {
-                currentState = .setupFlow(scannerType, stepIndex: stepIndex + 1)
-            }
+        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return }
+        let steps = getSteps(for: scannerType)
+        if stepIndex < steps.count - 1 {
+            currentState = .setupFlow(scannerType, stepIndex: stepIndex + 1)
         }
     }
 
     func previousStep() {
-        switch currentState {
-        case .scannerSelection:
-            break
-        case .setupFlow(let scannerType, let stepIndex):
-            if stepIndex > 0 {
-                currentState = .setupFlow(scannerType, stepIndex: stepIndex - 1)
-            } else {
-                goBackToSelection()
-            }
+        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return }
+        if stepIndex > 0 {
+            currentState = .setupFlow(scannerType, stepIndex: stepIndex - 1)
+        } else {
+            goBackToSelection()
         }
     }
 
     func getCurrentStep() -> SetupStep? {
-        switch currentState {
-        case .scannerSelection:
-            return nil
-        case .setupFlow(let scannerType, let stepIndex):
-            let steps = getSteps(for: scannerType)
-            return steps[safe: stepIndex]
-        }
+        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return nil }
+        let steps = getSteps(for: scannerType)
+        return steps[safe: stepIndex]
     }
 
     func isComplete() -> Bool {
-        switch currentState {
-        case .scannerSelection:
-            return false
-        case .setupFlow(let scannerType, let stepIndex):
-            let steps = getSteps(for: scannerType)
-            return stepIndex >= steps.count - 1
-        }
+        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return false }
+        let steps = getSteps(for: scannerType)
+        return stepIndex >= steps.count - 1
     }
 
     private func createWelcomeStep(title: String) -> SetupStep {

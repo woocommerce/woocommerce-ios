@@ -7,6 +7,11 @@
                         {
                             "address_1": "200 N SPRING ST"
                         }
+                    ],
+                    "selected_origin": [
+                        {
+                            "address_1": "Test origin address line"
+                        }
                     ]
                 },
                 "currentOrderLabels": [

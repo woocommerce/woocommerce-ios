@@ -7,7 +7,7 @@
 
 22.7
 -----
-- [*] Shipping Labels: Fixed an issue where the destination address was missing for previously purchased shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/15866]
+- [*] Shipping Labels: Fixed an issue where the origin and destination addresses were missing for previously purchased shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/15866]
 - [*] Shipping Labels: Fixed an issue where the purchase button would display a stale price after changing the origin address. [https://github.com/woocommerce/woocommerce-ios/pull/15795]
 - [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
 - [*] Shipping Labels: Improved shipment management UI by hiding remove/merge options instead of disabling them, hiding merge option for orders with 2 or fewer unfulfilled shipments, and hiding the ellipsis menu when no remove/merge actions are available [https://github.com/woocommerce/woocommerce-ios/pull/15760]

@@ -44,5 +44,10 @@ private struct WooShippingConfigMapperEnvelope: Decodable {
 extension WooShippingConfigMapper {
     /// Load only the relevant fields from remote
     ///
-    static let fieldsToLoad = "config.shipments, config.shippingLabelData.currentOrderLabels, config.shippingLabelData.storedData.selected_destination"
+    static let fieldsToLoad = [
+        "config.shipments",
+        "config.shippingLabelData.currentOrderLabels",
+        "config.shippingLabelData.storedData.selected_destination",
+        "config.shippingLabelData.storedData.selected_origin"
+    ].joined(separator: ", ")
 }

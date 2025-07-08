@@ -21,9 +21,55 @@ enum SetupFlowState {
     case setupFlow(ScannerType)
 }
 
+// MARK: - Setup Step
+struct SetupStep {
+    let title: String
+    let content: any View
+    let nextButtonTitle: String
+    let isNextButtonEnabled: Bool
+    let canGoBack: Bool
+    let onNext: () -> Void
+    let onBack: () -> Void
+
+    init(
+        title: String,
+        @ViewBuilder content: () -> any View,
+        nextButtonTitle: String = Localization.nextButtonTitle,
+        isNextButtonEnabled: Bool = true,
+        canGoBack: Bool = true,
+        onNext: @escaping () -> Void,
+        onBack: @escaping () -> Void
+    ) {
+        self.title = title
+        self.content = content()
+        self.nextButtonTitle = nextButtonTitle
+        self.isNextButtonEnabled = isNextButtonEnabled
+        self.canGoBack = canGoBack
+        self.onNext = onNext
+        self.onBack = onBack
+    }
+}
+
+extension SetupStep {
+    var shouldShowBackButton: Bool {
+        canGoBack
+    }
+
+    var shouldShowNextButton: Bool {
+        true // Always show next button
+    }
+}
+
 // MARK: - Setup Flow Manager
-class SetupFlowManager: ObservableObject {
-    @Published var currentState: SetupFlowState = .scannerSelection
+@available(iOS 17.0, *)
+@Observable
+class SetupFlowManager {
+    var currentState: SetupFlowState = .scannerSelection
+    @ObservationIgnored @Binding var isPresented: Bool
+
+    init(isPresented: Binding<Bool>) {
+        self._isPresented = isPresented
+    }
 
     func selectScanner(_ scannerType: ScannerType) {
         currentState = .setupFlow(scannerType)
@@ -48,64 +94,66 @@ class SetupFlowManager: ObservableObject {
             return SetupStep(
                 title: "Socket S720 Setup",
                 content: { SocketS720WelcomeView() },
-                nextButtonTitle: "Done",
-                canGoBack: true
+                nextButtonTitle: Localization.doneButtonTitle,
+                canGoBack: true,
+                onNext: { [weak self] in
+                    self?.isPresented = false
+                },
+                onBack: { [weak self] in
+                    self?.goBackToSelection()
+                }
             )
         case .starBSH20B:
             return SetupStep(
                 title: "Star BSH-20B Setup",
                 content: { StarBSH20BWelcomeView() },
-                nextButtonTitle: "Done",
-                canGoBack: true
+                nextButtonTitle: Localization.doneButtonTitle,
+                canGoBack: true,
+                onNext: { [weak self] in
+                    self?.isPresented = false
+                },
+                onBack: { [weak self] in
+                    self?.goBackToSelection()
+                }
             )
         case .tbcScanner:
             return SetupStep(
                 title: "TBC Scanner Setup",
                 content: { TBCScannerWelcomeView() },
-                nextButtonTitle: "Done",
-                canGoBack: true
+                nextButtonTitle: Localization.doneButtonTitle,
+                canGoBack: true,
+                onNext: { [weak self] in
+                    self?.isPresented = false
+                },
+                onBack: { [weak self] in
+                    self?.goBackToSelection()
+                }
             )
         case .other:
             return SetupStep(
                 title: "General Scanner Setup",
                 content: { OtherScannerView() },
                 nextButtonTitle: "Done",
-                canGoBack: true
+                canGoBack: true,
+                onNext: { [weak self] in
+                    self?.isPresented = false
+                },
+                onBack: { [weak self] in
+                    self?.goBackToSelection()
+                }
             )
         }
-    }
-}
-
-// MARK: - Setup Step
-struct SetupStep {
-    let title: String
-    let content: any View
-    let nextButtonTitle: String
-    let isNextButtonEnabled: Bool
-    let canGoBack: Bool
-
-    init(
-        title: String,
-        @ViewBuilder content: () -> any View,
-        nextButtonTitle: String = "Next",
-        isNextButtonEnabled: Bool = true,
-        canGoBack: Bool = true
-    ) {
-        self.title = title
-        self.content = content()
-        self.nextButtonTitle = nextButtonTitle
-        self.isNextButtonEnabled = isNextButtonEnabled
-        self.canGoBack = canGoBack
     }
 }
 
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetUpFlow: View {
     @Binding var isPresented: Bool
-    @StateObject private var flowManager = SetupFlowManager()
+    @State private var flowManager: SetupFlowManager
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
+        self.flowManager = SetupFlowManager(isPresented: isPresented)
     }
 
     var body: some View {
@@ -121,19 +169,7 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
             .scrollVerticallyIfNeeded()
 
             // Bottom buttons
-            HStack(spacing: POSSpacing.medium) {
-                Button(Localization.backButtonTitle) {
-                    handleBackButton()
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                .renderedIf(shouldShowBackButton)
-
-                Button(currentNextButtonTitle) {
-                    handleNextButton()
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .disabled(!isNextButtonEnabled)
-            }
+            FlowButtonsView(flowManager: flowManager)
         }
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
@@ -169,52 +205,6 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
         }
     }
 
-    private var currentNextButtonTitle: String {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            return Localization.selectButtonTitle
-        case .setupFlow:
-            return flowManager.getCurrentStep()?.nextButtonTitle ?? Localization.nextButtonTitle
-        }
-    }
-
-    private var isNextButtonEnabled: Bool {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            return false // No selection made yet
-        case .setupFlow:
-            return flowManager.getCurrentStep()?.isNextButtonEnabled ?? false
-        }
-    }
-
-    private var shouldShowBackButton: Bool {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            return false
-        case .setupFlow:
-            return flowManager.getCurrentStep()?.canGoBack ?? false
-        }
-    }
-
-    // MARK: - Actions
-    private func handleBackButton() {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            break // Should not happen
-        case .setupFlow:
-            flowManager.goBackToSelection()
-        }
-    }
-
-    private func handleNextButton() {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            break // Should not happen
-        case .setupFlow:
-            isPresented = false
-        }
-    }
-
     private var scannerOptions: [ScannerOption] {
         [
             ScannerOption(
@@ -238,6 +228,29 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
                 scannerType: .other
             )
         ]
+    }
+}
+
+// MARK: - Flow Buttons View
+@available(iOS 17.0, *)
+struct FlowButtonsView: View {
+    let flowManager: SetupFlowManager
+
+    var body: some View {
+        HStack(spacing: POSSpacing.medium) {
+            if let step = flowManager.getCurrentStep(), step.shouldShowBackButton {
+                Button(Localization.backButtonTitle) {
+                    step.onBack()
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+
+                Button(step.nextButtonTitle) {
+                    step.onNext()
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .disabled(!step.isNextButtonEnabled)
+            }
+        }
     }
 }
 
@@ -425,11 +438,6 @@ private enum Localization {
         "pos.barcodeScannerSetup.done.button.title",
         value: "Done",
         comment: "Title for the done button in barcode scanner setup navigation"
-    )
-    static let selectButtonTitle = NSLocalizedString(
-        "pos.barcodeScannerSetup.select.button.title",
-        value: "Select",
-        comment: "Title for the select button in barcode scanner setup navigation"
     )
 }
 

@@ -106,7 +106,17 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(productIDs, forKey: .products)
 
         if let hazmat = package.hazmatCategory {
-            try container.encode(package.hazmatCategory, forKey: .hazmat)
+            try container.encode(hazmat, forKey: .hazmat)
+        }
+
+        if let form = package.customsForm {
+            try container.encode(form.contentsType.rawValue, forKey: .contentsType)
+            try container.encode(form.contentExplanation, forKey: .contentsExplanation)
+            try container.encode(form.restrictionType.rawValue, forKey: .restrictionType)
+            try container.encode(form.restrictionComments, forKey: .restrictionComments)
+            try container.encode(form.nonDeliveryOption.rawValue, forKey: .nonDeliveryOption)
+            try container.encode(form.itn, forKey: .itn)
+            try container.encode(form.items, forKey: .items)
         }
 
         if selectedRate.signatureRate != nil {
@@ -195,6 +205,13 @@ extension WooShippingPackagePurchase: Encodable {
         case saturdayDelivery = "saturday_delivery"
         case additionalHandling = "additional_handling"
         case hazmat
+        case contentsType = "contents_type"
+        case contentsExplanation = "contents_explanation"
+        case restrictionType = "restriction_type"
+        case restrictionComments = "restriction_comments"
+        case nonDeliveryOption = "non_delivery_option"
+        case itn
+        case items
     }
 
     private enum ParameterKeys {

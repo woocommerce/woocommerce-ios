@@ -344,14 +344,12 @@ enum XcodeSupport {
                 dependencies: [
                     "Networking",
                     "WooFoundation",
-                    "Yosemite",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
                 dependencies: [
-                    "Experiments",
                     "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),

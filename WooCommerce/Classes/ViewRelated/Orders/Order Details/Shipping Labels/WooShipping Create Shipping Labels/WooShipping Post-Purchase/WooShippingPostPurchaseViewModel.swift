@@ -32,7 +32,12 @@ final class WooShippingPostPurchaseViewModel: ObservableObject {
     ///
     private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        return ResultsController<StorageShippingLabelAccountSettings>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return ResultsController<StorageShippingLabelAccountSettings>(
+            storageManager: storageManager,
+            matching: predicate,
+            fetchLimit: 1,
+            sortedBy: []
+        )
     }()
 
     init(siteID: Int64,

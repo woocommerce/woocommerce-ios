@@ -448,6 +448,7 @@ private extension OrdersRootViewController {
                                                                  dateRange: settings.dateRangeFilter,
                                                                  product: settings.productFilter,
                                                                  customer: settings.customerFilter,
+                                                                 salesChannel: nil, // TODO: Filter persistence WOOMOB-712
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")

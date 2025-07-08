@@ -60,18 +60,60 @@ public struct WooShippingLabelData: Decodable, Equatable {
     /// Labels purchased for the current order
     public let currentOrderLabels: [ShippingLabel]
 
-    public init(currentOrderLabels: [ShippingLabel]) {
+    /// Contains destination addresses
+    public let storedData: StoredData?
+
+    public init(
+        currentOrderLabels: [ShippingLabel],
+        storedData: StoredData? = nil
+    ) {
         self.currentOrderLabels = currentOrderLabels
+        self.storedData = storedData
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let currentOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
-        self.init(currentOrderLabels: currentOrderLabels)
+
+        let storedData = try container.decodeIfPresent(StoredData.self, forKey: .storedData)
+        let decodedOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
+
+        /// Inject destination addresses into labels if present
+        let orderLabels: [ShippingLabel]
+        if let destinations = storedData?.selectedDestinations, !destinations.isEmpty {
+            orderLabels = WooShippingLabelData.mapDestinations(destinations, into: decodedOrderLabels)
+        } else {
+            orderLabels = decodedOrderLabels
+        }
+
+        self.init(
+            currentOrderLabels: orderLabels,
+            storedData: storedData
+        )
     }
 
     private enum CodingKeys: String, CodingKey {
         case currentOrderLabels
+        case storedData
+    }
+}
+
+public extension WooShippingLabelData {
+    typealias WooShippingLabelDestinations = [String: WooShippingAddress]
+
+    struct StoredData: Decodable, Equatable {
+        let selectedDestinations: WooShippingLabelDestinations?
+
+        public enum CodingKeys: String, CodingKey {
+            case selectedDestination = "selected_destination"
+        }
+
+        public init(from decoder: any Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.selectedDestinations = try? container.decodeIfPresent(
+                WooShippingLabelDestinations.self,
+                forKey: CodingKeys.selectedDestination
+            )
+        }
     }
 }
 

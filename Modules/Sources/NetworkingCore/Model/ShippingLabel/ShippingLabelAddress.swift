@@ -117,4 +117,16 @@ extension ShippingLabelAddress {
     init() {
         self.init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
     }
+
+    var isEmpty: Bool {
+        return company.isEmpty &&
+        name.isEmpty &&
+        phone.isEmpty &&
+        country.isEmpty &&
+        state.isEmpty &&
+        address1.isEmpty &&
+        address2.isEmpty &&
+        city.isEmpty &&
+        postcode.isEmpty
+    }
 }

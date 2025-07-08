@@ -76,7 +76,7 @@ extension WooShippingPackagePurchase {
 
     /// shipment ID to set for hazmat and customs form
     var formattedShipmentID: String {
-        Values.shipmentIDPrefix + shipmentID
+        return WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
     }
 }
 
@@ -219,6 +219,5 @@ extension WooShippingPackagePurchase: Encodable {
         static let adult = "adult"
         static let signatureRequired = "signatureRequired"
         static let adultSignatureRequired = "adultSignatureRequired"
-        static let shipmentIDPrefix = "shipment_"
     }
 }

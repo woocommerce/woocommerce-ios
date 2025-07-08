@@ -18,7 +18,7 @@ enum ScannerType {
 // MARK: - Flow State
 enum SetupFlowState {
     case scannerSelection
-    case setupFlow(ScannerType)
+    case setupFlow(ScannerType, stepIndex: Int = 0)
 }
 
 // MARK: - Setup Step
@@ -72,76 +72,105 @@ class SetupFlowManager {
     }
 
     func selectScanner(_ scannerType: ScannerType) {
-        currentState = .setupFlow(scannerType)
+        currentState = .setupFlow(scannerType, stepIndex: 0)
     }
 
     func goBackToSelection() {
         currentState = .scannerSelection
     }
 
+    func nextStep() {
+        switch currentState {
+        case .scannerSelection:
+            break
+        case .setupFlow(let scannerType, let stepIndex):
+            let steps = getSteps(for: scannerType)
+            if stepIndex < steps.count - 1 {
+                currentState = .setupFlow(scannerType, stepIndex: stepIndex + 1)
+            }
+        }
+    }
+
+    func previousStep() {
+        switch currentState {
+        case .scannerSelection:
+            break
+        case .setupFlow(let scannerType, let stepIndex):
+            if stepIndex > 0 {
+                currentState = .setupFlow(scannerType, stepIndex: stepIndex - 1)
+            } else {
+                goBackToSelection()
+            }
+        }
+    }
+
     func getCurrentStep() -> SetupStep? {
         switch currentState {
         case .scannerSelection:
             return nil
-        case .setupFlow(let scannerType):
-            return getStep(for: scannerType)
+        case .setupFlow(let scannerType, let stepIndex):
+            let steps = getSteps(for: scannerType)
+            return steps[safe: stepIndex]
         }
     }
 
-    private func getStep(for scannerType: ScannerType) -> SetupStep {
+    func isComplete() -> Bool {
+        switch currentState {
+        case .scannerSelection:
+            return false
+        case .setupFlow(let scannerType, let stepIndex):
+            let steps = getSteps(for: scannerType)
+            return stepIndex >= steps.count - 1
+        }
+    }
+
+    private func createWelcomeStep(title: String) -> SetupStep {
+        SetupStep(
+            title: title,
+            content: { ScannerWelcomeView(title: title) },
+            nextButtonTitle: Localization.doneButtonTitle,
+            canGoBack: true,
+            onNext: { [weak self] in
+                self?.isPresented = false
+            },
+            onBack: { [weak self] in
+                self?.previousStep()
+            }
+        )
+    }
+
+    private func getSteps(for scannerType: ScannerType) -> [SetupStep] {
         switch scannerType {
         case .socketS720:
-            return SetupStep(
-                title: "Socket S720 Setup",
-                content: { SocketS720WelcomeView() },
-                nextButtonTitle: Localization.doneButtonTitle,
-                canGoBack: true,
-                onNext: { [weak self] in
-                    self?.isPresented = false
-                },
-                onBack: { [weak self] in
-                    self?.goBackToSelection()
-                }
-            )
+            return [
+                createWelcomeStep(title: "Socket S720 Setup")
+                // TODO: Add more steps for Socket S720 WOOMOB-698
+            ]
         case .starBSH20B:
-            return SetupStep(
-                title: "Star BSH-20B Setup",
-                content: { StarBSH20BWelcomeView() },
-                nextButtonTitle: Localization.doneButtonTitle,
-                canGoBack: true,
-                onNext: { [weak self] in
-                    self?.isPresented = false
-                },
-                onBack: { [weak self] in
-                    self?.goBackToSelection()
-                }
-            )
+            return [
+                createWelcomeStep(title: "Star BSH-20B Setup")
+                // TODO: Add more steps for Star BSH-20B WOOMOB-696
+            ]
         case .tbcScanner:
-            return SetupStep(
-                title: "TBC Scanner Setup",
-                content: { TBCScannerWelcomeView() },
-                nextButtonTitle: Localization.doneButtonTitle,
-                canGoBack: true,
-                onNext: { [weak self] in
-                    self?.isPresented = false
-                },
-                onBack: { [weak self] in
-                    self?.goBackToSelection()
-                }
-            )
+            return [
+                createWelcomeStep(title: "TBC Scanner Setup")
+                // TODO: Add more steps for TBC Scanner WOOMOB-699
+            ]
         case .other:
-            return SetupStep(
-                title: "General Scanner Setup",
-                content: { OtherScannerView() },
-                nextButtonTitle: "Done",
-                canGoBack: true,
-                onNext: { [weak self] in
-                    self?.isPresented = false
-                },
-                onBack: { [weak self] in
-                    self?.goBackToSelection()
-                }
-            )
+            return [
+                SetupStep(
+                    title: "General Scanner Setup",
+                    content: { BarcodeScannerInformationContent() },
+                    nextButtonTitle: Localization.doneButtonTitle,
+                    canGoBack: true,
+                    onNext: { [weak self] in
+                        self?.isPresented = false
+                    },
+                    onBack: { [weak self] in
+                        self?.previousStep()
+                    }
+                )
+            ]
         }
     }
 }
@@ -311,59 +340,21 @@ struct ScannerOptionView: View {
 }
 
 // MARK: - Step Views
-struct SocketS720WelcomeView: View {
+struct ScannerWelcomeView: View {
+    let title: String
+
     var body: some View {
         VStack(spacing: POSSpacing.medium) {
-            Text("Socket S720 Scanner")
+            Text(title)
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
 
-            Text("TODO: Implement Socket S720 setup flow WOOMOB-698")
+            Text("TODO: Implement \(title) setup flow")
                 .font(.posBodyMediumRegular())
                 .foregroundColor(.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-struct StarBSH20BWelcomeView: View {
-    var body: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Text("Star BSH-20B Scanner")
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-
-            Text("TODO: Implement Star BSH-20B setup flow WOOMOB-696")
-                .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantHighest)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-struct TBCScannerWelcomeView: View {
-    var body: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Text("TBC Scanner")
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-
-            Text("TODO: Implement TBC scanner setup flow WOOMOB-699")
-                .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantHighest)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-struct OtherScannerView: View {
-    var body: some View {
-        VStack(spacing: POSSpacing.medium) {
-            BarcodeScannerInformationContent()
-        }
     }
 }
 

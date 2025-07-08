@@ -5,39 +5,137 @@ struct ScannerOption: Identifiable {
     let id = UUID()
     let title: String
     let subtitle: String
-    let destination: SetupDestination
+    let scannerType: ScannerType
 }
 
-enum SetupDestination {
+enum ScannerType {
     case socketS720
     case starBSH20B
     case tbcScanner
     case other
 }
 
+// MARK: - Flow State
+enum SetupFlowState {
+    case scannerSelection
+    case setupFlow(ScannerType)
+}
+
+// MARK: - Setup Flow Manager
+class SetupFlowManager: ObservableObject {
+    @Published var currentState: SetupFlowState = .scannerSelection
+
+    func selectScanner(_ scannerType: ScannerType) {
+        currentState = .setupFlow(scannerType)
+    }
+
+    func goBackToSelection() {
+        currentState = .scannerSelection
+    }
+
+    func getCurrentStep() -> SetupStep? {
+        switch currentState {
+        case .scannerSelection:
+            return nil
+        case .setupFlow(let scannerType):
+            return getStep(for: scannerType)
+        }
+    }
+
+    private func getStep(for scannerType: ScannerType) -> SetupStep {
+        switch scannerType {
+        case .socketS720:
+            return SetupStep(
+                title: "Socket S720 Setup",
+                content: { SocketS720WelcomeView() },
+                nextButtonTitle: "Done",
+                canGoBack: true
+            )
+        case .starBSH20B:
+            return SetupStep(
+                title: "Star BSH-20B Setup",
+                content: { StarBSH20BWelcomeView() },
+                nextButtonTitle: "Done",
+                canGoBack: true
+            )
+        case .tbcScanner:
+            return SetupStep(
+                title: "TBC Scanner Setup",
+                content: { TBCScannerWelcomeView() },
+                nextButtonTitle: "Done",
+                canGoBack: true
+            )
+        case .other:
+            return SetupStep(
+                title: "General Scanner Setup",
+                content: { OtherScannerView() },
+                nextButtonTitle: "Done",
+                canGoBack: true
+            )
+        }
+    }
+}
+
+// MARK: - Setup Step
+struct SetupStep {
+    let title: String
+    let content: any View
+    let nextButtonTitle: String
+    let isNextButtonEnabled: Bool
+    let canGoBack: Bool
+
+    init(
+        title: String,
+        @ViewBuilder content: () -> any View,
+        nextButtonTitle: String = "Next",
+        isNextButtonEnabled: Bool = true,
+        canGoBack: Bool = true
+    ) {
+        self.title = title
+        self.content = content()
+        self.nextButtonTitle = nextButtonTitle
+        self.isNextButtonEnabled = isNextButtonEnabled
+        self.canGoBack = canGoBack
+    }
+}
+
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetUpFlow: View {
     @Binding var isPresented: Bool
+    @StateObject private var flowManager = SetupFlowManager()
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: POSSpacing.xxLarge) {
-                PointOfSaleModalHeader(isPresented: $isPresented,
-                                       title: .constant(AttributedString(Localization.setupHeading)))
+        VStack(spacing: POSSpacing.xxLarge) {
+            // Header
+            PointOfSaleModalHeader(isPresented: $isPresented,
+                                   title: .constant(AttributedString(currentTitle)))
 
-                VStack {
-                    ScannerSelectionView(options: scannerOptions, isPresented: $isPresented)
-                    Spacer()
-                }
-                .scrollVerticallyIfNeeded()
+            VStack {
+                currentContent
+                Spacer()
             }
-            .toolbar(.hidden, for: .navigationBar)
-            .padding(POSPadding.xxLarge)
+            .scrollVerticallyIfNeeded()
+
+            // Bottom buttons
+            HStack(spacing: POSSpacing.medium) {
+                Button(Localization.backButtonTitle) {
+                    handleBackButton()
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .renderedIf(shouldShowBackButton)
+
+                Button(currentNextButtonTitle) {
+                    handleNextButton()
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .disabled(!isNextButtonEnabled)
+            }
         }
+        .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
         .containerRelativeFrame([.horizontal, .vertical]) { length, _ in
             max(length * 0.75, Constants.modalFrameMaxSmallDimension)
@@ -47,35 +145,106 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
         }
     }
 
+    // MARK: - Computed Properties
+    private var currentTitle: String {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            return Localization.setupHeading
+        case .setupFlow:
+            return flowManager.getCurrentStep()?.title ?? Localization.setupHeading
+        }
+    }
+
+    @ViewBuilder
+    private var currentContent: some View {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            ScannerSelectionView(options: scannerOptions) { scannerType in
+                flowManager.selectScanner(scannerType)
+            }
+        case .setupFlow:
+            if let step = flowManager.getCurrentStep() {
+                AnyView(step.content)
+            }
+        }
+    }
+
+    private var currentNextButtonTitle: String {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            return Localization.selectButtonTitle
+        case .setupFlow:
+            return flowManager.getCurrentStep()?.nextButtonTitle ?? Localization.nextButtonTitle
+        }
+    }
+
+    private var isNextButtonEnabled: Bool {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            return false // No selection made yet
+        case .setupFlow:
+            return flowManager.getCurrentStep()?.isNextButtonEnabled ?? false
+        }
+    }
+
+    private var shouldShowBackButton: Bool {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            return false
+        case .setupFlow:
+            return flowManager.getCurrentStep()?.canGoBack ?? false
+        }
+    }
+
+    // MARK: - Actions
+    private func handleBackButton() {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            break // Should not happen
+        case .setupFlow:
+            flowManager.goBackToSelection()
+        }
+    }
+
+    private func handleNextButton() {
+        switch flowManager.currentState {
+        case .scannerSelection:
+            break // Should not happen
+        case .setupFlow:
+            isPresented = false
+        }
+    }
+
     private var scannerOptions: [ScannerOption] {
         [
             ScannerOption(
                 title: Localization.socketS720Title,
                 subtitle: Localization.socketS720Subtitle,
-                destination: .socketS720
+                scannerType: .socketS720
             ),
             ScannerOption(
                 title: Localization.starBSH20BTitle,
                 subtitle: Localization.starBSH20BSubtitle,
-                destination: .starBSH20B
+                scannerType: .starBSH20B
             ),
             ScannerOption(
                 title: Localization.tbcScannerTitle,
                 subtitle: Localization.tbcScannerSubtitle,
-                destination: .tbcScanner
+                scannerType: .tbcScanner
             ),
             ScannerOption(
                 title: Localization.otherTitle,
                 subtitle: Localization.otherSubtitle,
-                destination: .other
+                scannerType: .other
             )
         ]
     }
 }
 
+// MARK: - Scanner Selection View
 struct ScannerSelectionView: View {
     let options: [ScannerOption]
-    @Binding var isPresented: Bool
+    let onSelection: (ScannerType) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -87,7 +256,9 @@ struct ScannerSelectionView: View {
 
             VStack(spacing: POSSpacing.small) {
                 ForEach(options) { option in
-                    NavigationLink(destination: destinationView(for: option.destination)) {
+                    Button {
+                        onSelection(option.scannerType)
+                    } label: {
                         ScannerOptionView(
                             title: option.title,
                             subtitle: option.subtitle
@@ -98,23 +269,9 @@ struct ScannerSelectionView: View {
             }
         }
     }
-
-    @ViewBuilder
-    private func destinationView(for destination: SetupDestination) -> some View {
-        switch destination {
-        case .socketS720:
-            EmptyView() // TODO: Implement Socket S720 setup flow WOOMOB-698
-        case .starBSH20B:
-            EmptyView() // TODO: Implement Star BSH-20B setup flow WOOMOB-696
-        case .tbcScanner:
-            EmptyView() // TODO: Implement TBC scanner setup flow WOOMOB-699
-        case .other:
-            BarcodeScannerInformationView(isPresented: $isPresented)
-                .padding(POSPadding.xxLarge)
-        }
-    }
 }
 
+// MARK: - Scanner Option View
 struct ScannerOptionView: View {
     let title: String
     let subtitle: String
@@ -140,24 +297,64 @@ struct ScannerOptionView: View {
     }
 }
 
-struct BarcodeScannerInformationView: View {
-    @Binding var isPresented: Bool
-
+// MARK: - Step Views
+struct SocketS720WelcomeView: View {
     var body: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
-            PointOfSaleModalHeader(isPresented: $isPresented,
-                                   title: .constant(AttributedString(PointOfSaleBarcodeScannerInformationModal.Localization.barcodeInfoHeading)))
-            VStack {
-                BarcodeScannerInformationContent()
-                Spacer()
-            }
-            .scrollVerticallyIfNeeded()
+        VStack(spacing: POSSpacing.medium) {
+            Text("Socket S720 Scanner")
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
+
+            Text("TODO: Implement Socket S720 setup flow WOOMOB-698")
+                .font(.posBodyMediumRegular())
+                .foregroundColor(.posOnSurfaceVariantHighest)
+                .multilineTextAlignment(.center)
         }
-        .toolbar(.hidden, for: .navigationBar)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
+struct StarBSH20BWelcomeView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Text("Star BSH-20B Scanner")
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
 
+            Text("TODO: Implement Star BSH-20B setup flow WOOMOB-696")
+                .font(.posBodyMediumRegular())
+                .foregroundColor(.posOnSurfaceVariantHighest)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct TBCScannerWelcomeView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.medium) {
+            Text("TBC Scanner")
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
+
+            Text("TODO: Implement TBC scanner setup flow WOOMOB-699")
+                .font(.posBodyMediumRegular())
+                .foregroundColor(.posOnSurfaceVariantHighest)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct OtherScannerView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.medium) {
+            BarcodeScannerInformationContent()
+        }
+    }
+}
+
+// MARK: - Constants
 private enum Constants {
     static var modalFrameMaxSmallDimension: CGFloat { 752 }
 }
@@ -218,6 +415,21 @@ private enum Localization {
         "pos.barcodeScannerSetup.back.button.title",
         value: "Back",
         comment: "Title for the back button in barcode scanner setup navigation"
+    )
+    static let nextButtonTitle = NSLocalizedString(
+        "pos.barcodeScannerSetup.next.button.title",
+        value: "Next",
+        comment: "Title for the next button in barcode scanner setup navigation"
+    )
+    static let doneButtonTitle = NSLocalizedString(
+        "pos.barcodeScannerSetup.done.button.title",
+        value: "Done",
+        comment: "Title for the done button in barcode scanner setup navigation"
+    )
+    static let selectButtonTitle = NSLocalizedString(
+        "pos.barcodeScannerSetup.select.button.title",
+        value: "Select",
+        comment: "Title for the select button in barcode scanner setup navigation"
     )
 }
 

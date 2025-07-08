@@ -18,7 +18,7 @@ enum ScannerType {
 // MARK: - Flow State
 enum SetupFlowState {
     case scannerSelection
-    case setupFlow(ScannerType, stepIndex: Int = 0)
+    case setupFlow(ScannerType)
 }
 
 // MARK: - Setup Step
@@ -60,70 +60,43 @@ extension SetupStep {
     }
 }
 
-// MARK: - Setup Flow Manager
+// MARK: - Scanner Flow
 @available(iOS 17.0, *)
-@Observable
-class SetupFlowManager {
-    var currentState: SetupFlowState = .scannerSelection
-    @ObservationIgnored @Binding var isPresented: Bool
+class ScannerFlow {
+    private let scannerType: ScannerType
+    private let onComplete: () -> Void
+    private let onBackToSelection: () -> Void
+    private var currentStepIndex: Int = 0
 
-    init(isPresented: Binding<Bool>) {
-        self._isPresented = isPresented
+    init(scannerType: ScannerType, onComplete: @escaping () -> Void, onBackToSelection: @escaping () -> Void) {
+        self.scannerType = scannerType
+        self.onComplete = onComplete
+        self.onBackToSelection = onBackToSelection
     }
 
-    func selectScanner(_ scannerType: ScannerType) {
-        currentState = .setupFlow(scannerType, stepIndex: 0)
+    var currentStep: SetupStep? {
+        steps[safe: currentStepIndex]
     }
 
-    func goBackToSelection() {
-        currentState = .scannerSelection
+    var isComplete: Bool {
+        currentStepIndex >= steps.count - 1
     }
 
     func nextStep() {
-        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return }
-        let steps = getSteps(for: scannerType)
-        if stepIndex < steps.count - 1 {
-            currentState = .setupFlow(scannerType, stepIndex: stepIndex + 1)
+        if currentStepIndex < steps.count - 1 {
+            currentStepIndex += 1
         }
     }
 
     func previousStep() {
-        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return }
-        if stepIndex > 0 {
-            currentState = .setupFlow(scannerType, stepIndex: stepIndex - 1)
+        if currentStepIndex > 0 {
+            currentStepIndex -= 1
         } else {
-            goBackToSelection()
+            onBackToSelection()
         }
     }
 
-    func getCurrentStep() -> SetupStep? {
-        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return nil }
-        let steps = getSteps(for: scannerType)
-        return steps[safe: stepIndex]
-    }
-
-    func isComplete() -> Bool {
-        guard case .setupFlow(let scannerType, let stepIndex) = currentState else { return false }
-        let steps = getSteps(for: scannerType)
-        return stepIndex >= steps.count - 1
-    }
-
-    private func createWelcomeStep(title: String) -> SetupStep {
-        SetupStep(
-            title: title,
-            content: { ScannerWelcomeView(title: title) },
-            nextButtonTitle: Localization.doneButtonTitle,
-            canGoBack: true,
-            onNext: { [weak self] in
-                self?.isPresented = false
-            },
-            onBack: { [weak self] in
-                self?.previousStep()
-            }
-        )
-    }
-
-    private func getSteps(for scannerType: ScannerType) -> [SetupStep] {
+    private var steps: [SetupStep] {
         switch scannerType {
         case .socketS720:
             return [
@@ -147,15 +120,69 @@ class SetupFlowManager {
                     content: { BarcodeScannerInformationContent() },
                     nextButtonTitle: Localization.doneButtonTitle,
                     canGoBack: true,
-                    onNext: { [weak self] in
-                        self?.isPresented = false
-                    },
+                    onNext: onComplete,
                     onBack: { [weak self] in
                         self?.previousStep()
                     }
                 )
             ]
         }
+    }
+
+    private func createWelcomeStep(title: String) -> SetupStep {
+        SetupStep(
+            title: title,
+            content: { ScannerWelcomeView(title: title) },
+            nextButtonTitle: Localization.doneButtonTitle,
+            canGoBack: true,
+            onNext: onComplete,
+            onBack: { [weak self] in
+                self?.previousStep()
+            }
+        )
+    }
+}
+
+// MARK: - Setup Flow Manager
+@available(iOS 17.0, *)
+@Observable
+class SetupFlowManager {
+    var currentState: SetupFlowState = .scannerSelection
+    @ObservationIgnored @Binding var isPresented: Bool
+    private var currentFlow: ScannerFlow?
+
+    init(isPresented: Binding<Bool>) {
+        self._isPresented = isPresented
+    }
+
+    func selectScanner(_ scannerType: ScannerType) {
+        currentFlow = ScannerFlow(scannerType: scannerType, onComplete: { [weak self] in
+            self?.isPresented = false
+        }, onBackToSelection: { [weak self] in
+            self?.goBackToSelection()
+        })
+        currentState = .setupFlow(scannerType)
+    }
+
+    func goBackToSelection() {
+        currentState = .scannerSelection
+        currentFlow = nil
+    }
+
+    func nextStep() {
+        currentFlow?.nextStep()
+    }
+
+    func previousStep() {
+        currentFlow?.previousStep()
+    }
+
+    func getCurrentStep() -> SetupStep? {
+        currentFlow?.currentStep
+    }
+
+    func isComplete() -> Bool {
+        currentFlow?.isComplete ?? false
     }
 }
 

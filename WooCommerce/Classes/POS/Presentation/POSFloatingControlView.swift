@@ -93,7 +93,11 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
+                PointOfSaleBarcodeScannerSetUpFlow(isPresented: $showBarcodeScanningModal)
+            } else {
+                PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)
+            }
         }
         .frame(height: Constants.size)
         .background(Color.clear)

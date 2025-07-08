@@ -3,24 +3,6 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-enum SalesChannelFilter: FilterType {
-    case online
-    case pointOfSale
-
-    var description: String {
-        switch self {
-        case .online:
-            return "online"
-        case .pointOfSale:
-            return "pos"
-        }
-    }
-
-    var isActive: Bool {
-        return true
-    }
-}
-
 /// `FilterListViewModel` for filtering a list of orders.
 final class FilterOrderListViewModel: FilterListViewModel {
     typealias Criteria = Filters
@@ -253,7 +235,7 @@ private extension FilterOrderListViewModel.OrderListFilter {
         case .customer:
             return Localization.rowCustomer
         case .salesChannel:
-            return "Sales Channel"
+            return Localization.rowSalesChannel
         }
     }
 }
@@ -327,20 +309,39 @@ extension FilterOrdersByProduct: FilterType {
 // MARK: - Constants
 private extension FilterOrderListViewModel {
     enum Localization {
-        static let filterActionTitle = NSLocalizedString("Show Orders", comment: "Button title for applying filters to a list of orders.")
+        static let filterActionTitle = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.filterActionTitle",
+            value: "Show Orders",
+            comment: "Button title for applying filters to a list of orders.")
     }
 }
 
 private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
-        static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
-        static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
-        static let rowTitleProduct = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowTitleProduct",
-                                                       value: "Product",
-                                                       comment: "Row title for filtering orders by Product.")
-        static let rowCustomer = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowCustomer",
-                                                   value: "Customer",
-                                                   comment: "Row title for filtering orders by customer.")
+        static let rowTitleOrderStatus = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus",
+            value: "Order Status",
+            comment: "Row title for filtering orders by order status.")
+
+        static let rowTitleDateRange = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleDateRange",
+            value: "Date Range",
+            comment: "Row title for filtering orders by date range.")
+
+        static let rowTitleProduct = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleProduct",
+            value: "Product",
+            comment: "Row title for filtering orders by Product.")
+
+        static let rowCustomer = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowCustomer",
+            value: "Customer",
+            comment: "Row title for filtering orders by customer.")
+
+        static let rowSalesChannel = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowSalesChannel",
+            value: "Sales Channel",
+            comment: "Row title for filtering orders by sales channel.")
     }
 }
 
@@ -367,4 +368,21 @@ extension CustomerFilter: FilterType {
 
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { true }
+}
+
+extension FilterOrderListViewModel {
+    enum SalesChannelFilter: FilterType {
+        case pointOfSale
+
+        var description: String {
+            switch self {
+            case .pointOfSale:
+                return "pos"
+            }
+        }
+
+        var isActive: Bool {
+            return true
+        }
+    }
 }

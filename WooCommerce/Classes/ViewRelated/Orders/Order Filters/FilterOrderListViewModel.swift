@@ -83,7 +83,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     let filterActionTitle = Localization.filterActionTitle
 
-    let filterTypeViewModels: [FilterTypeViewModel]
+    var filterTypeViewModels: [FilterTypeViewModel]
 
     let shouldShowHistory: Bool
 
@@ -125,8 +125,11 @@ final class FilterOrderListViewModel: FilterListViewModel {
         filterTypeViewModels = [orderStatusFilterViewModel,
                                 dateRangeFilterViewModel,
                                 customerFilterViewModel,
-                                productFilterViewModel,
-                                salesChannelFilterViewModel]
+                                productFilterViewModel]
+
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
+            filterTypeViewModels.append(salesChannelFilterViewModel)
+        }
     }
 
     var criteria: Filters {
@@ -155,7 +158,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                 dateRange: item.dateRangeFilter,
                                 product: item.productFilter,
                                 customer: item.customerFilter,
-                                salesChannel: nil, // TODO: Filter persistence
+                                salesChannel: nil, // TODO: Filter persistence WOOMOB-712
                                 numberOfActiveFilters: item.numberOfActiveFilters())
                     }
                     continuation.resume(returning: filters)

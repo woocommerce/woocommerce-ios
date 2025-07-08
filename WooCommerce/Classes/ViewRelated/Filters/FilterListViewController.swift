@@ -92,7 +92,7 @@ enum FilterListValueSelectorConfig {
     case products(siteID: Int64)
     // Filter list selector for customer
     case customer(siteID: Int64)
-    
+    // Filter list selector for sales channel
     case salesChannel
 
 }
@@ -300,7 +300,7 @@ private extension FilterListViewController {
                 }
                 self.listSelector.navigationController?.pushViewController(statusesFilterVC, animated: true)
             case .salesChannel:
-                // TODO: Make OrderSalesChannelFilterViewController. Handle filtering selection.
+                // TODO: Make OrderSalesChannelFilterViewController, and handle filtering selection WOOMOB-711
                 let emptyViewController = EmptyStateViewController(style: .list)
                 self.listSelector.navigationController?.pushViewController(emptyViewController, animated: true)
             case .ordersDateRange:

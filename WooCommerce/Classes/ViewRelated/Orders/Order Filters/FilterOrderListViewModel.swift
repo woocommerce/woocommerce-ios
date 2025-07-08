@@ -65,7 +65,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     let filterActionTitle = Localization.filterActionTitle
 
-    var filterTypeViewModels: [FilterTypeViewModel]
+    let filterTypeViewModels: [FilterTypeViewModel]
 
     let shouldShowHistory: Bool
 
@@ -104,14 +104,16 @@ final class FilterOrderListViewModel: FilterListViewModel {
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        filterTypeViewModels = [orderStatusFilterViewModel,
-                                dateRangeFilterViewModel,
-                                customerFilterViewModel,
-                                productFilterViewModel]
+        var allFilterViewModels = [orderStatusFilterViewModel,
+                                   dateRangeFilterViewModel,
+                                   customerFilterViewModel,
+                                   productFilterViewModel]
 
         if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
-            filterTypeViewModels.append(salesChannelFilterViewModel)
+            allFilterViewModels.append(salesChannelFilterViewModel)
         }
+
+        filterTypeViewModels = allFilterViewModels
     }
 
     var criteria: Filters {

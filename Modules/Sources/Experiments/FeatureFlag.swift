@@ -203,4 +203,8 @@ public enum FeatureFlag: Int {
     /// Enables displaying Point Of Sale details in order list and order details
     ///
     case pointOfSaleOrdersi1
+
+    /// Enables the Point of Sale Barcode Scanner set up flows, as part of i2
+    ///
+    case pointOfSaleBarcodeScanningi2
 }

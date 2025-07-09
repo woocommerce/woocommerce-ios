@@ -269,7 +269,7 @@ extension FilterOrderListViewModel.OrderListFilter {
             let salesChannelOptions: [FilterOrderListViewModel.SalesChannelFilter] = [.any, .pointOfSale]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: salesChannelOptions),
-                                       selectedValue: filters.salesChannel ?? .any)
+                                       selectedValue: filters.salesChannel)
         }
     }
 }

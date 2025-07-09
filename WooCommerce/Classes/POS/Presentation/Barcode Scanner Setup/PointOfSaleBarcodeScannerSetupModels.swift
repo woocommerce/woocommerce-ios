@@ -21,9 +21,9 @@ enum PointOfSaleBarcodeScannerSetupFlowState {
     case setupFlow(PointOfSaleBarcodeScannerType)
 }
 
-// MARK: - Step Customization Protocol
+// MARK: - Button Customization Protocol
 @available(iOS 17.0, *)
-protocol PointOfSaleBarcodeScannerStepCustomization {
+protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
 
@@ -32,15 +32,15 @@ protocol PointOfSaleBarcodeScannerStepCustomization {
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View
-    let customization: PointOfSaleBarcodeScannerStepCustomization?
+    let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
 
     init(
         title: String,
         @ViewBuilder content: () -> any View,
-        customization: PointOfSaleBarcodeScannerStepCustomization? = nil
+        buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil
     ) {
         self.title = title
         self.content = content()
-        self.customization = customization
+        self.buttonCustomization = buttonCustomization
     }
 }

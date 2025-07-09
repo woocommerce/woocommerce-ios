@@ -22,7 +22,7 @@ enum PointOfSaleBarcodeScannerSetupFlowState {
 }
 
 // MARK: - Button Configuration
-struct ButtonConfiguration {
+struct PointOfSaleFlowButtonConfiguration {
     let shouldShowBackButton: Bool
     let shouldShowNextButton: Bool
     let nextButtonTitle: String
@@ -30,7 +30,7 @@ struct ButtonConfiguration {
     let onBack: () -> Void
     let onNext: () -> Void
 
-    static func noButtons() -> ButtonConfiguration {
+    static func noButtons() -> PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: false,
             shouldShowNextButton: false,
@@ -41,7 +41,7 @@ struct ButtonConfiguration {
         )
     }
 
-    static func doneOnly(onDone: @escaping () -> Void) -> ButtonConfiguration {
+    static func doneOnly(onDone: @escaping () -> Void) -> PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: false,
             shouldShowNextButton: true,
@@ -52,7 +52,8 @@ struct ButtonConfiguration {
         )
     }
 
-    static func closeAndRetry(onClose: @escaping () -> Void, onRetry: @escaping () -> Void) -> ButtonConfiguration {
+    static func closeAndRetry(onClose: @escaping () -> Void,
+                              onRetry: @escaping () -> Void) -> PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: true,
             shouldShowNextButton: true,
@@ -63,7 +64,8 @@ struct ButtonConfiguration {
         )
     }
 
-    static func disabledNext(onBack: @escaping () -> Void, onNext: @escaping () -> Void) -> ButtonConfiguration {
+    static func disabledNext(onBack: @escaping () -> Void,
+                             onNext: @escaping () -> Void) -> PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: true,
             shouldShowNextButton: true,
@@ -76,22 +78,22 @@ struct ButtonConfiguration {
 }
 
 // MARK: - Private Localization Extension
-private extension ButtonConfiguration {
+private extension PointOfSaleFlowButtonConfiguration {
     enum Localization {
         static let doneButtonTitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.done.button.title",
+            "pos.flow.done.button.title",
             value: "Done",
-            comment: "Title for the done button in barcode scanner setup navigation"
+            comment: "Title for the done button in a step by step flow view in POS"
         )
         static let retryButtonTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.retry.button.title",
             value: "Retry",
-            comment: "Title for the retry button in barcode scanner setup navigation"
+            comment: "Title for the retry button in a step by step flow view in POS"
         )
         static let nextButtonTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.next.button.title",
             value: "Next",
-            comment: "Title for the next button in barcode scanner setup navigation"
+            comment: "Title for the next button in a step by step flow view in POS"
         )
     }
 }
@@ -99,7 +101,7 @@ private extension ButtonConfiguration {
 // MARK: - Step Customization Protocol
 @available(iOS 17.0, *)
 protocol PointOfSaleBarcodeScannerStepCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> ButtonConfiguration
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
 
 // MARK: - Setup Step

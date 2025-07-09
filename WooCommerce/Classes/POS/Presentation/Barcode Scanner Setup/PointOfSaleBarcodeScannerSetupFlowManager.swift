@@ -42,7 +42,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow?.isComplete ?? false
     }
 
-    var buttonConfiguration: ButtonConfiguration {
+    var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
         switch currentState {
         case .scannerSelection:
             return .noButtons()

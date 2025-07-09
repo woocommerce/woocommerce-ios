@@ -3,7 +3,7 @@ import SwiftUI
 // MARK: - Flow Buttons View
 @available(iOS 17.0, *)
 struct FlowButtonsView: View {
-    let buttonConfiguration: ButtonConfiguration
+    let buttonConfiguration: PointOfSaleFlowButtonConfiguration
 
     var body: some View {
         HStack(spacing: POSSpacing.medium) {

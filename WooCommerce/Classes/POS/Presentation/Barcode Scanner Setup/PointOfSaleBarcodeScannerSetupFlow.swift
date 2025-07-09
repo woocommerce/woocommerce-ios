@@ -56,7 +56,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
         currentStepIndex = 0
     }
 
-    func getButtonConfiguration() -> ButtonConfiguration {
+    func getButtonConfiguration() -> PointOfSaleFlowButtonConfiguration {
         guard let step = currentStep else {
             return .noButtons()
         }
@@ -67,7 +67,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
         }
 
         // Default button configuration
-        return ButtonConfiguration(
+        return PointOfSaleFlowButtonConfiguration(
             shouldShowBackButton: shouldShowBackButton,
             shouldShowNextButton: true,
             nextButtonTitle: nextButtonTitle,
@@ -120,7 +120,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
 // MARK: - Example Step Customizations
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerWelcomeStepCustomization: PointOfSaleBarcodeScannerStepCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> ButtonConfiguration {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return .doneOnly {
             flow.nextStep()
         }

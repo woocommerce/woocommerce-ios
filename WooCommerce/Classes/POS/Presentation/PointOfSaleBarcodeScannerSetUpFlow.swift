@@ -21,17 +21,27 @@ enum SetupFlowState {
     case setupFlow(ScannerType)
 }
 
+// MARK: - Step Customization Protocol
+@available(iOS 17.0, *)
+protocol StepCustomization {
+    func customizeButtons(for flow: ScannerFlow) -> ButtonConfiguration
+}
+
 // MARK: - Setup Step
+@available(iOS 17.0, *)
 struct SetupStep {
     let title: String
     let content: any View
+    let customization: StepCustomization?
 
     init(
         title: String,
-        @ViewBuilder content: () -> any View
+        @ViewBuilder content: () -> any View,
+        customization: StepCustomization? = nil
     ) {
         self.title = title
         self.content = content()
+        self.customization = customization
     }
 }
 
@@ -85,6 +95,35 @@ class ScannerFlow {
         }
     }
 
+    func restartFlow() {
+        currentStepIndex = 0
+    }
+
+    func getButtonConfiguration() -> ButtonConfiguration {
+        guard let step = currentStep else {
+            return .noButtons()
+        }
+
+        // Use step customization if available
+        if let customization = step.customization {
+            return customization.customizeButtons(for: self)
+        }
+
+        // Default button configuration
+        return ButtonConfiguration(
+            shouldShowBackButton: shouldShowBackButton,
+            shouldShowNextButton: true,
+            nextButtonTitle: nextButtonTitle,
+            isNextButtonEnabled: isNextButtonEnabled,
+            onBack: { [weak self] in
+                self?.previousStep()
+            },
+            onNext: { [weak self] in
+                self?.nextStep()
+            }
+        )
+    }
+
     private var steps: [SetupStep] {
         switch scannerType {
         case .socketS720:
@@ -115,8 +154,19 @@ class ScannerFlow {
     private func createWelcomeStep(title: String) -> SetupStep {
         SetupStep(
             title: title,
-            content: { ScannerWelcomeView(title: title) }
+            content: { ScannerWelcomeView(title: title) },
+            customization: WelcomeStepCustomization()
         )
+    }
+}
+
+// MARK: - Example Step Customizations
+@available(iOS 17.0, *)
+struct WelcomeStepCustomization: StepCustomization {
+    func customizeButtons(for flow: ScannerFlow) -> ButtonConfiguration {
+        return .doneOnly {
+            flow.nextStep()
+        }
     }
 }
 
@@ -137,6 +187,39 @@ struct ButtonConfiguration {
             isNextButtonEnabled: false,
             onBack: {},
             onNext: {}
+        )
+    }
+
+    static func doneOnly(onDone: @escaping () -> Void) -> ButtonConfiguration {
+        .init(
+            shouldShowBackButton: false,
+            shouldShowNextButton: true,
+            nextButtonTitle: Localization.doneButtonTitle,
+            isNextButtonEnabled: true,
+            onBack: {},
+            onNext: onDone
+        )
+    }
+
+    static func closeAndRetry(onClose: @escaping () -> Void, onRetry: @escaping () -> Void) -> ButtonConfiguration {
+        .init(
+            shouldShowBackButton: true,
+            shouldShowNextButton: true,
+            nextButtonTitle: Localization.retryButtonTitle,
+            isNextButtonEnabled: true,
+            onBack: onClose,
+            onNext: onRetry
+        )
+    }
+
+    static func disabledNext(onBack: @escaping () -> Void, onNext: @escaping () -> Void) -> ButtonConfiguration {
+        .init(
+            shouldShowBackButton: true,
+            shouldShowNextButton: true,
+            nextButtonTitle: Localization.nextButtonTitle,
+            isNextButtonEnabled: false,
+            onBack: onBack,
+            onNext: onNext
         )
     }
 }
@@ -192,18 +275,7 @@ class SetupFlowManager {
                 return .noButtons()
             }
 
-            return ButtonConfiguration(
-                shouldShowBackButton: flow.shouldShowBackButton,
-                shouldShowNextButton: true,
-                nextButtonTitle: flow.nextButtonTitle,
-                isNextButtonEnabled: flow.isNextButtonEnabled,
-                onBack: { [weak self] in
-                    self?.previousStep()
-                },
-                onNext: { [weak self] in
-                    self?.nextStep()
-                }
-            )
+            return flow.getButtonConfiguration()
         }
     }
 }
@@ -463,6 +535,11 @@ private enum Localization {
         "pos.barcodeScannerSetup.done.button.title",
         value: "Done",
         comment: "Title for the done button in barcode scanner setup navigation"
+    )
+    static let retryButtonTitle = NSLocalizedString(
+        "pos.barcodeScannerSetup.retry.button.title",
+        value: "Retry",
+        comment: "Title for the retry button in barcode scanner setup navigation"
     )
 }
 

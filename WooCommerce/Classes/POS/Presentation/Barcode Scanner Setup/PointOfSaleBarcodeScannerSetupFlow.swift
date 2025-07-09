@@ -28,14 +28,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
         isComplete ? Localization.doneButtonTitle : Localization.nextButtonTitle
     }
 
-    var isNextButtonEnabled: Bool {
-        true
-    }
-
-    var shouldShowBackButton: Bool {
-        true
-    }
-
     func nextStep() {
         if currentStepIndex < steps.count - 1 {
             currentStepIndex += 1
@@ -61,23 +53,20 @@ class PointOfSaleBarcodeScannerSetupFlow {
             return .noButtons()
         }
 
-        // Use step customization if available
-        if let customization = step.customization {
-            return customization.customizeButtons(for: self)
-        }
-
         // Default button configuration
         return PointOfSaleFlowButtonConfiguration(
-            shouldShowBackButton: shouldShowBackButton,
-            shouldShowNextButton: true,
-            nextButtonTitle: nextButtonTitle,
-            isNextButtonEnabled: isNextButtonEnabled,
-            onBack: { [weak self] in
-                self?.previousStep()
-            },
-            onNext: { [weak self] in
-                self?.nextStep()
-            }
+            primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: nextButtonTitle,
+                action: { [weak self] in
+                    self?.nextStep()
+                }
+            ),
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.backButtonTitle,
+                action: { [weak self] in
+                    self?.previousStep()
+                }
+            )
         )
     }
 
@@ -111,19 +100,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
     private func createWelcomeStep(title: String) -> PointOfSaleBarcodeScannerSetupStep {
         PointOfSaleBarcodeScannerSetupStep(
             title: title,
-            content: { PointOfSaleBarcodeScannerWelcomeView(title: title) },
-            customization: PointOfSaleBarcodeScannerWelcomeStepCustomization()
+            content: { PointOfSaleBarcodeScannerWelcomeView(title: title) }
         )
-    }
-}
-
-// MARK: - Example Step Customizations
-@available(iOS 17.0, *)
-struct PointOfSaleBarcodeScannerWelcomeStepCustomization: PointOfSaleBarcodeScannerStepCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
-        return .doneOnly {
-            flow.nextStep()
-        }
     }
 }
 
@@ -140,6 +118,11 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             "pos.barcodeScannerSetup.next.button.title",
             value: "Next",
             comment: "Title for the next button in barcode scanner setup navigation"
+        )
+        static let backButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.back.button.title",
+            value: "Back",
+            comment: "Title for the back button in barcode scanner setup navigation"
         )
     }
 }

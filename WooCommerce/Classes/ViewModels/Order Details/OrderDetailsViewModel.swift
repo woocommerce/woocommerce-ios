@@ -445,7 +445,8 @@ extension OrderDetailsViewModel {
         ]
 
         let cellsWithoutNib = [
-            HostingConfigurationTableViewCell<ShippingLineRowView>.self
+            HostingConfigurationTableViewCell<ShippingLineRowView>.self,
+            HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>.self,
         ]
 
         for cellClass in cellsWithNib {

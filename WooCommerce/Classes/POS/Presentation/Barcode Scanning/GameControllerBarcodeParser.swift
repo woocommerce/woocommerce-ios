@@ -46,15 +46,7 @@ final class GameControllerBarcodeParser {
     }
 
     private func shouldRecogniseAsScanKeystroke(_ keyCode: GCKeyCode, isShiftPressed: Bool) -> Bool {
-        guard let character = characterForKeyCode(keyCode, isShiftPressed: isShiftPressed) else {
-            // This prevents a double-trigger-pull on a Star scanner from adding an error row –
-            // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE, which is
-            // undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
-            // There seems to be no reason to handle empty input when considering scans.
-            return false
-        }
-
-        guard character.isNotEmpty else {
+        guard let character = characterForKeyCode(keyCode, isShiftPressed: isShiftPressed), character.isNotEmpty else {
             // This prevents a double-trigger-pull on a Star scanner from adding an error row –
             // Star use this as a shortcut to switch to the software keyboard. They send keycode 174 0xAE, which is
             // undefined and reserved in UIKeyboardHIDUsage. The scanner doesn't send a character with the code.
@@ -194,4 +186,29 @@ final class GameControllerBarcodeParser {
         }
         resetScan()
     }
+}
+
+/// Configuration options for the HID barcode parser
+struct HIDBarcodeParserConfiguration {
+    /// Strings that indicate the end of a barcode scan
+    let terminatingStrings: Set<String>
+
+    /// Minimum length to consider scanned input complete
+    let minimumBarcodeLength: Int
+
+    /// Maximum time between scanned keystrokes
+    /// After this time elapses, any further keystrokes result in the scan being rejected
+    let maximumInterCharacterTime: TimeInterval
+
+    /// Default configuration suitable for most barcode scanners
+    static let `default` = HIDBarcodeParserConfiguration(
+        terminatingStrings: ["\r", "\n"],
+        minimumBarcodeLength: 6,
+        maximumInterCharacterTime: 0.2
+    )
+}
+
+enum HIDBarcodeParserError: Error {
+    case scanTooShort(barcode: String)
+    case timedOut(barcode: String)
 }

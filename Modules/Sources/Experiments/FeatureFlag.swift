@@ -188,10 +188,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleBarcodeScanningi1
 
-    /// Enables further improvements to barcode scanning with an external scanner in POS
-    ///
-    case pointOfSaleBarcodeScanningi2
-
     /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
     ///
     case showPointOfSaleBarcodeSimulator

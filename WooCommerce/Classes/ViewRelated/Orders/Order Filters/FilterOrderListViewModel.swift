@@ -13,6 +13,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?
         let customer: CustomerFilter?
+        let salesChannel: SalesChannelFilter?
 
         let numberOfActiveFilters: Int
 
@@ -21,6 +22,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
             dateRange = nil
             product = nil
             customer = nil
+            salesChannel = nil
             numberOfActiveFilters = 0
         }
 
@@ -28,11 +30,13 @@ final class FilterOrderListViewModel: FilterListViewModel {
              dateRange: OrderDateRangeFilter?,
              product: FilterOrdersByProduct?,
              customer: CustomerFilter?,
+             salesChannel: SalesChannelFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
             self.product = product
             self.customer = customer
+            self.salesChannel = salesChannel
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
@@ -50,6 +54,11 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let customer = customer {
                 readable.append(customer.description)
             }
+
+            if let salesChannel = salesChannel {
+                readable.append(salesChannel.description)
+            }
+
             return readable.joined(separator: ", ")
         }
     }
@@ -66,6 +75,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
+    private let salesChannelFilterViewModel: FilterTypeViewModel
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -87,13 +97,23 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        salesChannelFilterViewModel = OrderListFilter.salesChannel.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
+        var allFilterViewModels = [orderStatusFilterViewModel,
+                                   dateRangeFilterViewModel,
+                                   customerFilterViewModel,
+                                   productFilterViewModel]
+
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
+            allFilterViewModels.append(salesChannelFilterViewModel)
+        }
+
+        filterTypeViewModels = allFilterViewModels
     }
 
     var criteria: Filters {
@@ -101,11 +121,13 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
         let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
+        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
                        product: product,
                        customer: customer,
+                       salesChannel: salesChannel,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -120,6 +142,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                 dateRange: item.dateRangeFilter,
                                 product: item.productFilter,
                                 customer: item.customerFilter,
+                                salesChannel: nil, // TODO: Filter persistence WOOMOB-712
                                 numberOfActiveFilters: item.numberOfActiveFilters())
                     }
                     continuation.resume(returning: filters)
@@ -198,6 +221,7 @@ extension FilterOrderListViewModel {
         case dateRange
         case product(siteID: Int64)
         case customer(siteID: Int64)
+        case salesChannel
     }
 }
 
@@ -212,6 +236,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleProduct
         case .customer:
             return Localization.rowCustomer
+        case .salesChannel:
+            return Localization.rowSalesChannel
         }
     }
 }
@@ -235,6 +261,10 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
+        case .salesChannel:
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .salesChannel,
+                                       selectedValue: filters.salesChannel)
         }
     }
 }
@@ -281,20 +311,39 @@ extension FilterOrdersByProduct: FilterType {
 // MARK: - Constants
 private extension FilterOrderListViewModel {
     enum Localization {
-        static let filterActionTitle = NSLocalizedString("Show Orders", comment: "Button title for applying filters to a list of orders.")
+        static let filterActionTitle = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.filterActionTitle",
+            value: "Show Orders",
+            comment: "Button title for applying filters to a list of orders.")
     }
 }
 
 private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
-        static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
-        static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
-        static let rowTitleProduct = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowTitleProduct",
-                                                       value: "Product",
-                                                       comment: "Row title for filtering orders by Product.")
-        static let rowCustomer = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowCustomer",
-                                                   value: "Customer",
-                                                   comment: "Row title for filtering orders by customer.")
+        static let rowTitleOrderStatus = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus",
+            value: "Order Status",
+            comment: "Row title for filtering orders by order status.")
+
+        static let rowTitleDateRange = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleDateRange",
+            value: "Date Range",
+            comment: "Row title for filtering orders by date range.")
+
+        static let rowTitleProduct = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleProduct",
+            value: "Product",
+            comment: "Row title for filtering orders by Product.")
+
+        static let rowCustomer = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowCustomer",
+            value: "Customer",
+            comment: "Row title for filtering orders by customer.")
+
+        static let rowSalesChannel = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowSalesChannel",
+            value: "Sales Channel",
+            comment: "Row title for filtering orders by sales channel.")
     }
 }
 
@@ -321,4 +370,21 @@ extension CustomerFilter: FilterType {
 
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { true }
+}
+
+extension FilterOrderListViewModel {
+    enum SalesChannelFilter: FilterType {
+        case pointOfSale
+
+        var description: String {
+            switch self {
+            case .pointOfSale:
+                return "POS"
+            }
+        }
+
+        var isActive: Bool {
+            return true
+        }
+    }
 }

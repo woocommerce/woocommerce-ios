@@ -192,7 +192,17 @@ private extension WooShippingStore {
 
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
-        remote.loadAccountSettings(siteID: siteID, completion: completion)
+        remote.loadAccountSettings(siteID: siteID, completion: { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let settings):
+                upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings.accountSettings) {
+                    completion(.success(settings))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
     }
 
     func updateAccountSettings(siteID: Int64,
@@ -731,6 +741,29 @@ private extension WooShippingStore {
         } else {
             storageShippingLabel.refund = nil
         }
+    }
+
+    /// Updates/inserts the specified readonly shipping label account settings entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
+                                                        accountSettings: ShippingLabelAccountSettings,
+                                                        onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storageAccountSettings = storage.loadShippingLabelAccountSettings(siteID: siteID) ??
+                storage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+            storageAccountSettings.update(with: accountSettings)
+
+            // Remove all previous payment methods
+            storageAccountSettings.paymentMethods?.removeAll()
+
+            // Insert the payment methods from the read-only account settings
+            for paymentMethod in accountSettings.paymentMethods {
+                let newStoragePaymentMethod = storage.insertNewObject(ofType: Storage.ShippingLabelPaymentMethod.self)
+                newStoragePaymentMethod.update(with: paymentMethod)
+                storageAccountSettings.addToPaymentMethods(newStoragePaymentMethod)
+            }
+        }, completion: onCompletion, on: .main)
     }
 }
 

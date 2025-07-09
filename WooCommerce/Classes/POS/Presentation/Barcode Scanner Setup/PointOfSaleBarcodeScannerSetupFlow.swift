@@ -3,12 +3,14 @@ import SwiftUI
 // MARK: - Point of Sale Barcode Scanner Setup Flow
 @available(iOS 17.0, *)
 class PointOfSaleBarcodeScannerSetupFlow {
-    private let scannerType: ScannerType
+    private let scannerType: PointOfSaleBarcodeScannerType
     private let onComplete: () -> Void
     private let onBackToSelection: () -> Void
     private var currentStepIndex: Int = 0
 
-    init(scannerType: ScannerType, onComplete: @escaping () -> Void, onBackToSelection: @escaping () -> Void) {
+    init(scannerType: PointOfSaleBarcodeScannerType,
+         onComplete: @escaping () -> Void,
+         onBackToSelection: @escaping () -> Void) {
         self.scannerType = scannerType
         self.onComplete = onComplete
         self.onBackToSelection = onBackToSelection

@@ -12,7 +12,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         self._isPresented = isPresented
     }
 
-    func selectScanner(_ scannerType: ScannerType) {
+    func selectScanner(_ scannerType: PointOfSaleBarcodeScannerType) {
         currentFlow = PointOfSaleBarcodeScannerSetupFlow(scannerType: scannerType, onComplete: { [weak self] in
             self?.isPresented = false
         }, onBackToSelection: { [weak self] in

@@ -27,7 +27,7 @@ struct FlowButtonsView: View {
 // MARK: - Scanner Selection View
 struct ScannerSelectionView: View {
     let options: [PointOfSaleBarcodeScannerSetupFlowOption]
-    let onSelection: (ScannerType) -> Void
+    let onSelection: (PointOfSaleBarcodeScannerType) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {

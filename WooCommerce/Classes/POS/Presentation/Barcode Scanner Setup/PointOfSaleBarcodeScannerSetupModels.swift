@@ -5,10 +5,10 @@ struct PointOfSaleBarcodeScannerSetupFlowOption: Identifiable {
     let id = UUID()
     let title: String
     let subtitle: String
-    let scannerType: ScannerType
+    let scannerType: PointOfSaleBarcodeScannerType
 }
 
-enum ScannerType {
+enum PointOfSaleBarcodeScannerType {
     case socketS720
     case starBSH20B
     case tbcScanner
@@ -18,7 +18,7 @@ enum ScannerType {
 // MARK: - Flow State
 enum PointOfSaleBarcodeScannerSetupFlowState {
     case scannerSelection
-    case setupFlow(ScannerType)
+    case setupFlow(PointOfSaleBarcodeScannerType)
 }
 
 // MARK: - Button Configuration

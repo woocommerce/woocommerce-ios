@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Scanner Selection View
-struct ScannerSelectionView: View {
+struct PointOfSaleBarcodeScannerSetupSelectionView: View {
     let options: [PointOfSaleBarcodeScannerSetupFlowOption]
     let onSelection: (PointOfSaleBarcodeScannerType) -> Void
 
@@ -76,7 +76,7 @@ struct ScannerWelcomeView: View {
 }
 
 // MARK: - Private Localization Extensions
-private extension ScannerSelectionView {
+private extension PointOfSaleBarcodeScannerSetupSelectionView {
     enum Localization {
         static let setupIntroMessage = NSLocalizedString(
             "pos.barcodeScannerSetup.introMessage",

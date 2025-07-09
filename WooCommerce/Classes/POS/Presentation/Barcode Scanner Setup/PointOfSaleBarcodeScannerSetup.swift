@@ -49,7 +49,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
     private var currentContent: some View {
         switch flowManager.currentState {
         case .scannerSelection:
-            ScannerSelectionView(options: scannerOptions) { scannerType in
+            PointOfSaleBarcodeScannerSetupSelectionView(options: scannerOptions) { scannerType in
                 flowManager.selectScanner(scannerType)
             }
         case .setupFlow:

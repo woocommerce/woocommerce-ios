@@ -356,18 +356,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.countries.count, 2, "Should include all countries for destination addresses")
     }
 
-    func test_init_fetches_countries_from_remote() {
+    func test_init_fetches_countries_from_storage() {
         // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
         let country = Country(code: "US", name: "United States", states: [])
-        stores.whenReceivingAction(ofType: DataAction.self) { action in
-            switch action {
-            case .synchronizeCountries(_, let completion):
-                storageManager.insertSampleCountries(readOnlyCountries: [country])
-                completion(.success([country]))
-            }
-        }
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
 
         // When
         let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
@@ -384,12 +377,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isDefaultAddress: true,
                                                         showCompanyField: true,
                                                         isVerified: true,
-                                                        stores: stores,
                                                         storageManager: storageManager)
 
         // Then
         XCTAssertEqual(viewModel.countries.count, 1)
-        XCTAssertTrue(stores.receivedActions.first is DataAction)
     }
 
     func test_state_required_when_selected_country_contains_states() {

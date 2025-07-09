@@ -70,7 +70,6 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             order: order,
             shipment: shipment,
             originCountryCode: originCountryCodePublisher(),
-            stores: stores,
             storageManager: storageManager
         ) { [weak self] form in
             self?.customsForm = form

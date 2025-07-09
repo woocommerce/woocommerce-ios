@@ -359,14 +359,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             Country(code: "US", name: "United States", states: []),
             Country(code: "CA", name: "Canada", states: [])
         ]
-
-        stores.whenReceivingAction(ofType: DataAction.self) { action in
-            switch action {
-            case let .synchronizeCountries(_, onCompletion):
-                storageManager.insertSampleCountries(readOnlyCountries: countries)
-                onCompletion(.success(countries))
-            }
-        }
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
 
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
             sampleOriginAddress(country: "US", state: "NY")
@@ -790,14 +783,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             Country(code: "US", name: "United States", states: []),
             Country(code: "CA", name: "Canada", states: [])
         ]
-
-        stores.whenReceivingAction(ofType: DataAction.self) { action in
-            switch action {
-            case let .synchronizeCountries(_, onCompletion):
-                storageManager.insertSampleCountries(readOnlyCountries: countries)
-                onCompletion(.success(countries))
-            }
-        }
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
 
         let viewModel = WooShippingShipmentDetailsViewModel(
             order: Order.fake(),
@@ -833,14 +819,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             originCountry,
             destinationCountry
         ]
-
-        stores.whenReceivingAction(ofType: DataAction.self) { action in
-            switch action {
-            case let .synchronizeCountries(_, onCompletion):
-                storageManager.insertSampleCountries(readOnlyCountries: countries)
-                onCompletion(.success(countries))
-            }
-        }
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
 
         let shipment = sampleShipment
 

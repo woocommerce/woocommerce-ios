@@ -210,6 +210,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedCustomer: CustomerFilter? = nil
         customerFilterViewModel.selectedValue = clearedCustomer
+
+        let clearSalesChannel: SalesChannelFilter? = nil
+        salesChannelFilterViewModel.selectedValue = clearSalesChannel
     }
 }
 
@@ -262,8 +265,9 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
         case .salesChannel:
+            let salesChannelOptions: [FilterOrderListViewModel.SalesChannelFilter] = [.any, .pointOfSale]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .salesChannel,
+                                       listSelectorConfig: .staticOptions(options: salesChannelOptions),
                                        selectedValue: filters.salesChannel)
         }
     }
@@ -375,16 +379,24 @@ extension CustomerFilter: FilterType {
 extension FilterOrderListViewModel {
     enum SalesChannelFilter: FilterType {
         case pointOfSale
+        case any
 
         var description: String {
             switch self {
             case .pointOfSale:
-                return "POS"
+                return NSLocalizedString("Point of Sale", comment: "Sales channel filter option for Point of Sale orders")
+            case .any:
+                return NSLocalizedString("Any", comment: "Sales channel filter option for all orders")
             }
         }
 
         var isActive: Bool {
-            return true
+            switch self {
+            case .pointOfSale:
+                return true
+            case .any:
+                return false
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 import SwiftUI
 
-// MARK: - Point of Sale Barcode Scanner Flow
+// MARK: - Point of Sale Barcode Scanner Setup Flow
 @available(iOS 17.0, *)
-class PointOfSaleBarcodeScannerFlow {
+class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: ScannerType
     private let onComplete: () -> Void
     private let onBackToSelection: () -> Void
@@ -118,7 +118,7 @@ class PointOfSaleBarcodeScannerFlow {
 // MARK: - Example Step Customizations
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerWelcomeStepCustomization: PointOfSaleBarcodeScannerStepCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerFlow) -> ButtonConfiguration {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> ButtonConfiguration {
         return .doneOnly {
             flow.nextStep()
         }
@@ -127,7 +127,7 @@ struct PointOfSaleBarcodeScannerWelcomeStepCustomization: PointOfSaleBarcodeScan
 
 // MARK: - Private Localization Extension
 @available(iOS 17.0, *)
-private extension PointOfSaleBarcodeScannerFlow {
+private extension PointOfSaleBarcodeScannerSetupFlow {
     enum Localization {
         static let doneButtonTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.done.button.title",

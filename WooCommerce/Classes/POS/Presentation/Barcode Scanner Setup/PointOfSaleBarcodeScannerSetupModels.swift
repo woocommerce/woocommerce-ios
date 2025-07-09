@@ -99,7 +99,7 @@ private extension ButtonConfiguration {
 // MARK: - Step Customization Protocol
 @available(iOS 17.0, *)
 protocol PointOfSaleBarcodeScannerStepCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerFlow) -> ButtonConfiguration
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> ButtonConfiguration
 }
 
 // MARK: - Setup Step

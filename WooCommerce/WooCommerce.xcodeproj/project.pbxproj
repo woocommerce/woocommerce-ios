@@ -917,7 +917,7 @@
 		20C3DB242E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */; };
 		20C3DB252E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1E2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift */; };
 		20C3DB262E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */; };
-		20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerFlow.swift */; };
+		20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift */; };
 		20C6E7512CDE4AEA00CD124C /* ItemListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6E7502CDE4AEA00CD124C /* ItemListState.swift */; };
 		20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */; };
 		20CC1EDB2AFA8381006BD429 /* InPersonPaymentsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */; };
@@ -4082,7 +4082,7 @@
 		20BCF6EF2B0E48CC00954840 /* WooPaymentsPayoutsOverviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsOverviewViewModelTests.swift; sourceTree = "<group>"; };
 		20BCF6F62B0E5AEF00954840 /* MockSystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSystemStatusService.swift; sourceTree = "<group>"; };
 		20C3CC3B2E1D31B100CF7D3B /* PointOfSaleModalHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleModalHeader.swift; sourceTree = "<group>"; };
-		20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerFlow.swift; sourceTree = "<group>"; };
+		20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupFlow.swift; sourceTree = "<group>"; };
 		20C3DB1E2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetup.swift; sourceTree = "<group>"; };
 		20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupFlowManager.swift; sourceTree = "<group>"; };
 		20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupModels.swift; sourceTree = "<group>"; };
@@ -8303,7 +8303,7 @@
 		20C3DB222E1E69CF00CF7D3B /* Barcode Scanner Setup */ = {
 			isa = PBXGroup;
 			children = (
-				20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerFlow.swift */,
+				20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift */,
 				20C3DB1E2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift */,
 				20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */,
 				20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */,
@@ -15943,7 +15943,7 @@
 				20C3DB242E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift in Sources */,
 				20C3DB252E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift in Sources */,
 				20C3DB262E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift in Sources */,
-				20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerFlow.swift in Sources */,
+				20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift in Sources */,
 				0260B1B12805321B00FCFE8C /* OrderDetailsPaymentAlertsProtocol.swift in Sources */,
 				4556ED38270645A6005CBC0D /* ShippingLabelCarrierSectionHeader.swift in Sources */,
 				267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */,

@@ -6,14 +6,14 @@ import SwiftUI
 class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection
     @ObservationIgnored @Binding var isPresented: Bool
-    private var currentFlow: PointOfSaleBarcodeScannerFlow?
+    private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
     }
 
     func selectScanner(_ scannerType: ScannerType) {
-        currentFlow = PointOfSaleBarcodeScannerFlow(scannerType: scannerType, onComplete: { [weak self] in
+        currentFlow = PointOfSaleBarcodeScannerSetupFlow(scannerType: scannerType, onComplete: { [weak self] in
             self?.isPresented = false
         }, onBackToSelection: { [weak self] in
             self?.goBackToSelection()

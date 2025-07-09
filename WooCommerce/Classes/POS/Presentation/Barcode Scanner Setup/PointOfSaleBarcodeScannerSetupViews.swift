@@ -1,29 +1,5 @@
 import SwiftUI
 
-// MARK: - Flow Buttons View
-@available(iOS 17.0, *)
-struct FlowButtonsView: View {
-    let buttonConfiguration: PointOfSaleFlowButtonConfiguration
-
-    var body: some View {
-        HStack(spacing: POSSpacing.medium) {
-            if buttonConfiguration.shouldShowBackButton {
-                Button(Localization.backButtonTitle) {
-                    buttonConfiguration.onBack()
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            }
-            if buttonConfiguration.shouldShowNextButton {
-                Button(buttonConfiguration.nextButtonTitle) {
-                    buttonConfiguration.onNext()
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .disabled(!buttonConfiguration.isNextButtonEnabled)
-            }
-        }
-    }
-}
-
 // MARK: - Scanner Selection View
 struct ScannerSelectionView: View {
     let options: [PointOfSaleBarcodeScannerSetupFlowOption]
@@ -100,18 +76,6 @@ struct ScannerWelcomeView: View {
 }
 
 // MARK: - Private Localization Extensions
-
-@available(iOS 17.0, *)
-private extension FlowButtonsView {
-    enum Localization {
-        static let backButtonTitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.back.button.title",
-            value: "Back",
-            comment: "Title for the back button in barcode scanner setup navigation"
-        )
-    }
-}
-
 private extension ScannerSelectionView {
     enum Localization {
         static let setupIntroMessage = NSLocalizedString(

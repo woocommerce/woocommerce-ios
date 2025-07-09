@@ -918,6 +918,7 @@
 		20C3DB252E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1E2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetup.swift */; };
 		20C3DB262E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */; };
 		20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift */; };
+		20C3DB292E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */; };
 		20C6E7512CDE4AEA00CD124C /* ItemListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6E7502CDE4AEA00CD124C /* ItemListState.swift */; };
 		20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */; };
 		20CC1EDB2AFA8381006BD429 /* InPersonPaymentsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */; };
@@ -4087,6 +4088,7 @@
 		20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupFlowManager.swift; sourceTree = "<group>"; };
 		20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupModels.swift; sourceTree = "<group>"; };
 		20C3DB212E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupViews.swift; sourceTree = "<group>"; };
+		20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleFlowButtonsView.swift; sourceTree = "<group>"; };
 		20C6E7502CDE4AEA00CD124C /* ItemListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListState.swift; sourceTree = "<group>"; };
 		20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListBaseItem.swift; sourceTree = "<group>"; };
 		20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenu.swift; sourceTree = "<group>"; };
@@ -8308,6 +8310,7 @@
 				20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */,
 				20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */,
 				20C3DB212E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupViews.swift */,
+				20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */,
 			);
 			path = "Barcode Scanner Setup";
 			sourceTree = "<group>";
@@ -15795,6 +15798,7 @@
 				CE6302432BAB431D00E3325C /* CustomerDetailView.swift in Sources */,
 				EE45E29F2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift in Sources */,
 				02667A1A2ABDD44200C77B56 /* GiftCardCodeScannerViewController.swift in Sources */,
+				20C3DB292E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift in Sources */,
 				57A25C7C25ACFAEC00A54A62 /* OrderFulfillmentNoticePresenter.swift in Sources */,
 				B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */,
 				205E794B2C2051B5001BA266 /* PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView.swift in Sources */,

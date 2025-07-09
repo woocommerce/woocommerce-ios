@@ -23,7 +23,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .scrollVerticallyIfNeeded()
 
             // Bottom buttons
-            FlowButtonsView(buttonConfiguration: flowManager.buttonConfiguration)
+            PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
         }
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)

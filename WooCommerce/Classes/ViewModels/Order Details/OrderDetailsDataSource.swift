@@ -61,6 +61,10 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
+    /// Shipments created for the order
+    ///
+    private var wooShippingShipments: [Shipment] = []
+
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
@@ -1696,6 +1700,36 @@ extension OrderDetailsDataSource {
     }
 }
 
+// MARK: - Woo Shipping Shipments
+extension OrderDetailsDataSource {
+    struct Shipment {
+        let index: String
+        let shippingLabel: ShippingLabel?
+    }
+
+    func populateShipments(labels: [ShippingLabel], shipments: WooShippingShipments) {
+        var contents = [Shipment]()
+
+        for key in shipments.keys.sorted(by: { $0.localizedStandardCompare($1) == .orderedAscending }) {
+
+            let label: ShippingLabel? = {
+                let purchasedLabels = labels.filter {
+                    $0.shipmentID == key && $0.status == .purchased
+                }
+                let sortedLabels = purchasedLabels.sorted { $0.dateCreated > $1.dateCreated }
+                if let completedLabel = sortedLabels.first(where: { $0.refund == nil }) {
+                    return completedLabel
+                } else {
+                    return sortedLabels.first
+                }
+            }()
+
+            let shipment = Shipment(index: key, shippingLabel: label)
+            contents.append(shipment)
+        }
+        self.wooShippingShipments = contents
+    }
+}
 
 // MARK: - Constants
 extension OrderDetailsDataSource {

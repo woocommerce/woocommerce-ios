@@ -283,9 +283,12 @@ extension OrderDetailsViewModel {
                     taskGroup.addTask { [weak self] in
                         guard let self else { return }
                         // Sync shipping labels and update order with the result if available
-                        let shippingLabels = await syncShippingLabels()
+                        let syncResult = await syncShippingLabels()
+                        dataSource.populateShipments(labels: syncResult.labels,
+                                                     shipments: syncResult.shipments)
+
                         // Update the order with the newly synced shipping labels
-                        let updatedOrder = order.copy(shippingLabels: shippingLabels)
+                        let updatedOrder = order.copy(shippingLabels: syncResult.labels)
                         update(order: updatedOrder)
                     }
                 }
@@ -703,18 +706,18 @@ extension OrderDetailsViewModel {
     }
 
     @discardableResult
-    @MainActor func syncShippingLabels() async -> [ShippingLabel] {
+    @MainActor func syncShippingLabels() async -> ShippingLabelSyncResult {
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             /// old logic for syncing labels
             if await localRequirementsForShippingLabelsAreFulfilled() {
                 return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
             }
-            return []
+            return .none
         }
 
         guard !orderContainsOnlyVirtualProducts else {
-            return []
+            return .none
         }
 
         if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
@@ -722,7 +725,7 @@ extension OrderDetailsViewModel {
         } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
             return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
         } else {
-            return []
+            return .none
         }
     }
 
@@ -990,33 +993,45 @@ private extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor func syncShippingLabelsForWooShipping() async -> [ShippingLabel] {
+    @MainActor func syncShippingLabelsForWooShipping() async -> ShippingLabelSyncResult {
         await withCheckedContinuation { continuation in
             stores.dispatch(WooShippingAction.syncShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: true) ?? []
-                continuation.resume(returning: labels)
+                switch result {
+                case let .success(result):
+                    self?.trackShippingLabelSyncingResult(result: .success, isRevampedFlow: true)
+                    continuation.resume(returning: result)
+                case let .failure(error):
+                    self?.trackShippingLabelSyncingResult(result: .failed(error: error), isRevampedFlow: true)
+                    continuation.resume(returning: .none)
+                }
             })
         }
     }
 
-    @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> [ShippingLabel] {
+    @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> ShippingLabelSyncResult {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: isRevampedFlow) ?? []
-                continuation.resume(returning: labels)
+                switch result {
+                case .success(let labels):
+                    self?.trackShippingLabelSyncingResult(result: .success, isRevampedFlow: isRevampedFlow)
+                    continuation.resume(returning: ShippingLabelSyncResult(labels: labels, shipments: [:]))
+                case .failure(let error):
+                    self?.trackShippingLabelSyncingResult(result: .failed(error: error), isRevampedFlow: isRevampedFlow)
+                    continuation.resume(returning: .none)
+                }
             })
         }
     }
 
-    func handleShippingLabelSyncingResult(result: Result<[ShippingLabel], Error>, isRevampedFlow: Bool) -> [ShippingLabel] {
+    func trackShippingLabelSyncingResult(result: WooAnalyticsEvent.ShippingLabelsAPIRequestResult,
+                                         isRevampedFlow: Bool) {
         switch result {
-        case .success(let shippingLabels):
+        case .success:
             ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                 result: .success,
                 isRevampedFlow: isRevampedFlow
             ))
-            return shippingLabels
-        case .failure(let error):
+        case .failed(let error):
             ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                 result: .failed(error: error),
                 isRevampedFlow: isRevampedFlow
@@ -1026,7 +1041,6 @@ private extension OrderDetailsViewModel {
             } else {
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
             }
-            return []
         }
     }
 

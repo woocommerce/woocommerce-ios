@@ -152,7 +152,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
-        whenSyncingShippingLabels(thenReturn: .success([]))
+        whenSyncingShippingLabels(thenReturn: .success(ShippingLabelSyncResult.none))
 
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
@@ -789,7 +789,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
-    func whenSyncingShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
+    func whenSyncingShippingLabels(thenReturn result: Result<ShippingLabelSyncResult, Error>) {
         storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
                 case let .syncShippingLabels(_, _, completion):

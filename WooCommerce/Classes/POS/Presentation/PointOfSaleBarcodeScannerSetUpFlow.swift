@@ -25,38 +25,13 @@ enum SetupFlowState {
 struct SetupStep {
     let title: String
     let content: any View
-    let nextButtonTitle: String
-    let isNextButtonEnabled: Bool
-    let canGoBack: Bool
-    let onNext: () -> Void
-    let onBack: () -> Void
 
     init(
         title: String,
-        @ViewBuilder content: () -> any View,
-        nextButtonTitle: String = Localization.nextButtonTitle,
-        isNextButtonEnabled: Bool = true,
-        canGoBack: Bool = true,
-        onNext: @escaping () -> Void,
-        onBack: @escaping () -> Void
+        @ViewBuilder content: () -> any View
     ) {
         self.title = title
         self.content = content()
-        self.nextButtonTitle = nextButtonTitle
-        self.isNextButtonEnabled = isNextButtonEnabled
-        self.canGoBack = canGoBack
-        self.onNext = onNext
-        self.onBack = onBack
-    }
-}
-
-extension SetupStep {
-    var shouldShowBackButton: Bool {
-        canGoBack
-    }
-
-    var shouldShowNextButton: Bool {
-        true // Always show next button
     }
 }
 
@@ -82,9 +57,23 @@ class ScannerFlow {
         currentStepIndex >= steps.count - 1
     }
 
+    var nextButtonTitle: String {
+        isComplete ? Localization.doneButtonTitle : Localization.nextButtonTitle
+    }
+
+    var isNextButtonEnabled: Bool {
+        true
+    }
+
+    var shouldShowBackButton: Bool {
+        true
+    }
+
     func nextStep() {
         if currentStepIndex < steps.count - 1 {
             currentStepIndex += 1
+        } else {
+            onComplete()
         }
     }
 
@@ -117,13 +106,7 @@ class ScannerFlow {
             return [
                 SetupStep(
                     title: "General Scanner Setup",
-                    content: { BarcodeScannerInformationContent() },
-                    nextButtonTitle: Localization.doneButtonTitle,
-                    canGoBack: true,
-                    onNext: onComplete,
-                    onBack: { [weak self] in
-                        self?.previousStep()
-                    }
+                    content: { BarcodeScannerInformationContent() }
                 )
             ]
         }
@@ -132,13 +115,7 @@ class ScannerFlow {
     private func createWelcomeStep(title: String) -> SetupStep {
         SetupStep(
             title: title,
-            content: { ScannerWelcomeView(title: title) },
-            nextButtonTitle: Localization.doneButtonTitle,
-            canGoBack: true,
-            onNext: onComplete,
-            onBack: { [weak self] in
-                self?.previousStep()
-            }
+            content: { ScannerWelcomeView(title: title) }
         )
     }
 }
@@ -183,6 +160,18 @@ class SetupFlowManager {
 
     func isComplete() -> Bool {
         currentFlow?.isComplete ?? false
+    }
+
+    var nextButtonTitle: String {
+        currentFlow?.nextButtonTitle ?? Localization.nextButtonTitle
+    }
+
+    var isNextButtonEnabled: Bool {
+        currentFlow?.isNextButtonEnabled ?? true
+    }
+
+    var shouldShowBackButton: Bool {
+        currentFlow?.shouldShowBackButton ?? false
     }
 }
 
@@ -278,17 +267,17 @@ struct FlowButtonsView: View {
 
     var body: some View {
         HStack(spacing: POSSpacing.medium) {
-            if let step = flowManager.getCurrentStep(), step.shouldShowBackButton {
+            if flowManager.shouldShowBackButton {
                 Button(Localization.backButtonTitle) {
-                    step.onBack()
+                    flowManager.previousStep()
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
 
-                Button(step.nextButtonTitle) {
-                    step.onNext()
+                Button(flowManager.nextButtonTitle) {
+                    flowManager.nextStep()
                 }
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .disabled(!step.isNextButtonEnabled)
+                .disabled(!flowManager.isNextButtonEnabled)
             }
         }
     }

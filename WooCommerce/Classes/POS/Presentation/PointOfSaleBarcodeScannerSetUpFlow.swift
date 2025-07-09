@@ -120,6 +120,27 @@ class ScannerFlow {
     }
 }
 
+// MARK: - Button Configuration
+struct ButtonConfiguration {
+    let shouldShowBackButton: Bool
+    let shouldShowNextButton: Bool
+    let nextButtonTitle: String
+    let isNextButtonEnabled: Bool
+    let onBack: () -> Void
+    let onNext: () -> Void
+
+    static func noButtons() -> ButtonConfiguration {
+        .init(
+            shouldShowBackButton: false,
+            shouldShowNextButton: false,
+            nextButtonTitle: "",
+            isNextButtonEnabled: false,
+            onBack: {},
+            onNext: {}
+        )
+    }
+}
+
 // MARK: - Setup Flow Manager
 @available(iOS 17.0, *)
 @Observable
@@ -162,16 +183,28 @@ class SetupFlowManager {
         currentFlow?.isComplete ?? false
     }
 
-    var nextButtonTitle: String {
-        currentFlow?.nextButtonTitle ?? Localization.nextButtonTitle
-    }
+    var buttonConfiguration: ButtonConfiguration {
+        switch currentState {
+        case .scannerSelection:
+            return .noButtons()
+        case .setupFlow:
+            guard let flow = currentFlow else {
+                return .noButtons()
+            }
 
-    var isNextButtonEnabled: Bool {
-        currentFlow?.isNextButtonEnabled ?? true
-    }
-
-    var shouldShowBackButton: Bool {
-        currentFlow?.shouldShowBackButton ?? false
+            return ButtonConfiguration(
+                shouldShowBackButton: flow.shouldShowBackButton,
+                shouldShowNextButton: true,
+                nextButtonTitle: flow.nextButtonTitle,
+                isNextButtonEnabled: flow.isNextButtonEnabled,
+                onBack: { [weak self] in
+                    self?.previousStep()
+                },
+                onNext: { [weak self] in
+                    self?.nextStep()
+                }
+            )
+        }
     }
 }
 
@@ -198,7 +231,7 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
             .scrollVerticallyIfNeeded()
 
             // Bottom buttons
-            FlowButtonsView(flowManager: flowManager)
+            FlowButtonsView(buttonConfiguration: flowManager.buttonConfiguration)
         }
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
@@ -263,21 +296,22 @@ struct PointOfSaleBarcodeScannerSetUpFlow: View {
 // MARK: - Flow Buttons View
 @available(iOS 17.0, *)
 struct FlowButtonsView: View {
-    let flowManager: SetupFlowManager
+    let buttonConfiguration: ButtonConfiguration
 
     var body: some View {
         HStack(spacing: POSSpacing.medium) {
-            if flowManager.shouldShowBackButton {
+            if buttonConfiguration.shouldShowBackButton {
                 Button(Localization.backButtonTitle) {
-                    flowManager.previousStep()
+                    buttonConfiguration.onBack()
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-
-                Button(flowManager.nextButtonTitle) {
-                    flowManager.nextStep()
+            }
+            if buttonConfiguration.shouldShowNextButton {
+                Button(buttonConfiguration.nextButtonTitle) {
+                    buttonConfiguration.onNext()
                 }
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
-                .disabled(!flowManager.isNextButtonEnabled)
+                .disabled(!buttonConfiguration.isNextButtonEnabled)
             }
         }
     }

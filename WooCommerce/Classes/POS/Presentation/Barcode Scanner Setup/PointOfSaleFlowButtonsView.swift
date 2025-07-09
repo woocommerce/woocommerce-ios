@@ -22,12 +22,6 @@ struct PointOfSaleFlowButtonsView: View {
     }
 }
 
-private extension PointOfSaleFlowButtonsView {
-    enum Localization {
-
-    }
-}
-
 // MARK: - Button Configuration
 struct PointOfSaleFlowButtonConfiguration {
     let shouldShowBackButton: Bool

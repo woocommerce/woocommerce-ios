@@ -111,7 +111,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
     private func createWelcomeStep(title: String) -> PointOfSaleBarcodeScannerSetupStep {
         PointOfSaleBarcodeScannerSetupStep(
             title: title,
-            content: { ScannerWelcomeView(title: title) },
+            content: { PointOfSaleBarcodeScannerWelcomeView(title: title) },
             customization: PointOfSaleBarcodeScannerWelcomeStepCustomization()
         )
     }

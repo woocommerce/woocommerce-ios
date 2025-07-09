@@ -18,7 +18,7 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
                     Button {
                         onSelection(option.scannerType)
                     } label: {
-                        ScannerOptionView(
+                        PointOfSaleBarcodeScannerOptionView(
                             title: option.title,
                             subtitle: option.subtitle
                         )
@@ -31,7 +31,7 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
 }
 
 // MARK: - Scanner Option View
-struct ScannerOptionView: View {
+struct PointOfSaleBarcodeScannerOptionView: View {
     let title: String
     let subtitle: String
 
@@ -57,7 +57,7 @@ struct ScannerOptionView: View {
 }
 
 // MARK: - Step Views
-struct ScannerWelcomeView: View {
+struct PointOfSaleBarcodeScannerWelcomeView: View {
     let title: String
 
     var body: some View {

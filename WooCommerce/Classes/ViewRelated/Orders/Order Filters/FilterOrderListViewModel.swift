@@ -159,6 +159,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel.selectedValue = filter.dateRange
         productFilterViewModel.selectedValue = filter.product
         customerFilterViewModel.selectedValue = filter.customer
+        salesChannelFilterViewModel.selectedValue = filter.salesChannel
         analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
@@ -268,7 +269,7 @@ extension FilterOrderListViewModel.OrderListFilter {
             let salesChannelOptions: [FilterOrderListViewModel.SalesChannelFilter] = [.any, .pointOfSale]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: salesChannelOptions),
-                                       selectedValue: filters.salesChannel)
+                                       selectedValue: filters.salesChannel ?? .any)
         }
     }
 }

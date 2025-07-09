@@ -37,7 +37,7 @@ public class OrderStore: Store {
             retrieveOrderRemotely(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, writeStrategy, pageSize, onCompletion):
+        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, createdVia, writeStrategy, pageSize, onCompletion):
             fetchFilteredOrders(siteID: siteID,
                                 statuses: statuses,
                                 after: after,
@@ -45,10 +45,11 @@ public class OrderStore: Store {
                                 modifiedAfter: modifiedAfter,
                                 customerID: customerID,
                                 productID: productID,
+                                createdVia: createdVia,
                                 writeStrategy: writeStrategy,
                                 pageSize: pageSize,
                                 onCompletion: onCompletion)
-        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, pageNumber, pageSize, onCompletion):
+        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, createdVia, pageNumber, pageSize, onCompletion):
             synchronizeOrders(siteID: siteID,
                               statuses: statuses,
                               after: after,
@@ -56,12 +57,12 @@ public class OrderStore: Store {
                               modifiedAfter: modifiedAfter,
                               customerID: customerID,
                               productID: productID,
+                              createdVia: createdVia,
                               pageNumber: pageNumber,
                               pageSize: pageSize,
                               onCompletion: onCompletion)
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
-
         case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
             updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
@@ -70,7 +71,6 @@ public class OrderStore: Store {
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
         case let .createOrder(siteID, order, giftCard, onCompletion):
             createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
-
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
                                       orderID: orderID,
@@ -148,6 +148,7 @@ private extension OrderStore {
                              modifiedAfter: Date?,
                              customerID: Int64?,
                              productID: Int64?,
+                             createdVia: String?,
                              writeStrategy: OrderAction.OrdersStorageWriteStrategy,
                              pageSize: Int,
                              onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
@@ -161,6 +162,7 @@ private extension OrderStore {
                                   modifiedAfter: modifiedAfter,
                                   customerID: customerID,
                                   productID: productID,
+                                  createdVia: createdVia,
                                   pageNumber: pageNumber,
                                   pageSize: pageSize) { [weak self] result in
             switch result {
@@ -189,6 +191,7 @@ private extension OrderStore {
                            modifiedAfter: Date?,
                            customerID: Int64?,
                            productID: Int64?,
+                           createdVia: String?,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
@@ -200,6 +203,7 @@ private extension OrderStore {
                              modifiedAfter: modifiedAfter,
                              customerID: customerID,
                              productID: productID,
+                             createdVia: createdVia,
                              pageNumber: pageNumber,
                              pageSize: pageSize) { [weak self] result in
             switch result {

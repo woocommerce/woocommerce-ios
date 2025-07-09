@@ -26,7 +26,7 @@ struct FlowButtonsView: View {
 
 // MARK: - Scanner Selection View
 struct ScannerSelectionView: View {
-    let options: [ScannerOption]
+    let options: [PointOfSaleBarcodeScannerSetupFlowOption]
     let onSelection: (ScannerType) -> Void
 
     var body: some View {

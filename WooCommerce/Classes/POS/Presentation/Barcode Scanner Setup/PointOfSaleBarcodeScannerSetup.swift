@@ -59,24 +59,24 @@ struct PointOfSaleBarcodeScannerSetup: View {
         }
     }
 
-    private var scannerOptions: [ScannerOption] {
+    private var scannerOptions: [PointOfSaleBarcodeScannerSetupFlowOption] {
         [
-            ScannerOption(
+            PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.socketS720Title,
                 subtitle: Localization.socketS720Subtitle,
                 scannerType: .socketS720
             ),
-            ScannerOption(
+            PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.starBSH20BTitle,
                 subtitle: Localization.starBSH20BSubtitle,
                 scannerType: .starBSH20B
             ),
-            ScannerOption(
+            PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.tbcScannerTitle,
                 subtitle: Localization.tbcScannerSubtitle,
                 scannerType: .tbcScanner
             ),
-            ScannerOption(
+            PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.otherTitle,
                 subtitle: Localization.otherSubtitle,
                 scannerType: .other

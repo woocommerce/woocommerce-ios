@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Data Models
-struct ScannerOption: Identifiable {
+struct PointOfSaleBarcodeScannerSetupFlowOption: Identifiable {
     let id = UUID()
     let title: String
     let subtitle: String

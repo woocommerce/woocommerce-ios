@@ -280,7 +280,7 @@ extension OrderDetailsViewModel {
                         dataSource.isEligibleForShippingLabelCreation = isEligible
                     }
 
-                    taskGroup.addTask { [weak self] in
+                    taskGroup.addTask { @MainActor [weak self] in
                         guard let self else { return }
                         // Sync shipping labels and update order with the result if available
                         let syncResult = await syncShippingLabels()

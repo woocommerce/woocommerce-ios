@@ -1705,13 +1705,18 @@ extension OrderDetailsDataSource {
     struct Shipment {
         let index: String
         let shippingLabel: ShippingLabel?
+        let items: [ShippingLabelPackageItem]
     }
 
     func populateShipments(labels: [ShippingLabel], shipments: WooShippingShipments) {
+        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
+        let packageItems = itemsDataSource.items
         var contents = [Shipment]()
 
         for key in shipments.keys.sorted(by: { $0.localizedStandardCompare($1) == .orderedAscending }) {
-
+            guard let shipmentItems = shipments[key] else {
+                continue
+            }
             let label: ShippingLabel? = {
                 let purchasedLabels = labels.filter {
                     $0.shipmentID == key && $0.status == .purchased
@@ -1724,7 +1729,19 @@ extension OrderDetailsDataSource {
                 }
             }()
 
-            let shipment = Shipment(index: key, shippingLabel: label)
+            var shipmentContents: [ShippingLabelPackageItem] = []
+            for shipmentItem in shipmentItems {
+                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
+                      let subItems = shipmentItem.subItems else {
+                    continue
+                }
+
+                let quantity = subItems.count > 0 ? subItems.count : 1
+                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
+                shipmentContents.append(updatedItem)
+            }
+
+            let shipment = Shipment(index: key, shippingLabel: label, items: shipmentContents)
             contents.append(shipment)
         }
         self.wooShippingShipments = contents

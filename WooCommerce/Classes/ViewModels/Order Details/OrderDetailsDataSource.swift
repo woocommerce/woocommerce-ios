@@ -535,6 +535,8 @@ private extension OrderDetailsDataSource {
             configureTrashOrder(cell: cell, at: indexPath)
         case let cell as HostingConfigurationTableViewCell<ShippingLineRowView> where row == .shippingLine:
             configureShippingLine(cell: cell, at: indexPath)
+        case let cell as HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView> where row == .shipmentDetails:
+            configureShipmentDetail(cell: cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -1085,6 +1087,54 @@ private extension OrderDetailsDataSource {
 
     }
 
+    func configureShipmentDetail(cell: HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>,
+                                 at indexPath: IndexPath) {
+        guard let shipment = wooShippingShipments[safe: indexPath.row] else {
+            ServiceLocator.crashLogging.logMessage(
+                "Invalid shipment index in OrderDetailsDataSource",
+                properties: [
+                    "row": indexPath.row,
+                    "section": indexPath.section,
+                    "availableShippingLinesCount": wooShippingShipments.count
+                ],
+                level: .error
+            )
+            return
+        }
+
+        let totalShipmentCount = wooShippingShipments.count
+        let isLastRow = indexPath.row == totalShipmentCount - 1
+        let view = OrderDetailsShipmentDetailsView(
+            shipment: shipment,
+            totalShipmentCount: totalShipmentCount,
+            shouldShowBottomDivider: !isLastRow,
+            eligibleForCreatingShippingLabel: isEligibleForShippingLabelCreation,
+            onViewItems: {},
+            onCreateLabel: { [weak self] in
+                self?.onCellAction?(.createShippingLabel, indexPath)
+            },
+            onViewLabel: { [weak self] in
+                guard let label = shipment.shippingLabel else { return }
+                self?.onCellAction?(.openShippingLabelForm(shippingLabel: label), indexPath)
+            },
+            onPrintLabel: { [weak self] in
+                guard let label = shipment.shippingLabel else { return }
+                self?.onCellAction?(.reprintShippingLabel(shippingLabel: label), indexPath)
+            },
+            onRefundRequested: { [weak self] updatedLabel in
+                self?.onCellAction?(.didRequestRefund(shippingLabel: updatedLabel), indexPath)
+            }
+        )
+
+        // Reduce cell padding between rows
+        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0
+        let insets = UIEdgeInsets(top: topMargin, left: Constants.cellDefaultMargin, bottom: Constants.cellDefaultMargin, right: Constants.cellDefaultMargin)
+
+        cell.host(view, insets: insets)
+        cell.hideSeparator()
+        cell.selectionStyle = .none
+    }
+
     private func configureSummary(cell: SummaryTableViewCell) {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
@@ -1325,8 +1375,10 @@ extension OrderDetailsDataSource {
             return Section(category: .installWCShip, title: nil, rows: rows)
         }()
 
+        let wooShippingSection = createWooShippingSection()
+
         let shippingLabelSections: [Section] = {
-            guard shippingLabels.isNotEmpty else {
+            guard wooShippingSection == nil, shippingLabels.isNotEmpty else {
                 return []
             }
 
@@ -1516,7 +1568,8 @@ extension OrderDetailsDataSource {
             customAmountsSection,
             customFields,
             installWCShipSection,
-            refundedProducts
+            refundedProducts,
+            wooShippingSection
         ] + shippingLabelSections + [
             subscriptions,
             shippingLinesSection,
@@ -1528,6 +1581,17 @@ extension OrderDetailsDataSource {
             notes,
             trashOrderSection
         ]
+    }
+
+    private func createWooShippingSection() -> Section? {
+        guard wooShippingShipments.isNotEmpty else {
+            return nil
+        }
+        return Section(
+            category: .payment,
+            title: "Shipping Labels",
+            rows: wooShippingShipments.map { _ in Row.shipmentDetails }
+        )
     }
 
     private func createPaymentSection() -> Section {
@@ -1846,6 +1910,7 @@ extension OrderDetailsDataSource {
             case shippingLabel
             case refundedProducts
             case payment
+            case wooShipping
             case customerInformation
             case subscriptions
             case giftCards
@@ -1955,6 +2020,7 @@ extension OrderDetailsDataSource {
         case shippingLabelRefunded
         case shippingLabelReprintButton
         case shippingLabelTrackingNumber
+        case shipmentDetails
         case shippingLine
         case addOrderNote
         case orderNoteHeader
@@ -2047,6 +2113,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLine:
                 return HostingConfigurationTableViewCell<ShippingLineRowView>.reuseIdentifier
+            case .shipmentDetails:
+                return HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>.reuseIdentifier
             }
         }
     }
@@ -2060,6 +2128,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case openShippingLabelForm(shippingLabel: ShippingLabel)
+        case didRequestRefund(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote

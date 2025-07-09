@@ -385,9 +385,15 @@ extension FilterOrderListViewModel {
         var description: String {
             switch self {
             case .pointOfSale:
-                return NSLocalizedString("Point of Sale", comment: "Sales channel filter option for Point of Sale orders")
+                return NSLocalizedString(
+                    "salesChannelFilter.row.pos.description",
+                    value: "Point of Sale",
+                    comment: "Description for the Sales channel filter option, when selecting 'Point of Sale' orders")
             case .any:
-                return NSLocalizedString("Any", comment: "Sales channel filter option for all orders")
+                return NSLocalizedString(
+                    "salesChannelFilter.row.any.description",
+                    value: "Any",
+                    comment: "Description for the Sales channel filter option, when selecting 'Any' order")
             }
         }
 

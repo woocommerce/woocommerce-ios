@@ -27,7 +27,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
                                                        salesChannel: .any,
-                                                       numberOfActiveFilters: 4)
+                                                       numberOfActiveFilters: 5)
 
         // When
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: [], siteID: 1)

@@ -26,7 +26,7 @@ struct PointOfSaleFlowButtonsView: View {
 struct PointOfSaleFlowButtonConfiguration {
     let shouldShowBackButton: Bool
     let shouldShowNextButton: Bool
-    let backButtonTitle = Localization.backButtonTitle
+    let backButtonTitle: String
     let nextButtonTitle: String
     let isNextButtonEnabled: Bool
     let onBack: () -> Void
@@ -36,6 +36,7 @@ struct PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: false,
             shouldShowNextButton: false,
+            backButtonTitle: "",
             nextButtonTitle: "",
             isNextButtonEnabled: false,
             onBack: {},
@@ -47,6 +48,7 @@ struct PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: false,
             shouldShowNextButton: true,
+            backButtonTitle: "",
             nextButtonTitle: Localization.doneButtonTitle,
             isNextButtonEnabled: true,
             onBack: {},
@@ -59,6 +61,7 @@ struct PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: true,
             shouldShowNextButton: true,
+            backButtonTitle: Localization.closeButtonTitle,
             nextButtonTitle: Localization.retryButtonTitle,
             isNextButtonEnabled: true,
             onBack: onClose,
@@ -71,6 +74,7 @@ struct PointOfSaleFlowButtonConfiguration {
         .init(
             shouldShowBackButton: true,
             shouldShowNextButton: true,
+            backButtonTitle: Localization.backButtonTitle,
             nextButtonTitle: Localization.nextButtonTitle,
             isNextButtonEnabled: false,
             onBack: onBack,
@@ -100,7 +104,12 @@ private extension PointOfSaleFlowButtonConfiguration {
         static let backButtonTitle = NSLocalizedString(
             "pos.flow.back.button.title",
             value: "Back",
-            comment: "Title for the back button in barcode scanner setup navigation"
+            comment: "Title for the back button in a step by step flow view in POS"
+        )
+        static let closeButtonTitle = NSLocalizedString(
+            "pos.flow.close.button.title",
+            value: "Close",
+            comment: "Title for the back button in a step by step flow view in POS"
         )
     }
 }

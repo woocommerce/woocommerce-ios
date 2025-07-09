@@ -267,9 +267,11 @@ private extension FilterListViewController {
                 guard let self = self else {
                     return
                 }
-                selected.selectedValue = selectedOption
-                self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                self.listSelector.reloadData()
+                if selectedOption.description != selected.selectedValue.description {
+                    selected.selectedValue = selectedOption
+                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
+                    self.listSelector.reloadData()
+                }
             }
 
             switch selected.listSelectorConfig {

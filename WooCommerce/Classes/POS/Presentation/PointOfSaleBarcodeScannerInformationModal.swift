@@ -10,6 +10,14 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 
     var body: some View {
         PointOfSaleInformationModal(isPresented: $isPresented, title: AttributedString(Localization.barcodeInfoHeading)) {
+            BarcodeScannerInformationContent()
+        }
+    }
+}
+
+struct BarcodeScannerInformationContent: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.medium) {
             PointOfSaleInformationModalParagraphView {
                 Text(AttributedString(Localization.barcodeInfoIntroMessage))
             }
@@ -50,17 +58,22 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
     }
 }
 
-private extension PointOfSaleBarcodeScannerInformationModal {
-    enum Constants {
-        static let detailsLink = URL(string: "https://woocommerce.com/document/barcode-and-qr-code-scanner/")
-    }
-
+extension PointOfSaleBarcodeScannerInformationModal {
     enum Localization {
         static let barcodeInfoHeading = NSLocalizedString(
             "pos.barcodeInfoModal.heading",
             value: "Barcode scanning",
             comment: "Heading for the barcode info modal in POS, introducing barcode scanning feature"
         )
+    }
+}
+
+private extension BarcodeScannerInformationContent {
+    enum Constants {
+        static let detailsLink = URL(string: "https://woocommerce.com/document/barcode-and-qr-code-scanner/")
+    }
+
+    enum Localization {
         static let barcodeInfoIntroMessage = NSLocalizedString(
             "pos.barcodeInfoModal.introMessage",
             value: "You can scan barcodes using an external scanner to quickly build a cart.",

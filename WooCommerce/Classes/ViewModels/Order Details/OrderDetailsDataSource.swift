@@ -63,7 +63,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Shipments created for the order
     ///
-    private var wooShippingShipments: [Shipment] = []
+    private(set) var wooShippingShipments: [Shipment] = []
 
     /// Whether the button to create shipping labels should be visible.
     ///
@@ -1709,7 +1709,7 @@ extension OrderDetailsDataSource {
     }
 
     func populateShipments(labels: [ShippingLabel], shipments: WooShippingShipments) {
-        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
+        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order, storageManager: storageManager)
         let packageItems = itemsDataSource.items
         var contents = [Shipment]()
 

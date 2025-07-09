@@ -132,7 +132,16 @@ struct OrderDetailsShipmentDetailsView: View {
         }
         .sheet(isPresented: $shouldPrintCustomsForm) {
             if let url = shipment.shippingLabel?.commercialInvoiceURL {
-                PrintCustomsFormsView(invoiceURLs: [url])
+                NavigationStack {
+                    PrintCustomsFormsView(invoiceURLs: [url])
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button(Localization.cancel) {
+                                    shouldPrintCustomsForm = false
+                                }
+                            }
+                        }
+                }
             }
         }
     }
@@ -218,6 +227,11 @@ private extension OrderDetailsShipmentDetailsView {
             "orderDetailsShipmentDetailsView.viewShippingLabel",
             value: "View purchased shipping label",
             comment: "Button to view details of a shipping label"
+        )
+        static let cancel = NSLocalizedString(
+            "orderDetailsShipmentDetailsView.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss printing customs form for a shipping label"
         )
     }
 }

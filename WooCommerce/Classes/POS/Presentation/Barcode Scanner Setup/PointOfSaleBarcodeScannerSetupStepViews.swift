@@ -15,7 +15,6 @@ struct PointOfSaleBarcodeScannerWelcomeView: View {
                 .foregroundColor(.posOnSurfaceVariantHighest)
                 .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -40,7 +39,6 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
 
             Image(barcode.imageName)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
@@ -76,7 +74,6 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var instruction: String {

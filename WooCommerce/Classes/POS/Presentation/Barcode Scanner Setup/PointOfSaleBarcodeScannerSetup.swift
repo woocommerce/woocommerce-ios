@@ -18,6 +18,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
 
             VStack {
                 currentContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 Spacer()
             }
             .scrollVerticallyIfNeeded()

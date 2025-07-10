@@ -62,7 +62,7 @@ struct PointOfSaleEntryPointView: View {
                 }
             case let .ineligible(reason):
                 POSIneligibleView(reason: reason, onRefresh: {
-                    try await posEntryPointController.refreshEligibility()
+                    try await posEntryPointController.refreshEligibility(reason: reason)
                 })
             }
         }

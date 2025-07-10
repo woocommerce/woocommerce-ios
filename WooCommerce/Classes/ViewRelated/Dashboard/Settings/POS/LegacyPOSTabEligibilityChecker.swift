@@ -113,6 +113,11 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
         let eligibility = await checkI1Eligibility()
         return eligibility == .eligible
     }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        assertionFailure("POS as a tab i1 implementation should not refresh eligibility as the eligibility check is performed in the visibility check.")
+        return .eligible
+    }
 }
 
 private extension LegacyPOSTabEligibilityChecker {

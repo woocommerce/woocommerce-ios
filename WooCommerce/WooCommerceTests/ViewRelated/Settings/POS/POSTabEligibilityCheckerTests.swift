@@ -587,7 +587,7 @@ private extension POSTabEligibilityCheckerTests {
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
         pluginsService.pluginToReturn = .fake().copy(
             siteID: siteID,
-            plugin: "WooCommerce",
+            plugin: "woocommerce/woocommerce.php",
             version: version,
             active: true
         )
@@ -648,7 +648,7 @@ private extension POSTabEligibilityCheckerTests {
 private final class MockPluginsService: PluginsServiceProtocol {
     var pluginToReturn: SystemPlugin = .fake()
 
-    func waitForPluginInStorage(siteID: Int64, pluginName: String, isActive: Bool) async -> SystemPlugin {
+    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
         pluginToReturn
     }
 }

@@ -19,6 +19,32 @@ struct PointOfSaleBarcodeScannerWelcomeView: View {
     }
 }
 
+struct PointOfSaleBarcodeScannerBarcodeView: View {
+    let title: String
+    let instruction: String
+    let barcode: PointOfSaleAssets
+
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(instruction)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+
+            Image(barcode.imageName)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+
 // MARK: - Button Customizations
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerWelcomeButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {

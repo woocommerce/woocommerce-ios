@@ -85,7 +85,12 @@ class PointOfSaleBarcodeScannerSetupFlow {
             ]
         case .starBSH20B:
             return [
-                createWelcomeStep(title: "Star BSH-20B Setup")
+                PointOfSaleBarcodeScannerSetupStep(content: {
+                    PointOfSaleBarcodeScannerBarcodeView(
+                        title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
+                        instruction: Localization.setUpBarcodeStepInstruction,
+                        barcode: .starBsh20SetupBarcode)
+                })
                 // TODO: Add more steps for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
@@ -131,5 +136,8 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             value: "Back",
             comment: "Title for the back button in barcode scanner setup navigation"
         )
+        //TODO: WOOMOB-792
+        static let starSetUpBarcodeStepTitleFormat = "%1$@ Setup"
+        static let setUpBarcodeStepInstruction = "Scan the barcode to set up your scanner."
     }
 }

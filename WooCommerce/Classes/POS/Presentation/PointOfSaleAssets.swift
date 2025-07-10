@@ -14,6 +14,7 @@ enum PointOfSaleAssets: CaseIterable {
     case shoppingBags
     case successCheck
     case coupons
+    case starBsh20SetupBarcode
 
     var imageName: String {
         switch self {
@@ -43,6 +44,8 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-success-check"
         case .coupons:
             "coupons"
+        case .starBsh20SetupBarcode:
+            "star-bsh20-setup-barcode"
         }
     }
 }

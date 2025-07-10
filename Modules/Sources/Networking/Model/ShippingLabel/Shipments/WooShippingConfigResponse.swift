@@ -44,6 +44,8 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let shippingLabelData = try container.decodeIfPresent(WooShippingLabelData.self, forKey: .shippingLabelData)
+
         let shipments: [WooShippingShipment] = {
             guard let shipmentsString = try? container.decodeIfPresent(String.self, forKey: .shipments),
                   let data = shipmentsString.data(using: .utf8) else {
@@ -54,14 +56,29 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
                 return []
             }
 
+            let labels = shippingLabelData?.currentOrderLabels ?? []
             var shipments = [WooShippingShipment]()
             for (index, items) in contents {
-                shipments.append(WooShippingShipment(siteID: siteID, orderID: orderID, index: index, items: items))
+                let label: ShippingLabel? = {
+                    let purchasedLabels = labels.filter {
+                        $0.shipmentID == index && $0.status == .purchased
+                    }
+                    let sortedLabels = purchasedLabels.sorted { $0.dateCreated > $1.dateCreated }
+                    if let completedLabel = sortedLabels.first(where: { $0.refund == nil }) {
+                        return completedLabel
+                    } else {
+                        return sortedLabels.first
+                    }
+                }()
+                shipments.append(WooShippingShipment(siteID: siteID,
+                                                     orderID: orderID,
+                                                     index: index,
+                                                     items: items,
+                                                     shippingLabel: label))
             }
             return shipments
         }()
 
-        let shippingLabelData = try container.decodeIfPresent(WooShippingLabelData.self, forKey: .shippingLabelData)
         self.init(siteID: siteID,
                   shipments: shipments,
                   shippingLabelData: shippingLabelData)

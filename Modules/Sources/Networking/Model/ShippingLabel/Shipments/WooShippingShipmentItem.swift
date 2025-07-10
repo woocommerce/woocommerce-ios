@@ -16,11 +16,19 @@ public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiab
     /// Contents of the shipment
     public let items: [WooShippingShipmentItem]
 
-    public init(siteID: Int64, orderID: Int64, index: String, items: [WooShippingShipmentItem]) {
+    /// The latest label purchased for the shipment
+    public let shippingLabel: ShippingLabel?
+
+    public init(siteID: Int64,
+                orderID: Int64,
+                index: String,
+                items: [WooShippingShipmentItem],
+                shippingLabel: ShippingLabel?) {
         self.siteID = siteID
         self.orderID = orderID
         self.index = index
         self.items = items
+        self.shippingLabel = shippingLabel
     }
 }
 

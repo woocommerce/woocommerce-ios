@@ -3729,18 +3729,21 @@ extension Networking.WooShippingShipment {
         siteID: CopiableProp<Int64> = .copy,
         orderID: CopiableProp<Int64> = .copy,
         index: CopiableProp<String> = .copy,
-        items: CopiableProp<[WooShippingShipmentItem]> = .copy
+        items: CopiableProp<[WooShippingShipmentItem]> = .copy,
+        shippingLabel: NullableCopiableProp<ShippingLabel> = .copy
     ) -> Networking.WooShippingShipment {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
         let index = index ?? self.index
         let items = items ?? self.items
+        let shippingLabel = shippingLabel ?? self.shippingLabel
 
         return Networking.WooShippingShipment(
             siteID: siteID,
             orderID: orderID,
             index: index,
-            items: items
+            items: items,
+            shippingLabel: shippingLabel
         )
     }
 }

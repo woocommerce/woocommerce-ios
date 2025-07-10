@@ -2491,7 +2491,8 @@ extension Networking.WooShippingShipment {
             siteID: .fake(),
             orderID: .fake(),
             index: .fake(),
-            items: .fake()
+            items: .fake(),
+            shippingLabel: .fake()
         )
     }
 }

@@ -61,7 +61,8 @@ enum ShippingLabelSampleData {
                             siteID: 1,
                             orderID: 2,
                             index: "0",
-                            items: [sampleWooShippingShipmentItem()]
+                            items: [sampleWooShippingShipmentItem()],
+                            shippingLabel: nil,
                           )],
                           shippingLabelData: nil)
     }

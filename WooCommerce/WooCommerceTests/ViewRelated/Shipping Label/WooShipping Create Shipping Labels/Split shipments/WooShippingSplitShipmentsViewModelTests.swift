@@ -834,19 +834,20 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // When
         let shipmentID = viewModel.shipments[0].index
         let purchasedLabelID: Int64 = 325
-        viewModel.didPurchaseLabel(for: shipmentID, purchasedLabelID: purchasedLabelID)
+        let label = ShippingLabel.fake().copy(shippingLabelID: purchasedLabelID)
+        viewModel.didPurchaseLabel(for: shipmentID, label: label)
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
         XCTAssertEqual(viewModel.shipments[0].index, 0)
-        XCTAssertEqual(viewModel.shipments[0].purchasedLabelID, purchasedLabelID)
+        XCTAssertEqual(viewModel.shipments[0].purchasedLabel, label)
         XCTAssertFalse(viewModel.shipments[0].contents[0].mainItemRow.isSelectable)
         XCTAssertTrue(viewModel.shipments[0].contents[0].childItemRows.allSatisfy({ !$0.isSelectable }))
 
         XCTAssertEqual(viewModel.shipments[1].index, 1)
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertTrue(viewModel.shipments[1].contents[0].mainItemRow.isSelectable)
-        XCTAssertNil(viewModel.shipments[1].purchasedLabelID)
+        XCTAssertNil(viewModel.shipments[1].purchasedLabel)
     }
 
     // MARK: - `didRequestRefund`
@@ -877,14 +878,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.shipments.count, 2)
-        XCTAssertNil(viewModel.shipments[0].purchasedLabelID)
+        XCTAssertNil(viewModel.shipments[0].purchasedLabel)
         XCTAssertTrue(viewModel.shipments[0].contents[0].mainItemRow.isSelectable)
         XCTAssertTrue(viewModel.shipments[0].contents[0].childItemRows.allSatisfy({ $0.isSelectable }))
 
 
         XCTAssertEqual(viewModel.shipments[1].contents.count, 1)
         XCTAssertTrue(viewModel.shipments[1].contents[0].mainItemRow.isSelectable)
-        XCTAssertNil(viewModel.shipments[1].purchasedLabelID)
+        XCTAssertNil(viewModel.shipments[1].purchasedLabel)
     }
 
     // MARK: - `enableDoneButton`

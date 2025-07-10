@@ -627,14 +627,14 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.originAddressLines?.first, labelOriginAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
         XCTAssertEqual(viewModel.originAddressLines?.first, originAddress.address1)
     }
 
@@ -679,14 +679,14 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, labelDestinationAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
     }
 
@@ -702,7 +702,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let order = Order.fake().copy(shippingLabels: [shippingLabel])
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: shippingLabel.shippingLabelID,
+            purchasedLabel: shippingLabel,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -746,7 +746,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         )
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -813,7 +813,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -895,7 +895,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()

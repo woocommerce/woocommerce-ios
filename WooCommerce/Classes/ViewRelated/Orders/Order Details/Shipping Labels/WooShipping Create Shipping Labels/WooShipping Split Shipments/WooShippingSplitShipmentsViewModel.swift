@@ -159,14 +159,14 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         selectedShipmentIndex = 0
     }
 
-    func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {
+    func didPurchaseLabel(for shipmentIndex: Int, label: ShippingLabel) {
         let currentShipment = shipments[shipmentIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
         shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
-                                            purchasedLabelID: purchasedLabelID,
+                                            purchasedLabel: label,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
@@ -179,7 +179,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
         shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
-                                            purchasedLabelID: nil,
+                                            purchasedLabel: nil,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
@@ -562,7 +562,7 @@ extension WooShippingSplitShipmentsViewModel {
 
                 return Shipment(index: Int(shipment.index) ?? 0,
                                 contents: shipmentContents,
-                                purchasedLabelID: shipment.shippingLabel?.shippingLabelID,
+                                purchasedLabel: shipment.shippingLabel,
                                 currency: currency,
                                 currencySettings: currencySettings,
                                 shippingSettingsService: shippingSettingsService)
@@ -586,7 +586,7 @@ extension WooShippingSplitShipmentsViewModel {
         let index: Int
 
         let contents: [CollapsibleShipmentItemCardViewModel]
-        let purchasedLabelID: Int64?
+        let purchasedLabel: ShippingLabel?
 
         let quantity: String
         let weight: String
@@ -603,7 +603,7 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         var isPurchased: Bool {
-            purchasedLabelID != nil
+            purchasedLabel != nil
         }
 
         private let currency: String
@@ -613,14 +613,14 @@ extension WooShippingSplitShipmentsViewModel {
         init(id: String = UUID().uuidString,
              index: Int = 0,
              contents: [CollapsibleShipmentItemCardViewModel],
-             purchasedLabelID: Int64? = nil,
+             purchasedLabel: ShippingLabel? = nil,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.id = id
             self.index = index
             self.contents = contents
-            self.purchasedLabelID = purchasedLabelID
+            self.purchasedLabel = purchasedLabel
 
             let items = contents.map(\.packageItem)
             let itemsCount = items.map(\.quantity).reduce(0, +)
@@ -661,7 +661,7 @@ extension WooShippingSplitShipmentsViewModel {
             Shipment(id: id,
                      index: newIndex,
                      contents: contents,
-                     purchasedLabelID: purchasedLabelID,
+                     purchasedLabel: purchasedLabel,
                      currency: currency,
                      currencySettings: currencySettings,
                      shippingSettingsService: shippingSettingsService)

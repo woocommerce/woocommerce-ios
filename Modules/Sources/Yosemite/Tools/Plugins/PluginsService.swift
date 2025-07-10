@@ -7,10 +7,10 @@ public protocol PluginsServiceProtocol {
     /// Waits for a specific plugin to be available in storage.
     /// - Parameters:
     ///   - siteID: The site ID to search for the plugin.
-    ///   - plugin: The plugin's file path (e.g., "woocommerce/woocommerce.php" for WooCommerce).
+    ///   - pluginPath: The plugin's file path (e.g., "woocommerce/woocommerce.php" for WooCommerce).
     ///   - isActive: Whether the plugin is active or not.
     /// - Returns: The SystemPlugin when found in storage.
-    func waitForPluginInStorage(siteID: Int64, plugin: String, isActive: Bool) async -> SystemPlugin
+    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin
 }
 
 public class PluginsService: PluginsServiceProtocol {
@@ -21,8 +21,8 @@ public class PluginsService: PluginsServiceProtocol {
     }
 
     @MainActor
-    public func waitForPluginInStorage(siteID: Int64, plugin: String, isActive: Bool) async -> SystemPlugin {
-        let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.plugin == plugin && \StorageSystemPlugin.active == isActive
+    public func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
+        let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.plugin == pluginPath && \StorageSystemPlugin.active == isActive
         let pluginDescriptor = NSSortDescriptor(keyPath: \StorageSystemPlugin.plugin, ascending: true)
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager,
                                                                        matching: predicate,
@@ -34,7 +34,7 @@ public class PluginsService: PluginsServiceProtocol {
                 return plugin
             }
         } catch {
-            DDLogError("Error loading plugin \(plugin) for site \(siteID) initially: \(error.localizedDescription)")
+            DDLogError("Error loading plugin \(pluginPath) for site \(siteID) initially: \(error.localizedDescription)")
         }
 
         return await withCheckedContinuation { continuation in

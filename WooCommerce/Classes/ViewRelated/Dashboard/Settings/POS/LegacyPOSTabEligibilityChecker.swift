@@ -154,7 +154,7 @@ private extension LegacyPOSTabEligibilityChecker {
 
     @MainActor
     func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
-        await pluginsService.waitForPluginInStorage(siteID: siteID, plugin: Constants.wcPlugin, isActive: true)
+        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginPath: Constants.wcPlugin, isActive: true)
     }
 
     @MainActor

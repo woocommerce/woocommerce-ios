@@ -648,7 +648,7 @@ private extension POSTabEligibilityCheckerTests {
 private final class MockPluginsService: PluginsServiceProtocol {
     var pluginToReturn: SystemPlugin = .fake()
 
-    func waitForPluginInStorage(siteID: Int64, plugin: String, isActive: Bool) async -> SystemPlugin {
+    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
         pluginToReturn
     }
 }

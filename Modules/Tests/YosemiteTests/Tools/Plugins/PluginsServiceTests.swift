@@ -18,7 +18,7 @@ struct PluginsServiceTests {
         storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "1.0.0")
 
         // When
-        let result = await sut.waitForPluginInStorage(siteID: siteID, plugin: PluginConstants.plugin, isActive: true)
+        let result = await sut.waitForPluginInStorage(siteID: siteID, pluginPath: PluginConstants.plugin, isActive: true)
 
         // Then
         #expect(result.siteID == siteID)
@@ -33,7 +33,7 @@ struct PluginsServiceTests {
         await storageManager.reset()
 
         // When
-        async let plugin = sut.waitForPluginInStorage(siteID: siteID, plugin: PluginConstants.plugin, isActive: true)
+        async let plugin = sut.waitForPluginInStorage(siteID: siteID, pluginPath: PluginConstants.plugin, isActive: true)
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 0)
         storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "2.0.0")
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 1)

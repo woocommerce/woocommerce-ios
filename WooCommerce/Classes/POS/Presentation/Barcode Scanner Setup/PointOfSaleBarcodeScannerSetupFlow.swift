@@ -90,7 +90,10 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
                         instruction: Localization.setUpBarcodeStepInstruction,
                         barcode: .starBsh20SetupBarcode)
-                })
+                }),
+                PointOfSaleBarcodeScannerSetupStep(content: {
+                    PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
+                }),
                 // TODO: Add more steps for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:

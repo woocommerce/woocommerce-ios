@@ -44,6 +44,55 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
     }
 }
 
+struct PointOfSaleBarcodeScannerPairingView: View {
+    let scanner: PointOfSaleBarcodeScannerType
+
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            // Temporary image until finalised assets are available
+            Image(systemName: "gearshape")
+                .font(.system(size: 78))
+                .accessibilityHidden(true)
+
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(instruction)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+
+            Button {
+                guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+                    return
+                }
+                UIApplication.shared.open(targetURL)
+            } label: {
+                Text(Localization.settingsButtonTitle)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var instruction: String {
+        String(format: Localization.instructionFormat, scanner.name)
+    }
+}
+
+private extension PointOfSaleBarcodeScannerPairingView {
+    //TODO: WOOMOB-792
+    enum Localization {
+        static let settingsButtonTitle = "Go to settings"
+        static let title = "Pair your device"
+        static let instructionFormat = "Enable Bluetooth and select your %1$@ scanner in iOS Settings."
+    }
+}
+
 
 // MARK: - Button Customizations
 @available(iOS 17.0, *)

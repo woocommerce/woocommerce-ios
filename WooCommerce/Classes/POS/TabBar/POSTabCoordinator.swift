@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import UIKit
 import SwiftUI
@@ -14,7 +15,9 @@ final class POSTabViewController: UIViewController {
         tabBarItem.title = NSLocalizedString("pos.tab.title", value: "POS", comment: "Title for the Point of Sale tab.")
         tabBarItem.image = UIImage(systemName: "cart")
         tabBarItem.accessibilityIdentifier = "tab-bar-pos-item"
-        tabBarItem.badgeValue = NSLocalizedString("pos.tab.badge.new", value: "NEW", comment: "NEW badge text for the Point of Sale tab.")
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+            tabBarItem.badgeValue = NSLocalizedString("pos.tab.badge.new", value: "NEW", comment: "NEW badge text for the Point of Sale tab.")
+        }
     }
 }
 

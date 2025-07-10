@@ -131,7 +131,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
                 return await checkEligibility()
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
-            // TODO: sync the WooCommerce plugin then check eligibility again.
+            // TODO: WOOMOB-799 - sync the WooCommerce plugin then check eligibility again.
+            // For now, it requires relaunching the app or switching stores to refresh the plugin info.
             return await checkEligibility()
         case .featureSwitchDisabled:
             // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again

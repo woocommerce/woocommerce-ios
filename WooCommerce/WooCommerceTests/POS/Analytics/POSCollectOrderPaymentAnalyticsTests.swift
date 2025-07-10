@@ -17,7 +17,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         let siteID: Int64 = 123
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        let sut = POSCollectOrderPaymentAnalytics(siteID: siteID, analytics: analytics, configuration: configuration)
+        let sut = POSCollectOrderPaymentAnalytics(analytics: analytics, configuration: configuration)
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
         let expectedEvent = "card_present_collect_payment_success"
         let expectedProperties = [
@@ -29,7 +29,6 @@ struct POSCollectOrderPaymentAnalyticsTests {
             "card_reader_model",
             "country",
             "payment_method_type",
-            "site_id",
             "plugin_slug"
         ]
 

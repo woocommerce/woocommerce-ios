@@ -30,7 +30,6 @@ extension WooAnalyticsEvent {
             static let cardReaderModel = "card_reader_model"
             static let countryCode = "country"
             static let paymentMethodType = "payment_method_type"
-            static let siteID = "site_id"
             static let gatewayID = "plugin_slug"
         }
 
@@ -111,7 +110,6 @@ extension WooAnalyticsEvent {
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
                                                      cardReaderModel: String?,
-                                                     siteID: Int64,
                                                      millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
@@ -122,7 +120,6 @@ extension WooAnalyticsEvent {
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
                 Key.paymentMethodType: paymentMethod.analyticsValue,
-                Key.siteID: siteID,
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",

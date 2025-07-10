@@ -52,7 +52,8 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                                         orderStatusesFilter: nil,
                                         dateRangeFilter: nil,
                                         productFilter: nil,
-                                        customerFilter: nil)))
+                                        customerFilter: nil,
+                                        salesChannelFilter: nil)))
         case .upsertProductsSettings(_, _, _, _, _, _, _, let onCompletion):
             onCompletion(nil)
         case .resetEligibilityErrorInfo,

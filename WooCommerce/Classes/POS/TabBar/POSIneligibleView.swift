@@ -99,8 +99,8 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
         case .featureSwitchSyncFailure:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
-                                     value: "Try relaunching the app or check your internet connection and try again.",
-                                     comment: "Suggestion for feature switch sync failure: relaunch or check connection")
+                                     value: "Please check your internet connection and try again.",
+                                     comment: "Suggestion for feature switch sync failure: check connection and retry")
         case let .unsupportedCurrency(supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
@@ -114,7 +114,7 @@ struct POSIneligibleView: View {
             return String.localizedStringWithFormat(format, formattedCurrencyList)
         case .siteSettingsNotAvailable:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
-                                     value: "Check your internet connection and try relaunching the app. If the issue persists, please contact support.",
+                                     value: "Check your internet connection and try again. If the issue persists, please contact support.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
         case .selfDeallocated:
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",

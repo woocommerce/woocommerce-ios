@@ -146,25 +146,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 // MARK: - WC Plugin Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
-    @MainActor
-    func syncSiteSettingsRemotely() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-            guard let self else {
-                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
-            }
-            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
-                guard let self else {
-                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
-                }
-                if let error {
-                    return continuation.resume(throwing: error)
-                }
-                siteSettings.refresh()
-                continuation.resume(returning: ())
-            })
-        }
-    }
-
     func checkPluginEligibility() async -> POSEligibilityState {
         let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
 
@@ -281,6 +262,25 @@ private extension POSTabEligibilityChecker {
             return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrenciesForCountry))
         }
         return .eligible
+    }
+
+    @MainActor
+    func syncSiteSettingsRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                if let error {
+                    return continuation.resume(throwing: error)
+                }
+                siteSettings.refresh()
+                continuation.resume(returning: ())
+            })
+        }
     }
 }
 

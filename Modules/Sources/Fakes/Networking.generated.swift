@@ -2483,6 +2483,18 @@ extension Networking.WooShippingSelectedRate {
         )
     }
 }
+extension Networking.WooShippingShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingShipment {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            index: .fake(),
+            items: .fake()
+        )
+    }
+}
 extension Networking.WooShippingShipmentItem {
     /// Returns a "ready to use" type filled with fake values.
     ///

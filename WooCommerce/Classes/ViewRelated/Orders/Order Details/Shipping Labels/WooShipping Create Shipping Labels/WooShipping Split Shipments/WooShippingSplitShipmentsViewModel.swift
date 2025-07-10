@@ -545,18 +545,19 @@ extension WooShippingSplitShipmentsViewModel {
         let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
         var shipments = [Shipment]()
 
-        for key in config.shipments.keys.sorted() {
-            guard let shipmentItems = config.shipments[key] else {
-                continue
-            }
+        let sortedShipments = config.shipments.sorted(by: {
+            $0.index.localizedStandardCompare($1.index) == .orderedAscending
+        })
+        for shipment in sortedShipments {
+            let index = shipment.index
 
             let purchasedLabel = currentOrderLabels
-                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil })
+                .first(where: { $0.shipmentID == index && $0.status == .purchased && $0.refund == nil })
 
             let isPurchased = purchasedLabel != nil
 
             var shipmentContents = ShipmentContents()
-            for shipmentItem in shipmentItems {
+            for shipmentItem in shipment.items {
                 guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
                       let subItems = shipmentItem.subItems else {
                     continue
@@ -570,7 +571,7 @@ extension WooShippingSplitShipmentsViewModel {
                 shipmentContents.append(content)
             }
 
-            let shipment = Shipment(index: Int(key) ?? 0,
+            let shipment = Shipment(index: Int(index) ?? 0,
                                     contents: shipmentContents,
                                     purchasedLabelID: purchasedLabel?.shippingLabelID,
                                     currency: currency,

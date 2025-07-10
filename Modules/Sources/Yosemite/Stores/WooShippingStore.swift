@@ -4,14 +4,14 @@ import Storage
 
 public struct ShippingLabelSyncResult {
     public let labels: [ShippingLabel]
-    public let shipments: WooShippingShipments
+    public let shipments: [WooShippingShipment]
 
-    public init(labels: [ShippingLabel], shipments: WooShippingShipments) {
+    public init(labels: [ShippingLabel], shipments: [WooShippingShipment]) {
         self.labels = labels
         self.shipments = shipments
     }
 
-    public static let none = ShippingLabelSyncResult(labels: [], shipments: [:])
+    public static let none = ShippingLabelSyncResult(labels: [], shipments: [])
 }
 
 /// Implements `WooShippingAction` actions

@@ -1708,18 +1708,19 @@ extension OrderDetailsDataSource {
         let items: [ShippingLabelPackageItem]
     }
 
-    func populateShipments(labels: [ShippingLabel], shipments: WooShippingShipments) {
+    func populateShipments(labels: [ShippingLabel], shipments: [WooShippingShipment]) {
         let itemsDataSource = DefaultWooShippingItemsDataSource(order: order, storageManager: storageManager)
         let packageItems = itemsDataSource.items
         var contents = [Shipment]()
 
-        for key in shipments.keys.sorted(by: { $0.localizedStandardCompare($1) == .orderedAscending }) {
-            guard let shipmentItems = shipments[key] else {
-                continue
-            }
+        let sortedShipments = shipments.sorted(by: {
+            $0.index.localizedStandardCompare($1.index) == .orderedAscending
+        })
+        for shipment in sortedShipments {
+            let index = shipment.index
             let label: ShippingLabel? = {
                 let purchasedLabels = labels.filter {
-                    $0.shipmentID == key && $0.status == .purchased
+                    $0.shipmentID == index && $0.status == .purchased
                 }
                 let sortedLabels = purchasedLabels.sorted { $0.dateCreated > $1.dateCreated }
                 if let completedLabel = sortedLabels.first(where: { $0.refund == nil }) {
@@ -1730,7 +1731,7 @@ extension OrderDetailsDataSource {
             }()
 
             var shipmentContents: [ShippingLabelPackageItem] = []
-            for shipmentItem in shipmentItems {
+            for shipmentItem in shipment.items {
                 guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
                       let subItems = shipmentItem.subItems else {
                     continue
@@ -1741,8 +1742,8 @@ extension OrderDetailsDataSource {
                 shipmentContents.append(updatedItem)
             }
 
-            let shipment = Shipment(index: key, shippingLabel: label, items: shipmentContents)
-            contents.append(shipment)
+            let shipmentWithLabel = Shipment(index: index, shippingLabel: label, items: shipmentContents)
+            contents.append(shipmentWithLabel)
         }
         self.wooShippingShipments = contents
     }

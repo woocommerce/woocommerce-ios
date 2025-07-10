@@ -57,7 +57,12 @@ enum ShippingLabelSampleData {
 
     static func sampleWooShippingConfig() -> WooShippingConfig {
         WooShippingConfig(siteID: 123,
-                          shipments: ["0": [sampleWooShippingShipmentItem()]],
+                          shipments: [WooShippingShipment(
+                            siteID: 1,
+                            orderID: 2,
+                            index: "0",
+                            items: [sampleWooShippingShipmentItem()]
+                          )],
                           shippingLabelData: nil)
     }
 }

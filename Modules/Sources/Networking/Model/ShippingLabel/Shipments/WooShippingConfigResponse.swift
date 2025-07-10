@@ -15,14 +15,14 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
     /// The remote ID of the site that owns this shipping label config info.
     public let siteID: Int64
 
-    /// Shipments of this order. The keys are the ids of the shipment.
-    public let shipments: WooShippingShipments
+    /// Shipments of this order.
+    public let shipments: [WooShippingShipment]
 
     /// Holds info about the shipping labels
     public let shippingLabelData: WooShippingLabelData?
 
     public init(siteID: Int64,
-                shipments: WooShippingShipments,
+                shipments: [WooShippingShipment],
                 shippingLabelData: WooShippingLabelData?) {
         self.siteID = siteID
         self.shipments = shipments
@@ -39,14 +39,26 @@ public struct WooShippingConfig: Decodable, Equatable, GeneratedFakeable, Genera
             throw WooShippingConfigDecodingError.missingSiteID
         }
 
+        guard let orderID = decoder.userInfo[.orderID] as? Int64 else {
+            throw WooShippingConfigDecodingError.missingOrderID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let shipments: WooShippingShipments = {
+        let shipments: [WooShippingShipment] = {
             guard let shipmentsString = try? container.decodeIfPresent(String.self, forKey: .shipments),
                   let data = shipmentsString.data(using: .utf8) else {
-                return [:]
+                return []
             }
 
-            return (try? JSONDecoder().decode(WooShippingShipments.self, from: data)) ?? [:]
+            guard let contents = (try? JSONDecoder().decode(WooShippingShipments.self, from: data)) else {
+                return []
+            }
+
+            var shipments = [WooShippingShipment]()
+            for (index, items) in contents {
+                shipments.append(WooShippingShipment(siteID: siteID, orderID: orderID, index: index, items: items))
+            }
+            return shipments
         }()
 
         let shippingLabelData = try container.decodeIfPresent(WooShippingLabelData.self, forKey: .shippingLabelData)
@@ -79,4 +91,5 @@ public struct WooShippingLabelData: Decodable, Equatable {
 //
 enum WooShippingConfigDecodingError: Error {
     case missingSiteID
+    case missingOrderID
 }

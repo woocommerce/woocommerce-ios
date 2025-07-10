@@ -1014,7 +1014,7 @@ private extension OrderDetailsViewModel {
                 switch result {
                 case .success(let labels):
                     self?.trackShippingLabelSyncingResult(result: .success, isRevampedFlow: isRevampedFlow)
-                    continuation.resume(returning: ShippingLabelSyncResult(labels: labels, shipments: [:]))
+                    continuation.resume(returning: ShippingLabelSyncResult(labels: labels, shipments: []))
                 case .failure(let error):
                     self?.trackShippingLabelSyncingResult(result: .failed(error: error), isRevampedFlow: isRevampedFlow)
                     continuation.resume(returning: .none)

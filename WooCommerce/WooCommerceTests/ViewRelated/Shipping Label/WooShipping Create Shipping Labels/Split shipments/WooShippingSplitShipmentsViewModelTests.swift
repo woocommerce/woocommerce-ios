@@ -105,10 +105,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
         // When
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabel.fake().copy(shipmentID: "1")])
+        let label = ShippingLabel.fake().copy(shipmentID: "1")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -237,10 +238,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabel.fake().copy(shipmentID: "1")])
+        let label = ShippingLabel.fake().copy(shipmentID: "1")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
         ], shippingLabelData: shippingLabelData)
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
@@ -596,11 +598,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabel.fake().copy(shipmentID: "2")])
+        let label = ShippingLabel.fake().copy(shipmentID: "2")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])],
-            "2": [WooShippingShipmentItem(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["1-sub-0", "1-sub-1"])]),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+            .fake().copy(index: "2", items: [.init(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])], shippingLabel: label)
         ], shippingLabelData: shippingLabelData)
 
         var receivedShipmentToUpdate: WooShippingUpdateShipment?
@@ -629,9 +632,9 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Then
         let expectedShipmentToUpdate = WooShippingUpdateShipment(
             shipmentIdsToUpdate: ["2": 1],
-            shipments: ["1": [WooShippingShipmentItem(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])],
-                        "0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
-                              WooShippingShipmentItem(id: 2, subItems: [])]]
+            shipments: ["0": [WooShippingShipmentItem(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                              WooShippingShipmentItem(id: 2, subItems: [])],
+                        "1": [WooShippingShipmentItem(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])]]
         )
         XCTAssertEqual(receivedShipmentToUpdate, expectedShipmentToUpdate)
     }
@@ -648,14 +651,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let shippingLabel = ShippingLabel.fake().copy(shipmentID: "1")
         let config = WooShippingConfig.fake().copy(
             shipments: [
-                "0": [
+                .fake().copy(index: "0", items: [
                     WooShippingShipmentItem.fake().copy(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
                     WooShippingShipmentItem.fake().copy(id: 2, subItems: []),
                     WooShippingShipmentItem.fake().copy(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])
-                ],
-                "1": [
+                ]),
+                .fake().copy(index: "1", items: [
                     WooShippingShipmentItem.fake().copy(id: 4, subItems: nil)
-                ]
+                ], shippingLabel: shippingLabel)
             ],
             shippingLabelData: WooShippingLabelData(currentOrderLabels: [shippingLabel])
         )
@@ -773,11 +776,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [ShippingLabel.fake().copy(shipmentID: "1")])
+        let label = ShippingLabel.fake().copy(shipmentID: "1")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])],
-            "2": [WooShippingShipmentItem(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label),
+            .fake().copy(index: "2", items: [.init(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])])
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -815,8 +819,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let shippingLabelData = WooShippingLabelData(currentOrderLabels: []) // none purchased yet
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -852,14 +856,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
-        let shippingLabelData = WooShippingLabelData(
-            currentOrderLabels: [
-                ShippingLabel.fake().copy(shipmentID: "0")
-            ]
-        )
+        let label = ShippingLabel.fake().copy(shipmentID: "0")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-            "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
                                                            config: config,
@@ -1008,17 +1009,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
             sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
         ]
 
-        let shippingLabelData = WooShippingLabelData(
-            currentOrderLabels: [
-                ShippingLabel.fake().copy(shipmentID: "0")
-            ]
-        )
+        let label = ShippingLabel.fake().copy(shipmentID: "0")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
             ],
             shippingLabelData: shippingLabelData
         )
@@ -1070,17 +1068,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
             sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)
         ]
 
-        let shippingLabelData = WooShippingLabelData(
-            currentOrderLabels: [
-                ShippingLabel.fake().copy(shipmentID: "1")
-            ]
-        )
+        let label = ShippingLabel.fake().copy(shipmentID: "1")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
             ],
             shippingLabelData: shippingLabelData
         )
@@ -1110,8 +1105,8 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])],
-                "1": [WooShippingShipmentItem(id: 2, subItems: [])]
+                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
             ],
             shippingLabelData: WooShippingLabelData(currentOrderLabels: [])
         )
@@ -1192,16 +1187,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
     func test_isMergeAllUnfulfilledAvailable_returns_false_when_no_unfulfilled_shipments() throws {
         // Given
-        let shippingLabelData = WooShippingLabelData(
-            currentOrderLabels: [
-                ShippingLabel.fake().copy(shipmentID: "0")
-            ]
-        )
+        let label = ShippingLabel.fake().copy(shipmentID: "0")
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
 
         let config = WooShippingConfig(
             siteID: 123,
             shipments: [
-                "0": [WooShippingShipmentItem(id: 1, subItems: ["sub-1", "sub-2"])]
+                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
             ],
             shippingLabelData: shippingLabelData
         )
@@ -1315,18 +1307,18 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
         let config = WooShippingConfig.fake().copy(
             shipments: [
-                "0": [
+                .fake().copy(index: "0", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ],
-                "1": [
+                ]),
+                .fake().copy(index: "1", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ]
+                ])
             ]
         )
         let viewModel = WooShippingSplitShipmentsViewModel(
@@ -1354,18 +1346,18 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let shippingLabel = ShippingLabel.fake().copy(shipmentID: "0")
         let config = WooShippingConfig.fake().copy(
             shipments: [
-                "0": [
+                .fake().copy(index: "0", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ],
-                "1": [
+                ], shippingLabel: shippingLabel),
+                .fake().copy(index: "1", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ]
+                ])
             ],
             shippingLabelData: WooShippingLabelData(
                 currentOrderLabels: [shippingLabel]
@@ -1397,18 +1389,18 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
         let config = WooShippingConfig.fake().copy(
             shipments: [
-                "0": [
+                .fake().copy(index: "0", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ],
-                "1": [
+                ]),
+                .fake().copy(index: "1", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: nil
                     )
-                ]
+                ])
             ]
         )
         let viewModel = WooShippingSplitShipmentsViewModel(
@@ -1435,24 +1427,24 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
         let config = WooShippingConfig.fake().copy(
             shipments: [
-                "0": [
+                .fake().copy(index: "0", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: ["sub-1"]
                     )
-                ],
-                "1": [
+                ]),
+                .fake().copy(index: "1", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: ["sub-2"]
                     )
-                ],
-                "2": [
+                ]),
+                .fake().copy(index: "2", items: [
                     WooShippingShipmentItem.fake().copy(
                         id: 1,
                         subItems: ["sub-3"]
                     )
-                ]
+                ])
             ]
         )
         let viewModel = WooShippingSplitShipmentsViewModel(

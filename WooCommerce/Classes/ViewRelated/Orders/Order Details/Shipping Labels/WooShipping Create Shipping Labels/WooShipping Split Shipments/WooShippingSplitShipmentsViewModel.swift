@@ -37,7 +37,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     ///
     private var editedShipmentsInfo: WooShippingShipments {
         var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
-        for shipment in shipments {
+        for shipment in shipments.sorted(by: { $0.index < $1.index}) {
             var items = [WooShippingShipmentItem]()
             for item in shipment.contents {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
@@ -542,43 +542,31 @@ extension WooShippingSplitShipmentsViewModel {
             return [shipment]
         }
 
-        let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
-        var shipments = [Shipment]()
+        let shipments = config.shipments
+            .sorted(by: { $0.index.localizedStandardCompare($1.index) == .orderedAscending })
+            .map { shipment in
+                var shipmentContents = ShipmentContents()
+                for shipmentItem in shipment.items {
+                    guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
+                          let subItems = shipmentItem.subItems else {
+                        continue
+                    }
 
-        let sortedShipments = config.shipments.sorted(by: {
-            $0.index.localizedStandardCompare($1.index) == .orderedAscending
-        })
-        for shipment in sortedShipments {
-            let index = shipment.index
-
-            let purchasedLabel = currentOrderLabels
-                .first(where: { $0.shipmentID == index && $0.status == .purchased && $0.refund == nil })
-
-            let isPurchased = purchasedLabel != nil
-
-            var shipmentContents = ShipmentContents()
-            for shipmentItem in shipment.items {
-                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
-                      let subItems = shipmentItem.subItems else {
-                    continue
+                    let quantity = subItems.count > 0 ? subItems.count : 1
+                    let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
+                    let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
+                                                                       isSelectable: shipment.shippingLabel == nil,
+                                                                       currency: currency)
+                    shipmentContents.append(content)
                 }
 
-                let quantity = subItems.count > 0 ? subItems.count : 1
-                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
-                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
-                                                                   isSelectable: !isPurchased,
-                                                                   currency: currency)
-                shipmentContents.append(content)
+                return Shipment(index: Int(shipment.index) ?? 0,
+                                contents: shipmentContents,
+                                purchasedLabelID: shipment.shippingLabel?.shippingLabelID,
+                                currency: currency,
+                                currencySettings: currencySettings,
+                                shippingSettingsService: shippingSettingsService)
             }
-
-            let shipment = Shipment(index: Int(index) ?? 0,
-                                    contents: shipmentContents,
-                                    purchasedLabelID: purchasedLabel?.shippingLabelID,
-                                    currency: currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-            shipments.append(shipment)
-        }
         return shipments
     }
 

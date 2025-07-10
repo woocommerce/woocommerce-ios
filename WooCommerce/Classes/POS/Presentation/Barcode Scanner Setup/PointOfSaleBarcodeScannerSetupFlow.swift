@@ -8,6 +8,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
     private let onComplete: () -> Void
     private let onBackToSelection: () -> Void
     private var currentStepIndex: Int = 0
+    private var stepHistory: [Int] = []
 
     init(scannerType: PointOfSaleBarcodeScannerType,
          onComplete: @escaping () -> Void,
@@ -30,23 +31,37 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 
     func nextStep() {
-        if currentStepIndex < steps.count - 1 {
-            currentStepIndex += 1
-        } else {
-            onComplete()
+        transition(to: .next) { [weak self] in
+            // Default behavior: move to next step in array
+            if self?.currentStepIndex ?? 0 < (self?.steps.count ?? 0) - 1 {
+                self?.stepHistory.append(self?.currentStepIndex ?? 0)
+                self?.currentStepIndex = (self?.currentStepIndex ?? 0) + 1
+            } else {
+                self?.onComplete()
+            }
         }
     }
 
     func previousStep() {
-        if currentStepIndex > 0 {
-            currentStepIndex -= 1
-        } else {
-            onBackToSelection()
+        transition(to: .back) { [weak self] in
+            // Default behavior: go back to previous step in history
+            if let previousIndex = self?.stepHistory.popLast() {
+                self?.currentStepIndex = previousIndex
+            } else {
+                self?.onBackToSelection()
+            }
         }
     }
 
     func restartFlow() {
         currentStepIndex = 0
+        stepHistory.removeAll()
+    }
+
+    // MARK: - Generic Transition Methods
+
+    func transition(to transitionType: PointOfSaleBarcodeScannerTransitionType) {
+        self.transition(to: transitionType, fallback: nil)
     }
 
     func getButtonConfiguration() -> PointOfSaleFlowButtonConfiguration {
@@ -76,6 +91,28 @@ class PointOfSaleBarcodeScannerSetupFlow {
         )
     }
 
+    // MARK: - Private Methods
+
+    private func transition(to transitionType: PointOfSaleBarcodeScannerTransitionType, fallback: (() -> Void)? = nil) {
+        guard let currentStep = currentStep,
+              let transition = currentStep.transitions[transitionType] else {
+            fallback?()
+            return
+        }
+
+        transitionToStep(transition.to)
+    }
+
+    private func transitionToStep(_ newStepIndex: Int) {
+        stepHistory.append(currentStepIndex)
+        currentStepIndex = newStepIndex
+
+        // If we're completing the flow, call the completion handler
+        if newStepIndex > steps.count - 1 {
+            onComplete()
+        }
+    }
+
     private var steps: [PointOfSaleBarcodeScannerSetupStep] {
         switch scannerType {
         case .socketS720:
@@ -85,15 +122,25 @@ class PointOfSaleBarcodeScannerSetupFlow {
             ]
         case .starBSH20B:
             return [
-                PointOfSaleBarcodeScannerSetupStep(content: {
-                    PointOfSaleBarcodeScannerBarcodeView(
-                        title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
-                        instruction: Localization.setUpBarcodeStepInstruction,
-                        barcode: .starBsh20SetupBarcode)
-                }),
-                PointOfSaleBarcodeScannerSetupStep(content: {
-                    PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
-                }),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerBarcodeView(
+                            title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
+                            instruction: Localization.setUpBarcodeStepInstruction,
+                            barcode: .starBsh20SetupBarcode)
+                    },
+                    transitions: [
+                        .next: PointOfSaleBarcodeScannerTransition(to: 1, type: .next)
+                    ]
+                ),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
+                    },
+                    transitions: [
+                        .next: PointOfSaleBarcodeScannerTransition(to: 2, type: .next)
+                    ]
+                ),
                 PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerTestBarcodeView(
@@ -101,16 +148,34 @@ class PointOfSaleBarcodeScannerSetupFlow {
                                 onTestPass: { [weak self] in
                                     self?.nextStep()
                                 },
-                                onTestFailure: {},
+                                onTestFailure: { [weak self] in
+                                    self?.transition(to: .error)
+                                },
                                 barcodeDefinition: .ean13)
                         )
                     },
-                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization()
+                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
+                    transitions: [
+                        .next: PointOfSaleBarcodeScannerTransition(to: 3, type: .next),
+                        .error: PointOfSaleBarcodeScannerTransition(to: 4, type: .error)
+                    ]
                 ),
                 PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerSetupCompleteView()
-                    })
+                    }),
+                // Error step
+                PointOfSaleBarcodeScannerSetupStep(
+                    title: "Test Failed",
+                    content: {
+                        PointOfSaleBarcodeScannerErrorView()
+                    },
+                    buttonCustomization: PointOfSaleBarcodeScannerErrorButtonCustomization(),
+                    transitions: [
+                        .retry: PointOfSaleBarcodeScannerTransition(to: 2, type: .retry),
+                        .back: PointOfSaleBarcodeScannerTransition(to: 1, type: .back)
+                    ]
+                )
                 // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
@@ -154,6 +219,35 @@ struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeS
             "pos.barcodeScannerSetup.back.button.title",
             value: "Back",
             comment: "Title for the back button in barcode scanner setup navigation"
+        )
+    }
+}
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration(
+            primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.retryButtonTitle,
+                action: { flow.transition(to: .retry) }
+            ),
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.backButtonTitle,
+                action: { flow.transition(to: .back) }
+            )
+        )
+    }
+
+    private enum Localization {
+        static let retryButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.retry.button.title",
+            value: "Retry",
+            comment: "Title for the retry button in barcode scanner setup error step"
+        )
+        static let backButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.back.button.title",
+            value: "Back",
+            comment: "Title for the back button in barcode scanner setup error step"
         )
     }
 }

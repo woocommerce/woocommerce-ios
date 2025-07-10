@@ -560,9 +560,15 @@ extension WooShippingSplitShipmentsViewModel {
                     shipmentContents.append(content)
                 }
 
+                let purchasedLabel: ShippingLabel? = {
+                    guard let label = shipment.shippingLabel, label.refund == nil else {
+                        return nil
+                    }
+                    return label
+                }()
                 return Shipment(index: Int(shipment.index) ?? 0,
                                 contents: shipmentContents,
-                                purchasedLabel: shipment.shippingLabel,
+                                purchasedLabel: purchasedLabel,
                                 currency: currency,
                                 currencySettings: currencySettings,
                                 shippingSettingsService: shippingSettingsService)

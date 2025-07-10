@@ -106,9 +106,10 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let label = ShippingLabel.fake().copy(shipmentID: "1")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
+        let refundedLabel = ShippingLabel.fake().copy(shipmentID: "0", refund: .fake())
+        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label, refundedLabel])
         let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: refundedLabel),
             .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
         ], shippingLabelData: shippingLabelData)
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,

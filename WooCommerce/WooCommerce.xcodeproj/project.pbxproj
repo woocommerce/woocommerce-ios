@@ -886,6 +886,7 @@
 		2088784B2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */; };
 		2088784D2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */; };
 		20897C9E2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */; };
+		208C0F0A2E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208C0F092E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift */; };
 		209566252D4CF00100977124 /* PointOfSalePaymentMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */; };
 		209AD3D22AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */; };
@@ -4057,6 +4058,7 @@
 		2088784A2D96E98000F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertView.swift; sourceTree = "<group>"; };
 		2088784C2D96EA3900F7AE03 /* PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel.swift; sourceTree = "<group>"; };
 		20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleUnsupportedWidthView.swift; sourceTree = "<group>"; };
+		208C0F092E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupStepViews.swift; sourceTree = "<group>"; };
 		209566242D4CF00100977124 /* PointOfSalePaymentMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSalePaymentMethod.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsPayoutsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
 		209AD3D12AC1EDF600825D76 /* WooPaymentsPayoutsCurrencyOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsPayoutsCurrencyOverviewView.swift; sourceTree = "<group>"; };
@@ -8310,6 +8312,7 @@
 				20C3DB1F2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlowManager.swift */,
 				20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */,
 				20C3DB212E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupViews.swift */,
+				208C0F092E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift */,
 				20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */,
 			);
 			path = "Barcode Scanner Setup";
@@ -15239,6 +15242,7 @@
 				03E471CA293E0A30001A58AD /* CardPresentModalTapToPayConfigurationProgress.swift in Sources */,
 				31AD0B1126E9575F000B6391 /* CardPresentModalConnectingFailed.swift in Sources */,
 				576EA39425264C9B00AFC0B3 /* RefundConfirmationViewModel.swift in Sources */,
+				208C0F0A2E1FAC1900FE619E /* PointOfSaleBarcodeScannerSetupStepViews.swift in Sources */,
 				02ED3D272C23315400ED6F3E /* PointOfSaleCardPresentPaymentReaderUpdateFailedView.swift in Sources */,
 				01BD77482C58D19C00147191 /* PointOfSaleCardPresentPaymentCancelledOnReaderMessageView.swift in Sources */,
 				DEC51B00276AEE91009F3DF4 /* SystemStatusReportViewModel.swift in Sources */,

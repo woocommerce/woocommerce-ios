@@ -112,28 +112,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 }
 
-// MARK: - Button Customizations
-@available(iOS 17.0, *)
-struct PointOfSaleBarcodeScannerWelcomeButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
-        return PointOfSaleFlowButtonConfiguration(
-            primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
-                title: Localization.doneButtonTitle,
-                action: { flow.nextStep() }
-            ),
-            secondaryButton: nil
-        )
-    }
-
-    private enum Localization {
-        static let doneButtonTitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.done.button.title",
-            value: "Done",
-            comment: "Title for the done button in barcode scanner setup navigation"
-        )
-    }
-}
-
 // MARK: - Private Localization Extension
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetupFlow {

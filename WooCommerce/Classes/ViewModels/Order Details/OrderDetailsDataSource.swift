@@ -61,10 +61,6 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Shipments created for the order
-    ///
-    private(set) var wooShippingShipments: [Shipment] = []
-
     /// Whether the button to create shipping labels should be visible.
     ///
     var shouldShowShippingLabelCreation: Bool {
@@ -1697,55 +1693,6 @@ extension OrderDetailsDataSource {
         }
 
         return sections
-    }
-}
-
-// MARK: - Woo Shipping Shipments
-extension OrderDetailsDataSource {
-    struct Shipment {
-        let index: String
-        let shippingLabel: ShippingLabel?
-        let items: [ShippingLabelPackageItem]
-    }
-
-    func populateShipments(labels: [ShippingLabel], shipments: [WooShippingShipment]) {
-        let itemsDataSource = DefaultWooShippingItemsDataSource(order: order, storageManager: storageManager)
-        let packageItems = itemsDataSource.items
-        var contents = [Shipment]()
-
-        let sortedShipments = shipments.sorted(by: {
-            $0.index.localizedStandardCompare($1.index) == .orderedAscending
-        })
-        for shipment in sortedShipments {
-            let index = shipment.index
-            let label: ShippingLabel? = {
-                let purchasedLabels = labels.filter {
-                    $0.shipmentID == index && $0.status == .purchased
-                }
-                let sortedLabels = purchasedLabels.sorted { $0.dateCreated > $1.dateCreated }
-                if let completedLabel = sortedLabels.first(where: { $0.refund == nil }) {
-                    return completedLabel
-                } else {
-                    return sortedLabels.first
-                }
-            }()
-
-            var shipmentContents: [ShippingLabelPackageItem] = []
-            for shipmentItem in shipment.items {
-                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
-                      let subItems = shipmentItem.subItems else {
-                    continue
-                }
-
-                let quantity = subItems.count > 0 ? subItems.count : 1
-                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
-                shipmentContents.append(updatedItem)
-            }
-
-            let shipmentWithLabel = Shipment(index: index, shippingLabel: label, items: shipmentContents)
-            contents.append(shipmentWithLabel)
-        }
-        self.wooShippingShipments = contents
     }
 }
 

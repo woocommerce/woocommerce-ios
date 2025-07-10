@@ -111,7 +111,7 @@ public enum WooShippingAction: Action {
     ///
     case syncShippingLabels(siteID: Int64,
                             orderID: Int64,
-                            completion: (Result<ShippingLabelSyncResult, Error>) -> Void)
+                            completion: (Result<[ShippingLabel], Error>) -> Void)
 
     /// Updates shipments for given order
     ///

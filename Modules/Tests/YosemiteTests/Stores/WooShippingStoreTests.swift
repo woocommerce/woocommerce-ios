@@ -996,7 +996,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_loadConfig_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipmentItem.fake()]])
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: [WooShippingShipment.fake()])
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1083,9 +1083,8 @@ final class WooShippingStoreTests: XCTestCase {
                                  usedDate: nil,
                                  expiryDate: nil)
         }()
-        let shipments = ["0": [WooShippingShipmentItem.fake()]]
         let expectedResponse = WooShippingConfig.fake().copy(
-            shipments: shipments,
+            shipments: [WooShippingShipment.fake()],
             shippingLabelData: WooShippingLabelData(currentOrderLabels: [expectedShippingLabel])
         )
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedResponse))
@@ -1094,7 +1093,7 @@ final class WooShippingStoreTests: XCTestCase {
         insertOrder(siteID: sampleSiteID, orderID: orderID)
 
         // When
-        let result: Result<ShippingLabelSyncResult, Error> = waitFor { promise in
+        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
             let action = WooShippingAction.syncShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
                 promise(result)
             }
@@ -1103,9 +1102,6 @@ final class WooShippingStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let syncResult = try XCTUnwrap(result.get())
-        XCTAssertEqual(syncResult.labels, [expectedShippingLabel])
-        XCTAssertEqual(syncResult.shipments, shipments)
 
         let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
         let persistedShippingLabels = try XCTUnwrap(viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: orderID))

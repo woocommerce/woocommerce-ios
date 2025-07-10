@@ -2,18 +2,6 @@ import Foundation
 import Networking
 import Storage
 
-public struct ShippingLabelSyncResult {
-    public let labels: [ShippingLabel]
-    public let shipments: [WooShippingShipment]
-
-    public init(labels: [ShippingLabel], shipments: [WooShippingShipment]) {
-        self.labels = labels
-        self.shipments = shipments
-    }
-
-    public static let none = ShippingLabelSyncResult(labels: [], shipments: [])
-}
-
 /// Implements `WooShippingAction` actions
 ///
 public final class WooShippingStore: Store {
@@ -304,7 +292,7 @@ private extension WooShippingStore {
 
     func syncShippingLabels(siteID: Int64,
                             orderID: Int64,
-                            completion: @escaping (Result<ShippingLabelSyncResult, Error>) -> Void) {
+                            completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         remote.loadConfig(siteID: siteID, orderID: orderID, completion: { [weak self] result in
             guard let self else { return }
 
@@ -312,14 +300,13 @@ private extension WooShippingStore {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let config):
-                let shipments = config.shipments
                 guard let labels = config.shippingLabelData?.currentOrderLabels else {
-                    return completion(.success(ShippingLabelSyncResult(labels: [], shipments: shipments)))
+                    return completion(.success([]))
                 }
                 upsertShippingLabelsInBackground(siteID: siteID,
                                                  orderID: orderID,
                                                  shippingLabels: labels) {
-                    completion(.success(ShippingLabelSyncResult(labels: labels, shipments: shipments)))
+                    completion(.success(labels))
                 }
             }
         })

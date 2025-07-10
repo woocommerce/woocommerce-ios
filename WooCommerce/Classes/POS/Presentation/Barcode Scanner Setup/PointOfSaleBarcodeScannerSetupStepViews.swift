@@ -90,6 +90,27 @@ private extension PointOfSaleBarcodeScannerPairingView {
     }
 }
 
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerTestBarcodeView: View {
+    let scanTester: PointOfSaleBarcodeScannerSetupScanTester
+
+    var body: some View {
+        PointOfSaleBarcodeScannerBarcodeView(title: Localization.title,
+                                             instruction: Localization.instruction,
+                                             barcode: scanTester.barcode)
+        .barcodeScanning { result in
+            scanTester.handleScan(result)
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleBarcodeScannerTestBarcodeView {
+    enum Localization {
+        static let title = "Test your scanner"
+        static let instruction = "Scan the barcode to test your scanner"
+    }
+}
 
 // MARK: - Button Customizations
 @available(iOS 17.0, *)

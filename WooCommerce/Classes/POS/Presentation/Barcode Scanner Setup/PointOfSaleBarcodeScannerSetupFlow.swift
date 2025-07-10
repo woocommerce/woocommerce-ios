@@ -94,6 +94,19 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 PointOfSaleBarcodeScannerSetupStep(content: {
                     PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
                 }),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerTestBarcodeView(
+                            scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+                                onTestPass: { [weak self] in
+                                    self?.nextStep()
+                                },
+                                onTestFailure: {},
+                                barcodeDefinition: .ean13)
+                        )
+                    },
+                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization()
+                )
                 // TODO: Add more steps for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
@@ -116,6 +129,27 @@ class PointOfSaleBarcodeScannerSetupFlow {
             title: title,
             content: { PointOfSaleBarcodeScannerWelcomeView(title: title) },
             buttonCustomization: PointOfSaleBarcodeScannerWelcomeButtonCustomization()
+        )
+    }
+}
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration(
+            primaryButton: nil,
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.backButtonTitle,
+                action: { flow.previousStep() }
+            )
+        )
+    }
+
+    private enum Localization {
+        static let backButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.back.button.title",
+            value: "Back",
+            comment: "Title for the back button in barcode scanner setup navigation"
         )
     }
 }

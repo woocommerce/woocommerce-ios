@@ -67,3 +67,22 @@ struct PointOfSaleBarcodeScannerSetupStep {
         self.buttonCustomization = buttonCustomization
     }
 }
+
+// MARK: - Test Barcodes
+enum PointOfSaleBarcodeScannerTestBarcode {
+    case ean13
+
+    var barcodeAsset: PointOfSaleAssets {
+        switch self {
+        case .ean13:
+            return .testEan13Barcode
+        }
+    }
+
+    var expectedValue: String {
+        switch self {
+        case .ean13:
+            return "1234567890128"
+        }
+    }
+}

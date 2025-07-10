@@ -41,13 +41,22 @@ extension UITabBar {
     /// Configures the appearance object for a tabbar's items with the default WC style.
     ///
     private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
-        let textColor = UIColor(light: .withColorStudio(.green, shade: .shade50), dark: .withColorStudio(.green, shade: .shade30))
-        let backgroundColor = UIColor(light: .withColorStudio(.green, shade: .shade0), dark: .withColorStudio(.green, shade: .shade80))
-        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: textColor]
-        tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: textColor]
-        tabBarItemAppearance.disabled.badgeTextAttributes = [.foregroundColor: textColor]
+        let backgroundColor = UIColor.appTabBarBadgeBackgroundColor
+        let badgeOffset = UIOffset(horizontal: 6, vertical: -1)
+        let textColor = UIColor.appTabBarBadgeTextColor
+        let badgeFont = UIFont.preferredFont(forTextStyle: .caption2)
+        let badgeTextAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: textColor,
+            .font: badgeFont
+        ]
+        tabBarItemAppearance.normal.badgeTextAttributes = badgeTextAttributes
+        tabBarItemAppearance.selected.badgeTextAttributes = badgeTextAttributes
+        tabBarItemAppearance.disabled.badgeTextAttributes = badgeTextAttributes
         tabBarItemAppearance.normal.badgeBackgroundColor = backgroundColor
         tabBarItemAppearance.selected.badgeBackgroundColor = backgroundColor
         tabBarItemAppearance.disabled.badgeBackgroundColor = backgroundColor
+        tabBarItemAppearance.normal.badgePositionAdjustment = badgeOffset
+        tabBarItemAppearance.selected.badgePositionAdjustment = badgeOffset
+        tabBarItemAppearance.disabled.badgePositionAdjustment = badgeOffset
     }
 }

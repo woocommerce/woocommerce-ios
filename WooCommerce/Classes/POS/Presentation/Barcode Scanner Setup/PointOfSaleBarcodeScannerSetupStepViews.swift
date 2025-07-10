@@ -112,6 +112,50 @@ private extension PointOfSaleBarcodeScannerTestBarcodeView {
     }
 }
 
+struct PointOfSaleBarcodeScannerSetupCompleteView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            // Temporary image until finalised assets are available
+            successIcon
+                .accessibilityHidden(true)
+
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(Localization.instruction)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+        }
+    }
+
+    @ViewBuilder private var successIcon: some View {
+        ZStack {
+            Circle()
+                .frame(width: 104, height: 104)
+                .foregroundColor(.posSuccess)
+            Image(PointOfSaleAssets.successCheck.imageName)
+                .renderingMode(.template)
+                .resizable()
+                .frame(width: 48, height: 48)
+                .foregroundColor(.posOnSuccess)
+        }
+    }
+}
+
+private extension PointOfSaleBarcodeScannerSetupCompleteView {
+    enum Localization {
+        //TODO: WOOMOB-792
+        static let title = "Scanner set up!"
+        static let instruction = "You are ready to start scanning products. \n" +
+        "Read more about barcode and QR code scanner support."
+    }
+}
+
 // MARK: - Button Customizations
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerWelcomeButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {

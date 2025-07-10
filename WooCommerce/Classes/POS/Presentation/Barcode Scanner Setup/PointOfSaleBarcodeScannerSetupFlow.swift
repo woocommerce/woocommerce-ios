@@ -106,8 +106,12 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         )
                     },
                     buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization()
-                )
-                // TODO: Add more steps for Star BSH-20B WOOMOB-696
+                ),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerSetupCompleteView()
+                    })
+                // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
             return [

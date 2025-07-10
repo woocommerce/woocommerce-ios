@@ -3,6 +3,8 @@ import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import enum WooFoundation.CountryCode
+import enum Yosemite.PaymentMethod
 
 extension WooAnalyticsEvent {
     enum PointOfSale {
@@ -25,6 +27,11 @@ extension WooAnalyticsEvent {
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
+            static let cardReaderModel = "card_reader_model"
+            static let countryCode = "country"
+            static let paymentMethodType = "payment_method_type"
+            static let siteID = "site_id"
+            static let gatewayID = "plugin_slug"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -100,12 +107,22 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
-        static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double,
+        static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
+                                                     countryCode: CountryCode,
+                                                     paymentMethod: PaymentMethod,
+                                                     cardReaderModel: String?,
+                                                     siteID: Int64,
+                                                     millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
                                                      checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.paymentMethodType: paymentMethod.analyticsValue,
+                Key.siteID: siteID,
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
@@ -180,6 +197,16 @@ extension WooAnalyticsEvent {
                                 Key.totalItems: "\(totalItems)"
                               ])
         }
+    }
+}
+
+private extension WooAnalyticsEvent.PointOfSale {
+    static func readerModel(for connectedReaderModel: String?) -> String {
+        connectedReaderModel ?? "none_connected"
+    }
+
+    static func safeGatewayID(for gatewayID: String?) -> String {
+        gatewayID ?? "unknown"
     }
 }
 

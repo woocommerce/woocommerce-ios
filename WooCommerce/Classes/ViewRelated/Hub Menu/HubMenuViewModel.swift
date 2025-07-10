@@ -154,7 +154,7 @@ final class HubMenuViewModel: ObservableObject {
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
-    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
+    private(set) var collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -181,6 +181,7 @@ final class HubMenuViewModel: ObservableObject {
                                                            currencySettings: ServiceLocator.currencySettings,
                                                            featureFlagService: featureFlagService)
         self.analytics = analytics
+        self.collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(siteID: siteID)
         observeSiteForUIUpdates()
         observePlanName()
         observeGoogleAdsEntryPointAvailability()

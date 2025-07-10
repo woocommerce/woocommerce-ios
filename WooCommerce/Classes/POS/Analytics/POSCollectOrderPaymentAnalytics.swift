@@ -3,8 +3,6 @@ import protocol WooFoundation.Analytics
 import Yosemite
 
 final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTracking {
-    var connectedReaderModel: String?
-
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
@@ -14,11 +12,35 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
 
     private let analytics: Analytics
 
-    init(analytics: Analytics = ServiceLocator.analytics) {
-        self.analytics = analytics
+    private let siteID: Int64
+    private var paymentGatewayAccount: PaymentGatewayAccount?
+    private let configuration: CardPresentPaymentsConfiguration
+    private var connectedReader: CardReader?
+    var connectedReaderModel: String? {
+        connectedReader?.readerType.model
     }
 
-    func preflightResultReceived(_ result: CardReaderPreflightResult?) { }
+    init(siteID: Int64,
+         analytics: Analytics = ServiceLocator.analytics,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
+        self.siteID = siteID
+        self.analytics = analytics
+        self.configuration = configuration
+    }
+
+    func preflightResultReceived(_ result: CardReaderPreflightResult?) {
+        switch result {
+        case .completed(let connectedReader, let paymentGatewayAccount):
+            self.connectedReader = connectedReader
+            self.paymentGatewayAccount = paymentGatewayAccount
+        case .canceled(_, let paymentGatewayAccount):
+            self.connectedReader = nil
+            self.paymentGatewayAccount = paymentGatewayAccount
+        case .none:
+            break
+        }
+    }
+
     func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
@@ -35,6 +57,11 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
         let elapsedTimeSinceCardTapped = calculateElapsedTimeInMilliseconds(since: cardReaderTapped)
 
         analytics.track(event: .PointOfSale.cardPresentCollectPaymentSuccess(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            countryCode: configuration.countryCode,
+            paymentMethod: capturedPaymentData.paymentMethod,
+            cardReaderModel: connectedReaderModel,
+            siteID: siteID,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,

@@ -88,7 +88,7 @@ private extension POSTabCoordinator {
     func presentPOSView() {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
+            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(siteID: siteID)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)

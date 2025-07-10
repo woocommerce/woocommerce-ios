@@ -2,6 +2,7 @@ import SwiftUI
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow
 @available(iOS 17.0, *)
+@Observable
 class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: PointOfSaleBarcodeScannerType
     private let onComplete: () -> Void

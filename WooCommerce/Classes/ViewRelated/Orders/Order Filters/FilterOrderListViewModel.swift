@@ -405,5 +405,14 @@ extension FilterOrderListViewModel {
                 return false
             }
         }
+
+        var analyticsDescription: String? {
+            switch self {
+            case .pointOfSale:
+                return "pos"
+            case .any:
+                return nil
+            }
+        }
     }
 }

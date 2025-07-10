@@ -8,7 +8,7 @@ public protocol PluginsServiceProtocol {
     /// - Parameters:
     ///   - siteID: The site ID to search for the plugin.
     ///   - plugin: The plugin's file path (e.g., "woocommerce/woocommerce.php" for WooCommerce).
-    ///   - isActive: Whether to wait for the plugin to be active or inactive.
+    ///   - isActive: Whether the plugin is active or not.
     /// - Returns: The SystemPlugin when found in storage.
     func waitForPluginInStorage(siteID: Int64, plugin: String, isActive: Bool) async -> SystemPlugin
 }

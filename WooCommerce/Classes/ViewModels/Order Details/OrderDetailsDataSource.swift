@@ -726,7 +726,7 @@ private extension OrderDetailsDataSource {
         cell.configure(style: .primary,
                        title: Titles.createShippingLabel,
                        bottomSpacing: 0) {
-            self.onCellAction?(.createShippingLabel, nil)
+            self.onCellAction?(.createShippingLabel(shipmentIndex: nil), nil)
         }
         cell.hideSeparator()
     }
@@ -1115,7 +1115,7 @@ private extension OrderDetailsDataSource {
             eligibleForCreatingShippingLabel: isEligibleForShippingLabelCreation,
             onViewItems: {},
             onCreateLabel: { [weak self] in
-                self?.onCellAction?(.createShippingLabel, indexPath)
+                self?.onCellAction?(.createShippingLabel(shipmentIndex: indexPath.row), indexPath)
             },
             onViewLabel: { [weak self] in
                 guard let label = shipment.shippingLabel else { return }
@@ -2189,7 +2189,7 @@ extension OrderDetailsDataSource {
         case issueRefund
         case collectPayment
         case reprintShippingLabel(shippingLabel: ShippingLabel)
-        case createShippingLabel
+        case createShippingLabel(shipmentIndex: Int?)
         case openShippingLabelForm(shippingLabel: ShippingLabel)
         case didRequestRefund(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)

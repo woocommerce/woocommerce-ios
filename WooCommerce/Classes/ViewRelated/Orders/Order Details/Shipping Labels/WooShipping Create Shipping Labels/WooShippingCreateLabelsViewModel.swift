@@ -198,6 +198,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
+         selectedShipmentIndex: Int? = nil,
          selectedShippingLabel: ShippingLabel? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
@@ -242,11 +243,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         Task { @MainActor in
             await loadRequiredData()
 
-            // After shipment configs are updated, shipments are updated with purchased label details
-            // Update the selected tab now by comparing the purchased labels with the initial selected label.
-            if let selectedShippingLabel,
+            // After shipment configs are updated, shipments are updated with purchased label details.
+            // Update the selected tab now by checking the initial selected shipment index if available.
+            // Otherwise, compare the purchased labels with the initial selected label.
+            if let selectedShipmentIndex {
+                self.selectedShipmentIndex = selectedShipmentIndex
+            } else if let selectedShippingLabel,
                 let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
-                selectedShipmentIndex = matchingIndex
+                self.selectedShipmentIndex = matchingIndex
             }
         }
     }

@@ -401,8 +401,8 @@ private extension OrderDetailsViewController {
             present(printNavigationController, animated: true)
         case .didRequestRefund(let shippingLabel):
             didRequestRefund(for: shippingLabel)
-        case .createShippingLabel:
-            navigateToCreateShippingLabelForm()
+        case .createShippingLabel(let shipmentIndex):
+            navigateToCreateShippingLabelForm(shipmentIndex: shipmentIndex)
         case .openShippingLabelForm(let shippingLabel):
             navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
@@ -418,7 +418,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func navigateToCreateShippingLabelForm(shippingLabel: ShippingLabel? = nil) {
+    func navigateToCreateShippingLabelForm(shippingLabel: ShippingLabel? = nil, shipmentIndex: Int? = nil) {
         guard viewModel.dataSource.isEligibleForWooShipping else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -448,6 +448,7 @@ private extension OrderDetailsViewController {
         }
 
         let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order,
+                                                                       selectedShipmentIndex: shipmentIndex,
                                                                        selectedShippingLabel: shippingLabel,
                                                                        onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {

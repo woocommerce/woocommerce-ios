@@ -19,4 +19,8 @@ final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     func checkEligibility() async -> POSEligibilityState {
         eligibility
     }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        .ineligible(reason: ineligibleReason)
+    }
 }

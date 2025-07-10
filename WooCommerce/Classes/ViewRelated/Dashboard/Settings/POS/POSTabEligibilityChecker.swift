@@ -128,7 +128,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             } catch POSTabEligibilityCheckerError.selfDeallocated {
                 return .ineligible(reason: .selfDeallocated)
             } catch {
-                return await checkEligibility()
+                throw error
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
             // TODO: WOOMOB-799 - sync the WooCommerce plugin then check eligibility again.

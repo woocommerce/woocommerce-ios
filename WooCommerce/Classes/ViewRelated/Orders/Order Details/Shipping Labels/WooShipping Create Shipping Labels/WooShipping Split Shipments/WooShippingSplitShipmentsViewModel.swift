@@ -170,6 +170,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
+        shipmentsSavedInRemote = shipments
     }
 
     func didRequestRefund(for shipmentIndex: Int) {
@@ -183,6 +184,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
+        shipmentsSavedInRemote = shipments
     }
 
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {

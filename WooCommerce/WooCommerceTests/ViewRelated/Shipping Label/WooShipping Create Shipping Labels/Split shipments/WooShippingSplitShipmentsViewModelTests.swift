@@ -839,6 +839,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.didPurchaseLabel(for: shipmentID, label: label)
 
         // Then
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
         XCTAssertEqual(viewModel.shipments.count, 2)
         XCTAssertEqual(viewModel.shipments[0].index, 0)
         XCTAssertEqual(viewModel.shipments[0].purchasedLabel, label)
@@ -878,6 +879,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         viewModel.didRequestRefund(for: shipmentID)
 
         // Then
+        XCTAssertFalse(viewModel.containsUnsavedChanges)
         XCTAssertEqual(viewModel.shipments.count, 2)
         XCTAssertNil(viewModel.shipments[0].purchasedLabel)
         XCTAssertTrue(viewModel.shipments[0].contents[0].mainItemRow.isSelectable)

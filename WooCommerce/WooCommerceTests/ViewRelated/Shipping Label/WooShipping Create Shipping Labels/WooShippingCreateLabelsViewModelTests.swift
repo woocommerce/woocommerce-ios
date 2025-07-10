@@ -537,7 +537,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
                 let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134)
-                let shipments = [WooShippingShipment.fake().copy(index: "shipment_0", items: [.fake()]),
+                let shipments = [WooShippingShipment.fake().copy(index: "shipment_0", items: [.fake()], shippingLabel: shippingLabel),
                                  WooShippingShipment.fake().copy(index: "shipment_1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
                     ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
@@ -610,7 +610,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()]),
+                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
                                  WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
@@ -658,7 +658,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()]),
+                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
                                  WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,

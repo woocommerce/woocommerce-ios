@@ -13,7 +13,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    @Test func POSCollectOrderPaymentAnalyticsTests_when_successful_payment_then_tracks_event_and_properties() {
+    @Test func analytics_when_successful_payment_then_tracks_event_and_properties() {
         // Given
         let siteID: Int64 = 123
         let configuration = CardPresentPaymentsConfiguration(country: .US)

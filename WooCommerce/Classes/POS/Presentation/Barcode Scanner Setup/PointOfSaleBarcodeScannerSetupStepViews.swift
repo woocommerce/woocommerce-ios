@@ -93,13 +93,28 @@ private extension PointOfSaleBarcodeScannerPairingView {
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     let scanTester: PointOfSaleBarcodeScannerSetupScanTester
+    @State private var timerCompleted = false
+    @State private var timer: Timer?
 
     var body: some View {
-        PointOfSaleBarcodeScannerBarcodeView(title: Localization.title,
-                                             instruction: Localization.instruction,
+        PointOfSaleBarcodeScannerBarcodeView(title: timerCompleted ? Localization.timeoutTitle : Localization.title,
+                                             instruction: timerCompleted ? Localization.timeoutInstruction : Localization.instruction,
                                              barcode: scanTester.barcode)
         .barcodeScanning { result in
             scanTester.handleScan(result)
+        }
+        .onAppear {
+            startTimer()
+        }
+        .onDisappear {
+            timer?.invalidate()
+            timer = nil
+        }
+    }
+
+    private func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
+            timerCompleted = true
         }
     }
 }
@@ -109,6 +124,8 @@ private extension PointOfSaleBarcodeScannerTestBarcodeView {
     enum Localization {
         static let title = "Test your scanner"
         static let instruction = "Scan the barcode to test your scanner"
+        static let timeoutTitle = "No scan data found yet"
+        static let timeoutInstruction = "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again."
     }
 }
 

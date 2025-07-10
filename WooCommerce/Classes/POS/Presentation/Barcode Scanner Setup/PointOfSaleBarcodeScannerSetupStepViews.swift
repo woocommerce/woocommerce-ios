@@ -173,6 +173,40 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
     }
 }
 
+struct PointOfSaleBarcodeScannerErrorView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            // Error icon
+            errorIcon
+                .accessibilityHidden(true)
+
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(Localization.instruction)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(POSSpacing.xLarge)
+    }
+
+    private var errorIcon: some View {
+        Image(systemName: "exclamationmark.triangle.fill")
+            .font(.system(size: 60))
+            .foregroundColor(.orange)
+    }
+
+    private enum Localization {
+        static let title = "Test Failed"
+        static let instruction = "The barcode test was unsuccessful. Please check your scanner connection and try again."
+    }
+}
+
 // MARK: - Button Customizations
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerWelcomeButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {

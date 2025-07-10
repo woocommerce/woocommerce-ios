@@ -50,21 +50,42 @@ protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
 
+// MARK: - Transition Types
+enum PointOfSaleBarcodeScannerTransitionType: Hashable {
+    case next
+    case error
+    case retry
+    case back
+}
+
+// MARK: - Transition Definition
+struct PointOfSaleBarcodeScannerTransition {
+    let to: Int // Index of the target step
+    let type: PointOfSaleBarcodeScannerTransitionType
+
+    init(to: Int, type: PointOfSaleBarcodeScannerTransitionType = .next) {
+        self.to = to
+        self.type = type
+    }
+}
+
 // MARK: - Setup Step
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
+    let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerTransition]
 
     init(
         title: String = "",
         @ViewBuilder content: () -> any View,
-        buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil
-    ) {
+        buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
+        transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerTransition] = [:]) {
         self.title = title
         self.content = content()
         self.buttonCustomization = buttonCustomization
+        self.transitions = transitions
     }
 }
 

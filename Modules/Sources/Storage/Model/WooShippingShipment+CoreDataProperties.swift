@@ -8,7 +8,7 @@ extension WooShippingShipment {
 
     @NSManaged public var siteID: Int64
     @NSManaged public var orderID: Int64
-    @NSManaged public var index: String?
+    @NSManaged public var index: String
     @NSManaged public var shippingLabel: ShippingLabel?
     @NSManaged public var items: Set<WooShippingShipmentItem>?
     @NSManaged public var order: Order?

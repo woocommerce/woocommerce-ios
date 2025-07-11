@@ -20,7 +20,7 @@ extension Storage.WooShippingShipment: ReadOnlyConvertible {
 
         return WooShippingShipment(siteID: siteID,
                                    orderID: orderID,
-                                   index: index ?? "0",
+                                   index: index,
                                    items: shipmentItems,
                                    shippingLabel: shipmentShippingLabel)
     }

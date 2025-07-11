@@ -6,7 +6,9 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @itsmeichigo 2025-07-11
   - Added `WooShippingShipment` entity.
   - Added `WooShippingShipmentItem` entity.
-  - Added `shipment` attribute to `ShippingLabel` entity.
+  - Added `shipment` relationship to `ShippingLabel` entity.
+  - Added `shipments` relationship to `Order` entity.
+  
 
 ## Model 123 (Release 22.8.0.0)
 - @iamgabrielma 2025-06-30

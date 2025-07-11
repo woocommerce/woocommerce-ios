@@ -183,10 +183,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     ///
     @MainActor
     func refreshPackagesAndShippingRates() async throws {
-        guard let selectedRate, let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+        let currentShipmentWeight = shipmentWeight
+
+        guard let selectedRate, let selectedPackage,
+              let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
         }
         self.selectedPackage = updatedPackage
+
+        /// If the shipment weight was manually entered, reuse it.
+        if currentShipmentWeight != shipmentWeight {
+            self.shipmentWeight = currentShipmentWeight
+        }
 
         let finalPackage = buildSelectedPackage(updatedPackage,
                                                 weight: Double(shipmentWeight) ?? 0,
@@ -374,13 +382,28 @@ private extension WooShippingShipmentDetailsViewModel {
                 } else if let selectedRate {
                     let baseRate = selectedRate.rate.rate
                     let formattedBaseRate = self.formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
-                    let formattedSignatureRate = [
+                    let formattedAdditionalRates = [
                         selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
                         selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
                                                                                       rate: $0.rate,
-                                                                                      basedOn: baseRate) }
+                                                                                      basedOn: baseRate) },
+                        selectedRate.carbonNeutralRate.map {
+                            self.formatShippingRate(name: Localization.carbonNeutral,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.additionalHandlingRate.map {
+                            self.formatShippingRate(name: Localization.additionalHandling,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.saturdayDeliveryRate.map {
+                            self.formatShippingRate(name: Localization.saturdayDelivery,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        }
                     ].compacted()
-                    return [formattedBaseRate] + formattedSignatureRate
+                    return [formattedBaseRate] + formattedAdditionalRates
                 } else {
                     return []
                 }
@@ -391,12 +414,14 @@ private extension WooShippingShipmentDetailsViewModel {
     /// Observes changes in shipment details and resets the selected rate.
     /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
     func setupSelectedRateReset() {
-        $destinationAddress
-            .combineLatest($originAddress)
-            .combineLatest($selectedPackage)
-            .combineLatest($shipmentWeight)
-            .combineLatest($hazmatCategory)
-            .combineLatest($customsForm)
+        $destinationAddress.removeDuplicates()
+            .combineLatest($originAddress.removeDuplicates())
+            .combineLatest(
+                $selectedPackage.removeDuplicates(by: { $0?.id == $1?.id })
+            )
+            .combineLatest($shipmentWeight.removeDuplicates())
+            .combineLatest($hazmatCategory.removeDuplicates())
+            .combineLatest($customsForm.removeDuplicates())
             // Drop the initial values set on initialization, so we only react to changes.
             .dropFirst()
             .sink { [weak self] _ in
@@ -495,7 +520,11 @@ private extension WooShippingShipmentDetailsViewModel {
             comment: "Button to undo a change on the shipping label creation screen"
         )
         static func baseRateLabel(for selectedRate: WooShippingSelectedRate) -> String {
-            if selectedRate.signatureRate == nil && selectedRate.adultSignatureRate == nil {
+            if selectedRate.signatureRate == nil &&
+                selectedRate.adultSignatureRate == nil &&
+                selectedRate.carbonNeutralRate == nil &&
+                selectedRate.additionalHandlingRate == nil &&
+                selectedRate.saturdayDeliveryRate == nil {
                 return selectedRate.rate.title
             } else {
                 return String.localizedStringWithFormat(baseFeeFormat, selectedRate.rate.title)
@@ -514,5 +543,23 @@ private extension WooShippingShipmentDetailsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+        static let carbonNeutral = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.carbonNeutral",
+            value: "Carbon Neutral",
+            comment: "Label for row showing the additional cost to require carbon neutral delivery " +
+            "on the shipping label creation screen"
+        )
+        static let additionalHandling = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.additionalHandling",
+            value: "Additional Handling",
+            comment: "Label for row showing the additional cost to require additional handling " +
+            "on the shipping label creation screen"
+        )
+        static let saturdayDelivery = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.saturdayDelivery",
+            value: "Saturday Delivery",
+            comment: "Label for row showing the additional cost to require Saturday delivery " +
+            "on the shipping label creation screen"
+        )
     }
 }

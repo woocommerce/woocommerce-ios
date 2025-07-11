@@ -11,6 +11,9 @@ struct WooShippingItems: View {
     /// View models for items to ship
     let items: [WooShippingItemRowViewModel]
 
+    /// Summary header accessibility label
+    let itemsSummaryAccessibilityValue: String
+
     /// Whether the item list is collapsed
     @State private var isCollapsed: Bool = true
 
@@ -27,6 +30,10 @@ struct WooShippingItems: View {
                     .foregroundStyle(Color(.textSubtle))
             }
             .padding(.vertical, Layout.textContainerAdditionalVerticalPadding)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Localization.collapsibleHeaderAccessibilityLabel)
+            .accessibilityValue(itemsSummaryAccessibilityValue)
+            .accessibilityHint(isCollapsed ? Localization.expandHint : Localization.collapseHint)
         },
                         content: {
             VStack {
@@ -46,7 +53,6 @@ struct WooShippingItems: View {
                     lineColor: Color(.separator),
                     lineWidth: Layout.borderWidth)
                 .accessibilityElement(children: .combine)
-                .accessibilityHint(isCollapsed ? Localization.expandHint : Localization.collapseHint)
         }
     }
 }
@@ -73,6 +79,11 @@ private extension WooShippingItems {
             value: "Double-tap to hide all items",
             comment: "Accessibility hint to collapse the product items section"
         )
+        static let collapsibleHeaderAccessibilityLabel = NSLocalizedString(
+            "shipping-labels.packages.items.header.accessibilityLabel",
+            value: "Products section",
+            comment: "Accessibility label for collapsible products section"
+        )
     }
 }
 
@@ -90,5 +101,8 @@ private extension WooShippingItems {
                                                          name: "Little Nap Brazil 250g",
                                                          detailsLabel: "15×10×8cm • Espresso",
                                                          weightLabel: "275g",
-                                                         priceLabel: "$60.00")])
+                                                         priceLabel: "$60.00")],
+                     itemsSummaryAccessibilityValue: "6 items with a total weight of 825g" +
+                     " and a total price of $135.00"
+    )
 }

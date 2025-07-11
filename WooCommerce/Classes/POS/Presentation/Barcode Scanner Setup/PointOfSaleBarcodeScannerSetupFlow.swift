@@ -148,8 +148,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     content: {
                         PointOfSaleBarcodeScannerSetupCompleteView()
                     },
+                    buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
                     transitions: [
-                        .back: .test
+                        .optionalNext: .information,
                     ]),
                 .testFailed: PointOfSaleBarcodeScannerSetupStep(
                     content: {
@@ -160,8 +161,11 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         .retry: .start,
                         .back: .test
                     ]
+                ),
+                .information: PointOfSaleBarcodeScannerSetupStep(
+                    content: { ProductBarcodeSetupInformation() },
+                    buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
                 )
-                // TODO: add product barcode setup info step WOOMOB-696
             ]
         case .tbcScanner:
             return [
@@ -171,9 +175,14 @@ class PointOfSaleBarcodeScannerSetupFlow {
         case .other:
             return [
                 .start: PointOfSaleBarcodeScannerSetupStep(
-                    content: { BarcodeScannerInformation() }
+                    content: { BarcodeScannerInformation() },
+                    transitions: [.next: .information]
+                ),
+                .information: PointOfSaleBarcodeScannerSetupStep(
+                    content: { ProductBarcodeSetupInformation() },
+                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
+                    transitions: [.back: .start]
                 )
-                // TODO: Add product barcode setup info step
             ]
         }
     }
@@ -236,6 +245,31 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
         )
     }
 }
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration(
+            primaryButton: nil,
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.informationButtonTitle,
+                action: { flow.transition(to: .optionalNext) }
+            )
+        )
+    }
+
+    private enum Localization {
+        static let informationButtonTitle = "How to set up barcodes on products"
+    }
+}
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerNoButtonsButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration.noButtons()
+    }
+}
+
 
 // MARK: - Private Localization Extension
 @available(iOS 17.0, *)

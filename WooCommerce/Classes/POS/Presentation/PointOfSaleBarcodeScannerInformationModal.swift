@@ -60,7 +60,7 @@ struct LegacyBarcodeScannerInformationContent: View {
 
 struct BarcodeScannerInformation: View {
     var body: some View {
-        VStack(spacing: POSSpacing.xxLarge){
+        VStack(spacing: POSSpacing.xxLarge) {
             Text(Localization.scannerInfoHeading)
                 .font(.posHeadingBold)
                 .accessibilityAddTraits(.isHeader)
@@ -91,6 +91,45 @@ struct BarcodeScannerInformation: View {
     }
 }
 
+@available(iOS 17.0, *)
+struct ProductBarcodeSetupInformation: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.xxLarge) {
+            Text(Localization.productBarcodeInfoHeading)
+                .font(.posHeadingBold)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.medium) {
+                PointOfSaleInformationModalParagraphView {
+                    Text(bulletPointWithLink)
+                        .accessibilityLabel(bulletPointWithLinkAccessibilityLabel)
+                }
+            }
+
+            Image(decorative: PointOfSaleAssets.barcodeFieldScreenshot.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+        }
+        .onAppear(perform: {
+            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
+        })
+    }
+
+    private var bulletPointWithLink: AttributedString {
+        var secondary = AttributedString(Localization.barcodeInfoPrimaryMessage + " ")
+        var moreDetails = AttributedString(Localization.barcodeInfoMoreDetailsLink)
+        moreDetails.link = Constants.detailsLink
+        moreDetails.foregroundColor = .posPrimary
+        moreDetails.underlineStyle = .single
+        secondary.append(moreDetails)
+        return secondary
+    }
+
+    private var bulletPointWithLinkAccessibilityLabel: String {
+        return Localization.barcodeInfoPrimaryMessageAccessible + " " + Localization.barcodeInfoMoreDetailsLinkAccessible
+    }
+}
+
 private enum Constants {
     static let detailsLink = URL(string: "https://woocommerce.com/document/barcode-and-qr-code-scanner/")
 }
@@ -102,11 +141,8 @@ private enum Localization {
         comment: "Heading for the barcode info modal in POS, introducing barcode scanning feature"
     )
 
-    static let scannerInfoHeading = NSLocalizedString(
-        "pos.scannerInfoModal.heading",
-        value: "Scanner set up",
-        comment: "Heading for the barcode info modal in POS, introducing barcode scanning feature"
-    )
+    static let scannerInfoHeading = "Scanner set up"
+    static let productBarcodeInfoHeading = "How to set up barcodes on products"
 
     static let barcodeInfoIntroMessage = NSLocalizedString(
         "pos.barcodeInfoModal.introMessage",

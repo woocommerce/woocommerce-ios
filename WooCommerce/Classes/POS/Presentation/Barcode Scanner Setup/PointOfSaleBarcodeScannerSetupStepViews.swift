@@ -48,9 +48,9 @@ struct PointOfSaleBarcodeScannerPairingView: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
             // Temporary image until finalised assets are available
-            Image(systemName: "gearshape")
-                .font(.system(size: 78))
-                .accessibilityHidden(true)
+            Image(decorative: PointOfSaleAssets.gears.imageName)
+                .resizable()
+                .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
 
             VStack(alignment: .center, spacing: POSSpacing.small) {
                 Text(Localization.title)
@@ -85,8 +85,12 @@ private extension PointOfSaleBarcodeScannerPairingView {
     //TODO: WOOMOB-792
     enum Localization {
         static let settingsButtonTitle = "Go to settings"
-        static let title = "Pair your device"
+        static let title = "Pair your scanner"
         static let instructionFormat = "Enable Bluetooth and select your %1$@ scanner in iOS Settings."
+    }
+
+    enum Constants {
+        static let gearIconSize: CGFloat = 112
     }
 }
 

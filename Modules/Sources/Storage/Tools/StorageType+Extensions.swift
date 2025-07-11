@@ -600,6 +600,20 @@ public extension StorageType {
         return allObjects(ofType: WooShippingCustomPackage.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    /// Returns all stored shipments for a site and order.
+    ///
+    func loadAllShipments(siteID: Int64, orderID: Int64) -> [WooShippingShipment] {
+        let predicate = \WooShippingShipment.siteID == siteID && \WooShippingShipment.orderID == orderID
+        return allObjects(ofType: WooShippingShipment.self, matching: predicate, sortedBy: nil)
+    }
+
+    /// Returns a single shipment given a `siteID`, `orderID`, and `index`
+    ///
+    func loadShipment(siteID: Int64, orderID: Int64, index: String) -> WooShippingShipment? {
+        let predicate = \WooShippingShipment.siteID == siteID && \WooShippingShipment.orderID == orderID && \WooShippingShipment.index == index
+        return firstObject(ofType: WooShippingShipment.self, matching: predicate)
+    }
+
     // MARK: - BlazeCampaignListItem
 
     /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`

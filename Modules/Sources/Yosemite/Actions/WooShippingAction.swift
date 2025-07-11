@@ -113,6 +113,14 @@ public enum WooShippingAction: Action {
                             orderID: Int64,
                             completion: (Result<[ShippingLabel], Error>) -> Void)
 
+    /// Sync shipments for a given order.
+    /// This uses the same endpoint as `loadConfig` but also stores shipments and shipping labels to the storage
+    /// and returns them in the completion closure.
+    ///
+    case syncShipments(siteID: Int64,
+                       orderID: Int64,
+                       completion: (Result<[WooShippingShipment], Error>) -> Void)
+
     /// Updates shipments for given order
     ///
     case updateShipment(siteID: Int64,

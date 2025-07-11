@@ -1309,6 +1309,96 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `syncShipments`
+
+    func test_syncShipments_returns_shipments_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedShipments = [WooShippingShipment.fake(), WooShippingShipment.fake()]
+        let config = WooShippingConfig.fake().copy(shipments: expectedShipments)
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(config))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actualShipments = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualShipments, expectedShipments)
+    }
+
+    func test_syncShipments_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_syncShipments_persists_shipments_to_storage_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
+        let shippingLabel = ShippingLabel.fake().copy(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            shippingLabelID: 123
+        )
+        let item = WooShippingShipmentItem(id: 11, subItems: [])
+        let expectedShipments = [WooShippingShipment.fake().copy(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            index: "0",
+            items: [item],
+            shippingLabel: shippingLabel
+        )]
+        let config = WooShippingConfig.fake().copy(shipments: expectedShipments)
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(config))
+
+        let store = WooShippingStore(dispatcher: dispatcher,
+                                     storageManager: storageManager,
+                                     network: network,
+                                     remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageWooShippingShipment.self), expectedShipments.count)
+        let object = viewStorage.loadShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
+        XCTAssertEqual(object?.order?.orderID, sampleOrderID)
+        XCTAssertEqual(object?.shippingLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(object?.items?.count, 1)
+        XCTAssertEqual(object?.items?.first?.id, item.id)
+    }
 }
 
 private extension WooShippingStoreTests {

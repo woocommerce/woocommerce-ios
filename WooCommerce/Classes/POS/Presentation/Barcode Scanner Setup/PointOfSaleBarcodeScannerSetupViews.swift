@@ -6,12 +6,17 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
     let onSelection: (PointOfSaleBarcodeScannerType) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.setupIntroMessage)
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(spacing: POSSpacing.large) {
+            VStack(spacing: POSSpacing.small) {
+                Text(Localization.setupHeading)
+                    .accessibilityAddTraits(.isHeader)
+                    .font(.posHeadingBold)
+                Text(Localization.setupIntroMessage)
+                    .font(.posBodyLargeRegular())
+            }
+            .foregroundStyle(Color.posOnSurface)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: POSSpacing.medium) {
                 ForEach(options) { option in
@@ -33,5 +38,8 @@ private extension PointOfSaleBarcodeScannerSetupSelectionView {
         //TODO: WOOMOB-792
         // Note that "pos.barcodeScannerSetup.introMessage" was previously sent for translation, so don't reuse that.
         static let setupIntroMessage = "Select a model from the list:"
+
+        // Note that "pos.barcodeScannerSetup.heading" was previously sent to translation – don't reuse
+        static let setupHeading = "Set up a barcode scanner"
     }
 }

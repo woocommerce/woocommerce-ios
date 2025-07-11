@@ -12,10 +12,6 @@ struct PointOfSaleBarcodeScannerSetup: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xxLarge) {
-            // Header
-            PointOfSaleModalHeader(isPresented: $isPresented,
-                                   title: .constant(AttributedString(currentTitle)))
-
             VStack {
                 currentContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -28,6 +24,9 @@ struct PointOfSaleBarcodeScannerSetup: View {
                 PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
             }
         }
+        .posModalCloseButton(action: {
+            isPresented = false
+        })
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
         .containerRelativeFrame([.horizontal, .vertical]) { length, _ in
@@ -39,15 +38,6 @@ struct PointOfSaleBarcodeScannerSetup: View {
     }
 
     // MARK: - Computed Properties
-    private var currentTitle: String {
-        switch flowManager.currentState {
-        case .scannerSelection:
-            return Localization.setupHeading
-        case .setupFlow:
-            return flowManager.getCurrentStep()?.title ?? Localization.setupHeading
-        }
-    }
-
     @ViewBuilder
     private var currentContent: some View {
         switch flowManager.currentState {
@@ -93,10 +83,6 @@ private enum Constants {
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetup {
     enum Localization {
-        //TODO: WOOMOB-792
-        // Note that "pos.barcodeScannerSetup.heading" was previously sent to translation – don't reuse
-        static let setupHeading = "Set up a barcode scanner"
-
         static let socketS720Title = NSLocalizedString(
             "pos.barcodeScannerSetup.socketS720.title",
             value: "Socket S720",

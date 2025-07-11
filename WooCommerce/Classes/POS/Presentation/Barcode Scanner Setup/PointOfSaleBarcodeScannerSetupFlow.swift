@@ -161,7 +161,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         .back: .test
                     ]
                 )
-                // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696
+                // TODO: add product barcode setup info step WOOMOB-696
             ]
         case .tbcScanner:
             return [
@@ -171,9 +171,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
         case .other:
             return [
                 .start: PointOfSaleBarcodeScannerSetupStep(
-                    title: "General Scanner Setup",
-                    content: { BarcodeScannerInformationContent() }
+                    content: { BarcodeScannerInformation() }
                 )
+                // TODO: Add product barcode setup info step
             ]
         }
     }

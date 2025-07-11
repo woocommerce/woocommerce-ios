@@ -10,7 +10,8 @@ public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiab
     /// ID of the order that the shipment belongs to.
     public let orderID: Int64
 
-    /// Index of the shipment
+    /// Index of the shipment.
+    /// The expected format is a numeric string, e.g: "0", "1", etc.
     public let index: String
 
     /// Contents of the shipment

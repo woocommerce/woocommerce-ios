@@ -3,6 +3,15 @@ import Foundation
 /// System Status: Remote Endpoint
 ///
 public class SystemStatusRemote: Remote {
+    /// Fields that can be requested in the app from the system status endpoint.
+    /// Reference of all supported fields: https://woocommerce.github.io/woocommerce-rest-api-docs/#system-status-properties
+    /// TODO: move raw value to private extension
+    public enum Field: String {
+        case activePlugins = "active_plugins"
+        case inactivePlugins = "inactive_plugins"
+        case environment = "environment"
+        case settings = "settings"
+    }
 
     /// Retrieves information from the system status that belongs to the current site.
     /// Currently fetching:
@@ -16,19 +25,17 @@ public class SystemStatusRemote: Remote {
     ///
     public func loadSystemInformation(for siteID: Int64,
                                       completion: @escaping (Result<SystemStatus, Error>) -> Void) {
-        let path = Constants.systemStatusPath
-        let parameters = [
-            ParameterKeys.fields: [ParameterValues.environment, ParameterValues.activePlugins, ParameterValues.inactivePlugins]
-        ]
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .get,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: parameters,
-                                     availableAsRESTRequest: true)
-        let mapper = SystemStatusMapper(siteID: siteID)
-
-        enqueue(request, mapper: mapper, completion: completion)
+        Task { @MainActor in
+            do {
+                let mapper = SystemStatusMapper(siteID: siteID)
+                let systemStatus = try await loadSystemStatus(for: siteID,
+                                                              fields: [Field.environment, Field.activePlugins, Field.inactivePlugins],
+                                                              mapper: mapper)
+                completion(.success(systemStatus))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
 
     /// Fetch details about system status for a given site.
@@ -39,15 +46,48 @@ public class SystemStatusRemote: Remote {
     ///
     public func fetchSystemStatusReport(for siteID: Int64,
                                         completion: @escaping (Result<SystemStatusReport, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let mapper = SystemStatusReportMapper(siteID: siteID)
+                let systemStatus = try await loadSystemStatus(for: siteID,
+                                                              fields: nil,
+                                                              mapper: mapper)
+                completion(.success(systemStatus))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    /// Loads system status information with configurable fields for a given site.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which the system status is fetched from.
+    ///   - fields: Optional array of fields to fetch. If nil or empty, it fetches all available fields.
+    ///   - mapper: Mapper to transform the response data.
+    /// - Returns: Mapped object based on the mapper output type.
+    /// - Throws: Network or parsing errors.
+    ///
+    public func loadSystemStatus<T, M: Mapper>(for siteID: Int64,
+                                               fields: [Field]? = nil,
+                                               mapper: M) async throws -> T where M.Output == T {
         let path = Constants.systemStatusPath
+        let parameters: [String: Any]? = {
+            if let fields, !fields.isEmpty {
+                return [
+                    ParameterKeys.fields: fields.map(\.rawValue)
+                ]
+            } else {
+                return nil
+            }
+        }()
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
-                                     parameters: nil,
+                                     parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = SystemStatusReportMapper(siteID: siteID)
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 
@@ -56,12 +96,6 @@ public class SystemStatusRemote: Remote {
 private extension SystemStatusRemote {
     enum Constants {
         static let systemStatusPath: String = "system_status"
-    }
-
-    enum ParameterValues {
-        static let activePlugins: String = "active_plugins"
-        static let inactivePlugins: String = "inactive_plugins"
-        static let environment: String = "environment"
     }
 
     enum ParameterKeys {

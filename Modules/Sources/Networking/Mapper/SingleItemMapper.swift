@@ -2,16 +2,20 @@ import Foundation
 
 /// SingleItemMapper: Maps generic REST API requests for a single item
 ///
-struct SingleItemMapper<Output: Decodable>: Mapper {
+public struct SingleItemMapper<Output: Decodable>: Mapper {
     /// Site Identifier associated to the items that will be parsed.
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned by our endpoints.
     ///
     let siteID: Int64
 
+    public init(siteID: Int64) {
+        self.siteID = siteID
+    }
+
     /// (Attempts) to convert a dictionary into Output.
     ///
-    func map(response: Data) throws -> Output {
+    public func map(response: Data) throws -> Output {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [

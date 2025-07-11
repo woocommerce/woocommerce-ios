@@ -59,12 +59,6 @@ private extension POSSystemStatusService {
     }
 }
 
-// MARK: - Errors
-
-public enum POSSystemStatusServiceError: Error {
-    case wooCommercePluginNotFound
-}
-
 // MARK: - Network Response Structs
 
 private struct POSPluginEligibilitySystemStatus: Decodable {

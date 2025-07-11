@@ -29,6 +29,11 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         remote = SystemStatusRemote(network: network)
     }
 
+    /// Test-friendly initializer that accepts a network implementation.
+    init(network: Network) {
+        remote = SystemStatusRemote(network: network)
+    }
+
     public func loadWooCommercePluginAndPOSFeatureSwitch(siteID: Int64) async throws -> POSPluginAndFeatureInfo {
         let mapper = SingleItemMapper<POSPluginEligibilitySystemStatus>(siteID: siteID)
         let systemStatus: POSPluginEligibilitySystemStatus = try await remote.loadSystemStatus(
@@ -43,7 +48,7 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         }
 
         // Extracts POS feature value from settings response.
-        let featureValue = systemStatus.settings.enabledFeatures.contains(SiteSettingsFeature.pointOfSale.rawValue) ? true : nil
+        let featureValue = systemStatus.settings.enabledFeatures?.contains(SiteSettingsFeature.pointOfSale.rawValue) == true ? true : nil
         return POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureValue)
     }
 }
@@ -73,7 +78,9 @@ private struct POSPluginEligibilitySystemStatus: Decodable {
 }
 
 private struct POSEligibilitySystemStatusSettings: Decodable {
-    let enabledFeatures: [String]
+    // As `settings.enable_features` was introduced in WC version 9.9.0, this field is optional.
+    // Ref: https://github.com/woocommerce/woocommerce/pull/57168
+    let enabledFeatures: [String]?
 
     enum CodingKeys: String, CodingKey {
         case enabledFeatures = "enabled_features"

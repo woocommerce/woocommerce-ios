@@ -32,7 +32,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -59,7 +59,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -143,7 +143,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(Localization.instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -176,9 +176,7 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
 struct PointOfSaleBarcodeScannerErrorView: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
-            // Error icon
-            errorIcon
-                .accessibilityHidden(true)
+            POSErrorXMark()
 
             VStack(alignment: .center, spacing: POSSpacing.small) {
                 Text(Localization.title)
@@ -187,7 +185,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(Localization.instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -195,15 +193,10 @@ struct PointOfSaleBarcodeScannerErrorView: View {
         .padding(POSSpacing.xLarge)
     }
 
-    private var errorIcon: some View {
-        Image(systemName: "exclamationmark.triangle.fill")
-            .font(.system(size: 60))
-            .foregroundColor(.orange)
-    }
-
     private enum Localization {
-        static let title = "Test Failed"
-        static let instruction = "The barcode test was unsuccessful. Please check your scanner connection and try again."
+        static let title = "Scanning issue found"
+        static let instruction = "Please check the scanner’s manual and reset it \n" +
+        "to factory settings, then retry the set up flow."
     }
 }
 

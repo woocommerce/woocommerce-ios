@@ -32,6 +32,9 @@ extension WooAnalyticsEvent {
             static let paymentMethodType = "payment_method_type"
             static let siteID = "site_id"
             static let gatewayID = "plugin_slug"
+            static let scanDurationMs = "scan_duration_ms"
+            static let barcodeLength = "barcode_length"
+            static let failReason = "fail_reason"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -195,6 +198,23 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.totalItems: "\(totalItems)"
+                              ])
+        }
+
+        static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningSuccess,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)"
+                              ])
+        }
+
+        static func barcodeScanningFailed(scanDurationMs: Int, barcodeLength: Int, failReason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningFailed,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)",
+                                Key.failReason: failReason
                               ])
         }
     }

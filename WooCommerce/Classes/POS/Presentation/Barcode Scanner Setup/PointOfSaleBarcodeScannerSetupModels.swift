@@ -52,7 +52,7 @@ enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
     case pairing
     case test
     case complete
-    case error
+    case testFailed
     case information
 }
 

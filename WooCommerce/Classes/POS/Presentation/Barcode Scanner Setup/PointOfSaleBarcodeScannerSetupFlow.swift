@@ -140,7 +140,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
                     transitions: [
                         .next: .complete,
-                        .error: .error,
+                        .error: .testFailed,
                         .back: .pairing
                     ]
                 ),
@@ -151,8 +151,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     transitions: [
                         .back: .test
                     ]),
-                .error: PointOfSaleBarcodeScannerSetupStep(
-                    title: "Test Failed",
+                .testFailed: PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerErrorView()
                     },

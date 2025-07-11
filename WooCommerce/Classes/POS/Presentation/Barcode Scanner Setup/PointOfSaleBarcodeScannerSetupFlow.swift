@@ -7,9 +7,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: PointOfSaleBarcodeScannerType
     private let onComplete: () -> Void
     private let onBackToSelection: () -> Void
-    private var currentStepIndex: Int = 0
-    private var steps: [PointOfSaleBarcodeScannerSetupStep] = []
-    private var stepHistory: [Int] = []
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
     private var currentStepKey: PointOfSaleBarcodeScannerStepID = .start
 
@@ -35,31 +32,18 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 
     func nextStep() {
-        transition(to: .next) { [weak self] in
-            // Default behavior: move to next step in array
-            if self?.currentStepIndex ?? 0 < (self?.steps.count ?? 0) - 1 {
-                self?.stepHistory.append(self?.currentStepIndex ?? 0)
-                self?.currentStepIndex = (self?.currentStepIndex ?? 0) + 1
-            } else {
-                self?.onComplete()
-            }
-        }
+        transition(to: .next)
     }
 
     func previousStep() {
         transition(to: .back) { [weak self] in
-            // Default behavior: go back to previous step in history
-            if let previousIndex = self?.stepHistory.popLast() {
-                self?.currentStepIndex = previousIndex
-            } else {
-                self?.onBackToSelection()
-            }
+            // If no back transition is defined, go back to selection
+            self?.onBackToSelection()
         }
     }
 
     func restartFlow() {
         currentStepKey = .start
-        stepHistory.removeAll()
     }
 
     // MARK: - Generic Transition Methods
@@ -108,12 +92,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
             return
         }
 
-        transitionToStep(transition.to)
-    }
-
-    private func transitionToStep(_ newStepKey: PointOfSaleBarcodeScannerStepID) {
-        stepHistory.append(currentStepIndex)
-        currentStepKey = newStepKey
+        currentStepKey = transition.to
     }
 
     private func createFlowSteps(for scannerType: PointOfSaleBarcodeScannerType) -> [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] {
@@ -141,7 +120,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
                     },
                     transitions: [
-                        .next: PointOfSaleBarcodeScannerTransition(to: .test, type: .next)
+                        .next: PointOfSaleBarcodeScannerTransition(to: .test, type: .next),
+                        .back: PointOfSaleBarcodeScannerTransition(to: .start, type: .back)
                     ]
                 ),
                 .test: PointOfSaleBarcodeScannerSetupStep(
@@ -160,7 +140,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
                     transitions: [
                         .next: PointOfSaleBarcodeScannerTransition(to: .complete, type: .next),
-                        .error: PointOfSaleBarcodeScannerTransition(to: .error, type: .error)
+                        .error: PointOfSaleBarcodeScannerTransition(to: .error, type: .error),
+                        .back: PointOfSaleBarcodeScannerTransition(to: .pairing, type: .back)
                     ]
                 ),
                 .complete: PointOfSaleBarcodeScannerSetupStep(
@@ -168,8 +149,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerSetupCompleteView()
                     },
                     transitions: [
-                        .back: PointOfSaleBarcodeScannerTransition(to: .test, type: .back),
-                        .next: PointOfSaleBarcodeScannerTransition(to: .complete, type: .next)
+                        .back: PointOfSaleBarcodeScannerTransition(to: .test, type: .back)
                     ]),
                 .error: PointOfSaleBarcodeScannerSetupStep(
                     title: "Test Failed",

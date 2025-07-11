@@ -158,8 +158,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     },
                     buttonCustomization: PointOfSaleBarcodeScannerErrorButtonCustomization(),
                     transitions: [
-                        .retry: .test,
-                        .back: .pairing
+                        .retry: .start,
+                        .back: .test
                     ]
                 )
                 // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696

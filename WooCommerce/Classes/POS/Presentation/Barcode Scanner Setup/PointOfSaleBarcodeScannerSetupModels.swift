@@ -13,6 +13,29 @@ enum PointOfSaleBarcodeScannerType {
     case starBSH20B
     case tbcScanner
     case other
+
+    var name: String {
+        switch self {
+        case .socketS720:
+            return Localization.socketS720Name
+        case .starBSH20B:
+            return Localization.starBsh20BName
+        case .tbcScanner:
+            return Localization.tbcScannerName
+        case .other:
+            return Localization.otherName
+        }
+    }
+}
+
+private extension PointOfSaleBarcodeScannerType {
+    //TODO: WOOMOB-792
+    enum Localization {
+        static let socketS720Name = "Socket S720"
+        static let starBsh20BName = "Star BSH-20B"
+        static let tbcScannerName = "TBC scanner"
+        static let otherName = "Other scanner"
+    }
 }
 
 // MARK: - Flow State
@@ -35,12 +58,31 @@ struct PointOfSaleBarcodeScannerSetupStep {
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
 
     init(
-        title: String,
+        title: String = "",
         @ViewBuilder content: () -> any View,
         buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil
     ) {
         self.title = title
         self.content = content()
         self.buttonCustomization = buttonCustomization
+    }
+}
+
+// MARK: - Test Barcodes
+enum PointOfSaleBarcodeScannerTestBarcode {
+    case ean13
+
+    var barcodeAsset: PointOfSaleAssets {
+        switch self {
+        case .ean13:
+            return .testEan13Barcode
+        }
+    }
+
+    var expectedValue: String {
+        switch self {
+        case .ean13:
+            return "1234567890128"
+        }
     }
 }

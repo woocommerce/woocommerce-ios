@@ -85,8 +85,33 @@ class PointOfSaleBarcodeScannerSetupFlow {
             ]
         case .starBSH20B:
             return [
-                createWelcomeStep(title: "Star BSH-20B Setup")
-                // TODO: Add more steps for Star BSH-20B WOOMOB-696
+                PointOfSaleBarcodeScannerSetupStep(content: {
+                    PointOfSaleBarcodeScannerBarcodeView(
+                        title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
+                        instruction: Localization.setUpBarcodeStepInstruction,
+                        barcode: .starBsh20SetupBarcode)
+                }),
+                PointOfSaleBarcodeScannerSetupStep(content: {
+                    PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
+                }),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerTestBarcodeView(
+                            scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+                                onTestPass: { [weak self] in
+                                    self?.nextStep()
+                                },
+                                onTestFailure: {},
+                                barcodeDefinition: .ean13)
+                        )
+                    },
+                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization()
+                ),
+                PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerSetupCompleteView()
+                    })
+                // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
             return [
@@ -112,24 +137,23 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 }
 
-// MARK: - Button Customizations
 @available(iOS 17.0, *)
-struct PointOfSaleBarcodeScannerWelcomeButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration(
-            primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
-                title: Localization.doneButtonTitle,
-                action: { flow.nextStep() }
-            ),
-            secondaryButton: nil
+            primaryButton: nil,
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.backButtonTitle,
+                action: { flow.previousStep() }
+            )
         )
     }
 
     private enum Localization {
-        static let doneButtonTitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.done.button.title",
-            value: "Done",
-            comment: "Title for the done button in barcode scanner setup navigation"
+        static let backButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.back.button.title",
+            value: "Back",
+            comment: "Title for the back button in barcode scanner setup navigation"
         )
     }
 }
@@ -153,5 +177,8 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             value: "Back",
             comment: "Title for the back button in barcode scanner setup navigation"
         )
+        //TODO: WOOMOB-792
+        static let starSetUpBarcodeStepTitleFormat = "%1$@ Setup"
+        static let setUpBarcodeStepInstruction = "Scan the barcode to set up your scanner."
     }
 }

@@ -56,25 +56,6 @@ struct PointOfSaleBarcodeScannerOptionView: View {
     }
 }
 
-// MARK: - Step Views
-struct PointOfSaleBarcodeScannerWelcomeView: View {
-    let title: String
-
-    var body: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Text(title)
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-
-            Text("TODO: Implement \(title) setup flow")
-                .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantHighest)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
 // MARK: - Private Localization Extensions
 private extension PointOfSaleBarcodeScannerSetupSelectionView {
     enum Localization {

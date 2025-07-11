@@ -70,30 +70,18 @@ enum PointOfSaleBarcodeScannerTransitionType: Hashable {
     case back
 }
 
-// MARK: - Transition Definition
-struct PointOfSaleBarcodeScannerTransition {
-    let to: PointOfSaleBarcodeScannerStepID
-    let type: PointOfSaleBarcodeScannerTransitionType
-
-    init(to: PointOfSaleBarcodeScannerStepID, type: PointOfSaleBarcodeScannerTransitionType = .next) {
-        self.to = to
-        self.type = type
-    }
-}
-
 // MARK: - Setup Step
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
-    let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerTransition]
+    let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID]
 
-    init(
-        title: String = "",
-        @ViewBuilder content: () -> any View,
-        buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
-        transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerTransition] = [:]) {
+    init(title: String = "",
+         @ViewBuilder content: () -> any View,
+         buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
+         transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [:]) {
         self.title = title
         self.content = content()
         self.buttonCustomization = buttonCustomization

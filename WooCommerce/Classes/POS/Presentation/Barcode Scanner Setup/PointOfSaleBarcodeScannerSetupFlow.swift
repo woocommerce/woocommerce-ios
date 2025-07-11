@@ -87,12 +87,12 @@ class PointOfSaleBarcodeScannerSetupFlow {
 
     private func transition(to transitionType: PointOfSaleBarcodeScannerTransitionType, fallback: (() -> Void)? = nil) {
         guard let currentStep = currentStep,
-              let transition = currentStep.transitions[transitionType] else {
+              let targetStep = currentStep.transitions[transitionType] else {
             fallback?()
             return
         }
 
-        currentStepKey = transition.to
+        currentStepKey = targetStep
     }
 
     private func createFlowSteps(for scannerType: PointOfSaleBarcodeScannerType) -> [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] {
@@ -112,7 +112,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                             barcode: .starBsh20SetupBarcode)
                     },
                     transitions: [
-                        .next: PointOfSaleBarcodeScannerTransition(to: .pairing, type: .next)
+                        .next: .pairing
                     ]
                 ),
                 .pairing: PointOfSaleBarcodeScannerSetupStep(
@@ -120,8 +120,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
                     },
                     transitions: [
-                        .next: PointOfSaleBarcodeScannerTransition(to: .test, type: .next),
-                        .back: PointOfSaleBarcodeScannerTransition(to: .start, type: .back)
+                        .next: .test,
+                        .back: .start
                     ]
                 ),
                 .test: PointOfSaleBarcodeScannerSetupStep(
@@ -139,9 +139,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     },
                     buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
                     transitions: [
-                        .next: PointOfSaleBarcodeScannerTransition(to: .complete, type: .next),
-                        .error: PointOfSaleBarcodeScannerTransition(to: .error, type: .error),
-                        .back: PointOfSaleBarcodeScannerTransition(to: .pairing, type: .back)
+                        .next: .complete,
+                        .error: .error,
+                        .back: .pairing
                     ]
                 ),
                 .complete: PointOfSaleBarcodeScannerSetupStep(
@@ -149,7 +149,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerSetupCompleteView()
                     },
                     transitions: [
-                        .back: PointOfSaleBarcodeScannerTransition(to: .test, type: .back)
+                        .back: .test
                     ]),
                 .error: PointOfSaleBarcodeScannerSetupStep(
                     title: "Test Failed",
@@ -158,8 +158,8 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     },
                     buttonCustomization: PointOfSaleBarcodeScannerErrorButtonCustomization(),
                     transitions: [
-                        .retry: PointOfSaleBarcodeScannerTransition(to: .test, type: .retry),
-                        .back: PointOfSaleBarcodeScannerTransition(to: .pairing, type: .back)
+                        .retry: .test,
+                        .back: .pairing
                     ]
                 )
                 // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696

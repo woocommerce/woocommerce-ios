@@ -1,9 +1,1 @@
-- [*] Shipping Labels: Improve UI of Split shipments screen. [https://github.com/woocommerce/woocommerce-ios/pull/15838]
-- [*] POS: icon button with confirmation step used for clearing the cart [https://github.com/woocommerce/woocommerce-ios/pull/15829]
-- [*] POS: Orders from Point of Sale now show a badge in order list and order details [https://github.com/woocommerce/woocommerce-ios/pull/15887]
-- [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
-- [*] Shipping Labels: Enable the confirm button on the payment method sheet even when there are no changes. [https://github.com/woocommerce/woocommerce-ios/pull/15856]
-- [*] POS: start a new cart by scanning a barcode on the payment success screen [https://github.com/woocommerce/woocommerce-ios/pull/15870]
-- [*] Watch app: Fixed connection issue upon fresh install [https://github.com/woocommerce/woocommerce-ios/pull/15867]
-- [Internal] Shipping Labels: Optimize requests for syncing countries [https://github.com/woocommerce/woocommerce-ios/pull/15875]
-- [*] Shipping Labels: Display label size from account settings as default [https://github.com/woocommerce/woocommerce-ios/pull/15873]
+Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.

@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.9
+-----
+
+
 22.8
 -----
 - [*] Shipping Labels: Improve UI of Split shipments screen. [https://github.com/woocommerce/woocommerce-ios/pull/15838]

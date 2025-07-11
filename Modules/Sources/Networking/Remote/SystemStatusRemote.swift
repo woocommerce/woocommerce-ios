@@ -5,12 +5,11 @@ import Foundation
 public class SystemStatusRemote: Remote {
     /// Fields that can be requested in the app from the system status endpoint.
     /// Reference of all supported fields: https://woocommerce.github.io/woocommerce-rest-api-docs/#system-status-properties
-    /// TODO: move raw value to private extension
-    public enum Field: String {
-        case activePlugins = "active_plugins"
-        case inactivePlugins = "inactive_plugins"
-        case environment = "environment"
-        case settings = "settings"
+    public enum Field {
+        case activePlugins
+        case inactivePlugins
+        case environment
+        case settings
     }
 
     /// Retrieves information from the system status that belongs to the current site.
@@ -100,5 +99,22 @@ private extension SystemStatusRemote {
 
     enum ParameterKeys {
         static let fields: String = "_fields"
+    }
+}
+
+// MARK: - Field Raw Values
+//
+private extension SystemStatusRemote.Field {
+    var rawValue: String {
+        switch self {
+        case .activePlugins:
+            return "active_plugins"
+        case .inactivePlugins:
+            return "inactive_plugins"
+        case .environment:
+            return "environment"
+        case .settings:
+            return "settings"
+        }
     }
 }

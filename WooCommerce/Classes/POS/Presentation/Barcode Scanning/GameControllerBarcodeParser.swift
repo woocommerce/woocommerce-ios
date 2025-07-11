@@ -190,7 +190,7 @@ final class GameControllerBarcodeParser {
 
     private func calculateScanDurationMs() -> Int {
         guard let startTime = scanStartTime else { return 0 }
-        return Int(timeProvider.now().timeIntervalSince(startTime) * 1000)
+        return Int(round(timeProvider.now().timeIntervalSince(startTime) * 1000))
     }
 
     private func processScan() {

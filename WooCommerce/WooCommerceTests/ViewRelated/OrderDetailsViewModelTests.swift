@@ -75,7 +75,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(status, .completed)
     }
 
-    // MARK: - `syncShippingLabels`
+    // MARK: - `syncShippingLabelsOrShipments`
 
     func test_syncShippingLabels_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
@@ -83,7 +83,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        await viewModel.syncShippingLabels()
+        await viewModel.syncShippingLabelsOrShipments()
 
         // Then no actions are dispatched
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -107,7 +107,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                               featureFlagService: featureFlagService)
 
         // When
-        await viewModel.syncShippingLabels()
+        await viewModel.syncShippingLabelsOrShipments()
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 3)
@@ -152,7 +152,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
-        whenSyncingShippingLabels(thenReturn: .success([]))
+        whenSyncingShipments(thenReturn: .success([]))
 
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
@@ -161,7 +161,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                               featureFlagService: featureFlagService)
 
         // When
-        await viewModel.syncShippingLabels()
+        await viewModel.syncShippingLabelsOrShipments()
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 2)
@@ -178,7 +178,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // WooShippingAction.syncShippingLabels
         let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
-        guard case let WooShippingAction.syncShippingLabels(siteID, orderID, _) = secondAction else {
+        guard case let WooShippingAction.syncShipments(siteID, orderID, _) = secondAction else {
             XCTFail("Expected \(secondAction) to be \(WooShippingAction.self)")
             return
         }
@@ -205,7 +205,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                               featureFlagService: featureFlagService)
 
         // When
-        await viewModel.syncShippingLabels()
+        await viewModel.syncShippingLabelsOrShipments()
 
         // Then
         XCTAssertEqual(storesManager.receivedActions.count, 3)
@@ -789,10 +789,10 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
-    func whenSyncingShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
+    func whenSyncingShipments(thenReturn result: Result<[WooShippingShipment], Error>) {
         storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-                case let .syncShippingLabels(_, _, completion):
+                case let .syncShipments(_, _, completion):
                     completion(result)
                 default:
                     break

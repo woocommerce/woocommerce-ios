@@ -3463,6 +3463,36 @@ final class MigrationTests: XCTestCase {
         let updatedShipment = migratedLabel.value(forKey: "shipment") as? WooShippingShipment
         XCTAssertEqual(updatedShipment, shipment)
     }
+
+    func test_migrating_from_123_to_124_adds_new_relationship_shipments_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 123")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(order.entity.relationshipsByName["shipments"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 124")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        // `shipments` should be present in `migratedOrder`
+        XCTAssertNotNil(migratedOrder.entity.relationshipsByName["shipments"])
+
+        let savedShipments = migratedOrder.value(forKey: "shipments") as? Set<WooShippingShipment>
+        XCTAssertEqual(savedShipments?.count, 0) // default value
+
+        let shipment = insertWooShippingShipment(to: targetContext)
+        migratedOrder.mutableSetValue(forKey: "shipments").add(shipment)
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrder.value(forKey: "shipments") as? Set<NSManagedObject>, [shipment])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

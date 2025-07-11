@@ -11,6 +11,7 @@ extension WooShippingShipment {
     @NSManaged public var index: String?
     @NSManaged public var shippingLabel: ShippingLabel?
     @NSManaged public var items: Set<WooShippingShipmentItem>?
+    @NSManaged public var order: Order?
 
 }
 

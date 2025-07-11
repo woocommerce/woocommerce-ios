@@ -8,15 +8,16 @@ final class GameControllerBarcodeParser {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode scan completes (success or failure)
-    let onScan: (Result<String, Error>) -> Void
+    let onScan: (HIDBarcodeParserResult) -> Void
 
     private let timeProvider: TimeProvider
 
     private var buffer = ""
     private var lastKeyPressTime: Date?
+    private var scanStartTime: Date?
 
     init(configuration: HIDBarcodeParserConfiguration,
-         onScan: @escaping (Result<String, Error>) -> Void,
+         onScan: @escaping (HIDBarcodeParserResult) -> Void,
          timeProvider: TimeProvider = DefaultTimeProvider()) {
         self.configuration = configuration
         self.onScan = onScan
@@ -41,6 +42,12 @@ final class GameControllerBarcodeParser {
         } else {
             guard !excludedKeyCodes.contains(keyCode) else { return }
             checkForTimeoutBetweenKeystrokes()
+
+            // Start timing on first character
+            if buffer.isEmpty {
+                scanStartTime = timeProvider.now()
+            }
+
             buffer.append(character)
         }
     }
@@ -69,7 +76,10 @@ final class GameControllerBarcodeParser {
 
         if let lastTime = lastKeyPressTime,
            currentTime.timeIntervalSince(lastTime) > configuration.maximumInterCharacterTime {
-            onScan(.failure(HIDBarcodeParserError.timedOut(barcode: buffer)))
+            let scanDurationMs = calculateScanDurationMs()
+            let result = HIDBarcodeParserResult.failure(error: HIDBarcodeParserError.timedOut(barcode: buffer), scanDurationMs: scanDurationMs)
+
+            onScan(result)
             resetScan()
         }
 
@@ -175,14 +185,24 @@ final class GameControllerBarcodeParser {
     private func resetScan() {
         buffer = ""
         lastKeyPressTime = nil
+        scanStartTime = nil
+    }
+
+    private func calculateScanDurationMs() -> Int {
+        guard let startTime = scanStartTime else { return 0 }
+        return Int(timeProvider.now().timeIntervalSince(startTime) * 1000)
     }
 
     private func processScan() {
         checkForTimeoutBetweenKeystrokes()
+        let scanDurationMs = calculateScanDurationMs()
+
         if buffer.count >= configuration.minimumBarcodeLength {
-            onScan(.success(buffer))
+            let result = HIDBarcodeParserResult.success(barcode: buffer, scanDurationMs: scanDurationMs)
+            onScan(result)
         } else {
-            onScan(.failure(HIDBarcodeParserError.scanTooShort(barcode: buffer)))
+            let result = HIDBarcodeParserResult.failure(error: HIDBarcodeParserError.scanTooShort(barcode: buffer), scanDurationMs: scanDurationMs)
+            onScan(result)
         }
         resetScan()
     }
@@ -211,4 +231,34 @@ struct HIDBarcodeParserConfiguration {
 enum HIDBarcodeParserError: Error {
     case scanTooShort(barcode: String)
     case timedOut(barcode: String)
+
+    var analyticsReason: String {
+        switch self {
+        case .scanTooShort:
+            return "too_short"
+        case .timedOut:
+            return "no_terminator"
+        }
+    }
+
+    var barcode: String {
+        switch self {
+        case .scanTooShort(let barcode), .timedOut(let barcode):
+            return barcode
+        }
+    }
+}
+
+enum HIDBarcodeParserResult {
+    case success(barcode: String, scanDurationMs: Int)
+    case failure(error: HIDBarcodeParserError, scanDurationMs: Int)
+
+    var asResult: Result<String, Error> {
+        switch self {
+        case .success(let barcode, _):
+            return .success(barcode)
+        case .failure(let error, _):
+            return .failure(error)
+        }
+    }
 }

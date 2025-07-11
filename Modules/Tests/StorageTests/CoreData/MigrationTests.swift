@@ -3398,6 +3398,71 @@ final class MigrationTests: XCTestCase {
         let updatedValue = migratedObject.value(forKey: "createdVia") as? String
         XCTAssertEqual(updatedValue, "pos-rest-api")
     }
+
+    func test_migrating_from_123_to_124_enables_creating_new_WooShippingShipment_and_WooShippingShipmentItem_entities() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 123")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. These entities should not exist in Model 123
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingShipment", in: sourceContext))
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingShipmentItem", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 124")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingShipment"), 0)
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingShipmentItem"), 0)
+
+        let shipment = insertWooShippingShipment(to: targetContext)
+        let shipmentItem = insertWooShippingShipmentItem(to: targetContext)
+        shipmentItem.setValue(shipment, forKey: "shipment")
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingShipment"), 1)
+        let insertedShipment = try XCTUnwrap(targetContext.firstObject(ofType: WooShippingShipment.self))
+        XCTAssertEqual(insertedShipment, shipment)
+        XCTAssertEqual(insertedShipment.items?.count, 1)
+
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingShipmentItem"), 1)
+        let insertedShipmentItem = try XCTUnwrap(targetContext.firstObject(ofType: WooShippingShipmentItem.self))
+        XCTAssertEqual(insertedShipmentItem, shipmentItem)
+    }
+
+    func test_migrating_from_123_to_124_adds_new_relationship_shipment_to_shippingLabel() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 123")
+        let sourceContext = sourceContainer.viewContext
+
+        let label = insertShippingLabel(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(label.entity.relationshipsByName["shipment"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 124")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+
+        // `shipment` should be present in `migratedLabel`
+        XCTAssertNotNil(migratedLabel.entity.relationshipsByName["shipment"])
+
+        let savedShipment = migratedLabel.value(forKey: "shipment") as? WooShippingShipment
+        XCTAssertNil(savedShipment) // default value
+
+        let shipment = insertWooShippingShipment(to: targetContext)
+        migratedLabel.setValue(shipment, forKey: "shipment")
+        try targetContext.save()
+
+        let updatedShipment = migratedLabel.value(forKey: "shipment") as? WooShippingShipment
+        XCTAssertEqual(updatedShipment, shipment)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -4295,6 +4360,23 @@ private extension MigrationTests {
         context.insert(entityName: "WooShippingSavedPredefinedPackage", properties: [
             "providerID": "usps",
             "groupTitle": "USPS Priority Mail Flat Rate Boxes",
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingShipment(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingShipment", properties: [
+            "siteID": 1,
+            "orderID": 2,
+            "index": "3"
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingShipmentItem(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingShipmentItem", properties: [
+            "id": 4,
+            "subItems": ["sub_1", "sub_2"]
         ])
     }
 }

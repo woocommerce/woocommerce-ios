@@ -13,56 +13,25 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
 
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: POSSpacing.medium) {
                 ForEach(options) { option in
                     Button {
                         onSelection(option.scannerType)
                     } label: {
-                        PointOfSaleBarcodeScannerOptionView(
-                            title: option.title,
-                            subtitle: option.subtitle
-                        )
+                        Text(option.title)
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
         }
     }
 }
 
-// MARK: - Scanner Option View
-struct PointOfSaleBarcodeScannerOptionView: View {
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(title)
-                    .font(.posBodyLargeBold)
-                    .foregroundColor(.posOnSurface)
-                Text(subtitle)
-                    .font(.posBodyMediumRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
-            }
-            Spacer()
-            Image(systemName: "chevron.forward")
-                .font(.posBodyMediumBold)
-                .foregroundColor(.posOnSurfaceVariantHighest)
-        }
-        .padding(POSPadding.medium)
-        .background(Color.posSurfaceDim)
-        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
-    }
-}
-
 // MARK: - Private Localization Extensions
 private extension PointOfSaleBarcodeScannerSetupSelectionView {
     enum Localization {
-        static let setupIntroMessage = NSLocalizedString(
-            "pos.barcodeScannerSetup.introMessage",
-            value: "Choose your barcode scanner to get started with the setup process.",
-            comment: "Introductory message in the barcode scanner setup flow in POS"
-        )
+        //TODO: WOOMOB-792
+        // Note that "pos.barcodeScannerSetup.introMessage" was previously sent for translation, so don't reuse that.
+        static let setupIntroMessage = "Select a model from the list:"
     }
 }

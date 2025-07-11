@@ -24,7 +24,9 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .scrollVerticallyIfNeeded()
 
             // Bottom buttons
-            PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
+            if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
+                PointOfSaleFlowButtonsView(configuration: flowManager.buttonConfiguration)
+            }
         }
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
@@ -64,22 +66,18 @@ struct PointOfSaleBarcodeScannerSetup: View {
         [
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.socketS720Title,
-                subtitle: Localization.socketS720Subtitle,
                 scannerType: .socketS720
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.starBSH20BTitle,
-                subtitle: Localization.starBSH20BSubtitle,
                 scannerType: .starBSH20B
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.tbcScannerTitle,
-                subtitle: Localization.tbcScannerSubtitle,
                 scannerType: .tbcScanner
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.otherTitle,
-                subtitle: Localization.otherSubtitle,
                 scannerType: .other
             )
         ]
@@ -95,51 +93,29 @@ private enum Constants {
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetup {
     enum Localization {
-        static let setupHeading = NSLocalizedString(
-            "pos.barcodeScannerSetup.heading",
-            value: "Barcode Scanner Setup",
-            comment: "Heading for the barcode scanner setup flow in POS"
-        )
+        //TODO: WOOMOB-792
+        // Note that "pos.barcodeScannerSetup.heading" was previously sent to translation – don't reuse
+        static let setupHeading = "Set up a barcode scanner"
 
         static let socketS720Title = NSLocalizedString(
             "pos.barcodeScannerSetup.socketS720.title",
             value: "Socket S720",
             comment: "Title for Socket S720 scanner option in barcode scanner setup"
         )
-        static let socketS720Subtitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.socketS720.subtitle",
-            value: "Small handheld scanner with a charging dock or stand",
-            comment: "Subtitle for Socket S720 scanner option in barcode scanner setup"
-        )
         static let starBSH20BTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.starBSH20B.title",
             value: "Star BSH-20B",
             comment: "Title for Star BSH-20B scanner option in barcode scanner setup"
-        )
-        static let starBSH20BSubtitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.starBSH20B.subtitle",
-            value: "Ergonomic scanner with a stand",
-            comment: "Subtitle for Star BSH-20B scanner option in barcode scanner setup"
         )
         static let tbcScannerTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.tbcScanner.title",
             value: "Scanner TBC",
             comment: "Title for TBC scanner option in barcode scanner setup"
         )
-        static let tbcScannerSubtitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.tbcScanner.subtitle",
-            value: "Recommended scanner",
-            comment: "Subtitle for TBC scanner option in barcode scanner setup"
-        )
         static let otherTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.other.title",
             value: "Other",
             comment: "Title for other scanner option in barcode scanner setup"
-        )
-        static let otherSubtitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.other.subtitle",
-            value: "General scanner setup instructions",
-            comment: "Subtitle for other scanner option in barcode scanner setup"
         )
     }
 }

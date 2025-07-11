@@ -39,6 +39,8 @@ protocol POSEntryPointEligibilityCheckerProtocol {
     func checkVisibility() async -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
+    /// Refreshes the eligibility state based on the provided ineligible reason.
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
@@ -112,6 +114,33 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
 
         return await featureFlagEligibility == .eligible
+    }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        switch ineligibleReason {
+        case .unsupportedIOSVersion:
+            // TODO: WOOMOB-768 - hide refresh CTA in this case
+            return .ineligible(reason: .unsupportedIOSVersion)
+        case .siteSettingsNotAvailable, .unsupportedCurrency:
+            do {
+                try await syncSiteSettingsRemotely()
+                return await checkEligibility()
+            } catch POSTabEligibilityCheckerError.selfDeallocated {
+                return .ineligible(reason: .selfDeallocated)
+            } catch {
+                throw error
+            }
+        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
+            // TODO: WOOMOB-799 - sync the WooCommerce plugin then check eligibility again.
+            // For now, it requires relaunching the app or switching stores to refresh the plugin info.
+            return await checkEligibility()
+        case .featureSwitchDisabled:
+            // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
+            // For now, just checks eligibility again.
+            return await checkEligibility()
+        case .featureSwitchSyncFailure, .selfDeallocated:
+            return await checkEligibility()
+        }
     }
 }
 
@@ -235,6 +264,25 @@ private extension POSTabEligibilityChecker {
         }
         return .eligible
     }
+
+    @MainActor
+    func syncSiteSettingsRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                if let error {
+                    return continuation.resume(throwing: error)
+                }
+                siteSettings.refresh()
+                continuation.resume(returning: ())
+            })
+        }
+    }
 }
 
 // MARK: - Remote Feature Flag Eligibility Check
@@ -275,6 +323,10 @@ private extension POSTabEligibilityChecker {
             self.stores.dispatch(action)
         }
     }
+}
+
+private enum POSTabEligibilityCheckerError: Error {
+    case selfDeallocated
 }
 
 private extension POSTabEligibilityChecker {

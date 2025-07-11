@@ -26,9 +26,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     private(set) var orderItems: WooShippingItemsViewModel
 
-    /// The purchased shipping label.
-    @Published private var shippingLabels: [ShippingLabel] = []
-
     var canViewLabel: Bool {
         currentShipmentDetailsViewModel.canViewLabel
     }
@@ -57,7 +54,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     }
 
     var hasUnfulfilledShipments: Bool {
-        shipments.contains(where: { $0.purchasedLabelID == nil })
+        shipments.contains(where: { $0.purchasedLabel == nil })
     }
 
     @Published var labelPurchaseErrorNotice: Notice?
@@ -246,7 +243,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             // After shipment configs are updated, shipments are updated with purchased label details
             // Update the selected tab now by comparing the purchased labels with the initial selected label.
             if let selectedShippingLabel,
-                let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabelID == selectedShippingLabel.shippingLabelID }) {
+               let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == selectedShippingLabel.shippingLabelID }) {
                 selectedShipmentIndex = matchingIndex
             }
         }
@@ -262,7 +259,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                 }
             }
 
-            if shipments.contains(where: { $0.purchasedLabelID == nil }) {
+            if shipments.contains(where: { $0.purchasedLabel == nil }) {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }
@@ -278,7 +275,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             state = .missingRequiredData
         } else {
             state = .ready
-            let count = shipments.count(where: { $0.purchasedLabelID == nil })
+            let count = shipments.count(where: { $0.purchasedLabel == nil })
             analytics.track(event: .WooShipping.createShippingLabelFormShown(unfulfilledShipmentsCount: count))
         }
     }
@@ -436,7 +433,6 @@ private extension WooShippingCreateLabelsViewModel {
         }
 
         if let config {
-            shippingLabels = config.shippingLabelData?.currentOrderLabels.filter { $0.refund == nil && $0.status == .purchased } ?? []
             splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: config,
                                                                          items: itemsDataSource.items,
@@ -501,14 +497,13 @@ private extension WooShippingCreateLabelsViewModel {
 
     func updateShipmentDetailsViewModels() {
         shipmentDetailViewModels = shipments.map { shipment in
-            let matchingShippingLabel = shippingLabels.first(where: { $0.shippingLabelID == shipment.purchasedLabelID })
             let originAddressPublisher = $selectedOriginAddress
                 .map { $0?.toWooShippingAddress() }
                 .eraseToAnyPublisher()
             return WooShippingShipmentDetailsViewModel(
                 order: order,
                 shipment: shipment,
-                shippingLabel: matchingShippingLabel,
+                shippingLabel: shipment.purchasedLabel,
                 originAddress: originAddressPublisher,
                 destinationAddress: $destinationAddress.eraseToAnyPublisher(),
                 stores: stores,
@@ -525,33 +520,26 @@ private extension WooShippingCreateLabelsViewModel {
     }
 
     func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
-        shippingLabels.append(newLabel)
-
         let index = shipment.index
         shipments[index] = Shipment(index: index,
                                     contents: shipment.contents,
-                                    purchasedLabelID: newLabel.shippingLabelID,
+                                    purchasedLabel: newLabel,
                                     currency: order.currency,
                                     currencySettings: currencySettings,
                                     shippingSettingsService: shippingSettingsService)
-        splitShipmentsViewModel.didPurchaseLabel(for: index,
-                                                 purchasedLabelID: newLabel.shippingLabelID)
+        splitShipmentsViewModel.didPurchaseLabel(for: index, label: newLabel)
         onLabelPurchase?(markOrderComplete)
     }
 
     func handleLabelRefundRequested(labelID: Int64,
                                     in shipment: Shipment) {
-        let labelIndex = shippingLabels.firstIndex(where: { $0.shippingLabelID == labelID })
-        guard let labelIndex else { return }
-
         let shipmentIndex = shipment.index
         shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: shipment.contents,
-                                            purchasedLabelID: nil,
+                                            purchasedLabel: nil,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
-        shippingLabels.remove(at: labelIndex)
         splitShipmentsViewModel.didRequestRefund(for: shipmentIndex)
         refundNotice = Notice(message: Localization.refundNotice)
     }

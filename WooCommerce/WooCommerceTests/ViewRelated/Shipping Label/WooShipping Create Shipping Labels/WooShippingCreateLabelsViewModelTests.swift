@@ -537,8 +537,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
                 let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134)
-                let shipments = ["shipment_0": [WooShippingShipmentItem.fake()],
-                                 "shipment_1": [WooShippingShipmentItem.fake()]]
+                let shipments = [WooShippingShipment.fake().copy(index: "shipment_0", items: [.fake()], shippingLabel: shippingLabel),
+                                 WooShippingShipment.fake().copy(index: "shipment_1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
                     ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
                                               shipmentID: "shipment_0")
@@ -610,8 +610,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = ["0": [WooShippingShipmentItem.fake()],
-                                 "1": [WooShippingShipmentItem.fake()]]
+                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
+                                 WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
                                                                   shippingLabelData: shippingLabelData)))
@@ -627,14 +627,14 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.originAddressLines?.first, labelOriginAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
         XCTAssertEqual(viewModel.originAddressLines?.first, originAddress.address1)
     }
 
@@ -658,8 +658,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(self.settings))
             case .loadConfig(_, _, let completion):
                 // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = ["0": [WooShippingShipmentItem.fake()],
-                                 "1": [WooShippingShipmentItem.fake()]]
+                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
+                                 WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
                 let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
                 completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
                                                                   shippingLabelData: shippingLabelData)))
@@ -679,14 +679,14 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.currentShipment.purchasedLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(viewModel.currentShipment.purchasedLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, labelDestinationAddress.address1)
 
         // When
         viewModel.selectedShipmentIndex = 1
 
         // Then
-        XCTAssertNil(viewModel.currentShipment.purchasedLabelID)
+        XCTAssertNil(viewModel.currentShipment.purchasedLabel)
         XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
     }
 
@@ -702,7 +702,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         let order = Order.fake().copy(shippingLabels: [shippingLabel])
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: shippingLabel.shippingLabelID,
+            purchasedLabel: shippingLabel,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -746,7 +746,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         )
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -813,7 +813,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()
@@ -895,7 +895,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
         let shipment = Shipment(
             contents: [],
-            purchasedLabelID: nil,
+            purchasedLabel: nil,
             currency: "USD",
             currencySettings: ServiceLocator.currencySettings,
             shippingSettingsService: MockShippingSettingsService()

@@ -1217,7 +1217,6 @@ private extension OrderDetailsDataSourceTests {
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSitePlugin.self)
         plugin.update(with: readOnlyPlugin)
-        storage.saveIfNeeded()
     }
 
     /// Finds first section with a given title from the provided data source.

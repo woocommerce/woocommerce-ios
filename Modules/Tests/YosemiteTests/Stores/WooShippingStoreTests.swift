@@ -996,7 +996,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_loadConfig_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipmentItem.fake()]])
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: [WooShippingShipment.fake()])
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1084,7 +1084,7 @@ final class WooShippingStoreTests: XCTestCase {
                                  expiryDate: nil)
         }()
         let expectedResponse = WooShippingConfig.fake().copy(
-            shipments: ["0": [WooShippingShipmentItem.fake()]],
+            shipments: [WooShippingShipment.fake()],
             shippingLabelData: WooShippingLabelData(currentOrderLabels: [expectedShippingLabel])
         )
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedResponse))

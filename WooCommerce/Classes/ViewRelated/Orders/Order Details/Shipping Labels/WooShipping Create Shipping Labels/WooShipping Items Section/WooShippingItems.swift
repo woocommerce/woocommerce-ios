@@ -41,7 +41,12 @@ struct WooShippingItems: View {
         .frame(maxWidth: .infinity, alignment: .center)
         .if(isCollapsed) { view in
             view
-                .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderWidth)
+                .roundedBorder(
+                    cornerRadius: Layout.borderCornerRadius,
+                    lineColor: Color(.separator),
+                    lineWidth: Layout.borderWidth)
+                .accessibilityElement(children: .combine)
+                .accessibilityHint(isCollapsed ? Localization.expandHint : Localization.collapseHint)
         }
     }
 }
@@ -55,6 +60,19 @@ private extension WooShippingItems {
         static let verticalPadding: CGFloat = 8
 
         static let textContainerAdditionalVerticalPadding: CGFloat = 2
+    }
+
+    private enum Localization {
+        static let expandHint = NSLocalizedString(
+            "shipping-labels.packages.items.expand.accessibility-hint",
+            value: "Double-tap to show all items",
+            comment: "Accessibility hint to expand the product items section"
+        )
+        static let collapseHint = NSLocalizedString(
+            "shipping-labels.packages.items.collapse.accessibility-hint",
+            value: "Double-tap to hide all items",
+            comment: "Accessibility hint to collapse the product items section"
+        )
     }
 }
 

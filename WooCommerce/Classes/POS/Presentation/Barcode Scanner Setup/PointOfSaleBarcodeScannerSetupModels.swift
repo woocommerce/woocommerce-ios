@@ -44,6 +44,18 @@ enum PointOfSaleBarcodeScannerSetupFlowState {
     case setupFlow(PointOfSaleBarcodeScannerType)
 }
 
+// MARK: - Step Identifiers
+enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
+    case start
+    case setupBarcode1
+    case setupBarcode2
+    case pairing
+    case test
+    case complete
+    case error
+    case information
+}
+
 // MARK: - Button Customization Protocol
 @available(iOS 17.0, *)
 protocol PointOfSaleBarcodeScannerButtonCustomization {
@@ -60,10 +72,10 @@ enum PointOfSaleBarcodeScannerTransitionType: Hashable {
 
 // MARK: - Transition Definition
 struct PointOfSaleBarcodeScannerTransition {
-    let to: Int // Index of the target step
+    let to: PointOfSaleBarcodeScannerStepID
     let type: PointOfSaleBarcodeScannerTransitionType
 
-    init(to: Int, type: PointOfSaleBarcodeScannerTransitionType = .next) {
+    init(to: PointOfSaleBarcodeScannerStepID, type: PointOfSaleBarcodeScannerTransitionType = .next) {
         self.to = to
         self.type = type
     }

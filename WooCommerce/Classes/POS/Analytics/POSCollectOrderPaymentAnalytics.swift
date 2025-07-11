@@ -12,7 +12,6 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
 
     private let analytics: Analytics
 
-    private let siteID: Int64
     private var paymentGatewayAccount: PaymentGatewayAccount?
     private let configuration: CardPresentPaymentsConfiguration
     private var connectedReader: CardReader?
@@ -20,10 +19,8 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
         connectedReader?.readerType.model
     }
 
-    init(siteID: Int64,
-         analytics: Analytics = ServiceLocator.analytics,
+    init(analytics: Analytics = ServiceLocator.analytics,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
-        self.siteID = siteID
         self.analytics = analytics
         self.configuration = configuration
     }
@@ -61,7 +58,6 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
             countryCode: configuration.countryCode,
             paymentMethod: capturedPaymentData.paymentMethod,
             cardReaderModel: connectedReaderModel,
-            siteID: siteID,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,

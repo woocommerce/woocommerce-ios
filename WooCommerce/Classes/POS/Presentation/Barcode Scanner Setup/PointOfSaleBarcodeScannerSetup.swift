@@ -88,7 +88,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
 
 // MARK: - Constants
 private enum Constants {
-    static var modalFrameMaxSmallDimension: CGFloat { 752 }
+    static var modalFrameMaxSmallDimension: CGFloat { 616 }
 }
 
 // MARK: - Private Localization Extension

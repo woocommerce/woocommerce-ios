@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24E263" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24F74" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -774,6 +774,7 @@
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLabels" inverseEntity="Order"/>
         <relationship name="originAddress" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelAddress" inverseName="originShippingLabel" inverseEntity="ShippingLabelAddress"/>
         <relationship name="refund" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelRefund" inverseName="shippingLabel" inverseEntity="ShippingLabelRefund"/>
+        <relationship name="shipment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingShipment" inverseName="shippingLabel" inverseEntity="WooShippingShipment"/>
     </entity>
     <entity name="ShippingLabelAccountSettings" representedClassName="ShippingLabelAccountSettings" syncable="YES">
         <attribute name="canEditSettings" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -1066,5 +1067,17 @@
         <attribute name="providerID" attributeType="String" defaultValueString=""/>
         <relationship name="package" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WooShippingPredefinedPackage" inverseName="savedPredefinedPackage" inverseEntity="WooShippingPredefinedPackage"/>
         <relationship name="packagesResponse" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingPackagesResponse" inverseName="savedPredefinedPackages" inverseEntity="WooShippingPackagesResponse"/>
+    </entity>
+    <entity name="WooShippingShipment" representedClassName="WooShippingShipment" syncable="YES">
+        <attribute name="index" attributeType="String" defaultValueString="0"/>
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="WooShippingShipmentItem" inverseName="shipment" inverseEntity="WooShippingShipmentItem"/>
+        <relationship name="shippingLabel" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabel" inverseName="shipment" inverseEntity="ShippingLabel"/>
+    </entity>
+    <entity name="WooShippingShipmentItem" representedClassName="WooShippingShipmentItem" syncable="YES">
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="subItems" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
+        <relationship name="shipment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingShipment" inverseName="items" inverseEntity="WooShippingShipment"/>
     </entity>
 </model>

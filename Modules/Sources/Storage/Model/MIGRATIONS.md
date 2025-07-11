@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 124 (Release 22.9.0.0)
+- @itsmeichigo 2025-07-11
+  - Added `WooShippingShipment` entity.
+  - Added `WooShippingShipmentItem` entity.
+  - Added `shipment` attribute to `ShippingLabel` entity.
+
 ## Model 123 (Release 22.8.0.0)
 - @iamgabrielma 2025-06-30
     - Added `createdVia` attribute to `Order` entity. 

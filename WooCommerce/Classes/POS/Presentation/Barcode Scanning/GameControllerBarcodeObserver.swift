@@ -88,7 +88,12 @@ final class GameControllerBarcodeObserver {
         cleanupKeyboard()
 
         coalescedKeyboard = keyboard
-        barcodeParser = GameControllerBarcodeParser(configuration: configuration, onScan: onScan)
+        barcodeParser = GameControllerBarcodeParser(
+            configuration: configuration,
+            onScan: { [weak self] result in
+                self?.handleScanResult(result)
+            }
+        )
 
         keyboard.keyboardInput?.keyChangedHandler = { [weak self] _, _, keyCode, pressed in
             guard let self = self else { return }
@@ -111,5 +116,30 @@ final class GameControllerBarcodeObserver {
         coalescedKeyboard = nil
         barcodeParser = nil
         isShiftPressed = false
+    }
+
+    private func handleScanResult(_ result: HIDBarcodeParserResult) {
+        trackAnalyticsEvent(for: result)
+        onScan(result.asResult)
+    }
+
+    private func trackAnalyticsEvent(for result: HIDBarcodeParserResult) {
+        switch result {
+        case .success(let barcode, let scanDurationMs):
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.PointOfSale.barcodeScanningSuccess(
+                    scanDurationMs: scanDurationMs,
+                    barcodeLength: barcode.count
+                )
+            )
+        case .failure(let error, let scanDurationMs):
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.PointOfSale.barcodeScanningFailed(
+                    scanDurationMs: scanDurationMs,
+                    barcodeLength: error.barcode.count,
+                    failReason: error.analyticsReason
+                )
+            )
+        }
     }
 }

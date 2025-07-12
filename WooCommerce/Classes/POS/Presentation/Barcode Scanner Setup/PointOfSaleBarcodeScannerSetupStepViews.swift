@@ -65,6 +65,8 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             }
 
             Button {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
+
                 guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
                     return
                 }
@@ -115,6 +117,7 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     private func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
             timerCompleted = true
+            scanTester.handleScanTimeout()
         }
     }
 }

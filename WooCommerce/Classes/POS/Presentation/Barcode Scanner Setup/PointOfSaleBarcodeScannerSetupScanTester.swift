@@ -20,18 +20,14 @@ struct PointOfSaleBarcodeScannerSetupScanTester {
         barcodeDefinition.barcodeAsset
     }
 
-    func handleScan(_ scanResult: Result<String, Error>) {
+    func handleScan(_ scanResult: Result<String, HIDBarcodeParserError>) {
         switch scanResult {
         case .success(barcodeDefinition.expectedValue):
             onTestPass()
         case .success(let scannedValue):
             onTestFailure(scannedValue)
-        case .failure(HIDBarcodeParserError.scanTooShort(barcode: let scannedValue)):
-            onTestFailure(scannedValue)
-        case .failure(HIDBarcodeParserError.timedOut(barcode: let scannedValue)):
-            onTestFailure(scannedValue)
-        case .failure:
-            onTestFailure("")
+        case .failure(let error):
+            onTestFailure(error.barcode)
         }
     }
 

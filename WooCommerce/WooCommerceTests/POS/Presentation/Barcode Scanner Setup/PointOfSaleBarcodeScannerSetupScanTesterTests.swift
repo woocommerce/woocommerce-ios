@@ -70,18 +70,14 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
             onTestTimeout: { onTestTimeoutCalled = true },
             barcodeDefinition: expectedBarcode)
 
-        // When the scan fails
-        sut.handleScan(.failure(TestError.scanFailed))
+        // When the scan fails with scanTooShort error
+        sut.handleScan(.failure(HIDBarcodeParserError.scanTooShort(barcode: "short")))
 
         // Then it calls the failure closure
         #expect(onTestPassCalled == false)
         #expect(onTestFailureCalled == true)
         #expect(onTestTimeoutCalled == false)
-        #expect(receivedScanValue == "")
-    }
-
-    private enum TestError: Error {
-        case scanFailed
+        #expect(receivedScanValue == "short")
     }
 
     @Test func test_scanTester_provides_correct_barcode_asset() {

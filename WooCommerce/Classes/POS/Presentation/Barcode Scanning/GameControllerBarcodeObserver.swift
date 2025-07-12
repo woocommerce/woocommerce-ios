@@ -9,8 +9,8 @@ import GameController
 ///
 final class GameControllerBarcodeObserver {
     /// A closure that is called when a barcode scan is completed.
-    /// The result will be a `success` with the barcode string or a `failure` with an error.
-    let onScan: (Result<String, Error>) -> Void
+    /// The result will be a `success` with the barcode string or a `failure` with an HIDBarcodeParserError.
+    let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     /// Track the coalesced keyboard and its parser
     /// According to Apple's documentation, all connected keyboards are coalesced into one keyboard object
@@ -27,7 +27,7 @@ final class GameControllerBarcodeObserver {
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
     ///   - onScan: The closure to be called when a scan is completed.
-    init(configuration: HIDBarcodeParserConfiguration = .default, onScan: @escaping (Result<String, Error>) -> Void) {
+    init(configuration: HIDBarcodeParserConfiguration = .default, onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
         self.onScan = onScan
         self.configuration = configuration
         addObservers()

@@ -253,7 +253,7 @@ enum HIDBarcodeParserResult {
     case success(barcode: String, scanDurationMs: Int)
     case failure(error: HIDBarcodeParserError, scanDurationMs: Int)
 
-    var asResult: Result<String, Error> {
+    var asResult: Result<String, HIDBarcodeParserError> {
         switch self {
         case .success(let barcode, _):
             return .success(barcode)

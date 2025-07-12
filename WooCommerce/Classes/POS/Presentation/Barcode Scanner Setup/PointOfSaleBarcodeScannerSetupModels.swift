@@ -26,6 +26,19 @@ enum PointOfSaleBarcodeScannerType {
             return Localization.otherName
         }
     }
+
+    var analyticsName: String {
+        switch self {
+        case .socketS720:
+            return "Socket_S720"
+        case .starBSH20B:
+            return "Star_BSH_20B"
+        case .tbcScanner:
+            return "TBC"
+        case .other:
+            return "other"
+        }
+    }
 }
 
 private extension PointOfSaleBarcodeScannerType {
@@ -35,6 +48,27 @@ private extension PointOfSaleBarcodeScannerType {
         static let starBsh20BName = "Star BSH-20B"
         static let tbcScannerName = "TBC scanner"
         static let otherName = "Other scanner"
+    }
+}
+
+// MARK: - Step Type
+enum PointOfSaleBarcodeScannerSetupStepType {
+    case setupBarcode
+    case pairing
+    case testBarcode
+    case complete
+
+    var analyticsValue: String {
+        switch self {
+        case .setupBarcode:
+            return "setup_barcode"
+        case .pairing:
+            return "pairing"
+        case .testBarcode:
+            return "test_barcode"
+        case .complete:
+            return "setup_barcode"
+        }
     }
 }
 
@@ -56,13 +90,16 @@ struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
+    let stepType: PointOfSaleBarcodeScannerSetupStepType
 
     init(
         title: String = "",
+        stepType: PointOfSaleBarcodeScannerSetupStepType,
         @ViewBuilder content: () -> any View,
         buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil
     ) {
         self.title = title
+        self.stepType = stepType
         self.content = content()
         self.buttonCustomization = buttonCustomization
     }

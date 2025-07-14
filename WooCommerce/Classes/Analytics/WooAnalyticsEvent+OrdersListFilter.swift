@@ -23,3 +23,14 @@ extension WooAnalyticsEvent {
         }
     }
 }
+
+fileprivate extension FilterOrderListViewModel.SalesChannelFilter {
+    var analyticsDescription: String? {
+        switch self {
+        case .pointOfSale:
+            return "pos"
+        case .any:
+            return nil
+        }
+    }
+}

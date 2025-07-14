@@ -42,6 +42,9 @@ struct POSIneligibleView: View {
                         Task { @MainActor in
                             do {
                                 isLoading = true
+                                ServiceLocator.analytics.track(
+                                    event: .PointOfSaleIneligibleUI.ineligibleUIRefreshTapped(reason: reason)
+                                )
                                 try await onRefresh()
                                 isLoading = false
                             } catch {
@@ -71,6 +74,12 @@ struct POSIneligibleView: View {
             Spacer()
         }
         .padding(POSPadding.large)
+        .onAppear {
+            ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
+        }
+        .onChange(of: reason) { newReason in
+            ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
+        }
     }
 
     private var suggestionText: String {

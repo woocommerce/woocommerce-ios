@@ -4,7 +4,6 @@ import SwiftUI
 struct PointOfSaleBarcodeScannerSetupFlowOption: Identifiable {
     let id = UUID()
     let title: String
-    let subtitle: String
     let scannerType: PointOfSaleBarcodeScannerType
 }
 

@@ -38,7 +38,16 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
             }
 
             Image(barcode.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: Constants.maxBarcodeSize)
         }
+    }
+}
+
+extension PointOfSaleBarcodeScannerBarcodeView {
+    enum Constants {
+        static let maxBarcodeSize: CGFloat = 168
     }
 }
 

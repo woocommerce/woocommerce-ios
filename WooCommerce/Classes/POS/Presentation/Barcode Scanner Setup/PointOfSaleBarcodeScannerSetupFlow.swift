@@ -148,8 +148,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     content: {
                         PointOfSaleBarcodeScannerSetupCompleteView()
                     },
+                    buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
                     transitions: [
-                        .back: .test
+                        .next: .information,
                     ]),
                 .testFailed: PointOfSaleBarcodeScannerSetupStep(
                     content: {
@@ -160,8 +161,11 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         .retry: .start,
                         .back: .test
                     ]
+                ),
+                .information: PointOfSaleBarcodeScannerSetupStep(
+                    content: { ProductBarcodeSetupInformation() },
+                    buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
                 )
-                // TODO: Add optional error step and documentation step for Star BSH-20B WOOMOB-696
             ]
         case .tbcScanner:
             return [
@@ -171,8 +175,13 @@ class PointOfSaleBarcodeScannerSetupFlow {
         case .other:
             return [
                 .start: PointOfSaleBarcodeScannerSetupStep(
-                    title: "General Scanner Setup",
-                    content: { BarcodeScannerInformationContent() }
+                    content: { BarcodeScannerInformation() },
+                    transitions: [.next: .information]
+                ),
+                .information: PointOfSaleBarcodeScannerSetupStep(
+                    content: { ProductBarcodeSetupInformation() },
+                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
+                    transitions: [.back: .start]
                 )
             ]
         }
@@ -236,6 +245,31 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
         )
     }
 }
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration(
+            primaryButton: nil,
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: Localization.informationButtonTitle,
+                action: { flow.transition(to: .next) }
+            )
+        )
+    }
+
+    private enum Localization {
+        static let informationButtonTitle = "How to set up barcodes on products"
+    }
+}
+
+@available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerNoButtonsButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration.noButtons()
+    }
+}
+
 
 // MARK: - Private Localization Extension
 @available(iOS 17.0, *)

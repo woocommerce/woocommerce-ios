@@ -66,7 +66,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, completion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion):
                 XCTAssertTrue(viewModel.syncingData)
                 completion(1, .success(self.sampleOrders))
             default:
@@ -93,7 +93,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, completion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion):
                 completion(1, .failure(error))
             default:
                 break
@@ -142,7 +142,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, _, _, let completion):
+            case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, _, _, _, let completion):
                 requestedOrderStatuses = statuses
                 XCTAssertTrue(viewModel.syncingData)
                 completion(1, .success(self.sampleOrders))
@@ -169,7 +169,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .fetchFilteredOrders(_, _, _, _, _, _, _, _, let pageSize, let completion):
+            case .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, let pageSize, let completion):
                 // Then
                 XCTAssertEqual(pageSize, 3)
                 completion(1, .success(self.sampleOrders))
@@ -191,7 +191,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case .fetchFilteredOrders(_, _, _, _, _, _, _, let writeStrategy, _, let completion):
+            case .fetchFilteredOrders(_, _, _, _, _, _, _, _, let writeStrategy, _, let completion):
                 // Then
                 XCTAssertEqual(writeStrategy, .doNotSave)
                 completion(1, .success(self.sampleOrders))
@@ -215,7 +215,7 @@ private extension LastOrdersDashboardCardViewModelTests {
     func mockFetchFilteredOrders() {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, completion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, completion):
                 completion(1, .success(self.sampleOrders))
             default:
                 break

@@ -1317,7 +1317,6 @@ enum WooAnalyticsStat: String {
     case pointOfSaleBarcodeScannerSetupTestScanTimedOut = "barcode_scanner_setup_test_scan_timed_out"
     case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
     case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
-    case pointOfSaleBarcodeScannerSetupComplete = "barcode_scanner_setup_complete"
     case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
 
     // MARK: Custom Fields events

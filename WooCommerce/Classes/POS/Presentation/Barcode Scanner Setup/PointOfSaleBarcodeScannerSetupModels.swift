@@ -4,7 +4,6 @@ import SwiftUI
 struct PointOfSaleBarcodeScannerSetupFlowOption: Identifiable {
     let id = UUID()
     let title: String
-    let subtitle: String
     let scannerType: PointOfSaleBarcodeScannerType
 }
 
@@ -51,31 +50,46 @@ private extension PointOfSaleBarcodeScannerType {
     }
 }
 
-// MARK: - Step Type
-enum PointOfSaleBarcodeScannerSetupStepType {
-    case setupBarcode
-    case pairing
-    case testBarcode
-    case complete
-
-    var analyticsValue: String {
-        switch self {
-        case .setupBarcode:
-            return "setup_barcode"
-        case .pairing:
-            return "pairing"
-        case .testBarcode:
-            return "test_barcode"
-        case .complete:
-            return "setup_barcode"
-        }
-    }
-}
-
 // MARK: - Flow State
 enum PointOfSaleBarcodeScannerSetupFlowState {
     case scannerSelection
     case setupFlow(PointOfSaleBarcodeScannerType)
+}
+
+// MARK: - Step Identifiers
+enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
+    case setupBarcodeHID
+    case setupBarcodePair
+    case setupInformation
+    case setupProducts
+    case pairing
+    case test
+    case testScanFailed
+    case testScanTimedOut
+    case complete
+
+    var analyticsValue: String? {
+        switch self {
+        case .setupBarcodeHID:
+            return "setup_barcode_hid"
+        case .setupBarcodePair:
+            return "setup_barcode_pair"
+        case .setupInformation:
+            return "setup_information"
+        case .setupProducts:
+            return "setup_products"
+        case .pairing:
+            return "pairing"
+        case .test:
+            return "test_barcode"
+        case .testScanFailed:
+            return "test_scan_failed"
+        case .testScanTimedOut:
+            return "test_scan_timed_out"
+        case .complete:
+            return "setup_complete"
+        }
+    }
 }
 
 // MARK: - Button Customization Protocol
@@ -84,24 +98,29 @@ protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
 
+// MARK: - Transition Types
+enum PointOfSaleBarcodeScannerTransitionType: Hashable {
+    case next
+    case retry
+    case back
+}
+
 // MARK: - Setup Step
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
-    let stepType: PointOfSaleBarcodeScannerSetupStepType
+    let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID]
 
-    init(
-        title: String = "",
-        stepType: PointOfSaleBarcodeScannerSetupStepType,
-        @ViewBuilder content: () -> any View,
-        buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil
-    ) {
+    init(title: String = "",
+         @ViewBuilder content: () -> any View,
+         buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
+         transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [:]) {
         self.title = title
-        self.stepType = stepType
         self.content = content()
         self.buttonCustomization = buttonCustomization
+        self.transitions = transitions
     }
 }
 

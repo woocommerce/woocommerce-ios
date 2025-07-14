@@ -8,6 +8,7 @@ extension WooAnalyticsEvent {
             static let dateRange = "date_range"
             static let product = "product"
             static let customer = "customer"
+            static let salesChannel = "sales_channel"
         }
 
         /// Tracked upon filtering orders
@@ -15,9 +16,21 @@ extension WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType?] = [Key.status: filters.orderStatus?.analyticsDescription,
                                                                         Key.dateRange: filters.dateRange?.analyticsDescription,
                                                                         Key.product: filters.product?.analyticsDescription,
-                                                                        Key.customer: filters.customer?.analyticsDescription]
+                                                                        Key.customer: filters.customer?.analyticsDescription,
+                                                                        Key.salesChannel: filters.salesChannel?.analyticsDescription]
             return WooAnalyticsEvent(statName: .ordersListFilter,
                                      properties: properties.compactMapValues { $0 })
+        }
+    }
+}
+
+fileprivate extension FilterOrderListViewModel.SalesChannelFilter {
+    var analyticsDescription: String? {
+        switch self {
+        case .pointOfSale:
+            return "pos"
+        case .any:
+            return nil
         }
     }
 }

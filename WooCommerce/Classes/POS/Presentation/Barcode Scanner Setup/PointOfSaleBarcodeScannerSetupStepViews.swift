@@ -32,13 +32,22 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
 
             Image(barcode.imageName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: Constants.maxBarcodeSize)
         }
+    }
+}
+
+extension PointOfSaleBarcodeScannerBarcodeView {
+    enum Constants {
+        static let maxBarcodeSize: CGFloat = 168
     }
 }
 
@@ -48,9 +57,9 @@ struct PointOfSaleBarcodeScannerPairingView: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
             // Temporary image until finalised assets are available
-            Image(systemName: "gearshape")
-                .font(.system(size: 78))
-                .accessibilityHidden(true)
+            Image(decorative: PointOfSaleAssets.gears.imageName)
+                .resizable()
+                .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
 
             VStack(alignment: .center, spacing: POSSpacing.small) {
                 Text(Localization.title)
@@ -59,7 +68,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -87,16 +96,19 @@ private extension PointOfSaleBarcodeScannerPairingView {
     //TODO: WOOMOB-792
     enum Localization {
         static let settingsButtonTitle = "Go to settings"
-        static let title = "Pair your device"
+        static let title = "Pair your scanner"
         static let instructionFormat = "Enable Bluetooth and select your %1$@ scanner in iOS Settings."
+    }
+
+    enum Constants {
+        static let gearIconSize: CGFloat = 112
     }
 }
 
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     let scanTester: PointOfSaleBarcodeScannerSetupScanTester
-    @State private var timerCompleted = false
-    @State private var timer: Timer?
+    let timerCompleted: Bool
 
     var body: some View {
         PointOfSaleBarcodeScannerBarcodeView(title: timerCompleted ? Localization.timeoutTitle : Localization.title,
@@ -106,20 +118,15 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
             scanTester.handleScan(result)
         }
         .onAppear {
-            startTimer()
+            if !timerCompleted {
+                scanTester.startTimer()
+            }
         }
         .onDisappear {
-            timer?.invalidate()
-            timer = nil
+            scanTester.stopTimer()
         }
     }
 
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
-            timerCompleted = true
-            scanTester.handleScanTimeout()
-        }
-    }
 }
 
 @available(iOS 17.0, *)
@@ -146,7 +153,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(Localization.instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -173,6 +180,33 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
         static let title = "Scanner set up!"
         static let instruction = "You are ready to start scanning products. \n" +
         "Read more about barcode and QR code scanner support."
+    }
+}
+
+struct PointOfSaleBarcodeScannerErrorView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            POSErrorXMark()
+
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(Localization.instruction)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(POSSpacing.xLarge)
+    }
+
+    private enum Localization {
+        static let title = "Scanning issue found"
+        static let instruction = "Please check the scanner’s manual and reset it \n" +
+        "to factory settings, then retry the set up flow."
     }
 }
 

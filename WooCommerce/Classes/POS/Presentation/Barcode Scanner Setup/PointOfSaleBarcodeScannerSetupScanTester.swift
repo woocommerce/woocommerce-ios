@@ -1,10 +1,13 @@
 import Foundation
 
-struct PointOfSaleBarcodeScannerSetupScanTester {
+@available(iOS 17.0, *)
+@Observable
+class PointOfSaleBarcodeScannerSetupScanTester {
     private let onTestPass: () -> Void
     private let onTestFailure: (String) -> Void
     private let onTestTimeout: () -> Void
     private let barcodeDefinition: PointOfSaleBarcodeScannerTestBarcode
+    private var timer: Timer?
 
     init(onTestPass: @escaping () -> Void,
          onTestFailure: @escaping (String) -> Void,
@@ -31,7 +34,14 @@ struct PointOfSaleBarcodeScannerSetupScanTester {
         }
     }
 
-    func handleScanTimeout() {
-        onTestTimeout()
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
+            self?.onTestTimeout()
+        }
+    }
+
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
 }

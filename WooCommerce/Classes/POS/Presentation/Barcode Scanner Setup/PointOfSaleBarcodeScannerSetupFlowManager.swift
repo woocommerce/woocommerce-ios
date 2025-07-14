@@ -27,13 +27,10 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
 
         currentFlow = PointOfSaleBarcodeScannerSetupFlow(
             scannerType: scannerType,
-            onComplete: { [weak self] in
-                self?.isPresented = false
-            },
+            analytics: analytics,
             onBackToSelection: { [weak self] in
                 self?.goBackToSelection()
-            },
-            analytics: analytics
+            }
         )
         currentState = .setupFlow(scannerType)
     }
@@ -55,10 +52,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow?.currentStep
     }
 
-    func isComplete() -> Bool {
-        currentFlow?.isComplete ?? false
-    }
-
     var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
         switch currentState {
         case .scannerSelection:
@@ -73,8 +66,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     func onDisappear() {
-        guard !isComplete() else { return }
-
         if case .setupFlow(let scannerType) = currentState, let step = getCurrentSetupStepValue() {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupDismissed(scanner: scannerType, step: step))
         } else {

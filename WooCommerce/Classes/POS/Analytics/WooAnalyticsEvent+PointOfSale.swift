@@ -279,11 +279,6 @@ extension WooAnalyticsEvent {
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupComplete(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupComplete,
-                              properties: [Key.scanner: scanner.analyticsName])
-        }
-
         static func barcodeScannerSetupScannerConnected(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerConnected,
                               properties: [Key.scanner: scanner.analyticsName])

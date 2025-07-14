@@ -95,7 +95,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: order)
                 onCompletion(0, .success([order]))
             default:
@@ -112,7 +112,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list & single order
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(0, .success([]))
             case let .retrieveOrderRemotely(_, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: order)
@@ -129,7 +129,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list & single order
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(0, .success([]))
             case let .retrieveOrderRemotely(_, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: Self.sampleOrderWithNoteFullDataOrderID)

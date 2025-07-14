@@ -150,7 +150,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     },
                     buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
                     transitions: [
-                        .optionalNext: .information,
+                        .next: .information,
                     ]),
                 .testFailed: PointOfSaleBarcodeScannerSetupStep(
                     content: {
@@ -253,7 +253,7 @@ struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: P
             primaryButton: nil,
             secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
                 title: Localization.informationButtonTitle,
-                action: { flow.transition(to: .optionalNext) }
+                action: { flow.transition(to: .next) }
             )
         )
     }

@@ -64,7 +64,6 @@ protocol PointOfSaleBarcodeScannerButtonCustomization {
 // MARK: - Transition Types
 enum PointOfSaleBarcodeScannerTransitionType: Hashable {
     case next
-    case optionalNext
     case error
     case retry
     case back

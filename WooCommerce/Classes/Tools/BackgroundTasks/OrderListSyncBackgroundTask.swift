@@ -73,7 +73,6 @@ private struct CurrentOrderListSyncUseCase {
             let action = AppSettingsAction.loadOrdersSettings(siteID: siteID) { (result) in
                 switch result {
                 case .success(let settings):
-                    // Cannot convert value of type 'SalesChannelFilter?' to expected argument type 'FilterOrderListViewModel.SalesChannelFilter?'
                     let filters = FilterOrderListViewModel.Filters(orderStatus: settings.orderStatusesFilter,
                                                                    dateRange: settings.dateRangeFilter,
                                                                    product: settings.productFilter,

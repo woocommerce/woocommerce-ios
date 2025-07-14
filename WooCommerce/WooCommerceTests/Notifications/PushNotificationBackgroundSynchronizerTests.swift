@@ -86,7 +86,12 @@ private extension PushNotificationBackgroundSynchronizerTests {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadOrdersSettings(_, onCompletion):
-                onCompletion(.success(.init(siteID: order.siteID, orderStatusesFilter: nil, dateRangeFilter: nil, productFilter: nil, customerFilter: nil)))
+                onCompletion(.success(.init(siteID: order.siteID,
+                                            orderStatusesFilter: nil,
+                                            dateRangeFilter: nil,
+                                            productFilter: nil,
+                                            customerFilter: nil,
+                                            salesChannelFilter: nil)))
             default:
                 break
             }

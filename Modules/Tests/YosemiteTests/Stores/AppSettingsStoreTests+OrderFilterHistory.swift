@@ -155,7 +155,7 @@ private extension AppSettingsStoreTests_OrderFilterHistory {
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product")
         let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
-        let salesChannelFilter = SalesChannelFilter(filter: .pointOfSale)
+        let salesChannelFilter = SalesChannelFilter.pointOfSale
         return StoredOrderSettings.Setting(siteID: siteID,
                                            orderStatusesFilter: orderStatuses,
                                            dateRangeFilter: dateRange,

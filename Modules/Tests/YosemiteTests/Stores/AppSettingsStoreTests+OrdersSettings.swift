@@ -51,11 +51,13 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product")
         let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
+        let salesChannelFilter = SalesChannelFilter.pointOfSale
         let orderSettings = StoredOrderSettings.Setting(siteID: siteID,
                                                         orderStatusesFilter: orderStatuses,
                                                         dateRangeFilter: dateRange,
                                                         productFilter: productFilter,
-                                                        customerFilter: customerFilter
+                                                        customerFilter: customerFilter,
+                                                        salesChannelFilter: salesChannelFilter
         )
 
         // When
@@ -73,7 +75,8 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
                                                                  orderStatusesFilter: orderStatuses,
                                                                  dateRangeFilter: dateRange,
                                                                  productFilter: productFilter,
-                                                                 customerFilter: customerFilter) { error in
+                                                                 customerFilter: customerFilter,
+                                                                 salesChannelFilter: salesChannelFilter) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction)
@@ -102,6 +105,7 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let dateRange = OrderDateRangeFilter(filter: .custom, startDate: startDate, endDate: endDate)
         let productFilter = FilterOrdersByProduct(id: 1, name: "Sample product 1")
         let customerFilter = CustomerFilter(customer: Customer.fake().copy(customerID: 1))
+        let salesChannelFilter = SalesChannelFilter.any
 
         let orderStatuses2: [OrderStatusEnum] = [.pending, .cancelled]
         let startDate2 = Date().yearStart
@@ -109,24 +113,28 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
         let dateRange2 = OrderDateRangeFilter(filter: .custom, startDate: startDate2, endDate: endDate2)
         let productFilter2 = FilterOrdersByProduct(id: 2, name: "Sample product 2")
         let customerFilter2 = CustomerFilter(customer: Customer.fake().copy(customerID: 2))
+        let salesChannelFilter2 = SalesChannelFilter.pointOfSale
 
         let orderSettings1 = StoredOrderSettings.Setting(siteID: siteID1,
-                                                        orderStatusesFilter: orderStatuses,
-                                                        dateRangeFilter: dateRange,
+                                                         orderStatusesFilter: orderStatuses,
+                                                         dateRangeFilter: dateRange,
                                                          productFilter: productFilter,
-                                                         customerFilter: customerFilter)
+                                                         customerFilter: customerFilter,
+                                                         salesChannelFilter: salesChannelFilter)
         let orderSettings2 = StoredOrderSettings.Setting(siteID: siteID2,
-                                                        orderStatusesFilter: orderStatuses2,
-                                                        dateRangeFilter: dateRange2,
+                                                         orderStatusesFilter: orderStatuses2,
+                                                         dateRangeFilter: dateRange2,
                                                          productFilter: productFilter2,
-                                                         customerFilter: customerFilter2)
+                                                         customerFilter: customerFilter2,
+                                                         salesChannelFilter: salesChannelFilter2)
 
         // When
         let writeAction1 = AppSettingsAction.upsertOrdersSettings(siteID: siteID1,
                                                                   orderStatusesFilter: orderStatuses,
                                                                   dateRangeFilter: dateRange,
                                                                   productFilter: productFilter,
-                                                                  customerFilter: customerFilter) { error in
+                                                                  customerFilter: customerFilter,
+                                                                  salesChannelFilter: salesChannelFilter) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
@@ -135,7 +143,8 @@ final class AppSettingsStoreTests_OrdersSettings: XCTestCase {
                                                                   orderStatusesFilter: orderStatuses2,
                                                                   dateRangeFilter: dateRange2,
                                                                   productFilter: productFilter2,
-                                                                  customerFilter: customerFilter2) { error in
+                                                                  customerFilter: customerFilter2,
+                                                                  salesChannelFilter: salesChannelFilter2) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)

@@ -10,7 +10,6 @@ struct POSTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var siteSettings: MockSelectedSiteSettings!
-    private var pluginsService: MockPluginsService!
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private let siteID: Int64 = 2
@@ -19,11 +18,10 @@ struct POSTabEligibilityCheckerTests {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
         storageManager = MockStorageManager()
-        pluginsService = MockPluginsService()
         eligibilityService = MockPOSEligibilityService()
-        setupWooCommerceVersion()
         siteSettings = MockSelectedSiteSettings()
         mockSystemStatusService = MockPOSSystemStatusService()
+        setupWooCommerceVersion()
     }
 
     // MARK: `checkVisibility`
@@ -40,7 +38,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -63,7 +60,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -89,7 +85,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -110,7 +105,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -126,12 +120,10 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.success(true))
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -148,12 +140,10 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.success(false))
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -170,12 +160,10 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: nil)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -191,12 +179,10 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("9.9.9")
-        setupPOSFeatureEnabled(.success(false))
+        setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -232,12 +218,13 @@ struct POSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
+        setupWooCommerceVersion("9.6.0")
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -254,7 +241,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -290,7 +276,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -309,7 +294,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .phone, // Not iPad
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -331,12 +315,13 @@ struct POSTabEligibilityCheckerTests {
         let settingsSubject = PassthroughSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>()
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
+        setupWooCommerceVersion("9.6.0")
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When - Call checkVisibility and checkEligibility concurrently before site settings are available
         async let visibilityTask = checker.checkVisibility()
@@ -408,9 +393,9 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -431,7 +416,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -458,7 +442,6 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                featureFlagService: featureFlagService)
 
@@ -478,9 +461,9 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -494,14 +477,13 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.success(true))
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -515,14 +497,13 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.success(false))
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -531,40 +512,18 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .ineligible(reason: .featureSwitchDisabled))
     }
 
-    func is_ineligible_when_core_version_is_10_0_0_and_POS_feature_check_fails() async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
-        setupCountry(country: .us)
-        accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0)))
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               userInterfaceIdiom: .pad,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores,
-                                               featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.checkEligibility()
-
-        // Then
-        #expect(result == .ineligible(reason: .featureSwitchSyncFailure))
-    }
-
     func is_eligible_when_core_version_is_below_10_0_0_and_POS_feature_disabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        setupWooCommerceVersion("9.9.9")
-        setupPOSFeatureEnabled(.success(false))
+        setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
-                                               featureFlagService: featureFlagService)
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
@@ -579,7 +538,6 @@ struct POSTabEligibilityCheckerTests {
         // Given
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores)
 
         // When
@@ -596,8 +554,7 @@ struct POSTabEligibilityCheckerTests {
     fileprivate func refreshEligibility_syncs_site_settings_and_checks_eligibility_for_site_settings_issues(ineligibleReason: POSIneligibleReason) async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("9.6.0")
-        setupPOSFeatureEnabled(.success(true))
+        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
 
         var syncCalled = false
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
@@ -614,8 +571,8 @@ struct POSTabEligibilityCheckerTests {
 
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
@@ -647,7 +604,6 @@ struct POSTabEligibilityCheckerTests {
 
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores)
 
         // When & Then - Should throw the network error
@@ -661,13 +617,12 @@ struct POSTabEligibilityCheckerTests {
     @Test func refreshEligibility_checks_eligibility_for_featureSwitchDisabled() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("10.0.0") // Version that supports feature switch
-        setupPOSFeatureEnabled(.success(true)) // Now enabled
+        setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
 
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .featureSwitchDisabled)
@@ -676,34 +631,15 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test func refreshEligibility_checks_eligibility_for_featureSwitchSyncFailure() async throws {
-        // Given
-        setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("10.0.0")
-        setupPOSFeatureEnabled(.failure(NSError(domain: "test", code: 0))) // Still failing
-
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .featureSwitchSyncFailure)
-
-        // Then - Should check eligibility again (still failing)
-        #expect(result == .ineligible(reason: .featureSwitchSyncFailure))
-    }
-
     @Test func refreshEligibility_checks_eligibility_for_selfDeallocated() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("9.6.0")
-        setupPOSFeatureEnabled(.success(true))
+        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
 
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
@@ -727,7 +663,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -751,7 +686,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -774,7 +708,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -798,7 +731,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -822,7 +754,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -845,7 +776,6 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
@@ -869,8 +799,9 @@ private extension POSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
     }
 
-    func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
-        pluginsService.pluginToReturn = createWooCommercePlugin(version: version)
+    func setupWooCommerceVersion(_ version: String = "9.6.0-beta", featureSwitchEnabled: Bool? = nil) {
+        let wcPlugin = createWooCommercePlugin(version: version)
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureSwitchEnabled))
     }
 
     func createWooCommercePlugin(version: String) -> SystemPlugin {
@@ -887,17 +818,6 @@ private extension POSTabEligibilityCheckerTests {
             switch action {
             case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
                 completion(isAllowed)
-            }
-        }
-    }
-
-    func setupPOSFeatureEnabled(_ result: Result<Bool, Error>) {
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case .isFeatureEnabled(_, _, let completion):
-                completion(result)
-            default:
-                break
             }
         }
     }
@@ -931,14 +851,6 @@ private extension POSTabEligibilityCheckerTests {
                 value: currency.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
-    }
-}
-
-private final class MockPluginsService: PluginsServiceProtocol {
-    var pluginToReturn: SystemPlugin = .fake()
-
-    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
-        pluginToReturn
     }
 }
 

@@ -11,8 +11,6 @@ import class Yosemite.POSEligibilityService
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
-import protocol Yosemite.PluginsServiceProtocol
-import class Yosemite.PluginsService
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 
@@ -23,7 +21,6 @@ enum POSIneligibleReason: Equatable {
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureSwitchDisabled
-    case featureSwitchSyncFailure
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }
@@ -49,7 +46,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
-    private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
@@ -58,7 +54,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -67,7 +62,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
-        self.pluginsService = pluginsService
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
@@ -142,7 +136,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
             // For now, just checks eligibility again.
             return await checkEligibility()
-        case .featureSwitchSyncFailure, .selfDeallocated:
+        case .selfDeallocated:
             return await checkEligibility()
         }
     }

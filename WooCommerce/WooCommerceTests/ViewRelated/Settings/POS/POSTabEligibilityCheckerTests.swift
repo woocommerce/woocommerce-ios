@@ -656,7 +656,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     func refreshEligibility_returns_eligible_when_plugin_refreshed_with_valid_version_below_10(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         let wcPlugin = createWooCommercePlugin(version: "9.9.9") // Valid version below feature switch threshold
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
@@ -679,7 +678,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     fileprivate func refreshEligibility_returns_eligible_when_plugin_with_version_10_and_feature_enabled(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         let wcPlugin = createWooCommercePlugin(version: "10.0.0")
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true))
 
@@ -702,7 +700,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     fileprivate func refreshEligibility_returns_ineligible_when_plugin_not_found_in_system_status(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
@@ -724,7 +721,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     fileprivate func refreshEligibility_returns_ineligible_when_plugin_version_still_below_minimum(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         let wcPlugin = createWooCommercePlugin(version: "9.5.0") // Still below minimum 9.6.0-beta
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
@@ -747,7 +743,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     fileprivate func refreshEligibility_returns_ineligible_when_feature_switch_still_disabled(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         let wcPlugin = createWooCommercePlugin(version: "10.0.0")
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
@@ -770,7 +765,6 @@ struct POSTabEligibilityCheckerTests {
     ])
     fileprivate func refreshEligibility_returns_ineligible_when_system_status_request_fails(ineligibleReason: POSIneligibleReason) async throws {
         // Given
-        let mockSystemStatusService = MockPOSSystemStatusService()
         mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
 
         setupCountry(country: .us, currency: .USD)

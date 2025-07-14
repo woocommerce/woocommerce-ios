@@ -26,7 +26,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
                                                        dateRange: OrderDateRangeFilter(filter: .today),
                                                        product: FilterOrdersByProduct(id: 1, name: "Sample product"),
                                                        customer: CustomerFilter(customer: Customer.fake().copy(customerID: 1)),
-                                                       salesChannel: .any,
+                                                       salesChannel: .pointOfSale,
                                                        numberOfActiveFilters: 5)
 
         // When

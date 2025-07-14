@@ -21,6 +21,10 @@ struct OrderDetailsShipmentDetailsView: View {
             HStack {
                 Text(String.localizedStringWithFormat(Localization.shipmentFormat, shipmentIndex))
                     .headlineStyle()
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(Layout.checkColor)
+                    .renderedIf(!canCreateLabel)
                 Spacer()
                 if let label = shipment.shippingLabel, label.refund == nil {
                     Menu {
@@ -47,8 +51,6 @@ struct OrderDetailsShipmentDetailsView: View {
                     .padding(Layout.contentPadding)
                     .background(Color.withColorStudio(name: .blue, shade: .shade5))
                     .contentShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
-                Divider()
-                    .padding(.trailing, -Layout.contentPadding)
             }
 
             Divider()
@@ -65,15 +67,17 @@ struct OrderDetailsShipmentDetailsView: View {
             }
             .buttonStyle(.plain)
 
-            Divider()
-                .padding(.trailing, -Layout.contentPadding)
-
             if canCreateLabel && eligibleForCreatingShippingLabel {
+                Divider()
+                    .padding(.trailing, -Layout.contentPadding)
+
                 Button(Localization.createShippingLabel, action: onCreateLabel)
                     .buttonStyle(PrimaryButtonStyle())
-            }
+                    .padding(.vertical, Layout.extraSpacing)
+            } else if let shippingLabel = shipment.shippingLabel, shippingLabel.refund == nil {
+                Divider()
+                    .padding(.trailing, -Layout.contentPadding)
 
-            if let shippingLabel = shipment.shippingLabel, shippingLabel.refund == nil {
                 HStack {
                     Image(uiImage: .locationImage)
                         .renderingMode(.template)
@@ -173,6 +177,8 @@ private extension OrderDetailsShipmentDetailsView {
         static let contentPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let extraSpacing: CGFloat = 8
+        static let checkColor = Color(light: .withColorStudio(name: .green, shade: .shade70),
+                                      dark: .withColorStudio(name: .green, shade: .shade50))
     }
     enum Localization {
         static let shipmentFormat = NSLocalizedString(

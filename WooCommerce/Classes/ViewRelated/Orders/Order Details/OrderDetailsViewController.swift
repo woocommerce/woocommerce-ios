@@ -399,10 +399,8 @@ private extension OrderDetailsViewController {
             let printViewController = coordinator.createPrintViewController()
             printNavigationController.viewControllers = [printViewController]
             present(printNavigationController, animated: true)
-        case .didRequestRefund(let shippingLabel):
-            didRequestRefund(for: shippingLabel)
-        case .createShippingLabel(let shipmentIndex):
-            navigateToCreateShippingLabelForm(shipmentIndex: shipmentIndex)
+        case .createShippingLabel:
+            navigateToCreateShippingLabelForm()
         case .openShippingLabelForm(let shippingLabel):
             navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
@@ -560,7 +558,16 @@ private extension OrderDetailsViewController {
                 let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
                     guard let self else { return }
                     presentedViewController?.dismiss(animated: true)
-                    didRequestRefund(for: updatedLabel)
+
+                    var allLabels = viewModel.order.shippingLabels
+                    guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                        return
+                    }
+                    allLabels[index] = updatedLabel
+                    let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+                    viewModel.update(order: updatedOrder)
+                    reloadTableViewSectionsAndData()
                 }
                 let refundViewController = UIHostingController(rootView: view)
                 self?.present(refundViewController, animated: true)
@@ -580,18 +587,6 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
-    }
-
-    func didRequestRefund(for label: ShippingLabel) {
-        var allLabels = viewModel.order.shippingLabels
-        guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == label.shippingLabelID }) else {
-            return
-        }
-        allLabels[index] = label
-        let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
-
-        viewModel.update(order: updatedOrder)
-        reloadTableViewSectionsAndData()
     }
 
     func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {

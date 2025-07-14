@@ -65,8 +65,7 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var shouldShowShippingLabelCreation: Bool {
         if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-            // TODO-15375: update logic to show shipping label creation button
-            return isEligibleForShippingLabelCreation && !isEligibleForPayment
+            return isEligibleForShippingLabelCreation && !isEligibleForPayment && shipments.isEmpty
         }
         return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty && !isEligibleForPayment
     }
@@ -76,7 +75,8 @@ final class OrderDetailsDataSource: NSObject {
     var shouldAllowRecreatingShippingLabels: Bool {
         isEligibleForShippingLabelCreation &&
         shippingLabels.isNotEmpty &&
-        !isEligibleForPayment
+        !isEligibleForPayment &&
+        !isEligibleForWooShipping
     }
 
     /// Whether the option to install the WCShip extension should be visible.
@@ -1112,7 +1112,9 @@ private extension OrderDetailsDataSource {
             totalShipmentCount: totalShipmentCount,
             shouldShowBottomDivider: !isLastRow,
             eligibleForCreatingShippingLabel: isEligibleForShippingLabelCreation,
-            onViewItems: {},
+            onViewItems: {
+                // TODO
+            },
             onCreateLabel: { [weak self] in
                 self?.onCellAction?(.createShippingLabel(shipmentIndex: indexPath.row), indexPath)
             },
@@ -1124,8 +1126,8 @@ private extension OrderDetailsDataSource {
                 guard let label = shipment.shippingLabel else { return }
                 self?.onCellAction?(.reprintShippingLabel(shippingLabel: label), indexPath)
             },
-            onRefundRequested: { [weak self] updatedLabel in
-                self?.onCellAction?(.didRequestRefund(shippingLabel: updatedLabel), indexPath)
+            onRefundRequested: { updatedLabel in
+                // TODO
             }
         )
 
@@ -2132,7 +2134,6 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel(shipmentIndex: Int?)
         case openShippingLabelForm(shippingLabel: ShippingLabel)
-        case didRequestRefund(shippingLabel: ShippingLabel)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote

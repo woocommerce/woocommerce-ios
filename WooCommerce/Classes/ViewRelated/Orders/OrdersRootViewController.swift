@@ -312,7 +312,6 @@ final class OrdersRootViewController: UIViewController {
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
-
             self?.analytics.track(event: .OrdersFilter.onFilterOrders(filters: filters))
         }, onClearAction: {
         }, onDismissAction: {

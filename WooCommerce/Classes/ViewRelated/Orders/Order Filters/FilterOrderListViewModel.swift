@@ -159,6 +159,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel.selectedValue = filter.dateRange
         productFilterViewModel.selectedValue = filter.product
         customerFilterViewModel.selectedValue = filter.customer
+        salesChannelFilterViewModel.selectedValue = filter.salesChannel
         analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
@@ -210,6 +211,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedCustomer: CustomerFilter? = nil
         customerFilterViewModel.selectedValue = clearedCustomer
+
+        let clearSalesChannel: SalesChannelFilter? = nil
+        salesChannelFilterViewModel.selectedValue = clearSalesChannel
     }
 }
 
@@ -262,8 +266,9 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
         case .salesChannel:
+            let salesChannelOptions: [FilterOrderListViewModel.SalesChannelFilter] = [.any, .pointOfSale]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .salesChannel,
+                                       listSelectorConfig: .staticOptions(options: salesChannelOptions),
                                        selectedValue: filters.salesChannel)
         }
     }
@@ -375,16 +380,30 @@ extension CustomerFilter: FilterType {
 extension FilterOrderListViewModel {
     enum SalesChannelFilter: FilterType {
         case pointOfSale
+        case any
 
         var description: String {
             switch self {
             case .pointOfSale:
-                return "POS"
+                return NSLocalizedString(
+                    "salesChannelFilter.row.pos.description",
+                    value: "Point of Sale",
+                    comment: "Description for the Sales channel filter option, when selecting 'Point of Sale' orders")
+            case .any:
+                return NSLocalizedString(
+                    "salesChannelFilter.row.any.description",
+                    value: "Any",
+                    comment: "Description for the Sales channel filter option, when selecting 'Any' order")
             }
         }
 
         var isActive: Bool {
-            return true
+            switch self {
+            case .pointOfSale:
+                return true
+            case .any:
+                return false
+            }
         }
     }
 }

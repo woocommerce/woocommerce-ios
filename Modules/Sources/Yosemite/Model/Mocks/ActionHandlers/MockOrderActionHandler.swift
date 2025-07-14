@@ -10,7 +10,7 @@ struct MockOrderActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .fetchFilteredOrders(let siteID, _, _, _, _, _, _, let writeStrategy, let pageSize, let onCompletion):
+        case .fetchFilteredOrders(let siteID, _, _, _, _, _, _, _, let writeStrategy, let pageSize, let onCompletion):
             fetchFilteredAndAllOrders(siteID: siteID,
                                       writeStrategy: writeStrategy,
                                       pageSize: pageSize,
@@ -25,7 +25,7 @@ struct MockOrderActionHandler: MockActionHandler {
             } else {
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             }
-        case .updateOrderStatus(let siteID, let orderID, let status, let onCompletion):
+        case .updateOrderStatus(_, _, _, let onCompletion):
             onCompletion(nil)
 
         default: unimplementedAction(action: action)

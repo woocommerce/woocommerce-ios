@@ -179,6 +179,9 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var shippingLabels: [ShippingLabel] = []
 
+    /// Shipments in an order
+    private(set) var shipments: [WooShippingShipment] = []
+
     private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order
@@ -1089,20 +1092,20 @@ private extension OrderDetailsDataSource {
 
     func configureShipmentDetail(cell: HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>,
                                  at indexPath: IndexPath) {
-        guard let shipment = wooShippingShipments[safe: indexPath.row] else {
+        guard let shipment = shipments[safe: indexPath.row] else {
             ServiceLocator.crashLogging.logMessage(
                 "Invalid shipment index in OrderDetailsDataSource",
                 properties: [
                     "row": indexPath.row,
                     "section": indexPath.section,
-                    "availableShippingLinesCount": wooShippingShipments.count
+                    "availableShippingLinesCount": shipments.count
                 ],
                 level: .error
             )
             return
         }
 
-        let totalShipmentCount = wooShippingShipments.count
+        let totalShipmentCount = shipments.count
         let isLastRow = indexPath.row == totalShipmentCount - 1
         let view = OrderDetailsShipmentDetailsView(
             shipment: shipment,
@@ -1268,6 +1271,7 @@ extension OrderDetailsDataSource {
         siteShippingMethods = resultsControllers.siteShippingMethods
         productVariations = resultsControllers.productVariations
         shippingLabels = resultsControllers.shippingLabels
+        shipments = resultsControllers.shipments
         shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
             shippingLabels: shippingLabels,
             orderItems: items,
@@ -1584,13 +1588,13 @@ extension OrderDetailsDataSource {
     }
 
     private func createWooShippingSection() -> Section? {
-        guard wooShippingShipments.isNotEmpty else {
+        guard shipments.isNotEmpty else {
             return nil
         }
         return Section(
             category: .payment,
             title: "Shipping Labels",
-            rows: wooShippingShipments.map { _ in Row.shipmentDetails }
+            rows: shipments.map { _ in Row.shipmentDetails }
         )
     }
 

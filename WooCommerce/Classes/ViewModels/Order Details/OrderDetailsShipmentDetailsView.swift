@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 
 struct OrderDetailsShipmentDetailsView: View {
-    let shipment: OrderDetailsDataSource.Shipment
+    let shipment: WooShippingShipment
     let totalShipmentCount: Int
     let shouldShowBottomDivider: Bool
     let eligibleForCreatingShippingLabel: Bool
@@ -68,7 +68,7 @@ struct OrderDetailsShipmentDetailsView: View {
             Divider()
                 .padding(.trailing, -Layout.contentPadding)
 
-            if shipment.canCreateLabel && eligibleForCreatingShippingLabel {
+            if canCreateLabel && eligibleForCreatingShippingLabel {
                 Button(Localization.createShippingLabel, action: onCreateLabel)
                     .buttonStyle(PrimaryButtonStyle())
             }
@@ -161,6 +161,10 @@ private extension OrderDetailsShipmentDetailsView {
             singular: Localization.itemCountSingular,
             plural: Localization.itemCountPlural
         )
+    }
+
+    var canCreateLabel: Bool {
+        shipment.shippingLabel == nil || shipment.shippingLabel?.refund != nil
     }
 }
 

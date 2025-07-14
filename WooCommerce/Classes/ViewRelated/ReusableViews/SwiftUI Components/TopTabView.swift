@@ -174,6 +174,7 @@ struct TopTabView<Content: View>: View {
                                                 }
                                             }
                                         })
+                                        .accessibilityElement(children: .combine)
                                 }
                             }
                             .padding(.horizontal, tabPadding)

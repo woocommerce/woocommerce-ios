@@ -43,7 +43,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed.rawValue)
         #expect(event?.properties["scanner"] as? String == "Star_BSH_20B")
-        #expect(event?.properties["step"] as? String == "setup_barcode")
+        #expect(event?.properties["step"] as? String == "setup_barcode_hid")
     }
 
     @available(iOS 17.0, *)

@@ -1125,9 +1125,6 @@ private extension OrderDetailsDataSource {
             onPrintLabel: { [weak self] in
                 guard let label = shipment.shippingLabel else { return }
                 self?.onCellAction?(.reprintShippingLabel(shippingLabel: label), indexPath)
-            },
-            onRefundRequested: { updatedLabel in
-                // TODO
             }
         )
 

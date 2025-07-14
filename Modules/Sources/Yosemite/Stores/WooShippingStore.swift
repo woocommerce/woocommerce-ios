@@ -644,10 +644,15 @@ private extension WooShippingStore {
                 DDLogWarn("⚠️ No shipping label found in storage when updating refund")
                 return shippingLabel.copy(refund: refund)
             }
+            let storageShipment = storageShippingLabel.shipment
 
             let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund
+
+            // update stored shipment to trigger onDidChangeContent notification
+            storageShipment?.shippingLabel = storageShippingLabel
+
             return storageShippingLabel.toReadOnly()
 
         }, completion: { result in

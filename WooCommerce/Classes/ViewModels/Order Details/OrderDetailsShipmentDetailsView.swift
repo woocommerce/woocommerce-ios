@@ -11,7 +11,6 @@ struct OrderDetailsShipmentDetailsView: View {
     let onCreateLabel: () -> Void
     let onViewLabel: () -> Void
     let onPrintLabel: () -> Void
-    let onRefundRequested: (ShippingLabel) -> Void
 
     @State private var shouldShowRefund = false
     @State private var shouldPrintCustomsForm = false
@@ -48,9 +47,10 @@ struct OrderDetailsShipmentDetailsView: View {
 
             if shipment.shippingLabel?.refund != nil {
                 Text(Localization.refundMessage)
+                    .font(.subheadline)
                     .padding(Layout.contentPadding)
                     .background(Color.withColorStudio(name: .blue, shade: .shade5))
-                    .contentShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
+                    .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
             }
 
             Divider()
@@ -129,7 +129,6 @@ struct OrderDetailsShipmentDetailsView: View {
         .sheet(isPresented: $shouldShowRefund) {
             if let label = shipment.shippingLabel {
                 WooShippingRefundView(viewModel: WooShippingRefundViewModel(shippingLabel: label)) { updatedLabel in
-                    onRefundRequested(updatedLabel)
                     shouldShowRefund = false
                 }
             }

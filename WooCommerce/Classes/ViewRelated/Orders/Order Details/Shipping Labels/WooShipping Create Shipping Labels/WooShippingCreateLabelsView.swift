@@ -178,6 +178,7 @@ private extension WooShippingCreateLabelsView {
                 Image(systemName: "pencil")
                     .padding(.horizontal)
             }
+            .accessibilityHint(Localization.Accessibility.editButtonHint)
             .renderedIf(viewModel.hasUnfulfilledShipments)
         }
         .disabled(viewModel.isPurchasingLabel)
@@ -690,6 +691,13 @@ private extension WooShippingCreateLabelsView {
         static let close = NSLocalizedString("wooShipping.createLabel.closeButton",
                                              value: "Close",
                                              comment: "Title of the button to dismiss the shipping label screen")
+
+        enum Accessibility {
+            static let editButtonHint = NSLocalizedString(
+                "wooShipping.createLabel.editButton.accessibility.hint",
+                value: "Opens the shipments editing form.",
+                comment: "Accessibility hint of the button to open the shipments editing form.")
+        }
 
         enum BottomSheet {
             static let shipmentDetails = NSLocalizedString("wooShipping.createLabels.bottomSheet.title",

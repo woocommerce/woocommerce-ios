@@ -1273,7 +1273,7 @@ enum WooAnalyticsStat: String {
     case pointOfSaleTabSelected = "main_tab_pos_selected"
     case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
     case pointOfSaleIneligibleUIShown = "pos_ineligible_ui_shown"
-    case pointOfSaleIneligibleUIRefreshTapped = "pos_ineligible_ui_refresh_tapped"
+    case pointOfSaleIneligibleUIRetryTapped = "pos_ineligible_ui_retry_tapped"
     case pointOfSaleLoaded = "loaded"
     case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"

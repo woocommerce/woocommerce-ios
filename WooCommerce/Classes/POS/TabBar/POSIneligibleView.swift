@@ -43,7 +43,7 @@ struct POSIneligibleView: View {
                             do {
                                 isLoading = true
                                 ServiceLocator.analytics.track(
-                                    event: .PointOfSaleIneligibleUI.ineligibleUIRefreshTapped(reason: reason)
+                                    event: .PointOfSaleIneligibleUI.ineligibleUIRetryTapped(reason: reason)
                                 )
                                 try await onRefresh()
                                 isLoading = false

@@ -9,8 +9,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIShown, properties: [Key.reason: reason.analyticsValue])
         }
 
-        static func ineligibleUIRefreshTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIRefreshTapped, properties: [Key.reason: reason.analyticsValue])
+        static func ineligibleUIRetryTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIRetryTapped, properties: [Key.reason: reason.analyticsValue])
         }
     }
 }

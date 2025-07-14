@@ -1319,7 +1319,7 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageWooShippingShipment.self), expectedShipments.count)
-        let object = viewStorage.loadShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
+        let object = viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID).first
         XCTAssertEqual(object?.order?.orderID, sampleOrderID)
         XCTAssertEqual(object?.shippingLabel?.shippingLabelID, shippingLabel.shippingLabelID)
         XCTAssertEqual(object?.items?.count, 1)

@@ -57,7 +57,7 @@ public extension StorageManagerType {
     func reset() {
         reset(onCompletion: nil)
     }
-    
+
     /// Async/await version of `performAndSave`.
     ///
     /// - Parameters:

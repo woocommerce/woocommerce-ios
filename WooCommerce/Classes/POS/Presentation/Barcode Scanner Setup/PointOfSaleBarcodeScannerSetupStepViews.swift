@@ -32,7 +32,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -59,7 +59,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -143,7 +143,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
                     .accessibilityAddTraits(.isHeader)
 
                 Text(Localization.instruction)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
@@ -170,6 +170,33 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
         static let title = "Scanner set up!"
         static let instruction = "You are ready to start scanning products. \n" +
         "Read more about barcode and QR code scanner support."
+    }
+}
+
+struct PointOfSaleBarcodeScannerErrorView: View {
+    var body: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            POSErrorXMark()
+
+            VStack(alignment: .center, spacing: POSSpacing.small) {
+                Text(Localization.title)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text(Localization.instruction)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(POSSpacing.xLarge)
+    }
+
+    private enum Localization {
+        static let title = "Scanning issue found"
+        static let instruction = "Please check the scanner’s manual and reset it \n" +
+        "to factory settings, then retry the set up flow."
     }
 }
 

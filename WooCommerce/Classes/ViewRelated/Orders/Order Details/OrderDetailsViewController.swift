@@ -399,8 +399,8 @@ private extension OrderDetailsViewController {
             let printViewController = coordinator.createPrintViewController()
             printNavigationController.viewControllers = [printViewController]
             present(printNavigationController, animated: true)
-        case .createShippingLabel:
-            navigateToCreateShippingLabelForm()
+        case .createShippingLabel(let shipmentIndex):
+            navigateToCreateShippingLabelForm(shipmentIndex: shipmentIndex)
         case .openShippingLabelForm(let shippingLabel):
             navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):

@@ -326,7 +326,12 @@ private extension WooShippingStore {
                 // If label has PURCHASED status, stop polling
                 if labelStatusResponse.status == .purchased,
                    let label = labelStatusResponse.getPurchasedLabel() {
-                    completion(.success(label))
+                    guard let self else {
+                        return completion(.success(label))
+                    }
+                    insertPurchasedLabelInBackground(siteID: siteID, orderID: orderID, shippingLabel: label) {
+                        completion(.success(label))
+                    }
                 }
 
                 // If label has PURCHASE_ERROR status, return error and stop polling
@@ -679,6 +684,28 @@ private extension WooShippingStore {
 
             storedOrder.dateModified = Date()
         }, completion: nil, on: .main)
+    }
+
+    /// Inserts the specified readonly shipping label entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func insertPurchasedLabelInBackground(siteID: Int64,
+                                          orderID: Int64,
+                                          shippingLabel: ShippingLabel,
+                                          onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+
+            let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID)
+            let storageShipment = storage.loadAllShipments(siteID: siteID, orderID: orderID)
+                .first(where: { $0.index == shippingLabel.shipmentID })
+
+            guard let storageOrder, let storageShipment else { return }
+
+            update(storageShipment: storageShipment,
+                   storageOrder: storageOrder,
+                   shippingLabel: shippingLabel,
+                   using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly shipments entities *in a background thread*.

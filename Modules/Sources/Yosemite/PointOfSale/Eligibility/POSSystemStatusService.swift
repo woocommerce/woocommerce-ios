@@ -64,10 +64,6 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
 }
 
 private extension POSSystemStatusService {
-    enum Constants {
-        static let wcPluginPath = "woocommerce/woocommerce.php"
-    }
-
     /// Updates or inserts system plugins in storage.
     func upsertSystemPlugins(siteID: Int64, systemStatus: POSPluginEligibilitySystemStatus, in storage: StorageType) {
         // Active and inactive plugins share identical structure, but are stored in separate parts of the remote response
@@ -100,6 +96,12 @@ private extension POSSystemStatusService {
         // Removes stale system plugins.
         let currentSystemPlugins = readonlySystemPlugins.map(\.name)
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
+    }
+}
+
+private extension POSSystemStatusService {
+    enum Constants {
+        static let wcPluginPath = "woocommerce/woocommerce.php"
     }
 }
 

@@ -81,19 +81,12 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        await checkEligibility(pluginEligibility: nil)
-    }
-
-    /// Checks the eligibility for POS based on site settings and plugin eligibility.
-    /// - Parameter pluginEligibility: An optional parameter that can provide pre-fetched plugin eligibility state.
-    /// - Returns: The eligibility state for POS.
-    private func checkEligibility(pluginEligibility: POSEligibilityState?) async -> POSEligibilityState {
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
-        async let pluginEligibility = checkPluginEligibility(pluginEligibility: pluginEligibility)
+        async let pluginEligibility = checkPluginEligibility()
 
         switch await siteSettingsEligibility {
         case .eligible:
@@ -144,8 +137,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
                 throw error
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
-            let pluginEligibility = await refreshPluginEligibility()
-            return await checkEligibility(pluginEligibility: pluginEligibility)
+            return await checkEligibility()
         case .featureSwitchDisabled:
             // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
             // For now, just checks eligibility again.
@@ -160,41 +152,20 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
 private extension POSTabEligibilityChecker {
     /// Checks the eligibility of the WooCommerce plugin and plugin version based POS feature switch value.
-    /// When a pre-fetched eligibility state is not provided, the plugin is the first matching WC plugin found in the storage for performance reason, which is
-    /// fetched remotely outside of the eligibility checker during site initialization.
-    /// The feature switch value is fetched remotely if the plugin version supports it.
     ///
     /// - Parameter pluginEligibility: An optional parameter that can provide pre-fetched plugin eligibility state.
     /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch.
-    func checkPluginEligibility(pluginEligibility: POSEligibilityState? = nil) async -> POSEligibilityState {
-        if let pluginEligibility {
-            return pluginEligibility
-        }
-        async let wcPlugin = fetchWooCommercePlugin(siteID: siteID)
-        let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: await wcPlugin)
-        switch wcPluginEligibility {
-        case .eligible:
-            return .eligible
-        case .ineligible(let reason):
-            return .ineligible(reason: reason)
-        case .pendingFeatureSwitchCheck:
-            return await checkFeatureSwitchRemotely(siteID: siteID)
-        }
-    }
-
-    /// Refreshes the eligibility state of the WooCommerce plugin and POS feature switch by making a system status API request.
-    /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch from remote sync.
-    func refreshPluginEligibility() async -> POSEligibilityState {
+    func checkPluginEligibility() async -> POSEligibilityState {
         do {
-            async let info = systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
-            let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: try await info.wcPlugin)
+            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+            let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: info.wcPlugin)
             switch wcPluginEligibility {
             case .eligible:
                 return .eligible
             case .ineligible(let reason):
                 return .ineligible(reason: reason)
             case .pendingFeatureSwitchCheck:
-                let isFeatureSwitchEnabled = try await info.featureValue == true
+                let isFeatureSwitchEnabled = info.featureValue == true
                 return isFeatureSwitchEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled)
             }
         } catch {
@@ -228,29 +199,6 @@ private extension POSTabEligibilityChecker {
 
         // For versions that support the feature switch, checks if the feature switch is enabled separately.
         return .pendingFeatureSwitchCheck
-    }
-
-    @MainActor
-    func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
-        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginPath: Constants.wcPlugin, isActive: true)
-    }
-
-    @MainActor
-    func checkFeatureSwitchRemotely(siteID: Int64) async -> POSEligibilityState {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-            }
-            let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
-                switch result {
-                case .success(let isEnabled):
-                    continuation.resume(returning: isEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled))
-                case .failure:
-                    continuation.resume(returning: .ineligible(reason: .featureSwitchSyncFailure))
-                }
-            }
-            stores.dispatch(action)
-        }
     }
 }
 

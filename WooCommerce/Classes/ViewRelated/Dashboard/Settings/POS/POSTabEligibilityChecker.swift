@@ -62,7 +62,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
+         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
+                                                                                      storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -208,7 +209,7 @@ private extension POSTabEligibilityChecker {
     }
 
     func checkWooCommercePluginEligibility(wcPlugin: SystemPlugin?) -> PluginEligibilityState {
-        guard let wcPlugin else {
+        guard let wcPlugin, wcPlugin.active else {
             return .ineligible(reason: .wooCommercePluginNotFound)
         }
 

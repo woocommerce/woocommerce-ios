@@ -13,6 +13,8 @@ import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PluginsService
+import protocol Yosemite.POSSystemStatusServiceProtocol
+import class Yosemite.POSSystemStatusService
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
@@ -51,6 +53,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let systemStatusService: POSSystemStatusServiceProtocol
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -58,7 +61,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -66,6 +70,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.systemStatusService = systemStatusService
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -75,12 +80,19 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
+        await checkEligibility(pluginEligibility: nil)
+    }
+
+    /// Checks the eligibility for POS based on site settings and plugin eligibility.
+    /// - Parameter pluginEligibility: An optional parameter that can provide pre-fetched plugin eligibility state.
+    /// - Returns: The eligibility state for POS.
+    private func checkEligibility(pluginEligibility: POSEligibilityState?) async -> POSEligibilityState {
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
-        async let pluginEligibility = checkPluginEligibility()
+        async let pluginEligibility = checkPluginEligibility(pluginEligibility: pluginEligibility)
 
         switch await siteSettingsEligibility {
         case .eligible:
@@ -131,9 +143,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
                 throw error
             }
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
-            // TODO: WOOMOB-799 - sync the WooCommerce plugin then check eligibility again.
-            // For now, it requires relaunching the app or switching stores to refresh the plugin info.
-            return await checkEligibility()
+            let pluginEligibility = await refreshPluginEligibility()
+            return await checkEligibility(pluginEligibility: pluginEligibility)
         case .featureSwitchDisabled:
             // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
             // For now, just checks eligibility again.
@@ -147,8 +158,59 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 // MARK: - WC Plugin Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
-    func checkPluginEligibility() async -> POSEligibilityState {
-        let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
+    /// Checks the eligibility of the WooCommerce plugin and plugin version based POS feature switch value.
+    /// When a pre-fetched eligibility state is not provided, the plugin is the first matching WC plugin found in the storage for performance reason, which is
+    /// fetched remotely outside of the eligibility checker during site initialization.
+    /// The feature switch value is fetched remotely if the plugin version supports it.
+    ///
+    /// - Parameter pluginEligibility: An optional parameter that can provide pre-fetched plugin eligibility state.
+    /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch.
+    func checkPluginEligibility(pluginEligibility: POSEligibilityState? = nil) async -> POSEligibilityState {
+        if let pluginEligibility {
+            return pluginEligibility
+        }
+        async let wcPlugin = fetchWooCommercePlugin(siteID: siteID)
+        let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: await wcPlugin)
+        switch wcPluginEligibility {
+        case .eligible:
+            return .eligible
+        case .ineligible(let reason):
+            return .ineligible(reason: reason)
+        case .pendingFeatureSwitchCheck:
+            return await checkFeatureSwitchRemotely(siteID: siteID)
+        }
+    }
+
+    /// Refreshes the eligibility state of the WooCommerce plugin and POS feature switch by making a system status API request.
+    /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch from remote sync.
+    func refreshPluginEligibility() async -> POSEligibilityState {
+        do {
+            async let info = systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+            let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: try await info.wcPlugin)
+            switch wcPluginEligibility {
+            case .eligible:
+                return .eligible
+            case .ineligible(let reason):
+                return .ineligible(reason: reason)
+            case .pendingFeatureSwitchCheck:
+                let isFeatureSwitchEnabled = try await info.featureValue == true
+                return isFeatureSwitchEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled)
+            }
+        } catch {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
+    }
+
+    enum PluginEligibilityState {
+        case eligible
+        case ineligible(reason: POSIneligibleReason)
+        case pendingFeatureSwitchCheck
+    }
+
+    func checkWooCommercePluginEligibility(wcPlugin: SystemPlugin?) -> PluginEligibilityState {
+        guard let wcPlugin else {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
 
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                 minimumRequired: Constants.wcPluginMinimumVersion) else {
@@ -163,8 +225,8 @@ private extension POSTabEligibilityChecker {
             return .eligible
         }
 
-        // For versions that support the feature switch, checks if the feature switch is enabled.
-        return await checkFeatureSwitchEnabled(siteID: siteID)
+        // For versions that support the feature switch, checks if the feature switch is enabled separately.
+        return .pendingFeatureSwitchCheck
     }
 
     @MainActor
@@ -173,7 +235,7 @@ private extension POSTabEligibilityChecker {
     }
 
     @MainActor
-    func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
+    func checkFeatureSwitchRemotely(siteID: Int64) async -> POSEligibilityState {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume(returning: .ineligible(reason: .selfDeallocated))

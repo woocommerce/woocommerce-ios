@@ -12,6 +12,7 @@ struct POSTabEligibilityCheckerTests {
     private var siteSettings: MockSelectedSiteSettings!
     private var pluginsService: MockPluginsService!
     private var eligibilityService: MockPOSEligibilityService!
+    private var mockSystemStatusService: MockPOSSystemStatusService!
     private let siteID: Int64 = 2
 
     init() async throws {
@@ -22,6 +23,7 @@ struct POSTabEligibilityCheckerTests {
         eligibilityService = MockPOSEligibilityService()
         setupWooCommerceVersion()
         siteSettings = MockSelectedSiteSettings()
+        mockSystemStatusService = MockPOSSystemStatusService()
     }
 
     // MARK: `checkVisibility`
@@ -656,41 +658,6 @@ struct POSTabEligibilityCheckerTests {
         #expect(syncCalled == true) // Called during the attempt
     }
 
-    @Test func refreshEligibility_checks_eligibility_for_unsupportedWooCommerceVersion() async throws {
-        // Given
-        setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("9.5.0") // Still below minimum
-
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"))
-
-        // Then - Should check eligibility again (still ineligible due to version)
-        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
-    }
-
-    @Test func refreshEligibility_checks_eligibility_for_wooCommercePluginNotFound() async throws {
-        // Given
-        setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("9.6.0") // Now eligible version
-        setupPOSFeatureEnabled(.success(true))
-
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               pluginsService: pluginsService,
-                                               stores: stores)
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .wooCommercePluginNotFound)
-
-        // Then - Should check eligibility again (now eligible)
-        #expect(result == .eligible)
-    }
-
     @Test func refreshEligibility_checks_eligibility_for_featureSwitchDisabled() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
@@ -744,6 +711,150 @@ struct POSTabEligibilityCheckerTests {
         // Then - Should check eligibility again (now eligible)
         #expect(result == .eligible)
     }
+
+    // MARK: - `refreshEligibility` with System Status Service Tests
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    func refreshEligibility_returns_eligible_when_plugin_refreshed_with_valid_version_below_10(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        let wcPlugin = createWooCommercePlugin(version: "9.9.9") // Valid version below feature switch threshold
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    fileprivate func refreshEligibility_returns_eligible_when_plugin_with_version_10_and_feature_enabled(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        let wcPlugin = createWooCommercePlugin(version: "10.0.0")
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    fileprivate func refreshEligibility_returns_ineligible_when_plugin_not_found_in_system_status(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
+    }
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    fileprivate func refreshEligibility_returns_ineligible_when_plugin_version_still_below_minimum(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        let wcPlugin = createWooCommercePlugin(version: "9.5.0") // Still below minimum 9.6.0-beta
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta")))
+    }
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    fileprivate func refreshEligibility_returns_ineligible_when_feature_switch_still_disabled(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        let wcPlugin = createWooCommercePlugin(version: "10.0.0")
+        mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .ineligible(reason: .featureSwitchDisabled))
+    }
+
+    @Test(arguments: [
+        POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0-beta"),
+        POSIneligibleReason.wooCommercePluginNotFound
+    ])
+    fileprivate func refreshEligibility_returns_ineligible_when_system_status_request_fails(ineligibleReason: POSIneligibleReason) async throws {
+        // Given
+        let mockSystemStatusService = MockPOSSystemStatusService()
+        mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
+
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               pluginsService: pluginsService,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
+
+        // Then
+        #expect(result == .ineligible(reason: .wooCommercePluginNotFound))
+    }
 }
 
 private extension POSTabEligibilityCheckerTests {
@@ -759,7 +870,11 @@ private extension POSTabEligibilityCheckerTests {
     }
 
     func setupWooCommerceVersion(_ version: String = "9.6.0-beta") {
-        pluginsService.pluginToReturn = .fake().copy(
+        pluginsService.pluginToReturn = createWooCommercePlugin(version: version)
+    }
+
+    func createWooCommercePlugin(version: String) -> SystemPlugin {
+        SystemPlugin.fake().copy(
             siteID: siteID,
             plugin: "woocommerce/woocommerce.php",
             version: version,
@@ -837,5 +952,18 @@ private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
 
     func refresh() {
         // Mock implementation - no action needed.
+    }
+}
+
+private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
+    var resultToReturn: Result<POSPluginAndFeatureInfo, Error> = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
+
+    func loadWooCommercePluginAndPOSFeatureSwitch(siteID: Int64) async throws -> POSPluginAndFeatureInfo {
+        switch resultToReturn {
+        case .success(let info):
+            return info
+        case .failure(let error):
+            throw error
+        }
     }
 }

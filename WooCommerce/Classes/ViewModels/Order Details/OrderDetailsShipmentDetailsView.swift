@@ -11,9 +11,8 @@ struct OrderDetailsShipmentDetailsView: View {
     let onCreateLabel: () -> Void
     let onViewLabel: () -> Void
     let onPrintLabel: () -> Void
-
-    @State private var shouldShowRefund = false
-    @State private var shouldPrintCustomsForm = false
+    let onPrintCustomsForm: () -> Void
+    let onRefund: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentPadding) {
@@ -27,14 +26,10 @@ struct OrderDetailsShipmentDetailsView: View {
                 Spacer()
                 if let label = shipment.shippingLabel, label.refund == nil {
                     Menu {
-                        Button(Localization.requestRefund, action: {
-                            shouldShowRefund = true
-                        })
+                        Button(Localization.requestRefund, action: onRefund)
                         .renderedIf(label.isRefundable)
 
-                        Button(Localization.printCustomsForm) {
-                            shouldPrintCustomsForm = true
-                        }
+                        Button(Localization.printCustomsForm, action: onPrintCustomsForm)
                         .renderedIf(label.commercialInvoiceURL != nil)
                     } label: {
                         Image(systemName: "ellipsis")
@@ -64,6 +59,7 @@ struct OrderDetailsShipmentDetailsView: View {
                         .foregroundStyle(Color(.tertiaryLabel))
                         .fontWeight(.semibold)
                 }
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
@@ -125,27 +121,6 @@ struct OrderDetailsShipmentDetailsView: View {
             Divider()
                 .padding(.horizontal, -Layout.contentPadding)
                 .renderedIf(shouldShowBottomDivider)
-        }
-        .sheet(isPresented: $shouldShowRefund) {
-            if let label = shipment.shippingLabel {
-                WooShippingRefundView(viewModel: WooShippingRefundViewModel(shippingLabel: label)) { updatedLabel in
-                    shouldShowRefund = false
-                }
-            }
-        }
-        .sheet(isPresented: $shouldPrintCustomsForm) {
-            if let url = shipment.shippingLabel?.commercialInvoiceURL {
-                NavigationStack {
-                    PrintCustomsFormsView(invoiceURLs: [url])
-                        .toolbar {
-                            ToolbarItem(placement: .cancellationAction) {
-                                Button(Localization.cancel) {
-                                    shouldPrintCustomsForm = false
-                                }
-                            }
-                        }
-                }
-            }
         }
     }
 }

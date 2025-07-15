@@ -4,7 +4,6 @@ import Yosemite
 struct OrderDetailsShipmentDetailsView: View {
     let shipment: WooShippingShipment
     let totalShipmentCount: Int
-    let shouldShowBottomDivider: Bool
     let eligibleForCreatingShippingLabel: Bool
 
     let onViewItems: () -> Void
@@ -70,6 +69,7 @@ struct OrderDetailsShipmentDetailsView: View {
                 Button(Localization.createShippingLabel, action: onCreateLabel)
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(.vertical, Layout.extraSpacing)
+
             } else if let shippingLabel = shipment.shippingLabel, shippingLabel.refund == nil {
                 Divider()
                     .padding(.trailing, -Layout.contentPadding)
@@ -116,11 +116,8 @@ struct OrderDetailsShipmentDetailsView: View {
                 Button(String.localizedStringWithFormat(Localization.printShippingLabel, shipmentIndex),
                        action: onPrintLabel)
                 .buttonStyle(SecondaryButtonStyle())
+                .padding(.vertical, Layout.extraSpacing)
             }
-
-            Divider()
-                .padding(.horizontal, -Layout.contentPadding)
-                .renderedIf(shouldShowBottomDivider)
         }
     }
 }
@@ -211,11 +208,6 @@ private extension OrderDetailsShipmentDetailsView {
             "orderDetailsShipmentDetailsView.viewShippingLabel",
             value: "View purchased shipping label",
             comment: "Button to view details of a shipping label"
-        )
-        static let cancel = NSLocalizedString(
-            "orderDetailsShipmentDetailsView.cancel",
-            value: "Cancel",
-            comment: "Button to dismiss printing customs form for a shipping label"
         )
     }
 }

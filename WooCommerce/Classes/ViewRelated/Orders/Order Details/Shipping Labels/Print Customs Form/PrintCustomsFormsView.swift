@@ -80,7 +80,6 @@ struct PrintCustomsFormsView: View {
             }
         }
         .navigationTitle(Localization.navigationTitle)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var saveForLaterButton: some View {

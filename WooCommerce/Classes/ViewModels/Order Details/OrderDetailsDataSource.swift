@@ -1110,11 +1110,9 @@ private extension OrderDetailsDataSource {
         }
 
         let totalShipmentCount = shipments.count
-        let isLastRow = indexPath.row == totalShipmentCount - 1
         let view = OrderDetailsShipmentDetailsView(
             shipment: shipment,
             totalShipmentCount: totalShipmentCount,
-            shouldShowBottomDivider: !isLastRow,
             eligibleForCreatingShippingLabel: isEligibleForShippingLabelCreation,
             onViewItems: {
                 // TODO
@@ -1138,12 +1136,11 @@ private extension OrderDetailsDataSource {
             }
         )
 
-        // Reduce cell padding between rows
-        let topMargin = indexPath.row == 0 ? Constants.cellDefaultMargin : 0
-        let insets = UIEdgeInsets(top: topMargin, left: Constants.cellDefaultMargin, bottom: Constants.cellDefaultMargin, right: Constants.cellDefaultMargin)
-
-        cell.host(view, insets: insets)
-        cell.hideSeparator()
+        cell.host(view, insets: .init(top: Constants.cellDefaultMargin,
+                                      left: Constants.cellDefaultMargin,
+                                      bottom: Constants.cellDefaultMargin,
+                                      right: Constants.cellDefaultMargin))
+        cell.separatorInset = .zero
         cell.selectionStyle = .none
     }
 

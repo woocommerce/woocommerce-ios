@@ -38,11 +38,11 @@ struct SystemPluginsUpsertUseCase {
             return activePluginsWithState + inactivePluginsWithState
         }()
 
-        let storedPlugins = storage.loadSystemPlugins(siteID: siteID, matching: readonlySystemPlugins.map { $0.name })
+        let storedPlugins = storage.loadSystemPlugins(siteID: siteID, matchingPaths: readonlySystemPlugins.map { $0.plugin })
         readonlySystemPlugins.forEach { readonlySystemPlugin in
             // Loads or creates new StorageSystemPlugin matching the readonly one.
             let storageSystemPlugin: StorageSystemPlugin = {
-                if let systemPlugin = storedPlugins.first(where: { $0.name == readonlySystemPlugin.name }) {
+                if let systemPlugin = storedPlugins.first(where: { $0.plugin == readonlySystemPlugin.plugin }) {
                     return systemPlugin
                 }
                 return storage.insertNewObject(ofType: StorageSystemPlugin.self)
@@ -52,7 +52,7 @@ struct SystemPluginsUpsertUseCase {
         }
 
         // Removes stale system plugins.
-        let currentSystemPlugins = readonlySystemPlugins.map(\.name)
-        storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
+        let currentSystemPluginPaths = readonlySystemPlugins.map(\.plugin)
+        storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPluginPaths: currentSystemPluginPaths)
     }
 }

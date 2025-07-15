@@ -206,6 +206,17 @@ public extension StorageType {
         }
     }
 
+    /// Deletes stored system plugins for the provided siteID that are not in the currentSystemPluginPaths list.
+    ///
+    func deleteStaleSystemPlugins(siteID: Int64, currentSystemPluginPaths: [String]) {
+        let systemPlugins = loadSystemPlugins(siteID: siteID).filter {
+            !currentSystemPluginPaths.contains($0.plugin)
+        }
+        systemPlugins.forEach {
+            deleteObject($0)
+        }
+    }
+
     // MARK: - InboxNotes
 
     /// Deletes all of the stored Inbox Notes for the provided siteID.

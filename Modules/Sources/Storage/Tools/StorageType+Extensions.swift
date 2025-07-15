@@ -846,6 +846,14 @@ public extension StorageType {
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 
+    /// Returns stored system plugins for a provided `siteID` matching the given plugin `paths`
+    ///
+    func loadSystemPlugins(siteID: Int64, matchingPaths paths: [String]) -> [SystemPlugin] {
+        let predicate = NSPredicate(format: "siteID == %lld && plugin in %@", siteID, paths)
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.plugin, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     // MARK: - Inbox Notes
 
     /// Returns a single Inbox Note given a `siteID` and `id`

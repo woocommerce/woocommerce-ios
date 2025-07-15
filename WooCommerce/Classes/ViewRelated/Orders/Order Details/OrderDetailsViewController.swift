@@ -403,6 +403,8 @@ private extension OrderDetailsViewController {
             navigateToCreateShippingLabelForm(shipmentIndex: shipmentIndex)
         case .openShippingLabelForm(let shippingLabel):
             navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
+        case .viewShipmentItems(let shipment):
+            showShipmentItems(shipment: shipment)
         case .refundShippingLabel(let shippingLabel):
             refundShippingLabel(shippingLabel)
         case .printCustomsForm(let url):
@@ -599,6 +601,16 @@ private extension OrderDetailsViewController {
         let hostingController = UIHostingController(rootView: printCustomsFormsView)
         hostingController.hidesBottomBarWhenPushed = true
         show(hostingController, sender: self)
+    }
+
+    func showShipmentItems(shipment: WooShippingShipment) {
+        let items = shipment.items.compactMap { item in
+            let orderItem = viewModel.order.items.first(where: { $0.itemID == item.id })
+            return orderItem?.copy(quantity: item.quantity)
+        }
+        let aggregateOrderItem = AggregateDataHelper.combineOrderItems(items, with: [])
+        let productListVC = AggregatedProductListViewController(viewModel: viewModel, items: aggregateOrderItem)
+        show(productListVC, sender: nil)
     }
 
     func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {

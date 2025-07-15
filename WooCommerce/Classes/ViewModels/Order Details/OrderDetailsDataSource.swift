@@ -1114,8 +1114,8 @@ private extension OrderDetailsDataSource {
             shipment: shipment,
             totalShipmentCount: totalShipmentCount,
             eligibleForCreatingShippingLabel: isEligibleForShippingLabelCreation,
-            onViewItems: {
-                // TODO
+            onViewItems: { [weak self] in
+                self?.onCellAction?(.viewShipmentItems(shipment: shipment), indexPath)
             },
             onCreateLabel: { [weak self] in
                 self?.onCellAction?(.createShippingLabel(shipmentIndex: indexPath.row), indexPath)
@@ -2138,6 +2138,7 @@ extension OrderDetailsDataSource {
         case openShippingLabelForm(shippingLabel: ShippingLabel)
         case refundShippingLabel(shippingLabel: ShippingLabel)
         case printCustomsForm(url: String)
+        case viewShipmentItems(shipment: WooShippingShipment)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote

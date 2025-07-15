@@ -259,7 +259,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                                    productsPerPage: String = POSConstants.productsPerPage,
                                                    productTypes: [ProductType],
                                                    orderBy: OrderKey = .name,
-                                                   order: Order = .ascending) -> [String: String] {
+                                                   order: Order = .ascending) -> [String: any Hashable] {
         [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: productsPerPage,
@@ -276,7 +276,7 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
     private func makePagedPointOfSaleProductsRequest(for siteID: Int64,
                                                      pageNumber: Int,
-                                                     parameters: [String: String]) async throws -> PagedItems<POSProduct> {
+                                                     parameters: [String: any Hashable]) async throws -> PagedItems<POSProduct> {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
@@ -318,7 +318,12 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
             productTypes: productTypes)
 
         parameters.updateValue(query, forKey: ParameterKey.search)
+
+        // Takes precedence over `search` from WC 9.9 to 10.1
         parameters.updateValue(query, forKey: ParameterKey.searchNameOrSKU)
+
+        // Takes precedence over `search_name_or_sku` from WC 10.1+ and is combined with `search` value
+        parameters.updateValue([SearchField.name, SearchField.sku, SearchField.globalUniqueID], forKey: ParameterKey.searchFields)
 
         return try await makePagedPointOfSaleProductsRequest(
             for: siteID,
@@ -749,6 +754,7 @@ public extension ProductsRemote {
         static let include: String    = "include"
         static let search: String     = "search"
         static let searchNameOrSKU: String = "search_name_or_sku"
+        static let searchFields: String = "search_fields"
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let sku: String        = "sku"
@@ -775,6 +781,14 @@ public extension ProductsRemote {
         static let skuFieldValues: String = "sku"
         static let productSegment = "product"
         static let itemsSold = "items_sold"
+    }
+
+    private enum SearchField {
+        static let name = "name"
+        static let sku = "sku"
+        static let globalUniqueID = "global_unique_id"
+        static let description = "description"
+        static let shortDescription = "short_description"
     }
 }
 

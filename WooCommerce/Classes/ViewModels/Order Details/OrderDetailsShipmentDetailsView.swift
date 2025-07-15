@@ -8,10 +8,10 @@ struct OrderDetailsShipmentDetailsView: View {
 
     let onViewItems: () -> Void
     let onCreateLabel: () -> Void
-    let onViewLabel: () -> Void
-    let onPrintLabel: () -> Void
-    let onPrintCustomsForm: () -> Void
-    let onRefund: () -> Void
+    let onViewLabel: (ShippingLabel) -> Void
+    let onPrintLabel: (ShippingLabel) -> Void
+    let onPrintCustomsForm: (ShippingLabel) -> Void
+    let onRefund: (ShippingLabel) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentPadding) {
@@ -25,10 +25,14 @@ struct OrderDetailsShipmentDetailsView: View {
                 Spacer()
                 if let label = shipment.shippingLabel, label.refund == nil {
                     Menu {
-                        Button(Localization.requestRefund, action: onRefund)
+                        Button(Localization.requestRefund) {
+                            onRefund(label)
+                        }
                         .renderedIf(label.isRefundable)
 
-                        Button(Localization.printCustomsForm, action: onPrintCustomsForm)
+                        Button(Localization.printCustomsForm) {
+                            onPrintCustomsForm(label)
+                        }
                         .renderedIf(label.commercialInvoiceURL != nil)
                     } label: {
                         Image(systemName: "ellipsis")
@@ -99,7 +103,9 @@ struct OrderDetailsShipmentDetailsView: View {
                 Divider()
                     .padding(.trailing, -Layout.contentPadding)
 
-                Button(action: onViewLabel) {
+                Button {
+                    onViewLabel(shippingLabel)
+                } label: {
                     HStack {
                         Text(Localization.viewShippingLabel)
                         Spacer()
@@ -113,8 +119,9 @@ struct OrderDetailsShipmentDetailsView: View {
                 Divider()
                     .padding(.trailing, -Layout.contentPadding)
 
-                Button(String.localizedStringWithFormat(Localization.printShippingLabel, shipmentIndex),
-                       action: onPrintLabel)
+                Button(String.localizedStringWithFormat(Localization.printShippingLabel, shipmentIndex)) {
+                    onPrintLabel(shippingLabel)
+                }
                 .buttonStyle(SecondaryButtonStyle())
                 .padding(.vertical, Layout.extraSpacing)
             }

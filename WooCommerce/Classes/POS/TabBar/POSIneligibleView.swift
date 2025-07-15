@@ -97,10 +97,6 @@ struct POSIneligibleView: View {
                                      value: "Point of Sale must be enabled to proceed. " +
                                      "Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
-        case .featureSwitchSyncFailure:
-            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
-                                     value: "Please check your internet connection and try again.",
-                                     comment: "Suggestion for feature switch sync failure: check connection and retry")
         case let .unsupportedCurrency(supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
@@ -189,15 +185,6 @@ private extension POSIneligibleView {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
             reason: .siteSettingsNotAvailable,
-            onRefresh: {}
-        )
-    }
-}
-
-#Preview("Feature switch sync failure") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .featureSwitchSyncFailure,
             onRefresh: {}
         )
     }

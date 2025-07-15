@@ -36,7 +36,7 @@ public struct WooShippingShipment: Equatable, GeneratedFakeable, GeneratedCopiab
 /// Represents a shipment item from the WooCommerce Shipping extension.
 ///
 public struct WooShippingShipmentItem: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
-    /// ID of the shipment
+    /// ID of the order item
     public let id: Int64
 
     /// Items of the shipment

@@ -14,10 +14,7 @@ struct POSIneligibleView: View {
             Spacer()
 
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                Image(PointOfSaleAssets.exclamationMark.imageName)
-                    .resizable()
-                    .frame(width: POSErrorAndAlertIconSize.large.dimension,
-                           height: POSErrorAndAlertIconSize.large.dimension)
+                POSErrorXMark()
 
                 Spacer()
                     .frame(height: POSSpacing.medium)

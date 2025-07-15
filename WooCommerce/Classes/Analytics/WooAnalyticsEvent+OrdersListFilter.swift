@@ -1,4 +1,5 @@
 import protocol WooFoundation.WooAnalyticsEventPropertyType
+import enum Yosemite.SalesChannelFilter
 
 extension WooAnalyticsEvent {
     enum OrdersFilter {
@@ -24,7 +25,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-fileprivate extension FilterOrderListViewModel.SalesChannelFilter {
+fileprivate extension SalesChannelFilter {
     var analyticsDescription: String? {
         switch self {
         case .pointOfSale:

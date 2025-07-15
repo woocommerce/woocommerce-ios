@@ -415,7 +415,23 @@ private extension WooShippingStore {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
-        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate, completion: completion)
+        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate) { [weak self] result in
+            guard let self, let contents = try? result.get() else {
+                return completion(result)
+            }
+            let shipments = contents.map { (index, items) in
+                WooShippingShipment(siteID: siteID,
+                                    orderID: orderID,
+                                    index: index,
+                                    items: items,
+                                    shippingLabel: nil)
+            }
+            upsertShipmentsInBackground(siteID: siteID,
+                                        orderID: orderID,
+                                        shipments: shipments) {
+                completion(.success(contents))
+            }
+        }
     }
 }
 

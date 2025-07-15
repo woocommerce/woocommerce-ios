@@ -1593,7 +1593,7 @@ extension OrderDetailsDataSource {
         }
         return Section(
             category: .payment,
-            title: "Shipping Labels",
+            title: Title.shippingLabels,
             rows: shipments.map { _ in Row.shipmentDetails }
         )
     }
@@ -1872,6 +1872,11 @@ extension OrderDetailsDataSource {
             NSLocalizedString("Don’t know how to print from your mobile device?",
                               comment: "Title of button in order details > shipping label that shows the instructions on how to print " +
                                 "a shipping label on the mobile device.")
+        static let shippingLabels = NSLocalizedString(
+            "orderDetailsDataSource.title.shippingLabels",
+            value: "Shipping Labels",
+            comment: "Title of Shipping Labels Section in Order Details screen."
+        )
         static let orderAttribution = NSLocalizedString(
             "orderDetailsDataSource.attributionInfo.orderAttribution",
             value: "Order attribution",

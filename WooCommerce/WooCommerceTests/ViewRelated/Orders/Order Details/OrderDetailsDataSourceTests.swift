@@ -1028,6 +1028,44 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(secondLabelSection.title, "Package 2")
         let secondLabel = dataSource.shippingLabel(at: shippingLabelSectionsIndices[1])
         XCTAssertEqual(secondLabel, shippingLabel1)
+
+        let shipmentsSection = dataSource.sections.first { $0.title == Title.shippingLabels }
+        XCTAssertNil(shipmentsSection)
+    }
+
+    func test_purchased_shipping_labels_are_unified_in_a_single_section_if_shipments_are_available() throws {
+        // Given
+        var order = makeOrder()
+        let shippingLabel1 = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, shipmentID: "1")
+        let shippingLabel2 = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, shipmentID: "0")
+        order = order.copy(shippingLabels: [shippingLabel1, shippingLabel2])
+        let shipment1 = WooShippingShipment.fake().copy(siteID: order.siteID, orderID: order.orderID, index: "1")
+        let shipment2 = WooShippingShipment.fake().copy(siteID: order.siteID, orderID: order.orderID, index: "0")
+        insert(shipment: shipment1, shippingLabel: shippingLabel1, order: order)
+        insert(shipment: shipment2, shippingLabel: shippingLabel2, order: order)
+
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        // Get IndexPaths for all shipping label rows
+        var shippingLabelSectionsIndices: [IndexPath] = []
+        for (sectionIndex, section) in dataSource.sections.enumerated() {
+            for (rowIndex, row) in section.rows.enumerated() where row == .shippingLabelDetail {
+                shippingLabelSectionsIndices.append(IndexPath(row: rowIndex, section: sectionIndex))
+            }
+        }
+        XCTAssertEqual(shippingLabelSectionsIndices.count, 0)
+
+        let shipmentsSection = try section(withTitle: Title.shippingLabels, from: dataSource)
+        XCTAssertEqual(shipmentsSection.rows.count, 2)
     }
 
     func test_isEligibleForBackendReceipt_when_initialized_then_defaults_to_false() {
@@ -1212,6 +1250,25 @@ private extension OrderDetailsDataSourceTests {
             storageShippingLabel.refund = storageRefund
         }
         storageShippingLabel.order = storageOrder
+    }
+
+    func insert(shipment: WooShippingShipment, shippingLabel: ShippingLabel, order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+
+        let storageShipment = storage.insertNewObject(ofType: StorageWooShippingShipment.self)
+        storageShipment.update(with: shipment)
+        storageShipment.order = storageOrder
+
+        let storageShippingLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
+        storageShippingLabel.update(with: shippingLabel)
+        if let shippingLabelRefund = shippingLabel.refund {
+            let storageRefund = storage.insertNewObject(ofType: StorageShippingLabelRefund.self)
+            storageRefund.update(with: shippingLabelRefund)
+            storageShippingLabel.refund = storageRefund
+        }
+        storageShippingLabel.order = storageOrder
+        storageShippingLabel.shipment = storageShipment
     }
 
     func insert(_ readOnlyPlugin: Yosemite.SitePlugin) {

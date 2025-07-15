@@ -3,6 +3,16 @@
     {
       "filename" : "tera-1200-2d-pair-barcode.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "tera-1200-2d-pair-barcode-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

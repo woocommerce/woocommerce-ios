@@ -3,7 +3,8 @@
 
 22.9
 -----
-
+- [*] Shipping Labels: Empty dimensions are no longer presented for product cards [https://github.com/woocommerce/woocommerce-ios/pull/15912]
+- [*] Shipping Labels: Improved VoiceOver accessibility [https://github.com/woocommerce/woocommerce-ios/pull/15912]
 
 22.8
 -----

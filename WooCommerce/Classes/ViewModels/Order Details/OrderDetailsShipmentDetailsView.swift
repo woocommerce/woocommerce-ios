@@ -10,7 +10,7 @@ struct OrderDetailsShipmentDetailsView: View {
     let onCreateLabel: () -> Void
     let onViewLabel: (ShippingLabel) -> Void
     let onPrintLabel: (ShippingLabel) -> Void
-    let onPrintCustomsForm: (ShippingLabel) -> Void
+    let onPrintCustomsForm: (String) -> Void
     let onRefund: (ShippingLabel) -> Void
 
     var body: some View {
@@ -30,10 +30,11 @@ struct OrderDetailsShipmentDetailsView: View {
                         }
                         .renderedIf(label.isRefundable)
 
-                        Button(Localization.printCustomsForm) {
-                            onPrintCustomsForm(label)
+                        if let url = label.commercialInvoiceURL, url.isNotEmpty {
+                            Button(Localization.printCustomsForm) {
+                                onPrintCustomsForm(url)
+                            }
                         }
-                        .renderedIf(label.commercialInvoiceURL != nil)
                     } label: {
                         Image(systemName: "ellipsis")
                             .foregroundStyle(Color.accentColor)

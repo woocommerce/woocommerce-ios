@@ -405,6 +405,8 @@ private extension OrderDetailsViewController {
             navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
         case .refundShippingLabel(let shippingLabel):
             refundShippingLabel(shippingLabel)
+        case .printCustomsForm(let url):
+            printCustomsForm(url: url)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
@@ -552,10 +554,7 @@ private extension OrderDetailsViewController {
 
         if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
-                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
-                let hostingController = UIHostingController(rootView: printCustomsFormsView)
-                hostingController.hidesBottomBarWhenPushed = true
-                self?.show(hostingController, sender: self)
+                self?.printCustomsForm(url: url)
             }
         }
 
@@ -593,6 +592,13 @@ private extension OrderDetailsViewController {
         }
         let refundViewController = UIHostingController(rootView: view)
         present(refundViewController, animated: true)
+    }
+
+    func printCustomsForm(url: String) {
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+        let hostingController = UIHostingController(rootView: printCustomsFormsView)
+        hostingController.hidesBottomBarWhenPushed = true
+        show(hostingController, sender: self)
     }
 
     func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {

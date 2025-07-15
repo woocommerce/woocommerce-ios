@@ -1466,6 +1466,78 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }
 
+    func test_loadSystemPlugin_by_siteID_path_and_active_state() throws {
+        // Given
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "woocommerce/woocommerce.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundActivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: true))
+
+        // Then
+        XCTAssertEqual(foundActivePlugin, activePlugin)
+    }
+
+    func test_loadSystemPlugin_by_siteID_path_and_inactive_state() throws {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "woocommerce/woocommerce.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        // When
+        let foundInactivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: false))
+
+        // Then
+        XCTAssertEqual(foundInactivePlugin, inactivePlugin)
+    }
+
+    func test_loadSystemPlugin_by_siteID_and_path_ignoring_active_state() throws {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "jetpack/jetpack.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: nil)
+
+        // Then
+        XCTAssertNotNil(foundPlugin)
+        XCTAssertEqual(foundPlugin, activePlugin)
+    }
+
+    func test_loadSystemPlugin_returns_nil_when_no_match_for_active_state() {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: false)
+
+        // Then
+        XCTAssertNil(foundPlugin)
+    }
+
     func test_loadSystemPlugins_by_siteID_matching_paths() {
         // Given
         let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)

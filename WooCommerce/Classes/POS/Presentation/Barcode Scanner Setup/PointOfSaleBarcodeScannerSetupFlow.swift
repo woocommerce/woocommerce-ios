@@ -112,7 +112,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     content: {
                         PointOfSaleBarcodeScannerBarcodeView(
                             title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
-                            instruction: Localization.setUpBarcodeStepInstruction,
+                            instruction: Localization.setUpBarcodeHIDStepInstruction,
                             barcode: .starBsh20SetupBarcode)
                     },
                     transitions: [
@@ -128,35 +128,51 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         .back: .setupBarcodeHID
                     ]
                 ),
-                .test: testBarcodeStep(barcode: .ean13, timerCompleted: false),
-                .testScanTimedOut: testBarcodeStep(barcode: .ean13, timerCompleted: true),
-                .complete: PointOfSaleBarcodeScannerSetupStep(
-                    content: {
-                        PointOfSaleBarcodeScannerSetupCompleteView()
-                    },
-                    buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
-                    transitions: [
-                        .next: .setupInformation,
-                    ]),
-                .testScanFailed: PointOfSaleBarcodeScannerSetupStep(
-                    content: {
-                        PointOfSaleBarcodeScannerErrorView()
-                    },
-                    buttonCustomization: PointOfSaleBarcodeScannerErrorButtonCustomization(),
-                    transitions: [
-                        .retry: .setupBarcodeHID,
-                        .back: .test
-                    ]
-                ),
-                .setupInformation: PointOfSaleBarcodeScannerSetupStep(
-                    content: { ProductBarcodeSetupInformation() },
-                    buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
-                )
+                .test: testScanStep(barcode: .ean13),
+                .testScanTimedOut: testScanTimeOutStep(barcode: .ean13),
+                .testScanFailed: testScanFailedStep(),
+                .complete: setupCompleteStep(),
+                .setupInformation: setupInformationStep()
             ]
         case .tera12002D:
             return [
-                .setupBarcodeHID: createWelcomeStep(title: "TBC Scanner Setup")
-                // TODO: Add more steps for TBC Scanner WOOMOB-699
+                .setupBarcodeHID: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerBarcodeView(
+                            title: Localization.starSetUpBarcodeStepTitleFormat,
+                            instruction: Localization.setUpBarcodeHIDStepInstruction,
+                            barcode: .tera12002DHIDBarcode)
+                    },
+                    transitions: [
+                        .next: .setupBarcodePair,
+                    ]
+                ),
+                .setupBarcodePair: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerBarcodeView(
+                            title: Localization.starSetUpBarcodeStepTitleFormat,
+                            instruction: Localization.setUpBarcodePairStepInstruction,
+                            barcode: .tera12002DPairBarcode)
+                    },
+                    transitions: [
+                        .next: .pairing,
+                        .back: .setupBarcodeHID
+                    ]
+                ),
+                .pairing: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
+                    },
+                    transitions: [
+                        .next: .test,
+                        .back: .setupBarcodePair
+                    ]
+                ),
+                .test: testScanStep(barcode: .ean13),
+                .testScanTimedOut: testScanTimeOutStep(barcode: .ean13),
+                .testScanFailed: testScanFailedStep(),
+                .complete: setupCompleteStep(),
+                .setupInformation: setupInformationStep()
             ]
         case .other:
             return [
@@ -194,7 +210,9 @@ class PointOfSaleBarcodeScannerSetupFlow {
         )
     }
 
-    private func testBarcodeStep(barcode: PointOfSaleBarcodeScannerTestBarcode, timerCompleted: Bool) -> PointOfSaleBarcodeScannerSetupStep {
+    // MARK: - Steps
+
+    private func testScanStep(barcode: PointOfSaleBarcodeScannerTestBarcode, timerCompleted: Bool = false) -> PointOfSaleBarcodeScannerSetupStep {
         PointOfSaleBarcodeScannerSetupStep(
             content: {
                 PointOfSaleBarcodeScannerTestBarcodeView(
@@ -219,6 +237,41 @@ class PointOfSaleBarcodeScannerSetupFlow {
             transitions: [
                 .back: .pairing
             ]
+        )
+    }
+
+    private func testScanTimeOutStep(barcode: PointOfSaleBarcodeScannerTestBarcode) -> PointOfSaleBarcodeScannerSetupStep {
+        testScanStep(barcode: barcode, timerCompleted: true)
+    }
+
+    private func testScanFailedStep() -> PointOfSaleBarcodeScannerSetupStep {
+        PointOfSaleBarcodeScannerSetupStep(
+            content: {
+                PointOfSaleBarcodeScannerErrorView()
+            },
+            buttonCustomization: PointOfSaleBarcodeScannerErrorButtonCustomization(),
+            transitions: [
+                .retry: .setupBarcodeHID,
+                .back: .test
+            ]
+        )
+    }
+
+    private func setupCompleteStep() -> PointOfSaleBarcodeScannerSetupStep {
+        PointOfSaleBarcodeScannerSetupStep(
+            content: {
+                PointOfSaleBarcodeScannerSetupCompleteView()
+            },
+            buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
+            transitions: [
+                .next: .setupInformation,
+            ])
+    }
+
+    private func setupInformationStep() -> PointOfSaleBarcodeScannerSetupStep {
+        PointOfSaleBarcodeScannerSetupStep(
+            content: { ProductBarcodeSetupInformation() },
+            buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
         )
     }
 }
@@ -326,9 +379,7 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
     }
 
     private func trackRetry() {
-        if let step = getCurrentAnalyticsStepValue() {
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupRetryTapped(scanner: scannerType))
-        }
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupRetryTapped(scanner: scannerType))
     }
 }
 
@@ -347,7 +398,8 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             comment: "Title for the back button in barcode scanner setup navigation"
         )
         //TODO: WOOMOB-792
-        static let starSetUpBarcodeStepTitleFormat = "%1$@ Setup"
-        static let setUpBarcodeStepInstruction = "Scan the barcode to set up your scanner."
+        static let starSetUpBarcodeStepTitleFormat = "Scanner Setup"
+        static let setUpBarcodeHIDStepInstruction = "Scan the Bluetooth HID symbol."
+        static let setUpBarcodePairStepInstruction = "Scan the Pair symbol to get the scanner ready for pairing."
     }
 }

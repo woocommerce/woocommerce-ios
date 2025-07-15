@@ -47,7 +47,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
 
 extension PointOfSaleBarcodeScannerBarcodeView {
     enum Constants {
-        static let maxBarcodeSize: CGFloat = 168
+        static let maxBarcodeSize: CGFloat = 142
     }
 }
 

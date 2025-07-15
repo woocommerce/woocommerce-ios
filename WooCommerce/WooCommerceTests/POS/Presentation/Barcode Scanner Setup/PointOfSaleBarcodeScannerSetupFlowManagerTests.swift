@@ -114,7 +114,6 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Initially on scanner selection
         if case .scannerSelection = sut.currentState {
-            // Expected state
         } else {
             #expect(Bool(false), "Expected scannerSelection state")
         }
@@ -141,7 +140,6 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         sut.selectScanner(.other)
         if case .setupFlow = sut.currentState {
-            // Expected state after selection
         } else {
             #expect(Bool(false), "Expected setupFlow state after selection")
         }
@@ -151,7 +149,6 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
 
         // Then state returns to scanner selection
         if case .scannerSelection = sut.currentState {
-            // Expected state after going back
         } else {
             #expect(Bool(false), "Expected scannerSelection state after going back")
         }

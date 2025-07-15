@@ -996,7 +996,7 @@ private extension OrderDetailsViewModel {
     func syncShipmentsForWooShipping() {
         stores.dispatch(WooShippingAction.syncShipments(siteID: order.siteID, orderID: order.orderID) { result in
             switch result {
-            case .success(let shipments):
+            case .success:
                 ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                     result: .success,
                     isRevampedFlow: true

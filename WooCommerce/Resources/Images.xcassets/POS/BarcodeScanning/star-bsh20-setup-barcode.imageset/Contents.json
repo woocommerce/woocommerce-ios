@@ -3,6 +3,16 @@
     {
       "filename" : "star-bsh20-setup-barcode.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "star-bsh20-setup-barcode_dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

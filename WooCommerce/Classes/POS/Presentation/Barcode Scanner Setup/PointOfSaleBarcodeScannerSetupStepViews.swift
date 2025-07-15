@@ -74,6 +74,8 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             }
 
             Button {
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
+
                 guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
                     return
                 }
@@ -106,8 +108,7 @@ private extension PointOfSaleBarcodeScannerPairingView {
 @available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     let scanTester: PointOfSaleBarcodeScannerSetupScanTester
-    @State private var timerCompleted = false
-    @State private var timer: Timer?
+    let timerCompleted: Bool
 
     var body: some View {
         PointOfSaleBarcodeScannerBarcodeView(title: timerCompleted ? Localization.timeoutTitle : Localization.title,
@@ -117,19 +118,15 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
             scanTester.handleScan(result)
         }
         .onAppear {
-            startTimer()
+            if !timerCompleted {
+                scanTester.startTimer()
+            }
         }
         .onDisappear {
-            timer?.invalidate()
-            timer = nil
+            scanTester.stopTimer()
         }
     }
 
-    private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { _ in
-            timerCompleted = true
-        }
-    }
 }
 
 @available(iOS 17.0, *)

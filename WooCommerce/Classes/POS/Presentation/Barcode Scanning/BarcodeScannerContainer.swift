@@ -11,11 +11,11 @@ struct BarcodeScannerContainer: View {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode scan completes (success or failure)
-    let onScan: (Result<String, Error>) -> Void
+    let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
-        onScan: @escaping (Result<String, Error>) -> Void
+        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
     ) {
         self.configuration = configuration
         self.onScan = onScan
@@ -37,7 +37,7 @@ struct BarcodeScannerContainer: View {
 /// keyboard input for barcode scanning.
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let configuration: HIDBarcodeParserConfiguration
-    let onScan: (Result<String, Error>) -> Void
+    let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     func makeUIViewController(context: Context) -> UIViewController {
         return GameControllerBarcodeScannerHostingController(
@@ -56,7 +56,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     init(
         configuration: HIDBarcodeParserConfiguration,
-        onScan: @escaping (Result<String, Error>) -> Void
+        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
     ) {
         super.init(rootView: EmptyView())
 

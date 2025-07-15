@@ -35,6 +35,9 @@ struct PointOfSaleBarcodeScannerSetup: View {
         .onAppear {
             ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
         }
+        .onDisappear {
+            flowManager.onDisappear()
+        }
     }
 
     // MARK: - Computed Properties

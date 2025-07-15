@@ -153,7 +153,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                     buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
                 )
             ]
-        case .tbcScanner:
+        case .tera12002D:
             return [
                 .setupBarcodeHID: createWelcomeStep(title: "TBC Scanner Setup")
                 // TODO: Add more steps for TBC Scanner WOOMOB-699
@@ -175,7 +175,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
 
     private func initialStep(for scannerType: PointOfSaleBarcodeScannerType) -> PointOfSaleBarcodeScannerStepID {
         switch scannerType {
-        case .socketS720, .starBSH20B, .tbcScanner:
+        case .socketS720, .starBSH20B, .tera12002D:
             return .setupBarcodeHID
         case .other:
             return .setupInformation

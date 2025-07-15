@@ -119,11 +119,11 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         }
 
         // When a scanner is selected
-        sut.selectScanner(.tbcScanner)
+        sut.selectScanner(.tera12002D)
 
         // Then state changes to setup flow
         if case .setupFlow(let scannerType) = sut.currentState {
-            #expect(scannerType == .tbcScanner)
+            #expect(scannerType == .tera12002D)
         } else {
             #expect(Bool(false), "Expected setupFlow state")
         }

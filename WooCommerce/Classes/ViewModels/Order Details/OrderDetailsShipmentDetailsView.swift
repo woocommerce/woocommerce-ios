@@ -43,12 +43,13 @@ struct OrderDetailsShipmentDetailsView: View {
                 }
             }
             .padding(.vertical, Layout.extraSpacing)
+            .accessibilityElement(children: .combine)
 
             if shipment.shippingLabel?.refund != nil {
                 Text(Localization.refundMessage)
                     .font(.subheadline)
                     .padding(Layout.contentPadding)
-                    .background(Color.withColorStudio(name: .blue, shade: .shade5))
+                    .background(Color.withColorStudio(name: .blue, shade: .shade5).opacity(0.2))
                     .clipShape(RoundedRectangle(cornerRadius: Layout.cornerRadius))
             }
 

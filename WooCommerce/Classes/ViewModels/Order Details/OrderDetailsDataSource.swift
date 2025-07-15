@@ -182,10 +182,6 @@ final class OrderDetailsDataSource: NSObject {
     /// Shipments in an order
     private(set) var shipments: [WooShippingShipment] = []
 
-    private var itemsDataSource: DefaultWooShippingItemsDataSource {
-        DefaultWooShippingItemsDataSource(order: order)
-    }
-
     private var shippingLabelOrderItemsAggregator: AggregatedShippingLabelOrderItems = AggregatedShippingLabelOrderItems.empty
 
     /// Shipping Lines from an Order

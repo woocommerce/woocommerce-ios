@@ -52,9 +52,7 @@ public typealias WooShippingShipments = [String: [WooShippingShipmentItem]]
 
 public extension WooShippingShipmentItem {
     var quantity: Decimal {
-        guard let subItems else {
-            return 0
-        }
+        guard let subItems else { return 0 }
         return subItems.count > 0 ? Decimal(subItems.count) : 1
     }
 }

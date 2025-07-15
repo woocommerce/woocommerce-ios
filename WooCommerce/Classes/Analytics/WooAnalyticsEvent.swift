@@ -2414,7 +2414,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-private extension PaymentMethod {
+extension PaymentMethod {
     var analyticsValue: String {
         switch self {
         case .card, .cardPresent:

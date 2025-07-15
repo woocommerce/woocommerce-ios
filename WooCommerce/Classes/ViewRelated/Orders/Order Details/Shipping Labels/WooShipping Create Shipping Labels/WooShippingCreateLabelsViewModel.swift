@@ -231,6 +231,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             loadDestinationAddress()
         }
 
+        syncCountries()
         updateShipmentDetailsViewModels()
         observeSelectedOriginAddress()
         observeDestinationAddress()
@@ -466,6 +467,12 @@ private extension WooShippingCreateLabelsViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Sync countries to update the storage with latest data from remote.
+    /// This is useful for checking countries in the customs form and listing countries in the edit address form.
+    func syncCountries() {
+        stores.dispatch(DataAction.synchronizeCountries(siteID: order.siteID) { _ in })
     }
 }
 

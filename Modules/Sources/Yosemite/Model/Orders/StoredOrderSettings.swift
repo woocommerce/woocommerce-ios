@@ -12,17 +12,20 @@ public struct StoredOrderSettings: Codable, Equatable {
         public let dateRangeFilter: OrderDateRangeFilter?
         public let productFilter: FilterOrdersByProduct?
         public let customerFilter: CustomerFilter?
+        public let salesChannelFilter: SalesChannelFilter?
 
         public init(siteID: Int64,
                     orderStatusesFilter: [OrderStatusEnum]?,
                     dateRangeFilter: OrderDateRangeFilter?,
                     productFilter: FilterOrdersByProduct?,
-                    customerFilter: CustomerFilter?) {
+                    customerFilter: CustomerFilter?,
+                    salesChannelFilter: SalesChannelFilter?) {
             self.siteID = siteID
             self.orderStatusesFilter = orderStatusesFilter
             self.dateRangeFilter = dateRangeFilter
             self.productFilter = productFilter
             self.customerFilter = customerFilter
+            self.salesChannelFilter = salesChannelFilter
         }
 
         public func numberOfActiveFilters() -> Int {
@@ -39,6 +42,9 @@ public struct StoredOrderSettings: Codable, Equatable {
             if customerFilter != nil {
                 total += 1
             }
+            if let salesChannelFilter = salesChannelFilter, case .pointOfSale = salesChannelFilter {
+                total += 1
+            }
 
             return total
         }
@@ -51,6 +57,7 @@ public struct StoredOrderSettings: Codable, Equatable {
             case dateRangeFilter = "date_range_filter"
             case productFilter = "product_filter"
             case customerFilter = "customer_filter"
+            case salesChannelFilter = "sales_channel_filter"
         }
     }
 

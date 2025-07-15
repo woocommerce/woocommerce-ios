@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 14:54:22+0000 */
+/* Translation-Revision-Date: 2025-07-02 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -10852,6 +10852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Extensions";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "Code-barres trop court";
+
+/* Error message shown when scan is incomplete. */
+"pointOfSale.barcodeScan.error.incompleteScan" = "Scan partiel du codes-barres";
+
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Échec de la demande réseau";
 
@@ -10863,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when a scanned item is not found in the store. */
 "pointOfSale.barcodeScan.error.notFound" = "Article scanné inconnu";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "Impossible de lire le code-barres";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "Échec de l’analyse";
 
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "Type d’article non pris en charge";
@@ -11209,6 +11221,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Code promo non appliqué";
 
+/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Lecture de code-barres";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Veuillez patienter";
 
@@ -11289,6 +11304,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Terminé";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "Lecture de code-barres";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Vous pouvez scanner les codes-barres à l’aide d’un scanner externe pour créer rapidement un panier.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "Plus de détails.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Plus de détails, lien.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Configurez des codes-barres dans le champ « GTIN, UPC, EAN, ISBN » dans Produits > Détails du produit > Inventaire. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Premièrement : configurez des codes-barres dans le champ « G-T-I-N, U-P-C, E-A-N, I-S-B-N » dans Produits > Détails du produit > Inventaire.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Scannez les codes-barres lorsque vous êtes sur la liste d’articles pour ajouter des produits au panier.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Quatrièmement : scannez les codes-barres lorsque vous êtes sur la liste d’articles pour ajouter des produits au panier.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "Le scanner émule un clavier, il empêche donc parfois le clavier logiciel de s’afficher, par exemple dans la recherche. Appuyez sur l’icône du clavier pour le réafficher.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage" = "• Reportez-vous au mode d’emploi de votre scanner de code-barres Bluetooth pour configurer le mode HID.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible" = "Deuxièmement : reportez-vous au mode d’emploi de votre scanner de code-barres Bluetooth pour configurer le mode H-I-D.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Connectez votre scanner de code-barres dans les réglages Bluetooth d’iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Troisièmement : connectez votre scanner de code-barres dans les réglages Bluetooth d’iOS.";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Appuyer sur un produit pour \n l’ajouter au panier";
@@ -11407,6 +11461,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the coupon list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "Aucun code promo trouvé";
 
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Actualiser";
+
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Pour en ajouter un, quittez le PDV et accédez à Produits.";
 
@@ -11437,6 +11494,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Créer un code promo";
 
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "OK";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Supprimer la recherche";
 
@@ -11463,6 +11523,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "Rupture de stock";
+
+/* Title for the Point of Sale tab. */
+"pos.tab.title" = "Point de vente";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "Nouvelle commande";
@@ -12948,6 +13011,15 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Envoi %1$d";
 
+/* Label when shipping rate has option for additional handling in Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)' */
+"wooShipping.createLabels.shippingService.additionalHandling" = "Prise en charge supplémentaire (%1$@)";
+
+/* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
+"wooShipping.createLabels.shippingService.adultSignatureRequiredLabel" = "Signature d’un adulte obligatoire (%1$@)";
+
+/* Label when shipping rate has option for carbon neutral delivery in Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)' */
+"wooShipping.createLabels.shippingService.carbonNeural" = "Neutre en carbone (%1$@)";
+
 /* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
 "wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d jour ouvrable";
 
@@ -12965,6 +13037,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
 "wooShipping.createLabels.shippingService.insuranceLiteral" = "Assurance (%1$@)";
+
+/* Label when shipping rate has option for Saturday delivery in Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)' */
+"wooShipping.createLabels.shippingService.saturdayDelivery" = "Livraison le samedi (%1$@)";
+
+/* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
+"wooShipping.createLabels.shippingService.signatureRequiredLabel" = "Signature obligatoire (%1$@)";
 
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "Suivi";

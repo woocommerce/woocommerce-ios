@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-01 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-07-03 09:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -11324,10 +11324,10 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "يُحاكي جهاز المسح الضوئي لوحة المفاتيح، لذا ستمنع لوحة مفاتيح البرنامج من الظهور في بعض الأحيان، على سبيل المثال في البحث. انقر على أيقونة لوحة المفاتيح لإظهارها مرة أخرى.";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• راجع تعليمات البلوتوث لماسح الرمز الشريطي للتعيين إلى وضع HID.";
+"pos.barcodeInfoModal.secondaryMessage" = "• راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع HID.";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "ثانيًا: راجع تعليمات ماسحك الضوئي للرمز الشريطي المزود بتقنية البلوتوث لتعيين وضع H-I-D.";
+"pos.barcodeInfoModal.secondaryMessage.accessible" = "ثانيًا: راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع H-I-D.";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";

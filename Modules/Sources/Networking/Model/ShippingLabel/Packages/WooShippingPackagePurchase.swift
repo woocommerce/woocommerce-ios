@@ -73,6 +73,11 @@ extension WooShippingPackagePurchase {
 
         return rates
     }
+
+    /// shipment ID to set for hazmat and customs form
+    var formattedShipmentID: String {
+        return WooShippingShipmentIDFormatter.formattedShipmentID(shipmentID)
+    }
 }
 
 // MARK: Enodable
@@ -86,7 +91,11 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(package.boxID, forKey: .boxID)
         try container.encode(package.length, forKey: .length)
         try container.encode(package.width, forKey: .width)
-        try container.encode(package.height, forKey: .height)
+
+        // workaround because 0 would cause an error for the API request
+        let packageHeight = package.height > 0 ? package.height : 0.25
+        try container.encode(packageHeight, forKey: .height)
+
         try container.encode(package.weight, forKey: .weight)
         try container.encode(package.isLetter, forKey: .isLetter)
         try container.encode(rate.shipmentID, forKey: .shipmentID)
@@ -95,6 +104,20 @@ extension WooShippingPackagePurchase: Encodable {
         try container.encode(rate.carrierID, forKey: .carrierID)
         try container.encode(rate.title, forKey: .serviceName)
         try container.encode(productIDs, forKey: .products)
+
+        if let hazmat = package.hazmatCategory {
+            try container.encode(hazmat, forKey: .hazmat)
+        }
+
+        if let form = package.customsForm {
+            try container.encode(form.contentsType.rawValue, forKey: .contentsType)
+            try container.encode(form.contentExplanation, forKey: .contentsExplanation)
+            try container.encode(form.restrictionType.rawValue, forKey: .restrictionType)
+            try container.encode(form.restrictionComments, forKey: .restrictionComments)
+            try container.encode(form.nonDeliveryOption.rawValue, forKey: .nonDeliveryOption)
+            try container.encode(form.itn, forKey: .itn)
+            try container.encode(form.items, forKey: .items)
+        }
 
         if selectedRate.signatureRate != nil {
             try container.encode(Values.yes, forKey: .signature)
@@ -140,7 +163,7 @@ extension WooShippingPackagePurchase: Encodable {
     /// Converts the hazmat settings to a dictionary as the API expects it.
     /// Includes the shipment ID if there are hazmat settings to report.
     public func encodedHazmat() -> [String: Any] {
-        [shipmentID: [
+        [formattedShipmentID: [
             ParameterKeys.isHazmat: package.hazmatCategory != nil,
             ParameterKeys.category: package.hazmatCategory ?? String()
         ]]
@@ -150,9 +173,9 @@ extension WooShippingPackagePurchase: Encodable {
     /// Includes the shipment ID with the encoded customs form.
     public func encodedCustomsForm() throws -> [String: Any] {
         guard let form = package.customsForm else {
-            return [shipmentID: [:]]
+            return [formattedShipmentID: [:]]
         }
-        return [shipmentID: [
+        return [formattedShipmentID: [
             ParameterKeys.items: try form.items.map { try $0.toDictionary() },
             ParameterKeys.contentsType: form.contentsType.rawValue,
             ParameterKeys.contentsExplanation: form.contentExplanation,
@@ -181,6 +204,14 @@ extension WooShippingPackagePurchase: Encodable {
         case carbonNeutral = "carbon_neutral"
         case saturdayDelivery = "saturday_delivery"
         case additionalHandling = "additional_handling"
+        case hazmat
+        case contentsType = "contents_type"
+        case contentsExplanation = "contents_explanation"
+        case restrictionType = "restriction_type"
+        case restrictionComments = "restriction_comments"
+        case nonDeliveryOption = "non_delivery_option"
+        case itn
+        case items
     }
 
     private enum ParameterKeys {

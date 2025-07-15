@@ -62,7 +62,7 @@ struct PointOfSaleEntryPointView: View {
                 }
             case let .ineligible(reason):
                 POSIneligibleView(reason: reason, onRefresh: {
-                    try await posEntryPointController.refreshEligibility()
+                    try await posEntryPointController.refreshEligibility(reason: reason)
                 })
             }
         }
@@ -105,7 +105,7 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),

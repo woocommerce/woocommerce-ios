@@ -6,7 +6,7 @@ import Networking
 import NetworkingCore
 #endif
 
-#if canImport(Yosemite)
+#if canImport(Yosemite) && !NOTIFICATION_EXTENSION
 import Yosemite
 #endif
 
@@ -19,7 +19,7 @@ struct MarkOrderAsReadUseCase {
         case noNeedToMarkAsRead
     }
 
-#if canImport(Yosemite)
+#if canImport(Yosemite) && !NOTIFICATION_EXTENSION
     /// Async method that marks the order note as read if it is the notification for the last order.
     /// We do it in a way that first we syncronize notification to get the remote `Note`
     /// and then we compare local `orderID` with the one from remote `Note`.

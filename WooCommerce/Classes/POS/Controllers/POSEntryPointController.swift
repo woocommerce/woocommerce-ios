@@ -22,7 +22,7 @@ import protocol Experiments.FeatureFlagService
     }
 
     @MainActor
-    func refreshEligibility() async throws {
-        // TODO: WOOMOB-720 - refresh eligibility
+    func refreshEligibility(reason: POSIneligibleReason) async throws {
+        eligibilityState = try await posEligibilityChecker.refreshEligibility(ineligibleReason: reason)
     }
 }

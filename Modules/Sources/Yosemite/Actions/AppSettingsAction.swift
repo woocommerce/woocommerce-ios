@@ -45,6 +45,7 @@ public enum AppSettingsAction: Action {
                               dateRangeFilter: OrderDateRangeFilter?,
                               productFilter: FilterOrdersByProduct?,
                               customerFilter: CustomerFilter?,
+                              salesChannelFilter: SalesChannelFilter?,
                               onCompletion: (Error?) -> Void)
 
     /// Clears all the orders settings

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-01 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-02 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -11306,7 +11306,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.heading" = "掃描條碼";
 
 /* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
-"pos.barcodeInfoModal.introMessage" = "你可以使用外部掃描器掃描條碼，以快速建立購物車。";
+"pos.barcodeInfoModal.introMessage" = "若要快速建立購物車，可以使用外部掃描器掃描條碼。";
 
 /* Link text in the barcode info modal in POS, leading to more details about barcode setup */
 "pos.barcodeInfoModal.moreDetailsLink" = "更多詳細資料。";
@@ -11318,7 +11318,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.primaryMessage" = "• 請依序點選「商品」>「商品詳細資料」>「庫存」，然後在「GTIN、UPC、EAN、ISBN」欄位設定條碼。 ";
 
 /* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.primaryMessage.accessible" = "1：請依序導覽至「商品」、「商品詳細資料」、「庫存」，然後在「GTIN、UPC、EAN、ISBN」欄位設定條碼。";
+"pos.barcodeInfoModal.primaryMessage.accessible" = "1：請依序導覽至「商品」、「商品詳細資料」、「庫存」，然後在「G-T-I-N、U-P-C、E-A-N、I-S-B-N」欄位設定條碼。";
 
 /* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
 "pos.barcodeInfoModal.quaternaryMessage" = "• 在項目清單上掃描條碼，將商品加入購物車。";

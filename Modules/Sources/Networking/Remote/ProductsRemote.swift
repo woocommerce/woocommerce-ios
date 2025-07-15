@@ -787,8 +787,6 @@ public extension ProductsRemote {
         static let name = "name"
         static let sku = "sku"
         static let globalUniqueID = "global_unique_id"
-        static let description = "description"
-        static let shortDescription = "short_description"
     }
 }
 

@@ -3,6 +3,7 @@
 
 22.9
 -----
+- [**] Order Details: Update Shipping Labels section for stores with Woo Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15889]
 
 
 22.8

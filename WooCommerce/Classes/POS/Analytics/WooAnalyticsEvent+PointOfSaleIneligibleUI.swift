@@ -29,7 +29,6 @@ private extension POSIneligibleReason {
         case .unsupportedIOSVersion:
             return "ios_version"
         case .siteSettingsNotAvailable,
-             .featureSwitchSyncFailure,
              .selfDeallocated:
             return "other"
         }

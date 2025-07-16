@@ -1019,7 +1019,6 @@
 		263491D5299C923400594566 /* SupportFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263491D4299C923300594566 /* SupportFormViewModelTests.swift */; };
 		26373E2C2BFD13E0008E6735 /* OrdersDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E2B2BFD13E0008E6735 /* OrdersDataService.swift */; };
 		26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26373E2D2BFD2F46008E6735 /* OrdersListViewModel.swift */; };
-		26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */; };
 		263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263C4CBF2963784900CA7E05 /* ProductVariationGenerator.swift */; };
 		263EAF9A2A15D513008C66CB /* PrivacyBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EAF992A15D513008C66CB /* PrivacyBannerViewModel.swift */; };
 		263EAF9C2A15E1F3008C66CB /* PrivacyBannerViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 263EAF9B2A15E1F3008C66CB /* PrivacyBannerViewModelTest.swift */; };
@@ -1216,6 +1215,9 @@
 		2DB88DA42E27DD8D0001B175 /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		2DB891662E27F0830001B175 /* Address+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891652E27F07E0001B175 /* Address+Shared.swift */; };
 		2DB891672E27F0880001B175 /* Address+Shared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891652E27F07E0001B175 /* Address+Shared.swift */; };
+		2DB891692E27F6200001B175 /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891682E27F61C0001B175 /* OrderListCellViewModel.swift */; };
+		2DB8916B2E27F6D90001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
+		2DB8916E2E27F7840001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
 		310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */; };
 		311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
@@ -4360,6 +4362,8 @@
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
 		2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarkOrderAsReadUseCase+Woo.swift"; sourceTree = "<group>"; };
 		2DB891652E27F07E0001B175 /* Address+Shared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Shared.swift"; sourceTree = "<group>"; };
+		2DB891682E27F61C0001B175 /* OrderListCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderListCellViewModel.swift; sourceTree = "<group>"; };
+		2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderListCellViewModel+Localizations.swift"; sourceTree = "<group>"; };
 		310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsLiveSiteInTestModeView.swift; sourceTree = "<group>"; };
 		311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalDisplayMessage.swift; sourceTree = "<group>"; };
 		311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalScanningForReader.swift; sourceTree = "<group>"; };
@@ -8692,6 +8696,7 @@
 		26A0B2D52BFBA51D002E9620 /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				2DB891682E27F61C0001B175 /* OrderListCellViewModel.swift */,
 				26A0B2D62BFBA536002E9620 /* OrdersListView.swift */,
 				26373E2D2BFD2F46008E6735 /* OrdersListViewModel.swift */,
 				26373E2B2BFD13E0008E6735 /* OrdersDataService.swift */,
@@ -12661,6 +12666,7 @@
 				CE1CCB4A20570B1F000EE3AC /* OrderTableViewCell.swift */,
 				B5FD110D21D3CB8500560344 /* OrderTableViewCell.xib */,
 				A6557217258B7510008AE7CA /* OrderListCellViewModel.swift */,
+				2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -14924,6 +14930,7 @@
 				264E9E952BF400AD009C48FD /* StoreInfoDataService.swift in Sources */,
 				26CFDEE32C029AD2005ABC31 /* Dictionary+Woo.swift in Sources */,
 				26373E2E2BFD2F46008E6735 /* OrdersListViewModel.swift in Sources */,
+				2DB891692E27F6200001B175 /* OrderListCellViewModel.swift in Sources */,
 				26A0B2D72BFBA536002E9620 /* OrdersListView.swift in Sources */,
 				2DB891672E27F0880001B175 /* Address+Shared.swift in Sources */,
 				26A52EF12C69B947000B1CFB /* ApiCredentials.swift in Sources */,
@@ -14932,13 +14939,13 @@
 				26F81B1A2BE433A2009EC58E /* MyStoreView.swift in Sources */,
 				26A52EF02C69B8F5000B1CFB /* WatchCrashLoggingStack.swift in Sources */,
 				268631CF2C07D38C00521364 /* WooAnalyticsStat.swift in Sources */,
-				26373E2F2BFD7C18008E6735 /* OrderListCellViewModel.swift in Sources */,
 				26CFDEDA2C029322005ABC31 /* AppDelegate.swift in Sources */,
 				264E9E942BF1D1DF009C48FD /* AppLocalizedString.swift in Sources */,
 				26A52EEE2C69B51D000B1CFB /* PerformanceTracking.swift in Sources */,
 				26A0B2D42BF9A78C002E9620 /* StoreInfoFormatter.swift in Sources */,
 				26DD32D42BEBCDFB00F2C69C /* WooConstants.swift in Sources */,
 				269FFA4B2BF544C9004E6B86 /* MyStoreViewModel.swift in Sources */,
+				2DB8916E2E27F7840001B175 /* OrderListCellViewModel+Localizations.swift in Sources */,
 				26A52EEA2C69AE6B000B1CFB /* CrashLogging.swift in Sources */,
 				26CA47202BFD823200E54348 /* Date+Woo.swift in Sources */,
 				26B984D62BEECF260052658C /* ConnectView.swift in Sources */,
@@ -15159,6 +15166,7 @@
 				DAB4099F2CA5A329008EE1F2 /* WooShippingAddPackageView.swift in Sources */,
 				02B21C5729C9EEF900C5623B /* WooAnalyticsEvent+StoreOnboarding.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
+				2DB8916B2E27F6D90001B175 /* OrderListCellViewModel+Localizations.swift in Sources */,
 				CC254F3626C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift in Sources */,
 				025B3C9A2C0EE5BA0013F036 /* WCSettingsWebView.swift in Sources */,
 				DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */,

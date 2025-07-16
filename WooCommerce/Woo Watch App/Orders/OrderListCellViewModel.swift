@@ -1,6 +1,5 @@
 import Foundation
-import Yosemite
-import UIKit
+import NetworkingCore
 import WooFoundationCore
 
 // MARK: - View Model for individual cells on the Order List screen
@@ -78,16 +77,5 @@ struct OrderListCellViewModel {
     ///
     func total(for orderItem: OrderItem) -> String {
         currencyFormatter.formatAmount(orderItem.total, with: order.currency) ?? "$\(orderItem.total)"
-    }
-
-    /// Accessory view that renders the cell's disclosure indicator
-    ///
-    var accessoryView: UIImageView? {
-        guard let image = UIImage(systemName: "chevron.forward") else {
-            return nil
-        }
-        let accessoryView = UIImageView(image: image, highlightedImage: nil)
-        accessoryView.tintColor = .tertiaryLabel
-        return accessoryView
     }
 }

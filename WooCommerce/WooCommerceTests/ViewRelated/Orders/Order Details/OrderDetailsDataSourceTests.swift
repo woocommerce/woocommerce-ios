@@ -1029,7 +1029,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let secondLabel = dataSource.shippingLabel(at: shippingLabelSectionsIndices[1])
         XCTAssertEqual(secondLabel, shippingLabel1)
 
-        let shipmentsSection = dataSource.sections.first { $0.title == Title.shippingLabels }
+        let shipmentsSection = dataSource.sections.first { $0.category == .wooShipping }
         XCTAssertNil(shipmentsSection)
     }
 
@@ -1064,8 +1064,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         }
         XCTAssertEqual(shippingLabelSectionsIndices.count, 0)
 
-        let shipmentsSection = try section(withTitle: Title.shippingLabels, from: dataSource)
-        XCTAssertEqual(shipmentsSection.rows.count, 2)
+        let shipmentsSection = dataSource.sections.first { $0.category == .wooShipping }
+        XCTAssertEqual(shipmentsSection?.rows.count, 2)
     }
 
     func test_isEligibleForBackendReceipt_when_initialized_then_defaults_to_false() {

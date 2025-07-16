@@ -1592,7 +1592,7 @@ extension OrderDetailsDataSource {
             return nil
         }
         return Section(
-            category: .payment,
+            category: .wooShipping,
             title: Title.shippingLabels,
             rows: shipments.map { _ in Row.shipmentDetails }
         )

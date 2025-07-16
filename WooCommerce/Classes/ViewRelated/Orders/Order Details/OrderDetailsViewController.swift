@@ -400,9 +400,13 @@ private extension OrderDetailsViewController {
             printNavigationController.viewControllers = [printViewController]
             present(printNavigationController, animated: true)
         case .createShippingLabel(let shipmentIndex):
-            navigateToCreateShippingLabelForm(shipmentIndex: shipmentIndex)
+            let preselection: WooShippingCreateLabelSelection? = {
+                guard let shipmentIndex else { return nil }
+                return .shipment(index: shipmentIndex)
+            }()
+            navigateToCreateShippingLabelForm(preSelection: preselection)
         case .openShippingLabelForm(let shippingLabel):
-            navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
+            navigateToCreateShippingLabelForm(preSelection: .shippingLabel(label: shippingLabel))
         case .viewShipmentItems(let shipment):
             showShipmentItems(shipment: shipment)
         case .refundShippingLabel(let shippingLabel):
@@ -422,7 +426,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func navigateToCreateShippingLabelForm(shippingLabel: ShippingLabel? = nil, shipmentIndex: Int? = nil) {
+    func navigateToCreateShippingLabelForm(preSelection: WooShippingCreateLabelSelection? = nil) {
         guard viewModel.dataSource.isEligibleForWooShipping else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -452,8 +456,7 @@ private extension OrderDetailsViewController {
         }
 
         let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order,
-                                                                       selectedShipmentIndex: shipmentIndex,
-                                                                       selectedShippingLabel: shippingLabel,
+                                                                       preselection: preSelection,
                                                                        onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
                 self?.markOrderCompleteFromShippingLabels()

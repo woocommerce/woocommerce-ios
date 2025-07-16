@@ -5,6 +5,18 @@ import Combine
 import struct Networking.WooShippingAccountSettings
 import enum Networking.DotcomError
 
+enum WooShippingCreateLabelSelection {
+    case shipment(index: Int)
+    case shippingLabel(label: ShippingLabel)
+
+    var selectedShippingLabel: ShippingLabel? {
+        switch self {
+        case .shipment: nil
+        case .shippingLabel(let label): label
+        }
+    }
+}
+
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
 final class WooShippingCreateLabelsViewModel: ObservableObject {
@@ -195,8 +207,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
-         selectedShipmentIndex: Int? = nil,
-         selectedShippingLabel: ShippingLabel? = nil,
+         preselection: WooShippingCreateLabelSelection? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
          stores: StoresManager = ServiceLocator.stores,
@@ -222,10 +233,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.splitShipmentsViewModel = splitShipmentsViewModel
         self.shipments = splitShipmentsViewModel.shipments
 
-        if let selectedShippingLabel {
+        if let label = preselection?.selectedShippingLabel {
             destinationAddressStatus = .verified
-            destinationAddress = selectedShippingLabel.destinationAddress.toWooShippingAddress()
-            originAddress = selectedShippingLabel.originAddress.formattedInlineAddress ?? ""
+            destinationAddress = label.destinationAddress.toWooShippingAddress()
+            originAddress = label.originAddress.formattedInlineAddress ?? ""
         } else {
             destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
             loadDestinationAddress()
@@ -244,11 +255,15 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             // After shipment configs are updated, shipments are updated with purchased label details.
             // Update the selected tab now by checking the initial selected shipment index if available.
             // Otherwise, compare the purchased labels with the initial selected label.
-            if let selectedShipmentIndex {
-                self.selectedShipmentIndex = selectedShipmentIndex
-            } else if let selectedShippingLabel,
-                let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == selectedShippingLabel.shippingLabelID }) {
-                self.selectedShipmentIndex = matchingIndex
+            switch preselection {
+            case .shipment(let index):
+                self.selectedShipmentIndex = index
+            case .shippingLabel(let label):
+                if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == label.shippingLabelID }) {
+                    self.selectedShipmentIndex = matchingIndex
+                }
+            case .none:
+                break
             }
         }
     }

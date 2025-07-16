@@ -165,7 +165,8 @@ struct SystemPluginsUpsertUseCaseTests {
         #expect(site2Plugins.first?.active == false)
     }
 
-    /// It is possible to have more than one installation of the same plugin, like from using Jetpack Beta (ref p1732109416765569/1732014675.214429-slack-C025A8VV728).
+    /// It is possible to have more than one installation of the same plugin, like from using Jetpack Beta
+    /// (example p1732109416765569/1732014675.214429-slack-C025A8VV728).
     /// This test and `upsert_stores_all_plugins_per_active_state_when_two_plugins_have_the_same_plugin_path_and_name` ensures that the upsert logic correctly handles
     /// multiple installations of the same plugin.
     @Test func upsert_stores_2_plugins_when_plugin_with_same_name_and_plugin_path_in_both_active_and_inactive() async throws {

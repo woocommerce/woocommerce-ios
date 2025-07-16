@@ -78,8 +78,9 @@ private extension SystemStatusStore {
     func upsertSystemPluginsInBackground(siteID: Int64,
                                          readonlySystemInformation: SystemStatus,
                                          completionHandler: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
-            self?.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: storage)
+        storageManager.performAndSave({ storage in
+            let useCase = SystemPluginsUpsertUseCase(storage: storage)
+            useCase.upsert(siteID: siteID, activePlugins: readonlySystemInformation.activePlugins, inactivePlugins: readonlySystemInformation.inactivePlugins)
         }, completion: completionHandler, on: .main)
     }
 
@@ -90,43 +91,6 @@ private extension SystemStatusStore {
         dispatcher.dispatch(action)
     }
 
-    /// Updates or inserts Readonly sistem plugins from the read only system information in specified storage.
-    /// Also removes stale plugins that no longer exist in remote plugin list.
-    ///
-    func upsertSystemPlugins(siteID: Int64, readonlySystemInformation: SystemStatus, in storage: StorageType) {
-        /// Active and in-active plugins share identical structure, but are stored in separate parts of the remote response
-        /// (and without an active attribute in the response). So... we use the same decoder for active and in-active plugins
-        /// and here we apply the correct value for active (or not)
-        ///
-        let readonlySystemPlugins: [SystemPlugin] = {
-            let activePlugins = readonlySystemInformation.activePlugins.map {
-                $0.copy(active: true)
-            }
-
-            let inactivePlugins = readonlySystemInformation.inactivePlugins.map {
-                $0.copy(active: false)
-            }
-
-            return activePlugins + inactivePlugins
-        }()
-
-        let storedPlugins = storage.loadSystemPlugins(siteID: siteID, matching: readonlySystemPlugins.map { $0.name })
-        readonlySystemPlugins.forEach { readonlySystemPlugin in
-            // load or create new StorageSystemPlugin matching the readonly one
-            let storageSystemPlugin: StorageSystemPlugin = {
-                if let systemPlugin = storedPlugins.first(where: { $0.name == readonlySystemPlugin.name }) {
-                    return systemPlugin
-                }
-                return storage.insertNewObject(ofType: StorageSystemPlugin.self)
-            }()
-
-            storageSystemPlugin.update(with: readonlySystemPlugin)
-        }
-
-        // remove stale system plugins
-        let currentSystemPlugins = readonlySystemPlugins.map(\.name)
-        storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
-    }
 
     /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.
     /// Useful when a plugin has had multiple names.

@@ -342,7 +342,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
-                    "Networking",
+                    "NetworkingCore",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]

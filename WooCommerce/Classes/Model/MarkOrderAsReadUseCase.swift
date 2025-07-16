@@ -1,10 +1,5 @@
 import Foundation
-
-#if canImport(Networking)
-import Networking
-#elseif canImport(NetworkingCore)
 import NetworkingCore
-#endif
 
 struct MarkOrderAsReadUseCase {
     /// Possible error states.

@@ -14,10 +14,7 @@ struct POSIneligibleView: View {
             Spacer()
 
             VStack(alignment: .center, spacing: POSSpacing.none) {
-                Image(PointOfSaleAssets.exclamationMark.imageName)
-                    .resizable()
-                    .frame(width: POSErrorAndAlertIconSize.large.dimension,
-                           height: POSErrorAndAlertIconSize.large.dimension)
+                POSErrorXMark()
 
                 Spacer()
                     .frame(height: POSSpacing.medium)
@@ -57,6 +54,7 @@ struct POSIneligibleView: View {
                         Text(Localization.refreshEligibility)
                     }
                     .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                    .renderedIf(reason.shouldShowRetryButton)
 
                     Button {
                         dismiss()
@@ -140,6 +138,23 @@ private extension POSIneligibleView {
             value: "Exit POS",
             comment: "Button title to dismiss POS ineligible view"
         )
+    }
+}
+
+@available(iOS 17.0, *)
+private extension POSIneligibleReason {
+    var shouldShowRetryButton: Bool {
+        switch self {
+        case .unsupportedIOSVersion:
+            return false
+        case .unsupportedWooCommerceVersion,
+                .siteSettingsNotAvailable,
+                .wooCommercePluginNotFound,
+                .featureSwitchDisabled,
+                .unsupportedCurrency,
+                .selfDeallocated:
+            return true
+        }
     }
 }
 

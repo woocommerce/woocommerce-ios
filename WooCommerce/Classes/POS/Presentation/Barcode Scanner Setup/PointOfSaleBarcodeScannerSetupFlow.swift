@@ -111,7 +111,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .setupBarcodeHID: PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerBarcodeView(
-                            title: String(format: Localization.starSetUpBarcodeStepTitleFormat, scannerType.name),
+                            title: String(format: Localization.scannerSetUpBarcodeStepTitleFormat, scannerType.name),
                             instruction: Localization.setUpBarcodeHIDStepInstruction,
                             barcode: .starBsh20SetupBarcode)
                     },
@@ -139,7 +139,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .setupBarcodeHID: PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerBarcodeView(
-                            title: Localization.starSetUpBarcodeStepTitleFormat,
+                            title: Localization.scannerSetUpBarcodeStepTitleFormat,
                             instruction: Localization.setUpBarcodeHIDStepInstruction,
                             barcode: .tera12002DHIDBarcode)
                     },
@@ -150,7 +150,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .setupBarcodePair: PointOfSaleBarcodeScannerSetupStep(
                     content: {
                         PointOfSaleBarcodeScannerBarcodeView(
-                            title: Localization.starSetUpBarcodeStepTitleFormat,
+                            title: Localization.scannerSetUpBarcodeStepTitleFormat,
                             instruction: Localization.setUpBarcodePairStepInstruction,
                             barcode: .tera12002DPairBarcode)
                     },
@@ -398,7 +398,7 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             comment: "Title for the back button in barcode scanner setup navigation"
         )
         //TODO: WOOMOB-792
-        static let starSetUpBarcodeStepTitleFormat = "Scanner Setup"
+        static let scannerSetUpBarcodeStepTitleFormat = "Scanner Setup"
         static let setUpBarcodeHIDStepInstruction = "Scan the Bluetooth HID symbol."
         static let setUpBarcodePairStepInstruction = "Scan the Pair symbol to get the scanner ready for pairing."
     }

@@ -193,6 +193,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
     }
 
+    let isOrderCompleted: Bool
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          selectedShippingLabel: ShippingLabel? = nil,
@@ -213,6 +215,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.analytics = analytics
         self.shippingSettingsService = shippingSettingsService
         self.initialNoticeDelay = initialNoticeDelay
+        self.isOrderCompleted = order.status == .completed
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,

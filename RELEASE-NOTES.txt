@@ -4,6 +4,7 @@
 22.9
 -----
 - [*] Order List: New orders made through Point of Sale are now filterable via the Order List filters menu [https://github.com/woocommerce/woocommerce-ios/pull/15910]
+- [*] Shipping Labels: Hide mark order completed toggle when order is completed [https://github.com/woocommerce/woocommerce-ios/pull/15917]
 
 22.8
 -----

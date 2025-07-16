@@ -41,13 +41,14 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
+                .background(Color.white)
         }
     }
 }
 
 extension PointOfSaleBarcodeScannerBarcodeView {
     enum Constants {
-        static let maxBarcodeSize: CGFloat = 168
+        static let maxBarcodeSize: CGFloat = 142
     }
 }
 

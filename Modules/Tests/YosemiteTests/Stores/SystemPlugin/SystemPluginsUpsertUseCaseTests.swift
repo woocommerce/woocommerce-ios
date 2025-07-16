@@ -21,8 +21,8 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_inserts_plugins_in_storage() async throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce")
-        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", name: "Jetpack")
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php")
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php")
 
         // When
         await storageManager.performAndSaveAsync { storage in
@@ -43,8 +43,8 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_sets_active_state_correctly() async throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", active: false)
-        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", name: "Jetpack", active: true)
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", active: false)
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", active: true)
 
         // When - pass activePlugin in activePlugins and inactivePlugin in inactivePlugins
         await storageManager.performAndSaveAsync { storage in
@@ -64,7 +64,7 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_updates_existing_plugins() async throws {
         // Given
-        let originalPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "1.0.0", active: false)
+        let originalPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "1.0.0", active: false)
 
         // Insert original plugin
         await storageManager.performAndSaveAsync { storage in
@@ -73,7 +73,7 @@ struct SystemPluginsUpsertUseCaseTests {
         }
 
         // When - update plugin with new version and active state
-        let updatedPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "2.0.0", active: true)
+        let updatedPlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "2.0.0", active: true)
         await storageManager.performAndSaveAsync { storage in
             let useCase = SystemPluginsUpsertUseCase(storage: storage)
             useCase.upsert(siteID: siteID, activePlugins: [updatedPlugin], inactivePlugins: [])
@@ -90,9 +90,9 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_removes_stale_plugins() async throws {
         // Given
-        let plugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", active: true)
-        let plugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", name: "Jetpack", active: false)
-        let plugin3 = SystemPlugin.fake().copy(siteID: siteID, plugin: "wordpress-seo/wp-seo.php", name: "WP SEO", active: true)
+        let plugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", active: true)
+        let plugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "jetpack/jetpack.php", active: false)
+        let plugin3 = SystemPlugin.fake().copy(siteID: siteID, plugin: "wordpress-seo/wp-seo.php", active: true)
 
         // Insert all three plugins
         await storageManager.performAndSaveAsync { storage in
@@ -118,7 +118,7 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_handles_empty_plugin_lists() async throws {
         // Given
-        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", active: true)
+        let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", active: true)
 
         // Insert a plugin first
         await storageManager.performAndSaveAsync { storage in
@@ -139,8 +139,8 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_handles_site_isolation() async throws {
         // Given
-        let plugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", active: true)
-        let plugin2 = SystemPlugin.fake().copy(siteID: 20, plugin: "jetpack/jetpack.php", name: "Jetpack", active: false)
+        let plugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", active: true)
+        let plugin2 = SystemPlugin.fake().copy(siteID: 20, plugin: "jetpack/jetpack.php", active: false)
 
         let siteID1: Int64 = 10
         let siteID2: Int64 = 20
@@ -167,12 +167,12 @@ struct SystemPluginsUpsertUseCaseTests {
 
     /// It is possible to have more than one installation of the same plugin, like from using Jetpack Beta
     /// (example p1732109416765569/1732014675.214429-slack-C025A8VV728).
-    /// This test and `upsert_stores_all_plugins_per_active_state_when_two_plugins_have_the_same_plugin_path_and_name` ensures that the upsert logic correctly handles
-    /// multiple installations of the same plugin.
+    /// This test and `upsert_stores_all_plugins_per_active_state_when_two_plugins_have_the_same_plugin_path_and_name` ensures that the upsert logic correctly
+    /// handles multiple installations of the same plugin.
     @Test func upsert_stores_2_plugins_when_plugin_with_same_name_and_plugin_path_in_both_active_and_inactive() async throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "1.0.0", active: true)
-        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "2.0.0", active: false)
+        let activePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "1.0.0", active: true)
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "2.0.0", active: false)
 
         // When
         await storageManager.performAndSaveAsync { storage in
@@ -195,10 +195,10 @@ struct SystemPluginsUpsertUseCaseTests {
 
     @Test func upsert_stores_all_plugins_per_active_state_when_two_plugins_have_the_same_plugin_path_and_name() async throws {
         // Given
-        let activePlugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "1.0.0", active: true)
-        let activePlugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "1.1.0", active: true)
-        let inactivePlugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "2.0.0", active: false)
-        let inactivePlugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", name: "WooCommerce", version: "2.5.0", active: false)
+        let activePlugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "1.0.0", active: true)
+        let activePlugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "1.1.0", active: true)
+        let inactivePlugin1 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "2.0.0", active: false)
+        let inactivePlugin2 = SystemPlugin.fake().copy(siteID: siteID, plugin: "woocommerce/woocommerce.php", version: "2.5.0", active: false)
 
         // When
         await storageManager.performAndSaveAsync { storage in
@@ -220,10 +220,10 @@ struct SystemPluginsUpsertUseCaseTests {
     @Test func upsert_handles_large_number_of_plugins() async throws {
         // Given
         let activePlugins = (1...500).map {
-            SystemPlugin.fake().copy(siteID: siteID, plugin: "active-plugin-\($0)/plugin.php", name: "Active Plugin \($0)", active: true)
+            SystemPlugin.fake().copy(siteID: siteID, plugin: "active-plugin-\($0)/plugin.php", active: true)
         }
         let inactivePlugins = (1...500).map {
-            SystemPlugin.fake().copy(siteID: siteID, plugin: "inactive-plugin-\($0)/plugin.php", name: "Inactive Plugin \($0)", active: false)
+            SystemPlugin.fake().copy(siteID: siteID, plugin: "inactive-plugin-\($0)/plugin.php", active: false)
         }
 
         // When

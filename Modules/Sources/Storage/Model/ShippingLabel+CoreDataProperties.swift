@@ -27,6 +27,7 @@ extension ShippingLabel {
     @NSManaged public var destinationAddress: ShippingLabelAddress?
     @NSManaged public var refund: ShippingLabelRefund?
     @NSManaged public var order: Order?
+    @NSManaged public var shipment: WooShippingShipment?
     @NSManaged public var commercialInvoiceURL: String?
     @NSManaged public var usedDate: Date?
     @NSManaged public var expiryDate: Date?

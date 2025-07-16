@@ -59,12 +59,12 @@ extension WooShippingAddress: Codable {
         // If no name is sent to validation address request, no name will be received in response.
         // So make sure to decode it only if it's present.
         let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
-        let company = try container.decode(String.self, forKey: .company)
-        let phone = try container.decode(String.self, forKey: .phone)
+        let company = try container.decodeIfPresent(String.self, forKey: .company) ?? ""
+        let phone = try container.decodeIfPresent(String.self, forKey: .phone) ?? ""
         let country = try container.decode(String.self, forKey: .country)
         let state = try container.decode(String.self, forKey: .state)
         let address1 = try container.decodeIfPresent(String.self, forKey: .address1) ?? container.decode(String.self, forKey: .alternateAddress1)
-        let address2 = try container.decode(String.self, forKey: .address2)
+        let address2 = try container.decodeIfPresent(String.self, forKey: .address2) ?? ""
         let city = try container.decode(String.self, forKey: .city)
         let postcode = try container.decode(String.self, forKey: .postcode)
 

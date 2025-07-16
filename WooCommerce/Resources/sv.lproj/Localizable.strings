@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-27 14:48:27+0000 */
+/* Translation-Revision-Date: 2025-07-02 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10855,6 +10855,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Streckkod för kort";
 
+/* Error message shown when scan is incomplete. */
+"pointOfSale.barcodeScan.error.incompleteScan" = "Partiell streckkodsskanning";
+
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Nätverksbegäran misslyckades";
 
@@ -11305,11 +11308,41 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Streckkodsskanning";
 
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Du kan skanna streckkoder med hjälp av en extern skanner för att snabbt skapa en varukorg.";
+
 /* Link text in the barcode info modal in POS, leading to more details about barcode setup */
 "pos.barcodeInfoModal.moreDetailsLink" = "Mer detaljer.";
 
 /* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
 "pos.barcodeInfoModal.moreDetailsLink.accessible" = "Mer detaljer, länk.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Ställ in streckkoder i fältet \"GTIN, UPC, EAN, ISBN\" i Produkter > Produktinformation > Lager. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Ett: Ställ in streckkoder i fältet \"GTIN, UPC, EAN, ISBN\"  genom att navigera till Produkter > Produktinformation > Lager.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Fyra: Skanna streckkoder när du är i artikellistan för att lägga till produkter i varukorgen.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "Skannern emulerar ett tangentbord, så ibland kommer det att förhindra programvaran tangentbordet från att visas, t.ex. i sökningar. Tryck på tangentbordsikonen för att visa det igen.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage" = "• Se instruktionerna för Bluetooth-streckkodsläsaren för att ställa in HID-läge.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible" = "Två: Se instruktionerna för Bluetooth-streckkodsläsaren för att ställa in HID-läge.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Anslut streckkodsskannern i Bluetooth-inställningarna för iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Tre: Anslut streckkodsskannern i Bluetooth-inställningarna för iOS.";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Klicka på en produkt för att \n lägga till den i varukorgen";
@@ -12978,8 +13011,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Försändelse %1$d";
 
+/* Label when shipping rate has option for additional handling in Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)' */
+"wooShipping.createLabels.shippingService.additionalHandling" = "Ytterligare hantering (%1$@)";
+
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
 "wooShipping.createLabels.shippingService.adultSignatureRequiredLabel" = "Vuxen signatur krävs (%1$@)";
+
+/* Label when shipping rate has option for carbon neutral delivery in Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)' */
+"wooShipping.createLabels.shippingService.carbonNeural" = "Kolneutral (%1$@)";
 
 /* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
 "wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d arbetsdag";
@@ -12998,6 +13037,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
 "wooShipping.createLabels.shippingService.insuranceLiteral" = "Försäkring (%1$@)";
+
+/* Label when shipping rate has option for Saturday delivery in Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)' */
+"wooShipping.createLabels.shippingService.saturdayDelivery" = "Leverans på lördag (%1$@)";
 
 /* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
 "wooShipping.createLabels.shippingService.signatureRequiredLabel" = "Signatur krävs (%1$@)";

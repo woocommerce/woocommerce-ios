@@ -1696,7 +1696,6 @@ extension OrderDetailsDataSource {
     }
 }
 
-
 // MARK: - Constants
 extension OrderDetailsDataSource {
     enum Localization {

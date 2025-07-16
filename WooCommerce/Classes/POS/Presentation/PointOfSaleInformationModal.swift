@@ -22,18 +22,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xxLarge) {
-            HStack {
-                Text(title)
-                    .font(.posHeadingBold)
-                Spacer()
-                Button {
-                    isPresented = false
-                } label: {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolLarge)
-                }
-            }
-            .foregroundColor(Color.posOnSurface)
+            PointOfSaleModalHeader(isPresented: $isPresented, title: .constant(title))
 
             ScrollView {
                 VStack {

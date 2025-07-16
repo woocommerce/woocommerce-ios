@@ -84,8 +84,8 @@ public final class WooShippingStore: Store {
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
-        case let .syncShippingLabels(siteID, orderID, completion):
-            syncShippingLabels(siteID: siteID, orderID: orderID, completion: completion)
+        case let .syncShipments(siteID, orderID, completion):
+            syncShipments(siteID: siteID, orderID: orderID, completion: completion)
         case let .updateShipment(siteID, orderID, shipmentToUpdate, completion):
             updateShipment(siteID: siteID,
                            orderID: orderID,
@@ -290,26 +290,23 @@ private extension WooShippingStore {
         remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
     }
 
-    func syncShippingLabels(siteID: Int64,
-                            orderID: Int64,
-                            completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
-        remote.loadConfig(siteID: siteID, orderID: orderID, completion: { [weak self] result in
+    func syncShipments(siteID: Int64,
+                       orderID: Int64,
+                       completion: @escaping (Result<[WooShippingShipment], Error>) -> Void) {
+        remote.loadConfig(siteID: siteID, orderID: orderID) { [weak self] result in
             guard let self else { return }
-
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let config):
-                guard let labels = config.shippingLabelData?.currentOrderLabels else {
-                    return completion(.success([]))
-                }
-                upsertShippingLabelsInBackground(siteID: siteID,
-                                                 orderID: orderID,
-                                                 shippingLabels: labels) {
-                    completion(.success(labels))
+                let shipments = config.shipments
+                upsertShipmentsInBackground(siteID: siteID,
+                                            orderID: orderID,
+                                            shipments: shipments) {
+                    completion(.success(shipments))
                 }
             }
-        })
+        }
     }
 }
 
@@ -679,35 +676,60 @@ private extension WooShippingStore {
         }, completion: nil, on: .main)
     }
 
-    /// Updates/inserts the specified readonly shipping label entities *in a background thread*.
+    /// Updates/inserts the specified readonly shipments entities *in a background thread*.
     /// `onCompletion` will be called on the main thread!
-    func upsertShippingLabelsInBackground(siteID: Int64,
-                                          orderID: Int64,
-                                          shippingLabels: [ShippingLabel],
-                                          onCompletion: @escaping () -> Void) {
-        if shippingLabels.isEmpty {
-            return onCompletion()
-        }
-
+    func upsertShipmentsInBackground(siteID: Int64,
+                                     orderID: Int64,
+                                     shipments: [WooShippingShipment],
+                                     onCompletion: @escaping () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
             guard let self else { return }
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
             }
-            upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)
+            upsertShipments(siteID: siteID,
+                            orderID: orderID,
+                            shipments: shipments,
+                            storageOrder: order,
+                            using: storage)
         }, completion: onCompletion, on: .main)
     }
 
-    /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
-    func upsertShippingLabels(siteID: Int64,
-                              orderID: Int64,
-                              shippingLabels: [ShippingLabel],
-                              storageOrder: StorageOrder,
-                              using storage: StorageType) {
-        let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
-        for shippingLabel in shippingLabels {
-            let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
-            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
+    /// Updates/inserts the specified readonly WooShippingShipments entities in the current thread.
+    func upsertShipments(siteID: Int64,
+                         orderID: Int64,
+                         shipments: [WooShippingShipment],
+                         storageOrder: StorageOrder,
+                         using storage: StorageType) {
+        let storedShipments = storage.loadAllShipments(siteID: siteID, orderID: orderID)
+        for shipment in shipments {
+            let storageShipment = storedShipments.first(where: { $0.index == shipment.index }) ??
+            storage.insertNewObject(ofType: Storage.WooShippingShipment.self)
+            storageShipment.update(with: shipment)
+            storageShipment.order = storageOrder
+
+            handleShipmentItems(shipment, storageShipment, storage)
+            update(storageShipment: storageShipment,
+                   storageOrder: storageOrder,
+                   shippingLabel: shipment.shippingLabel,
+                   using: storage)
+        }
+
+        // Now, remove any objects that exist in storage but not in shipments
+        let shipmentIndices = shipments.map(\.index)
+        storedShipments.filter {
+            !shipmentIndices.contains($0.index)
+        }.forEach {
+            storage.deleteObject($0)
+        }
+    }
+
+    func update(storageShipment: StorageWooShippingShipment,
+                storageOrder: StorageOrder,
+                shippingLabel: ShippingLabel?,
+                using storage: StorageType) {
+        if let shippingLabel {
+            let storageShippingLabel = storageShipment.shippingLabel ?? storage.insertNewObject(ofType: Storage.ShippingLabel.self)
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
@@ -720,14 +742,39 @@ private extension WooShippingStore {
             let destinationAddress = storageShippingLabel.destinationAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             destinationAddress.update(with: shippingLabel.destinationAddress)
             storageShippingLabel.destinationAddress = destinationAddress
+
+            /// Set the shipping label to the shipment's relationship
+            storageShipment.shippingLabel = storageShippingLabel
+        } else {
+            storageShipment.shippingLabel = nil
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageWooShippingShipment's items using the provided read-only WooShippingShipment's items
+    ///
+    private func handleShipmentItems(_ readOnlyShipment: Networking.WooShippingShipment,
+                                     _ storageShipment: Storage.WooShippingShipment,
+                                     _ storage: StorageType) {
+
+        let storageItemsArray = Array(storageShipment.items ?? [])
+
+        // Upsert the items from the read-only shipment
+        for readOnlyItem in readOnlyShipment.items {
+            if let existingStorageItem = storageItemsArray.first(where: { $0.id == readOnlyItem.id }) {
+                existingStorageItem.update(with: readOnlyItem)
+            } else {
+                let newStorageItem = storage.insertNewObject(ofType: Storage.WooShippingShipmentItem.self)
+                newStorageItem.update(with: readOnlyItem)
+                storageShipment.addToItems(newStorageItem)
+            }
         }
 
-        // Now, remove any objects that exist in storage but not in shippingLabels
-        let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
-        storedLabels.filter {
-            !shippingLabelIDs.contains($0.shippingLabelID)
-        }.forEach {
-            storage.deleteObject($0)
+        // Now, remove any objects that exist in storageShipment.items but not in readOnlyShipment.items
+        storageItemsArray.forEach { storageItem in
+            if readOnlyShipment.items.first(where: { $0.id == storageItem.id } ) == nil {
+                storageShipment.removeFromItems(storageItem)
+                storage.deleteObject(storageItem)
+            }
         }
     }
 

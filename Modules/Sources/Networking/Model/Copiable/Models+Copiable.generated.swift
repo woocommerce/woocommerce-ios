@@ -3481,7 +3481,7 @@ extension Networking.WooShippingAddress {
 extension Networking.WooShippingConfig {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy,
+        shipments: CopiableProp<[WooShippingShipment]> = .copy,
         shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
     ) -> Networking.WooShippingConfig {
         let siteID = siteID ?? self.siteID
@@ -3720,6 +3720,30 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingShipment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        index: CopiableProp<String> = .copy,
+        items: CopiableProp<[WooShippingShipmentItem]> = .copy,
+        shippingLabel: NullableCopiableProp<ShippingLabel> = .copy
+    ) -> Networking.WooShippingShipment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let index = index ?? self.index
+        let items = items ?? self.items
+        let shippingLabel = shippingLabel ?? self.shippingLabel
+
+        return Networking.WooShippingShipment(
+            siteID: siteID,
+            orderID: orderID,
+            index: index,
+            items: items,
+            shippingLabel: shippingLabel
         )
     }
 }

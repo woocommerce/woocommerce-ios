@@ -97,10 +97,6 @@ struct POSIneligibleView: View {
                                      value: "Point of Sale must be enabled to proceed. " +
                                      "Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
-        case .featureSwitchSyncFailure:
-            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchSyncFailure",
-                                     value: "Try relaunching the app or check your internet connection and try again.",
-                                     comment: "Suggestion for feature switch sync failure: relaunch or check connection")
         case let .unsupportedCurrency(supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
@@ -114,7 +110,7 @@ struct POSIneligibleView: View {
             return String.localizedStringWithFormat(format, formattedCurrencyList)
         case .siteSettingsNotAvailable:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
-                                     value: "Check your internet connection and try relaunching the app. If the issue persists, please contact support.",
+                                     value: "Check your internet connection and try again. If the issue persists, please contact support.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
         case .selfDeallocated:
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
@@ -189,15 +185,6 @@ private extension POSIneligibleView {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
             reason: .siteSettingsNotAvailable,
-            onRefresh: {}
-        )
-    }
-}
-
-#Preview("Feature switch sync failure") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .featureSwitchSyncFailure,
             onRefresh: {}
         )
     }

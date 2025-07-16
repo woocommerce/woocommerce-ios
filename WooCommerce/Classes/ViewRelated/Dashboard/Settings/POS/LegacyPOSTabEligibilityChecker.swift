@@ -113,6 +113,11 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
         let eligibility = await checkI1Eligibility()
         return eligibility == .eligible
     }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        assertionFailure("POS as a tab i1 implementation should not refresh eligibility as the eligibility check is performed in the visibility check.")
+        return .eligible
+    }
 }
 
 private extension LegacyPOSTabEligibilityChecker {
@@ -154,7 +159,7 @@ private extension LegacyPOSTabEligibilityChecker {
 
     @MainActor
     func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
-        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginName: Constants.wcPluginName, isActive: true)
+        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginPath: Constants.wcPlugin, isActive: true)
     }
 
     @MainActor
@@ -254,7 +259,7 @@ private extension LegacyPOSTabEligibilityChecker {
 
 private extension LegacyPOSTabEligibilityChecker {
     enum Constants {
-        static let wcPluginName = "WooCommerce"
+        static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
     }

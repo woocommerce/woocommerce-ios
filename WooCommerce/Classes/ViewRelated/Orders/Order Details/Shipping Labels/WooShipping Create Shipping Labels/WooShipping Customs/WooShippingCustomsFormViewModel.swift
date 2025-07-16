@@ -42,7 +42,6 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     init(order: Order,
          shipment: Shipment,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
-         stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onFormReady: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onFormReady = onFormReady
@@ -55,8 +54,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itemWeight: $0.weight,
                                             currencySymbol: currencySymbol(from: order),
                                             originCountryCode: originCountryCode,
-                                            storageManager: storageManager,
-                                            stores: stores)
+                                            storageManager: storageManager)
         }
 
         listenToItemsRequiredInformationValues()

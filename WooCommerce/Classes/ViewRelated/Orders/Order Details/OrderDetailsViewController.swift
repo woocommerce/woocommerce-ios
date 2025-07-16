@@ -880,6 +880,9 @@ private extension OrderDetailsViewController {
     private static func updateOrderStatusAction(viewModel: OrderDetailsViewModel, siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
         return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
+                let updatedOrder = viewModel.order.copy(status: status)
+                viewModel.update(order: updatedOrder)
+
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 viewModel.syncNotes()
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)

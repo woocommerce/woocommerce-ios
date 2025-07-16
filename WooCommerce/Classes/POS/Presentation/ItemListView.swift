@@ -7,8 +7,8 @@ struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @EnvironmentObject var modalManager: POSModalManager
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -40,9 +40,9 @@ struct ItemListView: View {
         _isSearching.wrappedValue
     }
 
-    private var isNotSearching: Binding<Bool> {
+    private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching },
+            get: { !isSearching && !modalManager.isPresented },
             set: { _ in }
         )
     }
@@ -113,7 +113,7 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
-        .barcodeScanning(enabled: isNotSearching) { scannedCode in
+        .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
     }
@@ -211,7 +211,7 @@ struct ItemListView: View {
                     sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
                 )
             )
-            .barcodeScanning(enabled: isNotSearching) { scannedCode in
+            .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
                 posModel.barcodeScanned(scannedCode)
             }
         default:

@@ -25,6 +25,19 @@ enum PointOfSaleBarcodeScannerType {
             return Localization.otherName
         }
     }
+
+    var analyticsName: String {
+        switch self {
+        case .socketS720:
+            return "Socket_S720"
+        case .starBSH20B:
+            return "Star_BSH_20B"
+        case .tbcScanner:
+            return "TBC"
+        case .other:
+            return "other"
+        }
+    }
 }
 
 private extension PointOfSaleBarcodeScannerType {
@@ -45,14 +58,38 @@ enum PointOfSaleBarcodeScannerSetupFlowState {
 
 // MARK: - Step Identifiers
 enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
-    case start
-    case setupBarcode1
-    case setupBarcode2
+    case setupBarcodeHID
+    case setupBarcodePair
+    case setupInformation
+    case setupProducts
     case pairing
     case test
+    case testScanFailed
+    case testScanTimedOut
     case complete
-    case testFailed
-    case information
+
+    var analyticsValue: String? {
+        switch self {
+        case .setupBarcodeHID:
+            return "setup_barcode_hid"
+        case .setupBarcodePair:
+            return "setup_barcode_pair"
+        case .setupInformation:
+            return "setup_information"
+        case .setupProducts:
+            return "setup_products"
+        case .pairing:
+            return "pairing"
+        case .test:
+            return "test_barcode"
+        case .testScanFailed:
+            return "test_scan_failed"
+        case .testScanTimedOut:
+            return "test_scan_timed_out"
+        case .complete:
+            return "setup_complete"
+        }
+    }
 }
 
 // MARK: - Button Customization Protocol
@@ -64,7 +101,6 @@ protocol PointOfSaleBarcodeScannerButtonCustomization {
 // MARK: - Transition Types
 enum PointOfSaleBarcodeScannerTransitionType: Hashable {
     case next
-    case error
     case retry
     case back
 }

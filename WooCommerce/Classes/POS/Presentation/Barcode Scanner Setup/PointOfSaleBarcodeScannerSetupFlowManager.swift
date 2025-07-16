@@ -1,4 +1,6 @@
 import SwiftUI
+import GameController
+import WooFoundation
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow Manager
 @available(iOS 17.0, *)
@@ -7,17 +9,29 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection
     @ObservationIgnored @Binding var isPresented: Bool
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
+    private let analytics: Analytics
+    private var keyboardObserver: NSObjectProtocol?
 
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>, analytics: Analytics = ServiceLocator.analytics) {
         self._isPresented = isPresented
+        self.analytics = analytics
+        setupKeyboardObserver()
+    }
+
+    deinit {
+        removeKeyboardObserver()
     }
 
     func selectScanner(_ scannerType: PointOfSaleBarcodeScannerType) {
-        currentFlow = PointOfSaleBarcodeScannerSetupFlow(scannerType: scannerType, onComplete: { [weak self] in
-            self?.isPresented = false
-        }, onBackToSelection: { [weak self] in
-            self?.goBackToSelection()
-        })
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerSelected(scanner: scannerType))
+
+        currentFlow = PointOfSaleBarcodeScannerSetupFlow(
+            scannerType: scannerType,
+            analytics: analytics,
+            onBackToSelection: { [weak self] in
+                self?.goBackToSelection()
+            }
+        )
         currentState = .setupFlow(scannerType)
     }
 
@@ -38,10 +52,6 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
         currentFlow?.currentStep
     }
 
-    func isComplete() -> Bool {
-        currentFlow?.isComplete ?? false
-    }
-
     var buttonConfiguration: PointOfSaleFlowButtonConfiguration {
         switch currentState {
         case .scannerSelection:
@@ -53,5 +63,39 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
 
             return flow.getButtonConfiguration()
         }
+    }
+
+    func onDisappear() {
+        if case .setupFlow(let scannerType) = currentState, let step = getCurrentSetupStepValue() {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupDismissed(scanner: scannerType, step: step))
+        } else {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupDismissed())
+        }
+    }
+
+    private func getCurrentSetupStepValue() -> String? {
+        return currentFlow?.getCurrentAnalyticsStepValue()
+    }
+
+    private func setupKeyboardObserver() {
+        keyboardObserver = NotificationCenter.default.addObserver(
+            forName: .GCKeyboardDidConnect,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.handleKeyboardConnected()
+        }
+    }
+
+    private func removeKeyboardObserver() {
+        if let keyboardObserver = keyboardObserver {
+            NotificationCenter.default.removeObserver(keyboardObserver)
+            self.keyboardObserver = nil
+        }
+    }
+
+    private func handleKeyboardConnected() {
+        guard case .setupFlow(let scannerType) = currentState, let step = getCurrentSetupStepValue() else { return }
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupScannerConnected(scanner: scannerType, step: step))
     }
 }

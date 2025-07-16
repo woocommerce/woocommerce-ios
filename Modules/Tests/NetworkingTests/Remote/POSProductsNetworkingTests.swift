@@ -64,9 +64,9 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID, productTypes: [.simple, .variable], pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
-        #expect(queryParametersDictionary["downloadable"] == "false")
-        #expect(queryParametersDictionary["include_types"] == "simple,variable")
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["downloadable"] as? String == "false")
+        #expect(queryParametersDictionary["include_types"] as? String == "simple,variable")
     }
 
     @Test(arguments: 1...4) func loadProductsForPointOfSale_returns_hasMorePages_based_on_header_with_case_insensitive_name(pageNumber: Int) async throws {
@@ -126,13 +126,13 @@ struct POSProductsNetworkingTests {
             pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
-        #expect(queryParametersDictionary["downloadable"] == "false")
-        #expect(queryParametersDictionary["include_types"] == "simple,variable")
-        #expect(queryParametersDictionary["search"] == "search terms")
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["downloadable"] as? String == "false")
+        #expect(queryParametersDictionary["include_types"] as? String == "simple,variable")
+        #expect(queryParametersDictionary["search"] as? String == "search terms")
     }
 
-    @Test func searchProductsForPointOfSale_sets_both_search_parameters() async throws {
+    @Test func searchProductsForPointOfSale_sets_all_search_parameters() async throws {
         // Given
         let remote = ProductsRemote(network: network)
         let searchQuery = "search terms"
@@ -145,9 +145,10 @@ struct POSProductsNetworkingTests {
             pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
-        #expect(queryParametersDictionary["search"] == searchQuery)
-        #expect(queryParametersDictionary["search_name_or_sku"] == searchQuery)
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["search"] as? String == searchQuery)
+        #expect(queryParametersDictionary["search_name_or_sku"] as? String == searchQuery)
+        #expect(queryParametersDictionary["search_fields"] as? [String] == ["name", "sku", "global_unique_id"])
     }
 
     @Test func searchProductsForPointOfSale_returns_parsed_products() async throws {
@@ -205,8 +206,8 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
-        #expect(queryParametersDictionary["_fields"] == POSProduct.requestFields.joined(separator: ","))
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
 
     @Test func searchProductsForPointOfSale_requests_only_required_fields() async throws {
@@ -217,8 +218,8 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID, query: "search")
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: String])
-        #expect(queryParametersDictionary["_fields"] == POSProduct.requestFields.joined(separator: ","))
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
 
     @Test func loadProductsForPointOfSale_returns_total_items_from_header() async throws {

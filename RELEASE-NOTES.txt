@@ -3,7 +3,7 @@
 
 22.9
 -----
-
+- [*] Order List: New orders made through Point of Sale are now filterable via the Order List filters menu [https://github.com/woocommerce/woocommerce-ios/pull/15910]
 
 22.8
 -----

@@ -3,16 +3,6 @@
     {
       "filename" : "test-ean13-barcode.pdf",
       "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "test-ean13-barcode_dark.pdf",
-      "idiom" : "universal"
     }
   ],
   "info" : {

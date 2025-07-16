@@ -3,16 +3,6 @@
     {
       "filename" : "tera-1200-2d-hid-barcode.pdf",
       "idiom" : "universal"
-    },
-    {
-      "appearances" : [
-        {
-          "appearance" : "luminosity",
-          "value" : "dark"
-        }
-      ],
-      "filename" : "tera-1200-2d-hid-barcode-dark.pdf",
-      "idiom" : "universal"
     }
   ],
   "info" : {

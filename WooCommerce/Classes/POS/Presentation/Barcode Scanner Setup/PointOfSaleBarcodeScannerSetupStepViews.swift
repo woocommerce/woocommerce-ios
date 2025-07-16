@@ -41,6 +41,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
+                .background(Color.white)
         }
     }
 }

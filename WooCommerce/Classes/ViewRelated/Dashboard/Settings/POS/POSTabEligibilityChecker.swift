@@ -13,6 +13,9 @@ import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
+import protocol Yosemite.POSSiteSettingServiceProtocol
+import class Yosemite.POSSiteSettingService
+import enum Networking.SiteSettingsFeature
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
@@ -50,6 +53,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let systemStatusService: POSSystemStatusServiceProtocol
+    private let siteSettingService: POSSiteSettingServiceProtocol
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -58,7 +62,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
-                                                                                      storageManager: ServiceLocator.storageManager)) {
+                                                                                      storageManager: ServiceLocator.storageManager),
+         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -66,6 +71,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.systemStatusService = systemStatusService
+        self.siteSettingService = siteSettingService
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -133,8 +139,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
             return await checkEligibility()
         case .featureSwitchDisabled:
-            // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
-            // For now, just checks eligibility again.
+            _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
             return await checkEligibility()

@@ -51,7 +51,7 @@ struct POSIneligibleView: View {
                             }
                         }
                     } label: {
-                        Text(Localization.refreshEligibility)
+                        Text(reason.refreshEligibilityTitle)
                     }
                     .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                     .renderedIf(reason.shouldShowRetryButton)
@@ -91,9 +91,9 @@ struct POSIneligibleView: View {
                                      value: "Install and activate the WooCommerce plugin from your WordPress admin.",
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
-            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",
+            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled.2",
                                      value: "Point of Sale must be enabled to proceed. " +
-                                     "Please enable the POS feature from your WordPress admin under WooCommerce settings > Advanced > Features.",
+                                     "You can enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
         case let .unsupportedCurrency(supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
@@ -127,12 +127,6 @@ private extension POSIneligibleView {
             comment: "Title shown in POS ineligible view"
         )
 
-        static let refreshEligibility = NSLocalizedString(
-            "pos.ineligible.refresh.button.title",
-            value: "Retry",
-            comment: "Button title to refresh POS eligibility check"
-        )
-
         static let dismiss = NSLocalizedString(
             "pos.ineligible.dismiss.button.title",
             value: "Exit POS",
@@ -154,6 +148,28 @@ private extension POSIneligibleReason {
                 .unsupportedCurrency,
                 .selfDeallocated:
             return true
+        }
+    }
+
+    var refreshEligibilityTitle: String {
+        switch self {
+        case .featureSwitchDisabled:
+            return NSLocalizedString(
+                "pos.ineligible.enable.pos.feature.and.refresh.button.title",
+                value: "Enable POS & Retry",
+                comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
+            )
+        case .unsupportedIOSVersion,
+                .unsupportedWooCommerceVersion,
+                .siteSettingsNotAvailable,
+                .wooCommercePluginNotFound,
+                .unsupportedCurrency,
+                .selfDeallocated:
+            return NSLocalizedString(
+                "pos.ineligible.refresh.button.title",
+                value: "Retry",
+                comment: "Button title to refresh POS eligibility check"
+            )
         }
     }
 }

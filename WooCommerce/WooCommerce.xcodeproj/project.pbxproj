@@ -1218,6 +1218,7 @@
 		2DB891692E27F6200001B175 /* OrderListCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB891682E27F61C0001B175 /* OrderListCellViewModel.swift */; };
 		2DB8916B2E27F6D90001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
 		2DB8916E2E27F7840001B175 /* OrderListCellViewModel+Localizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB8916A2E27F6CE0001B175 /* OrderListCellViewModel+Localizations.swift */; };
+		2DF0D1BC2E2907C100F8995C /* MarkOrderAsReadUseCase+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB88DA32E27DD790001B175 /* MarkOrderAsReadUseCase+Woo.swift */; };
 		310D1B482734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310D1B472734919E001D55B4 /* InPersonPaymentsLiveSiteInTestModeView.swift */; };
 		311237EE2714DA240033C44E /* CardPresentModalDisplayMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311237ED2714DA240033C44E /* CardPresentModalDisplayMessage.swift */; };
 		311D21E8264AEDB900102316 /* CardPresentModalScanningForReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 311D21E7264AEDB900102316 /* CardPresentModalScanningForReader.swift */; };
@@ -17534,6 +17535,7 @@
 				261AA30E275506DE009530FE /* PaymentMethodsViewModelTests.swift in Sources */,
 				4524CDA1242D045C00B2F20A /* ProductStatusSettingListSelectorCommandTests.swift in Sources */,
 				26A280D72B46027A00ACEE87 /* OrderNotificationView.swift in Sources */,
+				2DF0D1BC2E2907C100F8995C /* MarkOrderAsReadUseCase+Woo.swift in Sources */,
 				02077F72253816FF005A78EF /* ProductFormActionsFactory+ReadonlyProductTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				027111422913B9FC00F5269A /* AccountCreationFormViewModelTests.swift in Sources */,

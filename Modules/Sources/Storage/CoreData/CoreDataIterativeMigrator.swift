@@ -59,6 +59,13 @@ final class CoreDataIterativeMigrator {
         // Find the current model used by the store.
         let sourceModel = try model(for: sourceMetadata)
 
+        // Checks if we should perform purge migration for very old models
+        if shouldPerformPurgeMigration(sourceModel: sourceModel) {
+            return try performPurgeMigration(sourceStoreURL: sourceStoreURL,
+                                             targetModel: targetModel,
+                                             storeType: storeType)
+        }
+
         // Get the steps to perform the migration.
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
         guard !steps.isEmpty else {
@@ -175,5 +182,106 @@ private extension CoreDataIterativeMigrator {
         URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
             .appendingPathComponent("migration_\(UUID().uuidString)")
             .appendingPathExtension("sqlite")
+    }
+
+    /// Determines if purge migration should be performed based on the source model version.
+    /// This helps reduce app size by avoiding migration of very old model versions.
+    ///
+    /// - Parameter sourceModel: The source model from the existing database
+    /// - Returns: true if purge migration should be performed, false otherwise
+    func shouldPerformPurgeMigration(sourceModel: NSManagedObjectModel) -> Bool {
+        guard let sourceVersion = findModelVersion(for: sourceModel) else {
+            // If we can't determine the version, fall back to iterative migration for safety
+            return false
+        }
+
+        // Extract numeric version from model name (e.g., "Model 65" -> 65)
+        let versionNumber = extractVersionNumber(from: sourceVersion.name)
+
+        // TEMPORARY: Increased threshold to 121 (from planned 80) for testing purge migration with TestFlight 22.1 (Model 120).
+        let purgeMigrationThreshold = 121
+        let shouldPerformPurge = versionNumber < purgeMigrationThreshold
+
+        let log = """
+        Purge migration eval: \(sourceVersion.name) 
+        Version: \(versionNumber) 
+        Threshold: \(purgeMigrationThreshold)
+        Purge? \(shouldPerformPurge)
+        """
+        DDLogInfo(log)
+
+        return shouldPerformPurge
+    }
+
+    /// Performs purge migration by deleting the existing database and creating a fresh one.
+    ///
+    /// - Parameters:
+    ///   - sourceStoreURL: URL of the existing database to delete
+    ///   - targetModel: The target model for the new database
+    ///   - storeType: Type of store (usually NSSQLiteStoreType)
+    /// - Returns: Success/failure tuple with debug messages
+    func performPurgeMigration(sourceStoreURL: URL,
+                               targetModel: NSManagedObjectModel,
+                               storeType: String) throws -> (success: Bool, debugMessages: [String]) {
+        var debugMessages = [String]()
+
+        let purgeMessage = "Performing PURGE MIGRATION: Deleting old database and creating fresh one"
+        debugMessages.append(purgeMessage)
+        DDLogWarn(purgeMessage)
+
+        do {
+            // 1: Destroy the old database completely
+            try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL,
+                                                                  ofType: storeType,
+                                                                  options: nil)
+            debugMessages.append("✅ Old database destroyed successfully")
+            // 2: Create a fresh database with the target model
+            // The CoreDataManager will handle creating the new store when the app continues
+            debugMessages.append("✅ PURGE MIGRATION completed - fresh database will be created")
+
+            return (true, debugMessages)
+        } catch {
+            let errorMessage = "❌ PURGE MIGRATION failed: \(error)"
+            debugMessages.append(errorMessage)
+            DDLogError(errorMessage)
+
+            // If purge migration fails, we'll fall back to iterative migration
+            throw error
+        }
+    }
+
+    /// Finds the ModelVersion for a given NSManagedObjectModel by comparing against known versions.
+    ///
+    /// - Parameter targetModel: The model to find the version for
+    /// - Returns: The corresponding ModelVersion, or nil if not found
+    func findModelVersion(for targetModel: NSManagedObjectModel) -> ManagedObjectModelsInventory.ModelVersion? {
+        // Check against all known versions to find a match
+        for version in modelsInventory.versions {
+            if let versionModel = modelsInventory.model(for: version),
+               versionModel.isEqual(targetModel) {
+                return version
+            }
+        }
+        return nil
+    }
+
+    /// Extracts the numeric version number from a model version name.
+    ///
+    /// - Parameter versionName: Model version name (e.g., "Model 65", "Model", "Model 124")
+    /// - Returns: Numeric version (e.g., 65, 0, 124). Returns 0 for base "Model" version.
+    func extractVersionNumber(from versionName: String) -> Int {
+        // Handle base model case
+        if versionName == "Model" {
+            return 0
+        }
+
+        // Extract number from "Model X" format
+        let components = versionName.components(separatedBy: " ")
+        if components.count >= 2, let number = Int(components[1]) {
+            return number
+        }
+
+        // Fallback: return a high number to avoid purge migration if parsing fails
+        return 9999
     }
 }

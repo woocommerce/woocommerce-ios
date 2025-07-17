@@ -636,14 +636,6 @@ private extension WooShippingCreateLabelsViewModel {
         return address?.toWooShippingAddress()
     }
 
-    static func getStoredAccountSettings() -> AccountSettings? {
-        let storageManager = ServiceLocator.storageManager
-
-        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
-        try? resultsController.performFetch()
-        return resultsController.fetchedObjects.first
-    }
-
     func observePaymentMethod() {
         $paymentMethod
             .combineLatest($shipments, $selectedShipmentIndex)

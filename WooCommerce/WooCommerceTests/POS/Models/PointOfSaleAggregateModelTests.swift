@@ -14,7 +14,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func inits_with_building_order_stage() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -33,7 +34,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func startNewCart_removes_all_items_from_cart_and_moves_back_to_building() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -61,7 +63,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func checkOut_moves_to_finalizing_order_stage() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -85,7 +88,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addMoreToCart_moves_to_building_order_stage() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -158,7 +162,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addItem_results_in_a_non_empty_cart() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -183,7 +188,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func addItem_puts_new_items_first_in_the_cart() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -213,7 +219,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeItem_after_adding_two_items_removes_item_correctly() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -244,7 +251,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCart_removes_everything() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -273,7 +281,8 @@ struct PointOfSaleAggregateModelTests {
         @available(iOS 17.0, *)
         @Test func removeAllItemsFromCartOfCouponType_removes_coupons() async throws {
             // Given
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -320,6 +329,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -347,6 +357,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -377,6 +388,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -406,6 +418,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -435,7 +448,8 @@ struct PointOfSaleAggregateModelTests {
         @Test func sendReceipt_when_invoked_then_calls_controller() async throws {
             // Given
             let orderController = MockPointOfSaleOrderController()
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -462,7 +476,8 @@ struct PointOfSaleAggregateModelTests {
             orderController.shouldThrowReceiptError = true
             let expectedError = NSError(domain: "some error", code: -1)
 
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -491,6 +506,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -525,6 +541,7 @@ struct PointOfSaleAggregateModelTests {
             // When we init
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -575,6 +592,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -600,6 +618,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -628,6 +647,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -653,6 +673,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -685,6 +706,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -711,6 +733,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -736,6 +759,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -763,6 +787,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -800,6 +825,7 @@ struct PointOfSaleAggregateModelTests {
                 order: Order.fake().copy(currency: "$", total: "52.30"))
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -829,6 +855,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -864,6 +891,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -902,6 +930,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -939,6 +968,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -966,6 +996,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -993,6 +1024,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1031,6 +1063,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1064,6 +1097,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1095,6 +1129,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1130,6 +1165,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1176,6 +1212,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1212,6 +1249,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1239,6 +1277,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1264,6 +1303,7 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = PointOfSaleAggregateModel(
+                entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
                 itemsController: itemsController,
                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                 couponsController: MockPointOfSaleCouponsController(),
@@ -1288,7 +1328,8 @@ struct PointOfSaleAggregateModelTests {
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -1311,7 +1352,8 @@ struct PointOfSaleAggregateModelTests {
         @Test func cancelCashPayment_when_invoked_then_tracks_expected_event() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -1335,7 +1377,8 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let mockAnalyticsProvider = MockAnalyticsProvider()
             let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),
@@ -1362,7 +1405,8 @@ struct PointOfSaleAggregateModelTests {
             // Given
             let soundPlayer = MockPointOfSaleSoundPlayer()
             let barcodeScanService = MockPointOfSaleBarcodeScanService()
-            let sut = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+            let sut = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                itemsController: MockPointOfSaleItemsController(),
                                                 purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                 couponsController: MockPointOfSaleCouponsController(),
                                                 couponsSearchController: MockPointOfSaleCouponsController(),

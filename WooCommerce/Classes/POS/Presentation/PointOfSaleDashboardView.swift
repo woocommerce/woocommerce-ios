@@ -32,35 +32,55 @@ struct PointOfSaleDashboardView: View {
         }
     }
 
+    // MARK: View State
+
+    enum ViewState: Equatable {
+        case loading
+        case ineligible(reason: POSIneligibleReason)
+        case error(PointOfSaleErrorState)
+        case content
+        case unsupportedWidth
+    }
+
+    private var viewState: ViewState {
+        PointOfSaleDashboardViewHelper.determineViewState(
+            eligibilityState: posModel.entryPointController.eligibilityState,
+            itemsContainerState: itemsViewState.containerState,
+            horizontalSizeClass: horizontalSizeClass
+        )
+    }
+
     var body: some View {
         @Bindable var posModel = posModel
         ZStack(alignment: .bottomLeading) {
-            if case .regular = horizontalSizeClass {
-                switch itemsViewState.containerState {
-                case .loading:
-                    PointOfSaleLoadingView()
-                        .transition(.opacity)
-                        .ignoresSafeArea()
-                case .error(let error):
-                    PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
-                        Task {
-                            switch viewStateCoordinator.selectedItemListType {
-                            case .products(search: false):
-                                await posModel.purchasableItemsController.loadItems(base: .root)
-                            case .products(search: true):
-                                await posModel.purchasableItemsSearchController.loadItems(base: .root)
-                            case .coupons(search: false):
-                                await posModel.couponsSearchController.loadItems(base: .root)
-                            case .coupons(search: true):
-                                await posModel.couponsSearchController.loadItems(base: .root)
-                            }
+            switch viewState {
+            case .loading:
+                PointOfSaleLoadingView()
+                    .transition(.opacity)
+                    .ignoresSafeArea()
+            case .ineligible(let reason):
+                POSIneligibleView(reason: reason, onRefresh: {
+                    try await posModel.entryPointController.refreshEligibility(reason: reason)
+                })
+            case .error(let error):
+                PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
+                    Task {
+                        switch viewStateCoordinator.selectedItemListType {
+                        case .products(search: false):
+                            await posModel.purchasableItemsController.loadItems(base: .root)
+                        case .products(search: true):
+                            await posModel.purchasableItemsSearchController.loadItems(base: .root)
+                        case .coupons(search: false):
+                            await posModel.couponsSearchController.loadItems(base: .root)
+                        case .coupons(search: true):
+                            await posModel.couponsSearchController.loadItems(base: .root)
                         }
-                    })
-                case .content:
-                    contentView
-                        .accessibilitySortPriority(2)
-                }
-            } else {
+                    }
+                })
+            case .content:
+                contentView
+                    .accessibilitySortPriority(2)
+            case .unsupportedWidth:
                 PointOfSaleUnsupportedWidthView()
                     .transition(.opacity)
                     .ignoresSafeArea()
@@ -73,7 +93,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(itemsViewState.containerState != .loading)
+            .renderedIf(viewState != .loading)
 
             POSConnectivityView()
         }
@@ -81,7 +101,7 @@ struct PointOfSaleDashboardView: View {
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, backgroundAppearance)
-        .animation(.easeInOut, value: itemsViewState.containerState == .loading)
+        .animation(.easeInOut, value: viewState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -108,10 +128,13 @@ struct PointOfSaleDashboardView: View {
         .sheet(isPresented: $showDocumentation) {
             documentationView
         }
-        .task {
-            await posModel.purchasableItemsController.loadItems(base: .root)
-            await posModel.couponsController.loadItems(base: .root)
-            await posModel.popularPurchasableItemsController.loadItems(base: .root)
+        .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
+            guard newValue == .eligible else { return }
+            Task { @MainActor in
+                await posModel.purchasableItemsController.loadItems(base: .root)
+                await posModel.couponsController.loadItems(base: .root)
+                await posModel.popularPurchasableItemsController.loadItems(base: .root)
+            }
         }
         .ignoresSafeArea(.keyboard)
     }

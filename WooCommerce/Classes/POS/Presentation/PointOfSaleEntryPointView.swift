@@ -50,20 +50,11 @@ struct PointOfSaleEntryPointView: View {
 
     var body: some View {
         Group {
-            switch posEntryPointController.eligibilityState {
-            case .none:
+            if let posModel {
+                PointOfSaleDashboardView()
+                    .environment(posModel)
+            } else {
                 PointOfSaleLoadingView()
-            case .eligible:
-                if let posModel = posModel {
-                    PointOfSaleDashboardView()
-                        .environment(posModel)
-                } else {
-                    PointOfSaleLoadingView()
-                }
-            case let .ineligible(reason):
-                POSIneligibleView(reason: reason, onRefresh: {
-                    try await posEntryPointController.refreshEligibility(reason: reason)
-                })
             }
         }
         .task {
@@ -71,6 +62,7 @@ struct PointOfSaleEntryPointView: View {
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             posModel = PointOfSaleAggregateModel(
+                entryPointController: posEntryPointController,
                 itemsController: itemsController,
                 purchasableItemsSearchController: purchasableItemsSearchController,
                 couponsController: couponsController,

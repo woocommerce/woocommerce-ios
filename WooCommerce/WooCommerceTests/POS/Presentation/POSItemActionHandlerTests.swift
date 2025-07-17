@@ -8,7 +8,8 @@ import protocol Yosemite.POSSearchHistoryProviding
 struct POSItemActionHandlerTests {
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_list_then_does_not_add_it_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+        let aggregateModel = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                       itemsController: MockPointOfSaleItemsController(),
                                                        purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                        couponsController: MockPointOfSaleCouponsController(),
                                                        couponsSearchController: MockPointOfSaleCouponsController(),
@@ -35,7 +36,8 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_search_then_does_not_add_it_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+        let aggregateModel = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                       itemsController: MockPointOfSaleItemsController(),
                                                        purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                        couponsController: MockPointOfSaleCouponsController(),
                                                        couponsSearchController: MockPointOfSaleCouponsController(),
@@ -63,7 +65,8 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_list_then_adds_them_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+        let aggregateModel = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                       itemsController: MockPointOfSaleItemsController(),
                                                        purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                        couponsController: MockPointOfSaleCouponsController(),
                                                        couponsSearchController: MockPointOfSaleCouponsController(),
@@ -90,7 +93,8 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_search_then_adds_them_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
+        let aggregateModel = PointOfSaleAggregateModel(entryPointController: POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+                                                       itemsController: MockPointOfSaleItemsController(),
                                                        purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
                                                        couponsController: MockPointOfSaleCouponsController(),
                                                        couponsSearchController: MockPointOfSaleCouponsController(),

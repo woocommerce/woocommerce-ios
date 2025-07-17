@@ -202,12 +202,10 @@ private extension CoreDataIterativeMigrator {
         let purgeMigrationThreshold = 80
         let shouldPerformPurge = versionNumber < purgeMigrationThreshold
 
-        let log = """
-        Purge migration eval: \(sourceVersion.name) 
-        Version: \(versionNumber) 
-        Threshold: \(purgeMigrationThreshold)
-        Purge? \(shouldPerformPurge)
-        """
+        let log = "Purge migration eval: \(sourceVersion.name)\n" +
+        "Version: \(versionNumber)\n" +
+        "Threshold: \(purgeMigrationThreshold)\n" +
+        "Purge? \(shouldPerformPurge)"
         DDLogInfo(log)
 
         return shouldPerformPurge

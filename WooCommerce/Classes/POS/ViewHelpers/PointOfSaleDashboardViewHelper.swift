@@ -31,3 +31,15 @@ struct PointOfSaleDashboardViewHelper {
         }
     }
 }
+
+@available(iOS 17.0, *)
+extension PointOfSaleDashboardView.ViewState {
+    var showsFloatingControl: Bool {
+        switch self {
+        case .content, .error, .unsupportedWidth:
+            return true
+        case .loading, .ineligible:
+            return false
+        }
+    }
+}

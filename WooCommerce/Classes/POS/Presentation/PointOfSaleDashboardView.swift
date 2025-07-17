@@ -94,7 +94,7 @@ struct PointOfSaleDashboardView: View {
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
-            .renderedIf(viewState != .loading)
+            .renderedIf(viewState.showsFloatingControl)
 
             POSConnectivityView()
         }

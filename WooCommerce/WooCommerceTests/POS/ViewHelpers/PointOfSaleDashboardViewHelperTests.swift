@@ -214,4 +214,27 @@ struct PointOfSaleDashboardViewHelperTests {
         // Then
         #expect(result == .ineligible(reason: .unsupportedIOSVersion))
     }
+
+    // MARK: - Floating Control Tests
+
+    @available(iOS 17.0, *)
+    @Test(arguments: [
+        (PointOfSaleDashboardView.ViewState.content, true),
+        (PointOfSaleDashboardView.ViewState.error(PointOfSaleErrorState.errorOnLoadingProducts()), true),
+        (PointOfSaleDashboardView.ViewState.unsupportedWidth, true)
+    ])
+    func showsFloatingControl_when_content_error_or_unsupportedWidth_returns_true(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
+        // When & Then
+        #expect(viewState.showsFloatingControl == expected)
+    }
+
+    @available(iOS 17.0, *)
+    @Test(arguments: [
+        (PointOfSaleDashboardView.ViewState.loading, false),
+        (PointOfSaleDashboardView.ViewState.ineligible(reason: .unsupportedIOSVersion), false)
+    ])
+    func showsFloatingControl_when_loading_or_ineligible_returns_false(viewState: PointOfSaleDashboardView.ViewState, expected: Bool) async throws {
+        // When & Then
+        #expect(viewState.showsFloatingControl == expected)
+    }
 }

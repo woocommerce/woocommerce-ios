@@ -44,6 +44,7 @@ public struct ShippingLabelAccountSettings: Equatable, GeneratedFakeable, Genera
     public let lastSelectedPackageID: String
 
     /// Whether to mark order as completed after last label purchase
+    /// This is available only in the new Woo Shipping plugin.
     public let lastOrderCompleted: Bool
 
     /// URL to open the web view for adding new payment methods
@@ -110,7 +111,7 @@ extension ShippingLabelAccountSettings: Decodable {
 
         let userMetaContainer = try container.nestedContainer(keyedBy: UserMetaKeys.self, forKey: .userMeta)
         let lastSelectedPackageID = try userMetaContainer.decode(String.self, forKey: .lastSelectedPackageID)
-        let lastOrderCompleted = try userMetaContainer.decode(Bool.self, forKey: .lastOrderCompleted)
+        let lastOrderCompleted = (try? userMetaContainer.decodeIfPresent(Bool.self, forKey: .lastOrderCompleted)) ?? false
 
         self.init(siteID: siteID,
                   canManagePayments: canManagePayments,

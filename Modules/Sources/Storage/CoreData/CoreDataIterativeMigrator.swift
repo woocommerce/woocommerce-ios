@@ -199,7 +199,7 @@ private extension CoreDataIterativeMigrator {
         let versionNumber = extractVersionNumber(from: sourceVersion.name)
 
         // TEMPORARY: Increased threshold to 121 (from planned 80) for testing purge migration with TestFlight 22.1 (Model 120).
-        let purgeMigrationThreshold = 121
+        let purgeMigrationThreshold = 80
         let shouldPerformPurge = versionNumber < purgeMigrationThreshold
 
         let log = """

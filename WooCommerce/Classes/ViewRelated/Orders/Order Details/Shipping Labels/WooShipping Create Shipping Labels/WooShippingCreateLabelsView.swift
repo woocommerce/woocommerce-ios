@@ -143,6 +143,9 @@ private extension WooShippingCreateLabelsView {
         viewModel.shipments.enumerated().map { (index, shipment) in
             TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                        icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
+                       customAccessibilityValue: shipment.isPurchased ?
+                           Localization.Accessibility.shipmentTabFulfilled :
+                           Localization.Accessibility.shipmentTabUnfulfilled,
                        content: {
                 EmptyView()
             })
@@ -697,6 +700,14 @@ private extension WooShippingCreateLabelsView {
                 "wooShipping.createLabel.editButton.accessibility.hint",
                 value: "Opens the shipments editing form.",
                 comment: "Accessibility hint of the button to open the shipments editing form.")
+            static let shipmentTabFulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled",
+                value: "Fulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is fulfilled.")
+            static let shipmentTabUnfulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled",
+                value: "Unfulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is unfulfilled.")
         }
 
         enum BottomSheet {

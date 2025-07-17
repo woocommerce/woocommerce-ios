@@ -87,8 +87,9 @@ struct POSIneligibleView: View {
                                      "%1$@ is a placeholder for the minimum required version.")
             return String.localizedStringWithFormat(format, minimumVersion)
         case .wooCommercePluginNotFound:
-            return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound",
-                                     value: "Install and activate the WooCommerce plugin from your WordPress admin.",
+            return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound.2",
+                                     value: "Please make sure the WooCommerce plugin is installed and activated from your WordPress admin. " +
+                                     "If there is still an issue, please contact support for assistance.",
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
             return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled",

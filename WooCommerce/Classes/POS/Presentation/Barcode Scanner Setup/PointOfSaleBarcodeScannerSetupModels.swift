@@ -10,7 +10,7 @@ struct PointOfSaleBarcodeScannerSetupFlowOption: Identifiable {
 enum PointOfSaleBarcodeScannerType {
     case socketS720
     case starBSH20B
-    case tbcScanner
+    case tera12002D
     case other
 
     var name: String {
@@ -19,8 +19,8 @@ enum PointOfSaleBarcodeScannerType {
             return Localization.socketS720Name
         case .starBSH20B:
             return Localization.starBsh20BName
-        case .tbcScanner:
-            return Localization.tbcScannerName
+        case .tera12002D:
+            return Localization.tera12002DName
         case .other:
             return Localization.otherName
         }
@@ -32,8 +32,8 @@ enum PointOfSaleBarcodeScannerType {
             return "Socket_S720"
         case .starBSH20B:
             return "Star_BSH_20B"
-        case .tbcScanner:
-            return "TBC"
+        case .tera12002D:
+            return "Tera_1200_2D"
         case .other:
             return "other"
         }
@@ -45,7 +45,7 @@ private extension PointOfSaleBarcodeScannerType {
     enum Localization {
         static let socketS720Name = "Socket S720"
         static let starBsh20BName = "Star BSH-20B"
-        static let tbcScannerName = "TBC scanner"
+        static let tera12002DName = "Tera 1200 2D"
         static let otherName = "Other scanner"
     }
 }

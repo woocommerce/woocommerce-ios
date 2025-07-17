@@ -531,17 +531,22 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `purchaseShippingLabel`
 
-    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+    func test_purchaseShippingLabel_returns_shipping_label_on_success_and_persists_label_in_storage() throws {
         // Given
-        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let expectedLabel = ShippingLabel.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 13579, shipmentID: "0")
         let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
         let remote = MockWooShippingRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
         remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
+
+        let order = insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        let shipment = insertShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
+        shipment.order = order
+
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = waitFor(timeout: 10) { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
@@ -559,6 +564,15 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let actualLabel = try XCTUnwrap(result.get())
         XCTAssertEqual(actualLabel, expectedLabel)
+
+        // label is persisted
+        let storedLabels = storageManager.viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedLabels.count, 1)
+        XCTAssertEqual(storedLabels.first?.shippingLabelID, expectedLabel.shippingLabelID)
+
+        let storedShipments = storageManager.viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.count, 1)
+        XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, expectedLabel.shippingLabelID)
     }
 
     func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
@@ -1042,11 +1056,13 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `updateShipment`
 
-    func test_updateShipment_returns_success_response() throws {
+    func test_updateShipment_returns_success_response_and_persists_shipments() throws {
         // Given
         let remote = MockWooShippingRemote()
         let expected = ["0": [WooShippingShipmentItem.fake()]]
         remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .success(expected))
+
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -1062,6 +1078,10 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         let actual = try XCTUnwrap(result.get())
         XCTAssertEqual(actual, expected)
+
+        let storedShipments = storageManager.viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.count, 1)
+        XCTAssertEqual(storedShipments.first?.index, "0")
     }
 
     func test_updateShipment_returns_error_on_failure() throws {
@@ -1093,7 +1113,7 @@ final class WooShippingStoreTests: XCTestCase {
         let sampleOrderID: Int64 = 134
         let remote = MockWooShippingRemote()
         let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
-        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123)
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123, shipmentID: "0")
 
         remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
                                           orderID: shippingLabel.orderID,
@@ -1101,8 +1121,10 @@ final class WooShippingStoreTests: XCTestCase {
                                           thenReturn: .success(expectedRefund))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
+        let shipment = insertShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
         // Inserts a shipping label without a refund.
-        insertShippingLabel(shippingLabel)
+        let storedLabel = insertShippingLabel(shippingLabel)
+        shipment.shippingLabel = storedLabel
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
@@ -1126,6 +1148,10 @@ final class WooShippingStoreTests: XCTestCase {
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
+
+        let storedShipments = viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertNotNil(storedShipments.first?.shippingLabel?.refund)
     }
 
     func test_refundShippingLabel_returns_error_on_failure() throws {
@@ -1395,15 +1421,28 @@ private extension WooShippingStoreTests {
                                                                                                  groupId: "")])])
     }
 
-    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
+    @discardableResult
+    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) -> StorageShippingLabel {
         let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
         shippingLabel.update(with: readOnlyShippingLabel)
+        return shippingLabel
     }
 
-    func insertOrder(siteID: Int64, orderID: Int64) {
+    @discardableResult
+    func insertOrder(siteID: Int64, orderID: Int64) -> StorageOrder {
         let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
         order.siteID = siteID
         order.orderID = orderID
         order.statusKey = ""
+        return order
+    }
+
+    @discardableResult
+    func insertShipment(siteID: Int64, orderID: Int64, index: String) -> StorageWooShippingShipment {
+        let shipment = viewStorage.insertNewObject(ofType: StorageWooShippingShipment.self)
+        shipment.siteID = siteID
+        shipment.orderID = orderID
+        shipment.index = index
+        return shipment
     }
 }

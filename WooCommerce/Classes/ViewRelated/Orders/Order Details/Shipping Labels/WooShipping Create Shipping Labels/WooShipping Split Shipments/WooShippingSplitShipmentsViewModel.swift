@@ -549,13 +549,12 @@ extension WooShippingSplitShipmentsViewModel {
             .map { shipment in
                 var shipmentContents = ShipmentContents()
                 for shipmentItem in shipment.items {
-                    guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
-                          let subItems = shipmentItem.subItems else {
+                    guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }) else {
                         continue
                     }
 
-                    let quantity = subItems.count > 0 ? subItems.count : 1
-                    let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
+                    let updatedItem = ShippingLabelPackageItem(copy: packageItem,
+                                                               quantity: shipmentItem.quantity)
                     let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
                                                                        isSelectable: shipment.shippingLabel == nil,
                                                                        currency: currency)

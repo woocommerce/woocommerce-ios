@@ -399,10 +399,20 @@ private extension OrderDetailsViewController {
             let printViewController = coordinator.createPrintViewController()
             printNavigationController.viewControllers = [printViewController]
             present(printNavigationController, animated: true)
-        case .createShippingLabel:
-            navigateToCreateShippingLabelForm()
+        case .createShippingLabel(let shipmentIndex):
+            let preselection: WooShippingCreateLabelSelection? = {
+                guard let shipmentIndex else { return nil }
+                return .shipment(index: shipmentIndex)
+            }()
+            navigateToCreateShippingLabelForm(preSelection: preselection)
         case .openShippingLabelForm(let shippingLabel):
-            navigateToCreateShippingLabelForm(shippingLabel: shippingLabel)
+            navigateToCreateShippingLabelForm(preSelection: .shippingLabel(label: shippingLabel))
+        case .viewShipmentItems(let shipment):
+            showShipmentItems(shipment: shipment)
+        case .refundShippingLabel(let shippingLabel):
+            refundShippingLabel(shippingLabel)
+        case .printCustomsForm(let url):
+            printCustomsForm(url: url)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
@@ -416,7 +426,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func navigateToCreateShippingLabelForm(shippingLabel: ShippingLabel? = nil) {
+    func navigateToCreateShippingLabelForm(preSelection: WooShippingCreateLabelSelection? = nil) {
         guard viewModel.dataSource.isEligibleForWooShipping else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
@@ -446,7 +456,7 @@ private extension OrderDetailsViewController {
         }
 
         let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order,
-                                                                       selectedShippingLabel: shippingLabel,
+                                                                       preselection: preSelection,
                                                                        onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
                 self?.markOrderCompleteFromShippingLabels()
@@ -543,42 +553,13 @@ private extension OrderDetailsViewController {
 
         if shippingLabel.isRefundable {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
-                guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
-                    let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                        self?.navigationController?.popViewController(animated: true)
-                    }
-                    // Disables the bottom bar (tab bar) when requesting a refund.
-                    refundViewController.hidesBottomBarWhenPushed = true
-                    self?.show(refundViewController, sender: self)
-                    return
-                }
-
-                let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
-                let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
-                    guard let self else { return }
-                    presentedViewController?.dismiss(animated: true)
-
-                    var allLabels = viewModel.order.shippingLabels
-                    guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
-                        return
-                    }
-                    allLabels[index] = updatedLabel
-                    let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
-
-                    viewModel.update(order: updatedOrder)
-                    reloadTableViewSectionsAndData()
-                }
-                let refundViewController = UIHostingController(rootView: view)
-                self?.present(refundViewController, animated: true)
+                self?.refundShippingLabel(shippingLabel)
             }
         }
 
         if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
-                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
-                let hostingController = UIHostingController(rootView: printCustomsFormsView)
-                hostingController.hidesBottomBarWhenPushed = true
-                self?.show(hostingController, sender: self)
+                self?.printCustomsForm(url: url)
             }
         }
 
@@ -586,6 +567,53 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    func refundShippingLabel(_ shippingLabel: ShippingLabel) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
+            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            // Disables the bottom bar (tab bar) when requesting a refund.
+            refundViewController.hidesBottomBarWhenPushed = true
+            show(refundViewController, sender: self)
+            return
+        }
+
+        let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
+        let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
+            guard let self else { return }
+            presentedViewController?.dismiss(animated: true)
+
+            var allLabels = viewModel.order.shippingLabels
+            guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                return
+            }
+            allLabels[index] = updatedLabel
+            let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+            viewModel.update(order: updatedOrder)
+            reloadTableViewSectionsAndData()
+        }
+        let refundViewController = UIHostingController(rootView: view)
+        present(refundViewController, animated: true)
+    }
+
+    func printCustomsForm(url: String) {
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+        let hostingController = UIHostingController(rootView: printCustomsFormsView)
+        hostingController.hidesBottomBarWhenPushed = true
+        show(hostingController, sender: self)
+    }
+
+    func showShipmentItems(shipment: WooShippingShipment) {
+        let items = shipment.items.compactMap { item in
+            let orderItem = viewModel.order.items.first(where: { $0.itemID == item.id })
+            return orderItem?.copy(quantity: item.quantity)
+        }
+        let aggregateOrderItem = AggregateDataHelper.combineOrderItems(items, with: [])
+        let productListVC = AggregatedProductListViewController(viewModel: viewModel, items: aggregateOrderItem)
+        show(productListVC, sender: nil)
     }
 
     func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {

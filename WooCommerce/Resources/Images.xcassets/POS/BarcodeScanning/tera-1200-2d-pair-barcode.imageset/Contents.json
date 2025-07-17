@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "tera-1200-2d-pair-barcode.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

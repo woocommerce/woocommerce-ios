@@ -386,6 +386,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+        markOrderComplete = settings?.accountSettings.lastOrderCompleted ?? false
 
         if let accountSettings = settings?.accountSettings {
             paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)

@@ -62,6 +62,7 @@ struct PointOfSaleDashboardView: View {
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
                 })
+                .frame(maxWidth: .infinity)
             case .error(let error):
                 PointOfSaleItemListFullscreenErrorView(error: error, onAction: {
                     Task {

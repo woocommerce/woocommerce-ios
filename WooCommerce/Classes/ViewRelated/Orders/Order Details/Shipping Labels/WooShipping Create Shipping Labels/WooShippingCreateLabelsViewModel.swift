@@ -307,7 +307,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             if shouldRefreshPackageAndRate {
                 try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
             }
-            try await currentShipmentDetailsViewModel.purchaseLabel()
+            let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
+            try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
         } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch {

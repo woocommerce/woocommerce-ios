@@ -547,6 +547,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -574,6 +575,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -602,6 +604,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.01,
                                                                  pollingDelay: 0.01,
                                                                  pollingMaximumRetries: 3) { result in
@@ -631,6 +634,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -657,6 +661,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                              originAddress: .fake(),
                                                              destinationAddress: .fake(),
                                                              package: .fake(),
+                                                             markOrderComplete: false,
                                                              backendProcessingDelay: 0.01,
                                                              pollingDelay: 0.01,
                                                              // Irrelevant, because it caps retries on error only.

@@ -178,7 +178,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
@@ -215,7 +215,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, _, completion):
                 encodedHazmat = package.encodedHazmat()
                 completion(.success(ShippingLabel.fake()))
             case let .loadLabelRates(_, _, _, _, packages, completion):
@@ -260,7 +260,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break

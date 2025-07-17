@@ -57,6 +57,7 @@ public final class WooShippingStore: Store {
                                         originAddress,
                                         destinationAddress,
                                         package,
+                                        markOrderComplete,
                                         backendProcessingDelay,
                                         pollingDelay,
                                         pollingMaximumRetries,
@@ -66,6 +67,7 @@ public final class WooShippingStore: Store {
                                   originAddress: originAddress,
                                   destinationAddress: destinationAddress,
                                   package: package,
+                                  markOrderComplete: markOrderComplete,
                                   backendProcessingDelay: backendProcessingDelay,
                                   pollingDelay: pollingDelay,
                                   pollingMaximumRetries: pollingMaximumRetries,
@@ -216,6 +218,7 @@ private extension WooShippingStore {
                                originAddress: WooShippingAddress,
                                destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
                                pollingMaximumRetries: Int64,
@@ -225,7 +228,8 @@ private extension WooShippingStore {
                                      orderID: orderID,
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
-                                     package: package) { result in
+                                     package: package,
+                                     markOrderComplete: markOrderComplete) { result in
             switch result {
             case .success(let labelPurchases):
                 // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.

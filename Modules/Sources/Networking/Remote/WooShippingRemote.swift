@@ -287,9 +287,9 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                       package: WooShippingPackagePurchase,
                                       markOrderComplete: Bool?,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
-        let userMeta: [String: Any] = {
+        let userMeta: [String: Any]? = {
             guard let markOrderComplete else {
-                return [:]
+                return nil
             }
             return [ParameterKey.lastOrderCompleted: markOrderComplete]
         }()
@@ -305,7 +305,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
                 ParameterKey.userMeta: userMeta,
-            ]
+            ].compactMapValues { $0 }
             let path = "\(Path.purchase)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .post,

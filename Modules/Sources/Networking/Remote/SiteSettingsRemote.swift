@@ -1,5 +1,10 @@
 import Foundation
 
+/// Protocol for SiteSettingsRemote to enable testing.
+public protocol SiteSettingsRemoteProtocol {
+    func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
+}
+
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
 public enum SiteSettingsFeature {
     case pointOfSale

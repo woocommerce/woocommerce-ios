@@ -575,9 +575,11 @@ private extension WooShippingShipmentDetailsViewModel {
         )
         static let itemsSummaryAccessibilityFormat = NSLocalizedString(
             "shipping-labels.packages.items.summary.accessibility-label",
-            value: "%@ with a total weight of %@ and a total price of %@",
-            comment: "Accessibility label for the summary of product items in a shipment. "
-                   + "Parameters: %@: items count, %@: total weight, %@: total price."
+            value: "%1$@ with a total weight of %2$@ and a total price of %3$@",
+            comment: "Accessibility label for the summary of product items in a shipment." +
+                " The %1$@ is items count." +
+                " The %2$@ is total weight." +
+                " The %3$@ is total price."
         )
     }
 }

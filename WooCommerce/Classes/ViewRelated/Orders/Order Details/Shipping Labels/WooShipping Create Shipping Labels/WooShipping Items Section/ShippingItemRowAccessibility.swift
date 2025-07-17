@@ -34,14 +34,17 @@ enum ShippingItemRowAccessibility {
             "shipping_item_row.accessibility_value.format",
             value: "%1$@, Weight: %2$@, Total price: %3$@",
             comment: "Accessibility value for a shipping item row." +
-            "Parameters are:%1$@: details, %2$@: weight, %3$@: price."
+                " The %1$@ is details text." +
+                " The %2$@ is weight." +
+                " The %3$@ is a total price"
         )
 
         static let accessibilityValueQuantityFormat = NSLocalizedString(
             "shipping_item_row.quantity.format",
             value: "%1$d items of %2$@",
             comment: "Format for plural item quantity." +
-            "Parameters are: %1$@: plural quantity, %2$@: item name."
+                " The %1$@ is a plural quantity." +
+                " The %2$@ is the item name."
         )
     }
 }

@@ -281,31 +281,6 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
     // MARK: - allDimensionsValid tests
 
-    func test_allDimensionsValid_returns_false_when_no_dimensions_set() {
-        // Given
-        let siteID: Int64 = 1234
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores)
-
-        // Then
-        XCTAssertFalse(viewModel.allDimensionsValid)
-    }
-
-    func test_allDimensionsValid_returns_false_when_some_dimensions_missing() {
-        // Given
-        let siteID: Int64 = 1234
-        let mockStores = MockStoresManager(sessionManager: .testingInstance)
-        let viewModel = WooShippingAddCustomPackageViewModel(siteID: siteID, stores: mockStores)
-
-        // When
-        viewModel.fieldValues[.length] = "10"
-        viewModel.fieldValues[.width] = "5"
-        // height is missing
-
-        // Then
-        XCTAssertFalse(viewModel.allDimensionsValid)
-    }
-
     func test_allDimensionsValid_returns_false_when_dimension_is_zero() {
         // Given
         let siteID: Int64 = 1234

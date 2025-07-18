@@ -1,3 +1,5 @@
+import enum WooFoundationCore.BuildConfiguration
+
 public struct DefaultFeatureFlagService: FeatureFlagService {
     public init() {}
 
@@ -93,6 +95,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .pointOfSaleAsATabi1:
             return true
+        case .pointOfSaleAsATabi2:
+            return true
+        case .pointOfSaleOrdersi1:
+            return true
+        case .pointOfSaleOrdersi2:
+            return true
+        case .pointOfSaleBarcodeScanningi2:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

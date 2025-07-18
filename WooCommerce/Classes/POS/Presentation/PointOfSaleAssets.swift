@@ -14,6 +14,13 @@ enum PointOfSaleAssets: CaseIterable {
     case shoppingBags
     case successCheck
     case coupons
+    case gears
+    case barcodeFieldScreenshot
+    //TODO: WOOMOB-793 Update the imagesets for these barcodes to vector/dark mode friendly images
+    case starBsh20SetupBarcode
+    case tera12002DHIDBarcode
+    case tera12002DPairBarcode
+    case testEan13Barcode
 
     var imageName: String {
         switch self {
@@ -43,6 +50,18 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-success-check"
         case .coupons:
             "coupons"
+        case .gears:
+            "pos-gears"
+        case .barcodeFieldScreenshot:
+            "barcode-field-screenshot"
+        case .starBsh20SetupBarcode:
+            "star-bsh20-setup-barcode"
+        case .testEan13Barcode:
+            "test-ean13-barcode"
+        case .tera12002DHIDBarcode:
+            "tera-1200-2d-hid-barcode"
+        case .tera12002DPairBarcode:
+            "tera-1200-2d-pair-barcode"
         }
     }
 }

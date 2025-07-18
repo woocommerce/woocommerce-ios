@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-07-03 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -31,9 +31,6 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (Para el cliente)";
 
-/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
-"%1$@ \/ %2$@" = "%1$@\/%2$@";
-
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "Copia de %1$@";
 
@@ -44,9 +41,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ sobre cómo aceptar pagos con tu dispositivo móvil y pedir lectores de tarjetas.";
-
-/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
-"%1$@ about domains and how to take domain-related actions." = "%1$@ sobre los dominios y cómo llevar a cabo acciones relacionadas con estos.";
 
 /* %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about verifying information for WooPayments. */
 "%1$@ about verifying your information with WooPayments." = "%1$@ sobre la verificación de tu información con Woo Payments.";
@@ -273,9 +267,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "El formulario de aduanas se debe imprimir y adjuntar a este envío internacional";
 
-/* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "Se ha utilizado una tarjeta real en un sitio que se encuentra en modo de prueba. En su lugar, usa una tarjeta de prueba.";
-
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Se ha producido un error de red. Comprueba tu conexión e inténtalo de nuevo.";
 
@@ -297,12 +288,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "AÑADIR OPCIONES";
 
-/* Address section title in the domain contact info form. */
-"ADDRESS" = "DIRECCIÓN";
-
-/* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "SOPORTE";
-
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Recuperación de carritos abandonados";
 
@@ -322,9 +307,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
 "Account Settings" = "Ajustes de la cuenta";
-
-/* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "Tipo de Cuenta";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Cuenta conectada";
@@ -439,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "Añadir variación";
-
-/* Title of button to add a domain in domain settings. */
-"Add a domain" = "Añade un dominio";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Añadir una nueva tarjeta de crédito";
@@ -651,10 +630,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Cantidad apta para el reembolso";
 
-/* Line description for 'Amount Paid' cart total on the receipt
-   Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "Importe pagado";
-
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "An Apple ID can only be used to upgrade one store" = "Cada ID de Apple solo se puede utilizar para mejorar una tienda";
 
@@ -667,20 +642,8 @@ which should be translated separately and considered part of this sentence. */
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "Ha ocurrido un error al cerrar la cuenta.";
 
-/* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Se ha producido un error al acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
-
-/* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Recientemente, se ha emitido una transacción idéntica. Si quieres continuar, prueba otro método de pago.";
-
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "No se ha podido subir la imagen";
-
-/* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment." = "Se ha introducido un PIN incorrecto demasiadas veces. Prueba otro método de pago.";
-
-/* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment." = "Se ha introducido un PIN incorrecto. Inténtalo de nuevo o utiliza otro método de pago";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Una nota opcional para enviarla al cliente después de la compra";
@@ -733,9 +696,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Registros de la aplicación";
-
-/* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "Nombre de aplicación";
 
 /* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
@@ -1249,12 +1209,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Manuales del lector de tarjetas";
 
-/* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card." = "La tarjeta se ha dejado en el lector. Retírala y vuelve a introducirla.";
-
-/* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again." = "La tarjeta se he retirado demasiado pronto. Prueba a realizar la transacción de nuevo.";
-
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Cancelar";
 
@@ -1372,12 +1326,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "Falta la ciudad";
-
-/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
-"Claim Domain" = "Solicitar dominio";
-
-/* Title of the domain credit banner in domain settings. */
-"Claim your free domain" = "Reclama tu dominio gratuito";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Class 1 – Toy Propellant\/Safety Fuse Package" = "Clase 1 - Paquete de fusible de seguridad\/propulsores de juguete";
@@ -1559,9 +1507,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "¡Enhorabuena, has acabado de leer!";
 
-/* Title of the domain purchase success screen. */
-"Congratulations on your purchase" = "Felicidades por tu compra";
-
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "¡Enhorabuena! Ya estás un paso más cerca de que tu tienda esté lista.";
 
@@ -1633,9 +1578,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Conectando con el lector";
 
-/* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "El tiempo de conexión al lector de tarjetas se ha agotado. Asegúrate de que está cerca y cargado e inténtalo de nuevo.";
-
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Conectando con tu cuenta";
 
@@ -1692,7 +1634,6 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
-   Title of the button to continue with a selected domain.
    Title of the submit button on the account creation form. */
 "Continue" = "Continuar";
 
@@ -2011,9 +1952,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the range selection list */
 "Date Range" = "Rango de fechas";
 
-/* Title of 'Date Paid' section in the receipt */
-"Date paid" = "Fecha de pago";
-
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Fecha de envío";
 
@@ -2093,9 +2031,6 @@ which should be translated separately and considered part of this sentence. */
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "Descuento";
-
-/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "Descuento %1$@";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -2184,9 +2119,6 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documentos";
 
-/* Navigation bar title of the domain settings screen. */
-"Domains" = "Dominios";
-
 /* Country option for a site address. */
 "Dominica" = "Dominica";
 
@@ -2227,14 +2159,11 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
-   Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet
-   Title of the button to finish the domain purchase success screen. */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "Listo";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2787,9 +2716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "¡Comentario enviado!";
 
-/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
-"Fees" = "Comisiones";
-
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Recuperando variaciones…";
 
@@ -2882,9 +2808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "¿Olvidaste tu contraseña?";
 
-/* Title in the error notice when a validation error occurs after submitting domain contact info. */
-"Form Validation Error" = "Error de validación del formulario";
-
 /* Next web page */
 "Forward" = "Adelante";
 
@@ -2896,9 +2819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plan name for an active free trial */
 "Free Trial" = "Prueba gratuita";
-
-/* Label shown for domains that are free for the first year with available domain credit. */
-"Free for the first year" = "Gratis el primer año";
 
 /* Country option for a site address. */
 "French Guiana" = "Guayana Francesa";
@@ -3315,9 +3235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "Pagos en Persona";
 
-/* Cell title on beta features screen to enable in-app purchases */
-"In-app purchases" = "Compras en la aplicación";
-
 /* Application's Inactive State */
 "Inactive" = "Inactivo";
 
@@ -3359,17 +3276,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label action for inserting a link on the editor */
 "Insert" = "Insertar";
 
-/* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "Introduce la tarjeta";
-
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Insertar una regla horizontal";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Insertar enlace";
-
-/* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "Introduce o pasa la tarjeta";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Insert card to pay" = "Introduce una tarjeta para pagar";
@@ -3664,6 +3575,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Latvia" = "Letonia";
 
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy Debug" = "Iniciar la depuración con Wormholy";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Publica tu tienda";
 
@@ -3678,7 +3592,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
-   Tappable text at the bottom of the domain settings screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -4155,9 +4068,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Mozambique" = "Mozambique";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Se han detectado varias tarjetas de pago sin contacto.";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Varias tiendas";
 
@@ -4296,9 +4206,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the empty state of the Blaze campaign list view */
 "No campaigns yet" = "Todavía no hay campañas";
 
-/* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again." = "No se ha conectado ningún lector de tarjetas. Conecta un lector e inténtalo de nuevo.";
-
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "No se ha seleccionado ninguna categoría";
 
@@ -4307,9 +4214,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "No connection issues" = "No hay problemas de conexión";
-
-/* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again." = "Sin conexión a Internet. Conéctate a Internet e inténtalo de nuevo.";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "No se han encontrado cupones";
@@ -4429,9 +4333,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Enviar la nota al cliente";
-
-/* Title of order note section in the receipt, commonly used for Quick Orders. */
-"Notes" = "Notas";
 
 /* Default message for empty media picker */
 "Nothing to show" = "Nada que mostrar";
@@ -4801,14 +4702,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Payment section title */
 "Payment Totals" = "Cantidad total del pago";
 
-/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment." = "Se ha rechazado el pago porque no hay fondos suficientes. Prueba otro método de pago.";
-
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Error de pago";
 
-/* Title of 'Payment method' section in the receipt
-   Title of the webview of adding a payment method in Shipping Labels */
+/* Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "Método de pago";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -4816,12 +4713,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Pago correcto";
-
-/* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment." = "Se ha rechazado el pago por motivos desconocidos. Prueba otro método de pago.";
-
-/* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment." = "Se ha rechazado el pago por motivos que no se han especificado. Prueba otro método de pago.";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -4896,12 +4787,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carga el lector";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Comprueba que tu teléfono cumple estos requisitos: iPhone XS o posterior con iOS 16.7 o superior. Ponte en contacto con el servicio de soporte si aparece este error en un dispositivo compatible.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Comprueba que tu ID de Apple sea válido e inténtalo de nuevo. Para aceptar las Condiciones del servicio de Apple, se requiere un ID de Apple válido.";
-
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Conecta Jetpack a través de la página de administración en un navegador o ponte en contacto con el soporte técnico.";
 
@@ -4911,9 +4796,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Bolded message advising the merchant to contact support when the plan activation failed.
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "Por favor, contacta con soporte para obtener ayuda.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
-"Please contact support – there was an issue starting Tap to Pay on iPhone" = "Se ha producido un error al iniciar Tap to Pay on iPhone; ponte en contacto con el servicio de soporte.";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Ponte en contacto con el propietario del sitio para obtener una invitación como gestor o administrador de la tienda y utilizar la aplicación con este rol.";
@@ -5005,9 +4887,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Por favor, elige un paquete";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Inicia sesión en iCloud en este dispositivo para utilizar Tap to Pay on iPhone.";
-
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo más tarde o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
@@ -5020,9 +4899,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Inténtalo de nuevo o ponte en contacto con nosotros y estaremos encantados de ayudarte.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Inténtalo de nuevo y acepta las Condiciones del servicio de Apple para poder utilizar Tap to Pay on iPhone.";
-
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Inténtalo de nuevo o ponte en contacto con el equipo de soporte si necesitas ayuda";
 
@@ -5034,9 +4910,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when Jetpack install fails */
 "Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "Inténtalo de nuevo. Si lo prefieres, puedes instalar Jetpack a través de tu WP-Admin.";
-
-/* Default message when there is an unexpected error loading domain suggestions on the domain selector. */
-"Please try another query." = "Prueba a hacer otra consulta.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "Actualiza el software del lector para seguir aceptando pagos";
@@ -5171,9 +5044,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "Los precios se han actualizado correctamente.";
-
-/* Title for a free domain if the domain is the primary site address. */
-"Primary site address" = "Dirección principal del sitio";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "Imprimir";
@@ -5461,12 +5331,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Motivo del pedido de reembolso";
 
-/* The title of the view containing a receipt preview
-   Title of receipt. */
+/* The title of the view containing a receipt preview */
 "Receipt" = "Recibo";
-
-/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
-"Receipt from %1$@" = "Recibo de %1$@";
 
 /* No comment provided by engineer. */
 "Recurring payments'" = "Pagos recurrentes'";
@@ -5544,9 +5410,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "Regenerar código del cupón";
 
-/* Title of the domain contact info form. */
-"Register domain" = "Registrar dominio";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "Precio normal";
 
@@ -5568,9 +5431,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "Eliminar atributo";
-
-/* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "Retira la tarjeta.";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -5611,9 +5471,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "Renombrar atributo";
-
-/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
-"Renews on %1$@" = "Se renovará el %1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "Reemplazar foto";
@@ -5701,9 +5558,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "Inténtalo de nuevo después de actualizar.";
 
-/* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "Vuelve a pasar la tarjeta.";
-
 /* Action button to check site's connection again. */
 "Retry Connection" = "Volver a intentar la conexión";
 
@@ -5765,9 +5619,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "Se ha enviado un SMS";
-
-/* Header label of the domain suggestions on the domain selector. */
-"SUGGESTIONS" = "SUGERENCIAS";
 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
@@ -5907,12 +5758,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "Buscar cupones";
-
-/* Title of the domain selector in domain settings. */
-"Search domains" = "Buscar dominios";
-
-/* Title of the button on the domain settings screen to search for a domain. */
-"Search for a Domain" = "Buscar un dominio";
 
 /* Message to prompt users to search for customers on the customer search screen */
 "Search for an existing customer or" = "Buscar un cliente existente o";
@@ -6166,8 +6011,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Date an item was shipped */
 "Shipped %@" = "Enviado el %@";
 
-/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Product Shipping Settings navigation title
+/* Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the Shipping Settings row on Product main screen */
@@ -6328,9 +6172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Alguna dirección de correo electrónico no es válida.";
 
-/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
-"Some unexpected error with the validation. Please check the fields and try again." = "Ha ocurrido un error inesperado en la validación. Revisa los campos e inténtalo de nuevo.";
-
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguien";
 
@@ -6399,12 +6240,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Sorry, this payment couldn’t be processed" = "No se ha podido procesar este pago.";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed." = "No se ha podido procesar este pago.";
-
-/* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled." = "Lo sentimos, este reembolso no se ha podido cancelar";
-
-/* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "No se ha podido procesar el reembolso";
 
 /* No comment provided by engineer. */
@@ -6415,12 +6250,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Disculpa, el nombre de usuario, también debe contener letras.";
-
-/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
-"Sorry, we could not complete this action, as no active payment was found." = "Lo sentimos, no hemos podido completar esta acción, ya que no se ha encontrado ningún pago activo.";
-
-/* Error message shown when an in-progress connection is cancelled by the system */
-"Sorry, we could not connect to the reader. Please try again." = "Lo sentimos, no hemos podido conectar con el lector. Inténtalo de nuevo.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Lo sentimos, no hemos podido iniciar la función Tocar para pagar en el iPhone. Comprueba la conexión e inténtalo de nuevo.";
@@ -6539,7 +6368,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Subscriptions" = "Subscriptions";
 
 /* Create Shipping Label form -> Subtotal label
-   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
    Title on the refund screen that lists the fees subtotal cost
    Title on the refund screen that lists the products refund subtotal cost
@@ -6556,12 +6384,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Total de productos y peso del paquete";
 
-/* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "Resumen";
-
-/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "Resumen: pedido #%1$@";
-
 /* Country option for a site address. */
 "Suriname" = "Surinam";
 
@@ -6573,9 +6395,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Sweden" = "Suecia";
-
-/* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "Pasa la tarjeta";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Cambiar de tienda";
@@ -6621,9 +6440,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "Se ha copiado el informe de estado del sistema en el portapapeles.";
-
-/* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment." = "No se pueden realizar pagos con las tarjetas de prueba del sistema. Prueba otro método de pago.";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "Santo Tomé y Príncipe";
@@ -6679,9 +6495,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Toca para pagar en el iPhone";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
-"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "No se puede utilizar Tap to Pay on iPhone durante una llamada telefónica. Inténtalo de nuevo al terminar la llamada.";
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tap to Pay on iPhone está listo";
@@ -6780,8 +6593,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Estado del impuesto";
 
-/* Line description for tax charged on the whole cart. Only shown when non-zero
-   Taxes label for payment view */
+/* Taxes label for payment view */
 "Taxes" = "Impuestos";
 
 /* Title for the tax educational dialog */
@@ -6804,9 +6616,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "Condiciones del servicio";
-
-/* Cell description on beta features screen to enable in-app purchases */
-"Test out in-app purchases as we get ready to launch" = "Prueba las compras en la aplicación mientras preparamos el lanzamiento";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Prueba la visualización de Complementos del pedido mientras preparamos la publicación";
@@ -6862,20 +6671,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "La extensión %1$@ está instalada en tu tienda, pero se debe actualizar para los Pagos en persona. Actualízala a la versión más reciente.";
 
-/* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly." = "La conexión entre el Bluetooth y el lector de tarjetas se ha perdido inesperadamente.";
-
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "La cuenta de Google \"%@\" no coincide con ninguna cuenta de WordPress.com";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "No se ha podido cargar el pedido.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
-"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "El importe no es compatible con Tap to Pay on iPhone. Prueba con un lector físico o con otro método de pago.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "La aplicación no ha podido activar Tap to Pay on iPhone porque el chip NFC está desactivado. Ponte en contacto con el servicio de soporte para obtener más información.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "No se ha podido eliminar el atributo.";
@@ -6883,62 +6683,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "No se ha podido guardar el atributo.";
 
-/* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment." = "La tarjeta no admite esta moneda. Prueba otro método de pago.";
-
-/* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment." = "La tarjeta no admite este tipo de compras. Prueba otro método de pago.";
-
-/* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment." = "La tarjeta ha caducado. Prueba otro método de pago.";
-
-/* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment." = "La tarjeta o la cuenta de la tarjeta no es válida. Prueba otro método de pago.";
-
-/* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again." = "El lector de tarjetas está ocupado ejecutando otro comando. Inténtalo de nuevo.";
-
-/* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader." = "El lector de tarjetas no es compatible con esta aplicación. Prueba a actualizar la aplicación o usar otro lector.";
-
-/* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "La sesión del lector de tarjetas ha caducado. Desconéctalo y vuelve a conectarlo y, después, inténtalo de nuevo.";
-
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "El software del lector de tarjetas está obsoleto. Actualízalo antes de intentar procesar pagos.";
-
-/* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "El software del lector de tarjetas está obsoleto. Actualízalo antes de intentar procesar pagos.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "El software del lector de tarjetas no está actualizado. Actualízalo antes de intentar procesar reembolsos.";
 
-/* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again." = "La actualización del software del lector de tarjetas ha fallado debido a un error de comunicación. Inténtalo de nuevo.";
-
-/* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again." = "La actualización del software del lector de tarjetas ha fallado debido a un problema con el servidor de la actualización. Inténtalo de nuevo.";
-
-/* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again." = "La actualización del software del lector de tarjetas ha fallado inesperadamente. Inténtalo de nuevo.";
-
-/* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again." = "La actualización del software del lector de tarjetas se ha interrumpido antes de completarse. Inténtalo de nuevo.";
-
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "El lector de tarjetas ha rechazado la tarjeta. Prueba otro método de pago.";
-
-/* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment." = "El lector de tarjetas ha rechazado la tarjeta. Prueba otro método de pago.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "El lector de tarjetas ha rechazado la tarjeta. Prueba con otro método de reembolso.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "El lector de tarjetas del iPhone ha rechazado la tarjeta. Prueba con otro método de pago.";
-
-/* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment." = "El procesador de pagos ha rechazado la tarjeta. Prueba otro método de pago.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "El certificado para este servidor no es válido. Puede que estés intentando conectar con un servidor que aparenta ser \"%@\", lo que podría poner en peligro tu información confidencial.\n\n¿Deseas confiar en el certificado de todos modos?";
@@ -6952,38 +6710,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "El código del cupón no puede estar vacío.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
-"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "La moneda no es compatible con Tap to Pay on iPhone. Prueba con un lector físico o con otro método de pago.";
-
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "El cliente recibirá un correo electrónico cuando se complete el pedido";
-
-/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
-"The domain purchased will redirect users to **%1$@**" = "El dominio comprado redireccionará a los usuarios a **%1$@**.";
-
-/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
-"The domain purchased will redirect users to the current staging domain" = "El dominio comprado redireccionará a los usuarios al dominio de prueba actual.";
-
-/* Footnote about the domain credit banner in domain settings. */
-"The domain purchased will redirect users to your primary address." = "El dominio comprado redireccionará a los usuarios a la dirección principal.";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Es posible que la primera vez que utilices Tap to Pay on iPhone, se te solicite que aceptes las condiciones del servicio de Apple.";
 
-/* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "La tarjeta presentada no permite realizar un pago por este importe. Prueba otro método de pago.";
-
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "El procesador de pagos no puede procesar el pago.";
 
-/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
-"The payment card was removed too early, please try again." = "La tarjeta de pago se ha eliminado demasiado pronto, inténtalo de nuevo.";
-
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "El método de pago no admite reembolsos automáticos. Para realizar el reembolso, transfiere manualmente el dinero al cliente.";
-
-/* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader." = "Se ha cancelado el pago a través del lector";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "Se ha cancelado el pago.";
@@ -7014,9 +6751,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The refund can not be processed by the payment processor." = "El procesador de pagos no puede procesar el reembolso.";
-
-/* Error message when a request times out. */
-"The request timed out - please try again." = "Se ha agotado el tiempo de espera de la solicitud. Inténtalo de nuevo.";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "La solicitud para generar una contraseña de aplicación no se ha autorizado.";
@@ -7057,23 +6791,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "La cantidad en inventario de este producto. Editable.";
 
-/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "Falta la dirección de la tienda o no está completa. Actualízala antes de continuar.";
-
-/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "Falta el código postal de la tienda o no es válido. Actualízalo antes de continuar.";
-
-/* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again." = "El sistema ha cancelado el comando inesperadamente. Inténtalo de nuevo.";
-
-/* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error." = "Se ha producido un error de software inesperado en el sistema.";
-
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "En este momento, no puedes obtener el informe de estado del sistema para tu sitio. Inténtalo de nuevo.";
-
-/* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment." = "El código postal de la transacción y el de la tarjeta no coinciden. Prueba otro método de pago.";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "No se ha podido iniciar el pago de la prueba, inténtalo de nuevo más tarde o, si el problema continúa, ponte en contacto con el servicio de soporte.";
@@ -7166,9 +6885,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Se ha producido un error al intentar recibir el pago.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Se ha producido un error al preparar el uso de Tap to Pay on iPhone. Inténtalo de nuevo.";
-
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licencias de terceros";
@@ -7193,9 +6909,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Esta aplicación solo es compatible con los roles de usuario de administrador y gestor de tienda. Contacta con el propietario de la tienda para actualizar tu rol.";
-
-/* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Esta tarjeta necesita un código PIN y, por lo tanto, no se puede procesar. Prueba otro método de pago.";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Podría deberse a que en tu tienda haya que seguir algunos pasos de seguridad adicionales.";
@@ -7226,9 +6939,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Actualmente, este artículo se encuentra en el Paquete %1$d: %2$@. ¿A dónde te gustaría moverlo?";
-
-/* Explanation in the alert shown when a retry fails because the payment already completed */
-"This payment has already been completed – please check the order details." = "Este pago ya se ha completado; comprueba los detalles del pedido.";
 
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "No se ha podido cargar el producto";
@@ -7422,12 +7132,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Try Another Address" = "Prueba con otra dirección";
 
-/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "Prueba con otra tarjeta.";
-
-/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "Prueba otro método de lectura.";
-
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "Prueba a autorizarlo de nuevo";
 
@@ -7465,9 +7169,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
 "Try again with WP-Admin page" = "Inténtalo de nuevo con la página WP-Admin";
 
-/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment." = "Prueba otro método de pago.";
-
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Prueba a conectarte de nuevo para acceder a tu tienda.";
 
@@ -7479,9 +7180,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Prueba con la dirección del sitio";
-
-/* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment." = "Probar otra vez, o intentar usar otro método de pago, puede solucionar el problema.";
 
 /* Country option for a site address. */
 "Tunisia" = "Túnez";
@@ -7510,9 +7208,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tuvalu" = "Tuvalu";
 
-/* Placeholder of the search text field on the domain selector. */
-"Type a name for your store" = "Escribe un nombre para tu tienda";
-
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Tipo de contenido";
 
@@ -7535,12 +7230,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "No fue posible conectar";
 
-/* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again." = "No se ha podido acceder al Bluetooth. Actívalo e inténtalo de nuevo.";
-
-/* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again." = "No se ha podido acceder a los servicios de ubicación. Actívalos e inténtalo de nuevo.";
-
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "No se ha podido añadir el cupón.";
 
@@ -7552,18 +7241,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "No se ha podido cambiar el estado del pedido n.º %1$d";
-
-/* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again." = "No se ha podido comunicar con el lector. Inténtalo de nuevo.";
-
-/* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use." = "No se ha podido conectar al lector de tarjetas. Este todavía está en uso.";
-
-/* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected." = "No se ha podido conectar al lector. Hay otro lector conectado.";
-
-/* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "No se ha podido conectar al lector. El nivel de batería del lector es demasiado bajo. Cárgalo e inténtalo de nuevo.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "No se ha podido crear el nuevo pedido";
@@ -7649,15 +7326,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "No se ha podido marcar la reseña como %@";
 
-/* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "No se ha podido ejecutar la solicitud con el lector conectado. Función no admitida. Inténtalo de nuevo con otro lector.";
-
-/* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again." = "No se ha podido ejecutar la solicitud del software. Actualiza esta aplicación e inténtalo de nuevo.";
-
-/* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again." = "No se ha podido procesar el pago debido al uso de datos no válidos. Inténtalo de nuevo.";
-
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "No se puede procesar el pago. El importe total del pedido es inferior al importe mínimo que puedes cobrar, que es %1$@.";
 
@@ -7672,15 +7340,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "No se puede procesar el pago. No hemos podido obtener los últimos detalles del pedido. Comprueba tu conexión a la red e inténtalo de nuevo. Error subyacente: %1$@";
-
-/* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again." = "No se ha podido leer la tarjeta. Se ha agotado el tiempo de espera del sistema. Inténtalo de nuevo.";
-
-/* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again." = "No se ha podido leer la tarjeta. Prueba a retirarla e introducirla de nuevo.";
-
-/* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again." = "No se ha podido leer la tarjeta. Prueba a pasarla de nuevo.";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "No se ha podido leer el sitio de WordPress en esa dirección URL. Toca \"¿Necesitas más ayuda?\" para ver las Preguntas frecuentes.";
@@ -7704,20 +7363,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice displayed when data cannot be synced for edited order */
 "Unable to save changes. Please try again." = "No se pueden guardar los cambios. Inténtalo de nuevo.";
 
-/* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "No se han podido buscar lectores de tarjetas. El Bluetooth de baja energía no es compatible con este dispositivo. Usa otro dispositivo.";
-
-/* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again." = "No se han podido buscar lectores de tarjetas. Se ha agotado el tiempo de espera del Bluetooth. Inténtalo de nuevo.";
-
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "No se han podido establecer los datos del cliente.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "No se puede actualizar la dirección.";
-
-/* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low." = "No se ha podido actualizar el software del lector de tarjetas. El lector tiene poca batería.";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "No se puede actualizar el precio";
@@ -8186,9 +7836,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "No hemos podido verificar automáticamente la dirección de envío. Visualízalo en Apple Maps para comprobar que la dirección es correcta.";
 
-/* Explanation in the alert presented when a retry of a payment fails */
-"We were unable to retry the payment – please start again." = "No hemos podido reintentar el pago; empieza de nuevo.";
-
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "No hemos sido capaces de enviarte un correo electrónico en este momento. Por favor, inténtalo más tarde de nuevo.";
 
@@ -8418,9 +8065,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "Puedes editar los complementos para los productos en el escritorio del sitio web.";
 
-/* Instructions of the domain purchase success screen. */
-"You can find the domain settings in menu > settings" = "Para acceder a los ajustes del dominio, ve a Menú > Ajustes.";
-
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "Gestiona de forma rápida y sencilla.";
 
@@ -8454,9 +8098,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "No tienes permiso para gestionar plugins en esta tienda.";
 
-/* Subtitle of the domain credit banner in domain settings. */
-"You have a free one-year domain registration included with your plan." = "Tu plan incluye el registro de dominio gratis durante un año.";
-
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Tienes un pedido nuevo 🎉";
 
@@ -8470,9 +8111,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Tienes que añadir una contraseña para proteger el producto";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "Es necesario que establezcas un código de acceso en la pantalla de bloqueo para utilizar Tap to Pay on iPhone.";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que tienes instalado el plugin móvil de DudaMobile y está impidiendo a la aplicación conectarse a tu blog";
@@ -8505,9 +8143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "Ninguna cuenta de WordPress.com utiliza tu dirección de correo electrónico";
-
-/* Title of the free domain view. */
-"Your free store address" = "Dirección de tu tienda gratuita";
 
 /* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
 "Your free trial has ended" = "Tu período de prueba ha finalizado";
@@ -8550,12 +8185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "La dirección de tu sitio aparece en la barra de arriba de la pantalla cuando visitas tu sitio en Safari.";
-
-/* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "Se está configurando la dirección de tu sitio. El dominio puede tardar hasta 30 minutos en empezar a funcionar.";
-
-/* Header text of the site's domain list in domain settings. */
-"Your site domains" = "Tus dominios de sitio web";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "Tu sitio tarda bastante en responder";
@@ -10494,135 +10123,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Ver todas las campañas";
 
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "La aplicación necesita permiso para acceder al Bluetooth y conectarse a tu lector de tarjetas. Puedes otorgar el permiso en los ajustes del sistema, en la sección Woo.";
-
-/* Error message when Bluetooth is already paired with another device. */
-"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "El lector Bluetooth ya está vinculado con otro dispositivo. Es necesario restablecer la vinculación del lector para conectarlo con este dispositivo.";
-
-/* Error message when the Bluetooth connection has an invalid location ID parameter. */
-"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "La conexión Bluetooth tiene un ID de ubicación no válido.";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"hardware.cardReader.underlyingError.bluetoothDenied" = "La aplicación necesita permiso para acceder al Bluetooth y conectarse a tu lector de tarjetas. Puedes otorgar el permiso en los ajustes del sistema, en la sección Woo.";
-
-/* Error message when the Bluetooth peer removed pairing information. */
-"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "El lector ha eliminado la información de vinculación de este dispositivo. Intenta olvidar el lector en los ajustes de iOS.";
-
-/* Error message when Bluetooth reconnect has started. */
-"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "El lector Bluetooth se ha desconectado y estamos intentando restablecer la conexión.";
-
-/* Error message when an operation cannot be canceled because it is already completed. */
-"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "No se ha podido cancelar la operación porque ya se había completado.";
-
-/* Error message when card swipe functionality is unavailable. */
-"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "La función de deslizar la tarjeta no está disponible.";
-
-/* Error message when the command is not allowed. */
-"hardware.cardReader.underlyingError.commandNotAllowed" = "Ponte en contacto con el soporte técnico: el sistema operativo no puede ejecutar el comando.";
-
-/* Error message when the command requires cardholder consent. */
-"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "El titular de la tarjeta debe dar su consentimiento para que la operación se complete correctamente.";
-
-/* Error message when the connection token provider finishes with an error. */
-"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Se ha producido un error al recuperar el token de conexión.";
-
-/* Error message when the connection token provider operation times out. */
-"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "La solicitud del token de conexión ha caducado.";
-
-/* Error message when a feature is unavailable. */
-"hardware.cardReader.underlyingError.featureNotAvailable" = "Ponte en contacto con el soporte técnico: la función no está disponible.";
-
-/* Error message when forwarding a live mode payment in test mode is prohibited. */
-"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "No se permite reenviar un pago en modo en vivo en el modo de prueba.";
-
-/* Error message when forwarding a test mode payment in live mode is prohibited. */
-"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "No se permite reenviar un pago en modo de prueba en el modo en vivo.";
-
-/* Error message when Interac is not supported in offline mode. */
-"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "Interac no es compatible con el modo sin conexión.";
-
-/* Error message when an internal network error occurs. */
-"hardware.cardReader.underlyingError.internalNetworkError" = "Se ha producido un error desconocido en la red.";
-
-/* Error message when the internet connection operation timed out. */
-"hardware.cardReader.underlyingError.internetConnectTimeOut" = "La conexión con el lector a través de Internet ha caducado. Asegúrate de que el dispositivo y el lector están conectados a la misma red Wi-Fi.";
-
-/* Error message when the client secret is invalid. */
-"hardware.cardReader.underlyingError.invalidClientSecret" = "Ponte en contacto con el soporte técnico: la clave secreta del cliente no es válida.";
-
-/* Error message when the discovery configuration is invalid. */
-"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Ponte en contacto con el soporte técnico: la configuración de detección no es válida.";
-
-/* Error message when the location ID parameter is invalid. */
-"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "El ID de ubicación no es válido.";
-
-/* Error message when the reader for update is invalid. */
-"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "El lector que quieres actualizar no es válido.";
-
-/* Error message when the refund parameters are invalid. */
-"hardware.cardReader.underlyingError.invalidRefundParameters" = "Ponte en contacto con el soporte técnico: los parámetros de reembolso no son válidos.";
-
-/* Error message when a required parameter is invalid. */
-"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Ponte en contacto con el soporte técnico: el parámetro necesario no es válido.";
-
-/* Error message when EMV data is missing. */
-"hardware.cardReader.underlyingError.missingEMVData" = "El lector no ha podido leer los datos del método de pago presentado. Si se produce este error varias veces, es posible que el lector esté defectuoso, por lo que te recomendamos que te pongas en contacto con el soporte técnico.";
-
-/* Error message when the payment intent is missing. */
-"hardware.cardReader.underlyingError.nilPaymentIntent" = "Ponte en contacto con el soporte técnico: no se ha encontrado la intención de pago.";
-
-/* Error message when the refund payment method is missing. */
-"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Ponte en contacto con el soporte técnico: no se ha encontrado el método de reembolso del pago.";
-
-/* Error message when the setup intent is missing. */
-"hardware.cardReader.underlyingError.nilSetupIntent" = "Ponte en contacto con el soporte técnico: no se ha encontrado el intento de configuración.";
-
-/* Error message when the card is expired and offline mode is active. */
-"hardware.cardReader.underlyingError.offlineAndCardExpired" = "Se estaba confirmando el pago sin conexión, pero se ha detectado que la tarjeta había caducado.";
-
-/* Error message when there is a mismatch between offline collect and confirm. */
-"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Asegúrate de que la conexión a la red es consistente en el momento de recibir y confirmar el pago.";
-
-/* Error message when a test card is used in live mode while offline. */
-"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Cuando no hay conexión, se utiliza una tarjeta de prueba en el modo en vivo.";
-
-/* Error message when the offline transaction was declined. */
-"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "Se ha producido un error al confirmar el pago sin conexión y verificar la tarjeta.";
-
-/* Error message when online PIN is not supported in offline mode. */
-"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "El PIN en línea no se admite en el modo sin conexión. Intenta efectuar el pago de nuevo con otra tarjeta.";
-
-/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
-"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "No se ha presentado una tarjeta dentro del límite de tiempo.";
-
-/* Error message when the reader connection configuration is invalid. */
-"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "La configuración de conexión del lector no es válida.";
-
-/* Error message when the reader is missing encryption keys. */
-"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "El lector no dispone de las claves de cifrado necesarias para recibir pagos y se ha desconectado y reiniciado. Vuelve a conectarte al lector para intentar reinstalar las claves. Si el error persiste, ponte en contacto con el soporte técnico.";
-
-/* Error message when the reader software update fails due to an expired update. */
-"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "No se ha podido actualizar el software del lector porque la actualización ha caducado. Desconéctate del lector y vuelve a conectarte para recuperar una nueva actualización.";
-
-/* Error message when the reader tipping parameter is invalid. */
-"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Ponte en contacto con el soporte técnico: el parámetro de propinas del lector no es válido.";
-
-/* Error message when the refund operation failed. */
-"hardware.cardReader.underlyingError.refundFailed" = "No se ha podido efectuar el reembolso. El banco o el emisor de la tarjeta del cliente no han podido procesarlo correctamente (por ejemplo, la cuenta bancaria está cerrada o hay un problema con la tarjeta).";
-
-/* Error message when there is an error decoding the Stripe API response. */
-"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Ponte en contacto con el soporte técnico: se ha producido un error al descodificar la respuesta de la API de Stripe.";
-
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "El ID de la cuenta de Apple vinculada se ha desactivado.";
-
-/* Error message when an unexpected error occurs with the reader. */
-"hardware.cardReader.underlyingError.unexpectedReaderError" = "Se ha producido un error inesperado con el lector.";
-
-/* Error message when the reader's IP address is unknown. */
-"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "El lector devuelto por la detección no tiene dirección IP y no es posible conectarse a él.";
-
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Cupones";
 
@@ -11352,6 +10852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "Plugins";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "Código de barras demasiado corto";
+
+/* Error message shown when scan is incomplete. */
+"pointOfSale.barcodeScan.error.incompleteScan" = "Escaneo parcial del código de barras";
+
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Solicitud de red fallida";
 
@@ -11363,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when a scanned item is not found in the store. */
 "pointOfSale.barcodeScan.error.notFound" = "Artículo escaneado desconocido";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "No se ha podido leer el código de barras";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "Error de escaneado";
 
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "Tipo de artículo no compatible";
@@ -11709,6 +11221,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Cupón no aplicado";
 
+/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Escaneado de códigos de barras";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
 
@@ -11789,6 +11304,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "Hecho";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "Escaneado de códigos de barras";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "Puedes escanear códigos de barras con un escáner externo para crear rápidamente un carrito.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "Más detalles.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "Más detalles, enlace.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• Configura códigos de barras en el campo «GTIN, UPC, EAN, ISBN» de Productos > Detalles del producto > Inventario. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "Primero: configura códigos de barras en el campo «G-T-I-N, U-P-C, E-A-N, I-S-B-N» desplazándote a Productos, luego Detalles del producto y, luego, Inventario.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• Escanea los códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "Cuarto: escanea los códigos de barras mientras estás en la lista de artículos para añadir productos al carrito.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "El escáner emula un teclado, por lo que a veces evitará que se muestre el teclado del software, por ejemplo, en búsquedas. Toca el icono del teclado para que se muestre de nuevo.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage" = "• Consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo HID.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible" = "Segundo: consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo H-I-D.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• Conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "Tercero: conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
@@ -11889,9 +11443,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the list of popular products shown before a search term is typed in POS */
 "pos.itemsearch.before.search.popularProducts.title" = "Productos populares";
 
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "Buscar en tu tienda";
-
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "Búsquedas recientes";
 
@@ -11909,6 +11460,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "No se han encontrado cupones";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "Actualizar";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "Para añadir uno, sal del TPV y ve a Productos.";
@@ -11940,6 +11494,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "Crear cupón";
 
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "Aceptar";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Borrar la búsqueda";
 
@@ -11966,6 +11523,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "Sin existencias";
+
+/* Title for the Point of Sale tab. */
+"pos.tab.title" = "TPV";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "Nuevo pedido";
@@ -12674,9 +12234,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form. */
 "subscriptionsView.dismissSupport" = "Hecho";
 
-/* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
-"supportButton.accessibilityLabel" = "Ayuda y soporte";
-
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "Entendido";
 
@@ -13045,9 +12602,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "Pedidos";
-
-/* Title of the WPCOM checkout web view. */
-"webCheckoutViewModel.title" = "Finalizar compra";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Descartar";
@@ -13457,8 +13011,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "Envío %1$d";
 
+/* Label when shipping rate has option for additional handling in Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)' */
+"wooShipping.createLabels.shippingService.additionalHandling" = "Gestión adicional (%1$@)";
+
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
-"wooShipping.createLabels.shippingService.adultSignatureRequired" = "Firma de un adulto obligatoria (+%1$@)";
+"wooShipping.createLabels.shippingService.adultSignatureRequiredLabel" = "Firma de un adulto obligatoria (%1$@)";
+
+/* Label when shipping rate has option for carbon neutral delivery in Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)' */
+"wooShipping.createLabels.shippingService.carbonNeural" = "Huella de carbono cero (%1$@)";
 
 /* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
 "wooShipping.createLabels.shippingService.deliveryDaySingular" = "%1$d día laborable";
@@ -13478,8 +13038,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
 "wooShipping.createLabels.shippingService.insuranceLiteral" = "Seguro (%1$@)";
 
+/* Label when shipping rate has option for Saturday delivery in Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)' */
+"wooShipping.createLabels.shippingService.saturdayDelivery" = "Entrega el sábado (%1$@)";
+
 /* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
-"wooShipping.createLabels.shippingService.signatureRequired" = "Firma obligatoria (+%1$@)";
+"wooShipping.createLabels.shippingService.signatureRequiredLabel" = "Firma obligatoria (%1$@)";
 
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "Seguimiento";

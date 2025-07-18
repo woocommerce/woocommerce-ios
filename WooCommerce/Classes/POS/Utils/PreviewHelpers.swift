@@ -21,6 +21,7 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
+import struct Yosemite.PaymentIntent
 
 // MARK: - PreviewProvider helpers
 //
@@ -212,12 +213,13 @@ struct POSPreviewHelpers {
         couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentAnalytics(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
+            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0)),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -237,6 +239,44 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return mockSimpleProductItem(id: 5, price: "35.50")
     }
+}
+
+final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+    func trackCustomerInteractionStarted() {}
+
+    func trackOrderSyncSuccess() {}
+
+    func trackCardReaderReady() {}
+
+    func trackCardReaderTapped() {}
+
+    func trackCheckoutTapped() {}
+
+    func resetCheckoutTapCountTracker() {}
+
+    func trackSuccessfulCashPayment() {}
+
+    var connectedReaderModel: String?
+
+    func preflightResultReceived(_ result: CardReaderPreflightResult?) {}
+
+    func trackProcessingCompletion(intent: PaymentIntent) {}
+
+    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {}
+
+    func trackPaymentFailure(with error: any Error) {}
+
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {}
+
+    func trackEmailTapped() {}
+
+    func trackReceiptPrintTapped() {}
+
+    func trackReceiptPrintSuccess() {}
+
+    func trackReceiptPrintCanceled() {}
+
+    func trackReceiptPrintFailed(error: any Error) {}
 }
 
 #endif

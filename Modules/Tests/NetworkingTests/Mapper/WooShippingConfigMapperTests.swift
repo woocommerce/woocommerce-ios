@@ -15,8 +15,21 @@ final class WooShippingConfigMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(config.shipments.count, 3)
+        let shipment0 = try XCTUnwrap(config.shipments.first(where: { $0.index == "0" }))
+        XCTAssertNil(shipment0.shippingLabel) // non-purchased status means no label found
+        XCTAssertEqual(shipment0.items.count, 1)
+
+        let shipment1 = try XCTUnwrap(config.shipments.first(where: { $0.index == "1" }))
+        XCTAssertEqual(shipment1.shippingLabel?.shippingLabelID, 4871)
+        XCTAssertEqual(shipment1.items.count, 1)
+
+        let shipment2 = try XCTUnwrap(config.shipments.first(where: { $0.index == "2" }))
+        XCTAssertEqual(shipment2.shippingLabel?.shippingLabelID, 4873)
+        XCTAssertNotNil(shipment2.shippingLabel?.refund)
+        XCTAssertEqual(shipment2.items.count, 1)
+
         let shippingLabelData = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
-        XCTAssertEqual(shippingLabelData.count, 1)
+        XCTAssertEqual(shippingLabelData.count, 3)
         XCTAssertEqual(shippingLabelData.first?.shipmentID, "1")
         XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4871)
     }
@@ -28,8 +41,22 @@ final class WooShippingConfigMapperTests: XCTestCase {
         }
 
         XCTAssertEqual(config.shipments.count, 3)
+        let shipment0 = try XCTUnwrap(config.shipments.first(where: { $0.index == "0" }))
+        XCTAssertNil(shipment0.shippingLabel) // non-purchased status means no label found
+        XCTAssertEqual(shipment0.items.count, 1)
+
+        let shipment1 = try XCTUnwrap(config.shipments.first(where: { $0.index == "1" }))
+        XCTAssertEqual(shipment1.shippingLabel?.shippingLabelID, 4871)
+        XCTAssertNil(shipment1.shippingLabel?.refund)
+        XCTAssertEqual(shipment1.items.count, 1)
+
+        let shipment2 = try XCTUnwrap(config.shipments.first(where: { $0.index == "2" }))
+        XCTAssertEqual(shipment2.shippingLabel?.shippingLabelID, 4873)
+        XCTAssertNotNil(shipment2.shippingLabel?.refund)
+        XCTAssertEqual(shipment2.items.count, 1)
+
         let shippingLabelData = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
-        XCTAssertEqual(shippingLabelData.count, 1)
+        XCTAssertEqual(shippingLabelData.count, 3)
         XCTAssertEqual(shippingLabelData.first?.shipmentID, "1")
         XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4871)
     }

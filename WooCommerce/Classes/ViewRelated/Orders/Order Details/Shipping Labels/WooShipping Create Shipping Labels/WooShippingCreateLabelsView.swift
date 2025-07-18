@@ -143,6 +143,9 @@ private extension WooShippingCreateLabelsView {
         viewModel.shipments.enumerated().map { (index, shipment) in
             TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                        icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
+                       customAccessibilityValue: shipment.isPurchased ?
+                           Localization.Accessibility.shipmentTabFulfilled :
+                           Localization.Accessibility.shipmentTabUnfulfilled,
                        content: {
                 EmptyView()
             })
@@ -178,6 +181,7 @@ private extension WooShippingCreateLabelsView {
                 Image(systemName: "pencil")
                     .padding(.horizontal)
             }
+            .accessibilityHint(Localization.Accessibility.editButtonHint)
             .renderedIf(viewModel.hasUnfulfilledShipments)
         }
         .disabled(viewModel.isPurchasingLabel)
@@ -333,7 +337,7 @@ private extension WooShippingCreateLabelsView {
         Group {
             if isiPhonePortrait {
                 VStack(spacing: Layout.bottomSheetSpacing) {
-                    if isShipmentDetailsExpanded {
+                    if isShipmentDetailsExpanded && !viewModel.isOrderCompleted {
                         Toggle(isOn: $viewModel.markOrderComplete) {
                             Text(Localization.BottomSheet.markComplete)
                                 .font(.subheadline)
@@ -358,6 +362,7 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                         .fixedSize(horizontal: false, vertical: true)
+                        .renderedIf(!viewModel.isOrderCompleted)
 
                         if shouldShowPurchaseButton {
                             purchaseButton
@@ -370,16 +375,28 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing the origin ("Ship From") address.
     var shipFromAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
 
-            if viewModel.canViewLabel,
-               let addressLines = viewModel.originAddressLines {
-                AddressLinesView(addressLines: addressLines)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            if viewModel.canViewLabel {
+                Group {
+                    if let addressLines = viewModel.originAddressLines {
+                        AddressLinesView(addressLines: addressLines)
+                    } else {
+                        Spacer()
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                VStack(alignment: .leading) {
+                VStack(
+                    alignment: .leading,
+                    spacing: Layout.verticalSpacing
+                ) {
                     Button {
                         isOriginAddressListPresented = true
                     } label: {
@@ -412,10 +429,17 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing the destination ("Ship To") address.
     var shipToAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipTo)
                 .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
-            VStack(alignment: .leading) {
+            VStack(
+                alignment: .leading,
+                spacing: Layout.verticalSpacing
+            ) {
                 if let addressLines = viewModel.destinationAddressLines {
                     AddressLinesView(addressLines: addressLines)
                 }
@@ -671,6 +695,21 @@ private extension WooShippingCreateLabelsView {
         static let close = NSLocalizedString("wooShipping.createLabel.closeButton",
                                              value: "Close",
                                              comment: "Title of the button to dismiss the shipping label screen")
+
+        enum Accessibility {
+            static let editButtonHint = NSLocalizedString(
+                "wooShipping.createLabel.editButton.accessibility.hint",
+                value: "Opens the shipments editing form.",
+                comment: "Accessibility hint of the button to open the shipments editing form.")
+            static let shipmentTabFulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled",
+                value: "Fulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is fulfilled.")
+            static let shipmentTabUnfulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled",
+                value: "Unfulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is unfulfilled.")
+        }
 
         enum BottomSheet {
             static let shipmentDetails = NSLocalizedString("wooShipping.createLabels.bottomSheet.title",

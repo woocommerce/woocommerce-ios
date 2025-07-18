@@ -66,6 +66,8 @@ extension Storage.Order: ReadOnlyConvertible {
             shippingPhone = shippingAddress.phone
             shippingEmail = shippingAddress.email
         }
+
+        createdVia = order.createdVia
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -80,6 +82,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
         let orderGiftCards = appliedGiftCards?.map { $0.toReadOnly() } ?? [Yosemite.OrderGiftCard]()
         let orderShippingLabels = shippingLabels?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLabel]()
+        let orderShipments = shipments?.map { $0.toReadOnly() } ?? [Yosemite.WooShippingShipment]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -119,7 +122,8 @@ extension Storage.Order: ReadOnlyConvertible {
                      renewalSubscriptionID: renewalSubscriptionID,
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),
-                     shippingLabels: orderShippingLabels)
+                     shippingLabels: orderShippingLabels,
+                     createdVia: createdVia)
 
     }
 

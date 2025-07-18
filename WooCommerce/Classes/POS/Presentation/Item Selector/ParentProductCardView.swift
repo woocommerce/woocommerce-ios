@@ -40,6 +40,12 @@ struct ParentProductCardView: View {
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
+
+            Image(systemName: "chevron.forward")
+                .accessibilityHidden(true)
+                .font(.posButtonSymbolSmall)
+                .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                .padding(.horizontal, POSPadding.medium * (1 / scale))
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)

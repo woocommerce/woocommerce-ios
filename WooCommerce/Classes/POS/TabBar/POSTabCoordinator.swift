@@ -28,6 +28,7 @@ final class POSTabCoordinator {
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
+    private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
@@ -63,7 +64,8 @@ final class POSTabCoordinator {
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.tabContainerController = tabContainerController
@@ -72,6 +74,7 @@ final class POSTabCoordinator {
         self.storageManager = storageManager
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
+        self.eligibilityChecker = eligibilityChecker
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -121,7 +124,8 @@ private extension POSTabCoordinator {
                         itemProvider: PointOfSaleItemService(currencySettings: currencySettings),
                         itemFetchStrategyFactory: posPopularItemFetchStrategyFactory
                     ),
-                    barcodeScanService: barcodeScanService
+                    barcodeScanService: barcodeScanService,
+                    posEligibilityChecker: eligibilityChecker
                 )
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen

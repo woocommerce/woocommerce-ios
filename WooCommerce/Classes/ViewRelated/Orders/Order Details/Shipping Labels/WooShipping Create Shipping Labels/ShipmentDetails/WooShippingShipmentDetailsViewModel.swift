@@ -2,11 +2,13 @@ import Foundation
 import Yosemite
 import WooFoundation
 import Combine
+import protocol Storage.StorageManagerType
 
 final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     private let order: Order
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let onLabelPurchase: ((ShippingLabel) -> Void)?
     private let onLabelRefund: ((Int64) -> Void)?
@@ -64,9 +66,14 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     @Published private var customsForm: ShippingLabelCustomsForm?
 
     lazy private(set) var customsFormViewModel: WooShippingCustomsFormViewModel = {
-        WooShippingCustomsFormViewModel(order: order, shipment: shipment, onCompletion: { [weak self] form in
+        return WooShippingCustomsFormViewModel(
+            order: order,
+            shipment: shipment,
+            originCountryCode: originCountryCodePublisher(),
+            storageManager: storageManager
+        ) { [weak self] form in
             self?.customsForm = form
-        })
+        }
     }()
 
     /// Whether the custom information is completed or not.
@@ -130,6 +137,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          originAddress: AnyPublisher<WooShippingAddress?, Never>,
          destinationAddress: AnyPublisher<WooShippingAddress?, Never>,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          debounceDuration: Double = 1,
@@ -137,6 +145,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
          onLabelRefund: ((Int64) -> Void)? = nil) {
         self.order = order
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
         self.shipment = shipment
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
@@ -174,10 +183,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     ///
     @MainActor
     func refreshPackagesAndShippingRates() async throws {
-        guard let selectedRate, let selectedPackage, let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
+        let currentShipmentWeight = shipmentWeight
+
+        guard let selectedRate, let selectedPackage,
+              let updatedPackage = try await refreshSelectedPackage(from: selectedPackage) else {
             throw WooShippingLabelPurchaseError.failedToRefreshSelectedPackage
         }
         self.selectedPackage = updatedPackage
+
+        /// If the shipment weight was manually entered, reuse it.
+        if currentShipmentWeight != shipmentWeight {
+            self.shipmentWeight = currentShipmentWeight
+        }
 
         let finalPackage = buildSelectedPackage(updatedPackage,
                                                 weight: Double(shipmentWeight) ?? 0,
@@ -201,7 +218,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
-    func purchaseLabel() async throws {
+    func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
               let selectedRate = selectedRate else {
@@ -218,7 +235,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
-                                                                 package: packagePurchase) { [weak self] result in
+                                                                 package: packagePurchase,
+                                                                 markOrderComplete: markOrderComplete) { [weak self] result in
                 switch result {
                 case .success:
                     self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
@@ -242,6 +260,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel = nil
         postPurchase = nil
         onLabelRefund?(labelID)
+    }
+}
+
+/// Accessor for manual collapsed product items section accessibility label
+extension WooShippingShipmentDetailsViewModel {
+    var itemsSummaryAccessibilityValue: String {
+        return String.localizedStringWithFormat(
+            Localization.itemsSummaryAccessibilityFormat,
+            shipment.quantity,
+            shipment.weight,
+            shipment.price
+        )
     }
 }
 
@@ -365,13 +395,28 @@ private extension WooShippingShipmentDetailsViewModel {
                 } else if let selectedRate {
                     let baseRate = selectedRate.rate.rate
                     let formattedBaseRate = self.formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
-                    let formattedSignatureRate = [
+                    let formattedAdditionalRates = [
                         selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
                         selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
                                                                                       rate: $0.rate,
-                                                                                      basedOn: baseRate) }
+                                                                                      basedOn: baseRate) },
+                        selectedRate.carbonNeutralRate.map {
+                            self.formatShippingRate(name: Localization.carbonNeutral,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.additionalHandlingRate.map {
+                            self.formatShippingRate(name: Localization.additionalHandling,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        },
+                        selectedRate.saturdayDeliveryRate.map {
+                            self.formatShippingRate(name: Localization.saturdayDelivery,
+                                                    rate: $0.rate,
+                                                    basedOn: baseRate)
+                        }
                     ].compacted()
-                    return [formattedBaseRate] + formattedSignatureRate
+                    return [formattedBaseRate] + formattedAdditionalRates
                 } else {
                     return []
                 }
@@ -382,12 +427,14 @@ private extension WooShippingShipmentDetailsViewModel {
     /// Observes changes in shipment details and resets the selected rate.
     /// This is to prevent displaying a stale price when critical details that affect pricing have changed.
     func setupSelectedRateReset() {
-        $destinationAddress
-            .combineLatest($originAddress)
-            .combineLatest($selectedPackage)
-            .combineLatest($shipmentWeight)
-            .combineLatest($hazmatCategory)
-            .combineLatest($customsForm)
+        $destinationAddress.removeDuplicates()
+            .combineLatest($originAddress.removeDuplicates())
+            .combineLatest(
+                $selectedPackage.removeDuplicates(by: { $0?.id == $1?.id })
+            )
+            .combineLatest($shipmentWeight.removeDuplicates())
+            .combineLatest($hazmatCategory.removeDuplicates())
+            .combineLatest($customsForm.removeDuplicates())
             // Drop the initial values set on initialization, so we only react to changes.
             .dropFirst()
             .sink { [weak self] _ in
@@ -453,6 +500,12 @@ private extension WooShippingShipmentDetailsViewModel {
         }
         return foundCarrierPackage
     }
+
+    func originCountryCodePublisher() -> AnyPublisher<String?, Never> {
+        $originAddress
+            .map(\.?.country)
+            .eraseToAnyPublisher()
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModel {
@@ -480,7 +533,11 @@ private extension WooShippingShipmentDetailsViewModel {
             comment: "Button to undo a change on the shipping label creation screen"
         )
         static func baseRateLabel(for selectedRate: WooShippingSelectedRate) -> String {
-            if selectedRate.signatureRate == nil && selectedRate.adultSignatureRate == nil {
+            if selectedRate.signatureRate == nil &&
+                selectedRate.adultSignatureRate == nil &&
+                selectedRate.carbonNeutralRate == nil &&
+                selectedRate.additionalHandlingRate == nil &&
+                selectedRate.saturdayDeliveryRate == nil {
                 return selectedRate.rate.title
             } else {
                 return String.localizedStringWithFormat(baseFeeFormat, selectedRate.rate.title)
@@ -499,5 +556,31 @@ private extension WooShippingShipmentDetailsViewModel {
                                                               value: "Adult Signature Required",
                                                               comment: "Label for row showing the additional cost to require an adult signature " +
                                                               "on the shipping label creation screen")
+        static let carbonNeutral = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.carbonNeutral",
+            value: "Carbon Neutral",
+            comment: "Label for row showing the additional cost to require carbon neutral delivery " +
+            "on the shipping label creation screen"
+        )
+        static let additionalHandling = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.additionalHandling",
+            value: "Additional Handling",
+            comment: "Label for row showing the additional cost to require additional handling " +
+            "on the shipping label creation screen"
+        )
+        static let saturdayDelivery = NSLocalizedString(
+            "wooShipping.createLabels.bottomSheet.saturdayDelivery",
+            value: "Saturday Delivery",
+            comment: "Label for row showing the additional cost to require Saturday delivery " +
+            "on the shipping label creation screen"
+        )
+        static let itemsSummaryAccessibilityFormat = NSLocalizedString(
+            "shipping-labels.packages.items.summary.accessibility-label",
+            value: "%1$@ with a total weight of %2$@ and a total price of %3$@",
+            comment: "Accessibility label for the summary of product items in a shipment." +
+                " The %1$@ is items count." +
+                " The %2$@ is total weight." +
+                " The %3$@ is total price."
+        )
     }
 }

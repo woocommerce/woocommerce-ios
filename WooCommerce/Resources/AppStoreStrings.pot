@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v22.7-whats-new"
+msgctxt "v22.8-whats-new"
 msgid ""
-"Say hello to smoother shipping and sales! 🎉 We’ve enhanced Shipping Labels with UPS extras and smarter forms, fixed price and display glitches, and made shipment management easier. Plus, Point of Sale now has its own tab for eligible stores, barcode scanning, and smoother product refresh for faster checkout.\n"
+"Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

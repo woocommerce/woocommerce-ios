@@ -1,12 +1,32 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+22.9
+-----
+- [*] Shipping Labels: Empty dimensions are no longer presented for product cards [https://github.com/woocommerce/woocommerce-ios/pull/15912]
+- [*] Shipping Labels: Improved VoiceOver accessibility [https://github.com/woocommerce/woocommerce-ios/pull/15912]
+- [**] Order Details: Update Shipping Labels section for stores with Woo Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15889]
+- [*] Order List: New orders made through Point of Sale are now filterable via the Order List filters menu [https://github.com/woocommerce/woocommerce-ios/pull/15910]
+- [*] POS: a POS tab in the tab bar is now available in the app for stores in countries eligible for Point of Sale, instead of the tab is only shown when the store is eligible for POS. [https://github.com/woocommerce/woocommerce-ios/pull/15918]
+- [*] Shipping Labels: Display base rate on selected shipping service cards [https://github.com/woocommerce/woocommerce-ios/pull/15916]
+- [*] Shipping Labels: Update mark order completed toggle on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15917]
+- [internal] Optimized assets for app size reduction [https://github.com/woocommerce/woocommerce-ios/pull/15881]
+
 22.8
 -----
-
+- [*] Shipping Labels: Improve UI of Split shipments screen. [https://github.com/woocommerce/woocommerce-ios/pull/15838]
+- [*] POS: icon button with confirmation step used for clearing the cart [https://github.com/woocommerce/woocommerce-ios/pull/15829]
+- [*] POS: Orders from Point of Sale now show a badge in order list and order details [https://github.com/woocommerce/woocommerce-ios/pull/15887]
+- [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
+- [*] Shipping Labels: Enable the confirm button on the payment method sheet even when there are no changes. [https://github.com/woocommerce/woocommerce-ios/pull/15856]
+- [*] POS: start a new cart by scanning a barcode on the payment success screen [https://github.com/woocommerce/woocommerce-ios/pull/15870]
+- [*] Watch app: Fixed connection issue upon fresh install [https://github.com/woocommerce/woocommerce-ios/pull/15867]
+- [Internal] Shipping Labels: Optimize requests for syncing countries [https://github.com/woocommerce/woocommerce-ios/pull/15875]
+- [*] Shipping Labels: Display label size from account settings as default [https://github.com/woocommerce/woocommerce-ios/pull/15873]
 
 22.7
 -----
+- [*] Shipping Labels: Fixed an issue where the origin and destination addresses were missing for previously purchased shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/15866]
 - [*] Shipping Labels: Fixed an issue where the purchase button would display a stale price after changing the origin address. [https://github.com/woocommerce/woocommerce-ios/pull/15795]
 - [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
 - [*] Shipping Labels: Improved shipment management UI by hiding remove/merge options instead of disabling them, hiding merge option for orders with 2 or fewer unfulfilled shipments, and hiding the ellipsis menu when no remove/merge actions are available [https://github.com/woocommerce/woocommerce-ios/pull/15760]
@@ -18,6 +38,7 @@
 - [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
 - [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]
 - [*] Shipping Labels: Pre-fill custom forms with item description, value, and weight [https://github.com/woocommerce/woocommerce-ios/pull/15811]
+- [*] Shipping Labels: Pre-fill custom forms with item origin country [https://github.com/woocommerce/woocommerce-ios/pull/15835]
 - [internal] POS: Improved scrolling and animation performance by refactoring the shadow implementation and updating the cart and checkout views. [https://github.com/woocommerce/woocommerce-ios/pull/15817]
 
 22.6
@@ -775,7 +796,7 @@
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
 - [*] Product list filter (Products tab and order creation > add products > filter): product types from extensions supported in the app are now available for product filtering - subscription, variable subscription, bundle, and composite. [https://github.com/woocommerce/woocommerce-ios/pull/10382]
- 
+
 14.7
 -----
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]

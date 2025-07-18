@@ -20,6 +20,7 @@ extension Order {
     @NSManaged public var billingPostcode: String?
     @NSManaged public var billingState: String?
     @NSManaged public var chargeID: String?
+    @NSManaged public var createdVia: String?
     @NSManaged public var currency: String?
     @NSManaged public var customerID: Int64
     @NSManaged public var customerNote: String?
@@ -70,6 +71,7 @@ extension Order {
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
     @NSManaged public var taxes: Set<OrderTaxLine>?
     @NSManaged public var attributionInfo: OrderAttributionInfo?
+    @NSManaged public var shipments: Set<WooShippingShipment>?
 
 }
 
@@ -275,4 +277,20 @@ extension Order {
     @objc(removeAppliedGiftCards:)
     @NSManaged public func removeFromAppliedGiftCards(_ values: NSSet)
 
+}
+
+// MARK: Generated accessors for shipments
+extension Order {
+
+    @objc(addShipmentsObject:)
+    @NSManaged public func addToShipments(_ value: WooShippingShipment)
+
+    @objc(removeShipmentsObject:)
+    @NSManaged public func removeFromShipments(_ value: WooShippingShipment)
+
+    @objc(addShipments:)
+    @NSManaged public func addToShipments(_ values: NSSet)
+
+    @objc(removeShipments:)
+    @NSManaged public func removeFromShipments(_ values: NSSet)
 }

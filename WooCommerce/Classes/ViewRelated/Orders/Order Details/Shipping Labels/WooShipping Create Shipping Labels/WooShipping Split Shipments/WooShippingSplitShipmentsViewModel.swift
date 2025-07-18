@@ -37,7 +37,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     ///
     private var editedShipmentsInfo: WooShippingShipments {
         var shipmentsForRemote = [String: [WooShippingShipmentItem]]()
-        for shipment in shipments {
+        for shipment in shipments.sorted(by: { $0.index < $1.index}) {
             var items = [WooShippingShipmentItem]()
             for item in shipment.contents {
                 if let mainItemID = Int(item.mainItemRow.itemID) {
@@ -137,7 +137,9 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func onAppear() {
-        showInstructionsNotice()
+        if shipments.count == 1 {
+            showInstructionsNotice()
+        }
         updateMoveToNotice()
     }
 
@@ -152,17 +154,23 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         dismissedInstructions = true
     }
 
-    func didPurchaseLabel(for shipmentIndex: Int, purchasedLabelID: Int64) {
+    func revertChanges() {
+        shipments = shipmentsSavedInRemote
+        selectedShipmentIndex = 0
+    }
+
+    func didPurchaseLabel(for shipmentIndex: Int, label: ShippingLabel) {
         let currentShipment = shipments[shipmentIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
         shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
-                                            purchasedLabelID: purchasedLabelID,
+                                            purchasedLabel: label,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
+        shipmentsSavedInRemote = shipments
     }
 
     func didRequestRefund(for shipmentIndex: Int) {
@@ -172,10 +180,11 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         }
         shipments[shipmentIndex] = Shipment(index: shipmentIndex,
                                             contents: updatedContents,
-                                            purchasedLabelID: nil,
+                                            purchasedLabel: nil,
                                             currency: order.currency,
                                             currencySettings: currencySettings,
                                             shippingSettingsService: shippingSettingsService)
+        shipmentsSavedInRemote = shipments
     }
 
     func moveSelectedItems(to destination: MoveToShipmentNoticeViewModel.Destination) {
@@ -535,42 +544,36 @@ extension WooShippingSplitShipmentsViewModel {
             return [shipment]
         }
 
-        let currentOrderLabels = config.shippingLabelData?.currentOrderLabels ?? []
-        var shipments = [Shipment]()
+        let shipments = config.shipments
+            .sorted(by: { $0.index.localizedStandardCompare($1.index) == .orderedAscending })
+            .map { shipment in
+                var shipmentContents = ShipmentContents()
+                for shipmentItem in shipment.items {
+                    guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }) else {
+                        continue
+                    }
 
-        for key in config.shipments.keys.sorted() {
-            guard let shipmentItems = config.shipments[key] else {
-                continue
-            }
-
-            let purchasedLabel = currentOrderLabels
-                .first(where: { $0.shipmentID == key && $0.status == .purchased && $0.refund == nil })
-
-            let isPurchased = purchasedLabel != nil
-
-            var shipmentContents = ShipmentContents()
-            for shipmentItem in shipmentItems {
-                guard let packageItem = packageItems.first(where: { $0.orderItemID == shipmentItem.id }),
-                      let subItems = shipmentItem.subItems else {
-                    continue
+                    let updatedItem = ShippingLabelPackageItem(copy: packageItem,
+                                                               quantity: shipmentItem.quantity)
+                    let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
+                                                                       isSelectable: shipment.shippingLabel == nil,
+                                                                       currency: currency)
+                    shipmentContents.append(content)
                 }
 
-                let quantity = subItems.count > 0 ? subItems.count : 1
-                let updatedItem = ShippingLabelPackageItem(copy: packageItem, quantity: Decimal(quantity))
-                let content = CollapsibleShipmentItemCardViewModel(item: updatedItem,
-                                                                   isSelectable: !isPurchased,
-                                                                   currency: currency)
-                shipmentContents.append(content)
+                let purchasedLabel: ShippingLabel? = {
+                    guard let label = shipment.shippingLabel, label.refund == nil else {
+                        return nil
+                    }
+                    return label
+                }()
+                return Shipment(index: Int(shipment.index) ?? 0,
+                                contents: shipmentContents,
+                                purchasedLabel: purchasedLabel,
+                                currency: currency,
+                                currencySettings: currencySettings,
+                                shippingSettingsService: shippingSettingsService)
             }
-
-            let shipment = Shipment(index: Int(key) ?? 0,
-                                    contents: shipmentContents,
-                                    purchasedLabelID: purchasedLabel?.shippingLabelID,
-                                    currency: currency,
-                                    currencySettings: currencySettings,
-                                    shippingSettingsService: shippingSettingsService)
-            shipments.append(shipment)
-        }
         return shipments
     }
 
@@ -590,7 +593,7 @@ extension WooShippingSplitShipmentsViewModel {
         let index: Int
 
         let contents: [CollapsibleShipmentItemCardViewModel]
-        let purchasedLabelID: Int64?
+        let purchasedLabel: ShippingLabel?
 
         let quantity: String
         let weight: String
@@ -607,7 +610,7 @@ extension WooShippingSplitShipmentsViewModel {
         }
 
         var isPurchased: Bool {
-            purchasedLabelID != nil
+            purchasedLabel != nil
         }
 
         private let currency: String
@@ -617,14 +620,14 @@ extension WooShippingSplitShipmentsViewModel {
         init(id: String = UUID().uuidString,
              index: Int = 0,
              contents: [CollapsibleShipmentItemCardViewModel],
-             purchasedLabelID: Int64? = nil,
+             purchasedLabel: ShippingLabel? = nil,
              currency: String,
              currencySettings: CurrencySettings,
              shippingSettingsService: ShippingSettingsService) {
             self.id = id
             self.index = index
             self.contents = contents
-            self.purchasedLabelID = purchasedLabelID
+            self.purchasedLabel = purchasedLabel
 
             let items = contents.map(\.packageItem)
             let itemsCount = items.map(\.quantity).reduce(0, +)
@@ -665,7 +668,7 @@ extension WooShippingSplitShipmentsViewModel {
             Shipment(id: id,
                      index: newIndex,
                      contents: contents,
-                     purchasedLabelID: purchasedLabelID,
+                     purchasedLabel: purchasedLabel,
                      currency: currency,
                      currencySettings: currencySettings,
                      shippingSettingsService: shippingSettingsService)

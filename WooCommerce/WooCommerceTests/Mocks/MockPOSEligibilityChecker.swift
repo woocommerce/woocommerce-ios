@@ -3,14 +3,24 @@ import Foundation
 
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
-    var result: POSEligibilityState = .eligible
+    var visibility: Bool = false
+    var eligibility: POSEligibilityState = .eligible
 
     func checkInitialVisibility() -> Bool {
         initialVisibility
     }
 
     @MainActor
+    func checkVisibility() async -> Bool {
+        visibility
+    }
+
+    @MainActor
     func checkEligibility() async -> POSEligibilityState {
-        result
+        eligibility
+    }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        .ineligible(reason: ineligibleReason)
     }
 }

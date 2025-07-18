@@ -129,17 +129,7 @@ final class WooShippingServiceCardViewModel: Identifiable, ObservableObject {
             }
         }()
 
-        let rateLabel = {
-            let selectedRate = WooShippingSelectedRate(
-                rate: rate,
-                signatureRate: signatureRequirement == .signatureRequired ? signatureRate : nil,
-                adultSignatureRate: signatureRequirement == .adultSignatureRequired ? adultSignatureRate : nil,
-                carbonNeutralRate: carbonNeutralSelected ? carbonNeutralRate : nil,
-                saturdayDeliveryRate: saturdayDeliverySelected ? saturdayDeliveryRate : nil,
-                additionalHandlingRate: additionalHandlingSelected ? additionalHandlingRate : nil
-            )
-            return currencyFormatter.formatAmount(Decimal(selectedRate.totalRate)) ?? ""
-        }()
+        let rateLabel = currencyFormatter.formatAmount(Decimal(rate.rate)) ?? ""
 
         let daysToDeliveryLabel: String? = {
             guard let deliveryDays = rate.deliveryDays else {

@@ -6,6 +6,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
+    @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
@@ -30,7 +31,8 @@ struct PointOfSaleEntryPointView: View {
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
-         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol) {
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -43,11 +45,12 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
     }
 
     var body: some View {
         Group {
-            if let posModel = posModel {
+            if let posModel {
                 PointOfSaleDashboardView()
                     .environment(posModel)
             } else {
@@ -59,6 +62,7 @@ struct PointOfSaleEntryPointView: View {
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
             posModel = PointOfSaleAggregateModel(
+                entryPointController: posEntryPointController,
                 itemsController: itemsController,
                 purchasableItemsSearchController: purchasableItemsSearchController,
                 couponsController: couponsController,
@@ -93,10 +97,11 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics(),
+                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
-                              barcodeScanService: PointOfSalePreviewBarcodeScanService())
+                              barcodeScanService: PointOfSalePreviewBarcodeScanService(),
+                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0))
 }
 
 #endif

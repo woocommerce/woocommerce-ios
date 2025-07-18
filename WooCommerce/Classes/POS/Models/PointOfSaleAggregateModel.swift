@@ -34,7 +34,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
     var cart: Cart { get }
-    func barcodeScanned(_ result: Result<String, Error>)
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>)
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
     func removeAllItemsFromCart(types: [CartItemType])
@@ -66,6 +66,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
+    let entryPointController: POSEntryPointController
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
     let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -99,7 +100,8 @@ protocol PointOfSaleAggregateModelProtocol {
         _viewStateCoordinator
     }
 
-    init(itemsController: PointOfSaleItemsControllerProtocol,
+    init(entryPointController: POSEntryPointController,
+         itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -112,6 +114,7 @@ protocol PointOfSaleAggregateModelProtocol {
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .idle) {
+        self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
         self.couponsController = couponsController
@@ -185,7 +188,7 @@ extension PointOfSaleAggregateModel {
 // MARK: - Barcode Scanning
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
-    func barcodeScanned(_ result: Result<String, Error>) {
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             switch result {

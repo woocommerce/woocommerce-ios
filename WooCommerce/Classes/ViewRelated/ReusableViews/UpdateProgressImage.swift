@@ -8,7 +8,7 @@ extension UIImage {
         }
         let size = firstImage.size
         let rect = CGRect(origin: .zero, size: size)
-        UIGraphicsBeginImageContext(size)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 
         for image in images {
             image.draw(in: rect)
@@ -28,7 +28,7 @@ extension UIImage {
 
         let rect = CGRect(x: 0, y: 0, width: Constants.size, height: Constants.size)
         let clippingRect = CGRect(x: 0, y: (1 - progress) * Constants.size, width: Constants.size, height: Constants.size)
-        UIGraphicsBeginImageContext(rect.size)
+        UIGraphicsBeginImageContextWithOptions(rect.size, false, 0.0)
         defer { UIGraphicsEndImageContext() }
 
         guard let context = UIGraphicsGetCurrentContext() else {
@@ -43,26 +43,16 @@ extension UIImage {
     }
 
     static func softwareUpdateProgress(progress: CGFloat) -> UIImage {
-        let symbol: UIImage = progress == 1 ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow
-
-        return .composite(images: [
-            .cardReaderUpdateProgressBackground,
-            .softwareUpdateProgressFill(progress: progress),
-            symbol
-        ].compactMap { $0 }) ?? .init()
-    }
-
-    static func posSoftwareUpdateProgress(progress: CGFloat) -> UIImage {
         let symbol: UIImage =
             progress == 1 ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow
         let backgroundImage = UIImage.cardReaderUpdateProgressBackground
             .withRenderingMode(.alwaysTemplate)
-            .withTintColor(UIColor(.posSecondary))
+            .withTintColor(.accent.withAlphaComponent(0.5))
         return .composite(
             images: [
                 backgroundImage,
-                .softwareUpdateProgressFill(progress: progress, fillColor: UIColor(.posPrimary)),
-                symbol.withTintColor(UIColor(.posOnPrimary)),
+                .softwareUpdateProgressFill(progress: progress, fillColor: .accent),
+                symbol
             ].compactMap { $0 }) ?? .init()
     }
 }
@@ -83,12 +73,6 @@ struct UpdateProgressImage_Previews: PreviewProvider {
                     Text("Default Style")
                         .font(.headline)
                     Image(uiImage: UIImage.softwareUpdateProgress(progress: complete))
-                }
-
-                VStack {
-                    Text("POS Style")
-                        .font(.headline)
-                    Image(uiImage: UIImage.posSoftwareUpdateProgress(progress: complete))
                 }
 
                 Slider(value: $complete, in: 0...1)

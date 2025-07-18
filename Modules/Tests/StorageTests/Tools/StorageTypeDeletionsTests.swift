@@ -115,18 +115,18 @@ final class StorageTypeDeletionsTests: XCTestCase {
 
     // MARK: - System plugins
 
-    func test_deleteStaleSystemPlugins_deletes_systemPlugins_not_included_in_currentSystemPlugins() throws {
+    func test_deleteStaleSystemPlugins_by_plugin_paths_deletes_systemPlugins_not_included_in_currentSystemPluginPaths() throws {
         // Given
-        _ = createSystemPlugin(name: "Plugin 1")
-        _ = createSystemPlugin(name: "Plugin 2")
-        let systemPlugin3 = createSystemPlugin(name: "Plugin 3")
+        _ = createSystemPlugin(name: "WooCommerce", path: "woocommerce/woocommerce.php")
+        _ = createSystemPlugin(name: "Jetpack", path: "jetpack/jetpack.php")
+        let systemPlugin3 = createSystemPlugin(name: "WooCommerce", path: "wordpress-seo/wp-seo.php")
 
         // When
-        storage.deleteStaleSystemPlugins(siteID: sampleSiteID, currentSystemPlugins: ["Plugin 3"])
+        storage.deleteStaleSystemPlugins(siteID: sampleSiteID, currentSystemPluginPaths: ["wordpress-seo/wp-seo.php"])
 
         // Then
-        let currrentSystemPlugin = storage.loadSystemPlugins(siteID: sampleSiteID)
-        XCTAssertEqual(currrentSystemPlugin, [systemPlugin3])
+        let currentSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID)
+        XCTAssertEqual(currentSystemPlugins, [systemPlugin3])
     }
 
     func test_deleteBlazeTargetDevices_with_locale() throws {
@@ -242,12 +242,15 @@ private extension StorageTypeDeletionsTests {
         return plugin
     }
 
-    /// Creates and inserts a `SystemPlugin` entity with a given name
+    /// Creates and inserts a `SystemPlugin` entity with a given name and optional path.
     ///
-    func createSystemPlugin(name: String) -> SystemPlugin {
+    func createSystemPlugin(name: String, path: String? = nil) -> SystemPlugin {
         let systemPlugin = storage.insertNewObject(ofType: SystemPlugin.self)
         systemPlugin.siteID = sampleSiteID
         systemPlugin.name = name
+        if let path {
+            systemPlugin.plugin = path
+        }
         return systemPlugin
     }
 }

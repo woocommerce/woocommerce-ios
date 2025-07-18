@@ -282,11 +282,8 @@ extension OrderDetailsViewModel {
 
                     taskGroup.addTask { [weak self] in
                         guard let self else { return }
-                        // Sync shipping labels and update order with the result if available
-                        let shippingLabels = await syncShippingLabels()
-                        // Update the order with the newly synced shipping labels
-                        let updatedOrder = order.copy(shippingLabels: shippingLabels)
-                        update(order: updatedOrder)
+                        // Sync shipping labels or shipments and update order with the result if available
+                        await syncShippingLabelsOrShipments()
                     }
                 }
 
@@ -442,7 +439,8 @@ extension OrderDetailsViewModel {
         ]
 
         let cellsWithoutNib = [
-            HostingConfigurationTableViewCell<ShippingLineRowView>.self
+            HostingConfigurationTableViewCell<ShippingLineRowView>.self,
+            HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>.self,
         ]
 
         for cellClass in cellsWithNib {
@@ -702,27 +700,32 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @discardableResult
-    @MainActor func syncShippingLabels() async -> [ShippingLabel] {
+    @MainActor func syncShippingLabelsOrShipments() async {
         let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
         guard isRevampedFlow else {
             /// old logic for syncing labels
-            if await localRequirementsForShippingLabelsAreFulfilled() {
-                return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
-            }
-            return []
+            let shippingLabels: [ShippingLabel] = await {
+                if await localRequirementsForShippingLabelsAreFulfilled() {
+                    return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+                }
+                return []
+            }()
+            // Update the order with the newly synced shipping labels
+            let updatedOrder = order.copy(shippingLabels: shippingLabels)
+            return update(order: updatedOrder)
         }
 
         guard !orderContainsOnlyVirtualProducts else {
-            return []
+            return
         }
 
         if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
-            return await syncShippingLabelsForWooShipping()
+            syncShipmentsForWooShipping()
         } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
-            return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
-        } else {
-            return []
+            let shippingLabels =  await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            // Update the order with the newly synced shipping labels
+            let updatedOrder = order.copy(shippingLabels: shippingLabels)
+            update(order: updatedOrder)
         }
     }
 
@@ -990,43 +993,43 @@ private extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor func syncShippingLabelsForWooShipping() async -> [ShippingLabel] {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(WooShippingAction.syncShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: true) ?? []
-                continuation.resume(returning: labels)
-            })
-        }
+    func syncShipmentsForWooShipping() {
+        stores.dispatch(WooShippingAction.syncShipments(siteID: order.siteID, orderID: order.orderID) { result in
+            switch result {
+            case .success:
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                    result: .success,
+                    isRevampedFlow: true
+                ))
+            case .failure(let error):
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                    result: .failed(error: error),
+                    isRevampedFlow: true
+                ))
+                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+            }
+        })
     }
 
     @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> [ShippingLabel] {
         await withCheckedContinuation { continuation in
-            stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-                let labels = self?.handleShippingLabelSyncingResult(result: result, isRevampedFlow: isRevampedFlow) ?? []
-                continuation.resume(returning: labels)
+            stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
+                switch result {
+                case .success(let shippingLabels):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .success,
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    continuation.resume(returning: shippingLabels)
+                case .failure(let error):
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
+                        result: .failed(error: error),
+                        isRevampedFlow: isRevampedFlow
+                    ))
+                    DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
+                    continuation.resume(returning: [])
+                }
             })
-        }
-    }
-
-    func handleShippingLabelSyncingResult(result: Result<[ShippingLabel], Error>, isRevampedFlow: Bool) -> [ShippingLabel] {
-        switch result {
-        case .success(let shippingLabels):
-            ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                result: .success,
-                isRevampedFlow: isRevampedFlow
-            ))
-            return shippingLabels
-        case .failure(let error):
-            ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                result: .failed(error: error),
-                isRevampedFlow: isRevampedFlow
-            ))
-            if error as? DotcomError == .noRestRoute {
-                DDLogError("⚠️ Endpoint for synchronizing shipping labels is unreachable. WC Shipping plugin may be missing.")
-            } else {
-                DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
-            }
-            return []
         }
     }
 

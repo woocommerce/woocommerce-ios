@@ -7,7 +7,7 @@ final class PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTes
         let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel()
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 3,
+                               expectedCount: 2,
                                messageHint: "Please check that the manual hashable conformance includes new properties.")
     }
 
@@ -15,7 +15,7 @@ final class PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModelTes
         let sut = PointOfSaleCardPresentPaymentReaderUpdateCompletionAlertViewModel()
 
         XCTAssertPropertyCount(sut,
-                               expectedCount: 3,
+                               expectedCount: 2,
                                messageHint: "Please check that the manual equatable conformance includes new properties.")
     }
 

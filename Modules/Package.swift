@@ -109,6 +109,7 @@ let package = Package(
         .target(
             name: "Experiments",
             dependencies: [
+                "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ]
         ),
@@ -341,16 +342,14 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.notificationExtension,
                 dependencies: [
-                    "Networking",
+                    "NetworkingCore",
                     "WooFoundation",
-                    "Yosemite",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
                 dependencies: [
-                    "Experiments",
                     "Networking",
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),

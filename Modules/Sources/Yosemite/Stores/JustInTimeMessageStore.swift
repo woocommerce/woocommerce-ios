@@ -95,11 +95,12 @@ private extension JustInTimeMessageStore {
     }
 
     func buildType() -> String? {
-        #if DEBUG || ALPHA
-        return "developer"
-        #else
-        return nil
-        #endif
+        switch BuildConfiguration.current {
+        case .localDeveloper, .alpha:
+            return "developer"
+        case .appStore:
+            return nil
+        }
     }
 
     func localeLanguageRegionIdentifier() -> String? {

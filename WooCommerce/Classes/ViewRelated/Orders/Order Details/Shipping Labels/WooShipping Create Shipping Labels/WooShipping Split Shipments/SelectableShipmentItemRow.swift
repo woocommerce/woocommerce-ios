@@ -4,6 +4,7 @@ import SwiftUI
 /// Row for a selectable shipment item to ship with the Woo Shipping extension.
 struct SelectableShipmentItemRow: View {
     @ObservedObject private var viewModel: SelectableShipmentItemRowViewModel
+    @Environment(\.isEnabled) private var isEnabled
 
     init(viewModel: SelectableShipmentItemRowViewModel) {
         self.viewModel = viewModel
@@ -21,39 +22,55 @@ struct SelectableShipmentItemRow: View {
                     }
             }
 
-            ProductImageThumbnail(productImageURL: viewModel.item.imageUrl,
-                                  productImageSize: Layout.imageSize,
-                                  scale: scale,
-                                  productImageCornerRadius: Layout.imageCornerRadius,
-                                  foregroundColor: Color(UIColor.listSmallIcon))
-            .overlay(alignment: .topTrailing) {
-                if viewModel.showQuantity {
-                    BadgeView(text: viewModel.item.quantityLabel,
-                              customizations: .init(textColor: .white, backgroundColor: .black),
-                              backgroundShape: badgeStyle)
-                    .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
+            AdaptiveStack(spacing: Layout.horizontalSpacing) {
+                ProductImageThumbnail(productImageURL: viewModel.item.imageUrl,
+                                      productImageSize: Layout.imageSize,
+                                      scale: scale,
+                                      productImageCornerRadius: Layout.imageCornerRadius,
+                                      foregroundColor: Color(UIColor.listSmallIcon))
+                .overlay(alignment: .topTrailing) {
+                    if viewModel.showQuantity {
+                        BadgeView(text: viewModel.item.quantityLabel,
+                                  customizations: .init(textColor: .white, backgroundColor: .black),
+                                  backgroundShape: badgeStyle)
+                        .offset(x: Layout.badgeOffset, y: -Layout.badgeOffset)
+                    }
                 }
-            }
-            VStack(alignment: .leading) {
-                Text(viewModel.item.name)
-                    .bodyStyle()
-                Text(viewModel.item.detailsLabel)
-                    .subheadlineStyle()
-                AdaptiveStack(verticalAlignment: .lastTextBaseline) {
-                    Text(viewModel.item.weightLabel)
+
+                VStack(alignment: .leading) {
+                    Text(viewModel.item.name)
+                        .bodyStyle()
+                    Text(viewModel.item.detailsLabel)
                         .subheadlineStyle()
-                    Spacer()
-                    Text(viewModel.item.priceLabel)
-                        .font(.subheadline)
-                        .foregroundStyle(Color(.text))
+                    AdaptiveStack(verticalAlignment: .lastTextBaseline) {
+                        Text(viewModel.item.weightLabel)
+                            .subheadlineStyle()
+                        Spacer()
+                        Text(viewModel.item.priceLabel)
+                            .font(.subheadline)
+                            .foregroundStyle(Color(.text))
+                    }
                 }
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityValue(accessibilityValue)
         }
         .frame(maxWidth: .infinity)
+        .opacity(isEnabled ? 1 : Layout.disabledOpacity)
     }
 }
 
 private extension SelectableShipmentItemRow {
+    var accessibilityValue: String {
+        return ShippingItemRowAccessibility.accessibilityValue(
+            itemName: viewModel.item.name,
+            quantity: viewModel.item.quantityLabel,
+            details: viewModel.item.detailsLabel,
+            weight: viewModel.item.weightLabel,
+            price: viewModel.item.priceLabel
+        )
+    }
+
     @ViewBuilder
     func selectionCircle(selected: Bool) -> some View {
         if selected {
@@ -81,6 +98,7 @@ private extension SelectableShipmentItemRow {
         static let imageSize: CGFloat = 56.0
         static let imageCornerRadius: CGFloat = 4.0
         static let badgeOffset: CGFloat = 8.0
+        static let disabledOpacity: CGFloat = 0.5
     }
 }
 

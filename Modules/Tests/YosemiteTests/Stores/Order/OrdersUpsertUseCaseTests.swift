@@ -151,6 +151,36 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
     }
 
+    func test_order_with_createdVia_field_when_upsert_to_storage_then_field_is_persisted_correctly() throws {
+        // Given
+        let order = makeOrder().copy(siteID: defaultSiteID, orderID: 123, createdVia: "pos-rest-api")
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 123))
+        XCTAssertEqual(persistedOrder.createdVia, "pos-rest-api")
+        XCTAssertEqual(persistedOrder.toReadOnly().createdVia, "pos-rest-api")
+    }
+
+    func test_order_with_createdVia_field_when_updated_then_field_is_updated_correctly() throws {
+        // Given
+        let originalOrder = makeOrder().copy(siteID: defaultSiteID, orderID: 123, createdVia: nil)
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([originalOrder])
+
+        // When
+        let updatedOrder = originalOrder.copy(createdVia: "pos-rest-api")
+        useCase.upsert([updatedOrder])
+
+        // Then
+        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: defaultSiteID, orderID: 123))
+        XCTAssertEqual(persistedOrder.createdVia, "pos-rest-api")
+        XCTAssertEqual(persistedOrder.toReadOnly().createdVia, "pos-rest-api")
+    }
+
     func test_it_persists_order_item_attributes_in_storage() throws {
         // Given
         let attributes = [

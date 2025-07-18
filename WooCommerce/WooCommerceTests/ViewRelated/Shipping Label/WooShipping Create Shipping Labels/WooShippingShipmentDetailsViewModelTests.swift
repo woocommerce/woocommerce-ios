@@ -131,6 +131,35 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shippingRates[1].amount, "$6.90")
     }
 
+    func test_selecting_extra_shipping_rate_sets_expected_shippingRates() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // When
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate(carbonNeutral: true,
+                                                                    saturdayDelivery: true,
+                                                                    additionalHandling: true))
+
+        // Then
+        XCTAssertEqual(viewModel.shippingRates.count, 4)
+        XCTAssertEqual(viewModel.shippingRates[0].title, "USPS - Parcel Select Mail (base fee)")
+        XCTAssertEqual(viewModel.shippingRates[0].amount, "$40.06")
+        XCTAssertEqual(viewModel.shippingRates[1].title, "Carbon Neutral")
+        XCTAssertEqual(viewModel.shippingRates[1].amount, "$5.50")
+        XCTAssertEqual(viewModel.shippingRates[2].title, "Additional Handling")
+        XCTAssertEqual(viewModel.shippingRates[2].amount, "$3.75")
+        XCTAssertEqual(viewModel.shippingRates[3].title, "Saturday Delivery")
+        XCTAssertEqual(viewModel.shippingRates[3].amount, "$8.25")
+    }
+
     @MainActor
     func test_purchaseLabel_sets_postPurchase_with_purchased_shipping_label() async throws {
         // Given
@@ -149,7 +178,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
@@ -186,7 +215,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, package, _, _, _, _, completion):
                 encodedHazmat = package.encodedHazmat()
                 completion(.success(ShippingLabel.fake()))
             case let .loadLabelRates(_, _, _, _, packages, completion):
@@ -205,7 +234,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         try await viewModel.purchaseLabel()
 
         // Then
-        let shipmentDetails = encodedHazmat?[viewModel.shipment.index.description] as? [String: Any]
+        let index = "shipment_" + viewModel.shipment.index.description
+        let shipmentDetails = encodedHazmat?[index] as? [String: Any]
         XCTAssertEqual(shipmentDetails?["isHazmat"] as? Bool, true)
         XCTAssertEqual(shipmentDetails?["category"] as? String, ShippingLabelHazmatCategory.class3.rawValue)
     }
@@ -230,7 +260,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, completion):
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.success(expectedShippingLabel))
             case .loadPackages, .loadOriginAddresses, .verifyDestinationAddress, .loadConfig:
                 break
@@ -330,6 +360,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             quantity: 2,
             value: 9.99,
             weight: 0.5,
+            originCountry: "US",
             productID: 1
         )
 
@@ -339,6 +370,8 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
                                                                        items: [expectedItem])
         var sentCustomsForm: ShippingLabelCustomsForm?
         let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .loadLabelRates(_, _, _, _, packages, _):
@@ -352,16 +385,30 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             }
         }
 
-        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
-        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleDestinationAddress(country: "US", state: "CA"))
-        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
-                                                            shipment: sampleShipment,
-                                                            shippingLabel: nil,
-                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
-                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
-                                                            stores: stores,
-                                                            debounceDuration: 0)
+        let countries = [
+            Country(code: "US", name: "United States", states: []),
+            Country(code: "CA", name: "Canada", states: [])
+        ]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
 
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleOriginAddress(country: "US", state: "NY")
+        )
+
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA")
+        )
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager,
+            debounceDuration: 0
+        )
 
         // When
         viewModel.selectPackage(samplePackageData())
@@ -603,6 +650,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
             rate: 20.11,
             serviceID: "test_rate"
         )
+        viewModel.shipmentWeight = "1.5"
         viewModel.shippingService?.onSelectRate?(WooShippingSelectedRate(rate: rate))
 
         // Confidence check
@@ -641,6 +689,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         try await viewModel.refreshPackagesAndShippingRates()
 
         // Then
+        XCTAssertEqual(viewModel.shipmentWeight, "1.5") // shipment weight is persisted if manually entered
         XCTAssertEqual(viewModel.selectedPackage?.name, updatedPackage.name)
         XCTAssertEqual(viewModel.selectedRate?.rate.rate, expectedRate.rate)
     }
@@ -750,6 +799,95 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedRate)
         XCTAssertNil(viewModel.shippingService?.selectedRate)
     }
+
+    // MARK: - Customs
+    func test_preselects_customs_origin_country() throws {
+        // Setup
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        // Given
+        let expectedCountry = "US"
+
+        let countries = [
+            Country(code: "US", name: "United States", states: []),
+            Country(code: "CA", name: "Canada", states: [])
+        ]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: sampleShipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        let customsItemViewModel = try XCTUnwrap(viewModel.customsFormViewModel.itemsViewModels.first)
+
+        // When
+        originAddressSubject.send(sampleOriginAddress(country: expectedCountry, state: ""))
+
+        // Then
+        XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
+    }
+
+    func test_package_contains_complete_customs_form_when_required_data_is_prefilled() throws {
+        // Setup
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        // Given
+        let originCountry = Country(code: "US", name: "United States", states: [])
+        let destinationCountry = Country(code: "CA", name: "Canada", states: [])
+
+        let countries = [
+            originCountry,
+            destinationCountry
+        ]
+        storageManager.insertSampleCountries(readOnlyCountries: countries)
+
+        let shipment = sampleShipment
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: shipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        // When
+        destinationAddressSubject.send(sampleDestinationAddress(country: destinationCountry.code, state: ""))
+        originAddressSubject.send(sampleOriginAddress(country: originCountry.code, state: ""))
+
+        viewModel.selectPackage(samplePackageData())
+
+        // Then
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+
+        waitUntil {
+            guard let customsForm = viewModel.currentPackage?.customsForm else {
+                return false
+            }
+
+            let customsFormItem = customsForm.items[0]
+            let shipmentItem = shipment.items[0]
+
+            return customsFormItem.description == shipmentItem.name &&
+            customsFormItem.value == shipmentItem.value &&
+            customsFormItem.weight == shipmentItem.weight &&
+            customsFormItem.originCountry == originCountry.code
+        }
+    }
 }
 
 private extension WooShippingShipmentDetailsViewModelTests {
@@ -805,50 +943,29 @@ private extension WooShippingShipmentDetailsViewModelTests {
                            postcode: "12345")
     }
 
-    func sampleSelectedRate(with signatureRequirement: WooShippingServiceCardViewModel.SignatureRequirement = .none) -> WooShippingSelectedRate {
-        WooShippingSelectedRate(rate: ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                                               insurance: "100",
-                                                               retailRate: 40.06,
-                                                               rate: 40.06,
-                                                               rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
-                                                               serviceID: "",
-                                                               carrierID: "usps",
-                                                               shipmentID: "",
-                                                               hasTracking: true,
-                                                               isSelected: false,
-                                                               isPickupFree: true,
-                                                               deliveryDays: 2,
-                                                               deliveryDateGuaranteed: false),
-                                signatureRate: signatureRequirement == .signatureRequired ?
-                                    ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                                             insurance: "100",
-                                                             retailRate: 42.76,
-                                                             rate: 42.76,
-                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ei",
-                                                             serviceID: "",
-                                                             carrierID: "usps",
-                                                             shipmentID: "",
-                                                             hasTracking: true,
-                                                             isSelected: false,
-                                                             isPickupFree: true,
-                                                             deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil,
-                                adultSignatureRate: signatureRequirement == .adultSignatureRequired ?
-                                    ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                                             insurance: "100",
-                                                             retailRate: 46.96,
-                                                             rate: 46.96,
-                                                             rateID: "rate_a8a29d5f34984722942f466c30ea27ej",
-                                                             serviceID: "",
-                                                             carrierID: "usps",
-                                                             shipmentID: "",
-                                                             hasTracking: true,
-                                                             isSelected: false,
-                                                             isPickupFree: true,
-                                                             deliveryDays: 2,
-                                                             deliveryDateGuaranteed: false) : nil,
-                                carbonNeutralRate: nil,
-                                saturdayDeliveryRate: nil,
-                                additionalHandlingRate: nil)
+    func sampleSelectedRate(with signatureRequirement: WooShippingServiceCardViewModel.SignatureRequirement = .none,
+                           carbonNeutral: Bool = false,
+                           saturdayDelivery: Bool = false,
+                           additionalHandling: Bool = false) -> WooShippingSelectedRate {
+        WooShippingSelectedRate(
+            rate: ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
+                                           insurance: "100",
+                                           retailRate: 40.06,
+                                           rate: 40.06,
+                                           rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
+                                           serviceID: "",
+                                           carrierID: "usps",
+                                           shipmentID: "",
+                                           hasTracking: true,
+                                           isSelected: false,
+                                           isPickupFree: true,
+                                           deliveryDays: 2,
+                                           deliveryDateGuaranteed: false),
+            signatureRate: signatureRequirement == .signatureRequired ? ShippingLabelCarrierRate.fake().copy(rate: 42.76) : nil,
+            adultSignatureRate: signatureRequirement == .adultSignatureRequired ? ShippingLabelCarrierRate.fake().copy(rate: 46.96) : nil,
+            carbonNeutralRate: carbonNeutral ? ShippingLabelCarrierRate.fake().copy(rate: 45.56) : nil,
+            saturdayDeliveryRate: saturdayDelivery ? ShippingLabelCarrierRate.fake().copy(rate: 48.31) : nil,
+            additionalHandlingRate: additionalHandling ? ShippingLabelCarrierRate.fake().copy(rate: 43.81) : nil
+        )
     }
 }

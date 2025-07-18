@@ -23,6 +23,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
+    /// Sales channel
+    ///
+    @IBOutlet private var salesChannelLabel: PaddedLabel!
+
     /// Top-level stack view that contains the stack view of title and payment status labels, and total price label.
     ///
     @IBOutlet weak var contentStackView: UIStackView!
@@ -52,6 +56,15 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
+           let salesChannel = viewModel.salesChannel {
+            salesChannelLabel.isHidden = false
+            salesChannelLabel.applySalesChannelStyle()
+            salesChannelLabel.text = salesChannel
+        } else {
+            salesChannelLabel.isHidden = true
+        }
 
         accessoryType = .none
         accessoryView = viewModel.accessoryView
@@ -147,5 +160,8 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
+
+        salesChannelLabel.applyFootnoteStyle()
+        salesChannelLabel.numberOfLines = 1
     }
 }

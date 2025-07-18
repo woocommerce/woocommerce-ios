@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Experiments
+import enum WooFoundationCore.BuildConfiguration
 import protocol WooFoundation.Analytics
 
 
@@ -148,20 +149,29 @@ final class MainTabBarController: UITabBarController {
         self.analytics = analytics
         self.stores = stores
         self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = posEligibilityService
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
-        self.featureFlagService = ServiceLocator.featureFlagService
+        let featureFlagService = ServiceLocator.featureFlagService
+        self.featureFlagService = featureFlagService
         self.noticePresenter = ServiceLocator.noticePresenter
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
         self.posEligibilityCheckerFactory = { siteID in
-            POSTabEligibilityChecker(siteID: siteID)
+            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
+                POSTabEligibilityChecker(siteID: siteID)
+            } else {
+                LegacyPOSTabEligibilityChecker(siteID: siteID)
+            }
         }
         self.posEligibilityService = POSEligibilityService()
         super.init(coder: coder)
@@ -670,8 +680,7 @@ private extension MainTabBarController {
         // Starts observing the POS eligibility state.
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posEligibilityChecker = self.posEligibilityChecker else { return }
-            let eligibility = await posEligibilityChecker.checkEligibility()
-            let isPOSTabVisible = eligibility == .eligible
+            let isPOSTabVisible = await posEligibilityChecker.checkVisibility()
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
@@ -747,7 +756,8 @@ private extension MainTabBarController {
             siteID: siteID,
             tabContainerController: posContainerController,
             viewControllerToPresent: self,
-            storesManager: stores
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
         )
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.

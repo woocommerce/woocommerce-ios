@@ -42,13 +42,13 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_include_pos_tab_when_pos_is_eligible() throws {
+    func test_tab_view_controllers_include_pos_tab_when_pos_tab_is_visible() throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .eligible
+        mockPOSEligibilityChecker.visibility = true
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
@@ -85,13 +85,13 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_exclude_pos_tab_when_pos_is_not_eligible() throws {
+    func test_tab_view_controllers_exclude_pos_tab_when_pos_tab_is_not_visible() throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .ineligible(reason: .notTablet)
+        mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
@@ -132,7 +132,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = false
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .eligible
+        mockPOSEligibilityChecker.visibility = true
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
@@ -165,13 +165,13 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
-    func test_tab_view_controllers_do_not_change_when_pos_eligibility_changes() throws {
+    func test_tab_view_controllers_do_not_change_when_pos_visibility_changes() throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
 
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
-        mockPOSEligibilityChecker.result = .ineligible(reason: .featureFlagDisabled)
+        mockPOSEligibilityChecker.visibility = false
 
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
@@ -196,7 +196,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         }
 
         // When - change POS eligibility
-        mockPOSEligibilityChecker.result = .eligible
+        mockPOSEligibilityChecker.visibility = true
 
         // Then tabs remain the same
         XCTAssertEqual(tabBarController.tabRootViewControllers.count, 4)

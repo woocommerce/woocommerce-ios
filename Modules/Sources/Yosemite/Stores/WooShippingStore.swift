@@ -57,6 +57,7 @@ public final class WooShippingStore: Store {
                                         originAddress,
                                         destinationAddress,
                                         package,
+                                        markOrderComplete,
                                         backendProcessingDelay,
                                         pollingDelay,
                                         pollingMaximumRetries,
@@ -66,6 +67,7 @@ public final class WooShippingStore: Store {
                                   originAddress: originAddress,
                                   destinationAddress: destinationAddress,
                                   package: package,
+                                  markOrderComplete: markOrderComplete,
                                   backendProcessingDelay: backendProcessingDelay,
                                   pollingDelay: pollingDelay,
                                   pollingMaximumRetries: pollingMaximumRetries,
@@ -84,8 +86,8 @@ public final class WooShippingStore: Store {
             updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
-        case let .syncShippingLabels(siteID, orderID, completion):
-            syncShippingLabels(siteID: siteID, orderID: orderID, completion: completion)
+        case let .syncShipments(siteID, orderID, completion):
+            syncShipments(siteID: siteID, orderID: orderID, completion: completion)
         case let .updateShipment(siteID, orderID, shipmentToUpdate, completion):
             updateShipment(siteID: siteID,
                            orderID: orderID,
@@ -192,7 +194,17 @@ private extension WooShippingStore {
 
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
-        remote.loadAccountSettings(siteID: siteID, completion: completion)
+        remote.loadAccountSettings(siteID: siteID, completion: { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let settings):
+                upsertShippingLabelAccountSettingsInBackground(siteID: siteID, accountSettings: settings.accountSettings) {
+                    completion(.success(settings))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
     }
 
     func updateAccountSettings(siteID: Int64,
@@ -206,6 +218,7 @@ private extension WooShippingStore {
                                originAddress: WooShippingAddress,
                                destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
                                pollingMaximumRetries: Int64,
@@ -215,7 +228,8 @@ private extension WooShippingStore {
                                      orderID: orderID,
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
-                                     package: package) { result in
+                                     package: package,
+                                     markOrderComplete: markOrderComplete) { result in
             switch result {
             case .success(let labelPurchases):
                 // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.
@@ -280,26 +294,23 @@ private extension WooShippingStore {
         remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
     }
 
-    func syncShippingLabels(siteID: Int64,
-                            orderID: Int64,
-                            completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
-        remote.loadConfig(siteID: siteID, orderID: orderID, completion: { [weak self] result in
+    func syncShipments(siteID: Int64,
+                       orderID: Int64,
+                       completion: @escaping (Result<[WooShippingShipment], Error>) -> Void) {
+        remote.loadConfig(siteID: siteID, orderID: orderID) { [weak self] result in
             guard let self else { return }
-
             switch result {
             case .failure(let error):
                 completion(.failure(error))
             case .success(let config):
-                guard let labels = config.shippingLabelData?.currentOrderLabels else {
-                    return completion(.success([]))
-                }
-                upsertShippingLabelsInBackground(siteID: siteID,
-                                                 orderID: orderID,
-                                                 shippingLabels: labels) {
-                    completion(.success(labels))
+                let shipments = config.shipments
+                upsertShipmentsInBackground(siteID: siteID,
+                                            orderID: orderID,
+                                            shipments: shipments) {
+                    completion(.success(shipments))
                 }
             }
-        })
+        }
     }
 }
 
@@ -319,7 +330,12 @@ private extension WooShippingStore {
                 // If label has PURCHASED status, stop polling
                 if labelStatusResponse.status == .purchased,
                    let label = labelStatusResponse.getPurchasedLabel() {
-                    completion(.success(label))
+                    guard let self else {
+                        return completion(.success(label))
+                    }
+                    insertPurchasedLabelInBackground(siteID: siteID, orderID: orderID, shippingLabel: label) {
+                        completion(.success(label))
+                    }
                 }
 
                 // If label has PURCHASE_ERROR status, return error and stop polling
@@ -403,7 +419,23 @@ private extension WooShippingStore {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
-        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate, completion: completion)
+        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate) { [weak self] result in
+            guard let self, let contents = try? result.get() else {
+                return completion(result)
+            }
+            let shipments = contents.map { (index, items) in
+                WooShippingShipment(siteID: siteID,
+                                    orderID: orderID,
+                                    index: index,
+                                    items: items,
+                                    shippingLabel: nil)
+            }
+            upsertShipmentsInBackground(siteID: siteID,
+                                        orderID: orderID,
+                                        shipments: shipments) {
+                completion(.success(contents))
+            }
+        }
     }
 }
 
@@ -637,10 +669,15 @@ private extension WooShippingStore {
                 DDLogWarn("⚠️ No shipping label found in storage when updating refund")
                 return shippingLabel.copy(refund: refund)
             }
+            let storageShipment = storageShippingLabel.shipment
 
             let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund
+
+            // update stored shipment to trigger onDidChangeContent notification
+            storageShipment?.shippingLabel = storageShippingLabel
+
             return storageShippingLabel.toReadOnly()
 
         }, completion: { result in
@@ -669,35 +706,82 @@ private extension WooShippingStore {
         }, completion: nil, on: .main)
     }
 
-    /// Updates/inserts the specified readonly shipping label entities *in a background thread*.
+    /// Inserts the specified readonly shipping label entity *in a background thread*.
     /// `onCompletion` will be called on the main thread!
-    func upsertShippingLabelsInBackground(siteID: Int64,
+    func insertPurchasedLabelInBackground(siteID: Int64,
                                           orderID: Int64,
-                                          shippingLabels: [ShippingLabel],
+                                          shippingLabel: ShippingLabel,
                                           onCompletion: @escaping () -> Void) {
-        if shippingLabels.isEmpty {
-            return onCompletion()
-        }
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
 
+            let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID)
+            let storageShipment = storage.loadAllShipments(siteID: siteID, orderID: orderID)
+                .first(where: { $0.index == shippingLabel.shipmentID })
+
+            guard let storageOrder, let storageShipment else { return }
+
+            update(storageShipment: storageShipment,
+                   storageOrder: storageOrder,
+                   shippingLabel: shippingLabel,
+                   using: storage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates/inserts the specified readonly shipments entities *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func upsertShipmentsInBackground(siteID: Int64,
+                                     orderID: Int64,
+                                     shipments: [WooShippingShipment],
+                                     onCompletion: @escaping () -> Void) {
         storageManager.performAndSave ({ [weak self] storage in
             guard let self else { return }
             guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
                 return
             }
-            upsertShippingLabels(siteID: siteID, orderID: orderID, shippingLabels: shippingLabels, storageOrder: order, using: storage)
+            upsertShipments(siteID: siteID,
+                            orderID: orderID,
+                            shipments: shipments,
+                            storageOrder: order,
+                            using: storage)
         }, completion: onCompletion, on: .main)
     }
 
-    /// Updates/inserts the specified readonly ShippingLabel entities in the current thread.
-    func upsertShippingLabels(siteID: Int64,
-                              orderID: Int64,
-                              shippingLabels: [ShippingLabel],
-                              storageOrder: StorageOrder,
-                              using storage: StorageType) {
-        let storedLabels = storage.loadAllShippingLabels(siteID: siteID, orderID: orderID)
-        for shippingLabel in shippingLabels {
-            let storageShippingLabel = storedLabels.first(where: { $0.shippingLabelID == shippingLabel.shippingLabelID }) ??
-            storage.insertNewObject(ofType: Storage.ShippingLabel.self)
+    /// Updates/inserts the specified readonly WooShippingShipments entities in the current thread.
+    func upsertShipments(siteID: Int64,
+                         orderID: Int64,
+                         shipments: [WooShippingShipment],
+                         storageOrder: StorageOrder,
+                         using storage: StorageType) {
+        let storedShipments = storage.loadAllShipments(siteID: siteID, orderID: orderID)
+        for shipment in shipments {
+            let storageShipment = storedShipments.first(where: { $0.index == shipment.index }) ??
+            storage.insertNewObject(ofType: Storage.WooShippingShipment.self)
+            storageShipment.update(with: shipment)
+            storageShipment.order = storageOrder
+
+            handleShipmentItems(shipment, storageShipment, storage)
+            update(storageShipment: storageShipment,
+                   storageOrder: storageOrder,
+                   shippingLabel: shipment.shippingLabel,
+                   using: storage)
+        }
+
+        // Now, remove any objects that exist in storage but not in shipments
+        let shipmentIndices = shipments.map(\.index)
+        storedShipments.filter {
+            !shipmentIndices.contains($0.index)
+        }.forEach {
+            storage.deleteObject($0)
+        }
+    }
+
+    func update(storageShipment: StorageWooShippingShipment,
+                storageOrder: StorageOrder,
+                shippingLabel: ShippingLabel?,
+                using storage: StorageType) {
+        if let shippingLabel {
+            let storageShippingLabel = storageShipment.shippingLabel ?? storage.insertNewObject(ofType: Storage.ShippingLabel.self)
             storageShippingLabel.update(with: shippingLabel)
             storageShippingLabel.order = storageOrder
 
@@ -710,14 +794,39 @@ private extension WooShippingStore {
             let destinationAddress = storageShippingLabel.destinationAddress ?? storage.insertNewObject(ofType: Storage.ShippingLabelAddress.self)
             destinationAddress.update(with: shippingLabel.destinationAddress)
             storageShippingLabel.destinationAddress = destinationAddress
+
+            /// Set the shipping label to the shipment's relationship
+            storageShipment.shippingLabel = storageShippingLabel
+        } else {
+            storageShipment.shippingLabel = nil
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageWooShippingShipment's items using the provided read-only WooShippingShipment's items
+    ///
+    private func handleShipmentItems(_ readOnlyShipment: Networking.WooShippingShipment,
+                                     _ storageShipment: Storage.WooShippingShipment,
+                                     _ storage: StorageType) {
+
+        let storageItemsArray = Array(storageShipment.items ?? [])
+
+        // Upsert the items from the read-only shipment
+        for readOnlyItem in readOnlyShipment.items {
+            if let existingStorageItem = storageItemsArray.first(where: { $0.id == readOnlyItem.id }) {
+                existingStorageItem.update(with: readOnlyItem)
+            } else {
+                let newStorageItem = storage.insertNewObject(ofType: Storage.WooShippingShipmentItem.self)
+                newStorageItem.update(with: readOnlyItem)
+                storageShipment.addToItems(newStorageItem)
+            }
         }
 
-        // Now, remove any objects that exist in storage but not in shippingLabels
-        let shippingLabelIDs = shippingLabels.map(\.shippingLabelID)
-        storedLabels.filter {
-            !shippingLabelIDs.contains($0.shippingLabelID)
-        }.forEach {
-            storage.deleteObject($0)
+        // Now, remove any objects that exist in storageShipment.items but not in readOnlyShipment.items
+        storageItemsArray.forEach { storageItem in
+            if readOnlyShipment.items.first(where: { $0.id == storageItem.id } ) == nil {
+                storageShipment.removeFromItems(storageItem)
+                storage.deleteObject(storageItem)
+            }
         }
     }
 
@@ -731,6 +840,29 @@ private extension WooShippingStore {
         } else {
             storageShippingLabel.refund = nil
         }
+    }
+
+    /// Updates/inserts the specified readonly shipping label account settings entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    ///
+    func upsertShippingLabelAccountSettingsInBackground(siteID: Int64,
+                                                        accountSettings: ShippingLabelAccountSettings,
+                                                        onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storageAccountSettings = storage.loadShippingLabelAccountSettings(siteID: siteID) ??
+                storage.insertNewObject(ofType: Storage.ShippingLabelAccountSettings.self)
+            storageAccountSettings.update(with: accountSettings)
+
+            // Remove all previous payment methods
+            storageAccountSettings.paymentMethods?.removeAll()
+
+            // Insert the payment methods from the read-only account settings
+            for paymentMethod in accountSettings.paymentMethods {
+                let newStoragePaymentMethod = storage.insertNewObject(ofType: Storage.ShippingLabelPaymentMethod.self)
+                newStoragePaymentMethod.update(with: paymentMethod)
+                storageAccountSettings.addToPaymentMethods(newStoragePaymentMethod)
+            }
+        }, completion: onCompletion, on: .main)
     }
 }
 

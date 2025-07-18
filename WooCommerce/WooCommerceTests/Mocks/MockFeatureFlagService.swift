@@ -14,6 +14,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var isSubscriptionsInOrderCreationCustomersEnabled: Bool
     var isSubscriptionsInOrderCreationUIEnabled: Bool
     var isPointOfSaleEnabled: Bool
+    var isPointOfSaleAsATabi2Enabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
     var blazeEvergreenCampaigns: Bool
     var blazeCampaignObjective: Bool
@@ -37,6 +38,7 @@ final class MockFeatureFlagService: FeatureFlagService {
          isSubscriptionsInOrderCreationCustomersEnabled: Bool = false,
          isSubscriptionsInOrderCreationUIEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
+         isPointOfSaleAsATabi2Enabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
          blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
@@ -58,6 +60,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.isSubscriptionsInOrderCreationCustomersEnabled = isSubscriptionsInOrderCreationCustomersEnabled
         self.isSubscriptionsInOrderCreationUIEnabled = isSubscriptionsInOrderCreationUIEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
+        self.isPointOfSaleAsATabi2Enabled = isPointOfSaleAsATabi2Enabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
@@ -101,6 +104,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return isSubscriptionsInOrderCreationUIEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
+        case .pointOfSaleAsATabi2:
+            return isPointOfSaleAsATabi2Enabled
         case .googleAdsCampaignCreationOnWebView:
             return googleAdsCampaignCreationOnWebView
         case .blazeEvergreenCampaigns:

@@ -312,7 +312,6 @@ final class OrdersRootViewController: UIViewController {
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             self?.filters = filters
-
             self?.analytics.track(event: .OrdersFilter.onFilterOrders(filters: filters))
         }, onClearAction: {
         }, onDismissAction: {
@@ -448,6 +447,7 @@ private extension OrdersRootViewController {
                                                                  dateRange: settings.dateRangeFilter,
                                                                  product: settings.productFilter,
                                                                  customer: settings.customerFilter,
+                                                                 salesChannel: settings.salesChannelFilter,
                                                                  numberOfActiveFilters: settings.numberOfActiveFilters())
             case .failure(let error):
                 print("It was not possible to sync local orders settings: \(String(describing: error))")
@@ -464,7 +464,8 @@ private extension OrdersRootViewController {
                                                             orderStatusesFilter: filters.orderStatus,
                                                             dateRangeFilter: filters.dateRange,
                                                             productFilter: filters.product,
-                                                            customerFilter: filters.customer) { error in
+                                                            customerFilter: filters.customer,
+                                                            salesChannelFilter: filters.salesChannel) { error in
             if error != nil {
                 assertionFailure("It was not possible to store order settings due to an error: \(String(describing: error))")
             }

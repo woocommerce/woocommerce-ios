@@ -65,6 +65,15 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let shippingLabels: [ShippingLabel]
 
+    /// Set to orders created via specific sources (e.g. checkout, store-api, Point of Sale, ...)
+    ///
+    public let createdVia: String?
+
+    public var salesChannel: SalesChannel? {
+        guard let createdVia else { return nil }
+        return SalesChannel(rawValue: createdVia)
+    }
+
     /// Order struct initializer.
     ///
     public init(siteID: Int64,
@@ -105,7 +114,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 renewalSubscriptionID: String?,
                 appliedGiftCards: [OrderGiftCard],
                 attributionInfo: OrderAttributionInfo?,
-                shippingLabels: [ShippingLabel]) {
+                shippingLabels: [ShippingLabel],
+                createdVia: String?) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -151,6 +161,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.appliedGiftCards = appliedGiftCards
         self.attributionInfo = attributionInfo
         self.shippingLabels = shippingLabels
+        self.createdVia = createdVia
     }
 
 
@@ -187,7 +198,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         let paymentMethodID = try container.decode(String.self, forKey: .paymentMethodID)
         let paymentMethodTitle = try container.decode(String.self, forKey: .paymentMethodTitle)
 
-        // "payment_url" is only available on stores stores with version >= 6.4
+        // "payment_url" is only available on stores with version >= 6.4
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
         let allOrderMetaData = try? container.decode([MetaData].self, forKey: .metadata)
@@ -250,6 +261,9 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         /// It's fetched with a specific API request, while at the same time it has a relationship in Core Data with Order.
         let shippingLabels: [ShippingLabel] = []
 
+        // "created_via" is only available on stores with version >= 9.9
+        let createdVia = try container.decodeIfPresent(String.self, forKey: .createdVia)
+
         self.init(siteID: siteID,
                   orderID: orderID,
                   parentID: parentID,
@@ -288,7 +302,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   renewalSubscriptionID: renewalSubscriptionID,
                   appliedGiftCards: appliedGiftCards,
                   attributionInfo: attributionInfo,
-                  shippingLabels: shippingLabels)
+                  shippingLabels: shippingLabels,
+                  createdVia: createdVia)
     }
 
     public static var empty: Order {
@@ -330,7 +345,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   renewalSubscriptionID: nil,
                   appliedGiftCards: [],
                   attributionInfo: nil,
-                  shippingLabels: [])
+                  shippingLabels: [],
+                  createdVia: nil)
     }
 }
 

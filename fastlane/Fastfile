@@ -784,15 +784,19 @@ platform :ios do
   lane :build_for_prototype_build do |fetch_code_signing: true|
     update_certs_and_profiles_enterprise if fetch_code_signing
 
-    build_number = ENV.fetch('BUILDKITE_BUILD_NUMBER', '0')
-    pr_or_branch = pull_request_number&.then { |num| "PR ##{num}" } || ENV.fetch('BUILDKITE_BRANCH', nil)
+    pr_prefix = pull_request_number&.then { |num| "pr#{num}" }
+    commit_short_hash = ENV.fetch('BUILDKITE_COMMIT', '0')[0...7]
+    build_number = [pr_prefix, commit_short_hash].compact.join('-')
 
     gym(
       scheme: 'WooCommerce Alpha',
+      configuration: 'Release-Alpha',
       workspace: WORKSPACE_PATH,
       export_method: 'enterprise',
       clean: true,
-      xcargs: { BUILD_CODE_KEY => build_number, 'VERSION_SHORT' => pr_or_branch }.compact,
+      # Note that we don't want to override the `VERSION_SHORT` (with `PR #nn` or something) because that's the `.marketingVersion` and is used in API calls
+      # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
+      xcargs: { BUILD_CODE_KEY => build_number }.compact,
       output_directory: 'build',
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       export_options: {

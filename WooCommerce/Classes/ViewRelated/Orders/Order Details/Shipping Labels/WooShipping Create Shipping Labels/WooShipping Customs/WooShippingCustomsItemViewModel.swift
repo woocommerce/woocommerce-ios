@@ -12,9 +12,9 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     // Useful to determine externally if the shipping requires an ITN
     @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
+    @Published private var originCountryCode: String?
+
     private let storageManager: StorageManagerType
-    private let stores: StoresManager
-    private let siteID: Int64
     let currencySymbol: String
 
     let itemProductID: Int64
@@ -29,9 +29,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     @Published private(set) var selectedCountry: Country?
 
-    var countries: [Country] {
-        resultsController.fetchedObjects
-    }
+    @Published private(set) var countries: [Country] = []
 
     var totalValue: Decimal {
         guard currencySymbol == "$",
@@ -74,8 +72,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemValue: Double,
          itemWeight: Double,
          currencySymbol: String,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         originCountryCode: AnyPublisher<String?, Never>? = nil,
+         storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
         self.itemProductID = itemProductID
@@ -84,29 +82,46 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.weightPerUnit = String(itemWeight)
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
-        self.stores = stores
-        self.siteID = stores.sessionManager.defaultStoreID ?? Int64.min
+
+        originCountryCode?
+            .assign(to: &$originCountryCode)
 
         fetchCountries()
+
+        combineToPreselectCountry()
         combineRequiredInformationIsEntered()
         combineHSTariffNumberTotalValue()
     }
 }
 
 private extension WooShippingCustomsItemViewModel {
-    func fetchCountries() {
-        try? resultsController.performFetch()
-        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                try? self.resultsController.performFetch()
-            case .failure:
-                break
+    func combineToPreselectCountry() {
+        $originCountryCode
+            .compactMap { $0 }
+            .filter { !$0.isEmpty }
+            .first() /// Make sure to only handle the initial value
+            .combineLatest($countries)
+            .map { code, countries in
+                return countries.first(where: { $0.code == code })
             }
+            .assign(to: &$selectedCountry)
+    }
+
+    func fetchCountries() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateCountries()
         }
 
-        stores.dispatch(action)
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateCountries()
+        }
+
+        try? resultsController.performFetch()
+        updateCountries()
+    }
+
+    func updateCountries() {
+        countries = resultsController.fetchedObjects
     }
 
     func combineRequiredInformationIsEntered() {

@@ -12,9 +12,12 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionView: View {
 
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-            viewModel.image
-                .accessibilityHidden(true)
-                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+            PointOfSaleCardPresentPaymentReaderUpdateProgressView(
+                progress: 1,
+                isComplete: true
+            )
+            .accessibilityHidden(true)
+            .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
                 Text(viewModel.title)

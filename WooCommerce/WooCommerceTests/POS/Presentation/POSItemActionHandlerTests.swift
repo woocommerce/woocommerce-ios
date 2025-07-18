@@ -2,22 +2,14 @@ import Testing
 import Foundation
 import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
+import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 @testable import WooCommerce
 
 struct POSItemActionHandlerTests {
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_list_then_does_not_add_it_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                       purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                       couponsController: MockPointOfSaleCouponsController(),
-                                                       couponsSearchController: MockPointOfSaleCouponsController(),
-                                                       cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                       orderController: MockPointOfSaleOrderController(),
-                                                       collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                       searchHistoryService: MockPOSSearchHistoryService(),
-                                                       popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                       barcodeScanService: MockPointOfSaleBarcodeScanService())
+        let aggregateModel = makePointOfSaleAggregateModel()
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
             sourceView: .coupon,
@@ -35,16 +27,7 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_search_then_does_not_add_it_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                       purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                       couponsController: MockPointOfSaleCouponsController(),
-                                                       couponsSearchController: MockPointOfSaleCouponsController(),
-                                                       cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                       orderController: MockPointOfSaleOrderController(),
-                                                       collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                       searchHistoryService: MockPOSSearchHistoryService(),
-                                                       popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                       barcodeScanService: MockPointOfSaleBarcodeScanService())
+        let aggregateModel = makePointOfSaleAggregateModel()
         let sut = SearchResultItemActionHandler(
             posModel: aggregateModel,
             searchTerm: "",
@@ -63,16 +46,7 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_list_then_adds_them_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                       purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                       couponsController: MockPointOfSaleCouponsController(),
-                                                       couponsSearchController: MockPointOfSaleCouponsController(),
-                                                       cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                       orderController: MockPointOfSaleOrderController(),
-                                                       collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                       searchHistoryService: MockPOSSearchHistoryService(),
-                                                       popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                       barcodeScanService: MockPointOfSaleBarcodeScanService())
+        let aggregateModel = makePointOfSaleAggregateModel()
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
             sourceView: .product,
@@ -90,16 +64,7 @@ struct POSItemActionHandlerTests {
 
     @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_search_then_adds_them_to_cart() async throws {
-        let aggregateModel = PointOfSaleAggregateModel(itemsController: MockPointOfSaleItemsController(),
-                                                       purchasableItemsSearchController: MockPointOfSalePurchasableItemsSearchController(),
-                                                       couponsController: MockPointOfSaleCouponsController(),
-                                                       couponsSearchController: MockPointOfSaleCouponsController(),
-                                                       cardPresentPaymentService: MockCardPresentPaymentService(),
-                                                       orderController: MockPointOfSaleOrderController(),
-                                                       collectOrderPaymentAnalyticsTracker: MockPOSCollectOrderPaymentAnalyticsTracker(),
-                                                       searchHistoryService: MockPOSSearchHistoryService(),
-                                                       popularPurchasableItemsController: MockPointOfSaleItemsController(),
-                                                       barcodeScanService: MockPointOfSaleBarcodeScanService())
+        let aggregateModel = makePointOfSaleAggregateModel()
         let sut = SearchResultItemActionHandler(
             posModel: aggregateModel,
             searchTerm: "",
@@ -130,4 +95,33 @@ private func makeProductItem() -> POSItem {
                                 manageStock: false,
                                 stockQuantity: nil,
                                 stockStatusKey: ""))
+}
+
+@available(iOS 17.0, *)
+private func makePointOfSaleAggregateModel(
+    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+    itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
+    couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
+    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
+    cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
+    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
+    collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
+    searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
+    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+    barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
+) -> PointOfSaleAggregateModel {
+    PointOfSaleAggregateModel(
+        entryPointController: entryPointController,
+        itemsController: itemsController,
+        purchasableItemsSearchController: purchasableItemsSearchController,
+        couponsController: couponsController,
+        couponsSearchController: couponsSearchController,
+        cardPresentPaymentService: cardPresentPaymentService,
+        orderController: orderController,
+        collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+        searchHistoryService: searchHistoryService,
+        popularPurchasableItemsController: popularPurchasableItemsController,
+        barcodeScanService: barcodeScanService
+    )
 }

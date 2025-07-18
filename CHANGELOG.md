@@ -1,8 +1,11 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.8
+Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.
+
 ## 22.7
-Say hello to smoother shipping and sales! 🎉 We’ve enhanced Shipping Labels with UPS extras and smarter forms, fixed price and display glitches, and made shipment management easier. Plus, Point of Sale now has its own tab for eligible stores, barcode scanning, and smoother product refresh for faster checkout.
+Say hello to smoother shipping and sales! We’ve enhanced Shipping Labels with UPS extras and smarter forms, fixed price and display glitches, and made shipment management easier. Plus, Point of Sale now has its own tab for eligible stores, barcode scanning, and smoother product refresh for faster checkout.
 
 ## 22.6
 Shipping just got a major upgrade! Our revamped flow makes it easier than ever to create and manage shipping labels for stores using WooCommerce Shipping. We've also improved some icons and fixed a display issue with the order list's last updated time. This release includes some behind-the-scenes performance improvements too.

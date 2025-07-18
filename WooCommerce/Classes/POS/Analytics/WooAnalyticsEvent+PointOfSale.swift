@@ -3,6 +3,8 @@ import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import enum WooFoundation.CountryCode
+import enum Yosemite.PaymentMethod
 
 extension WooAnalyticsEvent {
     enum PointOfSale {
@@ -25,6 +27,16 @@ extension WooAnalyticsEvent {
             static let resultsCount = "results_count"
             static let millisecondsSinceRequestSent = "milliseconds_since_request_sent"
             static let totalItems = "total_items"
+            static let cardReaderModel = "card_reader_model"
+            static let countryCode = "country"
+            static let paymentMethodType = "payment_method_type"
+            static let gatewayID = "plugin_slug"
+            static let scanDurationMs = "scan_duration_ms"
+            static let barcodeLength = "barcode_length"
+            static let failReason = "fail_reason"
+            static let scanner = "scanner"
+            static let step = "step"
+            static let scanValue = "scan_value"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -100,12 +112,20 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
-        static func cardPresentCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double,
+        static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
+                                                     countryCode: CountryCode,
+                                                     paymentMethod: PaymentMethod,
+                                                     cardReaderModel: String?,
+                                                     millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderSyncSuccess: Double,
                                                      millisecondsSinceReaderReadyToCollect: Double,
                                                      millisecondsSinceCardTapped: Double,
                                                      checkoutTapCount: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .collectPaymentSuccess, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.paymentMethodType: paymentMethod.analyticsValue,
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
@@ -180,6 +200,99 @@ extension WooAnalyticsEvent {
                                 Key.totalItems: "\(totalItems)"
                               ])
         }
+
+        static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningSuccess,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)"
+                              ])
+        }
+
+        static func barcodeScanningFailed(scanDurationMs: Int, barcodeLength: Int, failReason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningFailed,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)",
+                                Key.failReason: failReason
+                              ])
+        }
+
+        static func barcodeScannerSetupScannerSelected(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerSelected,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupNextTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupNextTapped,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.step: step
+                              ])
+        }
+
+        static func barcodeScannerSetupBackTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupBackTapped,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.step: step
+                              ])
+        }
+
+        static func barcodeScannerSetupOpenSystemSettingsTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupTestScanSuccess(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanSuccess,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupTestScanFailed(scanner: PointOfSaleBarcodeScannerType, scanValue: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanFailed,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.scanValue: scanValue
+                              ])
+        }
+
+        static func barcodeScannerSetupTestScanTimedOut(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanTimedOut,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupDismissed(scanner: PointOfSaleBarcodeScannerType? = nil, step: String? = nil) -> WooAnalyticsEvent {
+            var properties: [String: String] = [:]
+            if let scanner {
+                properties[Key.scanner] = scanner.analyticsName
+            }
+            if let step {
+                properties[Key.step] = step
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupDismissed,
+                                     properties: properties)
+        }
+
+        static func barcodeScannerSetupRetryTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupRetryTapped,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupScannerConnected(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerConnected,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+    }
+}
+
+private extension WooAnalyticsEvent.PointOfSale {
+    static func readerModel(for connectedReaderModel: String?) -> String {
+        connectedReaderModel ?? "none_connected"
+    }
+
+    static func safeGatewayID(for gatewayID: String?) -> String {
+        gatewayID ?? "unknown"
     }
 }
 

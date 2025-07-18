@@ -386,7 +386,8 @@ extension MockObjectGraph {
             renewalSubscriptionID: nil,
             appliedGiftCards: [],
             attributionInfo: nil,
-            shippingLabels: []
+            shippingLabels: [],
+            createdVia: "rest-api"
         )
     }
 }

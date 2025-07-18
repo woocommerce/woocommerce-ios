@@ -48,6 +48,14 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertFalse(fieldValues.contains(" "))
     }
 
+    func test_order_fields_parameter_includes_created_via_field() throws {
+        // When
+        let fieldValues = OrdersRemote.ParameterValues.fieldValues
+
+        // Then
+        XCTAssertTrue(fieldValues.contains("created_via"), "fieldValues should include 'created_via' field")
+    }
+
     // MARK: - Load All Orders Tests
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.

@@ -17,6 +17,7 @@ public struct MockShippingLabelAccountSettings {
                                              isEmailReceiptsEnabled: Bool = true,
                                              paperSize: ShippingLabelPaperSize = .label,
                                              lastSelectedPackageID: String = "",
+                                             lastOrderCompleted: Bool = false,
                                              addPaymentMethodURL: URL? = nil) -> ShippingLabelAccountSettings {
         .init(siteID: siteID,
               canManagePayments: canManagePayments,
@@ -30,6 +31,7 @@ public struct MockShippingLabelAccountSettings {
               isEmailReceiptsEnabled: isEmailReceiptsEnabled,
               paperSize: paperSize,
               lastSelectedPackageID: lastSelectedPackageID,
+              lastOrderCompleted: lastOrderCompleted,
               addPaymentMethodURL: addPaymentMethodURL)
     }
 }

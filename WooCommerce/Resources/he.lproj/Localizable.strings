@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-06-17 16:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-02 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -31,9 +31,6 @@
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
 "%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (ללקוח)";
 
-/* The original price of a domain. %1$@ is the price per term. %2$@ is the duration of each pricing term, usually year. */
-"%1$@ \/ %2$@" = "%1$@ \/ %2$@";
-
 /* The default name for a duplicated product, with %1$@ being the original name. Reads like: Ramen Copy */
 "%1$@ Copy" = "להעתיק את %1$@";
 
@@ -44,9 +41,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* A label prompting users to learn more about card readers. %1$@ is a placeholder that is always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
 "%1$@ about accepting payments with your mobile device and ordering card readers." = "%1$@ על קבלת תשלומים באמצעות המכשיר הנייד והזמנה של קוראי כרטיסים.";
-
-/* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
-"%1$@ about domains and how to take domain-related actions." = "%1$@ על דומיינים ואיך לבצע פעולות שקשורות לדומיינים.";
 
 /* %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about verifying information for WooPayments. */
 "%1$@ about verifying your information with WooPayments." = "%1$@ לגבי אימות הפרטים שלך ב-WooPayments.";
@@ -273,9 +267,6 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "יש להדפיס את טופס המכס ולצרף אותו למשלוח בינלאומי זה";
 
-/* Message when attempting to pay for a test transaction with a live card. */
-"A live card was used on a site in test mode. Use a test card instead." = "נעשה שימוש בכרטיס אמיתי באתר במצב בדיקה. להשתמש בכרטיס לבדיקה במקום זאת.";
-
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "אירעה שגיאת רשת. יש לבדוק את החיבור ולנסות שוב.";
 
@@ -297,12 +288,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "להוסיף אפשרויות";
 
-/* Address section title in the domain contact info form. */
-"ADDRESS" = "כתובת";
-
-/* Reads as 'AID'. Part of the mandatory data in receipts */
-"AID" = "AID";
-
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "שחזור של עגלת קניות נטושה";
 
@@ -322,9 +307,6 @@ which should be translated separately and considered part of this sentence. */
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
 "Account Settings" = "הגדרות חשבון";
-
-/* Reads as 'Account Type'. Part of the mandatory data in receipts */
-"Account Type" = "סוג חשבון";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "מחובר לחשבון";
@@ -439,9 +421,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title on empty state button when the product has attributes but no variations
    Title on the bottom sheet to choose what variation process to start */
 "Add Variation" = "להוסיף סוג";
-
-/* Title of button to add a domain in domain settings. */
-"Add a domain" = "להוסיף דומיין";
 
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "להוסיף כרטיס אשראי חדש";
@@ -651,10 +630,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "ניתן לקבל החזר כספי עבור הסכום";
 
-/* Line description for 'Amount Paid' cart total on the receipt
-   Title of 'Amount Paid' section in the receipt */
-"Amount Paid" = "הסכום ששולם";
-
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "An Apple ID can only be used to upgrade one store" = "ניתן להשתמש ב-Apple ID כדי לשדרג חנות אחת בלבד";
 
@@ -667,20 +642,8 @@ which should be translated separately and considered part of this sentence. */
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "אירעה שגיאה במהלך סגירת החשבון.";
 
-/* Error message when Bluetooth is not enabled for this application. */
-"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "אירעה שגיאה בגישה ל-Bluetooth – יש להפעיל Bluetooth ולנסות שוב";
-
-/* Message when it looks like a duplicate transaction is being attempted. */
-"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "עסקה זהה נרשמה לאחרונה. אם ברצונך להמשיך, יש לנסות אמצעי תשלום אחר";
-
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "נכשלה העלאה של תמונה";
-
-/* Message when an incorrect PIN has been entered too many times. */
-"An incorrect PIN has been entered too many times. Try another means of payment." = "הוזן קוד PIN שגוי יותר מדי פעמים. יש לנסות אמצעי תשלום אחר";
-
-/* Message when an incorrect PIN has been entered. */
-"An incorrect PIN has been entered. Try again, or use another means of payment." = "הוזן קוד PIN שגוי. יש לנסות שוב או להשתמש באמצעי תשלום אחר";
 
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "הערה אופציונלית לשלוח ללקוחות לאחר הרכישה";
@@ -733,9 +696,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "יומני אפליקציה";
-
-/* Reads as 'Application name'. Part of the mandatory data in receipts */
-"Application Name" = "שם האפליקציה";
 
 /* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
@@ -1249,12 +1209,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "מדריכים לקורא הכרטיסים";
 
-/* Error message when a card is left in the reader and another transaction started. */
-"Card was left in reader - please remove and reinsert card." = "הכרטיס נשאר בקורא – יש להסיר אותו ולהכניס אותו שוב";
-
-/* Error message when the card is removed from the reader prematurely. */
-"Card was removed too soon - please try transaction again." = "הסרת את הכרטיס מהר מדי – יש לנסות לבצע את העסקה שוב";
-
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "ביטול";
 
@@ -1372,12 +1326,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error showed in Shipping Label Address Validation for the city field */
 "City missing" = "העיר חסרה";
-
-/* Title of button to redeem domain credit in the domain credit banner in domain settings. */
-"Claim Domain" = "לקבל בעלות על דומיין";
-
-/* Title of the domain credit banner in domain settings. */
-"Claim your free domain" = "לקבל דומיין בחינם";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Class 1 – Toy Propellant\/Safety Fuse Package" = "סיווג 1 – חבילה עם חומרים מניעים לצעצועים\/מנגנון בטיחות";
@@ -1559,9 +1507,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "ברכותינו, קראת הכול!";
 
-/* Title of the domain purchase success screen. */
-"Congratulations on your purchase" = "ברכותינו על הרכישה החדשה שלך";
-
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "ברכותינו! התקדמת עוד שלב בהכנת החנות.";
 
@@ -1633,9 +1578,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "מתחבר אל קורא הכרטיסים";
 
-/* Error message when establishing a connection to the card reader times out. */
-"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "הסתיים הזמן הקצוב של החיבור אל קורא הכרטיסים – יש לוודא שהקורא נמצא בקרבתך ושהסוללה שלו טעונה ולנסות שוב";
-
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "התחברות לחשבונך";
 
@@ -1692,7 +1634,6 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
-   Title of the button to continue with a selected domain.
    Title of the submit button on the account creation form. */
 "Continue" = "המשך";
 
@@ -2011,9 +1952,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the range selection list */
 "Date Range" = "טווח תאריכים";
 
-/* Title of 'Date Paid' section in the receipt */
-"Date paid" = "תאריך התשלום";
-
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "תאריך משלוח";
 
@@ -2093,9 +2031,6 @@ which should be translated separately and considered part of this sentence. */
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "הנחה";
-
-/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
-"Discount %1$@" = "הנחה %1$@";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -2184,9 +2119,6 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "מסמכים";
 
-/* Navigation bar title of the domain settings screen. */
-"Domains" = "דומיינים";
-
 /* Country option for a site address. */
 "Dominica" = "דומיניקה";
 
@@ -2227,14 +2159,11 @@ which should be translated separately and considered part of this sentence. */
    Done navigation button under the Package Selected screen in Shipping Label flow
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
-   Navigation bar button on the domain settings screen to leave the flow.
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
-   Text for the done button in the domain contact info form.
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for the Done button on a WebView modal sheet
-   Title of the button to finish the domain purchase success screen. */
+   Title for the Done button on a WebView modal sheet */
 "Done" = "בוצע";
 
 /* Link title to see instructions for printing a shipping label on an iOS device */
@@ -2787,9 +2716,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "המשוב נשלח!";
 
-/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
-"Fees" = "עמלות";
-
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "טוען סוגים…";
 
@@ -2882,9 +2808,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "שכחת סיסמה?";
 
-/* Title in the error notice when a validation error occurs after submitting domain contact info. */
-"Form Validation Error" = "שגיאת אימות בטופס";
-
 /* Next web page */
 "Forward" = "העבר";
 
@@ -2896,9 +2819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plan name for an active free trial */
 "Free Trial" = "תקופת ניסיון בחינם";
-
-/* Label shown for domains that are free for the first year with available domain credit. */
-"Free for the first year" = "ניתן בחינם לשנה הראשונה";
 
 /* Country option for a site address. */
 "French Guiana" = "גיאנה הצרפתית";
@@ -3315,9 +3235,6 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to In-Person Payments screen */
 "In-Person Payments" = "תשלומים באופן אישי";
 
-/* Cell title on beta features screen to enable in-app purchases */
-"In-app purchases" = "רכישה באפליקציה";
-
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
 
@@ -3359,17 +3276,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label action for inserting a link on the editor */
 "Insert" = "להוסיף";
 
-/* Message from the in-person payment card reader prompting user to insert their card */
-"Insert Card" = "יש להכניס את הכרטיס";
-
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "להוסיף סרגל אופקי";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "להוסיף קישור";
-
-/* Message from the in-person payment card reader prompting user to insert or swipe their card */
-"Insert Or Swipe Card" = "יש להכניס או להעביר את הכרטיס";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Insert card to pay" = "יש להכניס את הכרטיס לביצוע תשלום";
@@ -3664,6 +3575,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Latvia" = "לטביה";
 
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy Debug" = "להשיק את איתור הבאגים של Wormholy";
+
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "להשיק את החנות שלך";
 
@@ -3678,7 +3592,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
-   Tappable text at the bottom of the domain settings screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -4155,9 +4068,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Mozambique" = "מוזמביק";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "זוהו מספר כרטיסים ללא מגע";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "מספר חנויות";
 
@@ -4296,9 +4206,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the empty state of the Blaze campaign list view */
 "No campaigns yet" = "עדיין אין קמפיינים";
 
-/* Error message when a card reader was expected to already have been connected. */
-"No card reader is connected - connect a reader and try again." = "אין קורא כרטיסים מחובר – יש לחבר קורא ולנסות שוב";
-
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "לא נבחרו קטגוריות";
 
@@ -4307,9 +4214,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "No connection issues" = "לא נמצאו בעיות בחיבור";
-
-/* Error message when there is no connection to the Internet. */
-"No connection to the Internet - please connect to the Internet and try again." = "אין חיבור לאינטרנט – יש להתחבר לאינטרנט ולנסות שוב";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "לא נמצאו קופונים";
@@ -4429,9 +4333,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "הערה ללקוח";
-
-/* Title of order note section in the receipt, commonly used for Quick Orders. */
-"Notes" = "פתקים";
 
 /* Default message for empty media picker */
 "Nothing to show" = "אין מה לראות כאן";
@@ -4801,14 +4702,10 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Payment section title */
 "Payment Totals" = "סכומים כוללים לתשלום";
 
-/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
-"Payment declined due to insufficient funds. Try another means of payment." = "התשלום נדחה עקב יתרה לא מספיקה. יש לנסות אמצעי תשלום אחר";
-
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "התשלום נכשל";
 
-/* Title of 'Payment method' section in the receipt
-   Title of the webview of adding a payment method in Shipping Labels */
+/* Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "אמצעי תשלום";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -4816,12 +4713,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "התשלום בוצע בהצלחה";
-
-/* Message when we don't know exactly why the payment was declined. */
-"Payment was declined for an unknown reason. Try another means of payment." = "התשלום נדחה מסיבה לא ידועה. יש לנסות אמצעי תשלום אחר";
-
-/* Message when payment is declined for a non specific reason. */
-"Payment was declined for an unspecified reason. Try another means of payment." = "התשלום נדחה מסיבה שלא צוינה. יש לנסות אמצעי תשלום אחר";
 
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
@@ -4896,12 +4787,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "יש להטעין את הקורא";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "עליך לוודא שהטלפון עומד בדרישות הבאות: מכשיר iPhone XS או מכשיר חדש יותר עם מערכת הפעלה של iOS 16.7 ומעלה. יש לפנות לתמיכה אם השגיאה הזאת מופיעה במכשיר נתמך.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
-"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "עליך לוודא שה-Apple ID שלך תקף ולנסות שוב. חשבון Apple ID תקף נדרש כדי לקבל את תנאי השימוש של Apple";
-
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "יש לחבר את Jetpack דרך עמוד מנהל המערכת שלך בדפדפן או ליצור קשר עם התמיכה.";
 
@@ -4911,9 +4796,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Bolded message advising the merchant to contact support when the plan activation failed.
    Subtitle message displayed when In-App Purchases are not supported, redirecting to contact support if needed. */
 "Please contact support for assistance." = "כדאי לפנות לתמיכה לעזרה.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
-"Please contact support – there was an issue starting Tap to Pay on iPhone" = "יש לפנות לתמיכה – הייתה בעיה בהתחלת השימוש ב-Tap to Pay ב-iPhone";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "כדי להשתמש באפליקציה, יש לפנות לבעלי האתר כדי לקבל הזמנה לאתר זה כמנהל חנות או כמנהל מערכת.";
@@ -5005,9 +4887,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "יש לבחור חבילה";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
-"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "יש להתחבר ל-iCloud במכשיר זה כדי להשתמש ב-Tap to Pay ב-iPhone";
-
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב מאוחר יותר או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
@@ -5020,9 +4899,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "יש לנסות שוב או לפנות אלינו בכל עת ואנחנו נשמח לעזור!";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
-"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "כדי להשתמש באפשרות Tap to Pay ב-iPhone, יש לנסות שוב ולקבל את תנאי השימוש של Tap to Pay ב-iPhone";
-
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "יש לנסות שוב או לפנות לתמיכה לעזרה";
 
@@ -5034,9 +4910,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when Jetpack install fails */
 "Please try again. Alternatively, you can install Jetpack through your WP-Admin." = "יש לנסות שוב. לחלופין, אפשר להתקין את Jetpack דרך מנהל WP.";
-
-/* Default message when there is an unexpected error loading domain suggestions on the domain selector. */
-"Please try another query." = "יש לנסות שאילתה אחרת.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Please update your reader software to keep accepting payments" = "עליך לעדכן את התוכנה של הקורא כדי להמשיך לקבל תשלומים";
@@ -5171,9 +5044,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Notice title when updating the price via the bulk variation screen */
 "Prices updated successfully." = "המחירים עודכנו בהצלחה.";
-
-/* Title for a free domain if the domain is the primary site address. */
-"Primary site address" = "כתובת האתר הראשי";
 
 /* Title of print button on Print Customs Invoice screen of Shipping Label flow when there are more than one invoice */
 "Print" = "להדפיס";
@@ -5461,12 +5331,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "סיבה להחזר הכספי על ההזמנה";
 
-/* The title of the view containing a receipt preview
-   Title of receipt. */
+/* The title of the view containing a receipt preview */
 "Receipt" = "קבלה";
-
-/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
-"Receipt from %1$@" = "קבלה מאת %1$@";
 
 /* No comment provided by engineer. */
 "Recurring payments'" = "תשלומים חוזרים'";
@@ -5544,9 +5410,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button in the view for adding or editing a coupon code. */
 "Regenerate Coupon Code" = "ליצור מחדש את קוד הקופון";
 
-/* Title of the domain contact info form. */
-"Register domain" = "רישום הדומיין";
-
 /* The label in the option of selecting to bulk update the regular price of a product variation */
 "Regular Price" = "מחיר רגיל";
 
@@ -5568,9 +5431,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "להסיר את המאפיין";
-
-/* Message from the in-person payment card reader prompting user to remove their card */
-"Remove Card" = "להסיר את הכרטיס";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -5611,9 +5471,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation title for the Rename Attributes screen */
 "Rename Attribute" = "לשנות את שם המאפיין";
-
-/* Renewal date of a site's domain in domain settings. Reads like `Renews on October 11, 2023`. */
-"Renews on %1$@" = "מתחדש בתאריך %1$@";
 
 /* Action to replace one photo on the Product images screen */
 "Replace Photo" = "להחליף את התמונה";
@@ -5701,9 +5558,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "יש לנסות שוב לאחר העדכון";
 
-/* Message from the in-person payment card reader prompting user to retry payment with their card */
-"Retry Card" = "לנסות את הכרטיס שוב";
-
 /* Action button to check site's connection again. */
 "Retry Connection" = "לנסות שוב את החיבור";
 
@@ -5765,9 +5619,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
-
-/* Header label of the domain suggestions on the domain selector. */
-"SUGGESTIONS" = "הצעות";
 
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
@@ -5907,12 +5758,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Search Coupons button */
 "Search coupons" = "לחפש קופונים";
-
-/* Title of the domain selector in domain settings. */
-"Search domains" = "חיפוש דומיינים";
-
-/* Title of the button on the domain settings screen to search for a domain. */
-"Search for a Domain" = "לחפש דומיין";
 
 /* Message to prompt users to search for customers on the customer search screen */
 "Search for an existing customer or" = "לחפש לקוח קיים או";
@@ -6166,8 +6011,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Date an item was shipped */
 "Shipped %@" = "נשלח %@";
 
-/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
-   Product Shipping Settings navigation title
+/* Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the Shipping Settings row on Product main screen */
@@ -6328,9 +6172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "חלק מכתובת האימייל לא תקינות.";
 
-/* Message in the error notice when an unknown validation error occurs after submitting domain contact info. */
-"Some unexpected error with the validation. Please check the fields and try again." = "אירעה שגיאה לא צפויה בתהליך האימות. כדאי לבדוק את השדות ולנסות שוב.";
-
 /* Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "לא ידוע";
 
@@ -6399,12 +6240,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Sorry, this payment couldn’t be processed" = "אנו מתנצלים, לא ניתן היה לעבד תשלום זה";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
-"Sorry, this payment couldn’t be processed." = "אנו מתנצלים, לא ניתן היה לעבד תשלום זה.";
-
-/* Error message shown when a refund could not be canceled (likely because it had already completed) */
-"Sorry, this refund could not be canceled." = "מצטערים, לא ניתן לבטל את ההחזר הכספי הזה";
-
-/* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "מצטערים, לא ניתן היה לעבד את ההחזר הכספי הזה";
 
 /* No comment provided by engineer. */
@@ -6415,12 +6250,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "שם המשתמש חייב להכיל גם אותיות!";
-
-/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
-"Sorry, we could not complete this action, as no active payment was found." = "מצטערים, לא הצלחנו להשלים את הפעולה מאחר שלא נמצא תשלום פעיל.";
-
-/* Error message shown when an in-progress connection is cancelled by the system */
-"Sorry, we could not connect to the reader. Please try again." = "מצטערים, לא הצלחנו לחבר את הקורא. יש לנסות שוב.";
 
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "מצטערים, לא הצלחנו להתחיל את השירות של Tap To Pay ב-iPhone. יש לבדוק את החיבור ולנסות שוב.";
@@ -6539,7 +6368,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Subscriptions" = "מינויים";
 
 /* Create Shipping Label form -> Subtotal label
-   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
    Title on the refund screen that lists the fees subtotal cost
    Title on the refund screen that lists the products refund subtotal cost
@@ -6556,12 +6384,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "סיכום המוצרים ומשקל החבילה";
 
-/* Title of 'Summary' section in the receipt when the order number is unknown */
-"Summary" = "סיכום";
-
-/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
-"Summary: Order #%1$@" = "סיכום: הזמנה מס' %1$@";
-
 /* Country option for a site address. */
 "Suriname" = "סורינם";
 
@@ -6573,9 +6395,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Country option for a site address. */
 "Sweden" = "שוודיה";
-
-/* Message from the in-person payment card reader prompting user to swipe their card */
-"Swipe Card" = "יש להעביר כרטיס";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "החלפת חנות";
@@ -6621,9 +6440,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "דוח מצב המערכת הועתק ללוח";
-
-/* Message when attempting to pay for a live transaction with a test card. */
-"System test cards are not permitted for payment. Try another means of payment." = "כרטיסי בדיקה של המערכת לא מותרים לשימוש לצורך תשלום. יש לנסות אמצעי תשלום אחר";
 
 /* Country option for a site address. */
 "São Tomé and Príncipe" = "סאו טומה ופרינסיפה";
@@ -6679,9 +6495,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "להקיש לתשלום ב-iPhone";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
-"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "לא ניתן להשתמש ב-Tap to Pay ב-iPhone במהלך שיחה טלפונית. יש לסיים את השיחה ולנסות שוב.";
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "השירות של Tap To Pay ב-iPhone מוכן לשימוש";
@@ -6780,8 +6593,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "מצב מס";
 
-/* Line description for tax charged on the whole cart. Only shown when non-zero
-   Taxes label for payment view */
+/* Taxes label for payment view */
 "Taxes" = "מיסים";
 
 /* Title for the tax educational dialog */
@@ -6804,9 +6616,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
    Title of button that displays the App's terms of service */
 "Terms of Service" = "תנאי השירות";
-
-/* Cell description on beta features screen to enable in-app purchases */
-"Test out in-app purchases as we get ready to launch" = "כדאי לבדוק את האפשרות לרכישה באפליקציה בזמן שאנחנו מתכוננים להשקה";
 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "כדאי לבדוק את האפשרות להציג הרחבות בהזמנה בזמן שאנחנו מתכוננים להשקה";
@@ -6862,20 +6671,11 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "בחנות שלך הותקנה ההרחבה %1$@ אך יש לעדכן אותה כדי לבצע 'תשלומים באופן אישי'. עליך לעדכן את ההרחבה לגרסה האחרונה.";
 
-/* Error message when the card reader loses its Bluetooth connection to the card reader. */
-"The Bluetooth connection to the card reader disconnected unexpectedly." = "החיבור של Bluetooth לקורא הכרטיסים התנתק באופן בלתי צפוי";
-
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "חשבון ה-Google‏ \"%@\" לא תואם לשום חשבון ב-WordPress.com‏";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "לא ניתן לטעון את ההזמנה!";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
-"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "הסכום לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
-"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "האפליקציה לא הצליחה להפעיל את Tap to Pay ב-iPhone מאחר ששבב ה-NFC מושבת. יש לפנות לתמיכה לפרטים נוספים.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "לא ניתן היה להסיר את המאפיין.";
@@ -6883,62 +6683,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "לא ניתן היה לשמור את הסוג.";
 
-/* Message when the card presented does not support the order currency. */
-"The card does not support this currency. Try another means of payment." = "הכרטיס הזה לא תומך במטבע שצוין. יש לנסות אמצעי תשלום אחר";
-
-/* Message when the card presented does not allow this type of purchase. */
-"The card does not support this type of purchase. Try another means of payment." = "הכרטיס הזה לא תומך בסוג העסקה שנבחרה. יש לנסות אמצעי תשלום אחר";
-
-/* Message when the presented card is past its expiration date. */
-"The card has expired. Try another means of payment." = "פג תוקף הכרטיס שלך. יש לנסות אמצעי תשלום אחר";
-
-/* Message when payment is declined for a non specific reason. */
-"The card or card account is invalid. Try another means of payment." = "הכרטיס או חשבון הכרטיס לא תקין. יש לנסות אמצעי תשלום אחר";
-
-/* Error message when the card reader is busy executing another command. */
-"The card reader is busy executing another command - please try again." = "קורא הכרטיסים מבצע כרגע פקודה אחרת –יש לנסות שוב";
-
-/* Error message when the card reader is incompatible with the application. */
-"The card reader is not compatible with this application - please try updating the application or using a different reader." = "קורא הכרטיסים לא תואם לאפליקציה הזאת – יש לנסות לעדכן את האפליקציה או להשתמש בקורא אחר";
-
-/* Error message when the card reader session has timed out. */
-"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "תוקף ההפעלה של קורא הכרטיסים פג – יש לנתק את קורא הכרטיסים ולחברו מחדש ולאחר מכן, לנסות שוב";
-
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "התוכנה של קורא הכרטיסים לא מעודכנת – עליך לעדכן את התוכנה של קורא הכרטיסים לפני ניסיון לעבד תשלומים";
-
-/* Error message when the card reader software is too far out of date to process payments. */
-"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "התוכנה של קורא הכרטיסים לא מעודכנת – עליך לעדכן את התוכנה של קורא הכרטיסים לפני ניסיון לעבד תשלומים.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "התוכנה של קורא הכרטיסים לא מעודכנת – עליך לעדכן את התוכנה של קורא הכרטיסים לפני ניסיון לעבד החזרים כספיים";
 
-/* Error message when the card reader software update fails due to a communication error. */
-"The card reader software update failed due to a communication error - please try again." = "עדכון התוכנה של קורא הכרטיסים נכשל עקב שגיאה בתקשורת – יש לנסות שוב";
-
-/* Error message when the card reader software update fails due to a problem with the update server. */
-"The card reader software update failed due to a problem with the update server - please try again." = "עדכון התוכנה של קורא הכרטיסים נכשל עקב בעיה בשרת העדכון – יש לנסות שוב";
-
-/* Error message when the card reader software update fails unexpectedly. */
-"The card reader software update failed unexpectedly - please try again." = "עדכון התוכנה של קורא הכרטיסים נכשל באופן בלתי צפוי – יש לנסות שוב";
-
-/* Error message when the card reader software update is interrupted. */
-"The card reader software update was interrupted before it could complete - please try again." = "עדכון התוכנה של קורא הכרטיסים הופסק לפני שהושלם – יש לנסות שוב";
-
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר";
-
-/* Error message when the card reader itself declines the card. */
-"The card was declined by the card reader - please try another means of payment." = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "הכרטיס נדחה על ידי קורא הכרטיסים – יש לנסות אמצעי תשלום אחר להחזר הכספי";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "הכרטיס נדחה על ידי קורא הכרטיסים של ה-iPhone – יש לנסות אמצעי תשלום אחר";
-
-/* Error message when the card processor declines the payment. */
-"The card was declined by the payment processor - please try another means of payment." = "הכרטיס נדחה על ידי מעבד התשלומים – יש לנסות אמצעי תשלום אחר.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "האישור עבור שרת זה אינו חוקי. ייתכן שאתה מתחבר לשרת שמתחזה ל-&quot;%@&quot;, מה שעלול לסכן את המידע הסודי שלך.\n\nלבטוח באישור בכל מקרה?";
@@ -6952,38 +6710,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "קוד הקופון לא יכול להיות ריק";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
-"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "המטבע לא נתמך על ידי Tap to Pay ב-iPhone – יש לנסות קורא כרטיסים נפרד או אמצעי תשלום שונה.";
-
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "הלקוח יקבל אימייל כאשר ההזמנה הושלמה";
-
-/* Subtitle of the domain selector in domain settings. %1$@ is the free domain of the site from WordPress.com. */
-"The domain purchased will redirect users to **%1$@**" = "הדומיין שנרכש ינתב את המשתמשים אל *%1$@**";
-
-/* Subtitle of the domain selector in domain settings when a free staging domain is unavailable. */
-"The domain purchased will redirect users to the current staging domain" = "הדומיין שנרכש ינתב את המשתמשים אל דומיין האחסון הזמני הנוכחי";
-
-/* Footnote about the domain credit banner in domain settings. */
-"The domain purchased will redirect users to your primary address." = "הדומיין שנרכש ינתב את המשתמשים אל הכתובת הראשית שלך.";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "בשימוש הראשון בשירות של Tap To Pay ב-iPhone, ייתכן שתופיע בקשה לקבל את תנאי השימוש של Apple.";
 
-/* Message when the presented card does not allow the purchase amount. */
-"The payment amount is not allowed for the card presented. Try another means of payment." = "הסכום לתשלום לא מורשה עבור הכרטיס שהוצג. יש לנסות אמצעי תשלום אחר.";
-
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "לא ניתן לעבד את התשלום באמצעות מעבד התשלומים.";
 
-/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
-"The payment card was removed too early, please try again." = "כרטיס התשלום הוסר מהר מדי, יש לנסות שוב.";
-
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "אמצעי התשלום אינו תומך בהחזרים כספיים אוטומטיים. יש להשלים את ההחזר הכספי על-ידי העברה ידנית ללקוח.";
-
-/* Error message when the cancel button on the reader is used. */
-"The payment was canceled on the reader." = "התשלום בוטל דרך הקורא";
 
 /* Message shown if a payment cancellation is shown as an error. */
 "The payment was cancelled." = "התשלום הזה בוטל.";
@@ -7014,9 +6751,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The refund can not be processed by the payment processor." = "לא ניתן לעבד את ההחזר הכספי באמצעות מעבד התשלומים.";
-
-/* Error message when a request times out. */
-"The request timed out - please try again." = "הזמן הקצוב של הבקשה הסתיים – יש לנסות שוב";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "הבקשה ליצור סיסמת אפליקציה לא אושרה.";
@@ -7057,23 +6791,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "כמות המלאי של המוצר. ניתן לעריכה.";
 
-/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
-"The store address is incomplete or missing, please update it before continuing." = "הכתובת של החנות לא מלאה או חסרה, יש לעדכן אותה לפני ההמשך.";
-
-/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
-"The store postal code is invalid or missing, please update it before continuing." = "המיקוד של החנות לא תקין או חסר, יש לעדכן אותו לפני ההמשך.";
-
-/* Error message when the system cancels a command. */
-"The system canceled the command unexpectedly - please try again." = "המערכת ביטלה את הפקודה באופן לא צפוי – יש לנסות שוב";
-
-/* Error message when the card reader service experiences an unexpected software error. */
-"The system experienced an unexpected software error." = "המערכת נתקלה בשגיאת תוכנה לא צפויה";
-
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "אין אפשרות להביא את דוח מצב המערכת לאתר שלך כרגע. יש לנסות שוב.";
-
-/* Message when the presented card postal code doesn't match the order postal code. */
-"The transaction postal code and card postal code do not match. Try another means of payment." = "אין התאמה בין המיקוד של העסקה והמיקוד של הכרטיס. יש לנסות אמצעי תשלום אחר";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "לא ניתן היה להתחיל את הניסיון לביצוע התשלום. יש לנסות שוב או לפנות לתמיכה אם הבעיה ממשיכה.";
@@ -7166,9 +6885,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "אירעה שגיאה במהלך גביית התשלום.";
 
-/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
-"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "הייתה בעיה בהגדרת של Tap to Pay ב-iPhone – יש לנסות שוב.";
-
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "רישיונות של צד שלישי";
@@ -7193,9 +6909,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "האפליקציה הזאת תומכת רק בתפקידי משתמש של 'מנהל מערכת' ו'מנהל חנות'. יש ליצור קשר עם בעלי החנות כדי לשדרג את התפקיד שלך.";
-
-/* Message when a card requires a PIN code and we have no means of entering such a code. */
-"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "לכרטיס זה נדרש קוד PIN ולכן אין אפשרות לעבד אותו. יש לנסות אמצעי תשלום אחר";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "ייתכן שבחנות שלך הוגדרו כמה שלבים נוספים לצורך אבטחה.";
@@ -7226,9 +6939,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "הפריט הזה נמצא כעת בחבילה ⁦%1$d⁩ : %2$@. לאן ברצונך להעביר אותו?";
-
-/* Explanation in the alert shown when a retry fails because the payment already completed */
-"This payment has already been completed – please check the order details." = "עיבוד התשלום כבר הושלם – יש לבדוק את פרטי ההזמנה.";
 
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
@@ -7422,12 +7132,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Try Another Address" = "יש לנסות כתובת אחרת";
 
-/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
-"Try Another Card" = "יש לנסות כרטיס אחר";
-
-/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
-"Try Another Read Method" = "יש לנסות שיטת קריאה אחרת";
-
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "יש לנסות לאשר שוב";
 
@@ -7465,9 +7169,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
 "Try again with WP-Admin page" = "לנסות שוב עם העמוד WP-Admin";
 
-/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
-"Try another means of payment." = "יש לנסות אמצעי תשלום אחר";
-
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "יש לנסות להתחבר שוב כדי לגשת לחנות שלך.";
 
@@ -7479,9 +7180,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "ניתן לנסות באמצעות כתובת האתר";
-
-/* Message when a card is declined due to a potentially temporary problem. */
-"Trying again may succeed, or try another means of payment." = "ייתכן שהפעולה תצליח בניסיון חוזר. לחלופין, אפשר לנסות אמצעי תשלום אחר";
 
 /* Country option for a site address. */
 "Tunisia" = "טוניסיה";
@@ -7510,9 +7208,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Tuvalu" = "טובאלו";
 
-/* Placeholder of the search text field on the domain selector. */
-"Type a name for your store" = "יש להקליד את השם של החנות שלך";
-
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "סוג התוכן";
 
@@ -7535,12 +7230,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "אי אפשר להתחבר";
 
-/* Error message when Bluetooth is not enabled or available. */
-"Unable to access Bluetooth - please enable Bluetooth and try again." = "לא ניתן לגשת ל-Bluetooth – יש להפעיל Bluetooth ולנסות שוב";
-
-/* Error message when location services is not enabled for this application. */
-"Unable to access Location Services - please enable Location Services and try again." = "לא ניתן לגשת לשירותי המיקום – יש להפעיל את שירותי המיקום ולנסות שוב";
-
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "לא ניתן להוסיף קופון.";
 
@@ -7552,18 +7241,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "אין אפשרות לעדכן את מצב ההזמנה ⁦%1$d⁩#";
-
-/* Error message when communication with the card reader is disrupted. */
-"Unable to communicate with reader - please try again." = "לא ניתן ליצור תקשורת עם הקורא – יש לנסות שוב";
-
-/* Error message when attempting to connect to a card reader which is already in use. */
-"Unable to connect to card reader - the card reader is already in use." = "לא ניתן לחבר את קורא הכרטיסים – קורא כרטיסים אחר כבר נמצא בשימוש";
-
-/* Error message when a card reader is already connected and we were not expecting one. */
-"Unable to connect to reader - another reader is already connected." = "לא ניתן לחבר את הקורא – קורא אחר כבר מחובר";
-
-/* Error message the card reader battery level is too low to connect to the phone or tablet. */
-"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "לא ניתן לחבר את הקורא – רמת הסוללה של הקורא נמוכה מאוד – יש להטעין את הקורא ולנסות שוב.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "לא ניתן ליצור הזמנה חדשה";
@@ -7649,15 +7326,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "אין אפשרות לסמן את הביקורת בתור \"%@\"";
 
-/* Error message when the card reader cannot be used to perform the requested task. */
-"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "לא ניתן לבצע את הבקשה עם הקורא המחובר – אפשרות לא נתמכת – יש לנסות שוב עם קורא אחר";
-
-/* Error message when the application is so out of date that the backend refuses to work with it. */
-"Unable to perform software request - please update this application and try again." = "לא ניתן לבצע את בקשת התוכנה – יש לעדכן את האפליקציה ולנסות שוב";
-
-/* Error message when the payment intent is invalid. */
-"Unable to process payment due to invalid data - please try again." = "לא ניתן לעבד את התשלום עקב נתונים לא תקינים – יש לנסות שוב";
-
 /* Error message when the order amount is below the minimum amount allowed. */
 "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "אין אפשרות לעבד את התשלום. הסכום הכולל של ההזמנה נמוך מהסכום המינימלי שאפשר לגבות, %1$@";
 
@@ -7672,15 +7340,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
 "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "אין אפשרות לעבד את התשלום. לא ניתן היה להציג את פרטי ההזמנה העדכניים. עליך לבדוק את החיבור לרשת ולנסות שוב. שגיאה בסיסית: %1$@";
-
-/* Error message when the card reader times out while reading a card. */
-"Unable to read card - the system timed out - please try again." = "לא ניתן לקרוא את הכרטיס – הזמן הקצוב של המערכת הסתיים – יש לנסות שוב";
-
-/* Error message when the card reader is unable to read any chip on the inserted card. */
-"Unable to read inserted card - please try removing and inserting card again." = "לא ניתן לקרוא את הכרטיס שהוכנס – יש לנסות להכניס את הכרטיס שוב";
-
-/* Error message when the card reader is unable to read a swiped card. */
-"Unable to read swiped card - please try swiping again." = "לא ניתן לקרוא את הכרטיס שהועבר – יש לנסות להעביר את הכרטיס שוב";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "לא ניתן לקרוא את אתר WordPress בכתובת URL זו. יש להקיש על 'נדרשת עזרה נוספת?' כדי להציג את השאלות הנפוצות.";
@@ -7704,20 +7363,11 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice displayed when data cannot be synced for edited order */
 "Unable to save changes. Please try again." = "אין אפשרות לשמור את השינויים. יש לנסות שוב.";
 
-/* Error message when Bluetooth Low Energy is not supported on the user device. */
-"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "לא ניתן לחפש קוראי כרטיסים – האפשרות של Bluetooth Low Energy לא נתמכת במכשיר זה – יש להשתמש במכשיר אחר";
-
-/* Error message when Bluetooth scan times out during reader discovery. */
-"Unable to search for card readers - Bluetooth timed out - please try again." = "לא ניתן לחפש קוראי כרטיסים – הזמן הקצוב של חיבור ה-Bluetooth הסתיים – יש לנסות שוב";
-
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "אין אפשרות להגדיר את פרטי הלקוח.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "אין אפשרות לעדכן את הכתובת.";
-
-/* Error message when the card reader battery level is too low to safely perform a software update. */
-"Unable to update card reader software - the reader battery is too low." = "לא ניתן לעדכן את התוכנה של קורא הכרטיסים – רמת הסוללה של הקורא נמוכה מדי";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "לא ניתן היה לעדכן את המחיר";
@@ -8186,9 +7836,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "לא הצלחנו לאמת באופן אוטומטי את הכתובת למשלוח. ניתן להציג את המפה ב-Apple Maps כדי לוודא שהכתובת נכונה.";
 
-/* Explanation in the alert presented when a retry of a payment fails */
-"We were unable to retry the payment – please start again." = "לא ניתן היה לנסות שוב את ביצוע התשלום – יש להתחיל מחדש.";
-
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "לא הצלחנו לשלוח אליך אימייל בשלב זה. יש לנסות שוב מאוחר יותר.";
 
@@ -8418,9 +8065,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Info notice at the bottom of the product add-ons screen */
 "You can edit product add-ons in the web dashboard." = "ניתן לערוך את התוספים למוצר בלוח הבקרה באינטרנט.";
 
-/* Instructions of the domain purchase success screen. */
-"You can find the domain settings in menu > settings" = "אפשר לגשת אל הגדרות הדומיין דרך 'תפריט' > 'הגדרות'";
-
 /* Subtitle displayed in promotional screens shown during the login flow. */
 "You can manage quickly and easily." = "אפשר לנהל בצורה מהירה ונוחה.";
 
@@ -8454,9 +8098,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "אין לך הרשאה לניהול התוספים בחנות הזאת.";
 
-/* Subtitle of the domain credit banner in domain settings. */
-"You have a free one-year domain registration included with your plan." = "אנחנו מעניקים לך רישום דומיין בחינם לשנה עם התוכנית שלך.";
-
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "יש לך הזמנה חדשה! 🎉";
 
@@ -8470,9 +8111,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "עליך להוסיף סיסמה כדי להגן על המוצר שלך באמצעות סיסמה";
-
-/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
-"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "עליך להגדיר קוד סיסמה למסך הנעילה כדי להשתמש ב-Tap to Pay ב-iPhone";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "נראה שהתקנת תוסף למכשירים ניידים מ-DudaMobile שמונע מהאפליקציה להתחבר לבלוג שלך";
@@ -8505,9 +8143,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining that an email is not associated with a WordPress.com account. Presented when logging in with an email address that is not a WordPress.com account */
 "Your email isn't used with a WordPress.com account" = "כתובת האימייל שלך לא מקושרת לחשבון ב-WordPress.com";
-
-/* Title of the free domain view. */
-"Your free store address" = "הכתובת של החנות החינמית שלך";
 
 /* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
 "Your free trial has ended" = "תקופת הניסיון שלך נגמרה";
@@ -8550,12 +8185,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the top of the screen when you visit your site in Safari." = "עם הכניסה לאתר בדפדפן Safari, כתובת האתר שלך תופיע בסרגל העליון של המסך.";
-
-/* Subtitle of the domain purchase success screen. */
-"Your site address is being set up. It may take up to 30 minutes for your domain to start working." = "כתובת האתר שלך הוגדרה. יידרשו עד 30 דקות להתחלת הפעילות של הדומיין.";
-
-/* Header text of the site's domain list in domain settings. */
-"Your site domains" = "הדומיינים באתר שלך";
 
 /* The title of the Error Loading Data banner when there is a Jetpack connection error */
 "Your site is taking a long time to respond" = "זמן התגובה של האתר שלך איטי מדי";
@@ -10494,135 +10123,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "להציג את כל הקמפיינים";
 
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "לאפליקציה נדרשת גישה ל-Bluetooth כדי להתחבר אל קורא הכרטיסים. באפשרותך להעניק הרשאה באפליקציית ההגדרות של המערכת, דרך המקטע של Woo.";
-
-/* Error message when Bluetooth is already paired with another device. */
-"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "קורא ה-Bluetooth כבר מקושר למכשיר אחר. עליך לאפס את הקישור של קורא כרטיסים כדי לחבר אותו למכשיר זה.";
-
-/* Error message when the Bluetooth connection has an invalid location ID parameter. */
-"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "קיים מזהה מיקום לא תקין בחיבור ה-Bluetooth.";
-
-/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
-"hardware.cardReader.underlyingError.bluetoothDenied" = "לאפליקציה נדרשת גישה ל-Bluetooth כדי להתחבר אל קורא הכרטיסים. באפשרותך להעניק הרשאה באפליקציית ההגדרות של המערכת, דרך המקטע של Woo.";
-
-/* Error message when the Bluetooth peer removed pairing information. */
-"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "קורא הכרטיסים מחק את פרטי הקישור של המכשיר. כדאי לנסות לשכוח את קורא הכרטיסים מההגדרות של iOS.";
-
-/* Error message when Bluetooth reconnect has started. */
-"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "קורא ה-Bluetooth נותק ואנחנו מנסים להתחבר מחדש.";
-
-/* Error message when an operation cannot be canceled because it is already completed. */
-"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "לא ניתן לבטל את הפעולה מאחר שהיא כבר הושלמה.";
-
-/* Error message when card swipe functionality is unavailable. */
-"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "הפונקציונליות של העברת הכרטיס לא זמינה.";
-
-/* Error message when the command is not allowed. */
-"hardware.cardReader.underlyingError.commandNotAllowed" = "יש לפנות לתמיכה – אין הרשאה ממערכת ההפעלה לבצע את הפקודה הזאת.";
-
-/* Error message when the command requires cardholder consent. */
-"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "מחזיק הכרטיס חייב להביע הסכמה כדי שהפעולה הזו תבוצע בהצלחה.";
-
-/* Error message when the connection token provider finishes with an error. */
-"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "אירעה שגיאה בהבאת אסימון החיבור.";
-
-/* Error message when the connection token provider operation times out. */
-"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "הסתיים הזמן הקצוב של בקשת אסימון החיבור.";
-
-/* Error message when a feature is unavailable. */
-"hardware.cardReader.underlyingError.featureNotAvailable" = "יש לפנות לתמיכה – האפשרות לא זמינה.";
-
-/* Error message when forwarding a live mode payment in test mode is prohibited. */
-"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "אין הרשאה להעביר תשלום בסביבה אמיתית כאשר הקורא מוגדר למצב בדיקה.";
-
-/* Error message when forwarding a test mode payment in live mode is prohibited. */
-"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "אין הרשאה להעביר תשלום במצב בדיקה כאשר הקורא מוגדר לסביבה אמיתית.";
-
-/* Error message when Interac is not supported in offline mode. */
-"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "השירות של Interac לא נתמך במצב לא מקוון.";
-
-/* Error message when an internal network error occurs. */
-"hardware.cardReader.underlyingError.internalNetworkError" = "אירעה שגיאת רשת לא מזוהה.";
-
-/* Error message when the internet connection operation timed out. */
-"hardware.cardReader.underlyingError.internetConnectTimeOut" = "מתחבר אל קורא הכרטיסים דרך האינטרנט – הזמן הקצוב הסתיים. עליך לוודא שהמכשיר וקורא הכרטיסים מחוברים אל אותה רשת אלחוטית ושקורא הכרטיסים מחוברת לרשת האלחוטית.";
-
-/* Error message when the client secret is invalid. */
-"hardware.cardReader.underlyingError.invalidClientSecret" = "יש לפנות לתמיכה – סוד הלקוח לא תקין.";
-
-/* Error message when the discovery configuration is invalid. */
-"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "יש לפנות לתמיכה – תצורת האיתור לא תקינה.";
-
-/* Error message when the location ID parameter is invalid. */
-"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "מזהה המיקום לא תקין.";
-
-/* Error message when the reader for update is invalid. */
-"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "קורא הכרטיסים שהוגדר לעדכון אינו תקין.";
-
-/* Error message when the refund parameters are invalid. */
-"hardware.cardReader.underlyingError.invalidRefundParameters" = "יש לפנות לתמיכה – הפרמטרים להחזר הכספי חסרים.";
-
-/* Error message when a required parameter is invalid. */
-"hardware.cardReader.underlyingError.invalidRequiredParameter" = "יש לפנות לתמיכה – פרמטר נדרש לא תקין.";
-
-/* Error message when EMV data is missing. */
-"hardware.cardReader.underlyingError.missingEMVData" = "קורא הכרטיסים נכשל בקריאת הנתונים מאמצעי התשלום שהוצג. אם השגיאה הזאת מופיעה לעיתים קרובות, ייתכן שיש תקלה בקורא הכרטיסים ומומלץ לפנות לתמיכה.";
-
-/* Error message when the payment intent is missing. */
-"hardware.cardReader.underlyingError.nilPaymentIntent" = "יש לפנות לתמיכה – כוונת התשלום חסרה.";
-
-/* Error message when the refund payment method is missing. */
-"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "יש לפנות לתמיכה – אמצעי התשלום להחזר הכספי חסר.";
-
-/* Error message when the setup intent is missing. */
-"hardware.cardReader.underlyingError.nilSetupIntent" = "יש לפנות לתמיכה – כוונת ההגדרה חסרה.";
-
-/* Error message when the card is expired and offline mode is active. */
-"hardware.cardReader.underlyingError.offlineAndCardExpired" = "במהלך אישור התשלום במצב לא מקוון, זיהינו שהכרטיס לא תקף.";
-
-/* Error message when there is a mismatch between offline collect and confirm. */
-"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "עליך לוודא שהחיבור לרשת יציב במהלך הגבייה והאישור של התשלום.";
-
-/* Error message when a test card is used in live mode while offline. */
-"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "נעשה שימוש בכרטיס בדיקה במהלך מצב פעיל בחיבור לא מקוון.";
-
-/* Error message when the offline transaction was declined. */
-"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "במהלך אישור התשלום במצב לא מקוון, אימות הכרטיס נכשל.";
-
-/* Error message when online PIN is not supported in offline mode. */
-"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "PIN מקוון לא נתמך במצב לא מקוון. יש לנסות לגבות את התשלום שוב עם כרטיס שונה.";
-
-/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
-"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "לא הוצג כרטיס במגבלת הזמן שהוגדרה.";
-
-/* Error message when the reader connection configuration is invalid. */
-"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "תצורת החיבור של קורא הכרטיסים לא תקינה.";
-
-/* Error message when the reader is missing encryption keys. */
-"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "לקורא הכרטיסים חסרים מפתחות הצפנה שדרושים לגביית תשלומים. לכן, הקורא התנתק והופעל מחדש. יש להתחבר אל קורא הכרטיסים מחדש כדי לנסות להתקין את המפתחות מחדש. אם השגיאה לא תיפתר, מומלץ ליצור קשר עם התמיכה.";
-
-/* Error message when the reader software update fails due to an expired update. */
-"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "עדכון התוכנה של קורא הכרטיסים נכשל מאחר שהעדכון לא בתוקף. עליך לנתק את קורא הכרטיסים ולחברו שוב כדי לקבל עדכון חדש.";
-
-/* Error message when the reader tipping parameter is invalid. */
-"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "יש לפנות לתמיכה – פרמטר התשר של קורא הכרטיסים לא תקין.";
-
-/* Error message when the refund operation failed. */
-"hardware.cardReader.underlyingError.refundFailed" = "ההחזר הכספי נכשל. המנפיק של הבנק או הכרטיס של הלקוח לא הצליח לעבד את אמצעי התשלום בצורה תקינה (למשל, עקב חשבון בנק שנסגר או בעיה עם הכרטיס).";
-
-/* Error message when there is an error decoding the Stripe API response. */
-"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "יש לפנות לתמיכה – אירעה שגיאה בפענוח קוד התגובה של Stripe API.";
-
-/* Error message when the Apple built-in reader account is deactivated. */
-"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "החשבון המקושר של Apple ID הושבת.";
-
-/* Error message when an unexpected error occurs with the reader. */
-"hardware.cardReader.underlyingError.unexpectedReaderError" = "אירעה שגיאה בלתי צפויה עם קורא הכרטיסים.";
-
-/* Error message when the reader's IP address is unknown. */
-"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "לקורא הכרטיסים שחזר מהאיתור אין כתובת IP ולא ניתן להתחבר אליו.";
-
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "קופונים";
 
@@ -11352,6 +10852,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Plugin List view. */
 "pluginListView.title.plugins" = "תוספים";
 
+/* Error message shown when scan is too short. */
+"pointOfSale.barcodeScan.error.barcodeTooShort" = "הברקוד קצר מדי";
+
+/* Error message shown when scan is incomplete. */
+"pointOfSale.barcodeScan.error.incompleteScan" = "סריקת ברקוד חלקית";
+
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "בקשת הרשת נכשלה";
 
@@ -11363,6 +10869,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when a scanned item is not found in the store. */
 "pointOfSale.barcodeScan.error.notFound" = "הפריט שנסרק לא מוכר";
+
+/* Error message shown when parsing barcode data fails. */
+"pointOfSale.barcodeScan.error.parsingError" = "לא ניתן לקרוא את הברקוד";
+
+/* Error message when scanning a barcode fails for an unknown reason, before lookup. */
+"pointOfSale.barcodeScan.error.scanFailed" = "הסריקה נכשלה";
 
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "סוג פריט לא נתמך";
@@ -11709,6 +11221,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "הקופון לא הוחל";
 
+/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
+"pointOfSale.floatingButtons.barcodeScanning.button.title" = "סריקת ברקוד";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "רק רגע";
 
@@ -11789,6 +11304,45 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.done" = "בוצע";
+
+/* Heading for the barcode info modal in POS, introducing barcode scanning feature */
+"pos.barcodeInfoModal.heading" = "סריקת ברקוד";
+
+/* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
+"pos.barcodeInfoModal.introMessage" = "אפשר לסרוק ברקוד באמצעות סורק חיצוני כדי לבנות עגלת קניות במהירות.";
+
+/* Link text in the barcode info modal in POS, leading to more details about barcode setup */
+"pos.barcodeInfoModal.moreDetailsLink" = "פרטים נוספים.";
+
+/* Accessible version of more details link in barcode info modal, announcing it as a link for screen readers */
+"pos.barcodeInfoModal.moreDetailsLink.accessible" = "פרטים נוספים, קישור.";
+
+/* Primary bullet point in the barcode info modal in POS, instructing where to set up barcodes in product details */
+"pos.barcodeInfoModal.primaryMessage" = "• יש להגדיר ברקודים בשדה \"GTIN, UPC, EAN, ISBN\" שבמקטע 'מוצרים' > 'פרטי המוצר' > 'מלאי'. ";
+
+/* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.primaryMessage.accessible" = "יש להגדיר ברקודים בשדה 'G-T-I-N‏, U-P-C‏, E-A-N‏, I-S-B-N' שבמקטע 'מוצרים' > 'פרטי המוצר' > 'מלאי'.";
+
+/* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
+"pos.barcodeInfoModal.quaternaryMessage" = "• יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.quaternaryMessage.accessible" = "שלב רביעי: יש לסרוק את הברקוד כאשר נמצאים ברשימת הפריטים כדי להוסיף מוצרים לעגלת הקניות.";
+
+/* Quinary message in the barcode info modal in POS, explaining scanner keyboard emulation and how to show software keyboard again */
+"pos.barcodeInfoModal.quinaryMessage" = "הסורק מדמה מקלדת, לכן לעיתים הוא מונע הצגה של מקלדת התוכנה, למשל בחיפוש. יש להקיש על סמל המקלדת כדי להציג שוב אותה שוב.";
+
+/* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
+"pos.barcodeInfoModal.secondaryMessage" = "• יש לעיין בהוראות של סורק הברקודים של Bluetooth כדי להגדיר את מצב HID.";
+
+/* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.secondaryMessage.accessible" = "שלב שני: יש לעיין בהוראות של סורק הברקודים של Bluetooth כדי להגדיר את מצב H-I-D.";
+
+/* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
+"pos.barcodeInfoModal.tertiaryMessage" = "• יש לחבר את סורק הברקוד בהגדרות של Bluetooth במערכת iOS.";
+
+/* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
+"pos.barcodeInfoModal.tertiaryMessage.accessible" = "שלב שלישי: יש לחבר את סורק הברקוד בהגדרות של Bluetooth במערכת iOS.";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "יש להקיש על מוצר כדי \n להוסיף את המוצר לעגלה";
@@ -11889,9 +11443,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the list of popular products shown before a search term is typed in POS */
 "pos.itemsearch.before.search.popularProducts.title" = "מוצרים פופולריים";
 
-/* Text shown when there's nothing to show before a search term is typed in POS */
-"pos.itemsearch.before.search.recentSearches.emptyListText.1" = "לחפש בחנות שלך";
-
 /* Title for the list of recent searches shown before a search term is typed in POS */
 "pos.itemsearch.before.search.recentSearches.title" = "חיפושים אחרונים";
 
@@ -11909,6 +11460,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text appearing on the coupon list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.emptyCouponsTitle2" = "לא נמצאו קופונים";
+
+/* Text for the button appearing on the products list screen when there are no products found. */
+"pos.pointOfSaleItemListEmptyView.emptyProductsButtonTitle" = "לריענון";
 
 /* Text hinting the merchant to create a product. */
 "pos.pointOfSaleItemListEmptyView.emptyProductsHint.1" = "כדי להוסיף מוצר כזה, יש לצאת מ-POS ולעבור אל 'מוצרים'.";
@@ -11940,6 +11494,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the button appearing on the coupons list screen when there's no coupons found. */
 "pos.pointOfSaleItemListEmptyView.noCouponsFoundButtonTitleButtonTitle" = "ליצור קופון";
 
+/* Title for the OK button on the pos information modal */
+"pos.posInformationModal.ok.button.title" = "אישור";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "לנקות את החיפוש";
 
@@ -11966,6 +11523,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "לא במלאי";
+
+/* Title for the Point of Sale tab. */
+"pos.tab.title" = "נקודת מכירה";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "הזמנה חדשה";
@@ -12674,9 +12234,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form. */
 "subscriptionsView.dismissSupport" = "בוצע";
 
-/* Accessibility label for the Help & Support image navigation bar button in the store creation flow. */
-"supportButton.accessibilityLabel" = "עזרה ותמיכה";
-
 /* Button to dismiss the alert when a support request. */
 "supportForm.gotIt" = "הבנתי";
 
@@ -13045,9 +12602,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "הזמנות";
-
-/* Title of the WPCOM checkout web view. */
-"webCheckoutViewModel.title" = "תשלום בקופה";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "ביטול";
@@ -13457,8 +13011,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1' */
 "wooShipping.createLabels.shipmentFormat" = "משלוח ⁦%1$d⁩";
 
+/* Label when shipping rate has option for additional handling in Woo Shipping label creation flow. Reads like: 'Additional Handling (+$9.35)' */
+"wooShipping.createLabels.shippingService.additionalHandling" = "טיפול נוסף (%1$@)";
+
 /* Label when shipping rate has option to require an adult signature in Woo Shipping label creation flow. Reads like: 'Adult signature required (+$9.35)' */
-"wooShipping.createLabels.shippingService.adultSignatureRequired" = "נדרשת חתימה של אדם מבוגר (+%1$@)";
+"wooShipping.createLabels.shippingService.adultSignatureRequiredLabel" = "נדרשת חתימה של אדם מבוגר (%1$@)";
+
+/* Label when shipping rate has option for carbon neutral delivery in Woo Shipping label creation flow. Reads like: 'Carbon Neutral (+$9.35)' */
+"wooShipping.createLabels.shippingService.carbonNeural" = "ניטרליות של פליטת פחמן (%1$@)";
 
 /* Singular format of number of business days in Woo Shipping label creation flow. Reads like: '1 business day' */
 "wooShipping.createLabels.shippingService.deliveryDaySingular" = "יום עסקים ⁦%1$d⁩";
@@ -13478,8 +13038,11 @@ which should be translated separately and considered part of this sentence. */
 /* Label when shipping rate includes insurance in Woo Shipping label creation flow. Placeholder is a literal. Reads like: 'Insurance (limited)' */
 "wooShipping.createLabels.shippingService.insuranceLiteral" = "ביטוח (%1$@)";
 
+/* Label when shipping rate has option for Saturday delivery in Woo Shipping label creation flow. Reads like: 'Saturday Delivery (+$9.35)' */
+"wooShipping.createLabels.shippingService.saturdayDelivery" = "משלוח ביום שבת (%1$@)";
+
 /* Label when shipping rate has option to require a signature in Woo Shipping label creation flow. Reads like: 'Signature required (+$3.70)' */
-"wooShipping.createLabels.shippingService.signatureRequired" = "נדרשת חתימה (+%1$@)";
+"wooShipping.createLabels.shippingService.signatureRequiredLabel" = "נדרשת חתימה (%1$@)";
 
 /* Label when shipping rate includes tracking in Woo Shipping label creation flow. */
 "wooShipping.createLabels.shippingService.tracking" = "מעקב";

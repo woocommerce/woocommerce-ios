@@ -132,12 +132,14 @@ public class AppSettingsStore: Store {
                                    let dateRangeFilter,
                                    let productFilter,
                                    let customerFilter,
+                                   let salesChannelFilter,
                                    let onCompletion):
             upsertOrdersSettings(siteID: siteID,
                                  orderStatusesFilter: orderStatusesFilter,
                                  dateRangeFilter: dateRangeFilter,
                                  productFilter: productFilter,
                                  customerFilter: customerFilter,
+                                 salesChannelFilter: salesChannelFilter,
                                  onCompletion: onCompletion)
         case .resetOrdersSettings:
             resetOrdersSettings()
@@ -716,6 +718,7 @@ private extension AppSettingsStore {
                               dateRangeFilter: OrderDateRangeFilter?,
                               productFilter: FilterOrdersByProduct?,
                               customerFilter: CustomerFilter?,
+                              salesChannelFilter: SalesChannelFilter?,
                               onCompletion: (Error?) -> Void) {
         var existingSettings: [Int64: StoredOrderSettings.Setting] = [:]
         if let storedSettings: StoredOrderSettings = try? fileStorage.data(for: ordersSettingsURL) {
@@ -726,7 +729,8 @@ private extension AppSettingsStore {
                                                       orderStatusesFilter: orderStatusesFilter,
                                                       dateRangeFilter: dateRangeFilter,
                                                       productFilter: productFilter,
-                                                      customerFilter: customerFilter)
+                                                      customerFilter: customerFilter,
+                                                      salesChannelFilter: salesChannelFilter)
         existingSettings[siteID] = newSettings
 
         let newStoredOrderSettings = StoredOrderSettings(settings: existingSettings)

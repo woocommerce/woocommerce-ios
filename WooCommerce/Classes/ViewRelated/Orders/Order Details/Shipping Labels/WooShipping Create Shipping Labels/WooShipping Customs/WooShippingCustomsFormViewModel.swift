@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 import Combine
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
     enum ITNValidationError {
@@ -16,7 +17,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var returnToSenderIfNotDelivered = false
 
     @Published var requiredInformationIsEntered = false
-    @Published var itemsRequiredInformationIsEntered = false
+    @Published private var itemsRequiredInformationIsEntered = false
 
     @Published var contentExplanation = ""
     @Published var restrictionDetails = ""
@@ -29,10 +30,21 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published private(set) var destinationCountryCode: String?
 
     private var cancellables = Set<AnyCancellable>()
-    private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
-    init(order: Order, shipment: Shipment, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
-        self.onCompletion = onCompletion
+    /// The callback that passes the `ShippingLabelCustomsForm` to outer environment
+    /// Called when:
+    /// - The customs form is closed
+    /// - The customs form is pre-filled with data and all required fields are completed.
+    private let onFormReady: (ShippingLabelCustomsForm) -> ()
+
+    @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+
+    init(order: Order,
+         shipment: Shipment,
+         originCountryCode: AnyPublisher<String?, Never>? = nil,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         onFormReady: @escaping (ShippingLabelCustomsForm) -> ()) {
+        self.onFormReady = onFormReady
 
         itemsViewModels = shipment.items.map {
             WooShippingCustomsItemViewModel(itemName: $0.name,
@@ -40,37 +52,35 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itemQuantity: $0.quantity,
                                             itemValue: $0.value,
                                             itemWeight: $0.weight,
-                                            currencySymbol: currencySymbol(from: order))
+                                            currencySymbol: currencySymbol(from: order),
+                                            originCountryCode: originCountryCode,
+                                            storageManager: storageManager)
         }
 
         listenToItemsRequiredInformationValues()
         listenForRequiredInformation()
         listenForInternationalTransactionNumberIsRequired()
+        listenForRequiredInformationCompletedUponPreFill()
     }
 
-    @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+    /// WOOMOB-734
+    /// Solves the issue where a pre-filled form becomes complete without a manual submission
+    ///
+    /// Listens for the `requiredInformationIsEntered` state
+    /// As soon as all required info is entered, calls the `emitForm` just once
+    func listenForRequiredInformationCompletedUponPreFill() {
+        $requiredInformationIsEntered
+            .first { $0 == true }
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.emitForm()
+                }
+            }
+            .store(in: &cancellables)
+    }
 
     func onDismiss() {
-        /// Ignoring `packageID` and `packageName` as these are not needed in WooShipping plugin, only in WCS&T
-        let form = ShippingLabelCustomsForm(packageID: "",
-                                            packageName: "",
-                                            contentsType: contentType.toFormContentsType(),
-                                            contentExplanation: contentType == .other ? contentExplanation : "",
-                                            restrictionType: restrictionType.toFormRestrictionType(),
-                                            restrictionComments: restrictionType == .other ? restrictionDetails : "",
-                                            nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
-                                            itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
-                                            items: itemsViewModels.map {
-            ShippingLabelCustomsForm.Item(description: $0.description,
-                                          quantity: $0.itemQuantity,
-                                          value: Double($0.valuePerUnit) ?? 0,
-                                          weight: Double($0.weightPerUnit) ?? 0,
-                                          hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
-                                          originCountry: $0.selectedCountry?.code ?? "",
-                                          productID: $0.itemProductID)
-            }
-        )
-        onCompletion(form)
+        emitForm()
     }
 
     func updateDestinationCountry(code: String) {
@@ -182,6 +192,33 @@ private extension WooShippingCustomsFormViewModel {
             return ""
         }
         return ServiceLocator.currencySettings.symbol(from: currencyCode)
+    }
+
+    private func emitForm() {
+        /// Ignoring `packageID` and `packageName` as these are not needed in WooShipping plugin, only in WCS&T
+        let form = ShippingLabelCustomsForm(
+            packageID: "",
+            packageName: "",
+            contentsType: contentType.toFormContentsType(),
+            contentExplanation: contentType == .other ? contentExplanation : "",
+            restrictionType: restrictionType.toFormRestrictionType(),
+            restrictionComments: restrictionType == .other ? restrictionDetails : "",
+            nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
+            itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
+            items: itemsViewModels.map {
+                ShippingLabelCustomsForm.Item(
+                    description: $0.description,
+                    quantity: $0.itemQuantity,
+                    value: Double($0.valuePerUnit) ?? 0,
+                    weight: Double($0.weightPerUnit) ?? 0,
+                    hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
+                    originCountry: $0.selectedCountry?.code ?? "",
+                    productID: $0.itemProductID
+                )
+            }
+        )
+
+        onFormReady(form)
     }
 }
 

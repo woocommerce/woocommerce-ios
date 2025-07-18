@@ -20,6 +20,7 @@ struct WooShippingEditAddressView: View {
     @State private var previousFocusedField: WooShippingAddressFieldType?
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isPresentingCountrySelector: Bool = false
     @State private var isPresentingStateSelector: Bool = false
@@ -77,6 +78,10 @@ struct WooShippingEditAddressView: View {
                         .font(.subheadline)
                         .tint(Color(.accent))
                 }
+
+                if sizeCategory.isAccessibilityCategory {
+                    ctaFooter(isScrollViewEmbedded: true)
+                }
             }
             .padding()
             .onChange(of: focusedField) { newField in
@@ -86,11 +91,6 @@ struct WooShippingEditAddressView: View {
                 previousFocusedField = newField
             }
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        dismiss()
-                    }
-                }
                 ToolbarItemGroup(placement: .keyboard) {
                     Button(action: {
                         focusPreviousField()
@@ -113,71 +113,54 @@ struct WooShippingEditAddressView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isPresentingCountrySelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.countrySelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingCountrySelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
-                }
-            }
-            .sheet(isPresented: $isPresentingStateSelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.stateSelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingStateSelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancel) {
+                    dismiss()
                 }
             }
         }
         .safeAreaInset(edge: .bottom) {
-            VStack(spacing: .zero) {
-                Divider().ignoresSafeArea(edges: [.horizontal])
-                VStack(spacing: Constants.verticalSpacing) {
-                    HStack {
-                        Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
-                        Text(viewModel.statusLabel)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
-                    Button(Localization.Button.label(for: viewModel.status)) {
-                        switch viewModel.status {
-                        case .verified:
-                            dismiss()
-                        case .unverified:
-                            Task { @MainActor in
-                                await viewModel.remotelyValidateAddress()
-                            }
-                        case .missingInformation:
-                            break
-                        }
-                    }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
-                    .disabled(viewModel.status == .missingInformation)
-                }
-                .padding()
+            if !sizeCategory.isAccessibilityCategory {
+                ctaFooter(isScrollViewEmbedded: false)
             }
-            .background(Color(uiColor: .systemBackground))
         }
         .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
             NavigationStack {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
+            }
+        }
+        .sheet(isPresented: $isPresentingCountrySelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.countrySelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingCountrySelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $isPresentingStateSelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.stateSelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingStateSelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
             }
         }
         .alert(
@@ -204,6 +187,44 @@ struct WooShippingEditAddressView: View {
                 Text(viewModel.addressErrorState?.message ?? "")
             }
         )
+    }
+
+    private func ctaFooter(isScrollViewEmbedded: Bool) -> some View {
+        VStack(spacing: .zero) {
+            Divider()
+                .ignoresSafeArea(edges: [.horizontal])
+                .padding(
+                    /// When embedded in scroll view
+                    /// we use a negative value to neglect the parent padding for the divider
+                    isScrollViewEmbedded ? .horizontal : [],
+                    -Constants.defaultPadding
+                )
+
+            VStack(spacing: Constants.verticalSpacing) {
+                HStack {
+                    Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
+                    Text(viewModel.statusLabel)
+                }
+                .font(.subheadline)
+                .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
+                Button(Localization.Button.label(for: viewModel.status)) {
+                    switch viewModel.status {
+                    case .verified:
+                        dismiss()
+                    case .unverified:
+                        Task { @MainActor in
+                            await viewModel.remotelyValidateAddress()
+                        }
+                    case .missingInformation:
+                        break
+                    }
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+                .disabled(viewModel.status == .missingInformation)
+            }
+            .padding(isScrollViewEmbedded ? .vertical : .all)
+        }
+        .background(Color(uiColor: .systemBackground))
     }
 
     private struct AddressTextField: View {
@@ -345,6 +366,7 @@ extension WooShippingEditAddressView {
 private extension WooShippingEditAddressView {
     enum Constants {
         static let verticalSpacing: CGFloat = 16
+        static let defaultPadding: CGFloat = 16
         static let innerSpacing: CGFloat = 8
         static let extraPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8

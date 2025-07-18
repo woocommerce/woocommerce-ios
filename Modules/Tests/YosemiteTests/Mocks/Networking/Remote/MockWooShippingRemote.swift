@@ -332,6 +332,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                originAddress: Networking.WooShippingAddress,
                                destinationAddress: Networking.WooShippingAddress,
                                package: Networking.WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

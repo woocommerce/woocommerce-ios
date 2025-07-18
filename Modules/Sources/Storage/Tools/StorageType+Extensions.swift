@@ -841,9 +841,26 @@ public extension StorageType {
 
     /// Returns a system plugin with a specified `siteID` and `path`.
     ///
-    func loadSystemPlugin(siteID: Int64, path: String) -> SystemPlugin? {
-        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.plugin == path
+    /// - Parameters:
+    ///   - siteID: The site ID to filter by.
+    ///   - path: The plugin path to match (e.g., "woocommerce/woocommerce.php").
+    ///   - active: Optional active state filter. If provided, only plugins with matching active state are returned. If nil, active state is ignored.
+    /// - Returns: The matching system plugin, or nil if not found.
+    func loadSystemPlugin(siteID: Int64, path: String, active: Bool? = nil) -> SystemPlugin? {
+        let predicate = if let active {
+            \SystemPlugin.siteID == siteID && \SystemPlugin.plugin == path && \SystemPlugin.active == active
+        } else {
+            \SystemPlugin.siteID == siteID && \SystemPlugin.plugin == path
+        }
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
+    /// Returns stored system plugins for a provided `siteID` matching the given plugin `paths`.
+    ///
+    func loadSystemPlugins(siteID: Int64, matchingPaths paths: [String]) -> [SystemPlugin] {
+        let predicate = NSPredicate(format: "siteID == %lld && plugin in %@", siteID, paths)
+        let descriptor = NSSortDescriptor(keyPath: \SystemPlugin.plugin, ascending: true)
+        return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
     }
 
     // MARK: - Inbox Notes

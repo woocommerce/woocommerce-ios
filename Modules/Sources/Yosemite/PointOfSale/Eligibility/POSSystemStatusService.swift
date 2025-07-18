@@ -48,54 +48,19 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         )
 
         // Upserts all plugins in storage.
-        await storageManager.performAndSaveAsync({ [weak self] storage in
-            self?.upsertSystemPlugins(siteID: siteID, systemStatus: systemStatus, in: storage)
+        await storageManager.performAndSaveAsync({ storage in
+            let useCase = SystemPluginsUpsertUseCase(storage: storage)
+            useCase.upsert(siteID: siteID, activePlugins: systemStatus.activePlugins, inactivePlugins: systemStatus.inactivePlugins)
         })
 
         // Loads WooCommerce plugin from storage.
-        guard let wcPlugin = storageManager.viewStorage.loadSystemPlugin(siteID: siteID, path: Constants.wcPluginPath)?.toReadOnly() else {
+        guard let wcPlugin = storageManager.viewStorage.loadSystemPlugin(siteID: siteID, path: Constants.wcPluginPath, active: true)?.toReadOnly() else {
             return POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil)
         }
 
         // Extracts POS feature value from settings response.
         let featureValue = systemStatus.settings.enabledFeatures?.contains(SiteSettingsFeature.pointOfSale.rawValue) == true ? true : nil
         return POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureValue)
-    }
-}
-
-private extension POSSystemStatusService {
-    /// Updates or inserts system plugins in storage.
-    func upsertSystemPlugins(siteID: Int64, systemStatus: POSPluginEligibilitySystemStatus, in storage: StorageType) {
-        // Active and inactive plugins share identical structure, but are stored in separate parts of the remote response
-        // (and without an active attribute in the response). So we apply the correct value for active (or not)
-        let readonlySystemPlugins: [SystemPlugin] = {
-            let activePlugins = systemStatus.activePlugins.map {
-                $0.copy(active: true)
-            }
-
-            let inactivePlugins = systemStatus.inactivePlugins.map {
-                $0.copy(active: false)
-            }
-
-            return activePlugins + inactivePlugins
-        }()
-
-        let storedPlugins = storage.loadSystemPlugins(siteID: siteID, matching: readonlySystemPlugins.map { $0.name })
-        readonlySystemPlugins.forEach { readonlySystemPlugin in
-            // Loads or creates new StorageSystemPlugin matching the readonly one.
-            let storageSystemPlugin: StorageSystemPlugin = {
-                if let systemPlugin = storedPlugins.first(where: { $0.name == readonlySystemPlugin.name }) {
-                    return systemPlugin
-                }
-                return storage.insertNewObject(ofType: StorageSystemPlugin.self)
-            }()
-
-            storageSystemPlugin.update(with: readonlySystemPlugin)
-        }
-
-        // Removes stale system plugins.
-        let currentSystemPlugins = readonlySystemPlugins.map(\.name)
-        storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
     }
 }
 

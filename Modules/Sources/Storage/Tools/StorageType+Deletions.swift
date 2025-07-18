@@ -195,11 +195,11 @@ public extension StorageType {
         }
     }
 
-    /// Deletes all of the stored SystemPlugins for the provided siteID whose name is not included in `currentSystemPlugins` array
+    /// Deletes stored system plugins for the provided siteID that are not in the currentSystemPluginPaths list.
     ///
-    func deleteStaleSystemPlugins(siteID: Int64, currentSystemPlugins: [String]) {
+    func deleteStaleSystemPlugins(siteID: Int64, currentSystemPluginPaths: [String]) {
         let systemPlugins = loadSystemPlugins(siteID: siteID).filter {
-            !currentSystemPlugins.contains($0.name)
+            !currentSystemPluginPaths.contains($0.plugin)
         }
         systemPlugins.forEach {
             deleteObject($0)

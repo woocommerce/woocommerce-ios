@@ -66,8 +66,8 @@ struct PointOfSaleBarcodeScannerSetup: View {
                 scannerType: .starBSH20B
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
-                title: Localization.tbcScannerTitle,
-                scannerType: .tbcScanner
+                title: Localization.tera12002DTitle,
+                scannerType: .tera12002D
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.otherTitle,
@@ -96,10 +96,10 @@ private extension PointOfSaleBarcodeScannerSetup {
             value: "Star BSH-20B",
             comment: "Title for Star BSH-20B scanner option in barcode scanner setup"
         )
-        static let tbcScannerTitle = NSLocalizedString(
-            "pos.barcodeScannerSetup.tbcScanner.title",
-            value: "Scanner TBC",
-            comment: "Title for TBC scanner option in barcode scanner setup"
+        static let tera12002DTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.tera12002D.title",
+            value: "Tera 1200 2D",
+            comment: "Title for Tera 1200 2D scanner option in barcode scanner setup"
         )
         static let otherTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.other.title",

@@ -1466,6 +1466,107 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertEqual(foundSystemPlugin, systemPlugin2)
     }
 
+    func test_loadSystemPlugin_by_siteID_path_and_active_state() throws {
+        // Given
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "woocommerce/woocommerce.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundActivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: true))
+
+        // Then
+        XCTAssertEqual(foundActivePlugin, activePlugin)
+    }
+
+    func test_loadSystemPlugin_by_siteID_path_and_inactive_state() throws {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "woocommerce/woocommerce.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        // When
+        let foundInactivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: false))
+
+        // Then
+        XCTAssertEqual(foundInactivePlugin, inactivePlugin)
+    }
+
+    func test_loadSystemPlugin_by_siteID_and_path_ignoring_active_state() throws {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "jetpack/jetpack.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: nil)
+
+        // Then
+        XCTAssertNotNil(foundPlugin)
+        XCTAssertEqual(foundPlugin, activePlugin)
+    }
+
+    func test_loadSystemPlugin_returns_nil_when_no_match_for_active_state() {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, path: "woocommerce/woocommerce.php", active: false)
+
+        // Then
+        XCTAssertNil(foundPlugin)
+    }
+
+    func test_loadSystemPlugins_by_siteID_matching_paths() {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.plugin = "woocommerce/woocommerce.php"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.plugin = "woocommerce/woocommerce.php"
+        systemPlugin2.siteID = sampleSiteID + 1
+
+        let systemPlugin3 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin3.plugin = "wordpress-seo/wp-seo.php"
+        systemPlugin3.siteID = sampleSiteID
+
+        let systemPlugin4 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin4.plugin = "akismet/akismet.php"
+        systemPlugin4.siteID = sampleSiteID
+
+        // When
+        let storedSystemPlugins = storage.loadSystemPlugins(siteID: sampleSiteID, matchingPaths: ["woocommerce/woocommerce.php", "akismet/akismet.php"])
+
+        // Then
+        XCTAssertEqual(storedSystemPlugins.count, 2)
+        XCTAssertTrue(storedSystemPlugins.contains(systemPlugin1))
+        XCTAssertTrue(storedSystemPlugins.contains(systemPlugin4))
+        XCTAssertFalse(storedSystemPlugins.contains(systemPlugin2)) // Different siteID
+        XCTAssertFalse(storedSystemPlugins.contains(systemPlugin3)) // Not in matching paths
+    }
+
     func test_load_WCPayCharge_by_siteID_and_chargeID() throws {
         // Given
         let charge1 = storage.insertNewObject(ofType: WCPayCharge.self)

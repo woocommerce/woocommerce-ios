@@ -57,6 +57,7 @@ public final class WooShippingStore: Store {
                                         originAddress,
                                         destinationAddress,
                                         package,
+                                        markOrderComplete,
                                         backendProcessingDelay,
                                         pollingDelay,
                                         pollingMaximumRetries,
@@ -66,6 +67,7 @@ public final class WooShippingStore: Store {
                                   originAddress: originAddress,
                                   destinationAddress: destinationAddress,
                                   package: package,
+                                  markOrderComplete: markOrderComplete,
                                   backendProcessingDelay: backendProcessingDelay,
                                   pollingDelay: pollingDelay,
                                   pollingMaximumRetries: pollingMaximumRetries,
@@ -216,6 +218,7 @@ private extension WooShippingStore {
                                originAddress: WooShippingAddress,
                                destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                backendProcessingDelay: TimeInterval,
                                pollingDelay: TimeInterval,
                                pollingMaximumRetries: Int64,
@@ -225,7 +228,8 @@ private extension WooShippingStore {
                                      orderID: orderID,
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
-                                     package: package) { result in
+                                     package: package,
+                                     markOrderComplete: markOrderComplete) { result in
             switch result {
             case .success(let labelPurchases):
                 // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.
@@ -326,7 +330,12 @@ private extension WooShippingStore {
                 // If label has PURCHASED status, stop polling
                 if labelStatusResponse.status == .purchased,
                    let label = labelStatusResponse.getPurchasedLabel() {
-                    completion(.success(label))
+                    guard let self else {
+                        return completion(.success(label))
+                    }
+                    insertPurchasedLabelInBackground(siteID: siteID, orderID: orderID, shippingLabel: label) {
+                        completion(.success(label))
+                    }
                 }
 
                 // If label has PURCHASE_ERROR status, return error and stop polling
@@ -410,7 +419,23 @@ private extension WooShippingStore {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, Error>) -> Void) {
-        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate, completion: completion)
+        remote.updateShipment(siteID: siteID, orderID: orderID, shipmentToUpdate: shipmentToUpdate) { [weak self] result in
+            guard let self, let contents = try? result.get() else {
+                return completion(result)
+            }
+            let shipments = contents.map { (index, items) in
+                WooShippingShipment(siteID: siteID,
+                                    orderID: orderID,
+                                    index: index,
+                                    items: items,
+                                    shippingLabel: nil)
+            }
+            upsertShipmentsInBackground(siteID: siteID,
+                                        orderID: orderID,
+                                        shipments: shipments) {
+                completion(.success(contents))
+            }
+        }
     }
 }
 
@@ -644,10 +669,15 @@ private extension WooShippingStore {
                 DDLogWarn("⚠️ No shipping label found in storage when updating refund")
                 return shippingLabel.copy(refund: refund)
             }
+            let storageShipment = storageShippingLabel.shipment
 
             let storageRefund = storageShippingLabel.refund ?? storage.insertNewObject(ofType: Storage.ShippingLabelRefund.self)
             storageRefund.update(with: refund)
             storageShippingLabel.refund = storageRefund
+
+            // update stored shipment to trigger onDidChangeContent notification
+            storageShipment?.shippingLabel = storageShippingLabel
+
             return storageShippingLabel.toReadOnly()
 
         }, completion: { result in
@@ -674,6 +704,28 @@ private extension WooShippingStore {
 
             storedOrder.dateModified = Date()
         }, completion: nil, on: .main)
+    }
+
+    /// Inserts the specified readonly shipping label entity *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func insertPurchasedLabelInBackground(siteID: Int64,
+                                          orderID: Int64,
+                                          shippingLabel: ShippingLabel,
+                                          onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] storage in
+            guard let self else { return }
+
+            let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID)
+            let storageShipment = storage.loadAllShipments(siteID: siteID, orderID: orderID)
+                .first(where: { $0.index == shippingLabel.shipmentID })
+
+            guard let storageOrder, let storageShipment else { return }
+
+            update(storageShipment: storageShipment,
+                   storageOrder: storageOrder,
+                   shippingLabel: shippingLabel,
+                   using: storage)
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates/inserts the specified readonly shipments entities *in a background thread*.

@@ -131,7 +131,7 @@ struct WooShippingCreateLabelsView: View {
                             await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
                         }
                     }
-                    .presentationDetents([.fraction(0.8), .large])
+                    .presentationDetents([.large])
                 }
             }
         }

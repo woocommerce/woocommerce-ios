@@ -56,6 +56,7 @@ public enum WooShippingAction: Action {
                                originAddress: WooShippingAddress,
                                destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                backendProcessingDelay: TimeInterval = 2.0,
                                pollingDelay: TimeInterval = 1.0,
                                pollingMaximumRetries: Int64 = 3,

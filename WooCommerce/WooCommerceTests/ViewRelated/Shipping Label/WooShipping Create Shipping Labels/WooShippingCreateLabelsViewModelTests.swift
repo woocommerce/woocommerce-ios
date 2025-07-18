@@ -137,6 +137,22 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddresses.addresses, [originAddress])
     }
 
+    func test_isOrderCompleted_is_correct() {
+        // Given
+        let order = Order.fake().copy(status: .completed)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order)
+
+        // Then
+        XCTAssertTrue(viewModel.isOrderCompleted)
+
+        // Given
+        let order2 = Order.fake().copy(status: .processing)
+        let viewModel2 = WooShippingCreateLabelsViewModel(order: order2)
+
+        // Then
+        XCTAssertFalse(viewModel2.isOrderCompleted)
+    }
+
     func test_shipping_config_is_loaded_if_order_contains_one_item() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

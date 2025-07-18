@@ -99,12 +99,3 @@ private extension WooShippingItemsViewModel {
                                                         + "Reads like: '20 x 35 x 5 cm'")
     }
 }
-
-/// Convenience extension to provide data to `WooShippingItemRow`
-extension WooShippingItems {
-    init(viewModel: WooShippingItemsViewModel) {
-        self.itemsCountLabel = viewModel.itemsCountLabel
-        self.itemsDetailLabel = viewModel.itemsDetailLabel
-        self.items = viewModel.itemRows
-    }
-}

@@ -218,7 +218,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
-    func purchaseLabel() async throws {
+    func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
               let selectedRate = selectedRate else {
@@ -235,7 +235,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
-                                                                 package: packagePurchase) { [weak self] result in
+                                                                 package: packagePurchase,
+                                                                 markOrderComplete: markOrderComplete) { [weak self] result in
                 switch result {
                 case .success:
                     self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))
@@ -259,6 +260,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
         shippingLabel = nil
         postPurchase = nil
         onLabelRefund?(labelID)
+    }
+}
+
+/// Accessor for manual collapsed product items section accessibility label
+extension WooShippingShipmentDetailsViewModel {
+    var itemsSummaryAccessibilityValue: String {
+        return String.localizedStringWithFormat(
+            Localization.itemsSummaryAccessibilityFormat,
+            shipment.quantity,
+            shipment.weight,
+            shipment.price
+        )
     }
 }
 
@@ -560,6 +573,14 @@ private extension WooShippingShipmentDetailsViewModel {
             value: "Saturday Delivery",
             comment: "Label for row showing the additional cost to require Saturday delivery " +
             "on the shipping label creation screen"
+        )
+        static let itemsSummaryAccessibilityFormat = NSLocalizedString(
+            "shipping-labels.packages.items.summary.accessibility-label",
+            value: "%1$@ with a total weight of %2$@ and a total price of %3$@",
+            comment: "Accessibility label for the summary of product items in a shipment." +
+                " The %1$@ is items count." +
+                " The %2$@ is total weight." +
+                " The %3$@ is total price."
         )
     }
 }

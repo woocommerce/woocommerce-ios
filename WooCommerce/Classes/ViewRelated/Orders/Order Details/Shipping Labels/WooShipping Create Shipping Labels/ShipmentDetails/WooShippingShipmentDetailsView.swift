@@ -18,7 +18,8 @@ struct WooShippingShipmentDetailsView: View {
 
             WooShippingItems(itemsCountLabel: viewModel.itemsCountLabel,
                              itemsDetailLabel: viewModel.itemsDetailLabel,
-                             items: viewModel.itemsRowViewModels)
+                             items: viewModel.itemsRowViewModels,
+                             itemsSummaryAccessibilityValue: viewModel.itemsSummaryAccessibilityValue)
 
             WooShippingHazmatRow(selectedCategory: $viewModel.hazmatCategory,
                                  enabled: !viewModel.canViewLabel)

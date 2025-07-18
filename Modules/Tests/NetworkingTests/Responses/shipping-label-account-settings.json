@@ -35,7 +35,8 @@
             }
         },
         "userMeta": {
-            "last_box_id": "small_flat_box"
+            "last_box_id": "small_flat_box",
+            "last_order_completed": true
         }
     }
 }

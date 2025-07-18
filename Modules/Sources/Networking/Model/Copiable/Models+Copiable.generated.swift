@@ -2424,6 +2424,7 @@ extension Networking.ShippingLabelAccountSettings {
         isEmailReceiptsEnabled: CopiableProp<Bool> = .copy,
         paperSize: CopiableProp<ShippingLabelPaperSize> = .copy,
         lastSelectedPackageID: CopiableProp<String> = .copy,
+        lastOrderCompleted: CopiableProp<Bool> = .copy,
         addPaymentMethodURL: NullableCopiableProp<URL> = .copy
     ) -> Networking.ShippingLabelAccountSettings {
         let siteID = siteID ?? self.siteID
@@ -2438,6 +2439,7 @@ extension Networking.ShippingLabelAccountSettings {
         let isEmailReceiptsEnabled = isEmailReceiptsEnabled ?? self.isEmailReceiptsEnabled
         let paperSize = paperSize ?? self.paperSize
         let lastSelectedPackageID = lastSelectedPackageID ?? self.lastSelectedPackageID
+        let lastOrderCompleted = lastOrderCompleted ?? self.lastOrderCompleted
         let addPaymentMethodURL = addPaymentMethodURL ?? self.addPaymentMethodURL
 
         return Networking.ShippingLabelAccountSettings(
@@ -2453,6 +2455,7 @@ extension Networking.ShippingLabelAccountSettings {
             isEmailReceiptsEnabled: isEmailReceiptsEnabled,
             paperSize: paperSize,
             lastSelectedPackageID: lastSelectedPackageID,
+            lastOrderCompleted: lastOrderCompleted,
             addPaymentMethodURL: addPaymentMethodURL
         )
     }

@@ -213,6 +213,7 @@ extension ShippingLabelPaymentMethodsViewModel {
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,
                                             lastSelectedPackageID: "small_flat_box",
+                                            lastOrderCompleted: false,
                                             addPaymentMethodURL: nil)
     }
 

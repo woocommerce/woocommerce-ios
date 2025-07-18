@@ -333,7 +333,7 @@ private extension WooShippingCreateLabelsView {
         Group {
             if isiPhonePortrait {
                 VStack(spacing: Layout.bottomSheetSpacing) {
-                    if isShipmentDetailsExpanded {
+                    if isShipmentDetailsExpanded && !viewModel.isOrderCompleted {
                         Toggle(isOn: $viewModel.markOrderComplete) {
                             Text(Localization.BottomSheet.markComplete)
                                 .font(.subheadline)
@@ -358,6 +358,7 @@ private extension WooShippingCreateLabelsView {
                         }
                         .tint(Color(.primary))
                         .fixedSize(horizontal: false, vertical: true)
+                        .renderedIf(!viewModel.isOrderCompleted)
 
                         if shouldShowPurchaseButton {
                             purchaseButton

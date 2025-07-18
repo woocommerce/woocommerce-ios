@@ -1451,6 +1451,7 @@ extension Networking.ShippingLabelAccountSettings {
             isEmailReceiptsEnabled: .fake(),
             paperSize: .fake(),
             lastSelectedPackageID: .fake(),
+            lastOrderCompleted: .fake(),
             addPaymentMethodURL: .fake()
         )
     }

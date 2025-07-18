@@ -6,6 +6,7 @@
 - [**] Order Details: Update Shipping Labels section for stores with Woo Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15889]
 - [*] Order List: New orders made through Point of Sale are now filterable via the Order List filters menu [https://github.com/woocommerce/woocommerce-ios/pull/15910]
 - [*] Shipping Labels: Display base rate on selected shipping service cards [https://github.com/woocommerce/woocommerce-ios/pull/15916]
+- [*] Shipping Labels: Update mark order completed toggle on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15917]
 
 22.8
 -----

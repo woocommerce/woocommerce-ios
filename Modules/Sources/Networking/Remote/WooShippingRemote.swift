@@ -37,6 +37,7 @@ public protocol WooShippingRemoteProtocol {
                                originAddress: WooShippingAddress,
                                destinationAddress: WooShippingAddress,
                                package: WooShippingPackagePurchase,
+                               markOrderComplete: Bool?,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void)
     func checkLabelStatus(siteID: Int64,
                           orderID: Int64,
@@ -284,7 +285,14 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                       originAddress: WooShippingAddress,
                                       destinationAddress: WooShippingAddress,
                                       package: WooShippingPackagePurchase,
+                                      markOrderComplete: Bool?,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
+        let userMeta: [String: Any]? = {
+            guard let markOrderComplete else {
+                return nil
+            }
+            return [ParameterKey.lastOrderCompleted: markOrderComplete]
+        }()
         do {
             let parameters: [String: Any] = [
                 ParameterKey.async: true,
@@ -296,7 +304,8 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.featuresSupported: [Values.upsdap],
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
-            ]
+                ParameterKey.userMeta: userMeta,
+            ].compactMapValues { $0 }
             let path = "\(Path.purchase)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .post,
@@ -635,6 +644,8 @@ private extension WooShippingRemote {
         static let enabled = "enabled"
         static let featuresSupported = "features_supported_by_client"
         static let confirmed = "confirmed"
+        static let userMeta = "user_meta"
+        static let lastOrderCompleted = "last_order_completed"
     }
 
     enum Values {

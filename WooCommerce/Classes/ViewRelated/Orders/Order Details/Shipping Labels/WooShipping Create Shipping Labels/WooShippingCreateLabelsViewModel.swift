@@ -205,6 +205,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
     }
 
+    let isOrderCompleted: Bool
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          preselection: WooShippingCreateLabelSelection? = nil,
@@ -225,6 +227,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.analytics = analytics
         self.shippingSettingsService = shippingSettingsService
         self.initialNoticeDelay = initialNoticeDelay
+        self.isOrderCompleted = order.status == .completed
 
         let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
                                                                          config: nil,
@@ -323,7 +326,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             if shouldRefreshPackageAndRate {
                 try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
             }
-            try await currentShipmentDetailsViewModel.purchaseLabel()
+            let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
+            try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
         } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch {
@@ -402,6 +406,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+        markOrderComplete = settings?.accountSettings.lastOrderCompleted ?? false
 
         if let accountSettings = settings?.accountSettings {
             paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
@@ -629,14 +634,6 @@ private extension WooShippingCreateLabelsViewModel {
             return destinationAddress?.toWooShippingAddress()
         }
         return address?.toWooShippingAddress()
-    }
-
-    static func getStoredAccountSettings() -> AccountSettings? {
-        let storageManager = ServiceLocator.storageManager
-
-        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
-        try? resultsController.performFetch()
-        return resultsController.fetchedObjects.first
     }
 
     func observePaymentMethod() {

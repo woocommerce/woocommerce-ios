@@ -391,6 +391,7 @@ final class WooShippingRemoteTests: XCTestCase {
                 additionalHandlingRate: ShippingLabelCarrierRate.fake().copy(rate: 20.01)
             )
         )
+        let markOrderComplete = true
 
         // When
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
@@ -398,7 +399,8 @@ final class WooShippingRemoteTests: XCTestCase {
                                          orderID: self.sampleOrderID,
                                          originAddress: WooShippingAddress.fake(),
                                          destinationAddress: WooShippingAddress.fake(),
-                                         package: package) { result in
+                                         package: package,
+                                         markOrderComplete: markOrderComplete) { result in
                 promise(result)
             }
         }
@@ -456,6 +458,9 @@ final class WooShippingRemoteTests: XCTestCase {
         let customsShipment = try XCTUnwrap(customsValue["shipment_" + shipmentID] as? [String: Any])
         XCTAssertEqual((try XCTUnwrap(customsShipment["items"] as? [Any])).count, 2)
 
+        let userMetaValue = try XCTUnwrap(request.parameters["user_meta"] as? [String: Any])
+        XCTAssertEqual(userMetaValue["last_order_completed"] as? Bool, true)
+
         let labels = try XCTUnwrap(result.get())
         XCTAssertEqual(labels.count, 1)
     }
@@ -471,7 +476,8 @@ final class WooShippingRemoteTests: XCTestCase {
                                          orderID: self.sampleOrderID,
                                          originAddress: WooShippingAddress.fake(),
                                          destinationAddress: WooShippingAddress.fake(),
-                                         package: WooShippingPackagePurchase.fake()) { result in
+                                         package: WooShippingPackagePurchase.fake(),
+                                         markOrderComplete: false) { result in
                 promise(result)
             }
         }
@@ -492,7 +498,8 @@ final class WooShippingRemoteTests: XCTestCase {
                                          orderID: self.sampleOrderID,
                                          originAddress: WooShippingAddress.fake(),
                                          destinationAddress: WooShippingAddress.fake(),
-                                         package: WooShippingPackagePurchase.fake()) { result in
+                                         package: WooShippingPackagePurchase.fake(),
+                                         markOrderComplete: false) { result in
                 promise(result)
             }
         }

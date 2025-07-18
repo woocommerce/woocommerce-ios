@@ -80,6 +80,9 @@ jobs:
     needs: capture
     runs-on: macos-15
 
+    env:
+      BUNDLE_WITH: screenshots
+
     steps:
       - uses: actions/checkout@v4
 
@@ -93,9 +96,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Install Screenshot Gems
-        run: bundle install --with screenshots
 
       - name: Install Fastlane Dependencies
         run: bundle exec fastlane run configure_apply

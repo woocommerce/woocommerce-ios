@@ -67,7 +67,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         for (key, value) in fieldValues {
             guard keysToCheck.contains(key) else { continue }
             let doubleValue = Double(value)
-            if doubleValue == nil || doubleValue == 0 {
+            guard let doubleValue, doubleValue > 0 else {
                 return false
             }
         }

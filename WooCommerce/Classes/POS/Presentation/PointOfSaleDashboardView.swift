@@ -8,6 +8,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
 
@@ -138,6 +139,14 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .ignoresSafeArea(.keyboard)
+        .onAppear {
+            trackTimeForInitialLoadingState()
+        }
+        .onChange(of: viewState) { oldValue, newValue in
+            if newValue == .content && oldValue != newValue {
+                trackElapsedTimeForInitialLoadingState()
+            }
+        }
     }
 
     private var contentView: some View {
@@ -206,6 +215,20 @@ private extension PointOfSaleDashboardView {
         }))
         .onAppear {
             posModel.trackCardPaymentsOnboardingShown()
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension PointOfSaleDashboardView {
+    func trackTimeForInitialLoadingState() {
+        waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
+    }
+
+    func trackElapsedTimeForInitialLoadingState() {
+        if let waitingTimeTracker {
+            waitingTimeTracker.end(using: .milliseconds)
+            self.waitingTimeTracker = nil
         }
     }
 }

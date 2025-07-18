@@ -32,6 +32,7 @@ jobs:
       with:
         name: screenshot-build-products
         path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+        retention-days: 1
 
   capture:
     name: Capture

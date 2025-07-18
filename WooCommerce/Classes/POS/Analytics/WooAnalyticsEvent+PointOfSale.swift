@@ -31,6 +31,12 @@ extension WooAnalyticsEvent {
             static let countryCode = "country"
             static let paymentMethodType = "payment_method_type"
             static let gatewayID = "plugin_slug"
+            static let scanDurationMs = "scan_duration_ms"
+            static let barcodeLength = "barcode_length"
+            static let failReason = "fail_reason"
+            static let scanner = "scanner"
+            static let step = "step"
+            static let scanValue = "scan_value"
         }
 
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
@@ -193,6 +199,89 @@ extension WooAnalyticsEvent {
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.totalItems: "\(totalItems)"
                               ])
+        }
+
+        static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningSuccess,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)"
+                              ])
+        }
+
+        static func barcodeScanningFailed(scanDurationMs: Int, barcodeLength: Int, failReason: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningFailed,
+                              properties: [
+                                Key.scanDurationMs: "\(scanDurationMs)",
+                                Key.barcodeLength: "\(barcodeLength)",
+                                Key.failReason: failReason
+                              ])
+        }
+
+        static func barcodeScannerSetupScannerSelected(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerSelected,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupNextTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupNextTapped,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.step: step
+                              ])
+        }
+
+        static func barcodeScannerSetupBackTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupBackTapped,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.step: step
+                              ])
+        }
+
+        static func barcodeScannerSetupOpenSystemSettingsTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupTestScanSuccess(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanSuccess,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupTestScanFailed(scanner: PointOfSaleBarcodeScannerType, scanValue: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanFailed,
+                              properties: [
+                                Key.scanner: scanner.analyticsName,
+                                Key.scanValue: scanValue
+                              ])
+        }
+
+        static func barcodeScannerSetupTestScanTimedOut(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanTimedOut,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupDismissed(scanner: PointOfSaleBarcodeScannerType? = nil, step: String? = nil) -> WooAnalyticsEvent {
+            var properties: [String: String] = [:]
+            if let scanner {
+                properties[Key.scanner] = scanner.analyticsName
+            }
+            if let step {
+                properties[Key.step] = step
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupDismissed,
+                                     properties: properties)
+        }
+
+        static func barcodeScannerSetupRetryTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupRetryTapped,
+                              properties: [Key.scanner: scanner.analyticsName])
+        }
+
+        static func barcodeScannerSetupScannerConnected(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerConnected,
+                              properties: [Key.scanner: scanner.analyticsName])
         }
     }
 }

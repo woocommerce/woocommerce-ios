@@ -1306,6 +1306,18 @@ enum WooAnalyticsStat: String {
     case pointOfSaleBarcodeScanningMenuItemTapped = "barcode_scanning_menu_item_tapped"
     case pointOfSaleBarcodeScanningExplanationDialogShown = "barcode_scanning_explanation_dialog_shown"
     case pointOfSaleBarcodeScannerSetupFlowShown = "barcode_scanner_setup_flow_shown"
+    case pointOfSaleBarcodeScanningSuccess = "barcode_scanned"
+    case pointOfSaleBarcodeScanningFailed = "barcode_scanning_failed"
+    case pointOfSaleBarcodeScannerSetupScannerSelected = "barcode_scanner_setup_scanner_selected"
+    case pointOfSaleBarcodeScannerSetupNextTapped = "barcode_scanner_setup_next_tapped"
+    case pointOfSaleBarcodeScannerSetupBackTapped = "barcode_scanner_setup_back_tapped"
+    case pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped = "barcode_scanner_setup_open_system_settings_tapped"
+    case pointOfSaleBarcodeScannerSetupTestScanSuccess = "barcode_scanner_setup_test_scan_success"
+    case pointOfSaleBarcodeScannerSetupTestScanFailed = "barcode_scanner_setup_test_scan_failed"
+    case pointOfSaleBarcodeScannerSetupTestScanTimedOut = "barcode_scanner_setup_test_scan_timed_out"
+    case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
+    case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
+    case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -1451,6 +1451,7 @@ extension Networking.ShippingLabelAccountSettings {
             isEmailReceiptsEnabled: .fake(),
             paperSize: .fake(),
             lastSelectedPackageID: .fake(),
+            lastOrderCompleted: .fake(),
             addPaymentMethodURL: .fake()
         )
     }
@@ -2480,6 +2481,19 @@ extension Networking.WooShippingSelectedRate {
             carbonNeutralRate: .fake(),
             saturdayDeliveryRate: .fake(),
             additionalHandlingRate: .fake()
+        )
+    }
+}
+extension Networking.WooShippingShipment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooShippingShipment {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            index: .fake(),
+            items: .fake(),
+            shippingLabel: .fake()
         )
     }
 }

@@ -41,7 +41,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -75,7 +75,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -103,7 +103,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -130,7 +130,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, let writeStrategy, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -159,7 +159,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statuses, _, _, _, _, _, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statuses, _, _, _, _, _, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -182,7 +182,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .synchronizeOrders(_, let statuses, _, _, _, _, _, let pageNumber, let pageSize, _) = action else {
+        guard case .synchronizeOrders(_, let statuses, _, _, _, _, _, _, let pageNumber, let pageSize, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }
@@ -217,7 +217,7 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
                                        completionHandler: unimportantCompletionHandler)
 
         // Assert
-        guard case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, let writeStrategy, _, _) = action else {
+        guard case .fetchFilteredOrders(_, let statuses, _, _, _, _, _, _, let writeStrategy, _, _) = action else {
             XCTFail("Unexpected OrderAction type: \(action)")
             return
         }

@@ -57,4 +57,17 @@ public extension StorageManagerType {
     func reset() {
         reset(onCompletion: nil)
     }
+
+    /// Async/await version of `performAndSave`.
+    ///
+    /// - Parameters:
+    ///   - operation: A closure which uses the given `StorageType` to make data changes in background.
+    ///   - queue: A queue on which to execute the completion closure.
+    func performAndSaveAsync(_ operation: @escaping (StorageType) -> Void, on queue: DispatchQueue = .main) async {
+        await withCheckedContinuation { continuation in
+            performAndSave(operation, completion: {
+                continuation.resume()
+            }, on: queue)
+        }
+    }
 }

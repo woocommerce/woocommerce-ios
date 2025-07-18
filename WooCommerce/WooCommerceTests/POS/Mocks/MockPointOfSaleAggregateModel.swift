@@ -62,7 +62,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var cart: Cart = .init()
 
-    func barcodeScanned(_ result: Result<String, Error>) { }
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) { }
 
     func addToCart(_ item: POSItem) { }
 

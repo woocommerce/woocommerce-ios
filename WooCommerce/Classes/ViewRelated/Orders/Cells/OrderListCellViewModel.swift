@@ -1,17 +1,7 @@
 import Foundation
-
-#if canImport(Yosemite)
 import Yosemite
-#elseif canImport(NetworkingCore)
-import NetworkingCore
-#endif
-
-#if !os(watchOS)
 import UIKit
-#endif
-
 import WooFoundationCore
-
 
 // MARK: - View Model for individual cells on the Order List screen
 //
@@ -27,7 +17,7 @@ struct OrderListCellViewModel {
     /// For example, #560 Pamela Nguyen
     ///
     var title: String {
-        Localization.title(orderNumber: order.number, customerName: customerName)
+        OrderListCellViewModelLocalization.title(orderNumber: order.number, customerName: customerName)
     }
 
     /// For example, Pamela Nguyen
@@ -36,7 +26,7 @@ struct OrderListCellViewModel {
         if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
             return fullName
         }
-        return Localization.guestName
+        return OrderListCellViewModelLocalization.guestName
     }
 
     /// The localized unabbreviated total which includes the currency.
@@ -90,7 +80,6 @@ struct OrderListCellViewModel {
         currencyFormatter.formatAmount(orderItem.total, with: order.currency) ?? "$\(orderItem.total)"
     }
 
-#if !os(watchOS)
     /// Accessory view that renders the cell's disclosure indicator
     ///
     var accessoryView: UIImageView? {
@@ -100,24 +89,5 @@ struct OrderListCellViewModel {
         let accessoryView = UIImageView(image: image, highlightedImage: nil)
         accessoryView.tintColor = .tertiaryLabel
         return accessoryView
-    }
-#endif
-}
-
-extension OrderListCellViewModel {
-    enum Localization {
-        static func title(orderNumber: String, customerName: String) -> String {
-            let format = NSLocalizedString(
-                "orderlistcellviewmodel.cell.title",
-                value: "#%@ %@",
-                comment: "In Order List,"
-                + " the pattern to show the order number. For example, “#123456”."
-                + " The %@ placeholder is the order number.")
-            return String.localizedStringWithFormat(format, orderNumber, customerName)
-        }
-        static let guestName = NSLocalizedString(
-            "orderlistcellviewmodel.customerName.guestName",
-            value: "Guest",
-            comment: "In Order List, the name of the billed person when there are no first and last name.")
     }
 }

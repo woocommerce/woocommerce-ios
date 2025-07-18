@@ -218,7 +218,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
 
     /// Purchases a shipping label with the provided label details and settings.
     @MainActor
-    func purchaseLabel() async throws {
+    func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
               let selectedRate = selectedRate else {
@@ -235,7 +235,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
                                                                  orderID: order.orderID,
                                                                  originAddress: originAddress,
                                                                  destinationAddress: destinationAddress,
-                                                                 package: packagePurchase) { [weak self] result in
+                                                                 package: packagePurchase,
+                                                                 markOrderComplete: markOrderComplete) { [weak self] result in
                 switch result {
                 case .success:
                     self?.analytics.track(event: .WooShipping.purchaseStep(state: .purchaseSuccess))

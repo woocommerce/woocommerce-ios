@@ -22,6 +22,7 @@ public class OrdersRemote: Remote {
     ///     This method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - customerID: If given, limit response to orders placed by a customer.
     ///     - productID: If given, limit response to orders including the given product.
+    ///     - createdVia: If given, limit response to orders created via the specified source (e.g. "pos-rest-api" for Point of Sale).
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
@@ -33,6 +34,7 @@ public class OrdersRemote: Remote {
                               modifiedAfter: Date? = nil,
                               customerID: Int64? = nil,
                               productID: Int64? = nil,
+                              createdVia: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
                               completion: @escaping (Result<[Order], Error>) -> Void) {
@@ -64,6 +66,10 @@ public class OrdersRemote: Remote {
 
             if let productID {
                 parameters[ParameterKeys.product] = productID
+            }
+
+            if let createdVia {
+                parameters[ParameterKeys.createdVia] = createdVia
             }
 
             return parameters
@@ -470,6 +476,7 @@ public extension OrdersRemote {
         static let usesGMTDates: String     = "dates_are_gmt"
         static let customer = "customer"
         static let product = "product"
+        static let createdVia = "created_via"
     }
 
     enum ParameterValues {

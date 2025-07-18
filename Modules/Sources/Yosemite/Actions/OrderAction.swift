@@ -33,6 +33,7 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///     - customerID: Only include orders placed by the given customer.
     ///     - productID: Only include orders with `lineItems` including the given product.
+    ///     - createdVia: Only include orders created via the specified source (e.g. "pos-rest-api" for Point of Sale).
     ///
     case fetchFilteredOrders(
         siteID: Int64,
@@ -42,6 +43,7 @@ public enum OrderAction: Action {
         modifiedAfter: Date? = nil,
         customerID: Int64? = nil,
         productID: Int64? = nil,
+        createdVia: String? = nil,
         writeStrategy: OrdersStorageWriteStrategy,
         pageSize: Int,
         onCompletion: (TimeInterval, Result<[Order], Error>) -> Void
@@ -58,6 +60,7 @@ public enum OrderAction: Action {
     ///               doesn't matter. It will be converted to UTC later.
     ///     - customerID: Only include orders placed by the given customer.
     ///     - productID: Only include orders with `lineItems` including the given product.
+    ///     - createdVia: Only include orders created via the specified source (e.g. "pos-rest-api" for Point of Sale).
     ///
     case synchronizeOrders(siteID: Int64,
                            statuses: [String]?,
@@ -66,6 +69,7 @@ public enum OrderAction: Action {
                            modifiedAfter: Date? = nil,
                            customerID: Int64? = nil,
                            productID: Int64? = nil,
+                           createdVia: String? = nil,
                            pageNumber: Int,
                            pageSize: Int,
                            onCompletion: (TimeInterval, Error?) -> Void)

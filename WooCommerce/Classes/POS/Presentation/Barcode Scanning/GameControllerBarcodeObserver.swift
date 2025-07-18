@@ -9,8 +9,8 @@ import GameController
 ///
 final class GameControllerBarcodeObserver {
     /// A closure that is called when a barcode scan is completed.
-    /// The result will be a `success` with the barcode string or a `failure` with an error.
-    let onScan: (Result<String, Error>) -> Void
+    /// The result will be a `success` with the barcode string or a `failure` with an HIDBarcodeParserError.
+    let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     /// Track the coalesced keyboard and its parser
     /// According to Apple's documentation, all connected keyboards are coalesced into one keyboard object
@@ -27,7 +27,7 @@ final class GameControllerBarcodeObserver {
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
     ///   - onScan: The closure to be called when a scan is completed.
-    init(configuration: HIDBarcodeParserConfiguration = .default, onScan: @escaping (Result<String, Error>) -> Void) {
+    init(configuration: HIDBarcodeParserConfiguration = .default, onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
         self.onScan = onScan
         self.configuration = configuration
         addObservers()
@@ -88,7 +88,12 @@ final class GameControllerBarcodeObserver {
         cleanupKeyboard()
 
         coalescedKeyboard = keyboard
-        barcodeParser = GameControllerBarcodeParser(configuration: configuration, onScan: onScan)
+        barcodeParser = GameControllerBarcodeParser(
+            configuration: configuration,
+            onScan: { [weak self] result in
+                self?.handleScanResult(result)
+            }
+        )
 
         keyboard.keyboardInput?.keyChangedHandler = { [weak self] _, _, keyCode, pressed in
             guard let self = self else { return }
@@ -111,5 +116,30 @@ final class GameControllerBarcodeObserver {
         coalescedKeyboard = nil
         barcodeParser = nil
         isShiftPressed = false
+    }
+
+    private func handleScanResult(_ result: HIDBarcodeParserResult) {
+        trackAnalyticsEvent(for: result)
+        onScan(result.asResult)
+    }
+
+    private func trackAnalyticsEvent(for result: HIDBarcodeParserResult) {
+        switch result {
+        case .success(let barcode, let scanDurationMs):
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.PointOfSale.barcodeScanningSuccess(
+                    scanDurationMs: scanDurationMs,
+                    barcodeLength: barcode.count
+                )
+            )
+        case .failure(let error, let scanDurationMs):
+            ServiceLocator.analytics.track(
+                event: WooAnalyticsEvent.PointOfSale.barcodeScanningFailed(
+                    scanDurationMs: scanDurationMs,
+                    barcodeLength: error.barcode.count,
+                    failReason: error.analyticsReason
+                )
+            )
+        }
     }
 }

@@ -250,8 +250,23 @@ final class OrderListViewModel {
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
 
+        let predicateSalesChannel: NSPredicate? = {
+            guard let salesChannelFilter = filters?.salesChannel else {
+                return nil
+            }
+
+            switch salesChannelFilter {
+            case .pointOfSale:
+                let predicate = NSPredicate(format: "createdVia == %@", "pos-rest-api")
+                return predicate
+            case .any:
+                return nil
+            }
+        }()
+
         let siteIDPredicate = NSPredicate(format: "siteID = %lld", siteID)
-        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteIDPredicate, predicateStatus, predicateDateRanges])
+        let allPredicates = [siteIDPredicate, predicateStatus, predicateDateRanges, predicateSalesChannel].compactMap { $0 }
+        let queryPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: allPredicates)
 
         return FetchResultSnapshotsProvider<StorageOrder>.Query(
             sortDescriptor: NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false),

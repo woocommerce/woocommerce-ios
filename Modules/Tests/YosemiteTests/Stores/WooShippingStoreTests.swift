@@ -531,22 +531,28 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `purchaseShippingLabel`
 
-    func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
+    func test_purchaseShippingLabel_returns_shipping_label_on_success_and_persists_label_in_storage() throws {
         // Given
-        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579)
+        let expectedLabel = ShippingLabel.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 13579, shipmentID: "0")
         let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
         let remote = MockWooShippingRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID, thenReturn: .success([ShippingLabelPurchase.fake().copy(shippingLabelID: 13579)]))
         remote.whenCheckLabelStatus(siteID: sampleSiteID, thenReturn: .success(labelStatusResponse))
+
+        let order = insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+        let shipment = insertShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
+        shipment.order = order
+
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        let result: Result<ShippingLabel, Error> = waitFor { promise in
+        let result: Result<ShippingLabel, Error> = waitFor(timeout: 10) { promise in
             let action = WooShippingAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                  orderID: self.sampleOrderID,
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -558,6 +564,15 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
         let actualLabel = try XCTUnwrap(result.get())
         XCTAssertEqual(actualLabel, expectedLabel)
+
+        // label is persisted
+        let storedLabels = storageManager.viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedLabels.count, 1)
+        XCTAssertEqual(storedLabels.first?.shippingLabelID, expectedLabel.shippingLabelID)
+
+        let storedShipments = storageManager.viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.count, 1)
+        XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, expectedLabel.shippingLabelID)
     }
 
     func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
@@ -574,6 +589,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -602,6 +618,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.01,
                                                                  pollingDelay: 0.01,
                                                                  pollingMaximumRetries: 3) { result in
@@ -631,6 +648,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                                  originAddress: .fake(),
                                                                  destinationAddress: .fake(),
                                                                  package: .fake(),
+                                                                 markOrderComplete: false,
                                                                  backendProcessingDelay: 0.0,
                                                                  pollingDelay: 0.0) { result in
                 promise(result)
@@ -657,6 +675,7 @@ final class WooShippingStoreTests: XCTestCase {
                                                              originAddress: .fake(),
                                                              destinationAddress: .fake(),
                                                              package: .fake(),
+                                                             markOrderComplete: false,
                                                              backendProcessingDelay: 0.01,
                                                              pollingDelay: 0.01,
                                                              // Irrelevant, because it caps retries on error only.
@@ -996,7 +1015,7 @@ final class WooShippingStoreTests: XCTestCase {
     func test_loadConfig_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let expectedConfig = WooShippingConfig.fake().copy(shipments: ["0": [WooShippingShipmentItem.fake()]])
+        let expectedConfig = WooShippingConfig.fake().copy(shipments: [WooShippingShipment.fake()])
         remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedConfig))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -1035,87 +1054,15 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
-    // MARK: `syncShippingLabels`
-
-    func test_syncShippingLabels_persists_shipping_labels_on_success() throws {
-        // Given
-        let remote = MockWooShippingRemote()
-        let orderID: Int64 = 22
-        let expectedShippingLabel: Yosemite.ShippingLabel = {
-            let origin = ShippingLabelAddress(company: "fun testing",
-                                              name: "Woo seller",
-                                              phone: "6501234567",
-                                              country: "US",
-                                              state: "CA",
-                                              address1: "9999 19TH AVE",
-                                              address2: "",
-                                              city: "SAN FRANCISCO",
-                                              postcode: "94121-2303")
-            let destination = ShippingLabelAddress(company: "",
-                                                   name: "Woo buyer",
-                                                   phone: "1650345689",
-                                                   country: "TW",
-                                                   state: "Taiwan",
-                                                   address1: "No 70 RA St",
-                                                   address2: "",
-                                                   city: "Taipei",
-                                                   postcode: "100")
-            let refund = ShippingLabelRefund(dateRequested: Date(timeIntervalSince1970: 1603716266.809), status: .pending)
-            return ShippingLabel(siteID: sampleSiteID,
-                                 orderID: orderID,
-                                 shippingLabelID: 1149,
-                                 carrierID: "usps",
-                                 shipmentID: "0",
-                                 dateCreated: Date(timeIntervalSince1970: 1603716274.809),
-                                 packageName: "box",
-                                 rate: 58.81,
-                                 currency: "USD",
-                                 trackingNumber: "CM199912222US",
-                                 serviceName: "USPS - Priority Mail International",
-                                 refundableAmount: 58.81,
-                                 status: .purchased,
-                                 refund: refund,
-                                 originAddress: origin,
-                                 destinationAddress: destination,
-                                 productIDs: [3013],
-                                 productNames: ["Password protected!"],
-                                 commercialInvoiceURL: nil,
-                                 usedDate: nil,
-                                 expiryDate: nil)
-        }()
-        let expectedResponse = WooShippingConfig.fake().copy(
-            shipments: ["0": [WooShippingShipmentItem.fake()]],
-            shippingLabelData: WooShippingLabelData(currentOrderLabels: [expectedShippingLabel])
-        )
-        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(expectedResponse))
-
-        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        insertOrder(siteID: sampleSiteID, orderID: orderID)
-
-        // When
-        let result: Result<[Yosemite.ShippingLabel], Error> = waitFor { promise in
-            let action = WooShippingAction.syncShippingLabels(siteID: self.sampleSiteID, orderID: orderID) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isSuccess)
-
-        let persistedOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: sampleSiteID, orderID: orderID))
-        let persistedShippingLabels = try XCTUnwrap(viewStorage.loadAllShippingLabels(siteID: sampleSiteID, orderID: orderID))
-        XCTAssertEqual(persistedOrder.shippingLabels, Set(persistedShippingLabels))
-        XCTAssertEqual(persistedShippingLabels.map { $0.toReadOnly() }, [expectedShippingLabel])
-    }
-
     // MARK: `updateShipment`
 
-    func test_updateShipment_returns_success_response() throws {
+    func test_updateShipment_returns_success_response_and_persists_shipments() throws {
         // Given
         let remote = MockWooShippingRemote()
         let expected = ["0": [WooShippingShipmentItem.fake()]]
         remote.whenUpdatingShipment(siteID: sampleSiteID, thenReturn: .success(expected))
+
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -1131,6 +1078,10 @@ final class WooShippingStoreTests: XCTestCase {
         // Then
         let actual = try XCTUnwrap(result.get())
         XCTAssertEqual(actual, expected)
+
+        let storedShipments = storageManager.viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.count, 1)
+        XCTAssertEqual(storedShipments.first?.index, "0")
     }
 
     func test_updateShipment_returns_error_on_failure() throws {
@@ -1162,7 +1113,7 @@ final class WooShippingStoreTests: XCTestCase {
         let sampleOrderID: Int64 = 134
         let remote = MockWooShippingRemote()
         let expectedRefund = Yosemite.ShippingLabelRefund(dateRequested: Date(), status: .pending)
-        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123)
+        let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 123, shipmentID: "0")
 
         remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
                                           orderID: shippingLabel.orderID,
@@ -1170,8 +1121,10 @@ final class WooShippingStoreTests: XCTestCase {
                                           thenReturn: .success(expectedRefund))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
+        let shipment = insertShipment(siteID: sampleSiteID, orderID: sampleOrderID, index: "0")
         // Inserts a shipping label without a refund.
-        insertShippingLabel(shippingLabel)
+        let storedLabel = insertShippingLabel(shippingLabel)
+        shipment.shippingLabel = storedLabel
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
@@ -1195,6 +1148,10 @@ final class WooShippingStoreTests: XCTestCase {
 
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabel.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
+
+        let storedShipments = viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID)
+        XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertNotNil(storedShipments.first?.shippingLabel?.refund)
     }
 
     func test_refundShippingLabel_returns_error_on_failure() throws {
@@ -1309,6 +1266,96 @@ final class WooShippingStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
+
+    // MARK: `syncShipments`
+
+    func test_syncShipments_returns_shipments_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedShipments = [WooShippingShipment.fake(), WooShippingShipment.fake()]
+        let config = WooShippingConfig.fake().copy(shipments: expectedShipments)
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(config))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let actualShipments = try XCTUnwrap(result.get())
+        XCTAssertEqual(actualShipments, expectedShipments)
+    }
+
+    func test_syncShipments_returns_error_on_failure() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let expectedError = NetworkError.timeout()
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .failure(expectedError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? NetworkError, expectedError)
+    }
+
+    func test_syncShipments_persists_shipments_to_storage_on_success() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
+        let shippingLabel = ShippingLabel.fake().copy(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            shippingLabelID: 123
+        )
+        let item = WooShippingShipmentItem(id: 11, subItems: [])
+        let expectedShipments = [WooShippingShipment.fake().copy(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            index: "0",
+            items: [item],
+            shippingLabel: shippingLabel
+        )]
+        let config = WooShippingConfig.fake().copy(shipments: expectedShipments)
+        remote.whenLoadingConfig(siteID: sampleSiteID, thenReturn: .success(config))
+
+        let store = WooShippingStore(dispatcher: dispatcher,
+                                     storageManager: storageManager,
+                                     network: network,
+                                     remote: remote)
+
+        // When
+        let result: Result<[WooShippingShipment], Error> = waitFor { promise in
+            let action = WooShippingAction.syncShipments(siteID: self.sampleSiteID,
+                                                         orderID: self.sampleOrderID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageWooShippingShipment.self), expectedShipments.count)
+        let object = viewStorage.loadAllShipments(siteID: sampleSiteID, orderID: sampleOrderID).first
+        XCTAssertEqual(object?.order?.orderID, sampleOrderID)
+        XCTAssertEqual(object?.shippingLabel?.shippingLabelID, shippingLabel.shippingLabelID)
+        XCTAssertEqual(object?.items?.count, 1)
+        XCTAssertEqual(object?.items?.first?.id, item.id)
+    }
 }
 
 private extension WooShippingStoreTests {
@@ -1374,15 +1421,28 @@ private extension WooShippingStoreTests {
                                                                                                  groupId: "")])])
     }
 
-    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
+    @discardableResult
+    func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) -> StorageShippingLabel {
         let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
         shippingLabel.update(with: readOnlyShippingLabel)
+        return shippingLabel
     }
 
-    func insertOrder(siteID: Int64, orderID: Int64) {
+    @discardableResult
+    func insertOrder(siteID: Int64, orderID: Int64) -> StorageOrder {
         let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
         order.siteID = siteID
         order.orderID = orderID
         order.statusKey = ""
+        return order
+    }
+
+    @discardableResult
+    func insertShipment(siteID: Int64, orderID: Int64, index: String) -> StorageWooShippingShipment {
+        let shipment = viewStorage.insertNewObject(ofType: StorageWooShippingShipment.self)
+        shipment.siteID = siteID
+        shipment.orderID = orderID
+        shipment.index = index
+        return shipment
     }
 }

@@ -142,7 +142,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                 dateRange: item.dateRangeFilter,
                                 product: item.productFilter,
                                 customer: item.customerFilter,
-                                salesChannel: nil, // TODO: Filter persistence WOOMOB-712
+                                salesChannel: item.salesChannelFilter,
                                 numberOfActiveFilters: item.numberOfActiveFilters())
                     }
                     continuation.resume(returning: filters)
@@ -159,6 +159,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel.selectedValue = filter.dateRange
         productFilterViewModel.selectedValue = filter.product
         customerFilterViewModel.selectedValue = filter.customer
+        salesChannelFilterViewModel.selectedValue = filter.salesChannel
         analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
@@ -167,7 +168,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                                    orderStatusesFilter: filter.orderStatus,
                                                    dateRangeFilter: filter.dateRange,
                                                    productFilter: filter.product,
-                                                   customerFilter: filter.customer)
+                                                   customerFilter: filter.customer,
+                                                   salesChannelFilter: filter.salesChannel)
         stores.dispatch(AppSettingsAction.upsertOrderFilterHistory(filter: settings, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error saving filter history: \(error)")
@@ -181,7 +183,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                                    orderStatusesFilter: filter.orderStatus,
                                                    dateRangeFilter: filter.dateRange,
                                                    productFilter: filter.product,
-                                                   customerFilter: filter.customer)
+                                                   customerFilter: filter.customer,
+                                                   salesChannelFilter: filter.salesChannel)
         stores.dispatch(AppSettingsAction.removeFromOrderFilterHistory(filter: settings, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error removing from filter history: \(error)")
@@ -210,6 +213,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedCustomer: CustomerFilter? = nil
         customerFilterViewModel.selectedValue = clearedCustomer
+
+        let clearSalesChannel: SalesChannelFilter? = nil
+        salesChannelFilterViewModel.selectedValue = clearSalesChannel
     }
 }
 
@@ -262,8 +268,9 @@ extension FilterOrderListViewModel.OrderListFilter {
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
         case .salesChannel:
+            let salesChannelOptions: [SalesChannelFilter] = [.any, .pointOfSale]
             return FilterTypeViewModel(title: title,
-                                       listSelectorConfig: .salesChannel,
+                                       listSelectorConfig: .staticOptions(options: salesChannelOptions),
                                        selectedValue: filters.salesChannel)
         }
     }
@@ -372,19 +379,28 @@ extension CustomerFilter: FilterType {
     var isActive: Bool { true }
 }
 
-extension FilterOrderListViewModel {
-    enum SalesChannelFilter: FilterType {
-        case pointOfSale
-
-        var description: String {
-            switch self {
-            case .pointOfSale:
-                return "POS"
-            }
+extension SalesChannelFilter: FilterType {
+    var description: String {
+        switch self {
+        case .pointOfSale:
+            return NSLocalizedString(
+                "salesChannelFilter.row.pos.description",
+                value: "Point of Sale",
+                comment: "Description for the Sales channel filter option, when selecting 'Point of Sale' orders")
+        case .any:
+            return NSLocalizedString(
+                "salesChannelFilter.row.any.description",
+                value: "Any",
+                comment: "Description for the Sales channel filter option, when selecting 'Any' order")
         }
+    }
 
-        var isActive: Bool {
+    var isActive: Bool {
+        switch self {
+        case .pointOfSale:
             return true
+        case .any:
+            return false
         }
     }
 }

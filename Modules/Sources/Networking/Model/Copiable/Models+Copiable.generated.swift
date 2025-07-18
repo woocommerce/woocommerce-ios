@@ -2424,6 +2424,7 @@ extension Networking.ShippingLabelAccountSettings {
         isEmailReceiptsEnabled: CopiableProp<Bool> = .copy,
         paperSize: CopiableProp<ShippingLabelPaperSize> = .copy,
         lastSelectedPackageID: CopiableProp<String> = .copy,
+        lastOrderCompleted: CopiableProp<Bool> = .copy,
         addPaymentMethodURL: NullableCopiableProp<URL> = .copy
     ) -> Networking.ShippingLabelAccountSettings {
         let siteID = siteID ?? self.siteID
@@ -2438,6 +2439,7 @@ extension Networking.ShippingLabelAccountSettings {
         let isEmailReceiptsEnabled = isEmailReceiptsEnabled ?? self.isEmailReceiptsEnabled
         let paperSize = paperSize ?? self.paperSize
         let lastSelectedPackageID = lastSelectedPackageID ?? self.lastSelectedPackageID
+        let lastOrderCompleted = lastOrderCompleted ?? self.lastOrderCompleted
         let addPaymentMethodURL = addPaymentMethodURL ?? self.addPaymentMethodURL
 
         return Networking.ShippingLabelAccountSettings(
@@ -2453,6 +2455,7 @@ extension Networking.ShippingLabelAccountSettings {
             isEmailReceiptsEnabled: isEmailReceiptsEnabled,
             paperSize: paperSize,
             lastSelectedPackageID: lastSelectedPackageID,
+            lastOrderCompleted: lastOrderCompleted,
             addPaymentMethodURL: addPaymentMethodURL
         )
     }
@@ -3481,7 +3484,7 @@ extension Networking.WooShippingAddress {
 extension Networking.WooShippingConfig {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
-        shipments: CopiableProp<[String: [WooShippingShipmentItem]]> = .copy,
+        shipments: CopiableProp<[WooShippingShipment]> = .copy,
         shippingLabelData: NullableCopiableProp<WooShippingLabelData> = .copy
     ) -> Networking.WooShippingConfig {
         let siteID = siteID ?? self.siteID
@@ -3720,6 +3723,30 @@ extension Networking.WooShippingPackagesResponse {
             customPackages: customPackages,
             savedPredefinedPackages: savedPredefinedPackages,
             allPredefinedOptions: allPredefinedOptions
+        )
+    }
+}
+
+extension Networking.WooShippingShipment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        index: CopiableProp<String> = .copy,
+        items: CopiableProp<[WooShippingShipmentItem]> = .copy,
+        shippingLabel: NullableCopiableProp<ShippingLabel> = .copy
+    ) -> Networking.WooShippingShipment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let index = index ?? self.index
+        let items = items ?? self.items
+        let shippingLabel = shippingLabel ?? self.shippingLabel
+
+        return Networking.WooShippingShipment(
+            siteID: siteID,
+            orderID: orderID,
+            index: index,
+            items: items,
+            shippingLabel: shippingLabel
         )
     }
 }

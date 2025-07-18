@@ -11,8 +11,8 @@ import class Yosemite.POSEligibilityService
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
-import protocol Yosemite.PluginsServiceProtocol
-import class Yosemite.PluginsService
+import protocol Yosemite.POSSystemStatusServiceProtocol
+import class Yosemite.POSSystemStatusService
 
 /// Represents the reasons why a site may be ineligible for POS.
 enum POSIneligibleReason: Equatable {
@@ -21,7 +21,6 @@ enum POSIneligibleReason: Equatable {
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureSwitchDisabled
-    case featureSwitchSyncFailure
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }
@@ -39,31 +38,34 @@ protocol POSEntryPointEligibilityCheckerProtocol {
     func checkVisibility() async -> Bool
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
+    /// Refreshes the eligibility state based on the provided ineligible reason.
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
-    private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let systemStatusService: POSSystemStatusServiceProtocol
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
+                                                                                      storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
-        self.pluginsService = pluginsService
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.systemStatusService = systemStatusService
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -113,13 +115,68 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
         return await featureFlagEligibility == .eligible
     }
+
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+        switch ineligibleReason {
+        case .unsupportedIOSVersion:
+            // TODO: WOOMOB-768 - hide refresh CTA in this case
+            return .ineligible(reason: .unsupportedIOSVersion)
+        case .siteSettingsNotAvailable, .unsupportedCurrency:
+            do {
+                try await syncSiteSettingsRemotely()
+                return await checkEligibility()
+            } catch POSTabEligibilityCheckerError.selfDeallocated {
+                return .ineligible(reason: .selfDeallocated)
+            } catch {
+                throw error
+            }
+        case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
+            return await checkEligibility()
+        case .featureSwitchDisabled:
+            // TODO: WOOMOB-759 - enable feature switch via API and check eligibility again
+            // For now, just checks eligibility again.
+            return await checkEligibility()
+        case .selfDeallocated:
+            return await checkEligibility()
+        }
+    }
 }
 
 // MARK: - WC Plugin Related Eligibility Check
 
 private extension POSTabEligibilityChecker {
+    /// Checks the eligibility of the WooCommerce plugin and plugin version based POS feature switch value.
+    ///
+    /// - Parameter pluginEligibility: An optional parameter that can provide pre-fetched plugin eligibility state.
+    /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch.
     func checkPluginEligibility() async -> POSEligibilityState {
-        let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
+        do {
+            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+            let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: info.wcPlugin)
+            switch wcPluginEligibility {
+            case .eligible:
+                return .eligible
+            case .ineligible(let reason):
+                return .ineligible(reason: reason)
+            case .pendingFeatureSwitchCheck:
+                let isFeatureSwitchEnabled = info.featureValue == true
+                return isFeatureSwitchEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled)
+            }
+        } catch {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
+    }
+
+    enum PluginEligibilityState {
+        case eligible
+        case ineligible(reason: POSIneligibleReason)
+        case pendingFeatureSwitchCheck
+    }
+
+    func checkWooCommercePluginEligibility(wcPlugin: SystemPlugin?) -> PluginEligibilityState {
+        guard let wcPlugin, wcPlugin.active else {
+            return .ineligible(reason: .wooCommercePluginNotFound)
+        }
 
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                 minimumRequired: Constants.wcPluginMinimumVersion) else {
@@ -134,31 +191,8 @@ private extension POSTabEligibilityChecker {
             return .eligible
         }
 
-        // For versions that support the feature switch, checks if the feature switch is enabled.
-        return await checkFeatureSwitchEnabled(siteID: siteID)
-    }
-
-    @MainActor
-    func fetchWooCommercePlugin(siteID: Int64) async -> SystemPlugin {
-        await pluginsService.waitForPluginInStorage(siteID: siteID, pluginPath: Constants.wcPlugin, isActive: true)
-    }
-
-    @MainActor
-    func checkFeatureSwitchEnabled(siteID: Int64) async -> POSEligibilityState {
-        await withCheckedContinuation { [weak self] continuation in
-            guard let self else {
-                return continuation.resume(returning: .ineligible(reason: .selfDeallocated))
-            }
-            let action = SettingAction.isFeatureEnabled(siteID: siteID, feature: .pointOfSale) { result in
-                switch result {
-                case .success(let isEnabled):
-                    continuation.resume(returning: isEnabled ? .eligible : .ineligible(reason: .featureSwitchDisabled))
-                case .failure:
-                    continuation.resume(returning: .ineligible(reason: .featureSwitchSyncFailure))
-                }
-            }
-            stores.dispatch(action)
-        }
+        // For versions that support the feature switch, checks if the feature switch is enabled separately.
+        return .pendingFeatureSwitchCheck
     }
 }
 
@@ -235,6 +269,25 @@ private extension POSTabEligibilityChecker {
         }
         return .eligible
     }
+
+    @MainActor
+    func syncSiteSettingsRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                if let error {
+                    return continuation.resume(throwing: error)
+                }
+                siteSettings.refresh()
+                continuation.resume(returning: ())
+            })
+        }
+    }
 }
 
 // MARK: - Remote Feature Flag Eligibility Check
@@ -275,6 +328,10 @@ private extension POSTabEligibilityChecker {
             self.stores.dispatch(action)
         }
     }
+}
+
+private enum POSTabEligibilityCheckerError: Error {
+    case selfDeallocated
 }
 
 private extension POSTabEligibilityChecker {

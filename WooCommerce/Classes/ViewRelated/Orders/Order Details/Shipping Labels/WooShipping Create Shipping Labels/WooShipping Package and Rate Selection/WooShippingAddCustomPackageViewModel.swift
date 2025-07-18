@@ -46,7 +46,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     // Field values are invalid if one of them is empty
     // - if we are saving template we check all field values
     // - if we are not saving template we check only dimensions
-    var areFieldValuesInvalid: Bool {
+    var areFieldValuesEmpty: Bool {
         let keysToCheck: [WooShippingPackageUnitType] = showSaveTemplate ? WooShippingPackageUnitType.allCases : WooShippingPackageUnitType.dimensionUnits
 
         var validFieldsCount: Int = 0
@@ -59,6 +59,19 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
             validFieldsCount += 1
         }
         return validFieldsCount != keysToCheck.count
+    }
+
+    /// Ensure that all dimensions are larger than 0
+    var allDimensionsValid: Bool {
+        let keysToCheck = WooShippingPackageUnitType.dimensionUnits
+        for (key, value) in fieldValues {
+            guard keysToCheck.contains(key) else { continue }
+            let doubleValue = Double(value)
+            if doubleValue == nil || doubleValue == 0 {
+                return false
+            }
+        }
+        return true
     }
 
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
@@ -117,7 +130,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                     continuation.resume(returning: .success(packageData))
                 case let .failure(error):
                     DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
-                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failure(error)))
                 }
             }
             stores.dispatch(action)
@@ -134,7 +147,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     func validateCustomPackageInputFields() -> Bool {
-        guard !areFieldValuesInvalid else {
+        guard !areFieldValuesEmpty else {
             return false
         }
         if showSaveTemplate {

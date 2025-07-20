@@ -83,7 +83,12 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.itemProductID = itemProductID
         self.itemQuantity = itemQuantity
         self.valuePerUnit = String(itemValue)
-        self.weightPerUnit = String(itemWeight)
+
+        /// Skip zero weight
+        if Self.isWeightNonZero(itemWeight) {
+            self.weightPerUnit = String(itemWeight)
+        }
+
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
 

@@ -112,7 +112,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     init(order: Order,
-         config: WooShippingConfig?,
+         remoteShipments: [WooShippingShipment],
          items: [ShippingLabelPackageItem],
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -122,7 +122,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
         self.currencySettings = currencySettings
         self.shippingSettingsService = shippingSettingsService
 
-        let shipments = Self.createShipments(with: config,
+        let shipments = Self.createShipments(with: remoteShipments,
                                              packageItems: items,
                                              currency: order.currency,
                                              currencySettings: currencySettings,
@@ -528,12 +528,12 @@ private extension WooShippingSplitShipmentsViewModel {
 
 extension WooShippingSplitShipmentsViewModel {
 
-    private static func createShipments(with config: WooShippingConfig?,
+    private static func createShipments(with remoteShipments: [WooShippingShipment],
                                         packageItems: [ShippingLabelPackageItem],
                                         currency: String,
                                         currencySettings: CurrencySettings,
                                         shippingSettingsService: ShippingSettingsService) -> [Shipment] {
-        guard let config, config.shipments.isEmpty == false else {
+        guard remoteShipments.isEmpty == false else {
             let contents = packageItems.map { item in
                 CollapsibleShipmentItemCardViewModel(item: item, currency: currency)
             }
@@ -544,7 +544,7 @@ extension WooShippingSplitShipmentsViewModel {
             return [shipment]
         }
 
-        let shipments = config.shipments
+        let shipments = remoteShipments
             .sorted(by: { $0.index.localizedStandardCompare($1.index) == .orderedAscending })
             .map { shipment in
                 var shipmentContents = ShipmentContents()

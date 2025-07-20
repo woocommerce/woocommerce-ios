@@ -217,7 +217,7 @@ private extension OrderDetailsResultsControllers {
         do {
             try shipmentResultsController.performFetch()
         } catch {
-            DDLogError("⛔️ Unable to fetch Order Statuses: \(error)")
+            DDLogError("⛔️ Unable to fetch shipments: \(error)")
         }
     }
 

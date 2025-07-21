@@ -1559,14 +1559,14 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
     func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_plugin_path_is_in_different_valid_formats() throws {
         let validPluginPaths = [
+            "woocommerce.php",
+            "woocommerce.swift",
             "woocommerce/woocommerce.php",
             "woocommerce/woocommerce.swift",
-            "woocommerce//woocommerce.php",
             "test-plugin/test-plugin/woocommerce.php",
             "test-plugin/test-plugin/test-plugin/woocommerce.tmp.php",
             "test-plugin/test-plugin/woocommerce.tmp.php",
-            "test-plugin/woocommerce.tmp.php",
-            "/woocommerce.tmp.php"
+            "test-plugin/woocommerce.tmp.php"
         ]
 
         for pluginPath in validPluginPaths {
@@ -1588,11 +1588,13 @@ final class StorageTypeExtensionsTests: XCTestCase {
 
     func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_nil_when_plugin_path_is_in_different_invalid_formats() throws {
         let invalidPluginPaths = [
+            "woocommerce",
             "woocommerce/woocommerce",
+            "woocommerce//woocommerce",
+            "woocommerce-dev.php",
             "woocommerce/woocommerce-dev.php",
             "test-plugin/woocommerce-dev.php",
-            "test-plugin/test-plugin/woocommerce-dev.php",
-            "woocommerce.tmp.php"
+            "test-plugin/test-plugin/woocommerce-dev.php"
         ]
 
         for pluginPath in invalidPluginPaths {
@@ -1611,6 +1613,49 @@ final class StorageTypeExtensionsTests: XCTestCase {
             storage.deleteObject(plugin)
         }
     }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_handles_regex_special_characters() throws {
+        let specialCharacterTests = [
+            // Filename with regex special characters, plugin path, should match
+            ("plugin.name", "test-folder/plugin.name.php", true),
+            ("plugin+test", "plugin-dir/plugin+test.swift", true),
+            ("plugin*wild", "nested/plugin*wild.css", true),
+            ("plugin[bracket]", "plugin[bracket].php", true),
+            ("plugin(paren)", "folder/plugin(paren).min.js", true),
+            ("plugin^caret", "plugin^caret.tmp", true),
+            ("plugin$dollar", "deep/nested/plugin$dollar.ext", true),
+            // Filenames with spaces
+            ("test plugin", "some folder with spaces/test plugin.css", true),
+            ("plugin name", "plugin name.js", true),
+            // Should not match when filename is different
+            ("plugin.name", "test-folder/pluginXname.php", false),
+            ("plugin+test", "plugin-dir/plugin-test.js", false),
+            ("plugin*wild", "nested/pluginXwild.css", false),
+            ("my plugin", "folder/my-plugin.php", false),
+            ("plugin name", "plugin-name.js", false)
+        ]
+
+        for (searchTerm, pluginPath, shouldMatch) in specialCharacterTests {
+            // Given
+            let plugin = storage.insertNewObject(ofType: SystemPlugin.self)
+            plugin.plugin = pluginPath
+            plugin.siteID = sampleSiteID
+
+            // When
+            let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: searchTerm)
+
+            // Then
+            if shouldMatch {
+                XCTAssertEqual(foundPlugin, plugin, "Should find plugin for search term '\(searchTerm)' in path '\(pluginPath)'")
+            } else {
+                XCTAssertNil(foundPlugin, "Should NOT find plugin for search term '\(searchTerm)' in path '\(pluginPath)'")
+            }
+
+            // Cleanup for the next iteration
+            storage.deleteObject(plugin)
+        }
+    }
+
 
     func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_active_state_is_set() throws {
         // Given

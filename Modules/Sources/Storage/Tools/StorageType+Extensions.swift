@@ -863,11 +863,12 @@ public extension StorageType {
     ///   - active: Optional active state filter. If provided, only plugins with matching active state are returned. If nil, active state is ignored.
     /// - Returns: The matching system plugin, or nil if not found.
     func loadSystemPlugin(siteID: Int64, fileNameWithoutExtension: String, active: Bool? = nil) -> SystemPlugin? {
-        let pathPattern = "*/\(fileNameWithoutExtension).*"
+        let escapedFileName = NSRegularExpression.escapedPattern(for: fileNameWithoutExtension)
+        let regexPattern = "(.*/)?\(escapedFileName)\\.[^/]+$"
         let predicate = if let active {
-            NSPredicate(format: "siteID == %lld AND plugin LIKE %@ AND active == %@", siteID, pathPattern, NSNumber(value: active))
+            NSPredicate(format: "siteID == %lld AND plugin MATCHES %@ AND active == %@", siteID, regexPattern, NSNumber(value: active))
         } else {
-            NSPredicate(format: "siteID == %lld AND plugin LIKE %@", siteID, pathPattern)
+            NSPredicate(format: "siteID == %lld AND plugin MATCHES %@", siteID, regexPattern)
         }
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }

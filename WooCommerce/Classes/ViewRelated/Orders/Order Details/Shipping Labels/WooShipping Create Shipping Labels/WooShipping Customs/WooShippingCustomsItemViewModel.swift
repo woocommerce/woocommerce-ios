@@ -52,6 +52,10 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return HSTariffNumberValidator.isNumberValid(hsTariffNumber)
     }
 
+    var sanitizedHSTariffNumber: String {
+        HSTariffNumberValidator.sanitize(hsTariffNumber)
+    }
+
     @Published var requiredInformationIsEntered: Bool = false
 
     private var cancellables = Set<AnyCancellable>()

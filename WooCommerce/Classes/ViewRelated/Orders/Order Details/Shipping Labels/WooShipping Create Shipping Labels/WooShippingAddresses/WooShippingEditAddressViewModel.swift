@@ -121,7 +121,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     @Published private(set) var selectedState: StateOfACountry?
 
     /// Whether user can proceed with their input address even when validation fails.
-    @Published private(set) var canProceedWithoutValidation = false
+    @Published private(set) var canConfirmWithoutVerification = false
 
     /// View model for selecting a country from a list.
     var countrySelectorVM: CountrySelectorViewModel {
@@ -387,7 +387,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         } catch let error as WooShippingAddressValidationError {
             /// Enables proceeding for destination addresses even when validation fails
             if case .destination = addressType {
-                canProceedWithoutValidation = true
+                canConfirmWithoutVerification = true
             }
             if let nameError = error.nameError {
                 name.setError(nameError)
@@ -653,7 +653,7 @@ private extension WooShippingEditAddressViewModel {
         allFields.map { $0.$value.removeDuplicates() }
             .combineLatest()
             .map { _ in false }
-            .assign(to: &$canProceedWithoutValidation)
+            .assign(to: &$canConfirmWithoutVerification)
     }
 }
 

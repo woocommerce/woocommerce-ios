@@ -1447,9 +1447,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusLabel, expectedGeneralError)
     }
 
-    // MARK: - canProceedWithoutValidation Tests
+    // MARK: - canConfirmWithoutVerification Tests
 
-    func test_canProceedWithoutValidation_is_false_initially() {
+    func test_canConfirmWithoutVerification_is_false_initially() {
         // Given & When
         let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
                                                         id: "",
@@ -1467,11 +1467,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: false)
 
         // Then
-        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+        XCTAssertFalse(viewModel.canConfirmWithoutVerification)
     }
 
     @MainActor
-    func test_canProceedWithoutValidation_is_enabled_for_destination_addresses_when_validation_fails() async {
+    func test_canConfirmWithoutVerification_is_enabled_for_destination_addresses_when_validation_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
@@ -1491,7 +1491,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         stores: stores)
 
         // Initial state
-        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+        XCTAssertFalse(viewModel.canConfirmWithoutVerification)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .validateAddress(_, _, completion) = action {
@@ -1505,11 +1505,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         await viewModel.remotelyValidateAddress()
 
         // Then
-        XCTAssertTrue(viewModel.canProceedWithoutValidation)
+        XCTAssertTrue(viewModel.canConfirmWithoutVerification)
     }
 
     @MainActor
-    func test_canProceedWithoutValidation_remains_false_for_origin_addresses_even_when_validation_fails() async {
+    func test_canConfirmWithoutVerification_remains_false_for_origin_addresses_even_when_validation_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(type: .origin,
@@ -1529,7 +1529,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         stores: stores)
 
         // Initial state
-        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+        XCTAssertFalse(viewModel.canConfirmWithoutVerification)
 
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .validateAddress(_, _, completion) = action {
@@ -1543,11 +1543,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         await viewModel.remotelyValidateAddress()
 
         // Then
-        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+        XCTAssertFalse(viewModel.canConfirmWithoutVerification)
     }
 
     @MainActor
-    func test_canProceedWithoutValidation_resets_to_false_when_address_fields_change() async {
+    func test_canConfirmWithoutVerification_resets_to_false_when_address_fields_change() async {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
@@ -1566,7 +1566,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         isVerified: false,
                                                         stores: stores)
 
-        // Given canProceedWithoutValidation is enabled through validation failure
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             if case let .validateAddress(_, _, completion) = action {
                 completion(.failure(WooShippingAddressValidationError(addressError: "House number is missing",
@@ -1576,13 +1575,13 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         }
 
         await viewModel.remotelyValidateAddress()
-        XCTAssertTrue(viewModel.canProceedWithoutValidation)
+        XCTAssertTrue(viewModel.canConfirmWithoutVerification)
 
         // When any field value changes
         viewModel.name.value = "JANE DOE"
 
         // Then
-        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+        XCTAssertFalse(viewModel.canConfirmWithoutVerification)
     }
 }
 

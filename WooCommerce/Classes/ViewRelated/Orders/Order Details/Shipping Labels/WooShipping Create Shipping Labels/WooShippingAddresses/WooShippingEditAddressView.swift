@@ -225,7 +225,7 @@ struct WooShippingEditAddressView: View {
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
                                                        actionType == .validateOrConfirm))
                 .disabled(viewModel.status == .missingInformation)
-                .renderedIf(!viewModel.canProceedWithoutValidation)
+                .renderedIf(!viewModel.canConfirmWithoutVerification)
 
                 Button(Localization.useAddressAsEntered) {
                     actionType = .proceedWithoutValidation
@@ -233,7 +233,7 @@ struct WooShippingEditAddressView: View {
                 }
                 .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
                                                          actionType == .proceedWithoutValidation))
-                .renderedIf(viewModel.canProceedWithoutValidation)
+                .renderedIf(viewModel.canConfirmWithoutVerification)
             }
             .padding(isScrollViewEmbedded ? .vertical : .all)
         }

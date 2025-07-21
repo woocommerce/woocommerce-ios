@@ -357,7 +357,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                                          address2: "",
                                          city: city.value,
                                          postcode: postalCode.value)
-        updateConfirmedAddress(address)
+        updateConfirmedAddress(address, proceedingWithoutValidation: true)
     }
 
     /// Validates the address remotely.
@@ -418,14 +418,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// Update confirmed address remotely.
-    func updateConfirmedAddress(_ address: WooShippingAddress) {
+    func updateConfirmedAddress(_ address: WooShippingAddress, proceedingWithoutValidation: Bool = false) {
         switch addressType {
         case .origin:
             updateConfirmedOriginAddress(address)
         case .destination(let orderID):
             updateConfirmedDestinationAddress(
                 for: orderID,
-                with: address
+                with: address,
+                proceedingWithoutValidation: Bool
             )
         }
     }
@@ -474,7 +475,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Updates the destination address remotely with the provided (normalized) address and other edits.
     private func updateConfirmedDestinationAddress(for orderID: Int64,
-                                                   with address: WooShippingAddress) {
+                                                   with address: WooShippingAddress,
+                                                   proceedingWithoutValidation: Bool) {
         // Merge the provided (normalized) address with the edited address fields.
         let destinationAddress = WooShippingDestinationAddress(company: address.company,
                                                     address1: address.address1,
@@ -494,7 +496,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
                                                                                    with: destinationAddress)
                 onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
-                analytics.track(event: .WooShipping.editingAddressStep(type: .destination, state: .confirmed))
+                analytics.track(event: .WooShipping.editingAddressStep(
+                    type: .destination,
+                    state: proceedingWithoutValidation ? .proceedWithoutValidation : .confirmed
+                ))
             } catch {
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
 
@@ -503,7 +508,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
-                    state: .confirmed,
+                    state: proceedingWithoutValidation ? .proceedWithoutValidation : .confirmed,
                     error: error
                 ))
             }

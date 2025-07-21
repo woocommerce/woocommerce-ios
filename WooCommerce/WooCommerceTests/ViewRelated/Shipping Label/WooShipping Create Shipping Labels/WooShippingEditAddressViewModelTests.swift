@@ -1446,6 +1446,144 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.address.errorMessage, expectedAddressError)
         XCTAssertEqual(viewModel.statusLabel, expectedGeneralError)
     }
+
+    // MARK: - canProceedWithoutValidation Tests
+
+    func test_canProceedWithoutValidation_is_false_initially() {
+        // Given & When
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false)
+
+        // Then
+        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+    }
+
+    @MainActor
+    func test_canProceedWithoutValidation_is_enabled_for_destination_addresses_when_validation_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        // Initial state
+        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(WooShippingAddressValidationError(addressError: "House number is missing",
+                                                                      generalError: "Address not found",
+                                                                      nameError: nil)))
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertTrue(viewModel.canProceedWithoutValidation)
+    }
+
+    @MainActor
+    func test_canProceedWithoutValidation_remains_false_for_origin_addresses_even_when_validation_fails() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .origin,
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: true,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        // Initial state
+        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(WooShippingAddressValidationError(addressError: "House number is missing",
+                                                                      generalError: "Address not found",
+                                                                      nameError: nil)))
+            }
+        }
+
+        // When
+        await viewModel.remotelyValidateAddress()
+
+        // Then
+        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+    }
+
+    @MainActor
+    func test_canProceedWithoutValidation_resets_to_false_when_address_fields_change() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "",
+                                                        company: "",
+                                                        country: "US",
+                                                        address: "ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        // Given canProceedWithoutValidation is enabled through validation failure
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .validateAddress(_, _, completion) = action {
+                completion(.failure(WooShippingAddressValidationError(addressError: "House number is missing",
+                                                                      generalError: "Address not found",
+                                                                      nameError: "Either Name or Company is required")))
+            }
+        }
+
+        await viewModel.remotelyValidateAddress()
+        XCTAssertTrue(viewModel.canProceedWithoutValidation)
+
+        // When any field value changes
+        viewModel.name.value = "JANE DOE"
+
+        // Then
+        XCTAssertFalse(viewModel.canProceedWithoutValidation)
+    }
 }
 
 private extension WooShippingEditAddressViewModel {

@@ -58,14 +58,16 @@ struct PointOfSaleInformationModalParagraphView<Content: View>: View {
 
     let content: Content
     let style: Style
+    let spacing: CGFloat
 
-    init(style: Style = .default, @ViewBuilder content: () -> Content) {
+    init(style: Style = .default, spacing: CGFloat = POSSpacing.small, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.style = style
+        self.spacing = spacing
     }
 
     var body: some View {
-        VStack(alignment: style == .default ? .leading : .center) {
+        VStack(alignment: style == .default ? .leading : .center, spacing: spacing) {
             content
         }
         .if(style == .default, transform: { view in

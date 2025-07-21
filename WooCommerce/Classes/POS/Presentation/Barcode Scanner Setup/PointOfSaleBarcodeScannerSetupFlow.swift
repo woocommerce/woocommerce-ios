@@ -7,16 +7,19 @@ import WooFoundation
 class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: PointOfSaleBarcodeScannerType
     private let onBackToSelection: () -> Void
+    fileprivate let onDismiss: () -> Void
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
     private var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
     private let analytics: Analytics
 
     init(scannerType: PointOfSaleBarcodeScannerType,
          analytics: Analytics = ServiceLocator.analytics,
-         onBackToSelection: @escaping () -> Void) {
+         onBackToSelection: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
         self.scannerType = scannerType
         self.analytics = analytics
         self.onBackToSelection = onBackToSelection
+        self.onDismiss = onDismiss
         self.flowSteps = createFlowSteps(for: scannerType)
         self.currentStepKey = initialStep(for: scannerType)
     }
@@ -132,7 +135,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .testScanTimedOut: testScanTimeOutStep(barcode: .ean13),
                 .testScanFailed: testScanFailedStep(),
                 .complete: setupCompleteStep(),
-                .setupInformation: setupInformationStep()
+                .setupProducts: setupProductsStep()
             ]
         case .tera12002D:
             return [
@@ -172,19 +175,19 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .testScanTimedOut: testScanTimeOutStep(barcode: .ean13),
                 .testScanFailed: testScanFailedStep(),
                 .complete: setupCompleteStep(),
-                .setupInformation: setupInformationStep()
+                .setupProducts: setupProductsStep()
             ]
         case .other:
             return [
                 .setupInformation: PointOfSaleBarcodeScannerSetupStep(
                     content: { BarcodeScannerInformation() },
-                    transitions: [.next: .setupProducts]
+                    transitions: [.next: .test]
                 ),
-                .setupProducts: PointOfSaleBarcodeScannerSetupStep(
-                    content: { ProductBarcodeSetupInformation() },
-                    buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
-                    transitions: [.back: .setupInformation]
-                )
+                .test: testScanStep(barcode: .ean13, transitions: [.back: .setupInformation]),
+                .testScanTimedOut: testScanTimeOutStep(barcode: .ean13, transitions: [.back: .setupInformation]),
+                .testScanFailed: testScanFailedStep(),
+                .complete: setupCompleteStep(),
+                .setupProducts: setupProductsStep()
             ]
         }
     }
@@ -212,7 +215,11 @@ class PointOfSaleBarcodeScannerSetupFlow {
 
     // MARK: - Steps
 
-    private func testScanStep(barcode: PointOfSaleBarcodeScannerTestBarcode, timerCompleted: Bool = false) -> PointOfSaleBarcodeScannerSetupStep {
+    private func testScanStep(
+        barcode: PointOfSaleBarcodeScannerTestBarcode,
+        transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [.back: .pairing],
+        timerCompleted: Bool = false
+    ) -> PointOfSaleBarcodeScannerSetupStep {
         PointOfSaleBarcodeScannerSetupStep(
             content: {
                 PointOfSaleBarcodeScannerTestBarcodeView(
@@ -234,14 +241,15 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 )
             },
             buttonCustomization: PointOfSaleBarcodeScannerBackOnlyButtonCustomization(),
-            transitions: [
-                .back: .pairing
-            ]
+            transitions: transitions
         )
     }
 
-    private func testScanTimeOutStep(barcode: PointOfSaleBarcodeScannerTestBarcode) -> PointOfSaleBarcodeScannerSetupStep {
-        testScanStep(barcode: barcode, timerCompleted: true)
+    private func testScanTimeOutStep(
+        barcode: PointOfSaleBarcodeScannerTestBarcode,
+        transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [.back: .pairing]
+    ) -> PointOfSaleBarcodeScannerSetupStep {
+        testScanStep(barcode: barcode, transitions: transitions, timerCompleted: true)
     }
 
     private func testScanFailedStep() -> PointOfSaleBarcodeScannerSetupStep {
@@ -264,14 +272,17 @@ class PointOfSaleBarcodeScannerSetupFlow {
             },
             buttonCustomization: PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization(),
             transitions: [
-                .next: .setupInformation,
+                .next: .setupProducts
             ])
     }
 
-    private func setupInformationStep() -> PointOfSaleBarcodeScannerSetupStep {
+    private func setupProductsStep() -> PointOfSaleBarcodeScannerSetupStep {
         PointOfSaleBarcodeScannerSetupStep(
             content: { ProductBarcodeSetupInformation() },
-            buttonCustomization: PointOfSaleBarcodeScannerNoButtonsButtonCustomization()
+            buttonCustomization: PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomization(),
+            transitions: [
+                .back: .complete
+            ]
         )
     }
 }
@@ -344,6 +355,22 @@ struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: P
 }
 
 @available(iOS 17.0, *)
+struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
+    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
+        return PointOfSaleFlowButtonConfiguration(
+            primaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: PointOfSaleBarcodeScannerSetupFlow.Localization.doneButtonTitle,
+                action: { flow.onDismiss() }
+            ),
+            secondaryButton: PointOfSaleFlowButtonConfiguration.ButtonConfig(
+                title: PointOfSaleBarcodeScannerSetupFlow.Localization.backButtonTitle,
+                action: { flow.transition(to: .back) }
+            )
+        )
+    }
+}
+
+@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerNoButtonsButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration.noButtons()
@@ -397,6 +424,13 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             value: "Back",
             comment: "Title for the back button in barcode scanner setup navigation"
         )
+
+        static let doneButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.done.button.title",
+            value: "Done",
+            comment: "Title for the done button in barcode scanner setup navigation"
+        )
+
         //TODO: WOOMOB-792
         static let scannerSetUpBarcodeStepTitleFormat = "Scanner Setup"
         static let setUpBarcodeHIDStepInstruction = "Scan the Bluetooth HID symbol."

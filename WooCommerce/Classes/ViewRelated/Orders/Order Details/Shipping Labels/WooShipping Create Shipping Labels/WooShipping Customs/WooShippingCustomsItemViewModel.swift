@@ -144,7 +144,7 @@ private extension WooShippingCustomsItemViewModel {
 /// Follows validation logic from `woocommerce-shipping/client/utils/customs.ts`
 enum HSTariffNumberValidator {
     static let pattern = "^(\\d{1,2}\\.?){3,6}$"
-    
+
     /// Check if the HS Tariff Number is valid.
     /// It should be a string of 6 to 12 digits, with optional dots in between every 2 digits.
     /// - Parameter tariffNumber: The tariff number string.
@@ -168,5 +168,13 @@ enum HSTariffNumberValidator {
         ).joined()
         let count = digitsOnly.count
         return count >= 6 && count <= 12
+    }
+
+    /// Sanitize the HS Tariff Number
+    /// Remove all non-digit characters
+    /// - Parameter tariffNumber: The tariff number string.
+    /// - Returns: Tariff string without non-digit characters
+    static func sanitize(_ tariffNumber: String) -> String {
+        return tariffNumber.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
     }
 }

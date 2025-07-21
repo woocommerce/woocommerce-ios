@@ -1561,6 +1561,8 @@ final class StorageTypeExtensionsTests: XCTestCase {
         let validPluginPaths = [
             "woocommerce.php",
             "woocommerce.swift",
+            "./woocommerce.swift",
+            ".././woocommerce.swift",
             "woocommerce/woocommerce.php",
             "woocommerce/woocommerce.swift",
             "test-plugin/test-plugin/woocommerce.php",

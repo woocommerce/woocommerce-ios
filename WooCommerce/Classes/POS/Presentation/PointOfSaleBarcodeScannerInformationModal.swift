@@ -60,7 +60,7 @@ struct LegacyBarcodeScannerInformationContent: View {
 
 struct BarcodeScannerInformation: View {
     var body: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: POSSpacing.xLarge) {
             Text(Localization.scannerInfoHeading)
                 .font(.posHeadingBold)
                 .accessibilityAddTraits(.isHeader)
@@ -94,16 +94,17 @@ struct BarcodeScannerInformation: View {
 @available(iOS 17.0, *)
 struct ProductBarcodeSetupInformation: View {
     var body: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: POSSpacing.xLarge) {
             Text(Localization.productBarcodeInfoHeading)
                 .font(.posHeadingBold)
                 .accessibilityAddTraits(.isHeader)
 
-            VStack(spacing: POSSpacing.medium) {
-                PointOfSaleInformationModalParagraphView {
-                    Text(bulletPointWithLink)
-                        .accessibilityLabel(bulletPointWithLinkAccessibilityLabel)
-                }
+            PointOfSaleInformationModalParagraphView(spacing: POSSpacing.medium) {
+                Text(productSetupTextWithLink)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityLabel(Localization.productBarcodeSetupMessageAccessible)
+                    .multilineTextAlignment(.center)
             }
 
             Image(decorative: PointOfSaleAssets.barcodeFieldScreenshot.imageName)
@@ -115,18 +116,23 @@ struct ProductBarcodeSetupInformation: View {
         })
     }
 
-    private var bulletPointWithLink: AttributedString {
-        var secondary = AttributedString(Localization.legacyBarcodeInfoPrimaryMessage + " ")
-        var moreDetails = AttributedString(Localization.legacyBarcodeInfoMoreDetailsLink)
-        moreDetails.link = Constants.detailsLink
-        moreDetails.foregroundColor = .posPrimary
-        moreDetails.underlineStyle = .single
-        secondary.append(moreDetails)
-        return secondary
-    }
+    private var productSetupTextWithLink: AttributedString {
+        let mainContent = Localization.productBarcodeSetupMessage
+        let linkText = Localization.productBarcodeSetupLinkText
+        let link = Constants.detailsLink?.absoluteString ?? ""
 
-    private var bulletPointWithLinkAccessibilityLabel: String {
-        return Localization.legacyBarcodeInfoPrimaryMessageAccessible + " " + Localization.legacyBarcodeInfoMoreDetailsLinkAccessible
+        let content = String.localizedStringWithFormat(mainContent, linkText)
+        var attributedText = AttributedString(content)
+
+        if let range = attributedText.range(of: linkText),
+           let url = URL(string: link) {
+            var linkContainer = AttributeContainer()
+                .link(url)
+                .foregroundColor(Color.posPrimary)
+            linkContainer.underlineStyle = .single
+            attributedText[range].mergeAttributes(linkContainer)
+        }
+        return attributedText
     }
 }
 
@@ -244,6 +250,24 @@ private enum Localization {
         "pos.barcodeInfoModal.new.searchMessage.accessible",
         value: "Third: Ensure the search field is not enabled while scanning barcodes.",
         comment: "Accessible version of search message without bullet character for screen readers"
+    )
+
+    static let productBarcodeSetupMessage = NSLocalizedString(
+        "pos.barcodeInfoModal.productSetup.message",
+        value: "You can set up barcodes in the GTIN, UPC, EAN, ISBN field in the product's inventory tab. " +
+        "For more details %1$@.",
+        comment: "Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation."
+    )
+    static let productBarcodeSetupLinkText = NSLocalizedString(
+        "pos.barcodeInfoModal.productSetup.linkText",
+        value: "visit the documentation",
+        comment: "Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message."
+    )
+    static let productBarcodeSetupMessageAccessible = NSLocalizedString(
+        "pos.barcodeInfoModal.productSetup.message.accessible",
+        value: "You can set up barcodes in the G-T-I-N, U-P-C, E-A-N, I-S-B-N field in the product's inventory tab. " +
+        "For more details visit the documentation, link.",
+        comment: "Accessible version of product setup message, announcing link for screen readers"
     )
 }
 

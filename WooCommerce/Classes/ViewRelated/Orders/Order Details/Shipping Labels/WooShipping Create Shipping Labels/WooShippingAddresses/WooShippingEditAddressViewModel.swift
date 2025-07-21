@@ -86,12 +86,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
         let isRemotelyVerified = originalAddressIsVerified && !hasChanges
-        switch (isRemotelyVerified, isValid) {
-        case (true, true): // Is a valid, remotely verified address.
+        switch (isRemotelyVerified, isValid, canConfirmWithoutVerification) {
+        case (true, true, _): // Is a valid, remotely verified address.
             return .verified
-        case (false, true): // Is a valid, unverified address.
+        case (false, true, _): // Is a valid, unverified address.
             return .unverified
-        case (_, false): // Is an invalid address.
+        case (_, false, true): // Validation fails but user can proceed.
+            return .unverified
+        case (_, false, false): // Is an invalid address.
             return .missingInformation
         }
     }

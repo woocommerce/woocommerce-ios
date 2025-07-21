@@ -1506,6 +1506,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.canConfirmWithoutVerification)
+        XCTAssertEqual(viewModel.status, .unverified)
     }
 
     @MainActor
@@ -1544,6 +1545,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.canConfirmWithoutVerification)
+        XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
     @MainActor
@@ -1582,6 +1584,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.canConfirmWithoutVerification)
+        XCTAssertEqual(viewModel.status, .unverified)
     }
 }
 

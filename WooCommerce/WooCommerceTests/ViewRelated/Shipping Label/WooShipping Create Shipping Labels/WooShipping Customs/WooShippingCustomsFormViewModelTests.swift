@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import Combine
 @testable import WooCommerce
 
 final class WooShippingCustomsFormViewModelTests: XCTestCase {
@@ -331,6 +332,67 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertEqual(firstItemViewModel?.description, firstItem?.name)
         XCTAssertEqual(firstItemViewModel?.valuePerUnit, String(firstItem?.value ?? 0))
         XCTAssertEqual(firstItemViewModel?.weightPerUnit, String(firstItem?.weight ?? 0))
+    }
+
+    func test_requiredInformationIsEntered_when_weight_is_zero_then_returns_false() {
+        // Given
+        let storageManager = MockStorageManager()
+        let originCountryCodeSubject = PassthroughSubject<String?, Never>()
+
+        let country = Country(
+            code: "US",
+            name: "United States",
+            states: []
+        )
+        storageManager.insertSampleCountries(readOnlyCountries: [country])
+
+        let itemWithZeroWeight = ShippingLabelPackageItem(
+            productOrVariationID: 1,
+            orderItemID: 123,
+            name: "Shirt",
+            weight: 0,
+            quantity: 1,
+            value: 10,
+            dimensions: .fake(),
+            attributes: [],
+            imageURL: nil
+        )
+
+        let shipment = Shipment(
+            contents: [
+                CollapsibleShipmentItemCardViewModel(
+                    item: itemWithZeroWeight,
+                    currency: "USD"
+                )
+            ],
+            currency: "USD",
+            currencySettings: ServiceLocator.currencySettings,
+            shippingSettingsService: ServiceLocator.shippingSettingsService
+        )
+
+        viewModel = WooShippingCustomsFormViewModel(
+            order: .fake(),
+            shipment: shipment,
+            originCountryCode: originCountryCodeSubject.eraseToAnyPublisher(),
+            storageManager: storageManager,
+            onFormReady: { _ in }
+        )
+
+        let itemViewModel = viewModel.itemsViewModels[0]
+        itemViewModel.description = "Test Description"
+        itemViewModel.valuePerUnit = "10.0"
+
+        // When
+        originCountryCodeSubject.send("US")
+
+        // Then
+        XCTAssertFalse(
+            viewModel.requiredInformationIsEntered,
+            "requiredInformationIsEntered should be false when an item's weight is zero"
+        )
+        XCTAssertTrue(itemViewModel.weightPerUnit.isEmpty)
+        XCTAssertFalse(itemViewModel.isValidWeight)
+        XCTAssertFalse(itemViewModel.requiredInformationIsEntered)
     }
 }
 

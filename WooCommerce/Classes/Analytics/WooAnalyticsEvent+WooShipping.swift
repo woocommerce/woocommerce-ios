@@ -18,7 +18,7 @@ extension WooAnalyticsEvent {
             case validationFailed = "validation_failed"
             case validationSuccess = "validation_success"
             case confirmed
-            case proceedWithoutValidation = "proceed_without_validation"
+            case confirmedWithoutVerification = "confirmed_without_verification"
         }
 
         enum PackageSelectionStep: String {

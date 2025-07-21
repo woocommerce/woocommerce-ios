@@ -49,17 +49,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     }
 
     var isValidTariffNumber: Bool {
-        guard hsTariffNumber.isNotEmpty else {
-            return true
-        }
-
-        // Check if the string contains only digits
-        let digitsOnly = CharacterSet.decimalDigits.isSuperset(of: CharacterSet(charactersIn: hsTariffNumber))
-        guard digitsOnly else { return false }
-
-        // Check the length of the string
-        let length = hsTariffNumber.count
-        return length >= 6 && length <= 12
+        return HSTariffNumberValidator.isNumberValid(hsTariffNumber)
     }
 
     @Published var requiredInformationIsEntered: Bool = false
@@ -148,5 +138,35 @@ private extension WooShippingCustomsItemViewModel {
                 self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * itemQuantity)
             }
             .store(in: &cancellables)
+    }
+}
+
+/// Follows validation logic from `woocommerce-shipping/client/utils/customs.ts`
+enum HSTariffNumberValidator {
+    static let pattern = "^(\\d{1,2}\\.?){3,6}$"
+    
+    /// Check if the HS Tariff Number is valid.
+    /// It should be a string of 6 to 12 digits, with optional dots in between every 2 digits.
+    /// - Parameter tariffNumber: The tariff number string.
+    /// - Returns: `Bool` if tariff number valid or not.
+    static func isNumberValid(_ tariffNumber: String) -> Bool {
+        if tariffNumber.isEmpty {
+            return true
+        }
+
+        let patternRange = tariffNumber.range(
+            of: pattern,
+            options: .regularExpression
+        )
+
+        if patternRange == nil {
+            return false
+        }
+
+        let digitsOnly = tariffNumber.components(
+            separatedBy: CharacterSet.decimalDigits.inverted
+        ).joined()
+        let count = digitsOnly.count
+        return count >= 6 && count <= 12
     }
 }

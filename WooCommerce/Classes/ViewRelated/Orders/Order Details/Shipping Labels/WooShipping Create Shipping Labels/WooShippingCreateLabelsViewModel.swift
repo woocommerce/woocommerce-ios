@@ -229,6 +229,18 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return ResultsController<StorageWooShippingOriginAddress>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(
+            storageManager: storageManager,
+            matching: predicate,
+            fetchLimit: 1,
+            sortedBy: []
+        )
+    }()
+
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
          preselection: WooShippingCreateLabelSelection? = nil,
@@ -250,6 +262,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.storageManager = storageManager
         self.analytics = analytics
         self.shippingSettingsService = shippingSettingsService
+        self.weightUnit = shippingSettingsService.weightUnit ?? ""
+        self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
         self.initialNoticeDelay = initialNoticeDelay
         self.isOrderCompleted = order.status == .completed
 
@@ -277,6 +291,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         observePaymentMethod()
         configureShipmentResultsController()
         configureOriginAddressResultsController()
+        configureAccountSettingsResultsController()
 
         Task { @MainActor in
             await loadRequiredData()
@@ -301,10 +316,14 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     func loadRequiredData() async {
         state = .loading
         await withTaskGroup(of: Void.self) { group in
+            /// Only load store options synchronously if no settings have been saved in storage yet.
             if isMissingStoreSettings {
                 group.addTask {
                     await self.loadStoreOptions()
                 }
+            } else {
+                /// load asynchronously to update the local storage and unblock UI
+                stores.dispatch(WooShippingAction.loadAccountSettings(siteID: order.siteID, completion: { _ in }))
             }
 
             /// Only load origin addresses synchronously if no addresses have been saved in storage yet.
@@ -432,12 +451,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
-        markOrderComplete = settings?.accountSettings.lastOrderCompleted ?? false
-
-        if let accountSettings = settings?.accountSettings {
-            paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
-        }
-        setupPaymentMethod(accountSettings: settings?.accountSettings)
+        updateAccountSettings(accountSettings: settings?.accountSettings)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
@@ -712,6 +726,39 @@ private extension WooShippingCreateLabelsViewModel {
         originAddresses.onSelect = { [weak self] selectedAddress in
             self?.selectedOriginAddress = selectedAddress
         }
+    }
+
+    /// Shipping Label Account Settings ResultsController monitoring
+    ///
+    func configureAccountSettingsResultsController() {
+        let updateSettings = { [weak self] in
+            guard let self else { return }
+            let settings = accountSettingsResultsController.fetchedObjects.first
+            updateAccountSettings(accountSettings: settings)
+        }
+        accountSettingsResultsController.onDidChangeContent = {
+            updateSettings()
+        }
+
+        accountSettingsResultsController.onDidResetContent = {
+            updateSettings()
+        }
+
+        do {
+            try accountSettingsResultsController.performFetch()
+            updateSettings()
+        } catch {
+            DDLogError("⛔️ Unable to fetch woo shipping account settings: \(error)")
+        }
+    }
+
+    func updateAccountSettings(accountSettings: ShippingLabelAccountSettings?) {
+        markOrderComplete = accountSettings?.lastOrderCompleted ?? false
+
+        if let accountSettings {
+            paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+        }
+        setupPaymentMethod(accountSettings: accountSettings)
     }
 }
 

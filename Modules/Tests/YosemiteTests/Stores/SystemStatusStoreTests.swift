@@ -79,8 +79,8 @@ final class SystemStatusStoreTests: XCTestCase {
 
     func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {
         // Given
-        let staleSystemPluginName = "Stale System Plugin"
-        let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, name: staleSystemPluginName)
+        let staleSystemPluginPath = "folder/stale-plugin.php"
+        let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, plugin: staleSystemPluginPath)
         let storedStaleSystemPlugin = viewStorage.insertNewObject(ofType: StorageSystemPlugin.self)
         storedStaleSystemPlugin.update(with: staleSystemPlugin)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 1)
@@ -98,7 +98,7 @@ final class SystemStatusStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
-        XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, name: staleSystemPluginName))
+        XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "stale-plugin"))
     }
 
     func test_fetchSystemPlugins_return_systemPlugins_correctly() {

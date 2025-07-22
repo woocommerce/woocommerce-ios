@@ -15,14 +15,14 @@ struct PluginsServiceTests {
     @Test func waitForPluginInStorage_returns_plugin_when_already_in_storage() async {
         // Given
         await storageManager.reset()
-        storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "1.0.0")
+        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "1.0.0")
 
         // When
-        let result = await sut.waitForPluginInStorage(siteID: siteID, pluginPath: PluginConstants.plugin, isActive: true)
+        let result = await sut.waitForPluginInStorage(siteID: siteID, pluginPath: "woocommerce/woocommerce.php", isActive: true)
 
         // Then
         #expect(result.siteID == siteID)
-        #expect(result.plugin == PluginConstants.plugin)
+        #expect(result.plugin == "woocommerce/woocommerce.php")
         #expect(result.active == true)
         #expect(result.version == "1.0.0")
     }
@@ -33,31 +33,103 @@ struct PluginsServiceTests {
         await storageManager.reset()
 
         // When
-        async let plugin = sut.waitForPluginInStorage(siteID: siteID, pluginPath: PluginConstants.plugin, isActive: true)
+        async let plugin = sut.waitForPluginInStorage(siteID: siteID, pluginPath: "woocommerce/woocommerce.php", isActive: true)
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 0)
-        storageManager.insertWCPlugin(siteID: siteID, isActive: true, version: "2.0.0")
+        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "2.0.0")
         #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 1)
 
         // Then
         let result = await plugin
         #expect(result.siteID == siteID)
-        #expect(result.plugin == PluginConstants.plugin)
-        #expect(result.name == PluginConstants.pluginName)
+        #expect(result.plugin == "woocommerce/woocommerce.php")
         #expect(result.active == true)
         #expect(result.version == "2.0.0")
+    }
+
+    // MARK: - `loadPluginInStorage`
+
+    @Test(arguments: [(Plugin.wooCommerce, true, "1.5.0"),
+                      (Plugin.wooCommerce, false, "2.1.0"),
+                      (Plugin.wooSubscriptions, true, "3.0.0"),
+                      (Plugin.wooShipmentTracking, false, "3.0.0")])
+    func loadPluginInStorage_returns_plugin_when_exists_in_storage(plugin: Plugin, isActive: Bool, version: String) async throws {
+        // Given
+        await storageManager.reset()
+        storageManager.insertPlugin(siteID: siteID, plugin: plugin, isActive: isActive, version: version)
+
+        // When
+        let result = sut.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: isActive)
+
+        // Then
+        let unwrappedResult = try #require(result)
+        #expect(unwrappedResult.siteID == siteID)
+        #expect(unwrappedResult.plugin == plugin.pluginPath)
+        #expect(unwrappedResult.active == isActive)
+        #expect(unwrappedResult.version == version)
+    }
+
+    @Test func loadPluginInStorage_returns_plugin_when_exists_in_storage_with_any_active_state() async throws {
+        // Given
+        await storageManager.reset()
+        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "3.0.0")
+
+        // When
+        let result = sut.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: nil)
+
+        // Then
+        let unwrappedResult = try #require(result)
+        #expect(unwrappedResult.siteID == siteID)
+        #expect(unwrappedResult.plugin == "woocommerce/woocommerce.php")
+        #expect(unwrappedResult.active == true)
+        #expect(unwrappedResult.version == "3.0.0")
+    }
+
+    @Test func loadPluginInStorage_returns_nil_when_plugin_does_not_exist() async {
+        // Given
+        await storageManager.reset()
+
+        // When
+        let result = sut.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)
+
+        // Then
+        #expect(result == nil)
+    }
+
+    @Test func loadPluginInStorage_returns_nil_when_plugin_exists_but_active_state_does_not_match() async {
+        // Given
+        await storageManager.reset()
+        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "1.0.0")
+
+        // When
+        let result = sut.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: false)
+
+        // Then
+        #expect(result == nil)
+    }
+
+    @Test func loadPluginInStorage_returns_nil_when_plugin_exists_for_different_site() async {
+        // Given
+        await storageManager.reset()
+        let differentSiteID: Int64 = 999
+        storageManager.insertPlugin(siteID: differentSiteID, plugin: .wooCommerce, isActive: true, version: "1.0.0")
+
+        // When
+        let result = sut.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)
+
+        // Then
+        #expect(result == nil)
     }
 }
 
 private extension MockStorageManager {
-    func insertWCPlugin(siteID: Int64, isActive: Bool, version: String? = nil) {
+    func insertPlugin(siteID: Int64, plugin: Plugin, isActive: Bool, version: String? = nil) {
         performAndSave({ storage in
-            let plugin = SystemPlugin.fake().copy(siteID: siteID,
-                                                  plugin: PluginConstants.plugin,
-                                                  name: PluginConstants.pluginName,
-                                                  version: version,
-                                                  active: isActive)
+            let systemPlugin = SystemPlugin.fake().copy(siteID: siteID,
+                                                        plugin: plugin.pluginPath,
+                                                        version: version,
+                                                        active: isActive)
             let newPlugin = storage.insertNewObject(ofType: StorageSystemPlugin.self)
-            newPlugin.update(with: plugin)
+            newPlugin.update(with: systemPlugin)
         }, completion: nil, on: .main)
     }
 
@@ -70,8 +142,8 @@ private extension MockStorageManager {
     }
 }
 
-// MARK: - Constants
-private enum PluginConstants {
-    static let plugin = "example-plugin/example-plugin.php"
-    static let pluginName = "Example Plugin"
+extension Plugin {
+    var pluginPath: String {
+        "\(fileNameWithoutExtension)/\(fileNameWithoutExtension).php"
+    }
 }

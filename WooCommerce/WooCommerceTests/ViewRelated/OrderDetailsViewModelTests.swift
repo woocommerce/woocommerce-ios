@@ -520,41 +520,11 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 
-    func test_syncSubscriptions_loads_subscription_into_dataSource_with_legacy_plugin_name() throws {
-        // Given
-        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: "WooCommerce Subscriptions", active: true)
-        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
-
-        storesManager.reset()
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
-
-        // When
-        let subscriptionsCount: Int = waitFor { promise in
-
-            // Return the active WCExtensions plugin.
-            self.whenFetchingSystemPlugin(thenReturn: plugin)
-
-            // Return the synced subscription.
-            self.storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
-                switch action {
-                case .loadSubscriptions(_, let onCompletion):
-                    onCompletion(.success([Subscription.fake()]))
-                    promise(self.viewModel.dataSource.orderSubscriptions.count)
-                }
-            }
-
-            self.viewModel.syncSubscriptions()
-        }
-
-        // Then
-        XCTAssertEqual(subscriptionsCount, 1)
-    }
-
-    func test_syncSubscriptions_loads_subscription_into_dataSource_with_current_plugin_name() throws {
+    func test_syncSubscriptions_loads_subscription_into_dataSource() throws {
         // Given
 
         // Make sure the are plugins synced
-        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, name: "Woo Subscriptions", active: true)
+        let plugin = SystemPlugin.fake().copy(siteID: order.siteID, plugin: "woocommerce-subscriptions/woocommerce-subscriptions.php", active: true)
         storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
 
         storesManager.reset()
@@ -626,7 +596,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
         // When
-        let isEnabled = await viewModel.isShipmentTrackingEnabled()
+        let isEnabled = viewModel.isShipmentTrackingEnabled()
 
         // Then
         XCTAssertFalse(isEnabled)
@@ -640,11 +610,11 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
-        let plugin = insertSystemPlugin(name: SitePlugin.SupportedPlugin.WCTracking, siteID: order.siteID, isActive: true)
+        let plugin = insertSystemPlugin(path: "woocommerce-shipment-tracking/woocommerce-shipment-tracking.php", siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
-        let isEnabled = await viewModel.isShipmentTrackingEnabled()
+        let isEnabled = viewModel.isShipmentTrackingEnabled()
 
         // Then
         XCTAssertTrue(isEnabled)
@@ -735,13 +705,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
 }
 
 private extension OrderDetailsViewModelTests {
-    @discardableResult
-    func insertSystemPlugin(name: String, siteID: Int64, isActive: Bool, version: String? = nil) -> SystemPlugin {
-        let plugin = SystemPlugin.fake().copy(siteID: siteID, name: name, version: version, active: isActive)
-        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: plugin)
-        return plugin
-    }
-
     @discardableResult
     func insertSystemPlugin(path: String, siteID: Int64, isActive: Bool, version: String? = nil) -> SystemPlugin {
         let plugin = SystemPlugin.fake().copy(siteID: siteID, plugin: path, version: version, active: isActive)

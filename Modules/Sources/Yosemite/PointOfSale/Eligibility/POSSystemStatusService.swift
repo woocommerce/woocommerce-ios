@@ -54,7 +54,9 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         })
 
         // Loads WooCommerce plugin from storage.
-        guard let wcPlugin = storageManager.viewStorage.loadSystemPlugin(siteID: siteID, path: Constants.wcPluginPath, active: true)?.toReadOnly() else {
+        guard let wcPlugin = storageManager.viewStorage.loadSystemPlugin(siteID: siteID,
+                                                                         fileNameWithoutExtension: Constants.wcPluginFileNameWithoutExtension,
+                                                                         active: true)?.toReadOnly() else {
             return POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil)
         }
 
@@ -66,7 +68,7 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
 
 private extension POSSystemStatusService {
     enum Constants {
-        static let wcPluginPath = "woocommerce/woocommerce.php"
+        static let wcPluginFileNameWithoutExtension = "woocommerce"
     }
 }
 

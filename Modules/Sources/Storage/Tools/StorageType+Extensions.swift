@@ -855,6 +855,24 @@ public extension StorageType {
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 
+    /// Returns a system plugin with a specified `siteID` and `fileNameWithoutExtension`.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site ID to filter by.
+    ///   - fileNameWithoutExtension: The plugin file name to match without extension (e.g., "woocommerce", "woocommerce-payments").
+    ///   - active: Optional active state filter. If provided, only plugins with matching active state are returned. If nil, active state is ignored.
+    /// - Returns: The matching system plugin, or nil if not found.
+    func loadSystemPlugin(siteID: Int64, fileNameWithoutExtension: String, active: Bool? = nil) -> SystemPlugin? {
+        let escapedFileName = NSRegularExpression.escapedPattern(for: fileNameWithoutExtension)
+        let regexPattern = "(.*/)?\(escapedFileName)\\.[^/]+$"
+        let predicate = if let active {
+            NSPredicate(format: "siteID == %lld AND plugin MATCHES %@ AND active == %@", siteID, regexPattern, NSNumber(value: active))
+        } else {
+            NSPredicate(format: "siteID == %lld AND plugin MATCHES %@", siteID, regexPattern)
+        }
+        return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
     /// Returns stored system plugins for a provided `siteID` matching the given plugin `paths`.
     ///
     func loadSystemPlugins(siteID: Int64, matchingPaths paths: [String]) -> [SystemPlugin] {

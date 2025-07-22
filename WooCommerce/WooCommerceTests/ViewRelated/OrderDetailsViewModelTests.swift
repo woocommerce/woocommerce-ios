@@ -727,8 +727,6 @@ private extension OrderDetailsViewModelTests {
             switch action {
             case let .fetchSystemPlugin(_, _, onCompletion):
                 onCompletion(plugin)
-            case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
-                onCompletion(plugin)
             case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion):
                 if let path, path != pluginPath {
                     onCompletion(nil)

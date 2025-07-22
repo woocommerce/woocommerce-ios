@@ -370,13 +370,6 @@ struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomizatio
     }
 }
 
-@available(iOS 17.0, *)
-struct PointOfSaleBarcodeScannerNoButtonsButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
-    func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
-        return PointOfSaleFlowButtonConfiguration.noButtons()
-    }
-}
-
 // MARK: - Analytics
 
 @available(iOS 17.0, *)

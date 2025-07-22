@@ -1578,13 +1578,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         await viewModel.remotelyValidateAddress()
         XCTAssertTrue(viewModel.canConfirmWithoutVerification)
+        XCTAssertEqual(viewModel.status, .unverified)
 
         // When any field value changes
         viewModel.name.value = "JANE DOE"
 
         // Then
         XCTAssertFalse(viewModel.canConfirmWithoutVerification)
-        XCTAssertEqual(viewModel.status, .unverified)
+        XCTAssertEqual(viewModel.status, .missingInformation)
     }
 }
 

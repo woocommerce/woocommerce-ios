@@ -256,7 +256,8 @@ private enum Localization {
         "pos.barcodeInfoModal.productSetup.message",
         value: "You can set up barcodes in the GTIN, UPC, EAN, ISBN field in the product's inventory tab. " +
         "For more details %1$@.",
-        comment: "Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation."
+        comment: "Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. " +
+        "For example, visit the documentation."
     )
     static let productBarcodeSetupLinkText = NSLocalizedString(
         "pos.barcodeInfoModal.productSetup.linkText",

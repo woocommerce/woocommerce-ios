@@ -10,6 +10,7 @@ protocol ReceiptEligibilityUseCaseProtocol {
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
+    private let pluginsService: PluginsServiceProtocol
     private let featureFlagService: FeatureFlagService
 
     private var siteID: Int64 {
@@ -17,23 +18,23 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     }
 
     init(stores: StoresManager = ServiceLocator.stores,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.pluginsService = pluginsService
         self.featureFlagService = featureFlagService
     }
 
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-            // 1. WooCommerce must be installed and active
-            guard let wcPlugin = wcPlugin, wcPlugin.active else {
-                return onCompletion(false)
-            }
-            // 2. If WooCommerce version is higher than minimum required version, mark as eligible
-            let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                minimumRequired: Constants.BackendReceipt.wcPluginMinimumVersion)
-            onCompletion(isSupported)
+        let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)
+        // 1. WooCommerce must be installed and active
+        guard let wcPlugin, wcPlugin.active else {
+            return onCompletion(false)
         }
-        stores.dispatch(action)
+        // 2. If WooCommerce version is higher than minimum required version, mark as eligible
+        let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                            minimumRequired: Constants.BackendReceipt.wcPluginMinimumVersion)
+        onCompletion(isSupported)
     }
 
     /// Returns true if Point of Sale allows sending successful payment email receipts via the API.
@@ -41,7 +42,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     ///
     func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
+            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
                                                                  minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
             onCompletion(isWooCommerceSupported)
         }
@@ -52,7 +53,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     ///
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
+            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
                                                                  minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
             onCompletion(isWooCommerceSupported)
         }
@@ -66,16 +67,16 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     ///
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            async let wooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+            async let wooCommerceSupported = isPluginSupported(.wooCommerce,
                                                                minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
 
             async let gatewaySupported: Bool = {
                 switch paymentGatewayID {
                 case CardPresentPaymentsPlugin.wcPay.gatewayID:
-                    return await isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
+                    return await isPluginSupported(.wooPayments,
                                                    minimumVersion: Constants.ReceiptAfterPayment.wcPayPluginMinimumVersion)
                 case CardPresentPaymentsPlugin.stripe.gatewayID:
-                    return await isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
+                    return await isPluginSupported(.stripe,
                                                    minimumVersion: Constants.ReceiptAfterPayment.stripePluginMinimumVersion)
                 default:
                     return false
@@ -110,21 +111,17 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 
 private extension ReceiptEligibilityUseCase {
     @MainActor
-    func isPluginSupported(_ pluginName: String, minimumVersion: String) async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
-                // Plugin must be installed and active
-                guard let plugin, plugin.active else {
-                    return continuation.resume(returning: false)
-                }
-
-                // If plugin version is higher than minimum required version, mark as eligible
-                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
-                                                                    minimumRequired: minimumVersion)
-                continuation.resume(returning: isSupported)
-            }
-            stores.dispatch(action)
+    func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
+        // Plugin must be installed and active
+        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
+              systemPlugin.active else {
+            return false
         }
+
+        // If plugin version is higher than minimum required version, mark as eligible
+        let isSupported = VersionHelpers.isVersionSupported(version: systemPlugin.version,
+                                                            minimumRequired: minimumVersion)
+        return isSupported
     }
 
     // Returns the current payment gateway ID, needed when checking if a transaction is eligible for receipts
@@ -139,8 +136,6 @@ private extension ReceiptEligibilityUseCase {
 
 private extension ReceiptEligibilityUseCase {
     enum Constants {
-        static let wcPluginName = "WooCommerce"
-
         enum BackendReceipt {
             static let wcPluginMinimumVersion = "8.7.0"
         }

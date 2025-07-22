@@ -53,7 +53,8 @@ final class WooShippingOriginAddressListViewModel: ObservableObject {
 // MARK: SwiftUI Previews
 extension WooShippingOriginAddressListView {
     static func sampleAddresses() -> [WooShippingOriginAddress] {
-        [WooShippingOriginAddress(id: "1",
+        [WooShippingOriginAddress(siteID: 123,
+                                  id: "1",
                                   company: "HEADQUARTERS",
                                   address1: "417 MONTGOMERY ST",
                                   address2: "",
@@ -67,7 +68,8 @@ extension WooShippingOriginAddressListView {
                                   email: "",
                                   defaultAddress: true,
                                   isVerified: true),
-         WooShippingOriginAddress(id: "2",
+         WooShippingOriginAddress(siteID: 123,
+                                  id: "2",
                                   company: "WAREHOUSE",
                                   address1: "15 ALGONKIN ST",
                                   address2: "",

@@ -607,6 +607,13 @@ public extension StorageType {
         return allObjects(ofType: WooShippingShipment.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns all stored origin addresses for a site.
+    ///
+    func loadAllOriginAddresses(siteID: Int64) -> [WooShippingOriginAddress] {
+        let predicate = \WooShippingOriginAddress.siteID == siteID
+        return allObjects(ofType: WooShippingOriginAddress.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - BlazeCampaignListItem
 
     /// Returns a single BlazeCampaignListItem given a `siteID` and `campaignID`

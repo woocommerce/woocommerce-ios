@@ -67,7 +67,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let state = StateOfACountry(code: "NY", name: "New York")
         let countries = [Country(code: "US", name: "United States", states: [state]), Country(code: "CA", name: "Canada", states: [])]
         storageManager.insertSampleCountries(readOnlyCountries: countries)
-        let address = WooShippingOriginAddress(id: "default_address",
+        let address = WooShippingOriginAddress(siteID: 123,
+                                               id: "default_address",
                                                company: "HEADQUARTERS",
                                                address1: "15 ALGONKIN ST",
                                                address2: "STE 100",
@@ -964,7 +965,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         }
 
         // Then
-        let expectedAddress = WooShippingOriginAddress(id: originAddress.id,
+        let expectedAddress = WooShippingOriginAddress(siteID: 123,
+                                                       id: originAddress.id,
                                                        company: suggestedAddress.company,
                                                        address1: suggestedAddress.address1,
                                                        address2: suggestedAddress.address2,

@@ -823,6 +823,107 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    func test_loadOriginAddresses_persists_fetched_addresses_to_local_storage_on_success() {
+        // Given
+        let address1 = WooShippingOriginAddress(
+            siteID: sampleSiteID,
+            id: "address1",
+            company: "Company A",
+            address1: "123 Main St",
+            address2: "Suite 100",
+            city: "San Francisco",
+            state: "CA",
+            postcode: "94102",
+            country: "US",
+            phone: "555-0123",
+            firstName: "John",
+            lastName: "Doe",
+            email: "john@company.com",
+            defaultAddress: true,
+            isVerified: false
+        )
+        let address2 = WooShippingOriginAddress(
+            siteID: sampleSiteID,
+            id: "address2",
+            company: "Company B",
+            address1: "456 Oak Ave",
+            address2: "",
+            city: "Los Angeles",
+            state: "CA",
+            postcode: "90210",
+            country: "US",
+            phone: "555-0456",
+            firstName: "Jane",
+            lastName: "Smith",
+            email: "jane@companyb.com",
+            defaultAddress: false,
+            isVerified: true
+        )
+        let expectedAddresses = [address1, address2]
+
+        let remote = MockWooShippingRemote()
+        remote.whenOriginAddresses(siteID: sampleSiteID, thenReturn: .success(expectedAddresses))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Confidence check - no addresses in storage initially
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: StorageWooShippingOriginAddress.self), 0)
+
+        // When
+        let onSuccess: Bool = waitFor { promise in
+            let action = WooShippingAction.loadOriginAddresses(siteID: self.sampleSiteID) { result in
+                promise(result.isSuccess)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(onSuccess)
+
+        // Verify addresses are persisted to storage
+        let storedAddresses = storageManager.viewStorage.loadAllOriginAddresses(siteID: sampleSiteID)
+        XCTAssertEqual(storedAddresses.count, 2)
+
+        // Verify first address details
+        let storedAddress1 = storedAddresses.first { $0.id == "address1" }
+        XCTAssertNotNil(storedAddress1)
+        XCTAssertEqual(storedAddress1?.company, "Company A")
+        XCTAssertEqual(storedAddress1?.address1, "123 Main St")
+        XCTAssertEqual(storedAddress1?.address2, "Suite 100")
+        XCTAssertEqual(storedAddress1?.city, "San Francisco")
+        XCTAssertEqual(storedAddress1?.state, "CA")
+        XCTAssertEqual(storedAddress1?.postcode, "94102")
+        XCTAssertEqual(storedAddress1?.country, "US")
+        XCTAssertEqual(storedAddress1?.phone, "555-0123")
+        XCTAssertEqual(storedAddress1?.firstName, "John")
+        XCTAssertEqual(storedAddress1?.lastName, "Doe")
+        XCTAssertEqual(storedAddress1?.email, "john@company.com")
+        XCTAssertEqual(storedAddress1?.defaultAddress, true)
+        XCTAssertEqual(storedAddress1?.isVerified, false)
+
+        // Verify second address details
+        let storedAddress2 = storedAddresses.first { $0.id == "address2" }
+        XCTAssertNotNil(storedAddress2)
+        XCTAssertEqual(storedAddress2?.company, "Company B")
+        XCTAssertEqual(storedAddress2?.address1, "456 Oak Ave")
+        XCTAssertEqual(storedAddress2?.address2, "")
+        XCTAssertEqual(storedAddress2?.city, "Los Angeles")
+        XCTAssertEqual(storedAddress2?.state, "CA")
+        XCTAssertEqual(storedAddress2?.postcode, "90210")
+        XCTAssertEqual(storedAddress2?.country, "US")
+        XCTAssertEqual(storedAddress2?.phone, "555-0456")
+        XCTAssertEqual(storedAddress2?.firstName, "Jane")
+        XCTAssertEqual(storedAddress2?.lastName, "Smith")
+        XCTAssertEqual(storedAddress2?.email, "jane@companyb.com")
+        XCTAssertEqual(storedAddress2?.defaultAddress, false)
+        XCTAssertEqual(storedAddress2?.isVerified, true)
+
+        // Verify read-only conversion works correctly
+        let readOnlyAddresses = storedAddresses
+            .map { $0.toReadOnly() }
+            .sorted(by: { $0.id < $1.id })
+        XCTAssertEqual(readOnlyAddresses, expectedAddresses)
+    }
+
     // MARK: `validateAddress`
 
     func test_validateAddress_returns_WooShippingAddressValidationSuccess_on_success() throws {

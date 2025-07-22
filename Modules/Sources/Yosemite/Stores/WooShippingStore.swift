@@ -267,7 +267,17 @@ private extension WooShippingStore {
 
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[WooShippingOriginAddress], Error>) -> Void) {
-        remote.loadOriginAddresses(siteID: siteID, completion: completion)
+        remote.loadOriginAddresses(siteID: siteID, completion: { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let addresses):
+                upsertOriginAddressesInBackground(siteID: siteID, originAddresses: addresses) {
+                    completion(.success(addresses))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        })
     }
 
     func refundShippingLabel(shippingLabel: ShippingLabel,
@@ -654,6 +664,29 @@ private extension WooShippingStore {
         let predefinedPackage = storageSavedPackage.package ?? storage.insertNewObject(ofType: Storage.WooShippingPredefinedPackage.self)
         predefinedPackage.update(with: readOnlySavedPackage.package)
         storageSavedPackage.package = predefinedPackage
+    }
+
+    /// Updates the specified origin addresses with the given refund *in a background thread*.
+    /// `onCompletion` will be called on the main thread!
+    func upsertOriginAddressesInBackground(siteID: Int64,
+                                           originAddresses: [WooShippingOriginAddress],
+                                           onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            let storedOriginAddresses = storage.loadAllOriginAddresses(siteID: siteID)
+            for address in originAddresses {
+                let storageAddress = storedOriginAddresses.first(where: { $0.id == address.id }) ??
+                storage.insertNewObject(ofType: Storage.WooShippingOriginAddress.self)
+                storageAddress.update(with: address)
+            }
+
+            // Now, remove any objects that exist in storage but not in `originAddresses`
+            let addressIDs = originAddresses.map(\.id)
+            storedOriginAddresses.filter {
+                !addressIDs.contains($0.id)
+            }.forEach {
+                storage.deleteObject($0)
+            }
+        }, completion: onCompletion, on: .main)
     }
 
     /// Updates the specified shipping label with the given refund *in a background thread*.

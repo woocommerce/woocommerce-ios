@@ -1084,7 +1084,8 @@ private extension WooShippingRemoteTests {
     }
 
     func sampleOriginAddress() -> WooShippingOriginAddress {
-        WooShippingOriginAddress(id: "store_details",
+        WooShippingOriginAddress(siteID: sampleSiteID,
+                                 id: "store_details",
                                  company: "Superlative Centaur",
                                  address1: "60 29TH ST PMB 343",
                                  address2: "",

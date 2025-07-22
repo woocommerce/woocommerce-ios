@@ -3,6 +3,8 @@ import XCTest
 @testable import Networking
 import WooFoundation
 import Yosemite
+import protocol Storage.StorageManagerType
+import protocol Storage.StorageType
 
 final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     private let settings = WooShippingAccountSettings(storeOptions: ShippingLabelStoreOptions(currencySymbol: "$",
@@ -10,6 +12,24 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                               weightUnit: "g",
                                                                                               originCountry: "VN"),
                                                       accountSettings: .fake())
+
+    private var storageManager: MockStorageManager!
+    private let siteID: Int64 = 5435
+    private let orderID: Int64 = 254
+
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
+    override func setUp() {
+        super.setUp()
+        storageManager = MockStorageManager()
+    }
+
+    override func tearDown() {
+        storageManager = nil
+        super.tearDown()
+    }
 
     func test_state_is_loading_initially() {
         // Given
@@ -33,8 +53,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -65,8 +83,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.failure(error))
             case .loadAccountSettings(_, let completion):
                 completion(.failure(error))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -112,8 +128,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -153,80 +167,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel2.isOrderCompleted)
     }
 
-    func test_shipping_config_is_loaded_if_order_contains_one_item() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let error = NetworkError.notFound(response: nil)
-        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
-
-        var loadedConfig = false
-        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
-            switch action {
-            case .loadOriginAddresses(_, let completion):
-                completion(.success([originAddress]))
-            case .loadAccountSettings(_, let completion):
-                completion(.failure(error))
-            case .loadConfig(_, _, let completion):
-                loadedConfig = true
-                completion(.success(WooShippingConfig.fake()))
-            case .loadPackages, .verifyDestinationAddress:
-                break
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
-
-        // When
-        let order = Order.fake().copy(items: [OrderItem.fake().copy(quantity: Decimal(1))])
-        let viewModel = WooShippingCreateLabelsViewModel(order: order,
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         stores: stores)
-
-        // Then
-        waitUntil {
-            viewModel.state != .loading
-        }
-        XCTAssertTrue(loadedConfig)
-    }
-
-    func test_shipping_config_is_loaded_if_order_contains_more_than_one_item() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        let error = NetworkError.notFound(response: nil)
-        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
-
-        var loadedConfig = false
-        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
-            switch action {
-            case .loadOriginAddresses(_, let completion):
-                completion(.success([originAddress]))
-            case .loadAccountSettings(_, let completion):
-                completion(.failure(error))
-            case .loadConfig(_, _, let completion):
-                loadedConfig = true
-                completion(.success(WooShippingConfig.fake()))
-            case .loadPackages, .verifyDestinationAddress:
-                break
-            default:
-                XCTFail("Unexpected action: \(action)")
-            }
-        }
-        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
-
-        // When
-        let order = Order.fake().copy(items: [OrderItem.fake().copy(quantity: Decimal(2))])
-        let viewModel = WooShippingCreateLabelsViewModel(order: order,
-                                                         shippingSettingsService: shippingSettingsService,
-                                                         stores: stores)
-
-        // Then
-        waitUntil {
-            viewModel.state != .loading
-        }
-        XCTAssertTrue(loadedConfig)
-    }
-
     func test_origin_unverified_state_is_correct() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -250,7 +190,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress, .loadConfig:
+            case .loadPackages, .verifyDestinationAddress:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -296,7 +236,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress, .loadConfig:
+            case .loadPackages, .verifyDestinationAddress:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -362,7 +302,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success(originAddresses))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .verifyDestinationAddress, .loadConfig:
+            case .loadPackages, .verifyDestinationAddress:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -409,7 +349,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .loadConfig:
+            case .loadPackages, .loadOriginAddresses:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -454,7 +394,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: false)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .loadConfig:
+            case .loadPackages, .loadOriginAddresses:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -482,7 +422,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                                isVerified: true)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .loadConfig:
+            case .loadPackages, .loadOriginAddresses:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -509,7 +449,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                       nameError: nil)))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadPackages, .loadOriginAddresses, .loadConfig:
+            case .loadPackages, .loadOriginAddresses:
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -537,7 +477,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     func test_shouldShowNotices_is_updated_correctly_for_unfulfilled_shipment() {
         // Given
-        let order = Order.fake().copy(shippingAddress: nil)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -550,24 +489,20 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street", defaultAddress: true)
                 completion(.success([originAddress]))
-            case .loadConfig(_, _, let completion):
-                // There exist 2 shipments, one of which has been fulfilled.
-                let shippingLabel = ShippingLabel.fake().copy(shippingLabelID: 134)
-                let shipments = [WooShippingShipment.fake().copy(index: "shipment_0", items: [.fake()], shippingLabel: shippingLabel),
-                                 WooShippingShipment.fake().copy(index: "shipment_1", items: [.fake()])]
-                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [
-                    ShippingLabel.fake().copy(shippingLabelID: shippingLabel.shippingLabelID,
-                                              shipmentID: "shipment_0")
-                ])
-                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
-                                                                  shippingLabelData: shippingLabelData)))
             default:
                 XCTFail("Unexpected action: \(action)")
             }
         }
 
+        // There exist 2 shipments, one of which has been fulfilled.
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID)
+        let shippingLabel = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, shippingLabelID: 134)
+        let shipments = [WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "shipment_0", items: [.fake()], shippingLabel: shippingLabel),
+                         WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "shipment_1", items: [.fake()])]
+        insert(shipments: shipments, order: order)
+
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, initialNoticeDelay: .seconds(0))
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager, initialNoticeDelay: .seconds(0))
         XCTAssertFalse(viewModel.shouldShowNotices)
 
         waitUntil {
@@ -613,7 +548,11 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                       shipmentID: "0",
                                                       status: .purchased,
                                                       originAddress: labelOriginAddress)
-        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingLabels: [shippingLabel])
+        // There exist 2 shipments, one of which has been fulfilled.
+        let shipments = [WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "0", items: [.fake()], shippingLabel: shippingLabel),
+                         WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "1", items: [.fake()])]
+        insert(shipments: shipments, order: order)
 
         let originAddress = WooShippingOriginAddress.fake().copy(address1: "123 Main Street",
                                                                  defaultAddress: true)
@@ -624,20 +563,13 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadConfig(_, _, let completion):
-                // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
-                                 WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
-                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
-                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
-                                                                  shippingLabelData: shippingLabelData)))
             default:
                 break
             }
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
         waitUntil {
             viewModel.state == .ready
         }
@@ -661,7 +593,10 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                       shipmentID: "0",
                                                       status: .purchased,
                                                       destinationAddress: labelDestinationAddress)
-        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingLabels: [shippingLabel])
+        let shipments = [WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "0", items: [.fake()], shippingLabel: shippingLabel),
+                         WooShippingShipment.fake().copy(siteID: siteID, orderID: orderID, index: "1", items: [.fake()])]
+        insert(shipments: shipments, order: order)
 
         let destinationAddress = WooShippingNormalizedAddress.fake().copy(address1: "123 Main Street")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -672,13 +607,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                                           defaultAddress: true)]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadConfig(_, _, let completion):
-                // There exist 2 shipments, one of which has been fulfilled.
-                let shipments = [WooShippingShipment.fake().copy(index: "0", items: [.fake()], shippingLabel: shippingLabel),
-                                 WooShippingShipment.fake().copy(index: "1", items: [.fake()])]
-                let shippingLabelData = WooShippingLabelData(currentOrderLabels: [shippingLabel])
-                completion(.success(WooShippingConfig.fake().copy(shipments: shipments,
-                                                                  shippingLabelData: shippingLabelData)))
             case .verifyDestinationAddress(_, _, let completion):
                 completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
                                                                                isTrivialNormalization: nil,
@@ -689,7 +617,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
         waitUntil {
             viewModel.state == .ready
         }
@@ -730,8 +658,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -774,8 +700,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -843,8 +767,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadAccountSettings(_, let completion):
                 didLoadAccountSettings = true
                 completion(.success(settings))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -923,8 +845,6 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
                 completion(.success(settings))
-            case .loadConfig(_, _, let completion):
-                completion(.success(WooShippingConfig.fake()))
             case .loadPackages, .verifyDestinationAddress:
                 break
             default:
@@ -979,5 +899,36 @@ private extension WooShippingCreateLabelsViewModelTests {
     ///
     func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
+    }
+
+    func insert(shipments: [WooShippingShipment], order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+
+        for shipment in shipments {
+            let storageShipment = storage.insertNewObject(ofType: StorageWooShippingShipment.self)
+            storageShipment.update(with: shipment)
+            storageShipment.order = storageOrder
+
+            if let shippingLabel = shipment.shippingLabel {
+                let storageShippingLabel = storage.insertNewObject(ofType: StorageShippingLabel.self)
+                storageShippingLabel.update(with: shippingLabel)
+                if let shippingLabelRefund = shippingLabel.refund {
+                    let storageRefund = storage.insertNewObject(ofType: StorageShippingLabelRefund.self)
+                    storageRefund.update(with: shippingLabelRefund)
+                    storageShippingLabel.refund = storageRefund
+                }
+                storageShippingLabel.order = storageOrder
+                storageShippingLabel.shipment = storageShipment
+
+                let originAddress = storage.insertNewObject(ofType: StorageShippingLabelAddress.self)
+                originAddress.update(with: shippingLabel.originAddress)
+                storageShippingLabel.originAddress = originAddress
+
+                let destinationAddress = storage.insertNewObject(ofType: StorageShippingLabelAddress.self)
+                destinationAddress.update(with: shippingLabel.destinationAddress)
+                storageShippingLabel.destinationAddress = destinationAddress
+            }
+        }
     }
 }

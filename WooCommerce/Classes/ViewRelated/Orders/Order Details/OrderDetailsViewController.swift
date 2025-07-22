@@ -427,7 +427,7 @@ private extension OrderDetailsViewController {
     }
 
     func navigateToCreateShippingLabelForm(preSelection: WooShippingCreateLabelSelection? = nil) {
-        guard viewModel.dataSource.isEligibleForWooShipping else {
+        guard viewModel.shouldNavigateToNewShippingLabelFlow else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
             shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in

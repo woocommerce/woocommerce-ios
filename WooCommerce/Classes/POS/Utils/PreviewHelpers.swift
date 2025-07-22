@@ -219,6 +219,7 @@ struct POSPreviewHelpers {
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
+            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0)),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,

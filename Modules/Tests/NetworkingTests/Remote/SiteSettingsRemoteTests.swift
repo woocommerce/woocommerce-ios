@@ -228,4 +228,48 @@ final class SiteSettingsRemoteTests: XCTestCase {
             XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
         }
     }
+
+    // MARK: - `setFeature`
+
+    func test_setFeature_enables_feature_when_enabled_is_true() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_feature_point_of_sale_enabled",
+                                 filename: "settings-advanced-feature-pos-enabled")
+
+        // When
+        let isEnabled = try await remote.setFeature(for: sampleSiteID, feature: .pointOfSale, enabled: true)
+
+        // Then
+        XCTAssertTrue(isEnabled)
+    }
+
+    func test_setFeature_disables_feature_when_enabled_is_false() async throws {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_feature_point_of_sale_enabled",
+                                 filename: "settings-advanced-feature-pos-disabled")
+
+        // When
+        let isEnabled = try await remote.setFeature(for: sampleSiteID, feature: .pointOfSale, enabled: false)
+
+        // Then
+        XCTAssertFalse(isEnabled)
+    }
+
+    func test_setFeature_throws_error_when_network_fails() async {
+        // Given
+        let remote = SiteSettingsRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_feature_point_of_sale_enabled",
+                              error: error)
+
+        // When/Then
+        do {
+            _ = try await remote.setFeature(for: sampleSiteID, feature: .pointOfSale, enabled: true)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .unacceptableStatusCode(statusCode: 500))
+        }
+    }
 }

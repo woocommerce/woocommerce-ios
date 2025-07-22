@@ -1,5 +1,10 @@
 import Foundation
 
+/// Protocol for SiteSettingsRemote to enable testing.
+public protocol SiteSettingsRemoteProtocol {
+    func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
+}
+
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
 public enum SiteSettingsFeature {
     case pointOfSale
@@ -114,15 +119,48 @@ public class SiteSettingsRemote: Remote {
         let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .advanced)
         let response = try await enqueue(request, mapper: mapper)
         switch response.value {
-        case "yes":
+        case Constants.featureEnabledValue:
             return true
-        case "no":
+        case Constants.featureDisabledValue:
+            return false
+        default:
+            throw SiteSettingsRemoteError.invalidResponse
+        }
+    }
+
+    /// Enables or disables a specific feature in the site WC settings.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which we'll update the feature status.
+    ///   - feature: The feature to enable or disable.
+    ///   - enabled: Whether the feature should be enabled (true) or disabled (false).
+    /// - Returns: A boolean indicating the updated feature status.
+    /// - Throws: Error if the request fails.
+    ///
+    public func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
+        let value = enabled ? Constants.featureEnabledValue : Constants.featureDisabledValue
+        let parameters: [String: Any] = [Constants.valueParameter: value]
+        let path = Constants.siteSettingsPath + Constants.advancedSettingsGroup + "/woocommerce_feature_\(feature.rawValue)_enabled"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .advanced)
+        let response = try await enqueue(request, mapper: mapper)
+        switch response.value {
+        case Constants.featureEnabledValue:
+            return true
+        case Constants.featureDisabledValue:
             return false
         default:
             throw SiteSettingsRemoteError.invalidResponse
         }
     }
 }
+
+extension SiteSettingsRemote: SiteSettingsRemoteProtocol {}
 
 public extension SiteSettingsFeature {
     var rawValue: String {
@@ -142,6 +180,8 @@ private extension SiteSettingsRemote {
         static let productSettingsGroup: String   = "products"
         static let advancedSettingsGroup: String   = "advanced"
         static let valueParameter: String = "value"
+        static let featureEnabledValue: String = "yes"
+        static let featureDisabledValue: String = "no"
     }
 }
 

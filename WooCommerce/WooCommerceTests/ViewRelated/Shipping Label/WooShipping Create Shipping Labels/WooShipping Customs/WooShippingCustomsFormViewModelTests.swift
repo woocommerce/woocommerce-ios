@@ -394,6 +394,39 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertFalse(itemViewModel.isValidWeight)
         XCTAssertFalse(itemViewModel.requiredInformationIsEntered)
     }
+
+    func test_ITNNumberValidator_when_number_is_valid_then_returns_true() {
+        // Valid ITN formats
+        XCTAssertTrue(ITNNumberValidator.isValid("AES X12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("AES 12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("X12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("AES ITN 12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("AES ITN:12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("aes itn:12345678901234"))
+        XCTAssertTrue(ITNNumberValidator.isValid("aes x12345678901234"))
+
+        // Valid NOEEI formats
+        XCTAssertTrue(ITNNumberValidator.isValid("NOEEI 30.36"))
+        XCTAssertTrue(ITNNumberValidator.isValid("NOEEI 30.37(a)"))
+        XCTAssertTrue(ITNNumberValidator.isValid("NOEEI 30.37(a)(1)"))
+        XCTAssertTrue(ITNNumberValidator.isValid("noeei 30.37(a)(1)"))
+    }
+
+    func test_ITNNumberValidator_when_number_is_invalid_then_returns_false() {
+        // Invalid formats
+        XCTAssertFalse(ITNNumberValidator.isValid("AES Y12345678901234")) // Invalid prefix
+        XCTAssertFalse(ITNNumberValidator.isValid("X1234567890123")) // Too short
+        XCTAssertFalse(ITNNumberValidator.isValid("X123456789012345")) // Too long
+        XCTAssertFalse(ITNNumberValidator.isValid("NOEEI 30.3")) // Incomplete NOEEI
+        XCTAssertFalse(ITNNumberValidator.isValid("NOEEI 30.37(a)(1)(i)")) // Invalid NOEEI
+        XCTAssertFalse(ITNNumberValidator.isValid("AESX12345678901234"))
+        XCTAssertFalse(ITNNumberValidator.isValid("NOEEI30.36"))
+
+        // Empty and whitespace
+        XCTAssertTrue(ITNNumberValidator.isValid(""))
+        XCTAssertFalse(ITNNumberValidator.isValid(" "))
+    }
 }
 
 private extension WooShippingCustomsFormViewModelTests {

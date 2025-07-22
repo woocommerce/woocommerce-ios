@@ -802,7 +802,6 @@ extension HubMenuViewModel {
 
     enum AnalyticsKeys {
         static let trackingOption = "option"
-        static let paymentsOnboardingState = "payments_onboarding_state"
     }
 }
 

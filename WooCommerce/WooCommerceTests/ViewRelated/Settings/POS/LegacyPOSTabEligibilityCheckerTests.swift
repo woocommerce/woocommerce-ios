@@ -423,19 +423,6 @@ private extension LegacyPOSTabEligibilityCheckerTests {
     }
 }
 
-private final class MockPluginsService: PluginsServiceProtocol {
-    var pluginToReturn: SystemPlugin = .fake()
-    var pluginToReturnForLoadPluginInStorage: SystemPlugin?
-
-    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
-        pluginToReturn
-    }
-
-    func loadPluginInStorage(siteID: Int64, plugin: Yosemite.Plugin, isActive: Bool?) -> SystemPlugin? {
-        pluginToReturnForLoadPluginInStorage
-    }
-}
-
 private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
     var mockSettingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>?
     var siteSettings: [SiteSetting] = []

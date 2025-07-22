@@ -4,6 +4,7 @@ public enum Plugin: Equatable, CaseIterable {
     case wooCommerce
     case wooSubscriptions
     case wooShipmentTracking
+    case wooSquare
 
     /// File name without extension in the plugin path.
     /// Full plugin path is like `woocommerce/woocommerce.php`.
@@ -15,6 +16,8 @@ public enum Plugin: Equatable, CaseIterable {
             return "woocommerce-subscriptions"
         case .wooShipmentTracking:
             return "woocommerce-shipment-tracking"
+        case .wooSquare:
+            return "woocommerce-square"
         }
     }
 }

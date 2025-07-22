@@ -17,6 +17,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
 
     let siteID: Int64
     private let stores: StoresManager
+    private let pluginsService: PluginsServiceProtocol
 
     private(set) var selectedProducts: Set<Product> = .init()
 
@@ -32,13 +33,15 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
+        self.pluginsService = pluginsService
 
         Task { @MainActor [weak self] in
             await self?.loadFavoriteProductIDs()
@@ -199,23 +202,21 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
     // If the plugin is active, we'll hide the inventory scanner button
     // More details: https://wp.me/pdfdoF-2Nq
     func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
-        isPluginActive(SitePlugin.SupportedPlugin.square, completion: { [weak self] isPluginActive in
-            guard let self else { return }
-            switch isPluginActive {
-            case true:
-                completion(false)
-            case false:
-                guard self.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
-                      UIImagePickerController.isSourceTypeAvailable(.camera) else {
-                    return completion(false)
-                }
-                // If all conditions are met, scan to update inventory should be visible:
-                // 1. No Square plugin
-                // 2. Feature flag
-                // 3. Camera is available
-                completion(true)
+        let isPluginActive = isPluginActive(.wooSquare)
+        switch isPluginActive {
+        case true:
+            completion(false)
+        case false:
+            guard featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+                  UIImagePickerController.isSourceTypeAvailable(.camera) else {
+                return completion(false)
             }
-        })
+            // If all conditions are met, scan to update inventory should be visible:
+            // 1. No Square plugin
+            // 2. Feature flag
+            // 3. Camera is available
+            completion(true)
+        }
     }
 
     /// Loads favorite product IDs
@@ -225,10 +226,7 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         favoriteProductIDs = await favoriteProductsUseCase.favoriteProductIDs()
     }
 
-    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
-        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: siteID, systemPluginNameList: [plugin]) { plugin in
-            completion(plugin?.active == true)
-        }
-        stores.dispatch(action)
+    private func isPluginActive(_ plugin: Plugin) -> Bool {
+        pluginsService.isPluginActiveInStorage(siteID: siteID, plugin: plugin)
     }
 }

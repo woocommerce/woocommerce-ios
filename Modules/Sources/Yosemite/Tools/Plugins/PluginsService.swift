@@ -21,6 +21,13 @@ public protocol PluginsServiceProtocol {
     func loadPluginInStorage(siteID: Int64, plugin: Plugin, isActive: Bool?) -> SystemPlugin?
 }
 
+public extension PluginsServiceProtocol {
+    func isPluginActiveInStorage(siteID: Int64, plugin: Plugin) -> Bool {
+        let plugin = loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true)
+        return plugin != nil && plugin?.active == true
+    }
+}
+
 public class PluginsService: PluginsServiceProtocol {
     private let storageManager: StorageManagerType
 

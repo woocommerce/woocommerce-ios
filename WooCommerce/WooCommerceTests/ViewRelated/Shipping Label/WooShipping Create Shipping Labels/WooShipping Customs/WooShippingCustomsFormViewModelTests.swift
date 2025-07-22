@@ -427,6 +427,56 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         XCTAssertTrue(ITNNumberValidator.isValid(""))
         XCTAssertFalse(ITNNumberValidator.isValid(" "))
     }
+
+    func test_itnValidationError_when_totalShipmentValueExceedsThreshold_andTariffClassesDont() {
+        // Given
+        let storageManager = MockStorageManager()
+        let originCountryCodeSubject = PassthroughSubject<String?, Never>()
+
+        let usCountry = Country(
+            code: "US",
+            name: "United States",
+            states: []
+        )
+        let ukCountry = Country(
+            code: "UK",
+            name: "United Kingdom",
+            states: []
+        )
+        storageManager.insertSampleCountries(readOnlyCountries: [usCountry, ukCountry])
+        let shipment = sampleShipment
+        let order = Order.fake().copy(currency: "USD")
+
+        viewModel = WooShippingCustomsFormViewModel(
+            order: order,
+            shipment: shipment,
+            originCountryCode: originCountryCodeSubject.eraseToAnyPublisher(),
+            storageManager: storageManager,
+            onFormReady: { _ in }
+        )
+
+        // Set values to have a total > $2500, but each tariff class < $2500
+        // Item 1 has quantity 2, Item 2 has quantity 1.
+        viewModel.itemsViewModels[0].valuePerUnit = "1200" // Total: 2 * 1200 = 2400
+        viewModel.itemsViewModels[1].valuePerUnit = "200"  // Total: 1 * 200 = 200
+                                                           // Shipment total: 2600
+
+        // When
+        originCountryCodeSubject.send("US")
+        viewModel.updateDestinationCountry(code: "UK") // A country that doesn't have special ITN rules
+        viewModel.internationalTransactionNumber = "" // No ITN provided
+        // Set different tariff numbers for each item
+        viewModel.itemsViewModels[0].hsTariffNumber = "111111"
+        viewModel.itemsViewModels[1].hsTariffNumber = "222222"
+        viewModel.itemsViewModels.forEach {
+            $0.description = "Test"
+            $0.weightPerUnit = "1"
+        }
+
+        // Then
+        // The shipment total value is 2600, which is > $2500, so an ITN should be required.
+        XCTAssertEqual(viewModel.itnValidationError, .missingForTotalShipmentValue)
+    }
 }
 
 private extension WooShippingCustomsFormViewModelTests {

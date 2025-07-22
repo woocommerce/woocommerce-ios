@@ -778,7 +778,9 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: MockShippingSettingsService(dimensionUnit: "", weightUnit: ""),
+                                                         stores: stores)
 
         waitUntil {
             viewModel.state == .ready
@@ -847,6 +849,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             case .loadOriginAddresses(_, let completion):
                 completion(.success([originAddress]))
             case .loadAccountSettings(_, let completion):
+                self.insert(accountSettings: accountSettings)
                 completion(.success(settings))
             case .loadPackages, .verifyDestinationAddress:
                 break
@@ -856,7 +859,9 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
 
 
-        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(), stores: stores)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake(),
+                                                         shippingSettingsService: MockShippingSettingsService(dimensionUnit: "", weightUnit: ""),
+                                                         stores: stores)
 
         waitUntil {
             viewModel.state == .ready
@@ -884,6 +889,154 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                   title: "MASTERCARD****4444",
                   isEditable: true)
         ))
+    }
+
+    // MARK: - loadRequiredData with stored data tests
+
+    func test_loadRequiredData_state_becomes_ready_immediately_when_origin_addresses_and_settings_are_stored() {
+        // Given
+        let originAddress = WooShippingOriginAddress(siteID: siteID,
+                                                     id: "stored_address",
+                                                     company: "Stored Company",
+                                                     address1: "123 Stored St",
+                                                     address2: "",
+                                                     city: "San Francisco",
+                                                     state: "CA",
+                                                     postcode: "94102",
+                                                     country: "US",
+                                                     phone: "555-0123",
+                                                     firstName: "John",
+                                                     lastName: "Doe",
+                                                     email: "john@stored.com",
+                                                     defaultAddress: true,
+                                                     isVerified: true)
+
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(siteID: siteID)
+
+        // Pre-populate storage with data
+        insert(originAddress: originAddress)
+        insert(accountSettings: accountSettings)
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: "cm", weightUnit: "g")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(siteID: siteID),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.originAddress, "123 Stored St, San Francisco CA 94102, US")
+        XCTAssertEqual(viewModel.dimensionsUnit, "cm")
+        XCTAssertEqual(viewModel.weightUnit, "g")
+    }
+
+    func test_loadRequiredData_state_becomes_ready_immediately_when_only_origin_addresses_are_stored() {
+        // Given
+        let originAddress = WooShippingOriginAddress(siteID: siteID,
+                                                     id: "stored_address",
+                                                     company: "Stored Company",
+                                                     address1: "456 Another St",
+                                                     address2: "",
+                                                     city: "Los Angeles",
+                                                     state: "CA",
+                                                     postcode: "90210",
+                                                     country: "US",
+                                                     phone: "555-0456",
+                                                     firstName: "Jane",
+                                                     lastName: "Smith",
+                                                     email: "jane@stored.com",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
+
+        // Pre-populate storage with origin addresses only
+        insert(originAddress: originAddress)
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var accountSettingsLoaded = false
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadAccountSettings(_, let completion):
+                accountSettingsLoaded = true
+                completion(.success(self.settings))
+            case .loadPackages, .verifyDestinationAddress, .loadOriginAddresses:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: nil, weightUnit: nil)
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(siteID: siteID),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.originAddress, "456 Another St, Los Angeles CA 90210, US")
+        XCTAssertTrue(accountSettingsLoaded, "Account settings should be loaded from remote when missing")
+        XCTAssertEqual(viewModel.dimensionsUnit, settings.storeOptions.dimensionUnit)
+        XCTAssertEqual(viewModel.weightUnit, settings.storeOptions.weightUnit)
+    }
+
+    func test_loadRequiredData_state_becomes_ready_immediately_when_only_account_settings_are_stored() {
+        // Given
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(siteID: siteID)
+
+        // Pre-populate storage with account settings only
+        insert(accountSettings: accountSettings)
+
+        let originAddress = WooShippingOriginAddress(siteID: siteID,
+                                                     id: "stored_address",
+                                                     company: "Stored Company",
+                                                     address1: "456 Another St",
+                                                     address2: "",
+                                                     city: "Los Angeles",
+                                                     state: "CA",
+                                                     postcode: "90210",
+                                                     country: "US",
+                                                     phone: "555-0456",
+                                                     firstName: "Jane",
+                                                     lastName: "Smith",
+                                                     email: "jane@stored.com",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var originAddressesLoaded = false
+
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                originAddressesLoaded = true
+                completion(.success([originAddress]))
+            case .loadPackages, .verifyDestinationAddress, .loadAccountSettings:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let shippingSettingsService = MockShippingSettingsService(dimensionUnit: "cm", weightUnit: "g")
+        let viewModel = WooShippingCreateLabelsViewModel(order: Order.fake().copy(siteID: siteID),
+                                                         shippingSettingsService: shippingSettingsService,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertTrue(originAddressesLoaded, "Origin addresses should be loaded from remote when missing")
+        XCTAssertFalse(viewModel.originAddress.isEmpty, "Origin address should be set from loaded data")
     }
 }
 
@@ -933,5 +1086,15 @@ private extension WooShippingCreateLabelsViewModelTests {
                 storageShippingLabel.destinationAddress = destinationAddress
             }
         }
+    }
+
+    func insert(originAddress: WooShippingOriginAddress) {
+        let storageAddress = storage.insertNewObject(ofType: StorageWooShippingOriginAddress.self)
+        storageAddress.update(with: originAddress)
+    }
+
+    func insert(accountSettings: ShippingLabelAccountSettings) {
+        let storageSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
+        storageSettings.update(with: accountSettings)
     }
 }

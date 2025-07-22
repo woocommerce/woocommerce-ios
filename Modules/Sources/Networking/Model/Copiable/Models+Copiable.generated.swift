@@ -3636,6 +3636,7 @@ extension Networking.WooShippingNormalizedAddress {
 
 extension Networking.WooShippingOriginAddress {
     public func copy(
+        siteID: CopiableProp<Int64> = .copy,
         id: CopiableProp<String> = .copy,
         company: CopiableProp<String> = .copy,
         address1: CopiableProp<String> = .copy,
@@ -3651,6 +3652,7 @@ extension Networking.WooShippingOriginAddress {
         defaultAddress: CopiableProp<Bool> = .copy,
         isVerified: CopiableProp<Bool> = .copy
     ) -> Networking.WooShippingOriginAddress {
+        let siteID = siteID ?? self.siteID
         let id = id ?? self.id
         let company = company ?? self.company
         let address1 = address1 ?? self.address1
@@ -3667,6 +3669,7 @@ extension Networking.WooShippingOriginAddress {
         let isVerified = isVerified ?? self.isVerified
 
         return Networking.WooShippingOriginAddress(
+            siteID: siteID,
             id: id,
             company: company,
             address1: address1,

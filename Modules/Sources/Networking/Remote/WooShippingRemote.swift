@@ -379,7 +379,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                      path: Path.originAddresses,
                                      parameters: nil,
                                      availableAsRESTRequest: true)
-        let mapper = WooShippingOriginAddressesMapper()
+        let mapper = WooShippingOriginAddressesMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

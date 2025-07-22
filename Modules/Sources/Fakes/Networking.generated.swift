@@ -2383,6 +2383,7 @@ extension Networking.WooShippingOriginAddress {
     ///
     public static func fake() -> Networking.WooShippingOriginAddress {
         .init(
+            siteID: .fake(),
             id: .fake(),
             company: .fake(),
             address1: .fake(),

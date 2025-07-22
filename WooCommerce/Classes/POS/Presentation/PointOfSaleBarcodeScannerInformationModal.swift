@@ -222,8 +222,8 @@ private enum Localization {
     )
     static let newBarcodeInfoBluetoothMessage = NSLocalizedString(
         "pos.barcodeInfoModal.new.bluetoothMessage",
-        value: "• Refer to your bluetooth barcode scanner in iOS Bluetooth settings.",
-        comment: "New message about bluetooth barcode scanner settings"
+        value: "• Refer to your Bluetooth barcode scanner in iOS Bluetooth settings.",
+        comment: "New message about Bluetooth barcode scanner settings"
     )
     static let newBarcodeInfoScanMessage = NSLocalizedString(
         "pos.barcodeInfoModal.new.scanMessage",
@@ -238,8 +238,8 @@ private enum Localization {
 
     static let newBarcodeInfoBluetoothMessageAccessible = NSLocalizedString(
         "pos.barcodeInfoModal.new.bluetoothMessage.accessible",
-        value: "First: Refer to your bluetooth barcode scanner in iOS Bluetooth settings.",
-        comment: "Accessible version of bluetooth message without bullet character for screen readers"
+        value: "First: Refer to your Bluetooth barcode scanner in iOS Bluetooth settings.",
+        comment: "Accessible version of Bluetooth message without bullet character for screen readers"
     )
     static let newBarcodeInfoScanMessageAccessible = NSLocalizedString(
         "pos.barcodeInfoModal.new.scanMessage.accessible",

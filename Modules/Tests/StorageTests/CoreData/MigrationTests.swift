@@ -3518,6 +3518,57 @@ final class MigrationTests: XCTestCase {
         let insertedAddress = try XCTUnwrap(targetContext.firstObject(ofType: WooShippingOriginAddress.self))
         XCTAssertEqual(insertedAddress, address)
     }
+
+    func test_migrating_from_123_to_124_adds_new_attributes_lastOrderCompleted_and_addPaymentMethodURL_to_ShippingLabelAccountSettings() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 123")
+        let sourceContext = sourceContainer.viewContext
+
+        let object = sourceContext.insert(entityName: "ShippingLabelAccountSettings", properties: [
+            "siteID": 123,
+            "canEditSettings": false,
+            "canManagePayments": false,
+            "isEmailReceiptsEnabled": false,
+            "lastSelectedPackageID": "",
+            "paperSize": "",
+            "selectedPaymentMethodID": 0,
+            "storeOwnerDisplayName": "",
+            "storeOwnerUsername": "",
+            "storeOwnerWpcomEmail": "",
+            "storeOwnerWpcomUsername": ""
+        ])
+        try sourceContext.save()
+
+        // `lastOrderCompleted` and `addPaymentMethodURL` should not be present in model 122
+        XCTAssertNil(object.entity.attributesByName["lastOrderCompleted"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(object.entity.attributesByName["addPaymentMethodURL"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 124")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedObject = try XCTUnwrap(targetContext.first(entityName: "ShippingLabelAccountSettings"))
+
+        // `lastOrderCompleted` should be present in model 124
+        XCTAssertNotNil(migratedObject.entity.attributesByName["lastOrderCompleted"])
+
+        // `addPaymentMethodURL` value should default as nil in model 124
+        let value = migratedObject.value(forKey: "addPaymentMethodURL") as? String
+        XCTAssertNil(value)
+
+        // `lastOrderCompleted` must be settable
+        migratedObject.setValue(true, forKey: "lastOrderCompleted")
+        try targetContext.save()
+        let updatedValue = migratedObject.value(forKey: "lastOrderCompleted") as? Bool
+        XCTAssertEqual(updatedValue, true)
+
+        // `addPaymentMethodURL` must be settable
+        migratedObject.setValue("https://example.com", forKey: "addPaymentMethodURL")
+        try targetContext.save()
+        let urlValue = migratedObject.value(forKey: "addPaymentMethodURL") as? String
+        XCTAssertEqual(urlValue, "https://example.com")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

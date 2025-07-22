@@ -10,6 +10,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
   - Added `shipments` relationship to `Order` entity.
 - @itsmeichigo 2025-07-22
   - Added `WooShippingOriginAddress` entity.
+  - Added attributes `lastOrderCompleted` and `addPaymentMethodURL` to `ShippingLabelAccountSettings` entity.
 
 ## Model 123 (Release 22.8.0.0)
 - @iamgabrielma 2025-06-30

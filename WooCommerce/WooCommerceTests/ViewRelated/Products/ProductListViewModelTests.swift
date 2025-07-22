@@ -360,7 +360,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
                 promise(result)
             }
         }
@@ -388,7 +388,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
                 promise(result)
             }
         }
@@ -412,7 +412,7 @@ final class ProductListViewModelTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
                 promise(result)
             }
         }

@@ -4,7 +4,7 @@ import Yosemite
 import Experiments
 
 protocol ProductsListViewModelProtocol {
-    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void))
+    func scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: Bool, completion: @escaping (Bool) -> (Void))
 }
 
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
@@ -201,14 +201,14 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
     // The feature breaks if the Square plugin is active, since modifies inventory management logic
     // If the plugin is active, we'll hide the inventory scanner button
     // More details: https://wp.me/pdfdoF-2Nq
-    func scanToUpdateInventoryButtonShouldBeVisible(completion: @escaping (Bool) -> (Void)) {
+    func scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: Bool = UIImagePickerController.isSourceTypeAvailable(.camera),
+                                                    completion: @escaping (Bool) -> (Void)) {
         let isPluginActive = isPluginActive(.wooSquare)
         switch isPluginActive {
         case true:
             completion(false)
         case false:
-            guard featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
-                  UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            guard featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory), isCameraAvailable else {
                 return completion(false)
             }
             // If all conditions are met, scan to update inventory should be visible:

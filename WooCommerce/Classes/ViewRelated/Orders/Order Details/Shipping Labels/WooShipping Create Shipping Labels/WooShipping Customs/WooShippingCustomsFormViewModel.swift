@@ -146,8 +146,7 @@ private extension WooShippingCustomsFormViewModel {
             let totalItemValue = items.reduce(0, { sum, item in
                 sum + item.totalValue
             })
-            if hsTariffNumberTotalValueDictionary.isEmpty,
-                totalItemValue > Constants.minimumValueForRequiredITN {
+            if totalItemValue > Constants.minimumValueForRequiredITN {
                 return .missingForTotalShipmentValue
             }
 

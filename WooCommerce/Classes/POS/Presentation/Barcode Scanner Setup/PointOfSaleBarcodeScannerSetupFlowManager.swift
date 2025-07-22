@@ -30,6 +30,9 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
             analytics: analytics,
             onBackToSelection: { [weak self] in
                 self?.goBackToSelection()
+            },
+            onDismiss: { [weak self] in
+                self?.isPresented = false
             }
         )
         currentState = .setupFlow(scannerType)

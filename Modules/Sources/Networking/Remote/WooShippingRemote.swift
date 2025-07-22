@@ -431,7 +431,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          path: Path.updateOrigin,
                                          parameters: parameters,
                                          availableAsRESTRequest: true)
-            let mapper = WooShippingOriginAddressUpdateMapper()
+            let mapper = WooShippingOriginAddressUpdateMapper(siteID: siteID)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(.failure(error))

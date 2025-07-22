@@ -944,7 +944,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                             address2: "",
                                                             city: "TICONDEROGA",
                                                             postcode: "12883-1487")
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(siteID: 123)))
         let viewModel = WooShippingEditAddressViewModel(address: originAddress, stores: stores)
 
         // When

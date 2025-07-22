@@ -131,7 +131,7 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationCustomers
 
-    /// Enables the Point Of Sale entry point under the Menu tab.
+    /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
 

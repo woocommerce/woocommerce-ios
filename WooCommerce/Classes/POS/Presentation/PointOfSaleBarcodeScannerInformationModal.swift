@@ -67,16 +67,16 @@ struct BarcodeScannerInformation: View {
 
             VStack(spacing: POSSpacing.xLarge) {
                 PointOfSaleInformationModalParagraphView {
-                    Text(AttributedString(Localization.newBarcodeInfoIntroMessage))
+                    Text(AttributedString(Localization.barcodeInfoIntroMessage))
                 }
 
                 PointOfSaleInformationModalParagraphView {
-                    Text(AttributedString(Localization.newBarcodeInfoBluetoothMessage))
-                        .accessibilityLabel(Localization.newBarcodeInfoBluetoothMessageAccessible)
-                    Text(AttributedString(Localization.newBarcodeInfoScanMessage))
-                        .accessibilityLabel(Localization.newBarcodeInfoScanMessageAccessible)
-                    Text(AttributedString(Localization.newBarcodeInfoSearchMessage))
-                        .accessibilityLabel(Localization.newBarcodeInfoSearchMessageAccessible)
+                    Text(AttributedString(Localization.barcodeInfoBluetoothMessage))
+                        .accessibilityLabel(Localization.barcodeInfoBluetoothMessageAccessible)
+                    Text(AttributedString(Localization.barcodeInfoScanMessage))
+                        .accessibilityLabel(Localization.barcodeInfoScanMessageAccessible)
+                    Text(AttributedString(Localization.barcodeInfoSearchMessage))
+                        .accessibilityLabel(Localization.barcodeInfoSearchMessageAccessible)
                 }
                 .padding(.leading, POSSpacing.medium)
 
@@ -215,39 +215,39 @@ private enum Localization {
         comment: "Accessible version of quaternary bullet point in barcode info modal, without bullet character for screen readers"
     )
 
-    static let newBarcodeInfoIntroMessage = NSLocalizedString(
-        "pos.barcodeInfoModal.new.introMessage",
+    static let barcodeInfoIntroMessage = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.introMessage",
         value: "You can scan barcodes using an external scanner to quickly build a cart.",
         comment: "New introductory message for barcode scanner information"
     )
-    static let newBarcodeInfoBluetoothMessage = NSLocalizedString(
-        "pos.barcodeInfoModal.new.bluetoothMessage",
+    static let barcodeInfoBluetoothMessage = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.bluetoothMessage",
         value: "• Refer to your Bluetooth barcode scanner in iOS Bluetooth settings.",
         comment: "New message about Bluetooth barcode scanner settings"
     )
-    static let newBarcodeInfoScanMessage = NSLocalizedString(
-        "pos.barcodeInfoModal.new.scanMessage",
+    static let barcodeInfoScanMessage = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.scanMessage",
         value: "• Scan barcodes while on the item list to add products to the cart.",
         comment: "New message about scanning barcodes on item list"
     )
-    static let newBarcodeInfoSearchMessage = NSLocalizedString(
-        "pos.barcodeInfoModal.new.searchMessage",
+    static let barcodeInfoSearchMessage = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.searchMessage",
         value: "• Ensure the search field is not enabled while scanning barcodes.",
         comment: "New message about ensuring search field is disabled during scanning"
     )
 
-    static let newBarcodeInfoBluetoothMessageAccessible = NSLocalizedString(
-        "pos.barcodeInfoModal.new.bluetoothMessage.accessible",
+    static let barcodeInfoBluetoothMessageAccessible = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.bluetoothMessage.accessible",
         value: "First: Refer to your Bluetooth barcode scanner in iOS Bluetooth settings.",
         comment: "Accessible version of Bluetooth message without bullet character for screen readers"
     )
-    static let newBarcodeInfoScanMessageAccessible = NSLocalizedString(
-        "pos.barcodeInfoModal.new.scanMessage.accessible",
+    static let barcodeInfoScanMessageAccessible = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.scanMessage.accessible",
         value: "Second: Scan barcodes while on the item list to add products to the cart.",
         comment: "Accessible version of scan message without bullet character for screen readers"
     )
-    static let newBarcodeInfoSearchMessageAccessible = NSLocalizedString(
-        "pos.barcodeInfoModal.new.searchMessage.accessible",
+    static let barcodeInfoSearchMessageAccessible = NSLocalizedString(
+        "pos.barcodeInfoModal.i2.searchMessage.accessible",
         value: "Third: Ensure the search field is not enabled while scanning barcodes.",
         comment: "Accessible version of search message without bullet character for screen readers"
     )

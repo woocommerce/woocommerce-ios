@@ -24,6 +24,7 @@ struct WooShippingEditAddressView: View {
 
     @State private var isPresentingCountrySelector: Bool = false
     @State private var isPresentingStateSelector: Bool = false
+    @State private var actionType: ActionType?
 
     var body: some View {
         ScrollView {
@@ -207,7 +208,9 @@ struct WooShippingEditAddressView: View {
                 }
                 .font(.subheadline)
                 .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
+
                 Button(Localization.Button.label(for: viewModel.status)) {
+                    actionType = .validateOrConfirm
                     switch viewModel.status {
                     case .verified:
                         dismiss()
@@ -219,8 +222,18 @@ struct WooShippingEditAddressView: View {
                         break
                     }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
+                                                       actionType == .validateOrConfirm))
                 .disabled(viewModel.status == .missingInformation)
+                .renderedIf(!viewModel.canConfirmWithoutVerification)
+
+                Button(Localization.useAddressAsEntered) {
+                    actionType = .proceedWithoutValidation
+                    viewModel.proceedWithInputAddress()
+                }
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
+                                                         actionType == .proceedWithoutValidation))
+                .renderedIf(viewModel.canConfirmWithoutVerification)
             }
             .padding(isScrollViewEmbedded ? .vertical : .all)
         }
@@ -364,6 +377,11 @@ extension WooShippingEditAddressView {
 }
 
 private extension WooShippingEditAddressView {
+    enum ActionType {
+        case validateOrConfirm
+        case proceedWithoutValidation
+    }
+
     enum Constants {
         static let verticalSpacing: CGFloat = 16
         static let defaultPadding: CGFloat = 16
@@ -441,6 +459,11 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
+        static let useAddressAsEntered = NSLocalizedString(
+            "wooShipping.createLabels.editAddress.useAddressAsEntered",
+            value: "Use address as entered",
+            comment: "Button to proceed with the input address even when validation fails"
+        )
 
         enum Button {
             static func label(for status: WooShippingAddressStatus) -> String {

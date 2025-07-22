@@ -16,7 +16,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                 .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
                 Text(title)
-                    .foregroundStyle(Color.posOnSurface)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 

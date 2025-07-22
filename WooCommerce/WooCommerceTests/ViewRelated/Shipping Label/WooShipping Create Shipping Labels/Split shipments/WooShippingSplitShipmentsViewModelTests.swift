@@ -25,7 +25,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -42,7 +42,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -57,7 +57,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -72,7 +72,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -88,7 +88,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -107,13 +107,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // When
         let label = ShippingLabel.fake().copy(shipmentID: "1")
         let refundedLabel = ShippingLabel.fake().copy(shipmentID: "0", refund: .fake())
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label, refundedLabel])
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: refundedLabel),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: refundedLabel),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -140,7 +139,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // When
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -155,7 +154,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -173,7 +172,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -194,7 +193,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -217,7 +216,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -240,14 +239,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
         let label = ShippingLabel.fake().copy(shipmentID: "1")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label)
+        ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -275,7 +273,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -305,7 +303,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -334,7 +332,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -369,7 +367,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -403,7 +401,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -430,7 +428,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -450,7 +448,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -471,7 +469,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -490,7 +488,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -515,7 +513,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -557,7 +555,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -600,12 +598,11 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
         let label = ShippingLabel.fake().copy(shipmentID: "2")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["1-sub-0", "1-sub-1"])]),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-            .fake().copy(index: "2", items: [.init(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])], shippingLabel: label)
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["1-sub-0", "1-sub-1"])]),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+            WooShippingShipment.fake().copy(index: "2", items: [.init(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])], shippingLabel: label)
+        ]
 
         var receivedShipmentToUpdate: WooShippingUpdateShipment?
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -620,7 +617,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         }
 
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -650,21 +647,18 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         // The second shipment is initially purchased
         let shippingLabel = ShippingLabel.fake().copy(shipmentID: "1")
-        let config = WooShippingConfig.fake().copy(
-            shipments: [
-                .fake().copy(index: "0", items: [
-                    WooShippingShipmentItem.fake().copy(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
-                    WooShippingShipmentItem.fake().copy(id: 2, subItems: []),
-                    WooShippingShipmentItem.fake().copy(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])
-                ]),
-                .fake().copy(index: "1", items: [
-                    WooShippingShipmentItem.fake().copy(id: 4, subItems: nil)
-                ], shippingLabel: shippingLabel)
-            ],
-            shippingLabelData: WooShippingLabelData(currentOrderLabels: [shippingLabel])
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [
+                WooShippingShipmentItem.fake().copy(id: 1, subItems: ["1-sub-0", "1-sub-1"]),
+                WooShippingShipmentItem.fake().copy(id: 2, subItems: []),
+                WooShippingShipmentItem.fake().copy(id: 3, subItems: ["3-sub-0", "3-sub-1", "3-sub-2"])
+            ]),
+            WooShippingShipment.fake().copy(index: "1", items: [
+                WooShippingShipmentItem.fake().copy(id: 4, subItems: nil)
+            ], shippingLabel: shippingLabel)
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -703,7 +697,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -742,7 +736,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                            config: WooShippingConfig.fake(),
+                                                            remoteShipments: [],
                                                             items: items,
                                                             currencySettings: currencySettings,
                                                             shippingSettingsService: shippingSettingsService)
@@ -778,14 +772,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
         let label = ShippingLabel.fake().copy(shipmentID: "1")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label),
-            .fake().copy(index: "2", items: [.init(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])])
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])], shippingLabel: label),
+            WooShippingShipment.fake().copy(index: "2", items: [.init(id: 3, subItems: ["sub-1", "sub-2", "sub-3"])])
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -818,13 +811,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1),
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: []) // none purchased yet
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -860,13 +852,12 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                      sampleItem(id: 3, weight: 4, value: 5, quantity: 3)]
 
         let label = ShippingLabel.fake().copy(shipmentID: "0")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-        let config = WooShippingConfig(siteID: 123, shipments: [
-            .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
-            .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-        ], shippingLabelData: shippingLabelData)
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: config,
+                                                           remoteShipments: remoteShipments,
                                                            items: items,
                                                            currencySettings: currencySettings,
                                                            shippingSettingsService: shippingSettingsService)
@@ -900,7 +891,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -917,7 +908,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -953,7 +944,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -989,7 +980,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 3),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
         let viewModel = WooShippingSplitShipmentsViewModel(order: sampleOrder,
-                                                           config: WooShippingConfig.fake(),
+                                                           remoteShipments: [],
                                                            items: items,
                                                            stores: stores,
                                                            currencySettings: currencySettings,
@@ -1014,20 +1005,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
 
         let label = ShippingLabel.fake().copy(shipmentID: "0")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-
-        let config = WooShippingConfig(
-            siteID: 123,
-            shipments: [
-                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
-                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-            ],
-            shippingLabelData: shippingLabelData
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+        ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1049,7 +1034,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1073,20 +1058,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
 
         let label = ShippingLabel.fake().copy(shipmentID: "1")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-
-        let config = WooShippingConfig(
-            siteID: 123,
-            shipments: [
-                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
-                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-            ],
-            shippingLabelData: shippingLabelData
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+        ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1106,18 +1085,14 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         let items = [sampleItem(id: 1, weight: 5, value: 10, quantity: 2),
                      sampleItem(id: 2, weight: 3, value: 2.5, quantity: 1)]
 
-        let config = WooShippingConfig(
-            siteID: 123,
-            shipments: [
-                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
-                .fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
-            ],
-            shippingLabelData: WooShippingLabelData(currentOrderLabels: [])
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])]),
+            WooShippingShipment.fake().copy(index: "1", items: [.init(id: 2, subItems: [])]),
+        ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1137,7 +1112,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1159,7 +1134,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1192,19 +1167,13 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
     func test_isMergeAllUnfulfilledAvailable_returns_false_when_no_unfulfilled_shipments() throws {
         // Given
         let label = ShippingLabel.fake().copy(shipmentID: "0")
-        let shippingLabelData = WooShippingLabelData(currentOrderLabels: [label])
-
-        let config = WooShippingConfig(
-            siteID: 123,
-            shipments: [
-                .fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
-            ],
-            shippingLabelData: shippingLabelData
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [.init(id: 1, subItems: ["sub-1", "sub-2"])], shippingLabel: label),
+        ]
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: [sampleItem(id: 1, weight: 5, value: 10, quantity: 2)],
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1218,7 +1187,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         // Given
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: [sampleItem(id: 1, weight: 5, value: 10, quantity: 2)],
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1236,7 +1205,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1259,7 +1228,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
 
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1289,7 +1258,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1309,25 +1278,23 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                 quantity: 2
             )
         ]
-        let config = WooShippingConfig.fake().copy(
-            shipments: [
-                .fake().copy(index: "0", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ]),
-                .fake().copy(index: "1", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ])
-            ]
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ]),
+            WooShippingShipment.fake().copy(index: "1", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ])
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1348,28 +1315,23 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
             )
         ]
         let shippingLabel = ShippingLabel.fake().copy(shipmentID: "0")
-        let config = WooShippingConfig.fake().copy(
-            shipments: [
-                .fake().copy(index: "0", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ], shippingLabel: shippingLabel),
-                .fake().copy(index: "1", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ])
-            ],
-            shippingLabelData: WooShippingLabelData(
-                currentOrderLabels: [shippingLabel]
-            )
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ], shippingLabel: shippingLabel),
+            WooShippingShipment.fake().copy(index: "1", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ])
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1391,25 +1353,23 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                 quantity: 2
             )
         ]
-        let config = WooShippingConfig.fake().copy(
-            shipments: [
-                .fake().copy(index: "0", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ]),
-                .fake().copy(index: "1", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: nil
-                    )
-                ])
-            ]
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ]),
+            WooShippingShipment.fake().copy(index: "1", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: nil
+                )
+            ])
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1429,31 +1389,29 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
                 quantity: 3
             )
         ]
-        let config = WooShippingConfig.fake().copy(
-            shipments: [
-                .fake().copy(index: "0", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: ["sub-1"]
-                    )
-                ]),
-                .fake().copy(index: "1", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: ["sub-2"]
-                    )
-                ]),
-                .fake().copy(index: "2", items: [
-                    WooShippingShipmentItem.fake().copy(
-                        id: 1,
-                        subItems: ["sub-3"]
-                    )
-                ])
-            ]
-        )
+        let remoteShipments = [
+            WooShippingShipment.fake().copy(index: "0", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: ["sub-1"]
+                )
+            ]),
+            WooShippingShipment.fake().copy(index: "1", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: ["sub-2"]
+                )
+            ]),
+            WooShippingShipment.fake().copy(index: "2", items: [
+                WooShippingShipmentItem.fake().copy(
+                    id: 1,
+                    subItems: ["sub-3"]
+                )
+            ])
+        ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: config,
+            remoteShipments: remoteShipments,
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService
@@ -1475,7 +1433,7 @@ final class WooShippingSplitShipmentsViewModelTests: XCTestCase {
         ]
         let viewModel = WooShippingSplitShipmentsViewModel(
             order: sampleOrder,
-            config: WooShippingConfig.fake(),
+            remoteShipments: [],
             items: items,
             currencySettings: currencySettings,
             shippingSettingsService: shippingSettingsService

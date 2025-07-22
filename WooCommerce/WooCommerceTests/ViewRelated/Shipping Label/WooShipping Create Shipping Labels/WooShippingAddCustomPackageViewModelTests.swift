@@ -29,7 +29,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
-        XCTAssertEqual(viewModel.areFieldValuesEmpty, true)
+        XCTAssertEqual(viewModel.areFieldValuesIncomplete, true)
     }
 
     @MainActor
@@ -45,7 +45,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
-        XCTAssertEqual(viewModel.areFieldValuesEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesIncomplete, false)
     }
 
     @MainActor
@@ -62,7 +62,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
-        XCTAssertEqual(viewModel.areFieldValuesEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesIncomplete, false)
     }
 
     @MainActor
@@ -79,7 +79,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
-        XCTAssertEqual(viewModel.areFieldValuesEmpty, true)
+        XCTAssertEqual(viewModel.areFieldValuesIncomplete, true)
     }
 
     @MainActor
@@ -96,7 +96,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         viewModel.fieldValues[.weight] = "1"
         // Then
         XCTAssertEqual(viewModel.fieldValues.isEmpty, false)
-        XCTAssertEqual(viewModel.areFieldValuesEmpty, false)
+        XCTAssertEqual(viewModel.areFieldValuesIncomplete, false)
     }
 
     @MainActor
@@ -390,6 +390,6 @@ extension WooShippingAddCustomPackageViewModel {
         XCTAssertEqual(packageType, WooShippingPackageType.box)
         XCTAssertEqual(showSaveTemplate, false)
         XCTAssertEqual(packageTemplateName, "")
-        XCTAssertEqual(areFieldValuesEmpty, true)
+        XCTAssertEqual(areFieldValuesIncomplete, true)
     }
 }

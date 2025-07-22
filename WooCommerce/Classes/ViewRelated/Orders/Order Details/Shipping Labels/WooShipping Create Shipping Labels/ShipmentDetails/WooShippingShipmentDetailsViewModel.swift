@@ -263,6 +263,18 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     }
 }
 
+/// Accessor for manual collapsed product items section accessibility label
+extension WooShippingShipmentDetailsViewModel {
+    var itemsSummaryAccessibilityValue: String {
+        return String.localizedStringWithFormat(
+            Localization.itemsSummaryAccessibilityFormat,
+            shipment.quantity,
+            shipment.weight,
+            shipment.price
+        )
+    }
+}
+
 private extension WooShippingShipmentDetailsViewModel {
     func observeAddresses(originAddressPublisher: AnyPublisher<WooShippingAddress?, Never>,
                           destinationAddressPublisher: AnyPublisher<WooShippingAddress?, Never>) {
@@ -561,6 +573,14 @@ private extension WooShippingShipmentDetailsViewModel {
             value: "Saturday Delivery",
             comment: "Label for row showing the additional cost to require Saturday delivery " +
             "on the shipping label creation screen"
+        )
+        static let itemsSummaryAccessibilityFormat = NSLocalizedString(
+            "shipping-labels.packages.items.summary.accessibility-label",
+            value: "%1$@ with a total weight of %2$@ and a total price of %3$@",
+            comment: "Accessibility label for the summary of product items in a shipment." +
+                " The %1$@ is items count." +
+                " The %2$@ is total weight." +
+                " The %3$@ is total price."
         )
     }
 }

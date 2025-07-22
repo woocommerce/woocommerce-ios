@@ -43,10 +43,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         }
     }
 
-    // Field values are invalid if one of them is empty
+    // Field values are invalid if one of them is incomplete
     // - if we are saving template we check all field values
     // - if we are not saving template we check only dimensions
-    var areFieldValuesEmpty: Bool {
+    var areFieldValuesIncomplete: Bool {
         let keysToCheck: [WooShippingPackageUnitType] = showSaveTemplate ? WooShippingPackageUnitType.allCases : WooShippingPackageUnitType.dimensionUnits
 
         var validFieldsCount: Int = 0
@@ -147,7 +147,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     }
 
     func validateCustomPackageInputFields() -> Bool {
-        guard !areFieldValuesEmpty else {
+        if areFieldValuesIncomplete {
             return false
         }
         if showSaveTemplate {

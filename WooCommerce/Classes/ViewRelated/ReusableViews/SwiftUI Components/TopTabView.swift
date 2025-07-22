@@ -6,13 +6,19 @@ struct TopTabItem<Content: View> {
     let content: () -> Content
     let onSelected: (() -> Void)?
 
+    /// Generic accessibility value for VoiceOver
+    /// Introduced to narrate "Fulfilled" state of shipment tabs. Can be used for other purposes.
+    let customAccessibilityValue: String?
+
     init(name: String,
          icon: UIImage? = nil,
+         customAccessibilityValue: String? = nil,
          @ViewBuilder content: @escaping () -> Content,
          onSelected: (() -> Void)? = nil) {
         self.name = name
         self.icon = icon
         self.content = content
+        self.customAccessibilityValue = customAccessibilityValue
         self.onSelected = onSelected
     }
 }
@@ -118,8 +124,10 @@ struct TopTabView<Content: View>: View {
                 tabs[selectedTab].onSelected?()
             }
         }
+        .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isButton)
         .accessibilityAddTraits(selected ? [.isSelected, .isHeader] : [])
+        .accessibilityValue(tabs[index].customAccessibilityValue ?? "")
     }
 
     func tabIconView(with icon: UIImage) -> some View {
@@ -174,6 +182,7 @@ struct TopTabView<Content: View>: View {
                                                 }
                                             }
                                         })
+                                        .accessibilityElement(children: .combine)
                                 }
                             }
                             .padding(.horizontal, tabPadding)

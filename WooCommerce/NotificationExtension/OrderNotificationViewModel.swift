@@ -1,6 +1,6 @@
 import Foundation
 import KeychainAccess
-import Networking
+import NetworkingCore
 import UserNotifications
 
 /// View Model for the `OrderNotificationViewController`type.

@@ -960,6 +960,8 @@ platform :ios do
 
   desc 'Create Screenshot Summary'
   lane :create_screenshot_summary do
+    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion
     fastlane_require 'snapshot'
 
     # Provide enough information to bootstrap the configuration and generate the HTML report

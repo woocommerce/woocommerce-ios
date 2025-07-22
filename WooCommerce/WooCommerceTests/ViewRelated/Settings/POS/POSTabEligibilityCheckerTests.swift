@@ -12,6 +12,7 @@ struct POSTabEligibilityCheckerTests {
     private var siteSettings: MockSelectedSiteSettings!
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
+    private var mockSiteSettingService: MockPOSSiteSettingService!
     private let siteID: Int64 = 2
 
     init() async throws {
@@ -21,6 +22,7 @@ struct POSTabEligibilityCheckerTests {
         eligibilityService = MockPOSEligibilityService()
         siteSettings = MockSelectedSiteSettings()
         mockSystemStatusService = MockPOSSystemStatusService()
+        mockSiteSettingService = MockPOSSiteSettingService()
         setupWooCommerceVersion()
     }
 
@@ -622,7 +624,8 @@ struct POSTabEligibilityCheckerTests {
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               systemStatusService: mockSystemStatusService)
+                                               systemStatusService: mockSystemStatusService,
+                                               siteSettingService: mockSiteSettingService)
 
         // When
         let result = try await checker.refreshEligibility(ineligibleReason: .featureSwitchDisabled)
@@ -868,6 +871,19 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
         switch resultToReturn {
         case .success(let info):
             return info
+        case .failure(let error):
+            throw error
+        }
+    }
+}
+
+private final class MockPOSSiteSettingService: POSSiteSettingServiceProtocol {
+    var setFeatureResult: Result<Bool, Error> = .success(true)
+
+    func setFeature(siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
+        switch setFeatureResult {
+        case .success(let result):
+            return result
         case .failure(let error):
             throw error
         }

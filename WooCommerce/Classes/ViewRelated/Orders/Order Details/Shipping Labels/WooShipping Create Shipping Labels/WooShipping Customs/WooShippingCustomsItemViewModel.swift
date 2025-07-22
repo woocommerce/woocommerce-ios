@@ -62,6 +62,10 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         return length >= 6 && length <= 12
     }
 
+    var isValidWeight: Bool {
+        return Self.isWeightValid(weightPerUnit)
+    }
+
     @Published var requiredInformationIsEntered: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -79,7 +83,12 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         self.itemProductID = itemProductID
         self.itemQuantity = itemQuantity
         self.valuePerUnit = String(itemValue)
-        self.weightPerUnit = String(itemWeight)
+
+        /// Skip zero weight
+        if Self.isWeightNonZero(itemWeight) {
+            self.weightPerUnit = String(itemWeight)
+        }
+
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
 
@@ -127,7 +136,11 @@ private extension WooShippingCustomsItemViewModel {
     func combineRequiredInformationIsEntered() {
         Publishers.CombineLatest4($description, $valuePerUnit, $weightPerUnit, $selectedCountry)
             .sink { [weak self] description, valuePerUnit, weightPerUnit, selectedCountry in
-                self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty && selectedCountry != nil
+                guard let self else { return }
+                requiredInformationIsEntered = description.isNotEmpty &&
+                valuePerUnit.isNotEmpty &&
+                Self.isWeightValid(weightPerUnit) &&
+                selectedCountry != nil
             }
             .store(in: &cancellables)
     }
@@ -148,5 +161,14 @@ private extension WooShippingCustomsItemViewModel {
                 self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * itemQuantity)
             }
             .store(in: &cancellables)
+    }
+
+    /// Specifically introduced to check for a `0` value
+    static func isWeightValid(_ weightString: String) -> Bool {
+        return isWeightNonZero(Double(weightString) ?? 0)
+    }
+
+    static func isWeightNonZero(_ weightValue: Double) -> Bool {
+        return weightValue > 0
     }
 }

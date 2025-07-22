@@ -140,7 +140,7 @@ private extension WooShippingCustomsFormViewModel {
         .map { input -> ITNValidationError? in
             let (itn, items, hsTariffNumberTotalValueDictionary, countryCode) = input
             guard itn.isEmpty else {
-                return itn.isValidITN ? nil : .invalidFormat
+                return ITNNumberValidator.isValid(itn) ? nil : .invalidFormat
             }
 
             let totalItemValue = items.reduce(0, { sum, item in
@@ -204,7 +204,7 @@ private extension WooShippingCustomsFormViewModel {
             restrictionType: restrictionType.toFormRestrictionType(),
             restrictionComments: restrictionType == .other ? restrictionDetails : "",
             nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
-            itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
+            itn: ITNNumberValidator.isValid(internationalTransactionNumber) ? internationalTransactionNumber : "",
             items: itemsViewModels.map {
                 ShippingLabelCustomsForm.Item(
                     description: $0.description,
@@ -385,18 +385,24 @@ extension WooShippingContentType {
     }
 }
 
-private extension String {
-    var isValidITN: Bool {
-        guard self.isNotEmpty else {
+enum ITNNumberValidator {
+    /// Validates AES/ITN (International Transaction Number) or NOEEI (No EEI) exemption codes
+    /// Accepts formats like:
+    /// - AES ITN: X12345678901234, AES 12345678901234 or AES ITN: 12345678901234
+    /// - NOEEI exemptions: NOEEI 30.36 or NOEEI 30.36(a) or NOEEI 30.36(a)(1)
+    /// AES/ITN numbers which are 14 digits long, optionally prefixed with 'X', 'AES', and/or 'ITN'
+    /// NOEEI exemption codes in the format "NOEEI 30.XX" with optional subsection letters and numbers
+    static func isValid(_ itnNumber: String) -> Bool {
+        guard itnNumber.isNotEmpty else {
             return true
         }
 
-        let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+        let pattern = "^(?:(?:AES\\s*ITN:?\\s*)?(?:AES(?!\\S)\\s*)?X?\\d{14}|(?:NOEEI\\s+30\\.\\d{2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
 
         do {
-            let regex = try NSRegularExpression(pattern: pattern)
-            let range = NSRange(self.startIndex..<self.endIndex, in: self)
-            return regex.firstMatch(in: self, options: [], range: range) != nil
+            let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+            let range = NSRange(itnNumber.startIndex..<itnNumber.endIndex, in: itnNumber)
+            return regex.firstMatch(in: itnNumber, options: [], range: range) != nil
         } catch {
             return false
         }

@@ -10,6 +10,8 @@
 - [*] POS: a POS tab in the tab bar is now available in the app for stores in countries eligible for Point of Sale, instead of the tab is only shown when the store is eligible for POS. [https://github.com/woocommerce/woocommerce-ios/pull/15918]
 - [*] Shipping Labels: Display base rate on selected shipping service cards [https://github.com/woocommerce/woocommerce-ios/pull/15916]
 - [*] Shipping Labels: Update mark order completed toggle on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15917]
+- [*] Shipping Labels: Validate custom package dimensions [https://github.com/woocommerce/woocommerce-ios/pull/15925]
+- [*] Shipping Labels: Show UPS TOS modal in full length for better accessibility. [https://github.com/woocommerce/woocommerce-ios/pull/15926]
 - [*] Shipping Labels: Optimize data loading on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15919]
 - [internal] Optimized assets for app size reduction [https://github.com/woocommerce/woocommerce-ios/pull/15881]
 

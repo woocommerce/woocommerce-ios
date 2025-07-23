@@ -399,8 +399,6 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         // Valid ITN formats
         XCTAssertTrue(ITNNumberValidator.isValid("AES X12345678901234"))
         XCTAssertTrue(ITNNumberValidator.isValid("AES 12345678901234"))
-        XCTAssertTrue(ITNNumberValidator.isValid("X12345678901234"))
-        XCTAssertTrue(ITNNumberValidator.isValid("12345678901234"))
         XCTAssertTrue(ITNNumberValidator.isValid("AES ITN 12345678901234"))
         XCTAssertTrue(ITNNumberValidator.isValid("AES ITN:12345678901234"))
         XCTAssertTrue(ITNNumberValidator.isValid("aes itn:12345678901234"))
@@ -415,6 +413,8 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
 
     func test_ITNNumberValidator_when_number_is_invalid_then_returns_false() {
         // Invalid formats
+        XCTAssertFalse(ITNNumberValidator.isValid("X12345678901234"))
+        XCTAssertFalse(ITNNumberValidator.isValid("12345678901234"))
         XCTAssertFalse(ITNNumberValidator.isValid("AES Y12345678901234")) // Invalid prefix
         XCTAssertFalse(ITNNumberValidator.isValid("X1234567890123")) // Too short
         XCTAssertFalse(ITNNumberValidator.isValid("X123456789012345")) // Too long

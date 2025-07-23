@@ -396,7 +396,7 @@ enum ITNNumberValidator {
             return true
         }
 
-        let pattern = "^(?:(?:AES\\s*ITN:?\\s*)?(?:AES(?!\\S)\\s*)?X?\\d{14}|(?:NOEEI\\s+30\\.\\d{2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+        let pattern = "^(?:(?:AES(?!\\S)\\s*(?:ITN:?\\s*)?X?\\d{14})|(?:NOEEI\\s+30\\.\\d{2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
 
         do {
             let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)

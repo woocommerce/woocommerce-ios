@@ -86,12 +86,14 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     /// Status of the address, based on local validation and remote verification.
     var status: WooShippingAddressStatus {
         let isRemotelyVerified = originalAddressIsVerified && !hasChanges
-        switch (isRemotelyVerified, isValid) {
-        case (true, true): // Is a valid, remotely verified address.
+        switch (isRemotelyVerified, isValid, canConfirmWithoutVerification) {
+        case (true, true, _): // Is a valid, remotely verified address.
             return .verified
-        case (false, true): // Is a valid, unverified address.
+        case (false, true, _): // Is a valid, unverified address.
             return .unverified
-        case (_, false): // Is an invalid address.
+        case (_, false, true): // Validation fails but user can proceed.
+            return .unverified
+        case (_, false, false): // Is an invalid address.
             return .missingInformation
         }
     }
@@ -119,6 +121,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Selected state. We observe this to update the `state` property.
     @Published private(set) var selectedState: StateOfACountry?
+
+    /// Whether user can proceed with their input address even when validation fails.
+    @Published private(set) var canConfirmWithoutVerification = false
 
     /// View model for selecting a country from a list.
     var countrySelectorVM: CountrySelectorViewModel {
@@ -275,6 +280,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             return self.isPhoneNumberValid ? nil : Localization.Validation.phone
         }
 
+        observeFieldValues()
         observeNameAndCompany()
         observeSelectedCountry()
         observeSelectedState()
@@ -343,6 +349,19 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                   onDestinationAddressEdited: onAddressEdited)
     }
 
+    func proceedWithInputAddress() {
+        let address = WooShippingAddress(company: company.value,
+                                         name: name.value,
+                                         phone: phone.value,
+                                         country: country.value,
+                                         state: state.value,
+                                         address1: address.value,
+                                         address2: "",
+                                         city: city.value,
+                                         postcode: postalCode.value)
+        updateConfirmedAddress(address, withoutVerification: true)
+    }
+
     /// Validates the address remotely.
     @MainActor
     func remotelyValidateAddress() async {
@@ -368,6 +387,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 updateConfirmedAddress(confirmedAddress)
             })
         } catch let error as WooShippingAddressValidationError {
+            /// Enables proceeding for destination addresses even when validation fails
+            if case .destination = addressType {
+                canConfirmWithoutVerification = true
+            }
             if let nameError = error.nameError {
                 name.setError(nameError)
             }
@@ -397,15 +420,15 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// Update confirmed address remotely.
-    @MainActor
-    func updateConfirmedAddress(_ address: WooShippingAddress) {
+    func updateConfirmedAddress(_ address: WooShippingAddress, withoutVerification: Bool = false) {
         switch addressType {
         case .origin:
             updateConfirmedOriginAddress(address)
         case .destination(let orderID):
             updateConfirmedDestinationAddress(
                 for: orderID,
-                with: address
+                with: address,
+                withoutVerification: withoutVerification
             )
         }
     }
@@ -454,7 +477,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Updates the destination address remotely with the provided (normalized) address and other edits.
     private func updateConfirmedDestinationAddress(for orderID: Int64,
-                                                   with address: WooShippingAddress) {
+                                                   with address: WooShippingAddress,
+                                                   withoutVerification: Bool) {
         // Merge the provided (normalized) address with the edited address fields.
         let destinationAddress = WooShippingDestinationAddress(company: address.company,
                                                     address1: address.address1,
@@ -474,7 +498,10 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                 let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
                                                                                    with: destinationAddress)
                 onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
-                analytics.track(event: .WooShipping.editingAddressStep(type: .destination, state: .confirmed))
+                analytics.track(event: .WooShipping.editingAddressStep(
+                    type: .destination,
+                    state: withoutVerification ? .confirmedWithoutVerification : .confirmed
+                ))
             } catch {
                 DDLogError("⛔️ Error updating destination address for Woo Shipping label: \(error)")
 
@@ -483,7 +510,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
-                    state: .confirmed,
+                    state: withoutVerification ? .confirmedWithoutVerification : .confirmed,
                     error: error
                 ))
             }
@@ -622,6 +649,13 @@ private extension WooShippingEditAddressViewModel {
                 isValid = errors.allSatisfy { $0 == nil }
             }
             .store(in: &cancellables)
+    }
+
+    func observeFieldValues() {
+        allFields.map { $0.$value.removeDuplicates() }
+            .combineLatest()
+            .map { _ in false }
+            .assign(to: &$canConfirmWithoutVerification)
     }
 }
 

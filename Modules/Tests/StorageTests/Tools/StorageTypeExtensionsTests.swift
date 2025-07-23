@@ -1538,6 +1538,188 @@ final class StorageTypeExtensionsTests: XCTestCase {
         XCTAssertNil(foundPlugin)
     }
 
+    // MARK: - `loadSystemPlugin(siteID:fileNameWithoutExtension:)`
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_two_plugins_in_storage() throws {
+        // Given
+        let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.plugin = "woocommerce-payments/woocommerce-payments.php"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = storage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.plugin = "test-plugin/woocommerce-gift-cards.php"
+        systemPlugin2.siteID = sampleSiteID
+
+        // When
+        let foundSystemPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce-gift-cards"))
+
+        // Then
+        XCTAssertEqual(foundSystemPlugin, systemPlugin2)
+    }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_plugin_path_is_in_different_valid_formats() throws {
+        let validPluginPaths = [
+            "woocommerce.php",
+            "woocommerce.swift",
+            "./woocommerce.swift",
+            ".././woocommerce.swift",
+            "woocommerce/woocommerce.php",
+            "woocommerce/woocommerce.swift",
+            "test-plugin/test-plugin/woocommerce.php",
+            "test-plugin/test-plugin/test-plugin/woocommerce.tmp.php",
+            "test-plugin/test-plugin/woocommerce.tmp.php",
+            "test-plugin/woocommerce.tmp.php"
+        ]
+
+        for pluginPath in validPluginPaths {
+            // Given
+            let plugin = storage.insertNewObject(ofType: SystemPlugin.self)
+            plugin.plugin = pluginPath
+            plugin.siteID = sampleSiteID
+
+            // When
+            let foundPlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce"))
+
+            // Then
+            XCTAssertEqual(foundPlugin, plugin)
+
+            // Cleanup for next iteration
+            storage.deleteObject(plugin)
+        }
+    }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_nil_when_plugin_path_is_in_different_invalid_formats() throws {
+        let invalidPluginPaths = [
+            "woocommerce",
+            "woocommerce/woocommerce",
+            "woocommerce//woocommerce",
+            "woocommerce-dev.php",
+            "woocommerce/woocommerce-dev.php",
+            "test-plugin/woocommerce-dev.php",
+            "test-plugin/test-plugin/woocommerce-dev.php"
+        ]
+
+        for pluginPath in invalidPluginPaths {
+            // Given
+            let plugin = storage.insertNewObject(ofType: SystemPlugin.self)
+            plugin.plugin = pluginPath
+            plugin.siteID = sampleSiteID
+
+            // When
+            let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce")
+
+            // Then
+            XCTAssertNil(foundPlugin)
+
+            // Cleanup for next iteration
+            storage.deleteObject(plugin)
+        }
+    }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_handles_regex_special_characters() throws {
+        let specialCharacterTests = [
+            // Filename with regex special characters, plugin path, should match
+            ("plugin.name", "test-folder/plugin.name.php", true),
+            ("plugin+test", "plugin-dir/plugin+test.swift", true),
+            ("plugin*wild", "nested/plugin*wild.css", true),
+            ("plugin[bracket]", "plugin[bracket].php", true),
+            ("plugin(paren)", "folder/plugin(paren).min.js", true),
+            ("plugin^caret", "plugin^caret.tmp", true),
+            ("plugin$dollar", "deep/nested/plugin$dollar.ext", true),
+            // Filenames with spaces
+            ("test plugin", "some folder with spaces/test plugin.css", true),
+            ("plugin name", "plugin name.js", true),
+            // Should not match when filename is different
+            ("plugin.name", "test-folder/pluginXname.php", false),
+            ("plugin+test", "plugin-dir/plugin-test.js", false),
+            ("plugin*wild", "nested/pluginXwild.css", false),
+            ("my plugin", "folder/my-plugin.php", false),
+            ("plugin name", "plugin-name.js", false)
+        ]
+
+        for (searchTerm, pluginPath, shouldMatch) in specialCharacterTests {
+            // Given
+            let plugin = storage.insertNewObject(ofType: SystemPlugin.self)
+            plugin.plugin = pluginPath
+            plugin.siteID = sampleSiteID
+
+            // When
+            let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: searchTerm)
+
+            // Then
+            if shouldMatch {
+                XCTAssertEqual(foundPlugin, plugin, "Should find plugin for search term '\(searchTerm)' in path '\(pluginPath)'")
+            } else {
+                XCTAssertNil(foundPlugin, "Should NOT find plugin for search term '\(searchTerm)' in path '\(pluginPath)'")
+            }
+
+            // Cleanup for the next iteration
+            storage.deleteObject(plugin)
+        }
+    }
+
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_active_state_is_set() throws {
+        // Given
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "test-plugin/woocommerce.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundActivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce", active: true))
+
+        // Then
+        XCTAssertEqual(foundActivePlugin, activePlugin)
+
+        // When
+        let foundInactivePlugin = try XCTUnwrap(storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce", active: false))
+
+        // Then
+        XCTAssertEqual(foundInactivePlugin, inactivePlugin)
+    }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_matching_plugin_when_active_state_is_nil() throws {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "test-plugin/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        let inactivePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        inactivePlugin.plugin = "jetpack/jetpack.php"
+        inactivePlugin.siteID = sampleSiteID
+        inactivePlugin.active = false
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce", active: nil)
+
+        // Then
+        XCTAssertNotNil(foundPlugin)
+        XCTAssertEqual(foundPlugin, activePlugin)
+    }
+
+    func test_loadSystemPlugin_by_fileNameWithoutExtension_returns_nil_when_active_state_does_not_match() {
+        // Given
+        let activePlugin = storage.insertNewObject(ofType: SystemPlugin.self)
+        activePlugin.plugin = "woocommerce/woocommerce.php"
+        activePlugin.siteID = sampleSiteID
+        activePlugin.active = true
+
+        // When
+        let foundPlugin = storage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "woocommerce", active: false)
+
+        // Then
+        XCTAssertNil(foundPlugin)
+    }
+
+    // MARK: - `loadSystemPlugins(siteID:matchingPaths:)`
+
     func test_loadSystemPlugins_by_siteID_matching_paths() {
         // Given
         let systemPlugin1 = storage.insertNewObject(ofType: SystemPlugin.self)

@@ -38,6 +38,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
         .onDisappear {
             flowManager.onDisappear()
         }
+        .maximumScreenBrightness()
     }
 
     // MARK: - Computed Properties

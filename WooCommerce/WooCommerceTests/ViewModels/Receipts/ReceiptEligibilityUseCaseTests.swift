@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class ReceiptEligibilityUseCaseTests: XCTestCase {
     func test_when_WooCommerce_version_is_below_minimum_then_returns_false() {
         // Given
@@ -11,7 +12,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
                                               version: "8.5",
                                               active: true)
         mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
-        
+
         let sut = ReceiptEligibilityUseCase(stores: stores, pluginsService: mockPluginsService)
 
         // When
@@ -33,7 +34,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
                                               version: "8.7.0",
                                               active: true)
         mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
-        
+
         let sut = ReceiptEligibilityUseCase(stores: stores, pluginsService: mockPluginsService)
 
         // When
@@ -51,10 +52,10 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockPluginsService = MockPluginsService()
-        
+
         let wooCommercePlugin = SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: "9.6.0", active: false)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(plugin: "woocommerce-payments/woocommerce-payments.php", version: "8.9.0", active: false)
-        
+
         mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooCommercePlugin)
         mockPluginsService.setMockPlugin(.wooPayments, systemPlugin: wooPaymentsPlugin)
 
@@ -75,10 +76,10 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockPluginsService = MockPluginsService()
-        
+
         let wooCommercePlugin = SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: "9.5.0", active: true)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(plugin: "woocommerce-payments/woocommerce-payments.php", version: "8.6.0", active: true)
-        
+
         mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooCommercePlugin)
         mockPluginsService.setMockPlugin(.wooPayments, systemPlugin: wooPaymentsPlugin)
 
@@ -99,10 +100,10 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockPluginsService = MockPluginsService()
-        
+
         let wooCommercePlugin = SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: "9.5.0", active: true)
         let wooPaymentsPlugin = SystemPlugin.fake().copy(plugin: "woocommerce-payments/woocommerce-payments.php", version: "5.0.0-dev", active: true)
-        
+
         mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooCommercePlugin)
         mockPluginsService.setMockPlugin(.wooPayments, systemPlugin: wooPaymentsPlugin)
 

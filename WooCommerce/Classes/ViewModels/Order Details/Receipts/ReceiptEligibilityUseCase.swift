@@ -25,6 +25,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         self.featureFlagService = featureFlagService
     }
 
+    @MainActor
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
         let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)
         // 1. WooCommerce must be installed and active
@@ -88,6 +89,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
     }
 
+    @MainActor
     func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
         switch orderStatus {
         case .completed, .processing, .refunded:

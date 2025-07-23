@@ -511,7 +511,13 @@ private extension WooShippingShipmentDetailsViewModel {
     func isHSTariffNumberRequiredPublisher() -> AnyPublisher<Bool, Never> {
         $destinationAddress
             /// HS tariff number is required for EU countries
-            .map { _ in return false }
+            .map { address in
+                guard let address else {
+                    return false
+                }
+
+                return Country.countriesFollowingEUCustoms.contains(address.country)
+            }
             .eraseToAnyPublisher()
     }
 }

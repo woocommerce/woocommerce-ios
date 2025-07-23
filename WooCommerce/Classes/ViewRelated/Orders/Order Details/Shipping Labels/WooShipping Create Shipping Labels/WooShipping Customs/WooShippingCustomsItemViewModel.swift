@@ -145,13 +145,13 @@ private extension WooShippingCustomsItemViewModel {
             $weightPerUnit,
             $selectedCountry
         )
-        .combineLatest($hsTariffNumber)
+        .combineLatest($hsTariffNumber, $isHSTariffNumberRequired)
         .sink { [weak self] result in
             guard let self else { return }
 
-            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber) = result
+            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired) = result
 
-            let hsTariffNumberRequirementMet = hsTariffNumber.isEmpty && !isHSTariffNumberRequired || isValidTariffNumber
+            let hsTariffNumberRequirementMet = hsTariffNumber.isEmpty && !isHSTariffNumberRequired || isValidTariffNumber && hsTariffNumber.isNotEmpty
 
             requiredInformationIsEntered = description.isNotEmpty &&
             valuePerUnit.isNotEmpty &&

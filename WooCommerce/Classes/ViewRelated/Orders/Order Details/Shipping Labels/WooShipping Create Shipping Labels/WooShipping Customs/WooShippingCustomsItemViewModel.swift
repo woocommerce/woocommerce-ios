@@ -69,7 +69,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     ///
     /// Introduced to enforce tariff validation
     /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
-    @Published private var isHSTariffNumberRequired: Bool = false
+    @Published private(set) var isHSTariffNumberRequired: Bool = false
 
     init(itemName: String,
          itemProductID: Int64,

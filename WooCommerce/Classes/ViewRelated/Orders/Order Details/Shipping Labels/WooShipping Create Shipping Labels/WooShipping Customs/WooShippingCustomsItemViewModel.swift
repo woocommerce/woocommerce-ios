@@ -69,7 +69,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     ///
     /// Introduced to enforce tariff validation
     /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
-    private let isHSTariffNumberRequired: Bool
+    @Published private var isHSTariffNumberRequired: Bool = false
 
     init(itemName: String,
          itemProductID: Int64,
@@ -77,8 +77,8 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemValue: Double,
          itemWeight: Double,
          currencySymbol: String,
-         isHSTariffNumberRequired: Bool = false,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
+         isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
@@ -93,10 +93,12 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
-        self.isHSTariffNumberRequired = isHSTariffNumberRequired
 
         originCountryCode?
             .assign(to: &$originCountryCode)
+
+        isHSTariffNumberRequired?
+            .assign(to: &$isHSTariffNumberRequired)
 
         fetchCountries()
 

@@ -70,6 +70,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
             order: order,
             shipment: shipment,
             originCountryCode: originCountryCodePublisher(),
+            isHSTariffNumberRequired: isHSTariffNumberRequiredPublisher(),
             storageManager: storageManager
         ) { [weak self] form in
             self?.customsForm = form
@@ -504,6 +505,13 @@ private extension WooShippingShipmentDetailsViewModel {
     func originCountryCodePublisher() -> AnyPublisher<String?, Never> {
         $originAddress
             .map(\.?.country)
+            .eraseToAnyPublisher()
+    }
+
+    func isHSTariffNumberRequiredPublisher() -> AnyPublisher<Bool, Never> {
+        $destinationAddress
+            /// HS tariff number is required for EU countries
+            .map { _ in return false }
             .eraseToAnyPublisher()
     }
 }

@@ -2,43 +2,60 @@ import SwiftUI
 
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
     func body(content: Content) -> some View {
-        ZStack {
-            content
-                .blur(radius: modalManager.isPresented ? 8 : 0)
-                .disabled(modalManager.isPresented)
-                .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
+        GeometryReader { geometry in
+            ZStack {
+                content
+                    .blur(radius: modalManager.isPresented ? 8 : 0)
+                    .disabled(modalManager.isPresented)
+                    .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
 
-            if modalManager.isPresented {
-                Color.posSurfaceDim.opacity(0.8)
-                    .edgesIgnoringSafeArea(.all)
-                    .onTapGesture {
-                        if modalManager.allowsInteractiveDismissal {
-                            modalManager.dismiss()
+                if modalManager.isPresented {
+                    Color.posSurfaceDim.opacity(0.8)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            if modalManager.allowsInteractiveDismissal {
+                                modalManager.dismiss()
+                            }
                         }
+                        // Don't scale/fade in the backdrop
+                        .animation(nil, value: modalManager.isPresented)
+                    ZStack {
+                        modalManager.getContent()
+                            .environment(\.posModalParentSize, modalParentSize)
+                            .background(Color.posSurfaceBright)
+                            .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                            .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
+                            .padding()
                     }
-                    // Don't scale/fade in the backdrop
-                    .animation(nil, value: modalManager.isPresented)
-                ZStack {
-                    modalManager.getContent()
-                        .background(Color.posSurfaceBright)
-                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
-                        .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
-                        .padding()
+                    .zIndex(1)
+                    // Scale the modal container in and out, fading appropriately.
+                    // Unfortunately combined doesn't work on removal.
+                    // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                    // consistent even when animating out, which it wouldn't be if unspecified.
+                    .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
                 }
-                .zIndex(1)
-                // Scale the modal container in and out, fading appropriately.
-                // Unfortunately combined doesn't work on removal.
-                // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
-                // consistent even when animating out, which it wouldn't be if unspecified.
-                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+            }
+            .onAppear {
+                updateModalParentSize(from: geometry)
+            }
+            .onChange(of: geometry.size) { _ in
+                updateModalParentSize(from: geometry)
             }
         }
         .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+    }
+
+    private func updateModalParentSize(from geometry: GeometryProxy) {
+        let newSize = geometry.size
+        if newSize != modalParentSize && newSize != .zero {
+            modalParentSize = newSize
+        }
     }
 }
 
@@ -176,5 +193,20 @@ extension View {
     /// Prevents a POS Modal from being dismissed by tapping on the background.
     func posInteractiveDismissDisabled(_ disabled: Bool = true) -> some View {
         self.modifier(POSInteractiveDismissModifier(disabled: disabled))
+    }
+}
+
+// MARK: - POS Modal Parent Size Environment
+
+/// Environment key for tracking the current screen size in POS modals
+struct POSModalParentSizeKey: EnvironmentKey {
+    static let defaultValue: CGSize = UIScreen.main.bounds.size
+}
+
+extension EnvironmentValues {
+    /// The current screen size available to the POS modal
+    var posModalParentSize: CGSize {
+        get { self[POSModalParentSizeKey.self] }
+        set { self[POSModalParentSizeKey.self] = newValue }
     }
 }

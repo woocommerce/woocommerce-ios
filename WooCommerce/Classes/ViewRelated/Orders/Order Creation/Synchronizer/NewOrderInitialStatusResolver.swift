@@ -7,39 +7,33 @@ struct NewOrderInitialStatusResolver {
     ///
     private let siteID: Int64
 
-    /// Stores.
+    /// Plugins service.
     ///
-    private let stores: StoresManager
+    private let pluginsService: PluginsServiceProtocol
 
     /// Defines the WC version where `auto-draft` should be available.
     ///
     private let draftMinSupportedVersion = "6.3.0"
 
-    /// WooCommerce plugin name.
-    ///
-    private let wcPluginName = "WooCommerce"
-
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64, pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
-        self.stores = stores
+        self.pluginsService = pluginsService
     }
 
     /// Decides the initial `status` for a new order based on the current store version.
     ///
+    @MainActor
     func resolve(onCompletion: @escaping (OrderStatusEnum) -> ()) {
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: wcPluginName) { wooPlugin in
-            guard let wooPlugin = wooPlugin else {
-                return onCompletion(.pending)
-            }
-
-            // auto-draft should exists in versions greater than `6.3.0`
-            switch draftMinSupportedVersion.compare(wooPlugin.version, options: .numeric) {
-            case .orderedAscending, .orderedSame:
-                onCompletion(.autoDraft)
-            case .orderedDescending:
-                onCompletion(.pending)
-            }
+        guard let wooPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {
+            return onCompletion(.pending)
         }
-        stores.dispatch(action)
+
+        // auto-draft should exists in versions greater than `6.3.0`
+        switch draftMinSupportedVersion.compare(wooPlugin.version, options: .numeric) {
+        case .orderedAscending, .orderedSame:
+            onCompletion(.autoDraft)
+        case .orderedDescending:
+            onCompletion(.pending)
+        }
     }
 }

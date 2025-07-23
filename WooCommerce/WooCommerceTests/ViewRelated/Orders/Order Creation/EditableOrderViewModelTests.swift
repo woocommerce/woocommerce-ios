@@ -5,6 +5,7 @@ import WooFoundation
 import Networking
 import Combine
 
+@MainActor
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
     var stores: MockStoresManager!

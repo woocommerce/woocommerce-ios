@@ -451,7 +451,7 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .unsupportedCurrency(supportedCurrencies: expectedSupportedCurrencies)))
+        #expect(result == .ineligible(reason: .unsupportedCurrency(countryCode: country.countryCode, supportedCurrencies: expectedSupportedCurrencies)))
     }
 
     func is_ineligible_when_woocommerce_version_is_below_minimum() async throws {
@@ -551,7 +551,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test(arguments: [
         POSIneligibleReason.siteSettingsNotAvailable,
-        POSIneligibleReason.unsupportedCurrency(supportedCurrencies: [.USD])
+        POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
     fileprivate func refreshEligibility_syncs_site_settings_and_checks_eligibility_for_site_settings_issues(ineligibleReason: POSIneligibleReason) async throws {
         // Given
@@ -586,7 +586,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test(arguments: [
         POSIneligibleReason.siteSettingsNotAvailable,
-        POSIneligibleReason.unsupportedCurrency(supportedCurrencies: [.USD])
+        POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
     fileprivate func refreshEligibility_returns_siteSettingsNotAvailable_when_site_settings_sync_fails(ineligibleReason: POSIneligibleReason) async throws {
         // Given
@@ -828,6 +828,19 @@ private extension POSTabEligibilityCheckerTests {
         case ca = "CA:NS"
         case gb = "GB"
         case es = "ES"
+
+        var countryCode: CountryCode {
+            switch self {
+            case .us:
+                return .US
+            case .ca:
+                return .CA
+            case .gb:
+                return .GB
+            case .es:
+                return .ES
+            }
+        }
     }
 
     func mockCountrySetting(country: Country, siteID: Int64? = nil) -> SiteSetting {

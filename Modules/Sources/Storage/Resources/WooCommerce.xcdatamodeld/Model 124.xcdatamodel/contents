@@ -778,9 +778,11 @@
         <relationship name="shipment" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WooShippingShipment" inverseName="shippingLabel" inverseEntity="WooShippingShipment"/>
     </entity>
     <entity name="ShippingLabelAccountSettings" representedClassName="ShippingLabelAccountSettings" syncable="YES">
+        <attribute name="addPaymentMethodURL" optional="YES" attributeType="String"/>
         <attribute name="canEditSettings" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="canManagePayments" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="isEmailReceiptsEnabled" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lastOrderCompleted" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="lastSelectedPackageID" attributeType="String" defaultValueString=""/>
         <attribute name="paperSize" attributeType="String"/>
         <attribute name="selectedPaymentMethodID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

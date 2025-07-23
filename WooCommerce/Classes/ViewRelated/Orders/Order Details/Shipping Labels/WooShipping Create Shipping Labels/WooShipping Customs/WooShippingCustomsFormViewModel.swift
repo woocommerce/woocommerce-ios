@@ -245,9 +245,10 @@ extension WooShippingCustomsFormViewModel.ITNValidationError {
 
     private enum Localization {
         static let itnInvalidFormat = NSLocalizedString(
-            "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat",
-            value: "Please enter a valid ITN in one of these formats: X12345678901234, AES X12345678901234, or NOEEI 30.37(a).",
-            comment: "Message when the ITN field is invalid in the customs form of a shipping label"
+            "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES",
+            value: "Please enter a valid ITN in one of these formats: AES X12345678901234, or NOEEI 30.37(a).",
+            comment: "Message when the ITN field is invalid in the customs form of a shipping label. " +
+            "Doesn't contain X12345678901234 format example."
         )
         static let itnRequiredForTariffClass = NSLocalizedString(
             "wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass",

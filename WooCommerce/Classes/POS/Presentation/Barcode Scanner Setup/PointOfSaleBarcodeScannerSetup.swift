@@ -161,7 +161,6 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
     var body: some View {
         visibleContent
             .opacity(isVisible ? 1 : 0)
-            .animation(.easeInOut(duration: animationDuration), value: isVisible)
             // First layout pass: constrain content to let scrollView in content to configure itself
             .frame(width: maxWidth)
             .frame(maxHeight: maxHeight)
@@ -189,15 +188,15 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
                 guard newID != previousID else { return }
 
                 if hasAppeared {
-                    withAnimation {
+                    withAnimation(.easeInOut(duration: animationDuration / 2)) {
                         isVisible = false
                     }
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration / 2) {
                         visibleContent = contentBuilder()
                         previousID = newID
 
-                        withAnimation {
+                        withAnimation(.easeInOut(duration: animationDuration)) {
                             isVisible = true
                         }
                     }

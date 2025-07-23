@@ -50,6 +50,7 @@
 		0174DDBF2CE600C5005D20CA /* ReceiptEmailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */; };
 		0177250C2E1CFF7F00016148 /* GameControllerBarcodeParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */; };
 		0177250E2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */; };
+		01806E132E2F7F400033363C /* POSBrightnessControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01806E122E2F7F400033363C /* POSBrightnessControl.swift */; };
 		0182C8BE2CE3B11300474355 /* MockReceiptEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */; };
 		0182C8C02CE4DDC700474355 /* CardReaderTransactionAlertReceiptState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */; };
 		0182C8C22CE4F0DB00474355 /* ReceiptEmailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */; };
@@ -3228,6 +3229,7 @@
 		0174DDBE2CE600C0005D20CA /* ReceiptEmailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailViewModelTests.swift; sourceTree = "<group>"; };
 		0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerBarcodeParser.swift; sourceTree = "<group>"; };
 		0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerBarcodeParserTests.swift; sourceTree = "<group>"; };
+		01806E122E2F7F400033363C /* POSBrightnessControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBrightnessControl.swift; sourceTree = "<group>"; };
 		0182C8BD2CE3B10E00474355 /* MockReceiptEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReceiptEligibilityUseCase.swift; sourceTree = "<group>"; };
 		0182C8BF2CE4DDC100474355 /* CardReaderTransactionAlertReceiptState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderTransactionAlertReceiptState.swift; sourceTree = "<group>"; };
 		0182C8C12CE4F0DB00474355 /* ReceiptEmailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEmailView.swift; sourceTree = "<group>"; };
@@ -7113,6 +7115,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				01806E122E2F7F400033363C /* POSBrightnessControl.swift */,
 				689F29192DE4557D004DF52B /* POSStockFormatter.swift */,
 				681BB5FD2D676060008AF8BB /* POSPadding.swift */,
 				681BB5FB2D676043008AF8BB /* POSSpacing.swift */,
@@ -16660,6 +16663,7 @@
 				B50BB4162141828F00AF0F3C /* FooterSpinnerView.swift in Sources */,
 				867B330F2B4D39B900DCBEA6 /* BlazeAddParameterView.swift in Sources */,
 				D8610CE2257099E100A5DF27 /* FancyAlertViewController+UnifiedLogin.swift in Sources */,
+				01806E132E2F7F400033363C /* POSBrightnessControl.swift in Sources */,
 				EE289AE62C9D7B31004AB1A6 /* AIToneVoiceViewModel.swift in Sources */,
 				038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */,
 				03E471CE293F63B4001A58AD /* PaymentCaptureOrchestrator.swift in Sources */,

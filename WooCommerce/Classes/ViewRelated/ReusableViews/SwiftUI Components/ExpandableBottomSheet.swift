@@ -159,6 +159,9 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
         )
         .background(Color(.listForeground(modal: false)))
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
+            /// This workaround cancels the dragging when the app re-enters the foreground
+            /// and fixes the glitch caused by the divider at the bottom of the scroll view.
             revealContentDuringDrag = false
         }
     }

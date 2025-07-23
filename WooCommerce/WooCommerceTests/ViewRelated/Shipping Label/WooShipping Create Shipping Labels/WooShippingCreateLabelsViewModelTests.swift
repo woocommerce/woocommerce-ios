@@ -108,20 +108,21 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_state_is_ready_when_loading_required_data_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddress = WooShippingOriginAddress(id: "default_address",
-                                               company: "HEADQUARTERS",
-                                               address1: "15 ALGONKIN ST",
-                                               address2: "STE 100",
-                                               city: "TICONDEROGA",
-                                               state: "NY",
-                                               postcode: "12883-1487",
-                                               country: "US",
-                                               phone: "223-456-7890",
-                                               firstName: "JANE",
-                                               lastName: "DOE",
-                                               email: "TEST@EXAMPLE.COM",
-                                               defaultAddress: true,
-                                               isVerified: false)
+        let originAddress = WooShippingOriginAddress(siteID: 123,
+                                                     id: "default_address",
+                                                     company: "HEADQUARTERS",
+                                                     address1: "15 ALGONKIN ST",
+                                                     address2: "STE 100",
+                                                     city: "TICONDEROGA",
+                                                     state: "NY",
+                                                     postcode: "12883-1487",
+                                                     country: "US",
+                                                     phone: "223-456-7890",
+                                                     firstName: "JANE",
+                                                     lastName: "DOE",
+                                                     email: "TEST@EXAMPLE.COM",
+                                                     defaultAddress: true,
+                                                     isVerified: false)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .loadOriginAddresses(_, let completion):
@@ -170,7 +171,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_origin_unverified_state_is_correct() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingOriginAddress(siteID: 123,
+                                                     id: "default_address",
                                                      company: "HEADQUARTERS",
                                                      address1: "15 ALGONKIN ST",
                                                      address2: "STE 100",
@@ -216,7 +218,8 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let originAddress = WooShippingOriginAddress(id: "default_address",
+        let originAddress = WooShippingOriginAddress(siteID: 123,
+                                                     id: "default_address",
                                                      company: "HEADQUARTERS",
                                                      address1: "15 ALGONKIN ST",
                                                      address2: "STE 100",

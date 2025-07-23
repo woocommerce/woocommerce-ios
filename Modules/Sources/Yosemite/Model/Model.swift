@@ -346,6 +346,7 @@ public typealias StorageWooShippingPredefinedPackage = Storage.WooShippingPredef
 public typealias StorageWooShippingCustomPackage = Storage.WooShippingCustomPackage
 public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingSavedPredefinedPackage
 public typealias StorageWooShippingShipment = Storage.WooShippingShipment
+public typealias StorageWooShippingOriginAddress = Storage.WooShippingOriginAddress
 
 // MARK: - Internal ReadOnly Models
 

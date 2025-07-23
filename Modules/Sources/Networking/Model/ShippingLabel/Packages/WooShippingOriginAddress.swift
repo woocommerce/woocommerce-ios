@@ -2,6 +2,7 @@ import Foundation
 import Codegen
 
 public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeable, GeneratedCopiable {
+    public let siteID: Int64
     public let id: String
     public let company: String
     public let address1: String
@@ -17,7 +18,8 @@ public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeab
     public let defaultAddress: Bool
     public let isVerified: Bool
 
-    public init(id: String,
+    public init(siteID: Int64,
+                id: String,
                 company: String,
                 address1: String,
                 address2: String,
@@ -32,6 +34,7 @@ public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeab
                 defaultAddress:
                 Bool,
                 isVerified: Bool) {
+        self.siteID = siteID
         self.id = id
         self.company = company
         self.address1 = address1
@@ -52,6 +55,9 @@ public struct WooShippingOriginAddress: Identifiable, Equatable, GeneratedFakeab
 // MARK: Decodable
 extension WooShippingOriginAddress: Codable {
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw DecodingError.missingSiteID
+        }
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(String.self, forKey: CodingKeys.id)
@@ -70,7 +76,8 @@ extension WooShippingOriginAddress: Codable {
         let defaultAddress = try container.decodeIfPresent(Bool.self, forKey: CodingKeys.defaultAddress) ?? false
         let isVerified = try container.decodeIfPresent(Bool.self, forKey: CodingKeys.isVerified) ?? false
 
-        self.init(id: id,
+        self.init(siteID: siteID,
+                  id: id,
                   company: company,
                   address1: address1,
                   address2: address2,
@@ -119,5 +126,10 @@ extension WooShippingOriginAddress: Codable {
         case email
         case defaultAddress = "default_address"
         case isVerified = "is_verified"
+    }
+
+    /// Decoding Errors
+    enum DecodingError: Error {
+        case missingSiteID
     }
 }

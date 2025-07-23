@@ -440,20 +440,21 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
         }
 
         // Merge the provided (normalized) address with the edited address fields.
-        let originAddress = WooShippingOriginAddress(id: id,
-                                               company: address.company,
-                                               address1: address.address1,
-                                               address2: address.address2,
-                                               city: address.city,
-                                               state: address.state,
-                                               postcode: address.postcode,
-                                               country: address.country,
-                                               phone: address.phone,
-                                               firstName: name.value,
-                                               lastName: "",
-                                               email: email.value,
-                                               defaultAddress: isDefaultAddress,
-                                               isVerified: true)
+        let originAddress = WooShippingOriginAddress(siteID: siteID,
+                                                     id: id,
+                                                     company: address.company,
+                                                     address1: address.address1,
+                                                     address2: address.address2,
+                                                     city: address.city,
+                                                     state: address.state,
+                                                     postcode: address.postcode,
+                                                     country: address.country,
+                                                     phone: address.phone,
+                                                     firstName: name.value,
+                                                     lastName: "",
+                                                     email: email.value,
+                                                     defaultAddress: isDefaultAddress,
+                                                     isVerified: true)
 
         Task { @MainActor in
             do {

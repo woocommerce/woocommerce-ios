@@ -3493,6 +3493,31 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedOrder.value(forKey: "shipments") as? Set<NSManagedObject>, [shipment])
     }
+
+    func test_migrating_from_123_to_124_enables_creating_new_WooShippingOriginAddress_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 123")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. WooShippingOriginAddress should not exist in Model 123
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "WooShippingOriginAddress", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 124")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingOriginAddress"), 0)
+
+        let address = insertWooShippingOriginAddress(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "WooShippingOriginAddress"), 1)
+        let insertedAddress = try XCTUnwrap(targetContext.firstObject(ofType: WooShippingOriginAddress.self))
+        XCTAssertEqual(insertedAddress, address)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -4407,6 +4432,14 @@ private extension MigrationTests {
         context.insert(entityName: "WooShippingShipmentItem", properties: [
             "id": 4,
             "subItems": ["sub_1", "sub_2"]
+        ])
+    }
+
+    @discardableResult
+    func insertWooShippingOriginAddress(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingOriginAddress", properties: [
+            "siteID": 1,
+            "id": "test-address"
         ])
     }
 }

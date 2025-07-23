@@ -84,7 +84,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
     }
 
-    @MainActor
     func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
         switch orderStatus {
         case .completed, .processing, .refunded:

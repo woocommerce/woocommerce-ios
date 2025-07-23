@@ -7,79 +7,106 @@ struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
     @State private var isLoading: Bool = false
+    @State private var scrollViewHeight: CGFloat = 0
+    @State private var contentHeight: CGFloat = 0
+
+    /// Returns the frame width multiplier for the content view based on accessibility size category.
+    private var frameWidthMultiplier: Double {
+        if sizeCategory >= .accessibilityMedium {
+            return 0.9  // Use more horizontal space for larger accessibility sizes
+        } else {
+            return 0.5  // Standard multiplier for regular sizes
+        }
+    }
+
+    /// Returns true if scrolling should be disabled (content fits within scroll view).
+    private var shouldDisableScrolling: Bool {
+        scrollViewHeight > 0 && contentHeight > 0 && contentHeight <= scrollViewHeight
+    }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            Spacer()
-
-            VStack(alignment: .center, spacing: POSSpacing.none) {
-                POSErrorXMark()
-
+        ScrollView {
+            VStack(spacing: POSSpacing.none) {
                 Spacer()
-                    .frame(height: POSSpacing.medium)
 
-                VStack(spacing: POSSpacing.small) {
-                    Text(Localization.title)
-                        .font(POSFontStyle.posHeadingBold.font())
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color.posOnSurface)
+                VStack(alignment: .center, spacing: POSSpacing.none) {
+                    POSErrorXMark()
 
-                    Text(suggestionText)
-                        .font(POSFontStyle.posBodyLargeRegular().font())
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color.posOnSurface)
-                }
-                .containerRelativeFrame(.horizontal) { length, _ in
-                    max(length * 0.5, 300)
-                }
+                    Spacer()
+                        .frame(height: POSSpacing.medium)
 
-                Spacer()
-                    .frame(height: POSSpacing.large)
+                    VStack(spacing: POSSpacing.small) {
+                        Text(Localization.title)
+                            .font(POSFontStyle.posHeadingBold.font())
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.posOnSurface)
 
-                VStack(spacing: POSSpacing.medium) {
-                    Button {
-                        Task { @MainActor in
-                            do {
-                                isLoading = true
-                                ServiceLocator.analytics.track(
-                                    event: .PointOfSaleIneligibleUI.ineligibleUIRetryTapped(reason: reason)
-                                )
-                                try await onRefresh()
-                                isLoading = false
-                            } catch {
-                                // TODO: WOOMOB-720 - handle error if needed, e.g., show an error message
-                                DDLogError("Error refreshing eligibility: \(error)")
-                                isLoading = false
+                        Text(suggestionText)
+                            .font(POSFontStyle.posBodyLargeRegular().font())
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color.posOnSurface)
+                    }
+                    .containerRelativeFrame(.horizontal) { length, _ in
+                        max(length * frameWidthMultiplier, 300)
+                    }
+
+                    Spacer()
+                        .frame(height: POSSpacing.large)
+
+                    VStack(spacing: POSSpacing.medium) {
+                        Button {
+                            Task { @MainActor in
+                                do {
+                                    isLoading = true
+                                    ServiceLocator.analytics.track(
+                                        event: .PointOfSaleIneligibleUI.ineligibleUIRetryTapped(reason: reason)
+                                    )
+                                    try await onRefresh()
+                                    isLoading = false
+                                } catch {
+                                    DDLogError("Error refreshing eligibility: \(error)")
+                                    isLoading = false
+                                }
                             }
+                        } label: {
+                            Text(reason.refreshEligibilityTitle)
                         }
-                    } label: {
-                        Text(reason.refreshEligibilityTitle)
-                    }
-                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
-                    .renderedIf(reason.shouldShowRetryButton)
+                        .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                        .renderedIf(reason.shouldShowRetryButton)
 
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text(Localization.dismiss)
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text(Localization.dismiss)
+                        }
+                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                     }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .containerRelativeFrame(.horizontal) { length, _ in
+                        max(length * frameWidthMultiplier - 132, 300)
+                    }
                 }
-                .containerRelativeFrame(.horizontal) { length, _ in
-                    max(length * 0.5 - 132, 300)
-                }
+
+                Spacer()
             }
-
-            Spacer()
+            .padding(POSPadding.large)
+            .frame(maxWidth: .infinity, minHeight: scrollViewHeight > 0 ? scrollViewHeight : nil)
+            .measureHeight { height in
+                contentHeight = height
+            }
+            .onAppear {
+                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
+            }
+            .onChange(of: reason) { newReason in
+                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
+            }
         }
-        .padding(POSPadding.large)
-        .onAppear {
-            ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
+        .scrollDisabled(shouldDisableScrolling)
+        .measureHeight { height in
+            scrollViewHeight = height
         }
-        .onChange(of: reason) { newReason in
-            ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
-        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var suggestionText: String {

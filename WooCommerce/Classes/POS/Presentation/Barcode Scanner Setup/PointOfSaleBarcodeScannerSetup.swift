@@ -4,6 +4,7 @@ import SwiftUI
 struct PointOfSaleBarcodeScannerSetup: View {
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
+    @Environment(\.posModalParentSize) var parentSize
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented
@@ -12,12 +13,11 @@ struct PointOfSaleBarcodeScannerSetup: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xxLarge) {
-            VStack {
-                currentContent
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                Spacer()
+            ScrollView(showsIndicators: false) {
+                VStack {
+                    currentContent
+                }
             }
-            .scrollVerticallyIfNeeded()
 
             // Bottom buttons
             if flowManager.buttonConfiguration.primaryButton != nil || flowManager.buttonConfiguration.secondaryButton != nil {
@@ -29,9 +29,9 @@ struct PointOfSaleBarcodeScannerSetup: View {
         })
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
-        .containerRelativeFrame([.horizontal, .vertical]) { length, _ in
-            max(length * 0.75, Constants.modalFrameMaxSmallDimension)
-        }
+        .frame(maxHeight: parentSize.height * Constants.maxParentHeightRatio)
+        .frame(width: parentSize.width * Constants.parentWidthRatio)
+        .fixedSize(horizontal: false, vertical: true)
         .onAppear {
             ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
         }
@@ -79,7 +79,8 @@ struct PointOfSaleBarcodeScannerSetup: View {
 
 // MARK: - Constants
 private enum Constants {
-    static var modalFrameMaxSmallDimension: CGFloat { 616 }
+    static var maxParentHeightRatio: CGFloat { 0.9 }
+    static var parentWidthRatio: CGFloat { 0.75 }
 }
 
 // MARK: - Private Localization Extension

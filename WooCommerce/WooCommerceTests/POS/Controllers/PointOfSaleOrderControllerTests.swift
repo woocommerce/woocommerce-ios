@@ -802,7 +802,10 @@ struct PointOfSaleOrderControllerTests {
             let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
-            mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: wcPluginVersion, active: true))
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: wcPluginVersion,
+                                                                                    active: true))
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,

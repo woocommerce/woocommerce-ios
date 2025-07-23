@@ -8,10 +8,6 @@ public enum SystemStatusAction: Action {
     ///
     case synchronizeSystemInformation(siteID: Int64, onCompletion: (Result<SystemInformation, Error>) -> Void)
 
-    /// Fetch an specific systemPlugin by siteID and name
-    ///
-    case fetchSystemPlugin(siteID: Int64, systemPluginName: String, onCompletion: (SystemPlugin?) -> Void)
-
     /// Fetch a specific systemPlugin by path.
     ///
     case fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: (SystemPlugin?) -> Void)

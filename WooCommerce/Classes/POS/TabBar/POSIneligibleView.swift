@@ -132,17 +132,18 @@ struct POSIneligibleView: View {
                                      value: "Point of Sale must be enabled to proceed. " +
                                      "You can enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
-        case let .unsupportedCurrency(supportedCurrencies):
+        case let .unsupportedCurrency(countryCode, supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
             let format = NSLocalizedString(
-                "pos.ineligible.suggestion.unsupportedCurrency",
-                value: "The POS system is not available for your store’s currency. It currently supports only %1$@. " +
+                "pos.ineligible.suggestion.unsupportedCurrency.1",
+                value: "The POS system is not available for your store’s currency. In %1$@, it currently supports only %2$@. " +
                 "Please check your store currency settings or contact support for assistance.",
                 comment: "Suggestion for unsupported currency with list of supported currencies. " +
-                "%1$@ is a placeholder for the localized list of supported currency codes."
+                "%1$@ is a placeholder for the localized country name, " +
+                "and %2$@ is a placeholder for the localized list of supported currency codes."
             )
-            return String.localizedStringWithFormat(format, formattedCurrencyList)
+            return String.localizedStringWithFormat(format, countryCode.readableCountry, formattedCurrencyList)
         case .siteSettingsNotAvailable:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
                                      value: "Check your internet connection and try again. If the issue persists, please contact support.",
@@ -216,7 +217,7 @@ private extension POSIneligibleReason {
 #Preview("Unsupported currency") {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
-            reason: .unsupportedCurrency(supportedCurrencies: [.USD]),
+            reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
             onRefresh: {}
         )
     }

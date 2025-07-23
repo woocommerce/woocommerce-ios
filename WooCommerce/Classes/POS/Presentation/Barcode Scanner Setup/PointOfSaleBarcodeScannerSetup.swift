@@ -19,7 +19,11 @@ struct PointOfSaleBarcodeScannerSetup: View {
         ) {
             VStack(spacing: POSSpacing.xxLarge) {
                 ScrollView(showsIndicators: false) {
-                    currentContent
+                    HStack {
+                        Spacer()
+                        currentContent
+                        Spacer()
+                    }
                 }
                 .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
 

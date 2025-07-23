@@ -131,8 +131,7 @@ public enum FeatureFlag: Int {
     ///
     case subscriptionsInOrderCreationCustomers
 
-    /// Enables the Point Of Sale entry point under the Menu tab, if all requirements pass.
-    /// Please check the `POSEligibilityChecker` class for additional requirements in order to enable the feature.
+    /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
 

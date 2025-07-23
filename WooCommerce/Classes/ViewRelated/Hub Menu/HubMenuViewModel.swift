@@ -82,14 +82,10 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
 
-    /// Whether the app is in POS mode for an eligible site.
-    @Published var showsPOS: Bool = false
-
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
@@ -177,9 +173,6 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
-                                                           currencySettings: ServiceLocator.currencySettings,
-                                                           featureFlagService: featureFlagService)
         self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()
@@ -210,7 +203,6 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }
@@ -250,14 +242,7 @@ final class HubMenuViewModel: ObservableObject {
     }
 
     func trackMenuItemTapEvent(menu: HubMenuItem) {
-        let eventProperties: [AnyHashable: Any] = {
-            var properties: [AnyHashable: Any] = [AnalyticsKeys.trackingOption: menu.trackingOption]
-            if menu.id == HubMenuViewModel.PointOfSaleEntryPoint.id {
-                properties[AnalyticsKeys.paymentsOnboardingState] = cardPresentPaymentsOnboarding.state.reasonForAnalytics
-            }
-            return properties
-        }()
-        analytics.track(.hubMenuOptionTapped, withProperties: eventProperties)
+        analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
     }
 
     func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
@@ -311,21 +296,6 @@ private extension HubMenuViewModel {
                                                                              stores: stores,
                                                                              collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         }
-    }
-
-    func setupPOSElement() {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi1) == false else {
-            return
-        }
-
-        posEligibilityChecker.isEligible.map { isEligibleForPOS in
-            if isEligibleForPOS {
-                return PointOfSaleEntryPoint()
-            } else {
-                return nil
-            }
-        }
-        .assign(to: &$posElement)
     }
 
     func setupSettingsElements() {
@@ -694,20 +664,6 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .reviews
     }
 
-    struct PointOfSaleEntryPoint: HubMenuItem {
-        static var id = "pointOfSale"
-
-        let title: String = Localization.pos
-        let description: String = Localization.posDescription
-        let icon: UIImage = .pointOfSaleImage
-        let iconColor: UIColor = .withColorStudio(.green, shade: .shade30)
-        let accessibilityIdentifier: String = "menu-pointOfSale"
-        let trackingOption: String = "pointOfSale"
-        let iconBadge: HubMenuBadgeType? = nil
-        // POS is presented with its own navigation stack as nested navigation stack is not supported.
-        let navigationDestination: HubMenuNavigationDestination? = nil
-    }
-
     struct Subscriptions: HubMenuItem {
         static var id = "subscriptions"
 
@@ -785,15 +741,6 @@ extension HubMenuViewModel {
             "My Store",
             comment: "Title of the hub menu view in case there is no title for the store")
 
-        static let pos = NSLocalizedString(
-            "Point of Sale Mode",
-            comment: "Title of the POS menu in the hub menu")
-
-        static let posDescription = NSLocalizedString(
-            "hubMenu.pointOfSale.description",
-            value: "Accept payments at your physical store",
-            comment: "Description of the POS menu in the hub menu")
-
         static let woocommerceAdmin = NSLocalizedString(
             "WooCommerce Admin",
             comment: "Title of one of the hub menu options")
@@ -855,7 +802,6 @@ extension HubMenuViewModel {
 
     enum AnalyticsKeys {
         static let trackingOption = "option"
-        static let paymentsOnboardingState = "payments_onboarding_state"
     }
 }
 

@@ -731,24 +731,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_trackMenuItemTapEvent_includes_payments_onboarding_state_for_pos_menu_item() throws {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         analytics: analytics)
-
-        // When
-        viewModel.trackMenuItemTapEvent(menu: HubMenuViewModel.PointOfSaleEntryPoint())
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "hub_menu_option_tapped" }))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("payments_onboarding_state") }))
-        XCTAssertNotNil(eventProperties["payments_onboarding_state"])
-    }
-
-    @MainActor
     func test_trackMenuItemTapEvent_does_not_include_payments_onboarding_state_for_non_pos_menu_items() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

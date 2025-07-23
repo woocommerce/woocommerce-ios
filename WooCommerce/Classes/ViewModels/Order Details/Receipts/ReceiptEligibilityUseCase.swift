@@ -25,17 +25,12 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         self.featureFlagService = featureFlagService
     }
 
-    @MainActor
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void) {
-        let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)
-        // 1. WooCommerce must be installed and active
-        guard let wcPlugin, wcPlugin.active else {
-            return onCompletion(false)
+        Task { @MainActor in
+            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
+                                                                 minimumVersion: Constants.BackendReceipt.wcPluginMinimumVersion)
+            onCompletion(isWooCommerceSupported)
         }
-        // 2. If WooCommerce version is higher than minimum required version, mark as eligible
-        let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                            minimumRequired: Constants.BackendReceipt.wcPluginMinimumVersion)
-        onCompletion(isSupported)
     }
 
     /// Returns true if Point of Sale allows sending successful payment email receipts via the API.

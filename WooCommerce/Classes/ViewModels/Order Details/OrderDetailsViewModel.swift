@@ -15,6 +15,7 @@ final class OrderDetailsViewModel {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
+    private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
 
     private(set) var order: Order
@@ -35,7 +36,8 @@ final class OrderDetailsViewModel {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase()) {
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -46,6 +48,7 @@ final class OrderDetailsViewModel {
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
     }
 
     func update(order newOrder: Order) {
@@ -228,6 +231,7 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     /// Syncs all data related to the current order.
     ///
+    @MainActor
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
@@ -309,7 +313,7 @@ extension OrderDetailsViewModel {
             defer {
                 group.leave()
             }
-            trackingIsReachable = await isShipmentTrackingEnabled()
+            trackingIsReachable = isShipmentTrackingEnabled()
             guard trackingIsReachable else {
                 return
             }
@@ -371,9 +375,9 @@ extension OrderDetailsViewModel {
     /// Checks if shipment tracking is enabled for the order.
     /// - Returns: Whether shipment tracking is enabled for the user by checking the products and if the Shipment Tracking plugin is active.
     @MainActor
-    func isShipmentTrackingEnabled() async -> Bool {
+    func isShipmentTrackingEnabled() -> Bool {
         guard orderContainsOnlyVirtualProducts == false,
-              await isPluginActive(SitePlugin.SupportedPlugin.WCTracking) else {
+              isPluginActive(.wooShipmentTracking) else {
             return false
         }
         return true
@@ -749,9 +753,10 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
+    @MainActor
     func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point in continuing with a request that will fail.
-        isPluginActive(SitePlugin.SupportedPlugin.WCSubscriptions) { [weak self] isActive in
+        isPluginActive(.wooSubscriptions) { [weak self] isActive in
 
             guard let self, isActive else {
                 onCompletion?(nil)
@@ -892,40 +897,33 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    /// Helper function that returns `true` in its callback if the provided plugin name is active on the order's store.
+    /// Helper function that returns `true` in its callback if the provided plugin is active on the order's store.
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
-    private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
-        isPluginActive([plugin], completion: completion)
+    @MainActor
+    private func isPluginActive(_ plugin: Plugin) -> Bool {
+        let plugin = fetchPlugin(plugin, isActive: true)
+        return plugin != nil && plugin?.active == true
     }
 
-    /// Helper function that returns `true` in its callback if any of the the provided plugin names are active on the order's store.
-    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
-    /// Useful for when a plugin has had many names.
-    ///
-    private func isPluginActive(_ pluginNames: [String], completion: @escaping (Bool) -> (Void)) {
-        Task { @MainActor in
-            let plugin = await fetchPluginByNames(pluginNames)
-            completion(plugin?.active == true)
-        }
+    /// Legacy helper function that returns plugin active value in a completion closure.
+    @MainActor
+    private func isPluginActive(_ plugin: Plugin, completion: @escaping (Bool) -> (Void)) {
+        completion(isPluginActive(plugin))
     }
 
     /// Fetches a plugin from storage, based on the provided list of plugin names.
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
     @MainActor
-    private func fetchPluginByNames(_ pluginNames: [String]) async -> SystemPlugin? {
+    private func fetchPlugin(_ plugin: Plugin, isActive: Bool? = nil) -> SystemPlugin? {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins accessed without being in sync.")
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
             return nil
         }
 
-        return await withCheckedContinuation { continuation in
-            stores.dispatch(SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: pluginNames, onCompletion: { plugin in
-                continuation.resume(returning: plugin)
-            }))
-        }
+        return pluginsService.loadPluginInStorage(siteID: order.siteID, plugin: plugin, isActive: isActive)
     }
 
     /// Fetches a plugin from storage, based on the provided plugin path.
@@ -1036,20 +1034,6 @@ private extension OrderDetailsViewModel {
                     continuation.resume(returning: [])
                 }
             })
-        }
-    }
-
-    @MainActor
-    func isPluginActive(_ plugin: String) async -> Bool {
-        return await isPluginActive([plugin])
-    }
-
-    @MainActor
-    func isPluginActive(_ pluginNames: [String]) async -> Bool {
-        await withCheckedContinuation { continuation in
-            isPluginActive(pluginNames) { isActive in
-                continuation.resume(returning: isActive)
-            }
         }
     }
 

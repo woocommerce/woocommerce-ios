@@ -19,10 +19,6 @@ struct MockSystemStatusActionHandler: MockActionHandler {
             let filteredSystemPlugin = systemPlugins.first { $0.name == systemPluginName }
             let matchingPlugin = systemPlugins.first { $0.name == systemPluginName && $0.active } ?? filteredSystemPlugin
             onCompletion(matchingPlugin)
-        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
-            let systemPlugins = objectGraph.systemPlugins(for: siteID)
-            let filteredSystemPlugins = systemPlugins.first { systemPluginNameList.contains($0.name) }
-            onCompletion(filteredSystemPlugins)
         case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
             let systemPlugins = objectGraph.systemPlugins(for: siteID)
             let matchingPlugin = systemPlugins.first { $0.plugin == pluginPath }

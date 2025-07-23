@@ -25,17 +25,20 @@ public struct POSPluginAndFeatureInfo {
 public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
     private let remote: SystemStatusRemote
     private let storageManager: StorageManagerType
+    private let pluginsService: PluginsServiceProtocol
 
     public init(credentials: Credentials?, storageManager: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials)
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
+        self.pluginsService = PluginsService(storageManager: storageManager)
     }
 
     /// Test-friendly initializer that accepts a network implementation.
     init(network: Network, storageManager: StorageManagerType) {
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
+        self.pluginsService = PluginsService(storageManager: storageManager)
     }
 
     @MainActor
@@ -54,21 +57,13 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         })
 
         // Loads WooCommerce plugin from storage.
-        guard let wcPlugin = storageManager.viewStorage.loadSystemPlugin(siteID: siteID,
-                                                                         fileNameWithoutExtension: Constants.wcPluginFileNameWithoutExtension,
-                                                                         active: true)?.toReadOnly() else {
+        guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {
             return POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil)
         }
 
         // Extracts POS feature value from settings response.
         let featureValue = systemStatus.settings.enabledFeatures?.contains(SiteSettingsFeature.pointOfSale.rawValue) == true ? true : nil
         return POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureValue)
-    }
-}
-
-private extension POSSystemStatusService {
-    enum Constants {
-        static let wcPluginFileNameWithoutExtension = "woocommerce"
     }
 }
 

@@ -31,8 +31,6 @@ public final class SystemStatusStore: Store {
             synchronizeSystemInformation(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
             fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
-        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
-            fetchSystemPlugin(siteID: siteID, systemPluginNameList: systemPluginNameList, completionHandler: onCompletion)
         case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
             fetchSystemPluginWithPath(siteID: siteID,
                                       pluginPath: pluginPath,

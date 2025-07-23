@@ -203,6 +203,7 @@
 		0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */; };
 		02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958F237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift */; };
 		02279594237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279593237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift */; };
+		0229008A2E3019040028F6D7 /* MockPluginsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022900892E3019020028F6D7 /* MockPluginsService.swift */; };
 		02291737270BEFF200449FA0 /* ProcessConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02291736270BEFF200449FA0 /* ProcessConfiguration.swift */; };
 		0229ED00258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0229ECFF258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift */; };
 		022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */; };
@@ -3380,6 +3381,7 @@
 		0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OptionsTableViewController+Styles.swift"; sourceTree = "<group>"; };
 		0227958F237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		02279593237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecHeaderFormatBarCommandTests.swift; sourceTree = "<group>"; };
+		022900892E3019020028F6D7 /* MockPluginsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPluginsService.swift; sourceTree = "<group>"; };
 		02291736270BEFF200449FA0 /* ProcessConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessConfiguration.swift; sourceTree = "<group>"; };
 		0229ECFF258767BC00C336F8 /* ShippingLabelPrintingStepContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPrintingStepContentView.swift; sourceTree = "<group>"; };
 		022A45ED237BADA6001417F0 /* Product+ProductFormTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductFormTests.swift"; sourceTree = "<group>"; };
@@ -9973,6 +9975,7 @@
 		746791642108D853007CF1DC /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				022900892E3019020028F6D7 /* MockPluginsService.swift */,
 				02F36C3F2E0130E900DD8CB6 /* MockPOSEligibilityService.swift */,
 				02B8E41A2DFBC33C001D01FD /* MockPOSEligibilityChecker.swift */,
 				01F067EC2D0C5D56001C5805 /* MockLocationService.swift */,
@@ -17013,6 +17016,7 @@
 				450C2CB324D0803000D570DD /* ProductSettingsRowsTests.swift in Sources */,
 				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,
 				45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */,
+				0229008A2E3019040028F6D7 /* MockPluginsService.swift in Sources */,
 				CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */,
 				DE68B84326FAF17A00C86CFB /* DefaultConnectivityObserver.swift in Sources */,
 				455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */,

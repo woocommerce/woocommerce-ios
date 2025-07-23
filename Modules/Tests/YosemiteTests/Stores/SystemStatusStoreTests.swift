@@ -79,8 +79,8 @@ final class SystemStatusStoreTests: XCTestCase {
 
     func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {
         // Given
-        let staleSystemPluginName = "Stale System Plugin"
-        let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, name: staleSystemPluginName)
+        let staleSystemPluginPath = "folder/stale-plugin.php"
+        let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, plugin: staleSystemPluginPath)
         let storedStaleSystemPlugin = viewStorage.insertNewObject(ofType: StorageSystemPlugin.self)
         storedStaleSystemPlugin.update(with: staleSystemPlugin)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 1)
@@ -98,7 +98,7 @@ final class SystemStatusStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
-        XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, name: staleSystemPluginName))
+        XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "stale-plugin"))
     }
 
     func test_fetchSystemPlugins_return_systemPlugins_correctly() {
@@ -192,31 +192,6 @@ final class SystemStatusStoreTests: XCTestCase {
 
         // Then
         XCTAssertNil(fetchedPlugin)
-    }
-
-    func test_fetchSystemPluginsList_return_systemPlugins_correctly() {
-        // Given
-        let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
-        systemPlugin1.name = "Plugin 1"
-        systemPlugin1.siteID = sampleSiteID
-
-        let systemPlugin3 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
-        systemPlugin3.name = "Plugin 3"
-        systemPlugin3.siteID = sampleSiteID
-
-        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        // When
-        let systemPluginResult: Yosemite.SystemPlugin? = waitFor { promise in
-            let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: self.sampleSiteID,
-                                                                              systemPluginNameList: ["Plugin 2", "Plugin 3"]) { result in
-                promise(result)
-            }
-            store.onAction(action)
-        }
-
-        // Then
-        XCTAssertEqual(systemPluginResult?.name, "Plugin 3")
     }
 
     func test_fetchSystemPluginWithPath_returns_plugin_when_matching_plugin_is_in_storage() {

@@ -839,13 +839,6 @@ public extension StorageType {
         return allObjects(ofType: SystemPlugin.self, matching: predicate, sortedBy: [descriptor])
     }
 
-    /// Returns a system plugin with a specified `siteID` and `name`
-    ///
-    func loadSystemPlugin(siteID: Int64, name: String) -> SystemPlugin? {
-        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.name == name
-        return firstObject(ofType: SystemPlugin.self, matching: predicate)
-    }
-
     /// Returns a system plugin with a specified `siteID` and `path`.
     ///
     /// - Parameters:

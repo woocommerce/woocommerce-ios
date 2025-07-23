@@ -190,16 +190,6 @@ private struct OrderDetailStoreManagerFactory {
             }
         }
 
-        // Need to sync plugins first
-        storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
-                onCompletion(nil)
-            default:
-                break
-            }
-        }
-
         storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
             switch action {
             case let .loadSubscriptions(_, onCompletion):

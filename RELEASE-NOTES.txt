@@ -17,6 +17,7 @@
 - [Internal] Shipping Labels: Optimize requests for syncing countries [https://github.com/woocommerce/woocommerce-ios/pull/15875]
 - [*] Shipping Labels: Display label size from account settings as default [https://github.com/woocommerce/woocommerce-ios/pull/15873]
 - [*] Shipping Labels: Ensured customs form validation enforces non-zero product weight to fix shipping rate loading failure. [https://github.com/woocommerce/woocommerce-ios/pull/15927]
+- [*] Shipping Labels: ITN number is now required for shipments with total value more than 2500. [https://github.com/woocommerce/woocommerce-ios/pull/15937]
 
 22.7
 -----

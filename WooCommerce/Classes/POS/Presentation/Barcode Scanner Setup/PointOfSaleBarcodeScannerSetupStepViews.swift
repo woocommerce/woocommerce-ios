@@ -229,7 +229,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
         )
         static let instruction = NSLocalizedString(
             "pos.barcodeScannerSetup.error.instruction",
-            value: "Please check the scanner's manual and reset it \nto factory settings, then retry the set up flow.",
+            value: "Please check the scanner's manual and reset it to factory settings, then retry set up flow.",
             comment: "Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps"
         )
     }

@@ -9,8 +9,6 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
     @Published var hsTariffNumber: String = ""
     @Published var valuePerUnit: String = ""
     @Published var weightPerUnit: String = ""
-    // Useful to determine externally if the shipping requires an ITN
-    @Published var hsTariffNumberTotalValue: (String, Decimal)?
 
     @Published private var originCountryCode: String?
 
@@ -31,13 +29,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     @Published private(set) var countries: [Country] = []
 
-    var totalValue: Decimal {
-        guard currencySymbol == "$",
-              let valuePerUnitDecimal = Decimal(string: valuePerUnit) else {
-            return 0
-        }
-        return valuePerUnitDecimal * itemQuantity
-    }
+    @Published private(set) var totalValue: Decimal = 0
 
     /// View model for selecting a country from a list.
     var countrySelectorVM: CountrySelectorViewModel {
@@ -99,7 +91,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         combineToPreselectCountry()
         combineRequiredInformationIsEntered()
-        combineHSTariffNumberTotalValue()
+        combineTotalItemValue()
     }
 }
 
@@ -145,22 +137,19 @@ private extension WooShippingCustomsItemViewModel {
             .store(in: &cancellables)
     }
 
-    func combineHSTariffNumberTotalValue() {
-        Publishers.CombineLatest($valuePerUnit, $hsTariffNumber)
-            .sink { [weak self] valuePerUnit, hsTariffNumber in
-                guard let self = self else { return }
-
-                guard self.currencySymbol == "$",
-                      let valuePerUnitDecimal = Decimal(string: valuePerUnit),
-                      hsTariffNumber.isNotEmpty,
-                      isValidTariffNumber else {
-                    self.hsTariffNumberTotalValue = nil
-                    return
-                }
-
-                self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * itemQuantity)
+    func combineTotalItemValue() {
+        $valuePerUnit.map { [weak self] valuePerUnit in
+            guard
+                let self,
+                currencySymbol == "$",
+                let valuePerUnitDecimal = Decimal(string: valuePerUnit)
+            else {
+                return 0
             }
-            .store(in: &cancellables)
+
+            return valuePerUnitDecimal * itemQuantity
+        }
+        .assign(to: &$totalValue)
     }
 
     /// Specifically introduced to check for a `0` value

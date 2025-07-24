@@ -128,10 +128,26 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerTestBarcodeView {
     enum Localization {
-        static let title = "Test your scanner"
-        static let instruction = "Scan the barcode to test your scanner"
-        static let timeoutTitle = "No scan data found yet"
-        static let timeoutInstruction = "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.title",
+            value: "Test your scanner",
+            comment: "Title for the scanner testing step"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.instruction",
+            value: "Scan the barcode to test your scanner",
+            comment: "Instruction for testing the scanner by scanning a barcode"
+        )
+        static let timeoutTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.timeout.title",
+            value: "No scan data found yet",
+            comment: "Title shown when scanner test times out without detecting a scan"
+        )
+        static let timeoutInstruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.timeout.instruction",
+            value: "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again.",
+            comment: "Instruction shown when scanner test times out, suggesting troubleshooting steps"
+        )
     }
 }
 

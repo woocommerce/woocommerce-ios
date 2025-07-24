@@ -35,11 +35,16 @@ struct PointOfSaleBarcodeScannerSetupSelectionView: View {
 // MARK: - Private Localization Extensions
 private extension PointOfSaleBarcodeScannerSetupSelectionView {
     enum Localization {
-        //TODO: WOOMOB-792
-        // Note that "pos.barcodeScannerSetup.introMessage" was previously sent for translation, so don't reuse that.
-        static let setupIntroMessage = "Select a model from the list:"
+        static let setupIntroMessage = NSLocalizedString(
+            "pos.barcodeScannerSetup.selection.introMessage",
+            value: "Select a model from the list:",
+            comment: "Instruction message for selecting a barcode scanner model from the list"
+        )
 
-        // Note that "pos.barcodeScannerSetup.heading" was previously sent to translation – don't reuse
-        static let setupHeading = "Set up a barcode scanner"
+        static let setupHeading = NSLocalizedString(
+            "pos.barcodeScannerSetup.selection.heading",
+            value: "Set up a barcode scanner",
+            comment: "Heading for the barcode scanner setup selection screen"
+        )
     }
 }

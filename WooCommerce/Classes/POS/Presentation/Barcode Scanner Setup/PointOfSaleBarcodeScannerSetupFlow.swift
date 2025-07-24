@@ -457,7 +457,7 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
 
         static let scannerSetUpBarcodeStepTitleFormat = NSLocalizedString(
             "pos.barcodeScannerSetup.scanner.setup.title.format",
-            value: "Scanner Setup",
+            value: "Scanner setup",
             comment: "Title format for barcode scanner setup step"
         )
         static let setUpBarcodeHIDStepInstruction = NSLocalizedString(

@@ -120,18 +120,28 @@ private extension WooShippingCustomsFormViewModel {
             }
             .assign(to: &$isMissingITN)
 
+        let totalItemValue = $itemsViewModels
+           .map { childViewModels in
+               childViewModels.map { $0.$totalValue.eraseToAnyPublisher() }
+           }
+           .flatMap { childPublishers in
+               childPublishers.combineLatest()
+           }
+           .map { values in
+               return values.reduce(0) { partialResult, value in
+                   return partialResult + value
+               }
+           }
+
         $internationalTransactionNumber.combineLatest(
-            $itemsViewModels,
+            totalItemValue,
             $destinationCountryCode)
         .map { input -> ITNValidationError? in
-            let (itn, items, countryCode) = input
+            let (itn, totalItemValue, countryCode) = input
             guard itn.isEmpty else {
                 return ITNNumberValidator.isValid(itn) ? nil : .invalidFormat
             }
 
-            let totalItemValue = items.reduce(0, { sum, item in
-                sum + item.totalValue
-            })
             if totalItemValue > Constants.minimumValueForRequiredITN {
                 return .missingForTotalShipmentValue
             }

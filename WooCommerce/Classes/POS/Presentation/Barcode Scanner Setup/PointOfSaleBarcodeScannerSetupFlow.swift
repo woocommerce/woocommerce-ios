@@ -179,7 +179,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerBarcodeView(
                             title: Localization.scannerSetUpBarcodeStepTitleFormat,
                             instruction: Localization.setUpBarcodeHIDStepInstruction,
-                            barcode: .tera12002DHIDBarcode)
+                            barcode: .netum1228BCHIDBarcode)
                     },
                     transitions: [
                         .next: .setupBarcodePair,
@@ -190,7 +190,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
                         PointOfSaleBarcodeScannerBarcodeView(
                             title: Localization.scannerSetUpBarcodeStepTitleFormat,
                             instruction: Localization.setUpBarcodePairStepInstruction,
-                            barcode: .tera12002DPairBarcode)
+                            barcode: .netum1228BCPairBarcode)
                     },
                     transitions: [
                         .next: .pairing,

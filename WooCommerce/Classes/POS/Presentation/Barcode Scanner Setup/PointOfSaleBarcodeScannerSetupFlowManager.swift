@@ -12,6 +12,10 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     private let analytics: Analytics
     private var keyboardObserver: NSObjectProtocol?
 
+    var currentStepKey: String? {
+        currentFlow?.currentStepKey.rawValue
+    }
+
     init(isPresented: Binding<Bool>, analytics: Analytics = ServiceLocator.analytics) {
         self._isPresented = isPresented
         self.analytics = analytics

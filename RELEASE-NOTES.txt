@@ -16,6 +16,7 @@
 - [*] Shipping Labels: Optimize data loading on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15919]
 - [*] Shipping Labels: Cache settings and origin addresses to improve loading experience for purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15935]
 - [internal] Optimized assets for app size reduction [https://github.com/woocommerce/woocommerce-ios/pull/15881]
+- [*] Shipping Labels: Allow dots in HS tariff number input field for customs settings [https://github.com/woocommerce/woocommerce-ios/pull/15933]
 
 22.8
 -----

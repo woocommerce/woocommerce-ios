@@ -211,7 +211,7 @@ private extension WooShippingCustomsFormViewModel {
                     quantity: $0.itemQuantity,
                     value: Double($0.valuePerUnit) ?? 0,
                     weight: Double($0.weightPerUnit) ?? 0,
-                    hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
+                    hsTariffNumber: $0.isValidTariffNumber ? $0.sanitizedHSTariffNumber : "",
                     originCountry: $0.selectedCountry?.code ?? "",
                     productID: $0.itemProductID
                 )

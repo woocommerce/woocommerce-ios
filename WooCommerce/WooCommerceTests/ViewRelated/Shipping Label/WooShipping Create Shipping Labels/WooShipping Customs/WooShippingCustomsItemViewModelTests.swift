@@ -109,4 +109,41 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.0, viewModel.hsTariffNumber)
         XCTAssertEqual(viewModel.hsTariffNumberTotalValue?.1, Decimal(string: viewModel.valuePerUnit)! * 2)
     }
+
+    func test_isNumberValid_whenGivenValidTariffNumbers_shouldReturnTrue() {
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("123456"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("12.34.56"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("12.34.56.78"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("12.34.56.78.90"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("12.34.56.78.90.12"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("123456789012"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("12.345.678.90"))
+        XCTAssertTrue(HSTariffNumberValidator.isNumberValid("1.2.3.4.5.6"))
+    }
+
+    func test_isNumberValid_whenGivenInvalidTariffNumbers_shouldReturnFalse() {
+        // Less than 6 digits
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12345"))
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12.34.5"))
+
+        // More than 12 digits
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("1234567890123"))
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12.34.56.78.90.123"))
+
+        // Invalid characters
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12345a"))
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12.34.5a"))
+
+        // Invalid structure
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid("12.34..56"))
+        XCTAssertFalse(HSTariffNumberValidator.isNumberValid(".123456"))
+    }
+
+    func test_hsTariffNumber_sanitize_whenGivenStringWithNonDigits_shouldReturnOnlyDigits() {
+        XCTAssertEqual(HSTariffNumberValidator.sanitize("12.34.56"), "123456")
+        XCTAssertEqual(HSTariffNumberValidator.sanitize("12a34b56c"), "123456")
+        XCTAssertEqual(HSTariffNumberValidator.sanitize("...123---456..."), "123456")
+        XCTAssertEqual(HSTariffNumberValidator.sanitize("123456"), "123456")
+        XCTAssertEqual(HSTariffNumberValidator.sanitize(""), "")
+    }
 }

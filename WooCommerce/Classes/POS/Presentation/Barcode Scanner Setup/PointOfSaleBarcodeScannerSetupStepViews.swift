@@ -190,7 +190,7 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
     enum Localization {
         static let title = NSLocalizedString(
             "pos.barcodeScannerSetup.complete.title",
-            value: "Scanner setup!",
+            value: "Scanner set up!",
             comment: "Title shown when scanner setup is successfully completed"
         )
         static let instruction = NSLocalizedString(

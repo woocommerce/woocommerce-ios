@@ -41,7 +41,6 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
-            // Temporary image until finalised assets are available
             Image(decorative: PointOfSaleAssets.gears.imageName)
                 .resizable()
                 .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
@@ -54,7 +53,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 
                 Text(instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
 
@@ -68,7 +67,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             } label: {
                 Text(Localization.settingsButtonTitle)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posMain)
+                    .foregroundColor(.posPrimaryContainer)
                     .underline()
             }
             .padding(.top, POSSpacing.large)

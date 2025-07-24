@@ -8,10 +8,22 @@ public enum Plugin: Equatable, CaseIterable {
     case wooCompositeProducts
     case wooGiftCards
     case wooPayments
+    case wooPayPal
     case wooProductBundles
     case wooSubscriptions
     case wooShipmentTracking
     case wooSquare
+
+    /// Creates a Plugin from a plugin file name in the plugin path.
+    /// Returns nil if the file name doesn't match any known Plugin case.
+    ///
+    /// - Parameter systemPlugin: The SystemPlugin to convert.
+    public init?(fileNameWithoutExtension: String) {
+        guard let plugin = Plugin.allCases.first(where: { $0.fileNameWithoutExtension == fileNameWithoutExtension }) else {
+            return nil
+        }
+        self = plugin
+    }
 
     /// Creates a Plugin from a SystemPlugin by matching the plugin file name in the plugin path.
     /// Returns nil if the SystemPlugin doesn't match any known Plugin case.
@@ -19,10 +31,7 @@ public enum Plugin: Equatable, CaseIterable {
     /// - Parameter systemPlugin: The SystemPlugin to convert.
     public init?(systemPlugin: SystemPlugin) {
         let pluginFileNameWithoutExtension = systemPlugin.fileNameWithoutExtension
-        guard let plugin = Plugin.allCases.first(where: { $0.fileNameWithoutExtension == pluginFileNameWithoutExtension }) else {
-            return nil
-        }
-        self = plugin
+        self.init(fileNameWithoutExtension: pluginFileNameWithoutExtension)
     }
 
     /// File name without extension in the plugin path.
@@ -43,6 +52,8 @@ public enum Plugin: Equatable, CaseIterable {
             return "woocommerce-gift-cards"
         case .wooPayments:
             return "woocommerce-payments"
+        case .wooPayPal:
+            return "woocommerce-paypal-payments"
         case .wooProductBundles:
             return "woocommerce-product-bundles"
         case .wooSubscriptions:

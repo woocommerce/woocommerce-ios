@@ -1219,11 +1219,11 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     func test_CardPresentPaymentsPlugin_has_expected_name_and_fileNames() {
         XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.pluginName, "WooPayments")
-        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.fileNameWithoutExtension, "woocommerce-payments")
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.plugin, .wooPayments)
         XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension, "woocommerce-payments/woocommerce-payments")
 
         XCTAssertEqual(CardPresentPaymentsPlugin.stripe.pluginName, "WooCommerce Stripe Gateway")
-        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.fileNameWithoutExtension, "woocommerce-gateway-stripe")
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.plugin, .stripe)
         XCTAssertEqual(CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension, "woocommerce-gateway-stripe/woocommerce-gateway-stripe")
     }
 }

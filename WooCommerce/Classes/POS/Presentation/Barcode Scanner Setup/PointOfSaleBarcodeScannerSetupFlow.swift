@@ -104,11 +104,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
 
     private func createFlowSteps(for scannerType: PointOfSaleBarcodeScannerType) -> [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] {
         switch scannerType {
-        case .socketS720:
-            return [
-                .setupBarcodeHID: createWelcomeStep(title: "Socket S720 Setup")
-                // TODO: Add more steps for Socket S720 WOOMOB-698
-            ]
         case .starBSH20B:
             return [
                 .setupBarcodeHID: PointOfSaleBarcodeScannerSetupStep(
@@ -177,6 +172,46 @@ class PointOfSaleBarcodeScannerSetupFlow {
                 .complete: setupCompleteStep(),
                 .setupProducts: setupProductsStep()
             ]
+        case .netum1228BC:
+            return [
+                .setupBarcodeHID: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerBarcodeView(
+                            title: Localization.scannerSetUpBarcodeStepTitleFormat,
+                            instruction: Localization.setUpBarcodeHIDStepInstruction,
+                            barcode: .tera12002DHIDBarcode)
+                    },
+                    transitions: [
+                        .next: .setupBarcodePair,
+                    ]
+                ),
+                .setupBarcodePair: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerBarcodeView(
+                            title: Localization.scannerSetUpBarcodeStepTitleFormat,
+                            instruction: Localization.setUpBarcodePairStepInstruction,
+                            barcode: .tera12002DPairBarcode)
+                    },
+                    transitions: [
+                        .next: .pairing,
+                        .back: .setupBarcodeHID
+                    ]
+                ),
+                .pairing: PointOfSaleBarcodeScannerSetupStep(
+                    content: {
+                        PointOfSaleBarcodeScannerPairingView(scanner: scannerType)
+                    },
+                    transitions: [
+                        .next: .test,
+                        .back: .setupBarcodePair
+                    ]
+                ),
+                .test: testScanStep(barcode: .ean13),
+                .testScanTimedOut: testScanTimeOutStep(barcode: .ean13),
+                .testScanFailed: testScanFailedStep(),
+                .complete: setupCompleteStep(),
+                .setupProducts: setupProductsStep()
+            ]
         case .other:
             return [
                 .setupInformation: PointOfSaleBarcodeScannerSetupStep(
@@ -194,7 +229,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
 
     private func initialStep(for scannerType: PointOfSaleBarcodeScannerType) -> PointOfSaleBarcodeScannerStepID {
         switch scannerType {
-        case .socketS720, .starBSH20B, .tera12002D:
+        case .starBSH20B, .tera12002D, .netum1228BC:
             return .setupBarcodeHID
         case .other:
             return .setupInformation

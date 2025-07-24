@@ -59,16 +59,16 @@ struct PointOfSaleBarcodeScannerSetup: View {
     private var scannerOptions: [PointOfSaleBarcodeScannerSetupFlowOption] {
         [
             PointOfSaleBarcodeScannerSetupFlowOption(
-                title: Localization.socketS720Title,
-                scannerType: .socketS720
-            ),
-            PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.starBSH20BTitle,
                 scannerType: .starBSH20B
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.tera12002DTitle,
                 scannerType: .tera12002D
+            ),
+            PointOfSaleBarcodeScannerSetupFlowOption(
+                title: Localization.netum1228BCTitle,
+                scannerType: .netum1228BC
             ),
             PointOfSaleBarcodeScannerSetupFlowOption(
                 title: Localization.otherTitle,
@@ -87,11 +87,6 @@ private enum Constants {
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetup {
     enum Localization {
-        static let socketS720Title = NSLocalizedString(
-            "pos.barcodeScannerSetup.socketS720.title",
-            value: "Socket S720",
-            comment: "Title for Socket S720 scanner option in barcode scanner setup"
-        )
         static let starBSH20BTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.starBSH20B.title",
             value: "Star BSH-20B",
@@ -101,6 +96,11 @@ private extension PointOfSaleBarcodeScannerSetup {
             "pos.barcodeScannerSetup.tera12002D.title",
             value: "Tera 1200 2D",
             comment: "Title for Tera 1200 2D scanner option in barcode scanner setup"
+        )
+        static let netum1228BCTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.netum1228BC.title",
+            value: "Netum 1228BC",
+            comment: "Title for Netum 1228BC scanner option in barcode scanner setup"
         )
         static let otherTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.other.title",

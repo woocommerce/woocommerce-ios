@@ -222,8 +222,15 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     }
 
     private enum Localization {
-        static let title = "Scanning issue found"
-        static let instruction = "Please check the scanner’s manual and reset it \n" +
-        "to factory settings, then retry the set up flow."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.title",
+            value: "Scanning issue found",
+            comment: "Title shown when there's an error during scanner setup"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.instruction",
+            value: "Please check the scanner's manual and reset it \nto factory settings, then retry the set up flow.",
+            comment: "Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps"
+        )
     }
 }

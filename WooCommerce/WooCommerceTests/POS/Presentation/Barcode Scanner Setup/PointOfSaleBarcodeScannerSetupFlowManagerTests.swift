@@ -84,7 +84,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         // Then it tracks the scanner connected event
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected.rawValue)
-        #expect(event?.properties["scanner"] as? String == "netum_1228bc")
+        #expect(event?.properties["scanner"] as? String == "Netum_1228BC")
     }
 
     @available(iOS 17.0, *)

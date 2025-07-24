@@ -20,6 +20,8 @@ enum PointOfSaleAssets: CaseIterable {
     case starBsh20SetupBarcode
     case tera12002DHIDBarcode
     case tera12002DPairBarcode
+    case netum1228BCHIDBarcode
+    case netum1228BCPairBarcode
     case testEan13Barcode
 
     var imageName: String {
@@ -62,6 +64,10 @@ enum PointOfSaleAssets: CaseIterable {
             "tera-1200-2d-hid-barcode"
         case .tera12002DPairBarcode:
             "tera-1200-2d-pair-barcode"
+        case .netum1228BCHIDBarcode:
+            "netum-1228bc-hid-barcode"
+        case .netum1228BCPairBarcode:
+            "netum-1228bc-pair-barcode"
         }
     }
 }

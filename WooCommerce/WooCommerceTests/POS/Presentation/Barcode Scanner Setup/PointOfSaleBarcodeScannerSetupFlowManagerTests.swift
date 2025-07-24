@@ -75,7 +75,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         )
 
         // Setup a scanner flow
-        sut.selectScanner(.socketS720)
+        sut.selectScanner(.netum1228BC)
         mockAnalytics.events.removeAll() // Clear the selection event
 
         // When keyboard connected notification is posted
@@ -84,7 +84,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         // Then it tracks the scanner connected event
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected.rawValue)
-        #expect(event?.properties["scanner"] as? String == "Socket_S720")
+        #expect(event?.properties["scanner"] as? String == "Netum_1228BC")
     }
 
     @available(iOS 17.0, *)

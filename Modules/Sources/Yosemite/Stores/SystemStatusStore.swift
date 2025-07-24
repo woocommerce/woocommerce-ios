@@ -29,8 +29,6 @@ public final class SystemStatusStore: Store {
         switch action {
         case .synchronizeSystemInformation(let siteID, let onCompletion):
             synchronizeSystemInformation(siteID: siteID, completionHandler: onCompletion)
-        case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
-            fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
         case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
             fetchSystemPluginWithPath(siteID: siteID,
                                       pluginPath: pluginPath,
@@ -87,17 +85,6 @@ private extension SystemStatusStore {
     func updateStoreID(siteID: Int64, readonlySystemInformation: SystemStatus) {
         let action = AppSettingsAction.setStoreID(siteID: siteID, id: readonlySystemInformation.environment?.storeID)
         dispatcher.dispatch(action)
-    }
-
-
-    /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.
-    /// Useful when a plugin has had multiple names.
-    ///
-    func fetchSystemPlugin(siteID: Int64, systemPluginNameList: [String], completionHandler: @escaping (SystemPlugin?) -> Void) {
-        let matchingPlugins = storageManager.viewStorage.loadSystemPlugins(siteID: siteID, matching: systemPluginNameList)
-            .map { $0.toReadOnly() }
-        let matchingPlugin = matchingPlugins.first { $0.active } ?? matchingPlugins.first
-        completionHandler(matchingPlugin)
     }
 
     func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {

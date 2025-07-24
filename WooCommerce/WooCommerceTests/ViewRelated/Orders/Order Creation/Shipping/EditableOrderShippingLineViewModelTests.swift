@@ -4,6 +4,7 @@ import Yosemite
 import Storage
 @testable import WooCommerce
 
+@MainActor
 final class EditableOrderShippingLineViewModelTests: XCTestCase {
     var viewModel: EditableOrderShippingLineViewModel!
     var stores: MockStoresManager!

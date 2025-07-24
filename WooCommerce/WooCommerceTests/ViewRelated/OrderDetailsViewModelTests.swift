@@ -725,8 +725,6 @@ private extension OrderDetailsViewModelTests {
     func whenFetchingSystemPlugin(path: String? = nil, thenReturn plugin: SystemPlugin?) {
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(plugin)
             case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion):
                 if let path, path != pluginPath {
                     onCompletion(nil)

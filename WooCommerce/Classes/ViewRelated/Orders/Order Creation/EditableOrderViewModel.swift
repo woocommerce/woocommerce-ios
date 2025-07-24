@@ -450,6 +450,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let quantityDebounceDuration: Double
 
+    @MainActor
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,

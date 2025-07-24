@@ -24,7 +24,7 @@ enum POSIneligibleReason: Equatable {
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureSwitchDisabled
-    case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
+    case unsupportedCurrency(countryCode: CountryCode, supportedCurrencies: [CurrencyCode])
     case selfDeallocated
 }
 
@@ -212,7 +212,7 @@ private extension POSTabEligibilityChecker {
     enum SiteSettingsIneligibleReason {
         case siteSettingsNotAvailable
         case unsupportedCountry(supportedCountries: [CountryCode])
-        case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
+        case unsupportedCurrency(countryCode: CountryCode, supportedCurrencies: [CurrencyCode])
     }
 
     func checkSiteSettingsEligibility() async -> POSEligibilityState {
@@ -227,8 +227,8 @@ private extension POSTabEligibilityChecker {
                 // changed to an unsupported country during the session. In this case, we return an ineligible reason that prompts the merchant to
                 // relaunch the app.
                 return .ineligible(reason: .siteSettingsNotAvailable)
-            case let .unsupportedCurrency(supportedCurrencies: supportedCurrencies):
-                return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrencies))
+            case let .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies):
+                return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies))
             }
         }
     }
@@ -270,7 +270,7 @@ private extension POSTabEligibilityChecker {
 
         let supportedCurrenciesForCountry = supportedCurrencies[countryCode] ?? []
         guard supportedCurrenciesForCountry.contains(currencyCode) else {
-            return .ineligible(reason: .unsupportedCurrency(supportedCurrencies: supportedCurrenciesForCountry))
+            return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrenciesForCountry))
         }
         return .eligible
     }

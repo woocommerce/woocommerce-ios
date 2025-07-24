@@ -2,6 +2,7 @@ import Testing
 import WooFoundation
 @testable import Yosemite
 
+@MainActor
 struct PluginsServiceTests {
     private var storageManager: MockStorageManager!
     private var sut: PluginsService!

@@ -112,8 +112,8 @@ struct POSIneligibleView: View {
     private var suggestionText: String {
         switch reason {
         case .unsupportedIOSVersion:
-            return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion",
-                                     value: "Point of Sale requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
+            return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion.1",
+                                     value: "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
                                      comment: "Suggestion for unsupported iOS version: update iOS")
         case let .unsupportedWooCommerceVersion(minimumVersion):
             let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
@@ -123,29 +123,32 @@ struct POSIneligibleView: View {
                                      "%1$@ is a placeholder for the minimum required version.")
             return String.localizedStringWithFormat(format, minimumVersion)
         case .wooCommercePluginNotFound:
-            return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound.2",
-                                     value: "Please make sure the WooCommerce plugin is installed and activated from your WordPress admin. " +
-                                     "If there is still an issue, please contact support for assistance.",
+            return NSLocalizedString("pos.ineligible.suggestion.wooCommercePluginNotFound.3",
+                                     value: "We were unable to load the WooCommerce plugin info. Please make sure the WooCommerce plugin is installed " +
+                                     "and activated from your WordPress admin. If there is still an issue, contact support for assistance.",
                                      comment: "Suggestion for missing WooCommerce plugin: install plugin")
         case .featureSwitchDisabled:
-            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled.2",
+            return NSLocalizedString("pos.ineligible.suggestion.featureSwitchDisabled.3",
                                      value: "Point of Sale must be enabled to proceed. " +
-                                     "You can enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features.",
+                                     "Please enable the POS feature below or from your WordPress admin under WooCommerce settings > Advanced > Features " +
+                                     "and try again.",
                                      comment: "Suggestion for disabled feature switch: enable feature in WooCommerce settings")
-        case let .unsupportedCurrency(supportedCurrencies):
+        case let .unsupportedCurrency(countryCode, supportedCurrencies):
             let currencyList = supportedCurrencies.map { $0.rawValue }
             let formattedCurrencyList = ListFormatter.localizedString(byJoining: currencyList)
             let format = NSLocalizedString(
-                "pos.ineligible.suggestion.unsupportedCurrency",
-                value: "The POS system is not available for your store’s currency. It currently supports only %1$@. " +
+                "pos.ineligible.suggestion.unsupportedCurrency.1",
+                value: "The POS system is not available for your store’s currency. In %1$@, it currently supports only %2$@. " +
                 "Please check your store currency settings or contact support for assistance.",
                 comment: "Suggestion for unsupported currency with list of supported currencies. " +
-                "%1$@ is a placeholder for the localized list of supported currency codes."
+                "%1$@ is a placeholder for the localized country name, " +
+                "and %2$@ is a placeholder for the localized list of supported currency codes."
             )
-            return String.localizedStringWithFormat(format, formattedCurrencyList)
+            return String.localizedStringWithFormat(format, countryCode.readableCountry, formattedCurrencyList)
         case .siteSettingsNotAvailable:
-            return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable",
-                                     value: "Check your internet connection and try again. If the issue persists, please contact support.",
+            return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable.1",
+                                     value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
+                                     "If the issue persists, contact support for assistance.",
                                      comment: "Suggestion for site settings unavailable: check connection or contact support")
         case .selfDeallocated:
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
@@ -192,8 +195,8 @@ private extension POSIneligibleReason {
         switch self {
         case .featureSwitchDisabled:
             return NSLocalizedString(
-                "pos.ineligible.enable.pos.feature.and.refresh.button.title",
-                value: "Enable POS & Retry",
+                "pos.ineligible.enable.pos.feature.and.refresh.button.title.1",
+                value: "Enable POS feature",
                 comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
             )
         case .unsupportedIOSVersion,
@@ -216,7 +219,7 @@ private extension POSIneligibleReason {
 #Preview("Unsupported currency") {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
-            reason: .unsupportedCurrency(supportedCurrencies: [.USD]),
+            reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
             onRefresh: {}
         )
     }

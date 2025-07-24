@@ -1,6 +1,7 @@
 import Foundation
 
 public enum Plugin: Equatable, CaseIterable {
+    case jetpack
     case googleListingsAndAds
     case stripe
     case wooCommerce
@@ -28,6 +29,8 @@ public enum Plugin: Equatable, CaseIterable {
     /// Full plugin path is like `woocommerce/woocommerce.php`.
     var fileNameWithoutExtension: String {
         switch self {
+        case .jetpack:
+            return "jetpack"
         case .googleListingsAndAds:
             return "google-listings-and-ads"
         case .stripe:

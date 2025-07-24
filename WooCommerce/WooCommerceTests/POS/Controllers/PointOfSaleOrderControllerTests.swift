@@ -8,7 +8,7 @@ import struct Yosemite.OrderItem
 import struct Yosemite.OrderCouponLine
 import struct Yosemite.SystemPlugin
 import enum Yosemite.OrderAction
-import enum Yosemite.SystemStatusAction
+import protocol Yosemite.PluginsServiceProtocol
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
@@ -649,23 +649,21 @@ struct PointOfSaleOrderControllerTests {
         @available(iOS 17.0, *)
         @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockPluginsService = MockPluginsService()
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: "10.0.0-dev",
+                                                                                    active: true))
+
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 stores: mockStores,
-                                                 analytics: analytics)
+                                                 analytics: analytics,
+                                                 pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
-                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: "10.0.0-dev", active: true)
-                    onCompletion(plugin)
-                }
-            }
 
             // When
             try await sut.sendReceipt(recipientEmail: "test@example.com")
@@ -695,11 +693,16 @@ struct PointOfSaleOrderControllerTests {
         @available(iOS 17.0, *)
         @Test func sendReceipt_tracks_failure_with_eligible_for_pos_receipt() async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+            let mockPluginsService = MockPluginsService()
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: "10.0.0-dev",
+                                                                                    active: true))
+
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 stores: mockStores,
-                                                 analytics: analytics)
+                                                 analytics: analytics,
+                                                 pluginsService: mockPluginsService)
 
             receiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))
 
@@ -708,13 +711,6 @@ struct PointOfSaleOrderControllerTests {
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
-                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: "10.0.0-dev", active: true)
-                    onCompletion(plugin)
-                }
-            }
 
             // When
             do {
@@ -736,25 +732,21 @@ struct PointOfSaleOrderControllerTests {
         @Test("Eligible core plugin versions with feature flag enabled", arguments: Constants.eligibleWCPluginVersions)
         func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
             let mockReceiptService = MockReceiptService()
             let mockFeatureFlagService = MockFeatureFlagService()
+            let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: wcPluginVersion,
+                                                                                    active: true))
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 stores: mockStores,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService)
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
-                    #expect(systemPluginName == Constants.wcPluginName)
-                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: wcPluginVersion, active: true)
-                    onCompletion(plugin)
-                }
-            }
 
             // We need an existing order before we can update its email, and send a receipt:
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
@@ -774,24 +766,22 @@ struct PointOfSaleOrderControllerTests {
         )
         func sendReceipt_when_feature_flag_disabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
             let mockReceiptService = MockReceiptService()
             let mockFeatureFlagService = MockFeatureFlagService()
+            let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = false
+            // Plugin setup is irrelevant when feature flag is disabled
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: wcPluginVersion,
+                                                                                    active: true))
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 stores: mockStores,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService)
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, _, onCompletion) = action {
-                    Issue.record("Plugin check should be skipped when feature flag is disabled.")
-                    onCompletion(nil)
-                }
-            }
 
             // We need an existing order before we can update its email, and send a receipt:
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
@@ -808,25 +798,21 @@ struct PointOfSaleOrderControllerTests {
         @Test("Ineligible core plugin versions with feature flag enabled", arguments: Constants.ineligibleWCPluginVersions)
         func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
             let mockReceiptService = MockReceiptService()
             let mockFeatureFlagService = MockFeatureFlagService()
+            let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+            mockPluginsService.setMockPlugin(.wooCommerce,
+                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                    version: wcPluginVersion,
+                                                                                    active: true))
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 stores: mockStores,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService)
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, systemPluginName, onCompletion) = action {
-                    #expect(systemPluginName == Constants.wcPluginName)
-                    let plugin = SystemPlugin.fake().copy(name: systemPluginName, version: wcPluginVersion, active: true)
-                    onCompletion(plugin)
-                }
-            }
 
             // We need an existing order before we can update its email, and send a receipt:
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
@@ -842,29 +828,23 @@ struct PointOfSaleOrderControllerTests {
         @available(iOS 17.0, *)
         @Test("Unavailable core plugin with feature flag enabled",
               arguments: [
-                SystemPlugin.fake().copy(name: Constants.wcPluginName, active: false),
-                SystemPlugin.fake().copy(name: "Other plugin name", active: true),
+                SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", active: false),
                 nil
               ])
         func sendReceipt_when_feature_flag_enabled_and_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
             // Given
-            let mockStores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
             let mockReceiptService = MockReceiptService()
             let mockFeatureFlagService = MockFeatureFlagService()
+            let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+            mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 stores: mockStores,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService)
+                                                 featureFlagService: mockFeatureFlagService,
+                                                 pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
-
-            mockStores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                if case let .fetchSystemPlugin(_, _, onCompletion) = action {
-                    onCompletion(plugin)
-                }
-            }
 
             // We need an existing order before we can update its email, and send a receipt:
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
@@ -880,7 +860,6 @@ struct PointOfSaleOrderControllerTests {
         private enum Constants {
             static let eligibleWCPluginVersions = ["10.0.0", "10.0.0-dev", "10.0.0-beta", "10.0.1", "10.1"]
             static let ineligibleWCPluginVersions = ["9.9.0", "9.9.9", "9.9.9-beta.9", "9.9.9-dev"]
-            static let wcPluginName = "WooCommerce"
         }
     }
 }

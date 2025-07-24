@@ -33,7 +33,7 @@ enum PointOfSaleBarcodeScannerType {
         case .tera12002D:
             return "Tera_1200_2D"
         case .netum1228BC:
-            return "netum_1228bc"
+            return "Netum_1228BC"
         case .other:
             return "other"
         }

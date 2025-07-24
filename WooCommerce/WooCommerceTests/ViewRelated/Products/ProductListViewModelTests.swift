@@ -345,11 +345,11 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
-        pluginsService.pluginToReturnForLoadPluginInStorage = .fake().copy(
+        pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
             siteID: sampleSiteID,
             plugin: "woocommerce-square/woocommerce-square.php",
             active: true
-        )
+        ))
 
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,
@@ -373,11 +373,11 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
-        pluginsService.pluginToReturnForLoadPluginInStorage = .fake().copy(
+        pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
             siteID: sampleSiteID,
             plugin: "woocommerce-square/woocommerce-square.php",
             active: false
-        )
+        ))
 
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,
@@ -401,7 +401,7 @@ final class ProductListViewModelTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
-        pluginsService.pluginToReturnForLoadPluginInStorage = nil // Plugin not found
+        pluginsService.pluginsToReturnForLoadPluginInStorageByPlugin = [:]
 
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,

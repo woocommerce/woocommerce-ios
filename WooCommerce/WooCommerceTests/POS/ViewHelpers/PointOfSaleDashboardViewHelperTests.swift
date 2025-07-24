@@ -67,7 +67,7 @@ struct PointOfSaleDashboardViewHelperTests {
     @Test(arguments: [
         POSIneligibleReason.unsupportedIOSVersion,
         POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
-        POSIneligibleReason.unsupportedCurrency(supportedCurrencies: [.USD, .GBP]),
+        POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD, .GBP]),
         POSIneligibleReason.siteSettingsNotAvailable,
         POSIneligibleReason.wooCommercePluginNotFound,
         POSIneligibleReason.featureSwitchDisabled,

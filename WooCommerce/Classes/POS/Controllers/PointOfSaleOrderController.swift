@@ -4,6 +4,7 @@ import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
+import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
@@ -11,9 +12,10 @@ import struct Yosemite.POSCoupon
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
-import enum Yosemite.SystemStatusAction
+import enum Yosemite.Plugin
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
@@ -45,6 +47,7 @@ protocol PointOfSaleOrderControllerProtocol {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
@@ -53,6 +56,7 @@ protocol PointOfSaleOrderControllerProtocol {
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.pluginsService = pluginsService
         self.celebration = celebration
     }
 
@@ -65,6 +69,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let analytics: Analytics
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -104,6 +109,7 @@ protocol PointOfSaleOrderControllerProtocol {
         })
     }
 
+    @MainActor
     func sendReceipt(recipientEmail: String) async throws {
         var isEligibleForPOSReceipt: Bool?
         do {
@@ -115,8 +121,8 @@ protocol PointOfSaleOrderControllerProtocol {
 
             let posReceiptEligibility: Bool
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
-                posReceiptEligibility = await isPluginSupported(
-                    POSReceiptEligibilityConstants.wcPluginName,
+                posReceiptEligibility = isPluginSupported(
+                    .wooCommerce,
                     minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
                     siteID: order.siteID
                 )
@@ -207,22 +213,18 @@ private extension PointOfSaleOrderController {
 @available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     @MainActor
-    func isPluginSupported(_ pluginName: String, minimumVersion: String, siteID: Int64) async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
-                // Plugin must be installed and active
-                guard let plugin, plugin.active, plugin.name == pluginName else {
-                    return continuation.resume(returning: false)
-                }
-
-                // If plugin version is higher than minimum required version, mark as eligible
-                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
-                                                                    minimumRequired: minimumVersion,
-                                                                    includesDevAndBetaVersions: true)
-                continuation.resume(returning: isSupported)
-            }
-            stores.dispatch(action)
+    func isPluginSupported(_ plugin: Plugin, minimumVersion: String, siteID: Int64) -> Bool {
+        // Plugin must be installed and active
+        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
+              systemPlugin.active else {
+            return false
         }
+
+        // If plugin version is higher than minimum required version, mark as eligible
+        let isSupported = VersionHelpers.isVersionSupported(version: systemPlugin.version,
+                                                            minimumRequired: minimumVersion,
+                                                            includesDevAndBetaVersions: true)
+        return isSupported
     }
 }
 
@@ -245,7 +247,6 @@ private extension PointOfSaleOrderController {
 @available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     enum POSReceiptEligibilityConstants {
-        static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "10.0.0"
     }
 }

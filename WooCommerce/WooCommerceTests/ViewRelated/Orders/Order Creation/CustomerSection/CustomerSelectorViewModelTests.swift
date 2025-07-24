@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import Networking
 
+@MainActor
 final class CustomerSelectorViewModelTests: XCTestCase {
     var viewModel: CustomerSelectorViewModel!
     var stores: MockStoresManager!
@@ -15,64 +16,33 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
     }
 
-    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_lower_than_minimum_then_calls_action_with_right_parameters_and_return_false() {
+    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_lower_than_minimum_then_return_false() {
         // Given
-        var passedParameters: (Int64, String)?
         let returnedVersion = "7.9.9"
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(version: returnedVersion, active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(siteID, pluginName, onCompletion):
-                passedParameters = (siteID, pluginName)
-
-                onCompletion(SystemPlugin.fake().copy(version: returnedVersion))
-            default:
-                break
-            }
-        }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores, pluginsService: mockPluginsService) { _ in }
 
         // When
-        var isEligible = true
-        waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { result in
-                isEligible = result
-
-                expectation.fulfill()
-            }
-        }
+        let isEligible = viewModel.isEligibleForAdvancedSearch()
 
         // Then
         XCTAssertFalse(isEligible)
-        XCTAssertEqual(passedParameters?.0, sampleSiteID)
-        XCTAssertEqual(passedParameters?.1, "WooCommerce")
     }
 
     func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_the_minimum_then_returns_true() {
         // Given
         let returnedVersion = "8.0.0-beta.1"
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(version: returnedVersion, active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: true))
-            default:
-                break
-            }
-        }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores, pluginsService: mockPluginsService) { _ in }
 
         // When
-        var isEligible = false
-        waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { result in
-                isEligible = result
-
-                expectation.fulfill()
-            }
-        }
+        let isEligible = viewModel.isEligibleForAdvancedSearch()
 
         // Then
         XCTAssertTrue(isEligible)
@@ -81,27 +51,14 @@ final class CustomerSelectorViewModelTests: XCTestCase {
     func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_then_returns_true() {
         // Given
         let returnedVersion = "14.2.5"
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(version: returnedVersion, active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: true))
-            default:
-                break
-            }
-        }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores, pluginsService: mockPluginsService) { _ in }
 
         // When
-        var isEligible = false
-        waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { result in
-                isEligible = result
-
-                expectation.fulfill()
-            }
-        }
+        let isEligible = viewModel.isEligibleForAdvancedSearch()
 
         // Then
         XCTAssertTrue(isEligible)
@@ -110,27 +67,14 @@ final class CustomerSelectorViewModelTests: XCTestCase {
     func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_but_plugin_is_not_active_then_returns_false() {
         // Given
         let returnedVersion = "14.2.5"
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(version: returnedVersion, active: false)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
 
-        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: false))
-            default:
-                break
-            }
-        }
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores, pluginsService: mockPluginsService) { _ in }
 
         // When
-        var isEligible = true
-        waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { result in
-                isEligible = result
-
-                expectation.fulfill()
-            }
-        }
+        let isEligible = viewModel.isEligibleForAdvancedSearch()
 
         // Then
         XCTAssertFalse(isEligible)

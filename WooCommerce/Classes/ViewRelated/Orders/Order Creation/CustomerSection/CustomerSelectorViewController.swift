@@ -87,53 +87,49 @@ extension CustomerSelectorViewController {
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        viewModel.isEligibleForAdvancedSearch(completion: { [weak self] isEligible in
-            if isEligible {
-                self?.viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-                    guard let self = self else {
-                        return
-                    }
+        if viewModel.isEligibleForAdvancedSearch() {
+            viewModel.loadCustomersListData(onCompletion: { [weak self] result in
+                guard let self = self else {
+                    return
+                }
 
-                    self.removeGhostContent()
-                    switch result {
-                    case .success(let thereAreResults):
-                        if thereAreResults {
-                            self.addSearchViewController(
-                                loadResultsWhenSearchTermIsEmpty: true,
-                                showSearchFilters: false,
-                                showGuestLabel: configuration.showGuestLabel,
-                                shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
-                                disallowCreatingCustomer: configuration.disallowCreatingCustomer
-                            )
-                            self.configureActivityIndicator()
-                        } else {
-                            if configuration.disallowCreatingCustomer {
-                                self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
-
-                            } else {
-                                self.showEmptyState(with: self.emptyStateConfiguration())
-                            }
-                        }
-                    case .failure:
-                        self.showEmptyState(with: self.errorStateConfiguration())
-                    }
-                })
-            } else {
-                guard let self else { return }
                 self.removeGhostContent()
-                self.addSearchViewController(
-                    loadResultsWhenSearchTermIsEmpty: false,
-                    showSearchFilters: true,
-                    showGuestLabel: self.configuration.showGuestLabel,
-                    shouldTrackCustomerAdded: self.configuration.shouldTrackCustomerAdded,
-                    disallowCreatingCustomer: self.configuration.disallowCreatingCustomer,
-                    onAddCustomerDetailsManually: {
-                        self.presentNewCustomerDetailsFlow()
-                    })
-                self.configureActivityIndicator()
+                switch result {
+                case .success(let thereAreResults):
+                    if thereAreResults {
+                        self.addSearchViewController(
+                            loadResultsWhenSearchTermIsEmpty: true,
+                            showSearchFilters: false,
+                            showGuestLabel: configuration.showGuestLabel,
+                            shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
+                            disallowCreatingCustomer: configuration.disallowCreatingCustomer
+                        )
+                        self.configureActivityIndicator()
+                    } else {
+                        if configuration.disallowCreatingCustomer {
+                            self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
 
-            }
-        })
+                        } else {
+                            self.showEmptyState(with: self.emptyStateConfiguration())
+                        }
+                    }
+                case .failure:
+                    self.showEmptyState(with: self.errorStateConfiguration())
+                }
+            })
+        } else {
+            removeGhostContent()
+            addSearchViewController(
+                loadResultsWhenSearchTermIsEmpty: false,
+                showSearchFilters: true,
+                showGuestLabel: self.configuration.showGuestLabel,
+                shouldTrackCustomerAdded: self.configuration.shouldTrackCustomerAdded,
+                disallowCreatingCustomer: self.configuration.disallowCreatingCustomer,
+                onAddCustomerDetailsManually: {
+                    self.presentNewCustomerDetailsFlow()
+                })
+            configureActivityIndicator()
+        }
     }
 
     func configureNavigation() {

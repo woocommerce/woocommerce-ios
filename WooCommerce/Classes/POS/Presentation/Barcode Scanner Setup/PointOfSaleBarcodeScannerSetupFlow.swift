@@ -9,7 +9,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
     private let onBackToSelection: () -> Void
     fileprivate let onDismiss: () -> Void
     private var flowSteps: [PointOfSaleBarcodeScannerStepID: PointOfSaleBarcodeScannerSetupStep] = [:]
-    private var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
+    private(set) var currentStepKey: PointOfSaleBarcodeScannerStepID = .setupBarcodeHID
     private let analytics: Analytics
 
     init(scannerType: PointOfSaleBarcodeScannerType,

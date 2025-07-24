@@ -240,14 +240,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
         return currentStepKey.analyticsValue
     }
 
-    private func createWelcomeStep(title: String) -> PointOfSaleBarcodeScannerSetupStep {
-        PointOfSaleBarcodeScannerSetupStep(
-            title: title,
-            content: { PointOfSaleBarcodeScannerWelcomeView(title: title) },
-            buttonCustomization: PointOfSaleBarcodeScannerWelcomeButtonCustomization()
-        )
-    }
-
     // MARK: - Steps
 
     private func testScanStep(

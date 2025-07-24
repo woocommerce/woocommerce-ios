@@ -69,6 +69,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     private let currencyFormatter: CurrencyFormatter
 
+    private let pluginsService: PluginsServiceProtocol
+
     /// This is the order status that we will use to keep the order in sync with the remote source.
     ///
     private var baseSyncStatus: OrderStatusEnum = .pending
@@ -98,14 +100,17 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
     // MARK: Initializers
 
 
+    @MainActor
     init(siteID: Int64,
          flow: EditableOrderViewModel.Flow,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          debounceDuration: TimeInterval = 1.0) {
         self.siteID = siteID
         self.stores = stores
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.pluginsService = pluginsService
         self.blockingBehavior = .majorUpdates
         self.debounceDuration = debounceDuration
 
@@ -159,8 +164,9 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 private extension RemoteOrderSynchronizer {
     /// Updates the base sync order status.
     ///
+    @MainActor
     func updateBaseSyncOrderStatus() {
-        NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
+        NewOrderInitialStatusResolver(siteID: siteID, pluginsService: pluginsService).resolve { [weak self] baseStatus in
             self?.baseSyncStatus = baseStatus
         }
     }

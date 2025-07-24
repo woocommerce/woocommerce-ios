@@ -18,10 +18,12 @@ public protocol PluginsServiceProtocol {
     ///   - plugin: The plugin to load.
     ///   - isActive: Whether the plugin is active, inactive, or nil for any state.
     /// - Returns: The SystemPlugin if found in storage, nil otherwise.
+    @MainActor
     func loadPluginInStorage(siteID: Int64, plugin: Plugin, isActive: Bool?) -> SystemPlugin?
 }
 
 public extension PluginsServiceProtocol {
+    @MainActor
     func isPluginActiveInStorage(siteID: Int64, plugin: Plugin) -> Bool {
         let plugin = loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true)
         return plugin != nil && plugin?.active == true
@@ -65,6 +67,7 @@ public class PluginsService: PluginsServiceProtocol {
         }
     }
 
+    @MainActor
     public func loadPluginInStorage(siteID: Int64, plugin: Plugin, isActive: Bool?) -> SystemPlugin? {
         storageManager.viewStorage.loadSystemPlugin(siteID: siteID,
                                                     fileNameWithoutExtension: plugin.fileNameWithoutExtension,

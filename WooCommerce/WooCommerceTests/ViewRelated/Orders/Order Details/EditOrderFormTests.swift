@@ -6,6 +6,7 @@ import ViewInspector
 
 @testable import WooCommerce
 
+@MainActor
 final class EditOrderFormTests: XCTestCase {
 
     func test_addition_buttons_on_empty_orders() throws {

@@ -135,7 +135,7 @@ private extension PointOfSaleBarcodeScannerTestBarcodeView {
         )
         static let instruction = NSLocalizedString(
             "pos.barcodeScannerSetup.test.instruction",
-            value: "Scan the barcode to test your scanner",
+            value: "Scan the barcode to test your scanner.",
             comment: "Instruction for testing the scanner by scanning a barcode"
         )
         static let timeoutTitle = NSLocalizedString(

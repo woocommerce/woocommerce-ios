@@ -91,8 +91,8 @@ private extension PointOfSaleBarcodeScannerPairingView {
         )
         static let instructionFormat = NSLocalizedString(
             "pos.barcodeScannerSetup.pairing.instruction.format",
-            value: "Enable Bluetooth and select your %1$@ scanner in iOS Settings.",
-            comment: "Instruction for pairing scanner via iOS Settings. %1$@ is the scanner model name."
+            value: "Enable Bluetooth and select your %1$@ scanner in the device settings. The scanner will beep and show a solid LED when paired.",
+            comment: "Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name."
         )
     }
 

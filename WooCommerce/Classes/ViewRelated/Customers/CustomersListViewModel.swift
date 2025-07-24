@@ -329,7 +329,6 @@ private extension CustomersListViewModel {
     }
 
     enum Constants {
-        static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

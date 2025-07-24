@@ -69,7 +69,7 @@ public enum Plugin: Equatable, CaseIterable {
     }
 }
 
-extension SystemPlugin {
+private extension SystemPlugin {
     var fileNameWithoutExtension: String {
         ((plugin as NSString).lastPathComponent as NSString).deletingPathExtension
     }

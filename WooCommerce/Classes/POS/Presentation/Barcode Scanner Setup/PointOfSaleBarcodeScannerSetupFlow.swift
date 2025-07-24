@@ -467,7 +467,7 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
         )
         static let setUpBarcodePairStepInstruction = NSLocalizedString(
             "pos.barcodeScannerSetup.pairSetup.instruction",
-            value: "Scan the Pair symbol to get the scanner ready for pairing.",
+            value: "Use your barcode scanner to scan the code below to enter pairing mode.",
             comment: "Instruction for scanning the Pair barcode to prepare scanner for pairing"
         )
     }

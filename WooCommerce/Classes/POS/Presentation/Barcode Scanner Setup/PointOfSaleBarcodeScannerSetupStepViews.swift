@@ -188,10 +188,16 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
 
 private extension PointOfSaleBarcodeScannerSetupCompleteView {
     enum Localization {
-        //TODO: WOOMOB-792
-        static let title = "Scanner set up!"
-        static let instruction = "You are ready to start scanning products. \n" +
-        "Read more about barcode and QR code scanner support."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.complete.title",
+            value: "Scanner set up!",
+            comment: "Title shown when scanner setup is successfully completed"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.complete.instruction",
+            value: "You are ready to start scanning products. \nRead more about barcode and QR code scanner support.",
+            comment: "Message shown when scanner setup is complete, with additional information link"
+        )
     }
 }
 

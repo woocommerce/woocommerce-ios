@@ -17,7 +17,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             maxHeight: parentSize.height * Constants.maxParentHeightRatio,
             id: flowManager.currentStepKey
         ) {
-            VStack(spacing: POSSpacing.xxLarge) {
+            VStack(spacing: POSSpacing.xLarge) {
                 ScrollView(showsIndicators: false) {
                     HStack {
                         Spacer()
@@ -35,7 +35,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .posModalCloseButton(action: {
                 isPresented = false
             })
-            .padding(POSPadding.xxLarge)
+            .padding(POSPadding.xLarge)
             .background(Color.posSurfaceBright)
         }
         .onAppear {
@@ -115,6 +115,32 @@ private extension PointOfSaleBarcodeScannerSetup {
             comment: "Title for other scanner option in barcode scanner setup"
         )
     }
+}
+
+// MARK: - Previews
+
+@available(iOS 17.0, *)
+#Preview("Full Scanner Setup Flow") {
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+}
+
+@available(iOS 17.0, *)
+#Preview("Scanner Setup - Presented") {
+    GeometryReader { geometry in
+        PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+            .frame(width: geometry.size.width, height: geometry.size.height)
+    }
+    .background(Color.black.opacity(0.3))
+}
+
+@available(iOS 17.0, *)
+#Preview("Scanner Setup - Large Screen") {
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+}
+
+@available(iOS 17.0, *)
+#Preview("Scanner Setup - Compact") {
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
 }
 
 @available(iOS 17.0, *)

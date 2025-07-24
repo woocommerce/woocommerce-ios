@@ -15,7 +15,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
 
                 Text(instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
 
@@ -23,7 +23,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
-                .padding(POSPadding.medium)
+                .padding(POSPadding.xLarge)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
         }
@@ -168,7 +168,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
 
                 Text(Localization.instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
         }
@@ -177,12 +177,12 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
     @ViewBuilder private var successIcon: some View {
         ZStack {
             Circle()
-                .frame(width: 104, height: 104)
+                .frame(width: 88, height: 88)
                 .foregroundColor(.posSuccess)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: 48, height: 48)
+                .frame(width: 36, height: 36)
                 .foregroundColor(.posOnSuccess)
         }
     }
@@ -216,7 +216,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
 
                 Text(Localization.instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
         }
@@ -235,4 +235,65 @@ struct PointOfSaleBarcodeScannerErrorView: View {
             comment: "Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps"
         )
     }
+}
+
+// MARK: - Previews
+
+@available(iOS 17.0, *)
+#Preview("Barcode View - HID Setup") {
+    PointOfSaleBarcodeScannerBarcodeView(
+        title: "Star BSH-20B setup",
+        instruction: "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.",
+        barcode: .starBsh20SetupBarcode
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Barcode View - Barcode Setup") {
+    PointOfSaleBarcodeScannerBarcodeView(
+        title: "Scanner setup",
+        instruction: "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.",
+        barcode: .netum1228BCHIDBarcode
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Pairing View - Netum 1228BC") {
+    PointOfSaleBarcodeScannerPairingView(scanner: .netum1228BC)
+}
+
+@available(iOS 17.0, *)
+#Preview("Test View - Normal") {
+    PointOfSaleBarcodeScannerTestBarcodeView(
+        scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+            onTestPass: {},
+            onTestFailure: { _ in },
+            onTestTimeout: {},
+            barcodeDefinition: .ean13
+        ),
+        timerCompleted: false
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Test View - Timeout") {
+    PointOfSaleBarcodeScannerTestBarcodeView(
+        scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+            onTestPass: {},
+            onTestFailure: { _ in },
+            onTestTimeout: {},
+            barcodeDefinition: .ean13
+        ),
+        timerCompleted: true
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Setup Complete View") {
+    PointOfSaleBarcodeScannerSetupCompleteView()
+}
+
+@available(iOS 17.0, *)
+#Preview("Error View") {
+    PointOfSaleBarcodeScannerErrorView()
 }

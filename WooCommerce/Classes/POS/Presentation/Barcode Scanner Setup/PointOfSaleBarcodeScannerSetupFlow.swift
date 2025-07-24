@@ -461,6 +461,10 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             value: "Scan the Bluetooth HID symbol.",
             comment: "Instruction for scanning the Bluetooth HID barcode during scanner setup"
         )
-        static let setUpBarcodePairStepInstruction = "Scan the Pair symbol to get the scanner ready for pairing."
+        static let setUpBarcodePairStepInstruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairSetup.instruction",
+            value: "Scan the Pair symbol to get the scanner ready for pairing.",
+            comment: "Instruction for scanning the Pair barcode to prepare scanner for pairing"
+        )
     }
 }

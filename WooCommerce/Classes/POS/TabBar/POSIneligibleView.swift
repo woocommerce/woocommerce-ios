@@ -195,8 +195,8 @@ private extension POSIneligibleReason {
         switch self {
         case .featureSwitchDisabled:
             return NSLocalizedString(
-                "pos.ineligible.enable.pos.feature.and.refresh.button.title",
-                value: "Enable POS & Retry",
+                "pos.ineligible.enable.pos.feature.and.refresh.button.title.1",
+                value: "Enable POS feature",
                 comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
             )
         case .unsupportedIOSVersion,

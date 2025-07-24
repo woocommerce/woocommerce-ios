@@ -377,7 +377,11 @@ struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: P
     }
 
     private enum Localization {
-        static let informationButtonTitle = "How to set up barcodes on products"
+        static let informationButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.productBarcodeInformation.button.title",
+            value: "How to set up barcodes on products",
+            comment: "Button title for accessing product barcode setup information"
+        )
     }
 }
 

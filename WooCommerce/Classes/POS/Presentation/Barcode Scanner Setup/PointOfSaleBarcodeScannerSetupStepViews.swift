@@ -78,11 +78,22 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 }
 
 private extension PointOfSaleBarcodeScannerPairingView {
-    //TODO: WOOMOB-792
     enum Localization {
-        static let settingsButtonTitle = "Go to settings"
-        static let title = "Pair your scanner"
-        static let instructionFormat = "Enable Bluetooth and select your %1$@ scanner in iOS Settings."
+        static let settingsButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.settingsButton.title",
+            value: "Go to settings",
+            comment: "Button title to open iOS Settings for scanner pairing"
+        )
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.title",
+            value: "Pair your scanner",
+            comment: "Title for the scanner pairing step"
+        )
+        static let instructionFormat = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.instruction.format",
+            value: "Enable Bluetooth and select your %1$@ scanner in iOS Settings.",
+            comment: "Instruction for pairing scanner via iOS Settings. %1$@ is the scanner model name."
+        )
     }
 
     enum Constants {

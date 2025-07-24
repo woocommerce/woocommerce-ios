@@ -118,27 +118,11 @@ private extension WooShippingCustomsFormViewModel {
             }
             .assign(to: &$isMissingITN)
 
-         let hsTariffNumberTotalValueDictionary = $itemsViewModels
-            .map { childViewModels in
-                childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
-            }
-            .flatMap { childPublishers in
-                childPublishers.combineLatest()
-            }
-            .map { values in
-                var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
-                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
-                    hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
-                }
-                return hsTariffNumberTotalValueDictionary
-            }
-
         $internationalTransactionNumber.combineLatest(
             $itemsViewModels,
-            hsTariffNumberTotalValueDictionary,
             $destinationCountryCode)
         .map { input -> ITNValidationError? in
-            let (itn, items, hsTariffNumberTotalValueDictionary, countryCode) = input
+            let (itn, items, countryCode) = input
             guard itn.isEmpty else {
                 return ITNNumberValidator.isValid(itn) ? nil : .invalidFormat
             }
@@ -158,11 +142,6 @@ private extension WooShippingCustomsFormViewModel {
                 return .missingForRequiredDestination
             }
 
-            for (_, value) in hsTariffNumberTotalValueDictionary {
-                if value > Constants.minimumValueForRequiredITN {
-                    return .missingForTariffClass
-                }
-            }
             return nil
         }
         .assign(to: &$itnValidationError)

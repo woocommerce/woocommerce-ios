@@ -451,8 +451,11 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             comment: "Title for the done button in barcode scanner setup navigation"
         )
 
-        //TODO: WOOMOB-792
-        static let scannerSetUpBarcodeStepTitleFormat = "Scanner Setup"
+        static let scannerSetUpBarcodeStepTitleFormat = NSLocalizedString(
+            "pos.barcodeScannerSetup.scanner.setup.title.format",
+            value: "Scanner Setup",
+            comment: "Title format for barcode scanner setup step"
+        )
         static let setUpBarcodeHIDStepInstruction = "Scan the Bluetooth HID symbol."
         static let setUpBarcodePairStepInstruction = "Scan the Pair symbol to get the scanner ready for pairing."
     }

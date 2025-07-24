@@ -23,7 +23,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
-                .padding(POSPadding.xLarge)
+                .padding(POSPadding.medium)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
         }

@@ -258,7 +258,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
 
-    /// Names of the active plugins on the store.
+    /// A list of known active plugins on the store.
     ///
     private lazy var activePlugins: [Plugin] = {
         let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
@@ -570,9 +570,9 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    /// Helper function that returns `true` in its callback if the provided plugin is active on the  store.
+    /// Helper function that returns `true` in its callback if the provided plugin is active on the store.
     ///
-    /// - Parameter plugin: A list of known plugins.
+    /// - Parameter plugin: Plugin to check.
     private func isPluginActive(_ plugin: Plugin) -> Bool {
         activePlugins.contains(plugin)
     }

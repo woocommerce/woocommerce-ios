@@ -313,7 +313,7 @@ extension FilterProductListViewModel.ProductListFilter {
                       promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())]
     }
 
-    /// Fetches the active plugins for the provided site IDs using a `ResultsController`
+    /// Fetches the active known plugins for the provided site IDs using a `ResultsController`
     ///
     private func fetchActivePlugins(siteID: Int64, storageManager: StorageManagerType) -> [Plugin] {
         let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true

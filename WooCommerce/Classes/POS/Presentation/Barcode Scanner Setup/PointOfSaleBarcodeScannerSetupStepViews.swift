@@ -190,7 +190,7 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
     enum Localization {
         static let title = NSLocalizedString(
             "pos.barcodeScannerSetup.complete.title",
-            value: "Scanner set up!",
+            value: "Scanner setup!",
             comment: "Title shown when scanner setup is successfully completed"
         )
         static let instruction = NSLocalizedString(
@@ -229,7 +229,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
         )
         static let instruction = NSLocalizedString(
             "pos.barcodeScannerSetup.error.instruction",
-            value: "Please check the scanner's manual and reset it to factory settings, then retry set up flow.",
+            value: "Please check the scanner's manual and reset it to factory settings, then retry the setup flow.",
             comment: "Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps"
         )
     }

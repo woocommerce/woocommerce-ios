@@ -67,8 +67,11 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                 UIApplication.shared.open(targetURL)
             } label: {
                 Text(Localization.settingsButtonTitle)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posMain)
+                    .underline()
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            .padding(.top, POSSpacing.large)
         }
     }
 
@@ -81,8 +84,8 @@ private extension PointOfSaleBarcodeScannerPairingView {
     enum Localization {
         static let settingsButtonTitle = NSLocalizedString(
             "pos.barcodeScannerSetup.pairing.settingsButton.title",
-            value: "Go to settings",
-            comment: "Button title to open iOS Settings for scanner pairing"
+            value: "Go to your device settings",
+            comment: "Button title to open device Settings for scanner pairing"
         )
         static let title = NSLocalizedString(
             "pos.barcodeScannerSetup.pairing.title",

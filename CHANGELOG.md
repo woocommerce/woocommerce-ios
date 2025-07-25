@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.9
+This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We've also added a dedicated Point of Sale tab for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app's size!
+
 ## 22.8
 Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.
 

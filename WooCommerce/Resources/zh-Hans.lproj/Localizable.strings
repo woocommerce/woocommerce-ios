@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2025-07-01 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-16 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
 
 /* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% 完成";
@@ -1947,7 +1944,6 @@ which should be translated separately and considered part of this sentence. */
 "DHL Express" = "DHL Express";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "日期范围";
@@ -3032,10 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Guernsey" = "根西岛";
-
-/* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no first and last name. */
-"Guest" = "访客";
 
 /* Country option for a site address. */
 "Guinea" = "几内亚";
@@ -4491,8 +4483,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Order Notes" = "订单备注";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses
-   Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses */
 "Order Status" = "订单状态";
 
 /* Create Shipping Label form -> Order Total label
@@ -6060,9 +6051,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Short Description row on Product main screen */
 "Short description" = "简短说明";
 
-/* Button title for applying filters to a list of orders. */
-"Show Orders" = "显示订单";
-
 /* Button title for applying filters to a list of products. */
 "Show Products" = "显示产品";
 
@@ -6383,6 +6371,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "产品和包裹的总重量";
+
+/* In Order Details, the name of the billed person when there are no name and last name. */
+"SummaryTableViewCellViewModel.guestName" = "访客";
 
 /* Country option for a site address. */
 "Suriname" = "苏里南";
@@ -10054,8 +10045,20 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "筛选器历史记录";
 
+/* Button title for applying filters to a list of orders. */
+"filterOrderListViewModel.OrderListFilter.filterActionTitle" = "显示订单";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "客户";
+
+/* Row title for filtering orders by sales channel. */
+"filterOrderListViewModel.OrderListFilter.rowSalesChannel" = "销售渠道";
+
+/* Row title for filtering orders by date range. */
+"filterOrderListViewModel.OrderListFilter.rowTitleDateRange" = "日期范围";
+
+/* Row title for filtering orders by order status. */
+"filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus" = "订单状态";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "产品";
@@ -10768,6 +10771,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "税费";
 
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
+
+/* In Order List, the name of the billed person when there are no first and last name. */
+"orderlistcellviewmodel.customerName.guestName" = "访客";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11333,16 +11342,55 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "扫描程序使用模拟键盘，因此有时会导致软件键盘无法显示，如在搜索时。 轻点键盘图标即可再次显示键盘。";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• 参阅蓝牙条形码扫描程序的说明，以设置 HID 模式。";
+"pos.barcodeInfoModal.secondaryMessage.2" = "• 参阅蓝牙条形码扫描仪的使用说明，设置 HID 模式。 这通常需要扫描手册中的专用条形码。";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "第二步：参阅蓝牙条形码扫描程序的说明，以设置 H-I-D 模式。";
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "第二步：参阅蓝牙条形码扫描仪的使用说明，设置 H-I-D 模式。 这通常需要扫描手册中的专用条形码。";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• 在 iOS 蓝牙设置中连接条形码扫描程序。";
 
 /* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.tertiaryMessage.accessible" = "第三步：在 iOS 蓝牙设置中连接条形码扫描程序。";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "返回";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "完成";
+
+/* Heading for the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.heading" = "条形码扫描仪设置";
+
+/* Introductory message in the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.introMessage" = "选择您的条形码扫描仪，开始设置流程。";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "下一个";
+
+/* Subtitle for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.subtitle" = "常规扫描仪设置说明";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "其他";
+
+/* Subtitle for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.subtitle" = "带充电底座或支架的小型手持扫描仪";
+
+/* Title for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
+
+/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.subtitle" = "带支架的人体工学扫描仪";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Subtitle for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.subtitle" = "推荐的扫描仪";
+
+/* Title for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.title" = "扫描仪 TBC";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "点击产品以 \n 将其添加到购物车";
@@ -11353,8 +11401,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "结账";
 
-/* Title for the 'Clear' button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle" = "清除";
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "清空购物车";
 
 /* Back button title in the child item list screen. */
 "pos.childItemList.back" = "返回";
@@ -11376,6 +11424,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "退出销售点模式？";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "退出 POS";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "重试";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled" = "必须启用销售点才能继续。 请通过您的 WordPress 管理员在“WooCommerce 设置 > 高级 > 功能”下启用 POS 功能。";
+
+/* Suggestion for feature switch sync failure: relaunch or check connection */
+"pos.ineligible.suggestion.featureSwitchSyncFailure" = "请尝试重新启动应用程序或检查您的互联网连接后重试。";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "请尝试重新启动应用程序以解决此问题。";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable" = "请检查您的互联网连接并尝试重新启动应用程序。如果问题仍然存在，请联系支持人员。";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency" = "POS 系统暂不支持您的商店所使用的货币。 目前仅支持 %1$@。 请检查您的商店货币设置或联系支持人员寻求帮助。";
+
+/* Suggestion for unsupported iOS version: update iOS */
+"pos.ineligible.suggestion.unsupportedIOSVersion" = "销售点需要 iOS 17 或更高版本。 请将您的设备更新至 iOS 17+ 以使用此功能。";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "您的 WooCommerce 版本不受支持。 POS 系统需要 WooCommerce %1$@ 或更高版本。 请将 WooCommerce 更新到最新版本。";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound" = "通过您的 WordPress 管理员安装并激活 WooCommerce 插件。";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "无法加载";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "请检查您的互联网连接，然后重试。";
@@ -12553,10 +12634,13 @@ which should be translated separately and considered part of this sentence. */
 "viewPackagePhoto.packagePhoto" = "包装照片";
 
 /* Info message when connecting your watch to the phone for the first time. */
-"watch.connect.message" = "在您的 iPhone 上打开 Woo，连接您的商店，然后将您的手表放在附近";
+"watch.connect.messageUpdated" = "在您的 iPhone 上打开 Woo，登录您的商店，然后将您的手表放在附近。";
 
 /* Button title for when connecting the watch does not work on the connecting screen. */
 "watch.connect.notworking.title" = "无法连接";
+
+/* Workaround when connecting the watch to the phone fails. */
+"watch.connect.workaround" = "如果错误仍然存在，请重新启动应用程序。";
 
 /* Error description on the watch store stats screen. */
 "watch.mystore.error.description" = "确保您的手表连接到互联网，且手机就在附近。";
@@ -12735,6 +12819,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the option to add a payment method on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.addPaymentMethod" = "添加付款方式";
 
+/* Label for row showing the additional cost to require additional handling on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.additionalHandling" = "特殊处理";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "必须由成年人签收";
 
@@ -12743,6 +12830,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@（基本费用）";
+
+/* Label for row showing the additional cost to require carbon neutral delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.carbonNeutral" = "碳中和";
 
 /* Title for the edit destination address screen in the shipping label creation flow */
 "wooShipping.createLabels.bottomSheet.editDestination" = "编辑目的地";
@@ -12761,6 +12851,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
 "wooShipping.createLabels.bottomSheet.purchaseFormat" = "购买标签 · %1$@";
+
+/* Label for row showing the additional cost to require Saturday delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.saturdayDelivery" = "星期六配送";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "发货地";
@@ -13064,6 +13157,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Retry button title on the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "重试";
+
+/* Button on the error alert to revert changes when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges" = "还原更改";
 
 /* Title of the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.title" = "无法保存更改。 请重试。";

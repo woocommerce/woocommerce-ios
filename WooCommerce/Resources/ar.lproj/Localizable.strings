@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2025-07-03 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-16 11:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
 
 /* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% مكتمل";
@@ -1947,7 +1944,6 @@ which should be translated separately and considered part of this sentence. */
 "DHL Express" = "DHL Express.";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "نطاق التاريخ";
@@ -3032,10 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Guernsey" = "غيرنزي";
-
-/* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no first and last name. */
-"Guest" = "زائر";
 
 /* Country option for a site address. */
 "Guinea" = "غينيا";
@@ -4491,8 +4483,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Order Notes" = "ملاحظات الطلب";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses
-   Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses */
 "Order Status" = "حالة الطلب";
 
 /* Create Shipping Label form -> Order Total label
@@ -6060,9 +6051,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Short Description row on Product main screen */
 "Short description" = "وصف قصير";
 
-/* Button title for applying filters to a list of orders. */
-"Show Orders" = "إظهار الطلبات";
-
 /* Button title for applying filters to a list of products. */
 "Show Products" = "عرض المنتجات";
 
@@ -6383,6 +6371,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "إجمالي المنتجات ووزن الحزمة";
+
+/* In Order Details, the name of the billed person when there are no name and last name. */
+"SummaryTableViewCellViewModel.guestName" = "ضيف";
 
 /* Country option for a site address. */
 "Suriname" = "سورينام";
@@ -10045,8 +10036,20 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "محفوظات التصفية";
 
+/* Button title for applying filters to a list of orders. */
+"filterOrderListViewModel.OrderListFilter.filterActionTitle" = "إظهار الطلبات";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "العميل";
+
+/* Row title for filtering orders by sales channel. */
+"filterOrderListViewModel.OrderListFilter.rowSalesChannel" = "المبيعات حسب القناة";
+
+/* Row title for filtering orders by date range. */
+"filterOrderListViewModel.OrderListFilter.rowTitleDateRange" = "نطاق التاريخ";
+
+/* Row title for filtering orders by order status. */
+"filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus" = "حالة الطلب";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "المنتج";
@@ -10759,6 +10762,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "الضرائب";
 
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"orderlistcellviewmodel.cell.title" = "%1$@، %2$@";
+
+/* In Order List, the name of the billed person when there are no first and last name. */
+"orderlistcellviewmodel.customerName.guestName" = "ضيف";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11324,16 +11333,55 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "يُحاكي جهاز المسح الضوئي لوحة المفاتيح، لذا ستمنع لوحة مفاتيح البرنامج من الظهور في بعض الأحيان، على سبيل المثال في البحث. انقر على أيقونة لوحة المفاتيح لإظهارها مرة أخرى.";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع HID.";
+"pos.barcodeInfoModal.secondaryMessage.2" = "• راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع HID. يتطلب هذا عادة فحص رمز شريطي خاص في الدليل.";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "ثانيًا: راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع H-I-D.";
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "ثانيًا: راجع تعليمات الماسح الضوئي للرمز الشريطي الخاص بك عبر تقنية البلوتوث لتعيين وضع H-I-D. يتطلب هذا عادة فحص رمز شريطي خاص في الدليل.";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
 
 /* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.tertiaryMessage.accessible" = "ثالثًا: وصّل ماسحك الضوئي للرمز الشريطي بإعدادات البلوتوث في نظام التشغيل iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "رجوع";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "تم";
+
+/* Heading for the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.heading" = "إعداد الماسح الضوئي للرمز الشريطي";
+
+/* Introductory message in the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.introMessage" = "أختر ماسح الرمز الشريطي الخاص بك لبدء عملية الإعداد.";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "التالي";
+
+/* Subtitle for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.subtitle" = "تعليمات إعداد أداة الفحص العامة";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "أخرى";
+
+/* Subtitle for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.subtitle" = "ماسح ضوئي صغير محمول باليد مع منصة شحن أو حامل";
+
+/* Title for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.title" = "مقبس S720";
+
+/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.subtitle" = "ماسح ضوئي مريح مع حامل";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "ستار بي إس إتش-20B";
+
+/* Subtitle for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.subtitle" = "الماسح الضوئي الموصى به";
+
+/* Title for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.title" = "الماسح الضوئي TBC";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
@@ -11344,8 +11392,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "السداد";
 
-/* Title for the 'Clear' button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle" = "مسح";
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "مسح عربة التسوق";
 
 /* Back button title in the child item list screen. */
 "pos.childItemList.back" = "رجوع";
@@ -11367,6 +11415,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "هل تريد إنهاء وضع نقطة البيع؟";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "إنهاء POS";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "إعادة المحاولة";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled" = "يجب تمكين نقطة البيع للمتابعة. يرجى تمكين ميزة نقطة البيع من مسؤول WordPress لديك ضمن إعدادات WooCommerce > متقدم > الميزات.";
+
+/* Suggestion for feature switch sync failure: relaunch or check connection */
+"pos.ineligible.suggestion.featureSwitchSyncFailure" = "يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "حاول إعادة تشغيل التطبيق لحل هذه المشكلة.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable" = "تحقق من إتصالك بالإنترنت وحاول إعادة تشغيل التطبيق. إذا إستمرت المشكلة، فيرجى الاتصال بالدعم.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency" = "لا يتوافر نظام نقطة البيع لعملة متجرك. يدعم حاليا %1$@ فقط. يرجى التحقق من إعدادات عملة متجرك أو الاتصال بالدعم للحصول على المساعدة.";
+
+/* Suggestion for unsupported iOS version: update iOS */
+"pos.ineligible.suggestion.unsupportedIOSVersion" = "تتطلب نقطة البيع نظام التشغيل iOS 17 أو أحدث. يرجى تحديث جهازك إلى iOS 17+ لاستخدام هذه الميزة.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "إصدار WooCommerce الخاص بك غير مدعوم. يتطلب نظام نقطة البيع الإصدار %1$@ من WooCommerce أو إصدار أحدث. يُرجى التحديث إلى آخر إصدار من WooCommerce.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound" = "قم بتثبيت إضافة WooCommerce وتفعيلها من مسؤول WordPress الخاص بك.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "يتعذر التحميل";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "يُرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.";
@@ -12535,10 +12616,13 @@ which should be translated separately and considered part of this sentence. */
 "viewPackagePhoto.packagePhoto" = "صورة الحزمة";
 
 /* Info message when connecting your watch to the phone for the first time. */
-"watch.connect.message" = "فتح Woo على iPhone، وربط متجرك، والاحتفاظ بتطبيق Watch بالقرب منك";
+"watch.connect.messageUpdated" = "افتح تطبيق Woo على هاتف iPhone الخاص بك، سجل الدخول إلى متجرك، وقرّب ساعتك الذكية.";
 
 /* Button title for when connecting the watch does not work on the connecting screen. */
 "watch.connect.notworking.title" = "إنها لا تعمل";
+
+/* Workaround when connecting the watch to the phone fails. */
+"watch.connect.workaround" = "إذا استمر الخطأ، فأعد تشغيل التطبيق.";
 
 /* Error description on the watch store stats screen. */
 "watch.mystore.error.description" = "تأكد من أن ساعتك متصلة بالإنترنت وأن هاتفك قريب.";
@@ -12717,6 +12801,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the option to add a payment method on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.addPaymentMethod" = "إضافة طريقة الدفع";
 
+/* Label for row showing the additional cost to require additional handling on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.additionalHandling" = "معالجة إضافية";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "يلزم توقيع شخص بالغ";
 
@@ -12725,6 +12812,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (الرسوم الأساسية)";
+
+/* Label for row showing the additional cost to require carbon neutral delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.carbonNeutral" = "محايد الكربون";
 
 /* Title for the edit destination address screen in the shipping label creation flow */
 "wooShipping.createLabels.bottomSheet.editDestination" = "تحرير الوجهة";
@@ -12743,6 +12833,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
 "wooShipping.createLabels.bottomSheet.purchaseFormat" = "ملصق الشراء · %1$@";
+
+/* Label for row showing the additional cost to require Saturday delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.saturdayDelivery" = "التوصيل في يوم السبت";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "الشحن من";
@@ -13046,6 +13139,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Retry button title on the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "إعادة المحاولة";
+
+/* Button on the error alert to revert changes when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges" = "التراجع عن التغييرات";
 
 /* Title of the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.title" = "يتعذر حفظ التغييرات. يُرجى المحاولة مجددًا.";

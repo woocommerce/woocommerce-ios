@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2025-07-01 09:54:05+0000 */
+/* Translation-Revision-Date: 2025-07-16 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
 
 /* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% tamamlandı";
@@ -1947,7 +1944,6 @@ which should be translated separately and considered part of this sentence. */
 "DHL Express" = "DHL Express";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Tarih aralığı";
@@ -3032,10 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Guernsey" = "Guernsey";
-
-/* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no first and last name. */
-"Guest" = "Misafir";
 
 /* Country option for a site address. */
 "Guinea" = "Gine";
@@ -4491,8 +4483,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Order Notes" = "Sipariş Notları";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses
-   Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses */
 "Order Status" = "Sipariş Durumu";
 
 /* Create Shipping Label form -> Order Total label
@@ -6060,9 +6051,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Short Description row on Product main screen */
 "Short description" = "Kısa açıklama";
 
-/* Button title for applying filters to a list of orders. */
-"Show Orders" = "Siparişleri Göster";
-
 /* Button title for applying filters to a list of products. */
 "Show Products" = "Ürünleri Göster";
 
@@ -6383,6 +6371,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Ürünlerin toplamı ve paket ağırlığı";
+
+/* In Order Details, the name of the billed person when there are no name and last name. */
+"SummaryTableViewCellViewModel.guestName" = "Misafir";
 
 /* Country option for a site address. */
 "Suriname" = "Surinam";
@@ -10051,8 +10042,20 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtre geçmişi";
 
+/* Button title for applying filters to a list of orders. */
+"filterOrderListViewModel.OrderListFilter.filterActionTitle" = "Siparişleri Göster";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Müşteri";
+
+/* Row title for filtering orders by sales channel. */
+"filterOrderListViewModel.OrderListFilter.rowSalesChannel" = "Satış Kanalı";
+
+/* Row title for filtering orders by date range. */
+"filterOrderListViewModel.OrderListFilter.rowTitleDateRange" = "Tarih Aralığı";
+
+/* Row title for filtering orders by order status. */
+"filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus" = "Sipariş Durumu";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Ürün";
@@ -10765,6 +10768,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Vergiler";
 
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
+
+/* In Order List, the name of the billed person when there are no first and last name. */
+"orderlistcellviewmodel.customerName.guestName" = "Misafir";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11330,16 +11339,55 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "Tarayıcı bir klavyeyi taklit eder, bu nedenle bazen yazılım klavyesinin görünmesini engeller (ör. aramada). Tekrar göstermek için klavye simgesine dokunun.";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• HID modunu ayarlamak için Bluetooth barkod tarayıcınızın talimatlarına bakın.";
+"pos.barcodeInfoModal.secondaryMessage.2" = "• HID modunu ayarlamak için Bluetooth barkod tarayıcınızın talimatlarına bakın. Bu genellikle kılavuzda özel bir barkodun taranmasını gerektirir.";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "İkinci: H-I-D modunu ayarlamak için Bluetooth barkod tarayıcınızın talimatlarına bakın.";
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "İkinci: H-I-D modunu ayarlamak için Bluetooth barkod tarayıcınızın talimatlarına bakın. Bu genellikle kılavuzda özel bir barkodun taranmasını gerektirir.";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• Barkod tarayıcınızı iOS Bluetooth ayarlarından bağlayın.";
 
 /* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.tertiaryMessage.accessible" = "Üçüncü: Barkod tarayıcınızı iOS Bluetooth ayarlarından bağlayın.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Geri";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Tamam";
+
+/* Heading for the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.heading" = "Barkod Tarayıcı Kurulumu";
+
+/* Introductory message in the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.introMessage" = "Kurulum işlemine başlamak için barkod tarayıcınızı seçin.";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Sonraki";
+
+/* Subtitle for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.subtitle" = "Genel tarayıcı kurulum talimatları";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Diğer";
+
+/* Subtitle for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.subtitle" = "Şarj bağlantı noktası veya stantlı küçük el bilgisayarı tarayıcısı";
+
+/* Title for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
+
+/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.subtitle" = "Stantlı ergonomik tarayıcı";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Subtitle for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.subtitle" = "Önerilen tarayıcı";
+
+/* Title for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.title" = "TBC Tarayıcısı";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = " için ürüne dokunun Sepete eklemek";
@@ -11350,8 +11398,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Öde";
 
-/* Title for the 'Clear' button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle" = "Temizle";
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Sepeti temizle";
 
 /* Back button title in the child item list screen. */
 "pos.childItemList.back" = "Geri";
@@ -11373,6 +11421,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Satış Noktası Modundan Çıkılsın Mı?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "POS'tan çık";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Tekrar dene";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled" = "Devam etmek için Satış Noktası'nın etkinleştirilmesi gerekir. Lütfen WooCommerce ayarları > Gelişmiş > Özellikler bölümündeki WordPress yöneticinizden POS özelliğini etkinleştirin.";
+
+/* Suggestion for feature switch sync failure: relaunch or check connection */
+"pos.ineligible.suggestion.featureSwitchSyncFailure" = "Uygulamayı yeniden başlatmayı deneyin veya internet bağlantınızı kontrol edip tekrar deneyin.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Bu sorunu çözmek için uygulamayı yeniden başlatmayı deneyin.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable" = "İnternet bağlantınızı kontrol edip uygulamayı yeniden başlatmayı deneyin. Sorun devam ederse lütfen destek ekibine başvurun.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency" = "POS sistemi, mağazanızın para biriminde kullanılamıyor. Şu anda yalnızca %1$@ destekliyor. Lütfen mağaza para birimi ayarlarınızı kontrol edin veya yardım için destek birimine başvurun.";
+
+/* Suggestion for unsupported iOS version: update iOS */
+"pos.ineligible.suggestion.unsupportedIOSVersion" = "Satış Noktası için iOS 17 veya üzeri gerekir. Bu özelliği kullanmak için lütfen cihazınızı iOS 17 veya üzeri bir sürüme güncelleyin.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "WooCommerce sürümünüz desteklenmiyor. POS sistemi için WooCommerce %1$@ sürümü veya üzeri gerekiyor. Lütfen WooCommerce'ün en son sürümüne güncelleyin.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound" = "WooCommerce eklentisini WordPress yöneticinizden kurun ve etkinleştirin.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "Yüklenemedi";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
@@ -12550,10 +12631,13 @@ which should be translated separately and considered part of this sentence. */
 "viewPackagePhoto.packagePhoto" = "Paket fotoğrafı";
 
 /* Info message when connecting your watch to the phone for the first time. */
-"watch.connect.message" = "iPhone'unuzda Woo'yu açın, mağazanızı bağlayın ve Watch'ınızı yakında tutun";
+"watch.connect.messageUpdated" = "iPhone'unuzda Woo'yu açın, mağazanızda oturum açın ve Watch'unuzu yakında tutun.";
 
 /* Button title for when connecting the watch does not work on the connecting screen. */
 "watch.connect.notworking.title" = "Çalışmıyor";
+
+/* Workaround when connecting the watch to the phone fails. */
+"watch.connect.workaround" = "Hata devam ederse uygulamayı yeniden başlatın.";
 
 /* Error description on the watch store stats screen. */
 "watch.mystore.error.description" = "Saatinizin internete bağlı ve telefonunuzun yakında olduğundan emin olun.";
@@ -12732,6 +12816,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the option to add a payment method on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Ödeme yöntemi ekle";
 
+/* Label for row showing the additional cost to require additional handling on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.additionalHandling" = "Ek İşleme";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Yetişkin İmzası Gerekli";
 
@@ -12740,6 +12827,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (temel ücret)";
+
+/* Label for row showing the additional cost to require carbon neutral delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.carbonNeutral" = "Karbon Nötr";
 
 /* Title for the edit destination address screen in the shipping label creation flow */
 "wooShipping.createLabels.bottomSheet.editDestination" = "Hedef Adresini Düzenleyin";
@@ -12758,6 +12848,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
 "wooShipping.createLabels.bottomSheet.purchaseFormat" = "Satın Alma Etiketi · %1$@";
+
+/* Label for row showing the additional cost to require Saturday delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.saturdayDelivery" = "Cumartesi Teslimatı";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Gönderen";
@@ -13061,6 +13154,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Retry button title on the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "Tekrar dene";
+
+/* Button on the error alert to revert changes when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges" = "Değişiklikleri geri al";
 
 /* Title of the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.title" = "Değişiklikler kaydedilemiyor. Lütfen tekrar deneyin.";

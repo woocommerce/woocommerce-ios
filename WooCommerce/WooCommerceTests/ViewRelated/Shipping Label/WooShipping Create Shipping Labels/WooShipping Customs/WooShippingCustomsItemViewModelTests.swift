@@ -49,6 +49,23 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isValidTariffNumber)
     }
 
+    func test_when_item_weight_is_zero_then_it_is_invalid() {
+        // Given
+        let viewModel = WooShippingCustomsItemViewModel(
+            itemName: "Test",
+            itemProductID: 22,
+            itemQuantity: 1,
+            itemValue: 10,
+            itemWeight: 0,
+            currencySymbol: "$",
+            storageManager: MockStorageManager()
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.weightPerUnit.isEmpty, "Weight should be empty it the initial value is zero")
+        XCTAssertFalse(viewModel.isValidWeight, "isValidWeight should be false when the weight is zero")
+    }
+
     func test_hsTariffNumberTotalValue_when_currency_symbol_is_not_$_returns_nil() {
         // Given
         viewModel = WooShippingCustomsItemViewModel(itemName: "Test",

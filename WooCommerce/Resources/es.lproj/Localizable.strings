@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2025-07-03 11:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-15 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
 
 /* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% completado";
@@ -1947,7 +1944,6 @@ which should be translated separately and considered part of this sentence. */
 "DHL Express" = "DHL Express";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Rango de fechas";
@@ -3032,10 +3028,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Guernsey" = "Guernesey";
-
-/* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no first and last name. */
-"Guest" = "Invitado";
 
 /* Country option for a site address. */
 "Guinea" = "Guinea";
@@ -4491,8 +4483,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Order Notes" = "Notas del pedido";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses
-   Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses */
 "Order Status" = "Estado del pedido";
 
 /* Create Shipping Label form -> Order Total label
@@ -6060,9 +6051,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Short Description row on Product main screen */
 "Short description" = "Descripción corta";
 
-/* Button title for applying filters to a list of orders. */
-"Show Orders" = "Mostrar pedidos";
-
 /* Button title for applying filters to a list of products. */
 "Show Products" = "Mostrar productos";
 
@@ -6383,6 +6371,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Total de productos y peso del paquete";
+
+/* In Order Details, the name of the billed person when there are no name and last name. */
+"SummaryTableViewCellViewModel.guestName" = "Invitado";
 
 /* Country option for a site address. */
 "Suriname" = "Surinam";
@@ -10054,8 +10045,20 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Historial de filtros";
 
+/* Button title for applying filters to a list of orders. */
+"filterOrderListViewModel.OrderListFilter.filterActionTitle" = "Mostrar pedidos";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Cliente";
+
+/* Row title for filtering orders by sales channel. */
+"filterOrderListViewModel.OrderListFilter.rowSalesChannel" = "Canal de venta";
+
+/* Row title for filtering orders by date range. */
+"filterOrderListViewModel.OrderListFilter.rowTitleDateRange" = "Rango de fechas";
+
+/* Row title for filtering orders by order status. */
+"filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus" = "Estado del pedido";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Producto";
@@ -10768,6 +10771,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Impuestos";
 
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
+
+/* In Order List, the name of the billed person when there are no first and last name. */
+"orderlistcellviewmodel.customerName.guestName" = "Invitado";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11333,16 +11342,55 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "El escáner emula un teclado, por lo que a veces evitará que se muestre el teclado del software, por ejemplo, en búsquedas. Toca el icono del teclado para que se muestre de nuevo.";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• Consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo HID.";
+"pos.barcodeInfoModal.secondaryMessage.2" = "• Consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo HID. Normalmente, esto requiere que escanees un código de barras especial del manual.";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "Segundo: consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo H-I-D.";
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Segundo: consulta las instrucciones del escáner de códigos de barras Bluetooth para configurar el modo H-I-D. Normalmente, esto requiere que escanees un código de barras especial del manual.";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• Conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
 
 /* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.tertiaryMessage.accessible" = "Tercero: conecta tu escáner de códigos de barras en los ajustes de Bluetooth de iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Volver";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Hecho";
+
+/* Heading for the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.heading" = "Configuración del escáner de códigos de barras";
+
+/* Introductory message in the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.introMessage" = "Elige tu escáner de códigos de barras para empezar con el proceso de configuración.";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Siguiente";
+
+/* Subtitle for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.subtitle" = "Instrucciones generales de configuración del escáner";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Otros";
+
+/* Subtitle for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.subtitle" = "Escáner de mano pequeño con base o soporte de carga";
+
+/* Title for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
+
+/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.subtitle" = "Escáner ergonómico con soporte";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Subtitle for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.subtitle" = "Escáner recomendado";
+
+/* Title for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.title" = "Escáner por confirmar";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
@@ -11353,8 +11401,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Finalizar compra";
 
-/* Title for the 'Clear' button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle" = "Borrar";
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Borrar carrito";
 
 /* Back button title in the child item list screen. */
 "pos.childItemList.back" = "Volver";
@@ -11376,6 +11424,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "¿Salir del modo de punto de venta?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "Salir de POS";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Reintentar";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled" = "Point of Sale debe estar habilitado para continuar. Habilita la función POS desde tu administrador de WordPress en Ajustes de WooCommerce > Ajustes avanzados > Funciones.";
+
+/* Suggestion for feature switch sync failure: relaunch or check connection */
+"pos.ineligible.suggestion.featureSwitchSyncFailure" = "Prueba a reiniciar la aplicación o comprueba tu conexión a Internet e inténtalo de nuevo.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Prueba a reiniciar la aplicación para resolver este problema.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable" = "Comprueba tu conexión a Internet y prueba a reiniciar la aplicación. Si el problema continúa, ponte en contacto con el servicio de soporte.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency" = "El sistema de POS no está disponible para la moneda de tu tienda. Por el momento, solo admite %1$@. Comprueba los ajustes de moneda de tu tienda o ponte en contacto con el servicio de soporte para obtener ayuda.";
+
+/* Suggestion for unsupported iOS version: update iOS */
+"pos.ineligible.suggestion.unsupportedIOSVersion" = "Point of Sale requiere iOS 17 o una versión posterior. Actualiza tu dispositivo a iOS 17 o a una versión posterior para usar esta función.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Tu versión de WooCommerce no es compatible. El sistema POS requiere la versión %1$@ de WooCommerce o una superior. Actualiza WooCommerce a la última versión.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound" = "Instala y activa el plugin WooCommerce desde tu administrador de WordPress.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "No se puede cargar";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Revisa tu conexión a Internet e inténtalo de nuevo.";
@@ -12553,10 +12634,13 @@ which should be translated separately and considered part of this sentence. */
 "viewPackagePhoto.packagePhoto" = "Imagen del paquete";
 
 /* Info message when connecting your watch to the phone for the first time. */
-"watch.connect.message" = "Abre Woo en tu iPhone, conecta tu tienda y mantén tu Apple Watch cerca";
+"watch.connect.messageUpdated" = "Abre Woo en tu iPhone, inicia sesión en tu tienda y mantén tu Apple Watch cerca.";
 
 /* Button title for when connecting the watch does not work on the connecting screen. */
 "watch.connect.notworking.title" = "No funciona";
+
+/* Workaround when connecting the watch to the phone fails. */
+"watch.connect.workaround" = "Si el error continúa, reinicia la aplicación.";
 
 /* Error description on the watch store stats screen. */
 "watch.mystore.error.description" = "Asegúrate de que tu reloj esté conectado a Internet y tengas cerca tu teléfono.";
@@ -12735,6 +12819,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the option to add a payment method on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Añadir método de pago";
 
+/* Label for row showing the additional cost to require additional handling on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.additionalHandling" = "Gestión adicional";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Firma de un adulto obligatoria";
 
@@ -12743,6 +12830,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (cuota base)";
+
+/* Label for row showing the additional cost to require carbon neutral delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.carbonNeutral" = "Huella de carbono cero";
 
 /* Title for the edit destination address screen in the shipping label creation flow */
 "wooShipping.createLabels.bottomSheet.editDestination" = "Editar destino";
@@ -12761,6 +12851,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
 "wooShipping.createLabels.bottomSheet.purchaseFormat" = "Etiqueta de compra · %1$@";
+
+/* Label for row showing the additional cost to require Saturday delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.saturdayDelivery" = "Entrega el sábado";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Enviar desde";
@@ -13064,6 +13157,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Retry button title on the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "Reintentar";
+
+/* Button on the error alert to revert changes when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges" = "Revertir cambios";
 
 /* Title of the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.title" = "No se pueden guardar los cambios. Inténtalo de nuevo.";

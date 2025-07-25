@@ -1,13 +1,10 @@
-/* Translation-Revision-Date: 2025-07-02 11:54:05+0000 */
+/* Translation-Revision-Date: 2025-07-17 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
 
 /* Variation ID. Parameters: %1$@ - Product variation ID */
 "#%1$@" = "#%1$@";
-
-/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
-"#%@ %@" = "#%1$@ %2$@";
 
 /* Label that describes the completed progress of an update being installed (e.g. 15% complete). Keep the %.0f%% exactly as is */
 "%.0f%% complete" = "%.0f%% voltooid";
@@ -1941,7 +1938,6 @@ which should be translated separately and considered part of this sentence. */
 "DHL Express" = "DHL Express";
 
 /* Navigation title of the orders filter selector screen for date range
-   Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Datumbereik";
@@ -3026,10 +3022,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Guernsey" = "Guernsey";
-
-/* In Order Details, the name of the billed person when there are no name and last name.
-   In Order List, the name of the billed person when there are no first and last name. */
-"Guest" = "Gast";
 
 /* Country option for a site address. */
 "Guinea" = "Guinea";
@@ -4485,8 +4477,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Order Notes" = "Berichten van bestelling";
 
 /* Change order status screen - Screen title
-   Navigation title of the orders filter selector screen for order statuses
-   Row title for filtering orders by order status. */
+   Navigation title of the orders filter selector screen for order statuses */
 "Order Status" = "Bestelstatus";
 
 /* Create Shipping Label form -> Order Total label
@@ -6054,9 +6045,6 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the Short Description row on Product main screen */
 "Short description" = "Korte beschrijving";
 
-/* Button title for applying filters to a list of orders. */
-"Show Orders" = "Bestellingen weergeven";
-
 /* Button title for applying filters to a list of products. */
 "Show Products" = "Producten tonen";
 
@@ -6377,6 +6365,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Totaalaantal producten en gewicht van pakket";
+
+/* In Order Details, the name of the billed person when there are no name and last name. */
+"SummaryTableViewCellViewModel.guestName" = "Gast";
 
 /* Country option for a site address. */
 "Suriname" = "Suriname";
@@ -10048,8 +10039,20 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for the filter history button on the filter list screen */
 "filterListViewController.historyBarButtonItem.accessibilityHint" = "Filtergeschiedenis";
 
+/* Button title for applying filters to a list of orders. */
+"filterOrderListViewModel.OrderListFilter.filterActionTitle" = "Bestellingen weergeven";
+
 /* Row title for filtering orders by customer. */
 "filterOrderListViewModel.OrderListFilter.rowCustomer" = "Klant";
+
+/* Row title for filtering orders by sales channel. */
+"filterOrderListViewModel.OrderListFilter.rowSalesChannel" = "Verkoopkanaal";
+
+/* Row title for filtering orders by date range. */
+"filterOrderListViewModel.OrderListFilter.rowTitleDateRange" = "Datumbereik";
+
+/* Row title for filtering orders by order status. */
+"filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus" = "Bestelstatus";
 
 /* Row title for filtering orders by Product. */
 "filterOrderListViewModel.OrderListFilter.rowTitleProduct" = "Product";
@@ -10762,6 +10765,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Belastingen";
 
+/* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
+"orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
+
+/* In Order List, the name of the billed person when there are no first and last name. */
+"orderlistcellviewmodel.customerName.guestName" = "Gast";
+
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
 
@@ -11327,16 +11336,55 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeInfoModal.quinaryMessage" = "De scanner simuleert een toetsenbord, dus soms wordt het softwaretoetsenbord niet weergegeven, bijvoorbeeld in de zoekbalk. Tik op het toetsenbordpictogram om het opnieuw weer te geven.";
 
 /* Secondary bullet point in the barcode info modal in POS, instructing to set scanner to HID mode */
-"pos.barcodeInfoModal.secondaryMessage" = "• Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen.";
+"pos.barcodeInfoModal.secondaryMessage.2" = "• Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen. Dit vereist meestal het scannen van een speciale streepjescode in de handleiding.";
 
 /* Accessible version of secondary bullet point in barcode info modal, without bullet character for screen readers */
-"pos.barcodeInfoModal.secondaryMessage.accessible" = "Stap 2: Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen.";
+"pos.barcodeInfoModal.secondaryMessage.accessible.2" = "Stap twee: Raadpleeg de instructies van je Bluetooth-streepjescodescanner om de HID-modus in te stellen. Dit vereist meestal het scannen van een speciale streepjescode in de handleiding.";
 
 /* Tertiary bullet point in the barcode info modal in POS, instructing to connect scanner via Bluetooth settings */
 "pos.barcodeInfoModal.tertiaryMessage" = "• Verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
 
 /* Accessible version of tertiary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.tertiaryMessage.accessible" = "Stap 3: Verbind je streepjescodescanner in de Bluetooth-instellingen van iOS.";
+
+/* Title for the back button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.back.button.title" = "Terug";
+
+/* Title for the done button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.done.button.title" = "Klaar";
+
+/* Heading for the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.heading" = "Instellen streepjescodescanner";
+
+/* Introductory message in the barcode scanner setup flow in POS */
+"pos.barcodeScannerSetup.introMessage" = "Kies je streepjescodescanner om aan de slag te gaan met het instelproces.";
+
+/* Title for the next button in barcode scanner setup navigation */
+"pos.barcodeScannerSetup.next.button.title" = "Volgende";
+
+/* Subtitle for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.subtitle" = "Algemene instructies voor het instellen van de scanner";
+
+/* Title for other scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.other.title" = "Overige";
+
+/* Subtitle for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.subtitle" = "Kleine handscanner met een oplaadstation of -standaard";
+
+/* Title for Socket S720 scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
+
+/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.subtitle" = "Ergonomische scanner met een standaard";
+
+/* Title for Star BSH-20B scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
+
+/* Subtitle for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.subtitle" = "Aanbevolen scanner";
+
+/* Title for TBC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tbcScanner.title" = "Scanner TBC";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen";
@@ -11347,8 +11395,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "Afrekenen";
 
-/* Title for the 'Clear' button to remove all products from the Cart. */
-"pos.cartView.clearButtonTitle" = "Wissen";
+/* Title for the 'Clear cart' confirmation button to remove all products from the Cart. */
+"pos.cartView.clearButtonTitle.1" = "Winkelwagen leegmaken";
 
 /* Back button title in the child item list screen. */
 "pos.childItemList.back" = "Terug";
@@ -11370,6 +11418,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Verkooppuntmodus afsluiten?";
+
+/* Button title to dismiss POS ineligible view */
+"pos.ineligible.dismiss.button.title" = "POS afsluiten";
+
+/* Button title to refresh POS eligibility check */
+"pos.ineligible.refresh.button.title" = "Opnieuw proberen";
+
+/* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
+"pos.ineligible.suggestion.featureSwitchDisabled" = "Point of Sale moet ingeschakeld zijn om door te gaan. Schakel de POS-functie in vanuit je WordPress-beheer onder WooCommerce-instellingen > Geavanceerd > Functies.";
+
+/* Suggestion for feature switch sync failure: relaunch or check connection */
+"pos.ineligible.suggestion.featureSwitchSyncFailure" = "Probeer de app opnieuw te starten of controleer je internetverbinding en probeer het opnieuw.";
+
+/* Suggestion for self deallocated: relaunch */
+"pos.ineligible.suggestion.selfDeallocated" = "Probeer de app opnieuw te starten om dit probleem op te lossen.";
+
+/* Suggestion for site settings unavailable: check connection or contact support */
+"pos.ineligible.suggestion.siteSettingsNotAvailable" = "Controleer je internetverbinding en probeer de app opnieuw te starten. Neem contact op met de ondersteuning als het probleem zich blijft voordoen.";
+
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency" = "Het POS-systeem is niet beschikbaar voor de valuta van je winkel. Het ondersteunt momenteel alleen %1$@. Controleer de valuta-instellingen van je winkel of neem contact op met de ondersteuning voor hulp.";
+
+/* Suggestion for unsupported iOS version: update iOS */
+"pos.ineligible.suggestion.unsupportedIOSVersion" = "Point of Sale vereist iOS 17 of hoger. Werk je apparaat bij naar iOS 17 of hoger om deze functie te kunnen gebruiken.";
+
+/* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
+"pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Je WooCommerce-versie wordt niet ondersteund. Het POS-systeem vereist WooCommerce-versie %1$@ of hoger. Werk WooCommerce bij naar de nieuwste versie.";
+
+/* Suggestion for missing WooCommerce plugin: install plugin */
+"pos.ineligible.suggestion.wooCommercePluginNotFound" = "Installeer en activeer de WooCommerce-plugin vanuit je WordPress-beheer.";
+
+/* Title shown in POS ineligible view */
+"pos.ineligible.title" = "Kan niet laden";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Controleer je internetverbinding en probeer het opnieuw.";
@@ -12547,10 +12628,13 @@ which should be translated separately and considered part of this sentence. */
 "viewPackagePhoto.packagePhoto" = "Pakketfoto";
 
 /* Info message when connecting your watch to the phone for the first time. */
-"watch.connect.message" = "Open Woo op je iPhone, koppel je winkel en houd je Watch dichtbij";
+"watch.connect.messageUpdated" = "Open Woo op je iPhone, log in bij je winkel en houd je Watch bij de hand.";
 
 /* Button title for when connecting the watch does not work on the connecting screen. */
 "watch.connect.notworking.title" = "Het werkt niet";
+
+/* Workaround when connecting the watch to the phone fails. */
+"watch.connect.workaround" = "Start de app opnieuw als de fout zich blijft voordoen.";
 
 /* Error description on the watch store stats screen. */
 "watch.mystore.error.description" = "Zorg dat je horloge is verbonden met het internet en dat je telefoon in de buurt is.";
@@ -12729,6 +12813,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the option to add a payment method on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.addPaymentMethod" = "Betaalmethode toevoegen";
 
+/* Label for row showing the additional cost to require additional handling on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.additionalHandling" = "Extra verwerking";
+
 /* Label for row showing the additional cost to require an adult signature on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.adultSignatureRequired" = "Handtekening volwassene vereist";
 
@@ -12737,6 +12824,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for row showing the base fee for the selected shipping service on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)' */
 "wooShipping.createLabels.bottomSheet.baseFee" = "%1$@ (basistarief)";
+
+/* Label for row showing the additional cost to require carbon neutral delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.carbonNeutral" = "Koolstofneutraal";
 
 /* Title for the edit destination address screen in the shipping label creation flow */
 "wooShipping.createLabels.bottomSheet.editDestination" = "Adres van bestemming bewerken";
@@ -12755,6 +12845,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to purchase the shipping label on the shipping label creation screen, including the label price. Reads like: 'Purchase Label · $7.63' */
 "wooShipping.createLabels.bottomSheet.purchaseFormat" = "Label aanschaffen · %1$@";
+
+/* Label for row showing the additional cost to require Saturday delivery on the shipping label creation screen */
+"wooShipping.createLabels.bottomSheet.saturdayDelivery" = "Zaterdaglevering";
 
 /* Label for address where the shipment is shipped from on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.shipFrom" = "Verzenden van";
@@ -13058,6 +13151,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Retry button title on the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.retry" = "Opnieuw proberen";
+
+/* Button on the error alert to revert changes when saving split shipment changes fails */
+"wooShipping.createLabels.splitShipment.saveShipmentError.revertChanges" = "Wijzigingen ongedaan maken";
 
 /* Title of the error alert when saving split shipment changes fails */
 "wooShipping.createLabels.splitShipment.saveShipmentError.title" = "Opslaan van wijzigingen mislukt. Probeer het nog eens.";

@@ -11,7 +11,6 @@ struct WooShippingCustomsItem: View {
     @State private var isShowingDescriptionInfoDialog = false
     @State private var isShowingOriginCountryInfoDialog = false
 
-
     @Environment(\.shippingWeightUnit) var weightUnit: String
 
     var body: some View {
@@ -167,12 +166,12 @@ struct WooShippingCustomsItem: View {
                                 .padding(.trailing, Layout.unitsHorizontalSpacing)
                         }
                         .roundedBorder(cornerRadius: Layout.borderCornerRadius,
-                                       lineColor: viewModel.weightPerUnit.isEmpty ? warningRedColor : Color(.separator),
+                                       lineColor: viewModel.isValidWeight ? Color(.separator) : warningRedColor,
                                        lineWidth: Layout.borderLineWidth)
                         Text(Localization.valueRequiredWarningText)
                             .foregroundColor(warningRedColor)
                             .footnoteStyle()
-                            .renderedIf(viewModel.weightPerUnit.isEmpty)
+                            .renderedIf(!viewModel.isValidWeight)
                     }
                 }
                 .padding(.bottom, Layout.collapsibleViewVerticalSpacing)

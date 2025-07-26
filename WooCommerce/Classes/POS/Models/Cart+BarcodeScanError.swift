@@ -122,7 +122,7 @@ extension PointOfSaleBarcodeScanError {
 
         static let incompleteScan = NSLocalizedString(
             "pointOfSale.barcodeScan.error.incompleteScan2",
-            value: "The scanner did not send an end-of-line character.",
+            value: "The scanner did not send an end-of-line character",
             comment: "Error message shown when scanner times out without sending end-of-line character."
         )
 

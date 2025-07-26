@@ -299,6 +299,150 @@ struct GameControllerBarcodeParserTests {
             }
         }
 
+        @Test("proactive timeout triggers error without next character")
+        func timeout_whenTimerFires_triggersTimeoutError() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let configuration = HIDBarcodeParserConfiguration(
+                terminatingStrings: ["\r", "\n"],
+                minimumBarcodeLength: 3,
+                maximumInterCharacterTime: 0.2
+            )
+            let mockTimeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: configuration,
+                onScan: { results.append($0) },
+                timeProvider: mockTimeProvider
+            )
+
+            // When - Type partial barcode and simulate timer firing
+            parser.processKeyPress(GCKeyCode.one)
+            parser.processKeyPress(GCKeyCode.two)
+            parser.processKeyPress(GCKeyCode.three)
+
+            // Advance time beyond timeout period - this will automatically fire timers
+            mockTimeProvider.advance(by: 0.25)
+
+            // Then - Should get timeout error automatically
+            #expect(results.count == 1)
+            if case .failure(let error, let duration) = results.first {
+                if case .timedOut(let barcode) = error {
+                    #expect(barcode == "123")
+                    #expect(duration >= 0)
+                } else {
+                    Issue.record("Expected timedOut error")
+                }
+            } else {
+                Issue.record("Expected timeout failure")
+            }
+        }
+
+        @Test("timer cancelled on successful scan completion")
+        func timerCancelled_whenScanCompletes_preventsTimeoutError() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let configuration = HIDBarcodeParserConfiguration(
+                terminatingStrings: ["\r", "\n"],
+                minimumBarcodeLength: 3,
+                maximumInterCharacterTime: 0.2
+            )
+            let mockTimeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: configuration,
+                onScan: { results.append($0) },
+                timeProvider: mockTimeProvider
+            )
+
+            // When - Type partial barcode then complete it before timer fires
+            parser.processKeyPress(GCKeyCode.one)
+            parser.processKeyPress(GCKeyCode.two)
+            parser.processKeyPress(GCKeyCode.three)
+            parser.processKeyPress(GCKeyCode.returnOrEnter) // Complete scan before timeout
+
+            // Try to advance time beyond timeout period - timer should not fire since it was cancelled
+            mockTimeProvider.advance(by: 0.25)
+
+            // Then - Should only get success result, no timeout error
+            #expect(results.count == 1)
+            if case .success(let barcode, _) = results.first {
+                #expect(barcode == "123")
+            } else {
+                Issue.record("Expected successful scan")
+            }
+        }
+
+        @Test("timer cancelled on manual scan cancellation")
+        func timerCancelled_whenScanCancelled_preventsTimeoutError() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let configuration = HIDBarcodeParserConfiguration(
+                terminatingStrings: ["\r", "\n"],
+                minimumBarcodeLength: 3,
+                maximumInterCharacterTime: 0.2
+            )
+            let mockTimeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: configuration,
+                onScan: { results.append($0) },
+                timeProvider: mockTimeProvider
+            )
+
+            // When - Type partial barcode then cancel before timer fires
+            parser.processKeyPress(GCKeyCode.one)
+            parser.processKeyPress(GCKeyCode.two)
+            parser.processKeyPress(GCKeyCode.three)
+            parser.cancel() // Cancel scan before timeout
+
+            // Try to advance time beyond timeout period - timer should not fire since it was cancelled
+            mockTimeProvider.advance(by: 0.25)
+
+            // Then - Should have no results since scan was cancelled
+            #expect(results.isEmpty)
+        }
+
+        @Test("new character input cancels previous timer and starts new one")
+        func newCharacterInput_whenReceived_cancelsOldTimerAndStartsNew() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let configuration = HIDBarcodeParserConfiguration(
+                terminatingStrings: ["\r", "\n"],
+                minimumBarcodeLength: 6,
+                maximumInterCharacterTime: 0.2
+            )
+            let mockTimeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: configuration,
+                onScan: { results.append($0) },
+                timeProvider: mockTimeProvider
+            )
+
+            // When - Type characters with timing that would trigger timeout if timer wasn't reset
+            parser.processKeyPress(GCKeyCode.one)
+
+            // Advance time by 0.15 seconds (less than timeout) and add next character
+            mockTimeProvider.advance(by: 0.15)
+            parser.processKeyPress(GCKeyCode.two) // This should cancel the first timer
+
+            // Advance another 0.15 seconds (would be 0.3 total, but timer should have reset)
+            mockTimeProvider.advance(by: 0.15)
+            parser.processKeyPress(GCKeyCode.three)
+            parser.processKeyPress(GCKeyCode.four)
+            parser.processKeyPress(GCKeyCode.five)
+            parser.processKeyPress(GCKeyCode.six)
+            parser.processKeyPress(GCKeyCode.returnOrEnter)
+
+            // Final advance to ensure no leftover timers fire
+            mockTimeProvider.advance(by: 0.1)
+
+            // Then - Should get successful scan, not timeout
+            #expect(results.count == 1)
+            if case .success(let barcode, _) = results.first {
+                #expect(barcode == "123456")
+            } else {
+                Issue.record("Expected successful scan")
+            }
+        }
+
         @Test("scan duration is properly tracked for successful scan")
         func scanDuration_whenSuccessfulScan_isProperlyTracked() {
             // Given

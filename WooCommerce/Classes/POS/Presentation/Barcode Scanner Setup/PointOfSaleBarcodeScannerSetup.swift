@@ -120,30 +120,6 @@ private extension PointOfSaleBarcodeScannerSetup {
 // MARK: - Previews
 
 @available(iOS 17.0, *)
-#Preview("Full Scanner Setup Flow") {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
-}
-
-@available(iOS 17.0, *)
-#Preview("Scanner Setup - Presented") {
-    GeometryReader { geometry in
-        PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
-            .frame(width: geometry.size.width, height: geometry.size.height)
-    }
-    .background(Color.black.opacity(0.3))
-}
-
-@available(iOS 17.0, *)
-#Preview("Scanner Setup - Large Screen") {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
-}
-
-@available(iOS 17.0, *)
-#Preview("Scanner Setup - Compact") {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
-}
-
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
 }

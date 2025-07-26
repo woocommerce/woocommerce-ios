@@ -147,8 +147,17 @@ private enum Localization {
         comment: "Heading for the barcode info modal in POS, introducing barcode scanning feature"
     )
 
-    static let scannerInfoHeading = "Scanner set up"
-    static let productBarcodeInfoHeading = "How to set up barcodes on products"
+    static let scannerInfoHeading = NSLocalizedString(
+        "pos.barcodeScannerSetup.scannerInfo.title",
+        value: "Scanner setup",
+        comment: "Title format for barcode scanner setup step"
+    )
+
+    static let productBarcodeInfoHeading = NSLocalizedString(
+        "pos.barcodeScannerSetup.productBarcodeInfo.title",
+        value: "How to set up barcodes on products",
+        comment: "Title format for a product barcode setup step"
+    )
 
     static let legacyBarcodeInfoIntroMessage = NSLocalizedString(
         "pos.barcodeInfoModal.introMessage",

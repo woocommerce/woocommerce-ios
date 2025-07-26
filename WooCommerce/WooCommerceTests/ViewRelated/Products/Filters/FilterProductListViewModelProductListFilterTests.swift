@@ -111,10 +111,10 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          numberOfActiveFilters: 0)
         let mockStorage = MockStorageManager()
         mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                                name: SitePlugin.SupportedPlugin.WCSubscriptions[0],
+                                                                                plugin: "woocommerce-subscriptions/woocommerce-subscriptions.php",
                                                                                 active: true))
         mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                                name: SitePlugin.SupportedPlugin.WCProductBundles[0],
+                                                                                plugin: "woocommerce-product-bundles/woocommerce-product-bundles.php",
                                                                                 active: true))
 
         // When

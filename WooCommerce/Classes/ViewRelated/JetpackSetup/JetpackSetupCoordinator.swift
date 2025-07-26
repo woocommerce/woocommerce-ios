@@ -346,8 +346,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if let plugin = systemInformation.systemPlugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
-                       plugin.active {
+                    if let plugin = systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)
@@ -504,7 +503,6 @@ private extension JetpackSetupCoordinator {
 
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
-        static let jetpackPluginName = "Jetpack"
     }
 
     enum Localization {

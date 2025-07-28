@@ -13,7 +13,7 @@ extension CardReaderConnectionMethod {
         case .bluetooth:
             return .bluetoothScan
         case .tapToPay:
-            return .localMobile
+            return .tapToPay
         }
     }
 }

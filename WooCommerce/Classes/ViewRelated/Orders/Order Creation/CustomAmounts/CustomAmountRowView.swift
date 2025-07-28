@@ -22,14 +22,8 @@ struct CustomAmountRowView: View {
             Text(viewModel.total)
                 .bodyStyle()
 
-
-            Button {
+            PencilEditButton() {
                 viewModel.onEditCustomAmount()
-            } label: {
-                Image(systemName: "pencil")
-                    .resizable()
-                    .frame(width: Layout.editIconImageSize * scale,
-                           height: Layout.editIconImageSize * scale)
             }
             .tint(Color(.primary))
             .accessibilityLabel(Localization.editButtonAccessibilityLabel)

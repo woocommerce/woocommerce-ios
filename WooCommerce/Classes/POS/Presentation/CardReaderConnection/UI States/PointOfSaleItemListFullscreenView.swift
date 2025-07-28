@@ -27,10 +27,11 @@ private enum Localization {
     )
 }
 
+@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListFullscreenView(
         content: {
             PointOfSaleItemListErrorView(
-                error: .init(title: "Error", subtitle: "Something went wrong", buttonText: "Fix it"))
+                error: .init(errorType: .productsLoadError, title: "Error", subtitle: "Something went wrong", buttonText: "Fix it"))
         })
 }

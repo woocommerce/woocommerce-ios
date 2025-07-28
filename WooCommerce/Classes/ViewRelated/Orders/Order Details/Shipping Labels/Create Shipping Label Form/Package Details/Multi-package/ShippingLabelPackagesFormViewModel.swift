@@ -488,7 +488,9 @@ extension ShippingLabelPackagesFormViewModel {
                      customFields: [],
                      renewalSubscriptionID: nil,
                      appliedGiftCards: [],
-                     attributionInfo: nil)
+                     attributionInfo: nil,
+                     shippingLabels: [],
+                     createdVia: "rest-api")
     }
 
     static func sampleAddress() -> Address {

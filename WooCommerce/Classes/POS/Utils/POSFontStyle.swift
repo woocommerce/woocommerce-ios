@@ -18,7 +18,7 @@ enum POSFontStyle {
     case posButtonSymbolMedium
     case posButtonSymbolLarge
 
-    fileprivate func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
+    func font(maximumContentSizeCategory: UIContentSizeCategory? = nil) -> Font {
         switch self {
         case .posHeadingBold:
             Font.system(size: scaledValue(FontSize.heading, maximumContentSizeCategory: maximumContentSizeCategory ?? .accessibilityLarge), weight: .bold)

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -51,14 +52,14 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 
     var sectionTitle: String {
         if showDifferentAddressForm {
-            return Localization.billingAddressSection
+            return Localization.billingTitle.uppercased()
         } else {
-            return Localization.addressSection
+            return Localization.addressSection.uppercased()
         }
     }
 
     var secondarySectionTitle: String {
-        Localization.shippingAddressSection
+        Localization.shippingTitle.uppercased()
     }
 
     var showAlternativeUsageToggle: Bool {
@@ -103,20 +104,26 @@ final class CreateOrderAddressFormViewModel: AddressFormViewModel, AddressFormVi
 }
 
 private extension CreateOrderAddressFormViewModel {
-
-    // MARK: Constants
     enum Localization {
-        static let customerDetailsTitle = NSLocalizedString("Customer Details", comment: "Title for the Shipping Address Form for Customer Details")
-
-        static let shippingTitle = NSLocalizedString("Shipping Address", comment: "Title for the Edit Shipping Address Form")
-        static let billingTitle = NSLocalizedString("Billing Address", comment: "Title for the Edit Billing Address Form")
-
-        static let addressSection = NSLocalizedString("ADDRESS", comment: "Details section title in the Edit Address Form")
-
-        static let shippingAddressSection = NSLocalizedString("SHIPPING ADDRESS", comment: "Details section title in the Edit Address Form")
-        static let billingAddressSection = NSLocalizedString("BILLING ADDRESS", comment: "Details section title in the Edit Address Form")
-
-        static let differentAddressToggleTitle = NSLocalizedString("Add a different shipping address",
-                                                                   comment: "Title for the Add a Different Address switch in the Address form")
+        static let customerDetailsTitle = NSLocalizedString(
+            "createOrderAddressFormViewModel.customerDetailsTitle",
+            value: "Customer Details",
+            comment: "Title for the Shipping Address Form for Customer Details")
+        static let shippingTitle = NSLocalizedString(
+            "createOrderAddressFormViewModel.shippingTitle",
+            value: "Shipping Address",
+            comment: "Title for the Edit Shipping Address Form")
+        static let billingTitle = NSLocalizedString(
+            "createOrderAddressFormViewModel.billingTitle",
+            value: "Billing Address",
+            comment: "Title for the Edit Billing Address Form")
+        static let addressSection = NSLocalizedString(
+            "createOrderAddressFormViewModel.addressSection",
+            value: "Address",
+            comment: "Details section title in the Edit Address Form")
+        static let differentAddressToggleTitle = NSLocalizedString(
+            "createOrderAddressFormViewModel.differentAddressToggleTitle",
+            value: "Add a different shipping address",
+            comment: "Title for the Add a Different Address switch in the Address form")
     }
 }

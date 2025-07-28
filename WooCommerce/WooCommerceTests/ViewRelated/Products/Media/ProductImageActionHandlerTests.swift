@@ -8,8 +8,10 @@ import XCTest
 final class ProductImageActionHandlerTests: XCTestCase {
     private var productImageStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
+    private let siteID: Int64 = 1234
+    private let productID = ProductOrVariationID.product(id: 5678)
 
-    func testUploadingMediaSuccessfully() {
+    func test_uploading_media_successfully() {
         let mockMedia = createMockMedia()
         let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
                                                     dateCreated: mockMedia.date,
@@ -24,18 +26,20 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = Product.fake().copy(images: mockProductImages)
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
-            [.uploading(asset: .phAsset(asset: mockAsset))] + mockRemoteProductImageStatuses,
-            [.remote(image: mockUploadedProductImage)] + mockRemoteProductImageStatuses
+            [.uploading(asset: .phAsset(asset: mockAsset), siteID: siteID, productID: productID)] + mockRemoteProductImageStatuses,
+            [.remote(image: mockUploadedProductImage,
+                     siteID: siteID,
+                     productID: productID)] + mockRemoteProductImageStatuses
         ]
 
         let waitForStatusUpdates = self.expectation(description: "Wait for status updates from image upload")
@@ -70,7 +74,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
     }
 
-    func testUploadingMediaUnsuccessfully() {
+    func test_uploading_media_unsuccessfully() {
         let mockStoresManager = MockMediaStoresManager(media: nil, sessionManager: SessionManager.testingInstance)
         ServiceLocator.setStores(mockStoresManager)
 
@@ -78,18 +82,23 @@ final class ProductImageActionHandlerTests: XCTestCase {
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = Product.fake().copy(images: mockProductImages)
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
-            [.uploading(asset: .phAsset(asset: mockAsset))] + mockRemoteProductImageStatuses,
-            [.uploadFailure(asset: .phAsset(asset: mockAsset), error: MediaActionError.unknown)] + mockRemoteProductImageStatuses
+            [.uploading(asset: .phAsset(asset: mockAsset),
+                        siteID: siteID,
+                        productID: productID)] + mockRemoteProductImageStatuses,
+            [.uploadFailure(asset: .phAsset(asset: mockAsset),
+                            error: MediaActionError.unknown,
+                            siteID: siteID,
+                            productID: productID)] + mockRemoteProductImageStatuses
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
@@ -119,7 +128,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         ServiceLocator.setStores(mockStoresManager)
 
         let model = EditableProductModel(product: .fake())
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         // When
@@ -145,8 +154,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
         ServiceLocator.setStores(mockStoresManager)
 
-        let model = EditableProductModel(product: .fake())
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
         let mockImage = UIImage()
 
@@ -160,19 +169,21 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
 
         // Then
-        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"))])
+        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woocommerce.jpg", altText: "cool product"),
+                                          siteID: siteID,
+                                          productID: productID)])
     }
 
-    func testDeletingProductImage() {
+    func test_deleting_product_image() {
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = Product.fake().copy(images: mockProductImages)
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -203,17 +214,17 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     // MARK: - `addSiteMediaLibraryImagesToProduct(mediaItems:)`
 
-    func testAddingProductImagesFromSiteMediaLibrary() {
+    func test_adding_product_images_from_site_media_library() {
         // Arrange
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
-        let mockProduct = Product.fake().copy(images: mockProductImages)
+        let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
 
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         // Media items to upload to site media library.
@@ -229,7 +240,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
                                height: 320, width: 776)
         let mockMediaItems = [mockMedia1, mockMedia2]
 
-        let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage) }
+        let expectedImageStatusesFromSiteMediaLibrary = mockMediaItems.map { ProductImageStatus.remote(image: $0.toProductImage,
+                                                                                                       siteID: siteID,
+                                                                                                       productID: productID) }
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
             expectedImageStatusesFromSiteMediaLibrary + mockRemoteProductImageStatuses
@@ -257,20 +270,20 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     // MARK: - `resetProductImages(to:)`
 
-    func testResettingProductImagesToAProduct() {
+    func test_resetting_product_images_to_a_product() {
         // Arrange
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let anotherMockProduct = Product.fake().copy(images: mockProductImages)
+        let anotherMockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
         let anotherModel = EditableProductModel(product: anotherMockProduct)
 
-        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
 
         let expectation = self.expectation(description: "Wait for reset product images")
         expectation.expectedFulfillmentCount = 1
@@ -292,20 +305,20 @@ final class ProductImageActionHandlerTests: XCTestCase {
         XCTAssertEqual(productImageActionHandler.productImageStatuses, expectedProductImageStatuses)
     }
 
-    // MARK: - `updateProductImageStatusesAfterReordering
+    // MARK: - `updateProductImageStatusesAfterReordering`
 
     func test_productImageStatuses_are_updated_correctly_after_reordering() {
         // Given
         let mockProduct = Product.fake().copy(images: [])
         let model = EditableProductModel(product: mockProduct)
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
-        let anotherMockProduct = Product.fake().copy(images: mockProductImages)
-        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
+        let anotherMockProduct = Product.fake().copy(siteID: siteID, productID: productID.id, images: mockProductImages)
+        let expectedProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0, siteID: siteID, productID: productID) }
 
         let expectation = self.expectation(description: "Wait for update product images")
         expectation.expectedFulfillmentCount = 1
@@ -342,8 +355,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
             completion(.failure(uploadError))
         }
 
-        let model = EditableProductModel(product: .fake())
-        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+        let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
+        let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
                                                                   product: model)
 
         let expectation = self.expectation(description: "Wait for status update")
@@ -352,8 +365,11 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             [],
-            [.uploading(asset: .phAsset(asset: mockAsset))],
-            [.uploadFailure(asset: .phAsset(asset: mockAsset), error: MediaActionError.unknown)],
+            [.uploading(asset: .phAsset(asset: mockAsset), siteID: siteID, productID: productID)],
+            [.uploadFailure(asset: .phAsset(asset: mockAsset),
+                            error: MediaActionError.unknown,
+                            siteID: siteID,
+                            productID: productID)],
         ]
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
@@ -379,6 +395,48 @@ final class ProductImageActionHandlerTests: XCTestCase {
         // Then
         waitUntil {
             productImageActionHandler.productImageStatuses == []
+        }
+    }
+
+    func test_updateProductID_propagates_to_existing_upload_statuses() {
+        // Given
+        let localProductID = ProductOrVariationID.product(id: 0)
+        let remoteProductID = productID
+        let dummyImage = ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
+        let mockProduct = Product.fake().copy(siteID: siteID, productID: localProductID.id, images: [dummyImage])
+        let model = EditableProductModel(product: mockProduct)
+        let handler = ProductImageActionHandler(siteID: siteID, product: model)
+
+        // Simulate an upload with a status .uploading, with the current productID (localProductID)
+        let mockAsset = PHAsset()
+        handler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
+
+        waitUntil {
+            handler.productImageStatuses.first.map {
+                switch $0 {
+                case .uploading(_, let site, let productID):
+                    return site == self.siteID && productID == localProductID
+                default:
+                    return false
+                }
+            } ?? false
+        }
+
+        // When
+        // update of productID from locale to remote one
+        handler.updateProductID(remoteProductID)
+
+        // Then
+        // the new state should contain the remoteProductID
+        waitUntil(timeout: Constants.expectationTimeout) {
+            handler.productImageStatuses.first.map {
+                switch $0 {
+                case .uploading(_, _, let productID):
+                    return productID == remoteProductID
+                default:
+                    return false
+                }
+            } ?? false
         }
     }
 }

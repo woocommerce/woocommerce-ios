@@ -18,6 +18,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentActivityIndicatingMessageView(title: viewModel.title, message: viewModel.message, animation: animation)
         case .tapSwipeOrInsertCard(let viewModel):
             PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView(viewModel: viewModel, animation: animation)
+        case .cardInserted(viewModel: let viewModel):
+            PointOfSaleCardPresentPaymentCardInsertedMessageView(viewModel: viewModel, animation: animation)
         case .processing(let viewModel):
             PointOfSaleCardPresentPaymentProcessingMessageView(viewModel: viewModel, animation: animation)
         case .displayReaderMessage(let viewModel):

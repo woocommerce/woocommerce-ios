@@ -162,10 +162,13 @@ private extension ShippingLabelCarriersViewModelTests {
                                                 MockShippingLabelCarrierRate.makeRate(),
                                                 MockShippingLabelCarrierRate.makeRate(title: "UPS", insurance: "2500"),
                                                 MockShippingLabelCarrierRate.makeRate(title: "UPS", insurance: "limited")],
-                                             signatureRequired: [MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
+                                              signatureRequired: [MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
                                                                                                        rate: 45.060000000000002)],
-                                             adultSignatureRequired:
+                                              adultSignatureRequired:
                                                 [MockShippingLabelCarrierRate.makeRate(title: "USPS - Parcel Select Mail",
-                                                                                                            rate: 50.060000000000002)])]
+                                                                                                            rate: 50.060000000000002)],
+                                              carbonNeutral: [],
+                                              saturdayDelivery: [],
+                                              additionalHandling: [])]
     }
 }

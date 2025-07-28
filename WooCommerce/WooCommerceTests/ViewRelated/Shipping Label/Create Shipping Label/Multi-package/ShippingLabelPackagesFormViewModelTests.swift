@@ -178,6 +178,7 @@ private extension ShippingLabelPackagesFormViewModelTests {
 
 extension ShippingLabelPackageItem {
     static func fake(id: Int64 = 1,
+                     orderItemID: Int64 = 123,
                      name: String = "",
                      weight: Double = 1,
                      quantity: Decimal = 1,
@@ -186,6 +187,7 @@ extension ShippingLabelPackageItem {
                      attributes: [VariationAttributeViewModel] = [],
                      imageURL: URL? = nil) -> ShippingLabelPackageItem {
         ShippingLabelPackageItem(productOrVariationID: id,
+                                 orderItemID: orderItemID,
                                  name: name,
                                  weight: weight,
                                  quantity: quantity,

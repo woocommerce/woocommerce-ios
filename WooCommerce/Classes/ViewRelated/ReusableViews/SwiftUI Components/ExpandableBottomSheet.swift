@@ -79,7 +79,12 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
-                .onChange(of: fixedContentSize, perform: { _ in
+                .onChange(of: fixedContentSize, perform: { [fixedContentSize] _ in
+                    guard fixedContentSize.width > 0,
+                          fixedContentSize.height > 0 else {
+                        // No animation for initial load
+                        return panelHeight = calculateHeight()
+                    }
                     withAnimation {
                         panelHeight = calculateHeight()
                     }
@@ -152,13 +157,18 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .ignoresSafeArea(edges: .bottom)
         .background(Color(.listForeground(modal: false)))
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
+            /// This workaround cancels the dragging when the app re-enters the foreground
+            /// and fixes the glitch caused by the divider at the bottom of the scroll view.
+            revealContentDuringDrag = false
+        }
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
         let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
-        let screenHeight = UIScreen.main.bounds.height
+        let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
         let maxExpandedHeight = screenHeight * 0.8
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight

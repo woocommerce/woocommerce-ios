@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// ViewModel supporting the backed-generated receipt preview.

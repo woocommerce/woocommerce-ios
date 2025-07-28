@@ -1,4 +1,5 @@
 import Foundation
+import WordPressShared
 
 /// Implements the analytics tracking logic for our sign in flow.
 ///
@@ -263,9 +264,13 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case signInWithSiteCredentials = "sign_in_with_site_credentials"
 
-        /// When the user clicks on “Login with account password” on `VerifyEmailViewController`
+        /// When the user clicks on “Login with account password” on `VerifyEmailViewController` and magic link screens
         ///
         case loginWithAccountPassword = "login_with_password"
+
+        /// When the user falls back to WordPress.com username and password login from the magic link screen
+        ///
+        case loginWithWPComUsernamePassword = "login_with_wp_com_username_password"
     }
 
     public enum Failure: String {

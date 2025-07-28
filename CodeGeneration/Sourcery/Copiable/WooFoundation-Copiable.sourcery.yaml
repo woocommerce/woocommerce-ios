@@ -1,7 +1,0 @@
-project:
-    file: ../../../WooFoundation/WooFoundation.xcodeproj
-    target:
-        name: WooFoundation
-templates:
-    - Models+Copiable.swifttemplate
-output: ../../../WooFoundation/WooFoundation/Model/Copiable/

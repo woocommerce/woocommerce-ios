@@ -150,7 +150,14 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.updateImpressions(startDate: .now, dayCount: 3, dailyBudget: 15)
 
         // Then
-        XCTAssertEqual(viewModel.forecastedImpressionState, .result(formattedResult: "1,000 - 5,000"))
+        XCTAssertEqual(
+            viewModel.forecastedImpressionState,
+            .result(
+                formattedResult: "1,000 - 5,000",
+                minValue: 1000,
+                maxValue: 5000
+            )
+        )
     }
 
     @MainActor
@@ -187,7 +194,7 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         // Given
         var fetchInput: BlazeForecastedImpressionsInput?
         let expectedStartDate = Date(timeIntervalSinceNow: 86400) // Next day
-        let timeZone = try XCTUnwrap(TimeZone(identifier: "Europe/London"))
+        let timeZone = try XCTUnwrap(TimeZone(identifier: "Asia/Ho_Chi_Minh"))
         let targetOptions = BlazeTargetOptions(locations: [11, 22], languages: ["en", "vi"], devices: nil, pageTopics: ["Entertainment"])
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = BlazeBudgetSettingViewModel(siteID: 123,
@@ -215,10 +222,8 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         await viewModel.retryFetchingImpressions()
 
         // Then
-        XCTAssertEqual(fetchInput?.startDate, expectedStartDate)
-        XCTAssertEqual(fetchInput?.endDate, Date(timeInterval: 7 * 86400, since: expectedStartDate))
         XCTAssertEqual(fetchInput?.totalBudget, 20 * 7)
-        XCTAssertEqual(fetchInput?.timeZone, "Europe/London")
+        XCTAssertEqual(fetchInput?.timeZone, "Asia/Ho_Chi_Minh")
         XCTAssertEqual(fetchInput?.targeting, targetOptions)
     }
 

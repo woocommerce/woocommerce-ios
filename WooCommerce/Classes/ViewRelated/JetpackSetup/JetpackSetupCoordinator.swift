@@ -30,7 +30,8 @@ final class JetpackSetupCoordinator {
               allowAccountCreation: true,
               accountService: accountService,
               onPasswordUIRequest: showPasswordUI(email:),
-              onMagicLinkUIRequest: showMagicLinkUI,
+              onMagicLinkRequest: showMagicLinkRequestUI,
+              onMagicLinkSent: showMagicLinkSentUI,
               onError: { [weak self] message in
             self?.showAlert(message: message)
         })
@@ -91,11 +92,11 @@ final class JetpackSetupCoordinator {
         return true
     }
 
-    func startAuthentication(with email: String?) {
-        if let email {
+    func startAuthentication(with emailOrUsername: String?) {
+        if let emailOrUsername {
             Task { @MainActor in
                 analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
-                await emailLoginViewModel.checkWordPressComAccount(email: email)
+                await emailLoginViewModel.checkWordPressComAccount(emailOrUsername: emailOrUsername)
             }
         } else {
             showWPComEmailLogin()
@@ -345,8 +346,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if let plugin = systemInformation.systemPlugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
-                       plugin.active {
+                    if let plugin = systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)
@@ -361,11 +361,38 @@ private extension JetpackSetupCoordinator {
 
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
+        emailLoginViewModel.usernameOnly = false
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
         pushOrInitLoginViewController(emailLoginController)
     }
 
-    func showMagicLinkUI(email: String, isSignup: Bool) {
+    func showWPComUsernameLogin() {
+        emailLoginViewModel.usernameOnly = true
+        emailLoginViewModel.emailOrUsername = ""
+
+        let emailViewController = loginNavigationController?.viewControllers.first(where: { $0 is WPComEmailLoginHostingController })
+        if let emailViewController {
+            loginNavigationController?.popToViewController(emailViewController, animated: true)
+        } else {
+            loginNavigationController?.dismiss(animated: true, completion: nil)
+            pushOrInitLoginViewController(WPComEmailLoginHostingController(viewModel: emailLoginViewModel))
+        }
+    }
+
+    func showMagicLinkRequestUI(email: String) {
+        let magicLinkRequestController = WPComMagicLinkRequestHostingController(title: loginViewTitle,
+                                                                                viewModel: .init(email: email,
+                                                                                                 onMagicLinkSent: { [weak self] email in
+            self?.showMagicLinkSentUI(email: email, isSignup: false)
+        },
+                                                                                                 onUseUsernamePassword: showWPComUsernameLogin,
+                                                                                                 onError: { [weak self] message in
+            self?.showAlert(message: message)
+        }))
+        pushOrInitLoginViewController(magicLinkRequestController)
+    }
+
+    func showMagicLinkSentUI(email: String, isSignup: Bool) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, isSignup: isSignup))
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: loginViewTitle,
@@ -476,7 +503,6 @@ private extension JetpackSetupCoordinator {
 
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
-        static let jetpackPluginName = "Jetpack"
     }
 
     enum Localization {

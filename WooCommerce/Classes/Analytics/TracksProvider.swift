@@ -118,8 +118,8 @@ private extension TracksProvider {
         let pointOfSaleEventList: Set<WooAnalyticsStat> = [
             // POS-specific events
             WooAnalyticsStat.pointOfSaleLoaded,
-            WooAnalyticsStat.pointOfSaleProductsPullToRefresh,
-            WooAnalyticsStat.pointOfSaleVariationsPullToRefresh,
+            WooAnalyticsStat.pointOfSaleItemsFetched,
+            WooAnalyticsStat.pointOfSaleItemsPullToRefresh,
             WooAnalyticsStat.pointOfSaleAddItemToCart,
             WooAnalyticsStat.pointOfSaleItemRemovedFromCart,
             WooAnalyticsStat.pointOfSaleCheckoutTapped,
@@ -139,21 +139,40 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleViewDocsTapped,
             WooAnalyticsStat.pointOfSaleReaderReadyForCardPayment,
             WooAnalyticsStat.pointOfSaleCashCollectPaymentSuccess,
+            WooAnalyticsStat.pointOfSaleCashPaymentTapped,
+            WooAnalyticsStat.pointOfSaleCashPaymentFailed,
+            WooAnalyticsStat.pointOfSaleItemsHeaderTapped,
+            WooAnalyticsStat.pointOfSaleCouponsCreateTapped,
+            WooAnalyticsStat.pointOfSaleSearchButtonTapped,
+            WooAnalyticsStat.pointOfSalePreSearchRecentTermTapped,
+            WooAnalyticsStat.pointOfSaleKeyboardDismissedInSearch,
+            WooAnalyticsStat.pointOfSaleItemsNextPageLoaded,
+            WooAnalyticsStat.pointOfSaleSearchRemoteResultsFetched,
+            WooAnalyticsStat.pointOfSaleBarcodeScanningMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleBarcodeScanningExplanationDialogShown,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupFlowShown,
+            WooAnalyticsStat.pointOfSaleBarcodeScanningSuccess,
+            WooAnalyticsStat.pointOfSaleBarcodeScanningFailed,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerSelected,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupNextTapped,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupBackTapped,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupTestScanSuccess,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupTestScanFailed,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupTestScanTimedOut,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupRetryTapped,
+            WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected,
 
             // Order
             WooAnalyticsStat.orderCreationSuccess,
             WooAnalyticsStat.orderCreationFailed,
 
             // Card Reader Connection
-            WooAnalyticsStat.cardReaderSelectTypeShown,
-            WooAnalyticsStat.cardReaderSelectTypeBuiltInTapped,
-            WooAnalyticsStat.cardReaderSelectTypeBluetoothTapped,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
             WooAnalyticsStat.cardReaderDisconnectTapped,
-            WooAnalyticsStat.manageCardReadersBuiltInReaderAutoDisconnect,
-            WooAnalyticsStat.cardReaderAutomaticDisconnect,
             WooAnalyticsStat.cardReaderLocationPermissionPreAlertShown,
             WooAnalyticsStat.cardReaderLocationPermissionRequiredShown,
 
@@ -182,16 +201,10 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentCanceled,
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
-            WooAnalyticsStat.collectInteracPaymentSuccess,
-            WooAnalyticsStat.interacRefundSuccess,
-            WooAnalyticsStat.interacRefundFailed,
-            WooAnalyticsStat.interacRefundCanceled,
 
-            // Payment Methods
-            WooAnalyticsStat.paymentsFlowCompleted,
-            WooAnalyticsStat.paymentsFlowCanceled,
-            WooAnalyticsStat.paymentsFlowFailed,
-            WooAnalyticsStat.paymentsFlowCollect,
+            // Coupons
+            WooAnalyticsStat.couponSettingEnabled,
+            WooAnalyticsStat.couponCreationSuccess,
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

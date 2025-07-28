@@ -1,7 +1,7 @@
 import XCTest
 import Fakes
 import Yosemite
-import enum Networking.DotcomError
+import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageType
 @testable import WooCommerce
@@ -149,7 +149,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
 
         assertEqual("my_store", properties["source"] as? String)
-        assertEqual("Networking.DotcomError", properties["error_domain"] as? String)
+        assertEqual("NetworkingCore.DotcomError", properties["error_domain"] as? String)
         assertEqual("Dotcom Invalid REST Route", properties["error_description"] as? String)
     }
 

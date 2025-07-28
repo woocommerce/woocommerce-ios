@@ -67,9 +67,6 @@ struct ProductSelectorView: View {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-            return viewModel.selectProductsTitle
-        }
         return Localization.addProductsText
     }
 
@@ -77,8 +74,7 @@ struct ProductSelectorView: View {
     ///
     private var navigationTitle: String {
         let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-              narrowView, configuration.multipleSelectionEnabled else {
+        guard narrowView, configuration.multipleSelectionEnabled else {
             return configuration.title
         }
         return viewModel.selectProductsTitle
@@ -86,11 +82,7 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                productSelectorHeader
-            } else {
-                legacyProductSelectorHeader
-            }
+            productSelectorHeader
 
             switch viewModel.syncStatus {
             case .results:
@@ -292,41 +284,6 @@ private extension ProductSelectorView {
             productSelectorHeaderTitleRow
         }
         Divider()
-    }
-
-    @ViewBuilder var legacyProductSelectorHeader: some View {
-        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-            searchHeaderisBeingEdited = isEditing
-        })
-        .padding(.horizontal, insets: safeAreaInsets)
-        .accessibilityIdentifier("product-selector-search-bar")
-        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-            ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
-        }
-        .pickerStyle(.segmented)
-        .padding(.leading)
-        .padding(.trailing)
-        .renderedIf(searchHeaderisBeingEdited)
-
-        HStack {
-            Button(Localization.clearSelection) {
-                viewModel.clearSelection()
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
-            .disabled(isClearSelectionDisabled)
-            .renderedIf(configuration.multipleSelectionEnabled)
-
-            Spacer()
-
-            Button(viewModel.filterButtonTitle) {
-                showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: viewModel.source.filterAnalyticsSource))
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
-        }
-        .padding(.horizontal, insets: safeAreaInsets)
     }
 
     @ViewBuilder private var productSelectorHeaderTitleRow: some View {

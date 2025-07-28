@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 struct Manual: Identifiable, Equatable {

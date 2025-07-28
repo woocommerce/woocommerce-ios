@@ -43,12 +43,6 @@ extension UIImage {
         return UIImage(named: "AppIcon60x60")!
     }
 
-    /// Bell icon
-    ///
-    static var bell: UIImage {
-        UIImage(named: "bell")!
-    }
-
     /// Blaze icon
     ///
     static var blaze: UIImage {
@@ -281,10 +275,6 @@ extension UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
-    static var bankIcon: UIImage {
-        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
-    }
-
     static var scanToPayIcon: UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
@@ -309,12 +299,6 @@ extension UIImage {
     ///
     static var deleteCellImage: UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
-    }
-
-    /// Domain credit image.
-    ///
-    static var domainCreditImage: UIImage {
-        return UIImage(named: "domain-credit")!
     }
 
     /// Domain purchase success image.
@@ -409,6 +393,23 @@ extension UIImage {
     ///
     static var bigErrorIcon: UIImage {
         return UIImage(named: "error-big-icon")!
+    }
+
+    /// Gray error icon
+    static var grayErrorIcon: UIImage {
+        return UIImage(named: "error-icon-gray")!
+    }
+
+    static var deliveryIcon: UIImage {
+        return UIImage(named: "delivery-icon")!
+    }
+
+    static var giftIcon: UIImage {
+        return UIImage(named: "gift-icon")!
+    }
+
+    static var bellIcon: UIImage {
+        return UIImage(named: "bell-icon")!
     }
 
     /// Blaze success image
@@ -534,12 +535,6 @@ extension UIImage {
         UIImage(named: "icon-launch-store")!
     }
 
-    /// Customize domain image
-    ///
-    static var customizeDomainsImage: UIImage {
-        UIImage(named: "icon-customize-domain")!
-    }
-
     /// Get paid image
     ///
     static var getPaidImage: UIImage {
@@ -550,6 +545,10 @@ extension UIImage {
     ///
     static var cogImage: UIImage {
         return UIImage.gridicon(.cog)
+    }
+
+    static var wandAndRaysInverse: UIImage {
+        return UIImage(systemName: "wand.and.rays.inverse")!
     }
 
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
@@ -1305,40 +1304,44 @@ extension UIImage {
         return UIImage(named: "card-payments-select-reader-type")!
     }
 
-    /// Preparing built-in card reader: intended for use before we're ready to take payment
+    /// Preparing tap-to-pay card reader: intended for use before we're ready to take payment
     ///
-    static var preparingBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-preparing")!
+    static var preparingTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-preparing")!
     }
 
-    /// Built-in reader Processing: intended for use when a payment is
+    /// Tap to Pay reader Processing: intended for use when a payment is
     /// underway with the iPhone's built in reader.
     ///
-    static var builtInReaderProcessing: UIImage {
-        return UIImage(named: "built-in-reader-processing")!
+    static var tapToPayReaderProcessing: UIImage {
+        return UIImage(named: "tap-to-pay-reader-processing")!
     }
 
-    /// Built-in reader Success: intended for use when a transaction is complete
-    /// with the built-in reader
+    /// Tap to Pay reader Success: intended for use when a transaction is complete
+    /// with the tap-to-pay reader
     ///
-    static var builtInReaderSuccess: UIImage {
-        return UIImage(named: "built-in-reader-payment-success")!
+    static var tapToPayReaderSuccess: UIImage {
+        return UIImage(named: "tap-to-pay-reader-payment-success")!
     }
 
-    static var builtInReaderError: UIImage {
-        return UIImage(named: "built-in-reader-error")!
+    static var tapToPayReaderError: UIImage {
+        return UIImage(named: "tap-to-pay-reader-error")!
     }
 
-    static var setUpBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-set-up")!
+    static var setUpTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-set-up")!
     }
 
     static var shippingIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-shipping")
+        UIImage(imageLiteralResourceName: "icon-shipping").withRenderingMode(.alwaysTemplate)
     }
 
     static var productIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-product")
+        UIImage(imageLiteralResourceName: "icon-product").withRenderingMode(.alwaysTemplate)
+    }
+
+    static var creditCardIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "credit-card")
     }
 
     static var appPasswordTutorialImage: UIImage {

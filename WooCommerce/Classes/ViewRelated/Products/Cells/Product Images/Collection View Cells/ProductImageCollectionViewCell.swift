@@ -5,6 +5,7 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
+    var cancellable: Cancellable?
     var cancellableTask: Task<Void, Never>?
 
     private(set) lazy var coverTagView: UIView = {
@@ -46,7 +47,16 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         cancellableTask?.cancel()
         cancellableTask = nil
+
+        cancellable?.cancel()
+        cancellable = nil
+
         imageView.image = nil
+    }
+
+    deinit {
+        cancellableTask?.cancel()
+        cancellable?.cancel()
     }
 }
 

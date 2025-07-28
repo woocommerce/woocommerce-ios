@@ -2,6 +2,7 @@ import Foundation
 @testable import WooCommerce
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
+import enum Yosemite.POSItemType
 
 @available(iOS 17.0, *)
 final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
@@ -27,17 +28,29 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var orderState: WooCommerce.PointOfSaleOrderState
 
-    var itemsViewState: ItemsViewState
+    var purchasableItemsController: any WooCommerce.PointOfSaleItemsControllerProtocol
+
+    var purchasableItemsSearchController: any WooCommerce.PointOfSaleSearchingItemsControllerProtocol
+
+    var couponsController: any WooCommerce.PointOfSaleCouponsControllerProtocol
+
+    var couponsSearchController: any WooCommerce.PointOfSaleSearchingItemsControllerProtocol
+
     var blockReturnToItemSelection: Bool = false
 
     init(cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected,
-         itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading, itemsStack: ItemsStackState(root: .loading([]),
-                                                                                                               itemStates: [:])),
+         purchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
+         couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
+         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
          orderStage: PointOfSaleOrderStage = .building,
          orderState: PointOfSaleOrderState = .idle,
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
+         paymentState: PointOfSalePaymentState = .idle) {
         self.cardReaderConnectionStatus = cardReaderConnectionStatus
-        self.itemsViewState = itemsViewState
+        self.purchasableItemsController = purchasableItemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
+        self.couponsController = couponsController
+        self.couponsSearchController = couponsSearchController
         self.orderStage = orderStage
         self.orderState = orderState
         self.paymentState = paymentState
@@ -47,7 +60,9 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     func loadNextItems(base: ItemListBaseItem) async { }
 
-    var cart: [CartItem] = []
+    var cart: Cart = .init()
+
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) { }
 
     func addToCart(_ item: POSItem) { }
 
@@ -58,6 +73,8 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
         removeAllItemsFromCartCalled = true
     }
 
+    func removeAllItemsFromCart(types: [CartItemType]) { }
+
     func checkOut() async { }
 
     func addMoreToCart() { }
@@ -65,4 +82,12 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     func startNewCart() { }
 
     func pointOfSaleClosed() { }
+
+    func saveSearchTerm(_ term: String, for itemType: POSItemType) { }
+
+    func searchHistory(for itemType: Yosemite.POSItemType) -> [String] {
+        return []
+    }
+
+    func loadPopularItems(type: Yosemite.POSItemType) async { }
 }

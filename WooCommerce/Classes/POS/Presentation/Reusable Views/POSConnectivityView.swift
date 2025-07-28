@@ -40,7 +40,7 @@ struct POSConnectivityView: View {
         .frame(minHeight: Constants.height)
         .background(Color.posSecondaryContainer)
         .cornerRadius(Constants.cornerRadius)
-        .posShadow(.medium)
+        .posShadow(.medium, cornerRadius: Constants.cornerRadius)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 

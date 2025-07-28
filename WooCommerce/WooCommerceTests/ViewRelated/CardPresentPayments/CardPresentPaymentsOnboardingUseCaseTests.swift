@@ -1216,6 +1216,16 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
+
+    func test_CardPresentPaymentsPlugin_has_expected_name_and_fileNames() {
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.pluginName, "WooPayments")
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.plugin, .wooPayments)
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension, "woocommerce-payments/woocommerce-payments")
+
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.pluginName, "WooCommerce Stripe Gateway")
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.plugin, .stripe)
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension, "woocommerce-gateway-stripe/woocommerce-gateway-stripe")
+    }
 }
 
 // MARK: - Settings helpers
@@ -1257,8 +1267,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-payments/woocommerce-payments.php",
-                name: "WooCommerce Payments",
+                plugin: CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension,
+                name: CardPresentPaymentsPlugin.wcPay.pluginName,
                 version: version.rawValue,
                 networkActivated: networkActivated,
                 active: active
@@ -1273,8 +1283,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe.php",
-                name: "WooCommerce Stripe Gateway",
+                plugin: CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension,
+                name: CardPresentPaymentsPlugin.stripe.pluginName,
                 version: version.rawValue,
                 networkActivated: networkActivated,
                 active: active

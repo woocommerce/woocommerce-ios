@@ -1,5 +1,6 @@
 import Foundation
 import Experiments
+import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics

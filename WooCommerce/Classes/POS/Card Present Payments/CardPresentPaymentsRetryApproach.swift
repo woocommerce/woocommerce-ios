@@ -84,11 +84,11 @@ private extension CardReaderServiceUnderlyingError {
                 .incompleteStoreAddress,
                 .invalidPostalCode,
                 .passcodeNotEnabled,
-                .appleBuiltInReaderTOSAcceptanceRequiresiCloudSignIn,
-                .appleBuiltInReaderFailedToPrepare,
-                .appleBuiltInReaderTOSAcceptanceCanceled,
-                .appleBuiltInReaderTOSNotYetAccepted,
-                .appleBuiltInReaderTOSAcceptanceFailed,
+                .tapToPayReaderTOSAcceptanceRequiresiCloudSignIn,
+                .tapToPayReaderFailedToPrepare,
+                .tapToPayReaderTOSAcceptanceCanceled,
+                .tapToPayReaderTOSNotYetAccepted,
+                .tapToPayReaderTOSAcceptanceFailed,
                 .readerNotAccessibleInBackground,
                 .commandNotAllowedDuringCall,
                 .invalidAmount,
@@ -109,7 +109,7 @@ private extension CardReaderServiceUnderlyingError {
                 .unknownReaderIpAddress,
                 .internetConnectTimeOut,
                 .bluetoothReconnectStarted,
-                .appleBuiltInReaderAccountDeactivated,
+                .tapToPayReaderAccountDeactivated,
                 .readerMissingEncryptionKeys,
                 .unexpectedReaderError,
                 .commandRequiresCardholderConsent,
@@ -139,9 +139,9 @@ private extension CardReaderServiceUnderlyingError {
                 .connectionAttemptInvalidated,
                 .noActivePaymentIntent,
                 .nfcDisabled,
-                .appleBuiltInReaderMerchantBlocked,
-                .appleBuiltInReaderInvalidMerchant,
-                .appleBuiltInReaderDeviceBanned,
+                .tapToPayReaderMerchantBlocked,
+                .tapToPayReaderInvalidMerchant,
+                .tapToPayReaderDeviceBanned,
                 .unsupportedMobileDeviceConfiguration,
                 .readerIncompatible,
                 .invalidClientSecret,
@@ -151,7 +151,8 @@ private extension CardReaderServiceUnderlyingError {
                 .forwardingTestModePaymentInLiveMode,
                 .forwardingLiveModePaymentInTestMode,
                 .readerConnectionConfigurationInvalid,
-                .readerTippingParameterInvalid:
+                .readerTippingParameterInvalid,
+                .paymentMethodCollectionTimedOut:
             return .dontRetry
         }
     }

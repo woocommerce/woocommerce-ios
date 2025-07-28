@@ -1,5 +1,5 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
 
 /// My Store Stats View
 ///

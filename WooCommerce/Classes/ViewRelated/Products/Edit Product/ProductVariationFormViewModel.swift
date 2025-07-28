@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import UIKit
 import Yosemite
 
 /// Provides data for product form UI on a `ProductVariation`, and handles product editing actions.

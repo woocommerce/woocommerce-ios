@@ -1,10 +1,5 @@
 import Foundation
-
-#if canImport(Networking)
-import Networking
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
-#endif
+import NetworkingCore
 
 /// This wrapper to fetch orders from a notification.
 ///

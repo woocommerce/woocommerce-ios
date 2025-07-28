@@ -1,5 +1,6 @@
 import UIKit
 import SafariServices
+import WordPressShared
 
 /// The source for the sign in flow for external tracking.
 public enum SignInSource: Equatable {
@@ -578,10 +579,11 @@ private extension GetStartedViewController {
         if configuration.enableSignUp, errorCode == "unknown_user" {
             self.sendEmail()
         } else if errorCode == "email_login_not_allowed" {
-                // If we get this error, we know we have a WordPress.com user but their
-                // email address is flagged as suspicious.  They need to login via their
-                // username instead.
-                self.showSelfHostedWithError(error)
+            // If we get this error, we know we have a WordPress.com user but their
+            // email address is flagged as suspicious.
+            // Take the user to the magic link request screen to verify their email.
+            self.tracker.track(failure: error.localizedDescription)
+            self.showMagicLinkRequestScreen()
         } else {
             let signInError = SignInError(error: error, source: source) ?? error
             guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,
@@ -742,23 +744,13 @@ private extension GetStartedViewController {
         validateFormAndLogin()
     }
 
-    /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.
-    /// Displays the specified error message when the new view controller appears.
+    /// Show Magic Link request screen, the screen allows the user to request a magic link to be sent to their email.
     ///
-    func showSelfHostedWithError(_ error: Error) {
-        loginFields.siteAddress = "https://wordpress.com"
-        errorToPresent = error
-
-        tracker.track(failure: error.localizedDescription)
-
-        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
-            WPAuthenticatorLogError("Failed to navigate to SiteCredentialsViewController from GetStartedViewController")
-            return
-        }
+    func showMagicLinkRequestScreen() {
+        let vc = MagicLinkRequestViewController(fallbackAction: .wpcomUsernamePassword)
 
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
 
         navigationController?.pushViewController(vc, animated: true)
     }

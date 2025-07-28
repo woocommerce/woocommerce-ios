@@ -66,7 +66,8 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
 
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
-        assertThat(notice.title, contains: siteName)
+        let title = try XCTUnwrap(notice.title)
+        assertThat(title, contains: siteName)
         let expectedTitle = String.localizedStringWithFormat(SwitchStoreNoticePresenter.Localization.titleFormat, site.name)
         XCTAssertEqual(notice.title, expectedTitle)
     }
@@ -92,7 +93,8 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
         XCTAssertEqual(noticePresenter.queuedNotices.count, 1)
 
         let notice = try XCTUnwrap(noticePresenter.queuedNotices.first)
-        assertThat(notice.title, contains: siteName)
+        let title = try XCTUnwrap(notice.title)
+        assertThat(title, contains: siteName)
         let expectedTitle = String.localizedStringWithFormat(SwitchStoreNoticePresenter.Localization.titleFormat, site.name)
         XCTAssertEqual(notice.title, expectedTitle)
     }

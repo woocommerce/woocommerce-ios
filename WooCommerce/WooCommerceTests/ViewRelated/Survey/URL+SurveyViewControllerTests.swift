@@ -22,4 +22,18 @@ final class URL_SurveyViewControllerTests: XCTestCase {
 
         XCTAssertEqual(expectedURL, actualURL)
     }
+
+    func test_tagging_site_info_appends_the_correct_tag_data() throws {
+        let siteID: Int64 = 123
+        let testURL = "https://example.com"
+        let storeUUID = "8363cd24-2501-463f-b21b-649315a0d507"
+
+        let expectedURL = "https://testurl.com?site-id=\(siteID)&store-id=\(storeUUID)&store-url=\(testURL)"
+
+        let actualURL = URL(string: "https://testurl.com")?.tagSiteInfo(siteID: siteID,
+                                                                        storeUUID: storeUUID,
+                                                                        storeURL: testURL).absoluteString
+
+        XCTAssertEqual(expectedURL, actualURL)
+    }
 }

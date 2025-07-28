@@ -1,5 +1,5 @@
 #import "WPNUXMainButton.h"
-#import <WordPressShared/WPFontManager.h>
+@import WordPressSharedObjC;
 
 @implementation WPNUXMainButton {
     UIActivityIndicatorView *activityIndicator;

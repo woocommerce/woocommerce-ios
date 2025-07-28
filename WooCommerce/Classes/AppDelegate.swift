@@ -8,7 +8,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
 
-import CocoaLumberjack
+import CocoaLumberjackSwift
 import KeychainAccess
 import WordPressUI
 import WordPressAuthenticator
@@ -20,9 +20,8 @@ import class Yosemite.ScreenshotStoresManager
 @_exported import Inject
 
 #if DEBUG
-import Wormholy
+import WormholySwift
 #endif
-
 
 // MARK: - Woo's App Delegate!
 //
@@ -210,7 +209,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             tabBarController.navigate(to: OrdersDestination.orderList)
             completionHandler(true)
         case QuickAction.collectPayment:
-            tabBarController.navigate(to: PaymentsMenuDestination.collectPayment)
+            tabBarController.navigate(to: OrdersDestination.createOrder)
             completionHandler(true)
         }
     }
@@ -294,7 +293,6 @@ private extension AppDelegate {
     func setupWooAppearance() {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
-        UISearchBar.applyWooAppearance()
         UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
@@ -369,7 +367,7 @@ private extension AppDelegate {
     /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        CocoaLumberjack.dynamicLogLevel = level
+        CocoaLumberjackSwift.dynamicLogLevel = level
     }
 
     /// Setup: Notice Presenter
@@ -417,10 +415,10 @@ private extension AppDelegate {
     /// Set up Wormholy only in Debug build configuration
     ///
     func setupWormholy() {
-        #if DEBUG
-        /// We want to activate it programmatically, not using the shake.
+#if DEBUG
+        // We want to activate it programmatically, not using the shake.
         Wormholy.shakeEnabled = false
-        #endif
+#endif
     }
 
     /// Set up `KeyboardStateProvider`

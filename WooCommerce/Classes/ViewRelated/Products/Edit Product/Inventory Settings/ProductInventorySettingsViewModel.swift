@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 import Experiments
 import WooFoundation
@@ -281,10 +282,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
 //
 private extension ProductInventorySettingsViewModel {
     func reloadSections() {
-        var sections = [createSKUSection()]
-        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport) {
-            sections.append(createGlobalUniqueIdentifierSection())
-        }
+        var sections = [createSKUSection(), createGlobalUniqueIdentifierSection()]
 
         if formType == .inventory {
             let stockSection: Section

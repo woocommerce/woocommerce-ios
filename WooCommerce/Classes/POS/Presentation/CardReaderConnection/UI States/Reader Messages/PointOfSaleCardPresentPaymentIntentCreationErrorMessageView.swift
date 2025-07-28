@@ -41,9 +41,11 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
             }
+            .minimumScaleFactor(1)
+            .dynamicWidthScaling(containerWidth: width)
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

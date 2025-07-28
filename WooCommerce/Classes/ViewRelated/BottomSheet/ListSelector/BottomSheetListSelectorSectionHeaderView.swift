@@ -16,7 +16,9 @@ final class BottomSheetListSelectorSectionHeaderView: UITableViewHeaderFooterVie
 
     func configure(title: String?, subtitle: String?) {
         self.title.text = title
+        self.title.numberOfLines = 0
         self.subtitle.text = subtitle
+        self.subtitle.numberOfLines = 0
     }
 }
 

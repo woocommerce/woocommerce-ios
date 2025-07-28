@@ -4,9 +4,8 @@ import enum Yosemite.CardPresentPaymentsPlugin
 struct InPersonPaymentsStripeAccountPending: View {
     let deadline: Date?
     let analyticReason: String
+    let plugin: CardPresentPaymentsPlugin
     let onSkip: () -> ()
-
-    private let plugin: CardPresentPaymentsPlugin = .stripe
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -72,7 +71,7 @@ private enum Localization {
 
 struct InPersonPaymentsStripeAccountPending_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountPending(deadline: Date(), analyticReason: "", onSkip: {})
+        InPersonPaymentsStripeAccountPending(deadline: Date(), analyticReason: "", plugin: .wcPay, onSkip: {})
     }
 }
 

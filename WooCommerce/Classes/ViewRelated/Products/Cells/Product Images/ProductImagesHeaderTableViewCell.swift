@@ -4,6 +4,7 @@ import Yosemite
 final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
 
     /// View Model
     ///
@@ -34,6 +35,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
         configureBackground()
         configureSeparator()
+        updateCollectionViewHeight()
     }
 
     /// Configure cell
@@ -54,14 +56,24 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         }
     }
 
-    /// Rotation management
+    /// Rotation management and accessibility changes
     ///
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection != previousTraitCollection {
+            // Update collection view height for accessibility changes
+            updateCollectionViewHeight()
+            // Invalidate layout when trait collection changes (including accessibility changes)
             collectionView.collectionViewLayout.invalidateLayout()
             collectionView.reloadData()
         }
+    }
+
+    /// Updates the collection view height based on current accessibility settings
+    private func updateCollectionViewHeight() {
+        let cellSize = ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
+        // Add padding to accommodate the cell size
+        collectionViewHeightConstraint.constant = cellSize.height + Layout.collectionViewPadding
     }
 }
 
@@ -72,11 +84,11 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
         switch viewModel?.items[indexPath.item] {
         case .image(let status):
             switch status {
-            case .remote(let image):
+            case .remote(let image, _, _):
                 onImageSelected?(image, indexPath)
             case .uploading:
                 onImageSelected?(nil, indexPath)
-            case let .uploadFailure(asset, error):
+            case let .uploadFailure(asset, error, _, _):
                 onFailedUploadSelected?(asset, error)
             }
         case .addImage:
@@ -98,7 +110,8 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
         case .extendedAddImage:
             return frame.size
         default:
-            return ProductImagesHeaderViewModel.defaultCollectionViewCellSize
+            // Use dynamic sizing based on current accessibility settings
+            return ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
         }
     }
 }
@@ -141,11 +154,23 @@ private extension ProductImagesHeaderTableViewCell {
 
         self.config = config
 
+        // Update height for the new configuration
+        updateCollectionViewHeight()
+
         switch config {
         case .extendedAddImages:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)
         default:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
+            // Use dynamic sizing based on current accessibility settings
+            let dynamicSize = ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: dynamicSize, config: config)
         }
+    }
+}
+
+private extension ProductImagesHeaderTableViewCell {
+    enum Layout {
+        /// Padding around the collection view (16pt top and bottom)
+        static let collectionViewPadding: CGFloat = 32
     }
 }

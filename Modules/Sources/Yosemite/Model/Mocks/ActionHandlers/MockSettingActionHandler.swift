@@ -1,0 +1,52 @@
+import Foundation
+import Storage
+import Networking
+
+struct MockSettingActionHandler: MockActionHandler {
+    typealias ActionType = SettingAction
+
+    let objectGraph: MockObjectGraph
+    let storageManager: StorageManagerType
+
+    private let settingStore: SettingStore
+
+    init(objectGraph: MockObjectGraph, storageManager: StorageManagerType) {
+        self.objectGraph = objectGraph
+        self.storageManager = storageManager
+
+        settingStore = SettingStore(dispatcher: Dispatcher(), storageManager: storageManager, network: NullNetwork())
+    }
+
+    func handle(action: ActionType) {
+        switch action {
+        case .retrieveSiteAPI(let siteID, let onCompletion):
+            retrieveSiteAPI(siteId: siteID, onCompletion: onCompletion)
+        case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
+            synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveTaxBasedOnSetting(_, let onCompletion):
+            onCompletion(.success(objectGraph.taxBasedOnSetting))
+        case .isFeatureEnabled(_, let feature, let onCompletion):
+            switch feature {
+            case .pointOfSale:
+                // Only enables POS feature for eligible locales (US and UK variants).
+                let locale = Locale.current
+                let localeIdentifier = locale.identifier
+                let isEligibleCountry = localeIdentifier.hasPrefix("en_US") ||
+                                       localeIdentifier.hasPrefix("en_GB") ||
+                                       localeIdentifier == "en-US" ||
+                                       localeIdentifier == "en-GB"
+                onCompletion(.success(isEligibleCountry))
+            }
+        default: unimplementedAction(action: action)
+        }
+    }
+
+    func retrieveSiteAPI(siteId: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void) {
+        onCompletion(.success(objectGraph.defaultSiteAPI))
+    }
+
+    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+        let settings = objectGraph.siteSettings(for: siteID)
+        save(mocks: settings, as: StorageSiteSetting.self, onCompletion: onCompletion)
+    }
+}

@@ -1,7 +1,0 @@
-project: 
-    file: ../../../Hardware/Hardware.xcodeproj
-    target: 
-        name: Hardware
-templates:
-    - Models+Copiable.swifttemplate
-output: ../../../Hardware/Hardware/Model/Copiable/

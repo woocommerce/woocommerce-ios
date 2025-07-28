@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 extension StatsTimeRangeV4 {

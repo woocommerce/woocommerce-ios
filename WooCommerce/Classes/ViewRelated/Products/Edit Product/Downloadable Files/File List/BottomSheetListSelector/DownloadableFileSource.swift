@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 /// Actions in the downloadable file form bottom sheet to add a new downloadable file.

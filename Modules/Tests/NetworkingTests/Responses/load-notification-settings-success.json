@@ -1,0 +1,84 @@
+{
+    "blogs": [
+        {
+            "blog_id": 113,
+            "timeline": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "email": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "device": {
+                "device_id": 664,
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            }
+        },
+        {
+            "blog_id": 72,
+            "timeline": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "email": {
+                "new_comment": true,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            },
+            "device": {
+                "device_id": 664,
+                "new_comment": false,
+                "comment_like": true,
+                "post_like": true,
+                "follow": true,
+                "achievement": true,
+                "mentions": true,
+                "scheduled_publicize": true,
+                "store_order": true,
+                "blogging_prompt": false,
+                "draft_post_prompt": true
+            }
+        }
+    ]
+}

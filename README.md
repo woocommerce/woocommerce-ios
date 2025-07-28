@@ -53,7 +53,7 @@
     bundle install && bundle exec rake dependencies
     ```
 
-    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.
+    This command installs the required build tools and dependencies.
 
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 

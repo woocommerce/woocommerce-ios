@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 import Experiments
 import WooFoundation
@@ -45,10 +46,11 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
+        useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
         stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
             state = fixedState
-            useCase = CardPresentPaymentsOnboardingUseCase()
+            self.useCase = useCase
             userIsAdministrator = fixedUserIsAdministrator
             updateLearnMoreURL(state: fixedState)
         }

@@ -115,7 +115,6 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         ])
 
         extendContentUnderSafeAreas()
-        webView.configureForSandboxEnvironment()
 
         webView.publisher(for: \.estimatedProgress)
             .sink { [weak self] progress in

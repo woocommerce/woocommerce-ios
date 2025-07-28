@@ -20,9 +20,11 @@ struct WooShippingEditAddressView: View {
     @State private var previousFocusedField: WooShippingAddressFieldType?
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var isPresentingCountrySelector: Bool = false
     @State private var isPresentingStateSelector: Bool = false
+    @State private var actionType: ActionType?
 
     var body: some View {
         ScrollView {
@@ -66,14 +68,20 @@ struct WooShippingEditAddressView: View {
                 }
                 .padding(.bottom, Constants.extraPadding)
                 AddressTextField(field: viewModel.email,
-                                 focused: $focusedField)
+                                 focused: $focusedField,
+                                 keyboardType: .emailAddress)
                 AddressTextField(field: viewModel.phone,
-                                 focused: $focusedField)
+                                 focused: $focusedField,
+                                 keyboardType: .phonePad)
                 .padding(.bottom, Constants.extraPadding)
                 if viewModel.showSaveAsDefault {
                     Toggle(Localization.defaultAddress, isOn: $viewModel.isDefaultAddress)
                         .font(.subheadline)
                         .tint(Color(.accent))
+                }
+
+                if sizeCategory.isAccessibilityCategory {
+                    ctaFooter(isScrollViewEmbedded: true)
                 }
             }
             .padding()
@@ -84,11 +92,6 @@ struct WooShippingEditAddressView: View {
                 previousFocusedField = newField
             }
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        dismiss()
-                    }
-                }
                 ToolbarItemGroup(placement: .keyboard) {
                     Button(action: {
                         focusPreviousField()
@@ -111,73 +114,130 @@ struct WooShippingEditAddressView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isPresentingCountrySelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.countrySelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingCountrySelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
-                }
-            }
-            .sheet(isPresented: $isPresentingStateSelector) {
-                NavigationStack {
-                    FilterListSelector(viewModel: viewModel.stateSelectorVM)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button {
-                                    isPresentingStateSelector = false
-                                } label: {
-                                    Text(Localization.done)
-                                        .bold()
-                                }
-                            }
-                        }
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.cancel) {
+                    dismiss()
                 }
             }
         }
         .safeAreaInset(edge: .bottom) {
-            VStack(spacing: .zero) {
-                Divider().ignoresSafeArea(edges: [.horizontal])
-                VStack(spacing: Constants.verticalSpacing) {
-                    HStack {
-                        Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
-                        Text(viewModel.statusLabel)
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
-                    Button(Localization.Button.label(for: viewModel.status)) {
-                        switch viewModel.status {
-                        case .verified:
-                            dismiss()
-                        case .unverified:
-                            Task { @MainActor in
-                                await viewModel.remotelyValidateAddress()
-                            }
-                        case .missingInformation:
-                            break
-                        }
-                    }
-                    .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading))
-                    .disabled(viewModel.status == .missingInformation)
-                }
-                .padding()
+            if !sizeCategory.isAccessibilityCategory {
+                ctaFooter(isScrollViewEmbedded: false)
             }
-            .background(Color(uiColor: .systemBackground))
         }
         .sheet(item: $viewModel.normalizeAddressVM) { viewModel in
             NavigationStack {
                 WooShippingNormalizeAddressView(viewModel: viewModel)
             }
         }
+        .sheet(isPresented: $isPresentingCountrySelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.countrySelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingCountrySelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
+            }
+        }
+        .sheet(isPresented: $isPresentingStateSelector) {
+            NavigationStack {
+                FilterListSelector(viewModel: viewModel.stateSelectorVM)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button {
+                                isPresentingStateSelector = false
+                            } label: {
+                                Text(Localization.done)
+                                    .bold()
+                            }
+                        }
+                    }
+            }
+        }
+        .alert(
+            viewModel.addressErrorState?.title ?? "",
+            isPresented: $viewModel.isShowingAddressErrorAlert,
+            actions: {
+                Button(Localization.AlertButtons.retry) {
+                    Task { @MainActor in
+                        switch viewModel.addressErrorState {
+                        case .validation:
+                            await viewModel.remotelyValidateAddress()
+                        case .updateOrigin(let address), .updateDestination(let address):
+                            viewModel.updateConfirmedAddress(address)
+                        case nil:
+                            break
+                        }
+                    }
+                }
+                Button(
+                    Localization.AlertButtons.close,
+                    role: .cancel
+                ) {}
+            }, message: {
+                Text(viewModel.addressErrorState?.message ?? "")
+            }
+        )
+    }
+
+    private func ctaFooter(isScrollViewEmbedded: Bool) -> some View {
+        VStack(spacing: .zero) {
+            Divider()
+                .ignoresSafeArea(edges: [.horizontal])
+                .padding(
+                    /// When embedded in scroll view
+                    /// we use a negative value to neglect the parent padding for the divider
+                    isScrollViewEmbedded ? .horizontal : [],
+                    -Constants.defaultPadding
+                )
+
+            VStack(spacing: Constants.verticalSpacing) {
+                HStack {
+                    Image(systemName: viewModel.status == .verified ? "checkmark.circle" : "exclamationmark.circle")
+                    Text(viewModel.statusLabel)
+                }
+                .font(.subheadline)
+                .foregroundStyle(viewModel.status == .verified ? Constants.green : Constants.red)
+
+                Button(Localization.Button.label(for: viewModel.status)) {
+                    actionType = .validateOrConfirm
+                    switch viewModel.status {
+                    case .verified:
+                        dismiss()
+                    case .unverified:
+                        Task { @MainActor in
+                            await viewModel.remotelyValidateAddress()
+                        }
+                    case .missingInformation:
+                        break
+                    }
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
+                                                       actionType == .validateOrConfirm))
+                .disabled(viewModel.status == .missingInformation)
+                .renderedIf(!viewModel.canConfirmWithoutVerification)
+
+                Button(Localization.useAddressAsEntered) {
+                    actionType = .proceedWithoutValidation
+                    viewModel.proceedWithInputAddress()
+                }
+                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.isLoading &&
+                                                         actionType == .proceedWithoutValidation))
+                .renderedIf(viewModel.canConfirmWithoutVerification)
+            }
+            .padding(isScrollViewEmbedded ? .vertical : .all)
+        }
+        .background(Color(uiColor: .systemBackground))
     }
 
     private struct AddressTextField: View {
@@ -185,6 +245,8 @@ struct WooShippingEditAddressView: View {
 
         /// The focused state of the field.
         @FocusState.Binding var focused: WooShippingAddressFieldType?
+
+        var keyboardType = UIKeyboardType.default
 
         var body: some View {
             VStack(spacing: Constants.innerSpacing) {
@@ -198,6 +260,7 @@ struct WooShippingEditAddressView: View {
                 .font(.subheadline)
                 .foregroundStyle(Color(.text))
                 TextField(Localization.title(for: field.type), text: $field.value, prompt: Text(field.required ? "" : Localization.optional))
+                    .keyboardType(keyboardType)
                     .focused($focused, equals: field.type)
                     .onChange(of: field.value) { _ in
                         field.clearError()
@@ -314,8 +377,14 @@ extension WooShippingEditAddressView {
 }
 
 private extension WooShippingEditAddressView {
+    enum ActionType {
+        case validateOrConfirm
+        case proceedWithoutValidation
+    }
+
     enum Constants {
         static let verticalSpacing: CGFloat = 16
+        static let defaultPadding: CGFloat = 16
         static let innerSpacing: CGFloat = 8
         static let extraPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8
@@ -390,6 +459,11 @@ private extension WooShippingEditAddressView {
         static let done = NSLocalizedString("wooShipping.createLabels.editAddress.done",
                                             value: "Done",
                                             comment: "Button to dismiss the keyboard")
+        static let useAddressAsEntered = NSLocalizedString(
+            "wooShipping.createLabels.editAddress.useAddressAsEntered",
+            value: "Use address as entered",
+            comment: "Button to proceed with the input address even when validation fails"
+        )
 
         enum Button {
             static func label(for status: WooShippingAddressStatus) -> String {
@@ -412,6 +486,20 @@ private extension WooShippingEditAddressView {
                                                                  value: "Add Missing Information",
                                                                  comment: "Button label indicating the address is missing information for a Woo Shipping label")
         }
+
+        enum AlertButtons {
+            static let retry = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.alert.retry",
+                value: "Retry",
+                comment: "Button label indicating the user wants to retry an action"
+            )
+
+            static let close = NSLocalizedString(
+                "wooShipping.createLabels.editAddress.alert.close",
+                value: "Close",
+                comment: "Button label indicating the user wants to close an alert"
+            )
+        }
     }
 }
 
@@ -433,7 +521,7 @@ private extension WooShippingEditAddressView {
 }
 
 #Preview("With Company") {
-    WooShippingEditAddressView(viewModel: .init(type: .destination,
+    WooShippingEditAddressView(viewModel: .init(type: .destination(orderID: 123),
                                                 id: UUID().uuidString,
                                                 name: "HEADQUARTERS",
                                                 company: "COMPANY",

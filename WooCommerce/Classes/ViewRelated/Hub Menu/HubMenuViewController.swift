@@ -13,9 +13,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
     private var shouldShowNavigationBar = false
 
     init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
-                                          tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+                                          tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
+                                          stores: stores)
 
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         super.init(rootView: HubMenu(viewModel: viewModel))

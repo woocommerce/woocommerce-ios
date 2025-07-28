@@ -409,7 +409,6 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
-                                                 purchasableItemsOnly: purchasableItemsOnly,
                                                  orderSyncState: orderSyncState,
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product, selected in
             guard let self else { return }

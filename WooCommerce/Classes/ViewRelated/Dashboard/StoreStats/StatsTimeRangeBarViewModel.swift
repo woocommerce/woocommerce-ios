@@ -1,4 +1,5 @@
 import Experiments
+import Foundation
 import Yosemite
 
 private extension StatsTimeRangeV4 {

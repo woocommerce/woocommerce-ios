@@ -78,11 +78,12 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
 
     private let currencyFormatter: CurrencyFormatter
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
 
     /// Determines if Subscription-type product details should be shown
     ///
     var shouldShowProductSubscriptionsDetails: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
+        featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI) &&
         productSubscriptionDetails != nil
     }
 
@@ -218,6 +219,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
          stepperViewModel: ProductStepperViewModel,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          configure: (() -> Void)? = nil) {
         self.id = id
         self.productOrVariationID = productOrVariationID
@@ -244,6 +246,7 @@ struct CollapsibleProductRowCardViewModel: Identifiable {
                                            price: price)
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         observeProductQuantityFromStepperViewModel()
     }

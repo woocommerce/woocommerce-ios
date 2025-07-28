@@ -13,10 +13,16 @@ struct ProductImageThumbnail<Placeholder: View>: View {
     /// Image processor to resize images in a background thread to avoid blocking the UI
     ///
     private var imageProcessor: ImageProcessor {
-        ResizingImageProcessor(referenceSize:
-                .init(width: productImageSize * scale,
-                      height: productImageSize * scale),
-                               mode: .aspectFill)
+        let screenPixelScale = UIScreen.main.scale
+        let sideSize = productImageSize * screenPixelScale * scale
+        let pixelSize = CGSize(
+            width: sideSize,
+            height: sideSize
+        )
+        return ResizingImageProcessor(
+            referenceSize: pixelSize,
+            mode: .aspectFill
+        )
     }
 
     init(productImageURL: URL?,

@@ -1,0 +1,1 @@
+Notre dernière mise à jour apporte des écrans d’expédition scindée plus fluides et une meilleure accessibilité pour les étiquettes d’expédition, ainsi qu’une sélection plus facile de la taille des étiquettes et des badges de PDV dans la liste de commande. Dans Point de vente, profitez d’un nouveau flux de lecture de code-barres et d’un bouton d’effacement du panier plus sûr.

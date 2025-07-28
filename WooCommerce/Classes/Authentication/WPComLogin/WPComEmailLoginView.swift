@@ -73,10 +73,10 @@ struct WPComEmailLoginView: View {
 
                 // Email field
                 AuthenticationFormFieldView(viewModel: .init(
-                    header: Localization.emailLabel,
-                    placeholder: Localization.enterEmail,
-                    keyboardType: .emailAddress,
-                    text: $viewModel.emailAddress,
+                    header: viewModel.usernameOnly ? Localization.usernameLabel : Localization.emailLabel,
+                    placeholder: viewModel.usernameOnly ? Localization.enterUsername : Localization.enterEmail,
+                    keyboardType: viewModel.usernameOnly ? .default : .emailAddress,
+                    text: $viewModel.emailOrUsername,
                     isSecure: false,
                     errorMessage: nil,
                     isFocused: isEmailFieldFocused,
@@ -84,7 +84,8 @@ struct WPComEmailLoginView: View {
                 ))
                 .focused($isEmailFieldFocused)
 
-                if viewModel.allowAccountCreation {
+                if viewModel.allowAccountCreation,
+                   !viewModel.usernameOnly {
                     // Account creation hint
                     Text(Localization.accountCreationHint)
                         .footnoteStyle()
@@ -101,12 +102,12 @@ struct WPComEmailLoginView: View {
                     ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
-                        await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)
+                        await viewModel.checkWordPressComAccount(emailOrUsername: viewModel.emailOrUsername)
                         isPrimaryButtonLoading = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(viewModel.emailAddress.isEmpty)
+                .disabled(viewModel.emailOrUsername.isEmpty)
 
                 // Terms label
                 AttributedText(viewModel.termsAttributedString)
@@ -129,9 +130,19 @@ private extension WPComEmailLoginView {
             "Email Address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
+        static let usernameLabel = NSLocalizedString(
+            "wpComEmailLoginView.usernameLabel",
+            value: "Username",
+            comment: "Label for the username field on the WPCom email login screen of the Jetpack setup flow."
+        )
         static let enterEmail = NSLocalizedString(
             "Enter email or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
+        )
+        static let enterUsername = NSLocalizedString(
+            "wpComEmailLoginView.enterUsername",
+            value: "Enter username",
+            comment: "Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let accountCreationHint = NSLocalizedString(
             "wpComEmailLoginView.accountCreationHint",
@@ -148,7 +159,8 @@ struct WPComEmailLoginView_Previews: PreviewProvider {
                                              requiresConnectionOnly: true,
                                              allowAccountCreation: false,
                                              onPasswordUIRequest: { _ in },
-                                             onMagicLinkUIRequest: { _, _ in },
+                                             onMagicLinkRequest: { _ in },
+                                             onMagicLinkSent: { _, _ in },
                                              onError: { _ in }))
     }
 }

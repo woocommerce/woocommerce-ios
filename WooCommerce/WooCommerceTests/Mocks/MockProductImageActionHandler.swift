@@ -3,6 +3,9 @@ import Photos
 @testable import WooCommerce
 import struct Yosemite.Media
 import struct Yosemite.ProductImage
+import enum Yosemite.ProductImageStatus
+import enum Yosemite.ProductImageAssetType
+import enum Yosemite.ProductOrVariationID
 
 final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias AllStatuses = [ProductImageStatus]

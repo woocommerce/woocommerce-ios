@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import UIKit
 import WooFoundation
 import enum Networking.DotcomError
 
@@ -77,23 +78,11 @@ final class EditableOrderViewModel: ObservableObject {
         switch flow {
         case .creation: // Creation can be dismissed when there aren't changes pending to commit.
             return !hasChanges
-        case .editing: // Editing can always be dismissed because changes are committed instantly.
-            return true
+        case .editing:
+            // In a single-view layout: Editing can always be dismissed because changes are committed instantly.
+            // In a split-view layout: Editing can be dismissed when there aren't product changes pending to recalculate.
+            return !(selectionSyncApproach == .onRecalculateButtonTap && syncRequired)
         }
-    }
-
-    var sideBySideViewFeatureFlagEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
-    }
-
-    /// Indicates whether the cancel button is visible.
-    ///
-    var shouldShowCancelButton: Bool {
-        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
-        guard !sideBySideViewFeatureFlagEnabled else {
-            return false
-        }
-        return flow == .creation
     }
 
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
@@ -461,6 +450,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let quantityDebounceDuration: Double
 
+    @MainActor
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
@@ -1026,7 +1016,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
-            customAmountsSectionViewModel.showAddCustomAmount = true
+            customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
 
@@ -1618,7 +1608,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
+                        self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }
             }
@@ -2012,9 +2002,6 @@ private extension EditableOrderViewModel {
     }
 
     func evaluateSelectionSync() {
-        guard sideBySideViewFeatureFlagEnabled else {
-            return
-        }
         switch selectionSyncApproach {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
@@ -2028,10 +2015,7 @@ private extension EditableOrderViewModel {
     func forwardSyncApproachToSynchronizer() {
         $selectionSyncApproach
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
             }
             .store(in: &cancellables)
@@ -2041,10 +2025,7 @@ private extension EditableOrderViewModel {
         $selectionSyncApproach
             .removeDuplicates()
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
                     /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
                     /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when

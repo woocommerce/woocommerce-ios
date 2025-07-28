@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 /// Controls navigation for the issue refund feedback flow. Meant to be presented modally.

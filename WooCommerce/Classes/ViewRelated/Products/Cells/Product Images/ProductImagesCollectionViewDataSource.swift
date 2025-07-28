@@ -51,16 +51,16 @@ private extension ProductImagesCollectionViewDataSource {
 
     func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus, isFirstImage: Bool) {
         switch productImageStatus {
-        case .remote(let image):
+        case .remote(let image, _, _):
             configureRemoteImageCell(cell, productImage: image, isFirstImage: isFirstImage)
-        case .uploading(let asset):
+        case .uploading(let asset, _, _):
             switch asset {
                 case .phAsset(let asset):
                     configureUploadingImageCell(cell, asset: asset)
                 case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
-        case let .uploadFailure(asset, _):
+        case let .uploadFailure(asset, _, _, _):
             switch asset {
                 case .phAsset(let asset):
                     configureFailedImageCell(cell, asset: asset)
@@ -77,20 +77,40 @@ private extension ProductImagesCollectionViewDataSource {
 
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
-        cell.cancellableTask = Task { @MainActor [weak self, weak cell] in
-            guard let image = try? await self?.productUIImageLoader.requestImage(productImage: productImage) else {
-                return
-            }
 
-            /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
-            /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
-            ///
-            guard !Task.isCancelled else {
-                return
+        let useOptimizedImageRequest = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        )
+
+        if useOptimizedImageRequest {
+            do {
+                cell.cancellable = try productUIImageLoader.requestImage(
+                    productImage: productImage,
+                    targetSize: cell.imageView.frame.size
+                ) { [weak cell] image in
+                    cell?.imageView.contentMode = .scaleAspectFit
+                    cell?.imageView.image = image
+                }
+            } catch {
+                assertionFailure(error.localizedDescription)
             }
-            cell?.imageView.contentMode = .scaleAspectFit
-            cell?.imageView.image = image
+        } else {
+            cell.cancellableTask = Task { @MainActor [weak self, weak cell] in
+                guard let image = try? await self?.productUIImageLoader.requestImage(productImage: productImage) else {
+                    return
+                }
+
+                /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
+                /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
+                ///
+                guard !Task.isCancelled else {
+                    return
+                }
+                cell?.imageView.contentMode = .scaleAspectFit
+                cell?.imageView.image = image
+            }
         }
+
         cell.coverTagView.isHidden = !isFirstImage
     }
 

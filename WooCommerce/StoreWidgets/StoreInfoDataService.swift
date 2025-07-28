@@ -1,12 +1,12 @@
+import Foundation
+
 #if canImport(Networking)
 import Networking
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
+#elseif canImport(NetworkingCore)
+import NetworkingCore
 #endif
 
-#if canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationCore
 
 /// Orchestrator class that fetches today store stats data.
 ///

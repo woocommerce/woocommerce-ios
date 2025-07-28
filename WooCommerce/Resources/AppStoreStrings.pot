@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v21.8-whats-new"
+msgctxt "v22.9-whats-new"
 msgid ""
-"This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.\n"
+"This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We've also added a dedicated Point of Sale tab for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app's size!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

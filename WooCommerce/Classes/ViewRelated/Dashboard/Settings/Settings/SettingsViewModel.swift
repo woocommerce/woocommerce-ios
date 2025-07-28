@@ -208,10 +208,10 @@ private extension SettingsViewModel {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if featureFlagService.isFeatureFlagEnabled(.domainSettings)
-                && stores.sessionManager.defaultSite?.isWordPressComStore == true
-                && stores.sessionManager.defaultRoles.contains(.administrator) {
-                rows.append(.domain)
+            if stores.isAuthenticated,
+               stores.isAuthenticatedWithoutWPCom == false,
+               stores.sessionManager.defaultSite?.isWordPressComStore == false {
+                rows.append(.connectivity)
             }
 
             guard rows.isNotEmpty else {
@@ -277,9 +277,26 @@ private extension SettingsViewModel {
         }()
 
         // App Settings
-        let appSettingsSection = Section(title: Localization.appSettingsTitle,
-                                         rows: [.privacy],
-                                         footerHeight: UITableView.automaticDimension)
+        let appSettingsSection: Section = {
+            let rows: [Row]
+            let notificationAvailable: Bool = {
+                guard stores.isAuthenticated && stores.isAuthenticatedWithoutWPCom == false else {
+                    return false
+                }
+                guard let site = stores.sessionManager.defaultSite else {
+                    return false
+                }
+                return site.isJetpackCPConnected == false
+            }()
+            if notificationAvailable, featureFlagService.isFeatureFlagEnabled(.notificationSettings) {
+                rows = [.notifications, .privacy]
+            } else {
+                rows = [.privacy]
+            }
+            return Section(title: Localization.appSettingsTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
 
         // About the App
         let aboutTheAppSection: Section = {
@@ -298,11 +315,12 @@ private extension SettingsViewModel {
         // Other
         let otherSection: Section = {
             let rows: [Row]
-            #if DEBUG
+#if DEBUG
             rows = [.deviceSettings, .wormholy]
-            #else
+#else
             rows = [.deviceSettings]
-            #endif
+#endif
+
             return Section(title: Localization.otherTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)

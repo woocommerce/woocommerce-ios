@@ -1,0 +1,17 @@
+configurations:
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundation
+      templates:
+          - Models+Copiable.swifttemplate
+      output: ../../../../../Modules/Sources/WooFoundation/Model/Copiable/
+      args:
+          moduleName: WooFoundation
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundationCore
+      templates:
+          - Models+Copiable.swifttemplate
+      output: ../../../../../Modules/Sources/WooFoundationCore/Model/Copiable/
+      args:
+          moduleName: WooFoundationCore

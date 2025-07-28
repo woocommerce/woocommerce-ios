@@ -1,10 +1,11 @@
 #!/bin/bash -eu
 
+if .buildkite/commands/should-skip-job.sh --job-type build; then
+  exit 0
+fi
+
 echo "--- :rubygems: Setting up Gems"
 install_gems
-
-echo "--- :cocoapods: Setting up Pods"
-install_cocoapods
 
 echo "--- :swift: Setting up Swift Packages"
 install_swiftpm_dependencies

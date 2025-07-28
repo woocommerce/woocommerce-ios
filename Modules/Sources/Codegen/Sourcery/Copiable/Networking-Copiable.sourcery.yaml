@@ -1,0 +1,17 @@
+configurations:
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/Networking/
+      templates:
+          - Models+Copiable.swifttemplate
+      output: ../../../../../Modules/Sources/Networking/Model/Copiable/
+      args:
+          moduleName: Networking
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/NetworkingCore/
+      templates:
+          - Models+Copiable.swifttemplate
+      output: ../../../../../Modules/Sources/NetworkingCore/Model/Copiable/
+      args:
+          moduleName: NetworkingCore

@@ -20,6 +20,10 @@ extension WooAnalyticsEvent {
             .init(statName: .ordersListTopBannerTroubleshootTapped, properties: [:])
         }
 
+        static func settingsTroubleshootTapped() -> WooAnalyticsEvent {
+            .init(statName: .settingsTroubleshootConnectionTapped, properties: [:])
+        }
+
         static func requestResponse(test: Test, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {
             .init(statName: .connectivityToolRequestResponse,
                   properties: [

@@ -23,10 +23,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.analyticsImage)
     }
 
-    func test_bell_image_is_not_nil() {
-        XCTAssertNotNil(UIImage.bell)
-    }
-
     func test_blaze_image_is_not_nil() {
         XCTAssertNotNil(UIImage.blaze)
     }
@@ -164,10 +160,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.documentImage)
     }
 
-    func test_domainCreditImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.domainCreditImage)
-    }
-
     func test_domainPurchaseSuccessImage_is_not_nil() {
         XCTAssertNotNil(UIImage.domainPurchaseSuccessImage)
     }
@@ -224,6 +216,18 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.bigErrorIcon)
     }
 
+    func test_grayErrorIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.grayErrorIcon)
+    }
+
+    func test_deliveryIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.deliveryIcon)
+    }
+
+    func test_giftIcon_is_not_nil() {
+        XCTAssertNotNil(UIImage.giftIcon)
+    }
+
     func test_fixed_cart_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.fixedCartDiscountIcon)
     }
@@ -234,6 +238,10 @@ final class IconsTests: XCTestCase {
 
     func test_percentage_discount_icon_is_not_nil() {
         XCTAssertNotNil(UIImage.percentageDiscountIcon)
+    }
+
+    func test_bell_icon_is_not_nil() {
+        XCTAssertNotNil(UIImage.bellIcon)
     }
 
     func testHeartOutlineImageIconIsNotNil() {
@@ -282,10 +290,6 @@ final class IconsTests: XCTestCase {
 
     func test_storeDetailsImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeDetailsImage)
-    }
-
-    func test_customizeDomainsImagee_is_not_nil() {
-        XCTAssertNotNil(UIImage.customizeDomainsImage)
     }
 
     func test_getPaidImage_is_not_nil() {
@@ -807,6 +811,10 @@ final class IconsTests: XCTestCase {
 
     func test_productIcon_is_not_nil() {
         XCTAssertNotNil(UIImage.productIcon)
+    }
+
+    func test_creditCardIllustration_is_not_nil() {
+        XCTAssertNotNil(UIImage.creditCardIllustration)
     }
 
     func test_cardReaderLocationImage_is_not_nil() {

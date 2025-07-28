@@ -1,18 +1,25 @@
 import SwiftUI
 
+enum POSItemImageState {
+    case normal
+    case error
+}
+
 /// A view that displays an image in a POS item view.
 struct POSItemImageView: View {
     let imageSource: String?
     let imageSize: CGFloat
     let scale: CGFloat
+    var state: POSItemImageState = .normal
 
     private var placeholderView: some View {
         Rectangle()
-            .foregroundColor(Constants.placeholderBackgroundColor)
+            .foregroundColor(foregroundColor)
             .overlay {
-                Text(Image(systemName: "archivebox"))
+                Image(systemName: "archivebox")
+                    .accessibilityHidden(true)
                     .font(.posButtonSymbolLarge)
-                    .foregroundColor(Constants.placeholderIconColor)
+                    .foregroundColor(imageColor)
             }
     }
 
@@ -21,7 +28,7 @@ struct POSItemImageView: View {
             ProductImageThumbnail(productImageURL: URL(string: imageSource),
                                   productImageSize: imageSize,
                                   scale: scale,
-                                  foregroundColor: Constants.placeholderIconColor,
+                                  foregroundColor: imageColor,
                                   cachesOriginalImage: true) {
                 placeholderView
             }
@@ -29,13 +36,29 @@ struct POSItemImageView: View {
             placeholderView
         }
     }
+
+    private var foregroundColor: Color {
+        switch state {
+        case .normal:
+            return .posSurfaceDim
+        case .error:
+            return .posError
+        }
+    }
+
+    private var imageColor: Color {
+        switch state {
+        case .normal:
+            return .posOnSurfaceVariantLowest
+        case .error:
+            return .posOnError
+        }
+    }
 }
 
 private extension POSItemImageView {
     enum Constants {
         static let placeholderIconDimension: CGFloat = 38
-        static let placeholderIconColor: Color = .posOnSurfaceVariantLowest
-        static let placeholderBackgroundColor: Color = .posSurfaceDim
     }
 }
 

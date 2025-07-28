@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Makes network requests for each product form remote action that includes adding/editing a product and password.

@@ -140,7 +140,6 @@ private extension AuthenticatedWebViewController {
         ])
 
         extendContentUnderSafeAreas()
-        webView.configureForSandboxEnvironment()
     }
 
     func configureActivityIndicator() {

@@ -8,7 +8,7 @@ struct POSItemCardBorderStylesModifier: ViewModifier {
                     .stroke(Color.posShadow, lineWidth: Constants.nilOutline)
             }
             .clipShape(RoundedRectangle(cornerRadius: Constants.cardCornerRadius))
-            .posShadow(.medium)
+            .posShadow(.medium, cornerRadius: Constants.cardCornerRadius)
     }
 }
 

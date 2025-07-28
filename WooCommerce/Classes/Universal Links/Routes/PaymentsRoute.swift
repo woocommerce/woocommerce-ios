@@ -38,7 +38,7 @@ private extension PaymentsRoute {
         case "":
             return HubMenuDestination.paymentsMenu
         case "collect-payment":
-            return PaymentsMenuDestination.collectPayment
+            return OrdersDestination.createOrder
         case "tap-to-pay":
             return PaymentsMenuDestination.tapToPay
         default:

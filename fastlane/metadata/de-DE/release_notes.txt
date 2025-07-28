@@ -1,0 +1,1 @@
+Unser neuestes Update bietet reibungsloser nutzbare geteilte Versandbildschirme und eine verbesserte Zugänglichkeit für Versandetiketten sowie eine einfachere Auswahl der Etikettengröße und POS-Badges in der Bestellliste. In Point of Sale gibt es jetzt einen neuen Barcode-Scan-Flow und einen sichereren Button zum Leeren des Warenkorbs.

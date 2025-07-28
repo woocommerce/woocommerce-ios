@@ -19,6 +19,13 @@ enum WooShippingPackageSource {
         }
         return sourceID
     }
+
+    var isCustomPackage: Bool {
+        switch self {
+        case .custom: true
+        case .predefined: false
+        }
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {
@@ -85,6 +92,9 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
 extension WooShippingPackageDataRepresentable {
     func dimensionsDescription(unit: String) -> String {
+        guard height.isNotEmpty, let numericHeight = Int(height), numericHeight > 0 else {
+            return "\(length) x \(width) \( unit)"
+        }
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
@@ -102,34 +112,20 @@ extension WooShippingPackageDataRepresentable {
 
 struct WooSavedPackagesSelectionView: View {
     @ObservedObject private var viewModel: WooShippingAddPackageViewModel
-    let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    private let addingCustomPackageHandler: () -> Void
 
-    init(viewModel: WooShippingAddPackageViewModel, addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+    init(viewModel: WooShippingAddPackageViewModel,
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         addingCustomPackageHandler: @escaping () -> Void) {
         self.viewModel = viewModel
         self.addPackageAction = addPackageAction
+        self.addingCustomPackageHandler = addingCustomPackageHandler
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            if !viewModel.hasSavedPackages {
-                // Show extra loading indicator in case there are no packages
-                if viewModel.isLoadingPackages {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                        .padding()
-                }
-                else {
-                    Button {
-                        Task {
-                            await viewModel.loadPackages()
-                        }
-                    } label: {
-                        Image(systemName: "arrow.trianglehead.counterclockwise")
-                    }
-                    .padding()
-                }
-            }
-            else {
+            if viewModel.hasSavedPackages {
                 Divider()
                 ScrollViewReader { scroll in
                     List {
@@ -145,12 +141,23 @@ struct WooSavedPackagesSelectionView: View {
                     }
                 }
                 Divider()
+            } else if viewModel.isLoadingPackages {
+                // Loading state
+                loadingStateView
+            } else if viewModel.packageLoadingError != nil {
+                // Error state
+                loadingPackagesErrorView
+            } else {
+                // No packages loaded
+                emptyStateView
             }
+
             Spacer()
             Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
+            .renderedIf(viewModel.hasSavedPackages)
             .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
             }
@@ -160,12 +167,62 @@ struct WooSavedPackagesSelectionView: View {
             .padding()
         }
     }
+}
 
-    private var selectionButtonDisabled: Bool {
+private extension WooSavedPackagesSelectionView {
+    var loadingStateView: some View {
+        VStack {
+            Spacer()
+            ProgressView().progressViewStyle(.circular)
+            Spacer()
+        }
+    }
+
+    var loadingPackagesErrorView: some View {
+        VStack(spacing: Layout.contentSpacing) {
+            Spacer()
+            Image(uiImage: .grayErrorIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(Localization.loadingPackageError)
+                .multilineTextAlignment(.center)
+            Button(Localization.retryCTA) {
+                Task {
+                    await viewModel.loadPackages()
+                }
+            }
+            Spacer()
+        }
+    }
+
+    var emptyStateView: some View {
+        VStack(spacing: Layout.contentSpacing) {
+            Spacer()
+            Image(uiImage: .giftIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(Localization.emptyStateMessage)
+                .multilineTextAlignment(.center)
+                .bold()
+                .fixedSize(horizontal: false, vertical: true)
+            Button(Localization.createCustomPackageCTA) {
+                addingCustomPackageHandler()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, Layout.ctaPadding)
+            Spacer()
+        }
+        .scrollVerticallyIfNeeded()
+    }
+
+    var selectionButtonDisabled: Bool {
         viewModel.selectedSavedPackageId == nil || !viewModel.hasSavedPackages
     }
 
-    private var selectionButtonText: String {
+    var selectionButtonText: String {
         if selectionButtonDisabled {
             return WooShippingAddPackageView.Localization.selectPackage
         }
@@ -179,7 +236,7 @@ struct WooSavedPackagesSelectionView: View {
     }
 
     @ViewBuilder
-    private func packagesSection(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
+    func packagesSection(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         if packages.isEmpty {
             EmptyView()
         }
@@ -191,7 +248,7 @@ struct WooSavedPackagesSelectionView: View {
         }
     }
 
-    private func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
+    func packagesRows(for packages: [any WooShippingPackageDataRepresentable]) -> some View {
         ForEach(packages, id: \.id) { package in
             WooShippingPackageOptionView(
                 isSelected: viewModel.selectedSavedPackageId == package.id,
@@ -220,10 +277,41 @@ struct WooSavedPackagesSelectionView: View {
         .listRowInsets(.zero)
     }
 
-    private func addPackageButtonTapped() {
+    func addPackageButtonTapped() {
         // call addPackageAction with data from selected package
         guard let selectedPackage = viewModel.selectedSavedPackage else { return }
 
         addPackageAction(selectedPackage)
+    }
+}
+
+private extension WooSavedPackagesSelectionView {
+    enum Layout {
+        static let contentSpacing: CGFloat = 16
+        static let errorIconSize: CGFloat = 86
+        static let ctaPadding: CGFloat = 60
+    }
+
+    enum Localization {
+        static let loadingPackageError = NSLocalizedString(
+            "wooShipping.savedPackagesSelectionView.loadingPackageError",
+            value: "We are unable to load saved packages",
+            comment: "Error message when loading saved packages failed in the shipping label creation flow"
+        )
+        static let retryCTA = NSLocalizedString(
+            "wooShipping.savedPackagesSelectionView.retryCTA",
+            value: "Retry",
+            comment: "Button to retry loading saved packages in the shipping label creation flow"
+        )
+        static let emptyStateMessage = NSLocalizedString(
+            "wooShipping.savedPackagesSelectionView.emptyStateMessage",
+            value: "No saved packages yet",
+            comment: "Message when there are no saved packages loaded in the shipping label creation flow"
+        )
+        static let createCustomPackageCTA = NSLocalizedString(
+            "wooShipping.savedPackagesSelectionView.createCustomPackageCTA",
+            value: "Create a custom package",
+            comment: "Button to navigate to the custom package screen in the shipping label creation flow"
+        )
     }
 }

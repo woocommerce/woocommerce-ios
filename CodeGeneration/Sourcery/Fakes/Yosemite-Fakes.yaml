@@ -1,8 +1,0 @@
-project:
-    file: ../../../Yosemite/Yosemite.xcodeproj
-    target:
-        name: Yosemite
-templates:
-    - Fakes.swifttemplate
-output: ../../../Fakes/Fakes/Yosemite.generated.swift
-

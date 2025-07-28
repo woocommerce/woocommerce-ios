@@ -1,0 +1,8 @@
+sources:
+    include:
+        - ../../../../../Modules/Sources/Yosemite/
+templates:
+    - Fakes.swifttemplate
+output: ../../../../../Modules/Sources/Fakes/Yosemite.generated.swift
+args:
+    moduleName: Yosemite

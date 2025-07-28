@@ -127,16 +127,16 @@ struct WooShippingCustomsForm: View {
 
                                 TextField("", text: $viewModel.internationalTransactionNumber)
                                     .padding(Constants.borderPadding)
-                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius, lineColor: Color(.separator), lineWidth: Constants.borderWidth)
+                                    .roundedBorder(cornerRadius: Constants.borderCornerRadius,
+                                                   lineColor: viewModel.itnValidationError != nil ? warningRedColor : Color(.separator),
+                                                   lineWidth: Constants.borderWidth)
 
-                                Text(Localization.itnValidationWarningMessage)
-                                    .foregroundColor(warningRedColor)
-                                    .footnoteStyle()
-                                    .renderedIf(!viewModel.isValidITN())
-                                Text(Localization.itnRequiredWarningMessage)
-                                    .foregroundColor(warningRedColor)
-                                    .footnoteStyle()
-                                    .renderedIf(viewModel.internationalTransactionNumberIsRequired && viewModel.internationalTransactionNumber.isEmpty)
+                                viewModel.itnValidationError.map { error in
+                                    Text(error.message)
+                                        .foregroundColor(warningRedColor)
+                                        .footnoteStyle()
+                                }
+
                                 Button {
                                     isShowingITNInfoWebView = true
                                 } label: {
@@ -248,13 +248,6 @@ extension WooShippingCustomsForm {
         static let productDetailsTitle = NSLocalizedString("wooShipping.customs.productDetails",
                                                            value: "Product Details",
                                                            comment: "Product Details Section title")
-        static let itnValidationWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
-                                                           value: "Please enter a valid ITN",
-                                                           comment: "Customs validation warning for the ITN field")
-        static let itnRequiredWarningMessage = NSLocalizedString("wooShipping.customs.itnValidation",
-                                                           value: "International Transaction Number is required for shipping items " +
-                                                                 "valued over $2,500 per tariff number",
-                                                           comment: "Customs validation warning for the ITN field")
         static let valueRequiredWarning = NSLocalizedString("wooShipping.customs.valueRequiredWarning",
                                                    value: "Value required",
                                                    comment: "Footnote when a required value is missing")

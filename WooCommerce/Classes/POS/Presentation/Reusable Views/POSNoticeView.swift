@@ -68,7 +68,7 @@ struct POSNoticeView<Content: View>: View {
         .fixedSize(horizontal: false, vertical: true)
         .background(Color.posSurfaceBright)
         .cornerRadius(Constants.cornerRadius)
-        .posShadow(.medium)
+        .posShadow(.medium, cornerRadius: Constants.cornerRadius)
         .if(onTap != nil) { view in
             view
                 .accessibilityAddTraits(.isButton)

@@ -103,6 +103,8 @@ struct ConnectivityTool: View {
             .padding()
         }
         .background(Color(uiColor: .listBackground))
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -112,6 +114,11 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
+        static let title = NSLocalizedString(
+            "connectivityTool.title",
+            value: "Troubleshoot Connection",
+            comment: "Screen title for the connectivity tool"
+        )
     }
 }
 

@@ -1,7 +1,6 @@
 <!-- Remember about a good descriptive title. -->
 
-Closes: #
-<!-- Id number of the GitHub issue this PR addresses. -->
+<!-- Id number of the Linear issue this PR addresses. -->
 <!-- Part of: # -> use this if your PR is one of many related to one issue -->
 
 ## Description
@@ -18,11 +17,3 @@ Closes: #
 
 ---
 - [ ] I have considered if this change warrants user-facing release notes and have added them to `RELEASE-NOTES.txt` if necessary.
-
-## Reviewer (or Author, in the case of optional code reviews):
-
-Please make sure these conditions are met before approving the PR, or request changes if the PR needs improvement:
-
-- [ ] The PR is small and has a clear, single focus, or a valid explanation is provided in the description. If needed, please request to split it into smaller PRs.
-- [ ] Ensure Adequate Unit Test Coverage: The changes are reasonably covered by unit tests or an explanation is provided in the PR description.
-- [ ] Manual Testing: The author listed all the tests they ran, including smoke tests when needed (e.g., for refactorings). The reviewer confirmed that the PR works as expected on all devices (phone/tablet) and no regressions are added.

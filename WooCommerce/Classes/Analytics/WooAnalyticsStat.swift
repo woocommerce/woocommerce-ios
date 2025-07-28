@@ -320,7 +320,7 @@ enum WooAnalyticsStat: String {
     case settingsTapped = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped = "settings_selected_site_tapped"
     case settingsContactSupportTapped = "main_menu_contact_support_tapped"
-    case settingsDomainsTapped = "settings_domains_tapped"
+    case settingsTroubleshootConnectionTapped = "settings_troubleshoot_connection_tapped"
 
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
@@ -335,28 +335,29 @@ enum WooAnalyticsStat: String {
     case settingsThirdPartyLearnMoreTapped = "privacy_settings_third_party_tracking_info_link_tapped"
     case settingsLicensesLinkTapped = "settings_about_open_source_licenses_link_tapped"
     case settingsAboutLinkTapped = "settings_about_woocommerce_link_tapped"
+    case settingsNotificationSettingsTapped = "settings_notification_settings_tapped"
 
     case settingsLogoutTapped = "settings_logout_button_tapped"
     case settingsLogoutConfirmation = "settings_logout_confirmation_dialog_result"
     case settingsWereHiringTapped = "settings_we_are_hiring_button_tapped"
 
-    // MARK: Domain Settings
+    // MARK: Notification Settings
     //
-    case domainSettingsStep = "custom_domains_step"
-    case domainContactInfoValidationFailed = "domain_contact_info_validation_failed"
-    case domainSettingsCustomDomainPurchaseSuccess = "custom_domain_purchase_success"
-    case domainSettingsCustomDomainPurchaseFailed = "custom_domain_purchase_failed"
+    case notificationSettingsUpdateButtonTapped = "notification_settings_update_button_tapped"
+    case notificationSettingsSaveButtonTapped = "notification_settings_save_button_tapped"
+    case notificationSettingsSavingSuccess = "notification_settings_saving_success"
+    case notificationSettingsSavingFailed = "notification_settings_saving_failed"
 
     // MARK: Card Reader Connection Events
     //
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
-    case cardReaderSelectTypeBuiltInTapped = "card_present_select_reader_type_built_in_tapped"
+    case cardReaderSelectTypeTapToPayTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
     case cardReaderDisconnectTapped = "card_reader_disconnect_tapped"
-    case manageCardReadersBuiltInReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
+    case manageCardReadersTapToPayReaderAutoDisconnect = "manage_card_readers_automatic_disconnect_built_in_reader"
     case cardReaderAutomaticDisconnect = "card_reader_automatic_disconnect"
     case cardReaderLocationPermissionPreAlertShown = "card_reader_location_permission_pre_alert_shown"
     case cardReaderLocationPermissionRequiredShown = "card_reader_location_permission_required_shown"
@@ -1143,7 +1144,6 @@ enum WooAnalyticsStat: String {
     case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
 
     // MARK: Payments Menu
-    case paymentsMenuCollectPaymentTapped = "payments_hub_collect_payment_tapped"
     case paymentsMenuOnboardingErrorTapped = "payments_hub_onboarding_error_tapped"
     case paymentsMenuOrderCardReaderTapped = "payments_hub_order_card_reader_tapped"
     case paymentsMenuCardReadersManualsTapped = "payments_hub_card_readers_manuals_tapped"
@@ -1248,6 +1248,7 @@ enum WooAnalyticsStat: String {
     case watchAppOpened = "watch_app_opened"
     case watchStoreDataSynced = "watch_store_data_synced"
     case watchConnectingOpened = "watch_connecting_opened"
+    case watchSyncingFailed = "watch_syncing_failed"
     case watchMyStoreOpened = "watch_my_store_opened"
     case watchOrdersListOpened = "watch_orders_list_opened"
     case watchPushNotificationTapped = "watch_push_notification_tapped"
@@ -1269,13 +1270,19 @@ enum WooAnalyticsStat: String {
     case backgroundUpdatesDisabled = "background_updates_disabled"
 
     // MARK: Point of Sale events
+    case pointOfSaleTabSelected = "main_tab_pos_selected"
+    case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
+    case pointOfSaleIneligibleUIShown = "pos_ineligible_ui_shown"
+    case pointOfSaleIneligibleUIRetryTapped = "pos_ineligible_ui_retry_tapped"
     case pointOfSaleLoaded = "loaded"
-    case pointOfSaleProductsPullToRefresh = "products_pull_to_refresh"
-    case pointOfSaleVariationsPullToRefresh = "variations_pull_to_refresh"
+    case pointOfSaleItemsFetched = "items_fetched"
+    case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
     case pointOfSaleAddItemToCart = "item_added_to_cart"
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleCashPaymentTapped = "cash_payment_tapped"
+    case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"
     case pointOfSaleClearCartTapped = "clear_cart_tapped"
     case pointOfSaleExitMenuItemTapped = "exit_menu_item_tapped"
@@ -1291,6 +1298,28 @@ enum WooAnalyticsStat: String {
     case pointOfSaleViewDocsTapped = "view_docs_tapped"
     case pointOfSaleReaderReadyForCardPayment = "reader_ready_for_card_payment"
     case pointOfSaleCashCollectPaymentSuccess = "cash_collect_payment_success"
+    case pointOfSaleItemsHeaderTapped = "items_header_tapped"
+    case pointOfSaleCouponsCreateTapped = "coupons_create_tapped"
+    case pointOfSaleSearchButtonTapped = "search_button_tapped"
+    case pointOfSalePreSearchRecentTermTapped = "pre_search_recent_term_tapped"
+    case pointOfSaleKeyboardDismissedInSearch = "keyboard_dismissed_in_search"
+    case pointOfSaleItemsNextPageLoaded = "items_next_page_loaded"
+    case pointOfSaleSearchRemoteResultsFetched = "search_remote_results_fetched"
+    case pointOfSaleBarcodeScanningMenuItemTapped = "barcode_scanning_menu_item_tapped"
+    case pointOfSaleBarcodeScanningExplanationDialogShown = "barcode_scanning_explanation_dialog_shown"
+    case pointOfSaleBarcodeScannerSetupFlowShown = "barcode_scanner_setup_flow_shown"
+    case pointOfSaleBarcodeScanningSuccess = "barcode_scanned"
+    case pointOfSaleBarcodeScanningFailed = "barcode_scanning_failed"
+    case pointOfSaleBarcodeScannerSetupScannerSelected = "barcode_scanner_setup_scanner_selected"
+    case pointOfSaleBarcodeScannerSetupNextTapped = "barcode_scanner_setup_next_tapped"
+    case pointOfSaleBarcodeScannerSetupBackTapped = "barcode_scanner_setup_back_tapped"
+    case pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped = "barcode_scanner_setup_open_system_settings_tapped"
+    case pointOfSaleBarcodeScannerSetupTestScanSuccess = "barcode_scanner_setup_test_scan_success"
+    case pointOfSaleBarcodeScannerSetupTestScanFailed = "barcode_scanner_setup_test_scan_failed"
+    case pointOfSaleBarcodeScannerSetupTestScanTimedOut = "barcode_scanner_setup_test_scan_timed_out"
+    case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
+    case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
+    case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
@@ -1308,6 +1337,15 @@ enum WooAnalyticsStat: String {
     case customFieldEditorPickerTapped = "custom_field_editor_picker_tapped"
     case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
     case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
+
+    // MARK: Woo Shipping events
+    case wooShippingCreateShippingLabelFormShown = "wcs_create_shipping_label_form_shown"
+    case wooShippingEditingAddressStep = "wcs_editing_address_step"
+    case wooShippingPackageSelectionStep = "wcs_package_selection_step"
+    case wooShippingRateSelectionStep = "wcs_rate_selection_step"
+    case wooShippingPaymentStep = "wcs_payment_step"
+    case wooShippingPurchaseStep = "wcs_purchase_step"
+    case wooShippingRefundRequested = "wcs_refund_requested"
 }
 
 extension WooAnalyticsStat {

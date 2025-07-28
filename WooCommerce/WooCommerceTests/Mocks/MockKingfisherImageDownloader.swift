@@ -1,8 +1,11 @@
+import UIKit
 @testable import Kingfisher
 
 final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
     // Mocks in-memory cache.
     private let imagesByKey: [String: UIImage]
+
+    private(set) var capturedProcessor: ImageProcessor?
 
     init(imagesByKey: [String: UIImage]) {
         self.imagesByKey = imagesByKey
@@ -13,6 +16,14 @@ final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
                                 options: KingfisherOptionsInfo? = nil,
                                 progressBlock: DownloadProgressBlock?,
                                 completionHandler: ((Result<ImageLoadingResult, KingfisherError>) -> Void)? = nil) -> DownloadTask? {
+        if let options = options {
+            for option in options {
+                if case .processor(let processor) = option {
+                    capturedProcessor = processor
+                    break
+                }
+            }
+        }
         if let image = imagesByKey[url.absoluteString] {
             completionHandler?(.success(.init(image: image, url: url, originalData: Data())))
         } else {
@@ -24,6 +35,7 @@ final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
     override func downloadImage(with url: URL,
                                 options: KingfisherParsedOptionsInfo,
                                 completionHandler: ((Result<ImageLoadingResult, KingfisherError>) -> Void)? = nil) -> DownloadTask? {
+        capturedProcessor = options.processor
         if let image = imagesByKey[url.absoluteString] {
             completionHandler?(.success(.init(image: image, url: url, originalData: Data())))
         } else {

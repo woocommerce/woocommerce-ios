@@ -55,7 +55,7 @@ extension WooNavigationController {
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     private let connectivityObserver: ConnectivityObserver
-    private var currentController: UIViewController?
+    private weak var currentController: UIViewController?
     private var subscriptions: Set<AnyCancellable> = []
 
     init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {

@@ -7,6 +7,7 @@ struct TitleAndTextFieldRow: View {
     private let placeholder: String
     private let symbol: String?
     private let keyboardType: UIKeyboardType
+    private let autocapitalization: TextInputAutocapitalization
     private let onEditingChanged: ((Bool) -> Void)?
     private let editable: Bool
     private let fieldAlignment: TextAlignment
@@ -31,6 +32,7 @@ struct TitleAndTextFieldRow: View {
          editable: Bool = true,
          fieldAlignment: TextAlignment = .trailing,
          keyboardType: UIKeyboardType = .default,
+         autocapitalization: TextInputAutocapitalization = .sentences,
          contentColor: Color = Color(.label),
          inputFormatter: UnitInputFormatter? = nil,
          minHeight: CGFloat = Constants.height,
@@ -44,6 +46,7 @@ struct TitleAndTextFieldRow: View {
         self.editable = editable
         self.fieldAlignment = fieldAlignment
         self.keyboardType = keyboardType
+        self.autocapitalization = autocapitalization
         self.contentColor = contentColor
         self.inputFormatter = inputFormatter
         self.minHeight = minHeight
@@ -73,6 +76,7 @@ struct TitleAndTextFieldRow: View {
                     .font(.body)
                     .keyboardType(keyboardType)
                     .disabled(!editable)
+                    .textInputAutocapitalization(autocapitalization)
                 if let symbol = symbol {
                     Text(symbol)
                         .bodyStyle()

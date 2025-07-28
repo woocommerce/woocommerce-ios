@@ -1,4 +1,4 @@
-import NetworkingWatchOS
+import NetworkingCore
 
 /// This wrapper to fetch orders resources.
 ///

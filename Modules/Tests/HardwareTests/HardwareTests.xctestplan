@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "395D5794-483E-4BA1-9702-5094F9A31112",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "HardwareTests",
+        "name" : "HardwareTests"
+      }
+    }
+  ],
+  "version" : 1
+}

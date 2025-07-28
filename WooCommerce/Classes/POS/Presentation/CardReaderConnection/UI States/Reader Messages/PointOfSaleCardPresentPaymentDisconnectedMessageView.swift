@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
     private let connectCardReader: () -> Void
+    @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var width: CGFloat = 0
 
@@ -15,9 +16,9 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             Image(decorative: PointOfSaleAssets.readerDisconnected.imageName)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing)
+                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
 
-            VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
+            VStack(alignment: .center, spacing: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textSpacing)) {
                 Text(viewModel.title)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
@@ -30,7 +31,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
 
             Spacer()
-                .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
+                .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing))
 
             Button {
                 connectCardReader()
@@ -44,6 +45,14 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             width = containerWidth
         })
         .multilineTextAlignment(.center)
+    }
+
+    private func dynamicSpacing(_ spacing: CGFloat) -> CGFloat {
+        guard scale > 1 else {
+            return spacing
+        }
+
+        return spacing * (1 / scale)
     }
 }
 

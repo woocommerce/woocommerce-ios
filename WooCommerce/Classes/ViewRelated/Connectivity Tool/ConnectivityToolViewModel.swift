@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import Networking
+import UIKit
 import Yosemite
 
 final class ConnectivityToolViewModel {

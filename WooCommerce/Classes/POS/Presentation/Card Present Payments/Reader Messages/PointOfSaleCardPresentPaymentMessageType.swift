@@ -5,6 +5,7 @@ enum PointOfSaleCardPresentPaymentMessageType: Equatable {
     case validatingOrderError(viewModel: PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel)
     case preparingForPayment(viewModel: PointOfSaleCardPresentPaymentPreparingForPaymentMessageViewModel)
     case tapSwipeOrInsertCard(viewModel: PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageViewModel)
+    case cardInserted(viewModel: PointOfSaleCardPresentPaymentCardInsertedMessageViewModel)
     case processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel)
     case displayReaderMessage(viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel)
     case paymentSuccess(viewModel: PointOfSalePaymentSuccessViewModel)

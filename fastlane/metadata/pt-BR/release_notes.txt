@@ -1,0 +1,1 @@
+Nossa atualização mais recente traz telas de envio divididas de forma mais harmoniosa e acessibilidade aprimorada para etiquetas de envio, além de facilitar a seleção do tamanho da etiqueta e oferecer crachás de ponto de venda na lista de pedidos. Em Ponto de venda, aproveite um novo fluxo de leitura de código de barras e um botão de limpeza de carrinho mais seguro.

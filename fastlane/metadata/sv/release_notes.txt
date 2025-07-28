@@ -1,0 +1,1 @@
+Vår senaste uppdatering ger smidigare skärmar för uppdelade försändelser och förbättrad tillgänglighet för fraktetiketter, plus enklare val av etikettstorlek och POS-märken i beställningslistan. I Försäljningsplats finns ett nytt flöde för streckkodsskanning och en säkrare knapp för att rensa varukorgen.

@@ -341,6 +341,86 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    func test_scanToUpdateInventoryButton_when_square_plugin_is_active_then_should_not_be_visible() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
+            siteID: sampleSiteID,
+            plugin: "woocommerce-square/woocommerce-square.php",
+            active: true
+        ))
+
+        let viewModel = ProductListViewModel(
+            siteID: sampleSiteID,
+            stores: storesManager,
+            featureFlagService: featureFlagService,
+            pluginsService: pluginsService
+        )
+
+        // When
+        let result = waitFor { promise in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_scanToUpdateInventoryButton_when_square_plugin_is_inactive_then_should_be_visible() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
+            siteID: sampleSiteID,
+            plugin: "woocommerce-square/woocommerce-square.php",
+            active: false
+        ))
+
+        let viewModel = ProductListViewModel(
+            siteID: sampleSiteID,
+            stores: storesManager,
+            featureFlagService: featureFlagService,
+            pluginsService: pluginsService
+        )
+
+        // When
+        let result = waitFor { promise in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_scanToUpdateInventoryButton_when_square_plugin_is_not_installed_then_should_be_visible() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
+        let pluginsService = MockPluginsService()
+        pluginsService.pluginsToReturnForLoadPluginInStorageByPlugin = [:]
+
+        let viewModel = ProductListViewModel(
+            siteID: sampleSiteID,
+            stores: storesManager,
+            featureFlagService: featureFlagService,
+            pluginsService: pluginsService
+        )
+
+        // When
+        let result = waitFor { promise in
+            viewModel.scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: true) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
     // MARK: Favorite products
     //
     func test_it_loads_favorite_products_on_init() {

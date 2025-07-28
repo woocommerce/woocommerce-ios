@@ -29,8 +29,6 @@ final class SettingsViewController: UIViewController {
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
 
-    private var domainSettingsCoordinator: DomainSettingsCoordinator?
-
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self = self else { throw CloseAccountError.presenterDeallocated }
@@ -142,8 +140,8 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowContent> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
-        case let cell as BasicTableViewCell where row == .domain:
-            configureDomain(cell: cell)
+        case let cell as BasicTableViewCell where row == .connectivity:
+            configureConnectivity(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .themes:
@@ -156,6 +154,8 @@ private extension SettingsViewController {
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
             configureSendFeedback(cell: cell)
+        case let cell as BasicTableViewCell where row == .notifications:
+            configureNotificationSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -205,10 +205,10 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.helpAndSupport
     }
 
-    func configureDomain(cell: BasicTableViewCell) {
+    func configureConnectivity(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.domain
+        cell.textLabel?.text = Localization.connectivity
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -227,6 +227,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureNotificationSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.notificationSettings
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -382,18 +388,6 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func domainWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite, let navigationController else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.settingsDomainsTapped)
-
-        let coordinator = DomainSettingsCoordinator(source: .settings, site: site, navigationController: navigationController)
-        domainSettingsCoordinator = coordinator
-        coordinator.start()
-    }
-
     func installJetpackWasPressed() {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
@@ -474,6 +468,18 @@ private extension SettingsViewController {
     func presentSurveyForFeedback() {
         let surveyNavigation = SurveyCoordinatingController(survey: .inAppFeedback)
         present(surveyNavigation, animated: true, completion: nil)
+    }
+
+    func showNotificationSettings() {
+        ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
+        let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
+    func showConnectivityTool() {
+        ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
+        let controller = ConnectivityToolViewController()
+        show(controller, sender: self)
     }
 
     func deviceSettingsWasPressed() {
@@ -627,8 +633,6 @@ extension SettingsViewController: UITableViewDelegate {
             openWoocommerceDetails()
         case .support:
             supportWasPressed()
-        case .domain:
-            domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .storeName:
@@ -653,6 +657,10 @@ extension SettingsViewController: UITableViewDelegate {
             logoutWasPressed()
         case .themes:
             showThemeSettings()
+        case .notifications:
+            showNotificationSettings()
+        case .connectivity:
+            showConnectivityTool()
         default:
             break
         }
@@ -708,10 +716,10 @@ extension SettingsViewController {
         case woocommerceDetails
 
         // Store settings
-        case domain
         case installJetpack
         case storeName
         case themes
+        case connectivity
 
         // Help & Feedback
         case support
@@ -719,6 +727,7 @@ extension SettingsViewController {
         case sendFeedback
 
         // App Settings
+        case notifications
         case privacy
 
         // About the App
@@ -756,13 +765,13 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowContent>.self
             case .support:
                 return BasicTableViewCell.self
-            case .domain:
+            case .connectivity:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy:
+            case .privacy, .notifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -827,9 +836,10 @@ private extension SettingsViewController {
             comment: "Navigates to In-Person Payments screen"
         )
 
-        static let domain = NSLocalizedString(
-            "Domains",
-            comment: "Navigates to domain settings screen."
+        static let connectivity = NSLocalizedString(
+            "settingsViewController.connectivity",
+            value: "Troubleshoot Connection",
+            comment: "Navigates to connectivity test screen."
         )
 
         static let installJetpack = NSLocalizedString(
@@ -851,6 +861,12 @@ private extension SettingsViewController {
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
+        )
+
+        static let notificationSettings = NSLocalizedString(
+            "settingsViewController.notificationSettings",
+            value: "Notification Settings",
+            comment: "Navigates to the Notification Settings screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(

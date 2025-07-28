@@ -41,6 +41,7 @@ final class GenerateVariationsSelectorCommand: BottomSheetListSelectorCommand {
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: Options) {
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
                                                                     text: model.description,
+                                                                    numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0,
                                                                     isSelected: isSelected(model: model)
         )

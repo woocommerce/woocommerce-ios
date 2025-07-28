@@ -26,14 +26,12 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                     .font(.posHeadingBold)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                    Text(viewModel.message)
-                    Text(viewModel.nextStep)
-                }
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurface)
-                .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
+                Text(viewModel.message)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+            .dynamicWidthScaling(containerWidth: width)
 
             Spacer()
                 .frame(height: PointOfSaleCardPresentPaymentLayout.textAndButtonSpacing)
@@ -48,9 +46,10 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             }
+            .dynamicWidthScaling(containerWidth: width)
         }
         .multilineTextAlignment(.center)
-        .frame(maxWidth: PointOfSaleCardPresentPaymentLayout.errorContentMaxWidth)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .posModal(isPresented: $viewModel.showsInfoSheet) {
             PointOfSaleCardPresentPaymentCaptureFailedView(isPresented: $viewModel.showsInfoSheet)
         }

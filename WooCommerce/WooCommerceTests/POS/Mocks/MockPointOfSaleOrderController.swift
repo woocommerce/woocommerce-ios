@@ -5,7 +5,7 @@ import Combine
 import struct Yosemite.Order
 
 final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
-    func collectCashPayment() async throws {
+    func collectCashPayment(changeDueAmount: String?) async throws {
         // no-op
     }
 
@@ -16,15 +16,15 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     var orderStateToReturn: PointOfSaleInternalOrderState?
 
     var syncOrderWasCalled: Bool = false
-    var spyCartProducts: [CartItem]?
+    var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?
     var syncOrderResultToReturn: Result<SyncOrderState, Error> = .success(.newOrder)
 
     @discardableResult
-    func syncOrder(for cartProducts: [CartItem],
+    func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         syncOrderWasCalled = true
-        spyCartProducts = cartProducts
+        spyCartProducts = cart.purchasableItems
         spyRetryHandler = retryHandler
 
         guard let orderStateToReturn else {

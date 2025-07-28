@@ -222,7 +222,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
         let alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
-        let merchantEducationPresenter = BuiltInCardReaderMerchantEducationPresenter(rootViewController: rootViewController)
+        let merchantEducationPresenter = TapToPayCardReaderMerchantEducationPresenter(rootViewController: rootViewController)
         let analyticsTracker = CardReaderConnectionAnalyticsTracker(
             configuration: cardPresentPaymentsConfiguration,
             siteID: siteID,
@@ -236,8 +236,8 @@ final class PaymentMethodsViewModel: ObservableObject {
             alertsProvider: BluetoothReaderConnectionAlertsProvider(),
             configuration: cardPresentPaymentsConfiguration,
             analyticsTracker: analyticsTracker)
-        let tapToPayAlertsProvider = BuiltInReaderConnectionAlertsProvider()
-        let tapToPayConnectionController = BuiltInCardReaderConnectionController(
+        let tapToPayAlertsProvider = TapToPayReaderConnectionAlertsProvider()
+        let tapToPayConnectionController = TapToPayCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertsPresenter,
             alertsProvider: tapToPayAlertsProvider,
@@ -245,7 +245,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             configuration: cardPresentPaymentsConfiguration,
             analyticsTracker: analyticsTracker)
 
-        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+        collectPaymentsUseCase = useCase ?? CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                                         CardPresentPaymentAlertsPresenter>(
             siteID: self.siteID,
@@ -254,7 +254,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             rootViewController: rootViewController,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: alertsPresenter,
-            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: CardPresentPaymentPreflightController(siteID: siteID,
                                                                        configuration: cardPresentPaymentsConfiguration,
@@ -433,8 +433,8 @@ private extension PaymentMethodsViewModel {
             return
         }
 
-        localMobileReaderSupported { [weak self] tapToPaySupportedByDevice in
-            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn) ?? false
+        tapToPayReaderSupported { [weak self] tapToPaySupportedByDevice in
+            let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay) ?? false
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
                 self?.showPayWithCardRow = orderIsEligible
                 self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
@@ -442,11 +442,11 @@ private extension PaymentMethodsViewModel {
         }
     }
 
-    private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
+    private func tapToPayReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: siteID,
-            cardReaderType: .appleBuiltIn,
-            discoveryMethod: .localMobile,
+            cardReaderType: .tapToPay,
+            discoveryMethod: .tapToPay,
             minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionForTapToPay,
             onCompletion: onCompletion)
         stores.dispatch(action)
@@ -558,7 +558,7 @@ private extension PaymentMethodsViewModel {
     ///
     func shouldReturnToOrderDetails(for discoveryMethod: CardReaderDiscoveryMethod, error: Error) -> Bool {
         switch (discoveryMethod, error) {
-        case (.localMobile, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
+        case (.tapToPay, let error as CardPaymentErrorProtocol) where error.requiresFallbackPaymentMethod:
             return false
         default:
             return true
@@ -602,8 +602,8 @@ enum PaymentMethodsError: Error {
 private extension CardReaderDiscoveryMethod {
     var analyticsCardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType {
         switch self {
-        case .localMobile:
-            return .builtIn
+        case .tapToPay:
+            return .tapToPay
         case .bluetoothScan:
             return .external
         }

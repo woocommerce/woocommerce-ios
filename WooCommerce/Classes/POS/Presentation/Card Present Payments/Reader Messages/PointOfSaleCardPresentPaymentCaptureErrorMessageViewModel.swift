@@ -5,7 +5,6 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: Observabl
     let id = UUID()
     let title = Localization.title
     let message = Localization.message
-    let nextStep = Localization.nextStep
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel
     let newOrderButtonViewModel: CardPresentPaymentsModalButtonViewModel
 
@@ -29,7 +28,6 @@ final class PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel: Observabl
         lhs.id == rhs.id &&
         lhs.title == rhs.title &&
         lhs.message == rhs.message  &&
-        lhs.nextStep == rhs.nextStep &&
         lhs.tryAgainButtonViewModel == rhs.tryAgainButtonViewModel &&
         lhs.newOrderButtonViewModel == rhs.newOrderButtonViewModel &&
         lhs.showsInfoSheet == rhs.showsInfoSheet
@@ -46,18 +44,13 @@ private extension PointOfSaleCardPresentPaymentCaptureErrorMessageViewModel {
         )
 
         static let message = NSLocalizedString(
-            "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message",
-            value: "Due to a network error, we’re unable to confirm that the payment succeeded.",
+            "pointOfSale.cardPresent.paymentCaptureError.unable.to.confirm.message.1",
+            value: "Due to a network error, we’re unable to confirm that the payment succeeded. " +
+            "Verify payment on a device with a working network connection. If unsuccessful, retry the payment. " +
+            "If successful, start a new order.",
             comment: "Error message. Presented to users after collecting a payment fails from payment capture error " +
             "on the Point of Sale Checkout"
         )
-
-        static let nextStep = NSLocalizedString(
-            "pointOfSale.cardPresent.paymentCaptureError.nextSteps",
-            value: "Verify payment on a device with a working network connection. If unsuccessful, retry the payment. " +
-            "If successful, start a new order.",
-            comment: "Next steps hint for what to do after seeing a payment capture error message. Presented to users " +
-            "after collecting a payment fails from payment capture error on the Point of Sale Checkout")
 
         static let tryPaymentAgain = NSLocalizedString(
             "pointOfSale.cardPresent.paymentCaptureError.tryPaymentAgain.button.title",

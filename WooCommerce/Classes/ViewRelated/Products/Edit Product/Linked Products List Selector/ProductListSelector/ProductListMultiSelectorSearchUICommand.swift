@@ -1,3 +1,5 @@
+import Foundation
+import UIKit
 import Yosemite
 
 /// Implementation of `SearchUICommand` for selecting linked products to a grouped product from search UI.

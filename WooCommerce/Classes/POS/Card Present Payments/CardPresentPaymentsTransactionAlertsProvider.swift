@@ -20,6 +20,12 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
                               cancelPayment: onCancel)
     }
 
+    func cardInserted(title: String,
+                      amount: String,
+                      onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
+        .cardInserted(cancelPayment: onCancel)
+    }
+
     func displayReaderMessage(message: String) -> CardPresentPaymentEventDetails {
         .displayReaderMessage(message: message)
     }

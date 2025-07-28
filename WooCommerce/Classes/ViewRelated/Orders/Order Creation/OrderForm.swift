@@ -90,7 +90,9 @@ private extension OrderFormHostingController {
     }
 
     func discardOrderAndDismiss() {
-        viewModel.discardOrder()
+        if viewModel.flow == .creation {
+            viewModel.discardOrder()
+        }
         dismiss(animated: true)
     }
 
@@ -122,64 +124,56 @@ struct OrderFormPresentationWrapper: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     var body: some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(
-                primaryView: { presentProductSelector in
-                    OrderForm(dismissHandler: dismissHandler,
-                              flow: flow,
-                              viewModel: viewModel,
-                              presentProductSelector: presentProductSelector)
+        AdaptiveModalContainer(
+            primaryView: { presentProductSelector in
+                OrderForm(dismissHandler: dismissHandler,
+                          flow: flow,
+                          viewModel: viewModel,
+                          presentProductSelector: presentProductSelector)
+                // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                .if(horizontalSizeClass == .compact, transform: {
+                    $0
+                        .notice($viewModel.autodismissableNotice)
+                        .notice($viewModel.fixedNotice, autoDismiss: false)
+                })
+            },
+            secondaryView: { isShowingProductSelector in
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                        isPresented: isShowingProductSelector,
+                                        viewModel: productSelectorViewModel)
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
                     // When we're modal-on-modal, show the notices on both screens so they're definitely visible
                     .if(horizontalSizeClass == .compact, transform: {
                         $0
                             .notice($viewModel.autodismissableNotice)
                             .notice($viewModel.fixedNotice, autoDismiss: false)
                     })
-                },
-                secondaryView: { isShowingProductSelector in
-                    if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                        ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                            isPresented: isShowingProductSelector,
-                                            viewModel: productSelectorViewModel)
-                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                            ConfigurableBundleProductView(viewModel: viewModel)
-                        }
-                        // When we're modal-on-modal, show the notices on both screens so they're definitely visible
-                        .if(horizontalSizeClass == .compact, transform: {
-                            $0
-                                .notice($viewModel.autodismissableNotice)
-                                .notice($viewModel.fixedNotice, autoDismiss: false)
-                        })
+                }
+            },
+            dismissBarButton: {
+                Button {
+                    dismissHandler()
+                } label: {
+                    switch dismissLabel {
+                    case .cancelButton:
+                        Text(OrderForm.Localization.cancelButton)
+                    case .backButton:
+                        Image(systemName: "chevron.backward")
+                            .headlineLinkStyle()
                     }
-                },
-                dismissBarButton: {
-                    Button {
-                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                        // but on split views we move this responsibility to the AdaptiveModalContainer
-                        viewModel.syncOrderItemSelectionStateOnDismiss()
-                        dismissHandler()
-                    } label: {
-                        switch dismissLabel {
-                            case .cancelButton:
-                                Text(OrderForm.Localization.cancelButton)
-                            case .backButton:
-                                Image(systemName: "chevron.backward")
-                                    .headlineLinkStyle()
-                        }
-                    }
-                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
-                },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
-            // When we're side-by-side, show the notices over the combined screen
-            .if(horizontalSizeClass == .regular, transform: {
-                $0
-                    .notice($viewModel.autodismissableNotice)
-                    .notice($viewModel.fixedNotice, autoDismiss: false)
-            })
-        } else {
-            OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
-        }
+                }
+                .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+            },
+            isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+        // When we're side-by-side, show the notices over the combined screen
+        .if(horizontalSizeClass == .regular, transform: {
+            $0
+                .notice($viewModel.autodismissableNotice)
+                .notice($viewModel.fixedNotice, autoDismiss: false)
+        })
     }
 }
 
@@ -270,16 +264,11 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                                Group {
-                                    OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                }
-                                .renderedIf(flow == .editing)
-                            } else {
+                            Group {
                                 OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
+                            .renderedIf(flow == .editing)
 
                             ProductsSection(scroll: scroll,
                                             flow: flow,
@@ -431,13 +420,6 @@ struct OrderForm: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.cancelButton) {
-                    dismissHandler()
-                }
-                .accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
-                .renderedIf(viewModel.shouldShowCancelButton)
-            }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
                 case .create:
@@ -464,13 +446,6 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        // Avoids Notice duplication when the feature flag is enabled. These can be removed when the flag is removed.
-        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
-            $0.notice($viewModel.autodismissableNotice)
-        })
-        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
-            $0.notice($viewModel.fixedNotice, autoDismiss: false)
-        })
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -642,8 +617,7 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
-                    && presentationStyle == .sideBySide
+                if presentationStyle == .sideBySide
                     && !viewModel.shouldShowProductsSectionHeader {
                     HStack() {
                         scanProductRow
@@ -666,15 +640,6 @@ private struct ProductsSection: View {
                         if let presentProductSelector {
                             Button(action: {
                                 presentProductSelector()
-                            }) {
-                                Image(uiImage: .plusImage)
-                            }
-                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-                            .id(addProductButton)
-                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                        } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                            Button(action: {
-                                viewModel.toggleProductSelectorVisibility()
                             }) {
                                 Image(uiImage: .plusImage)
                             }
@@ -712,13 +677,6 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                        Button(OrderForm.Localization.addProducts) {
-                            viewModel.toggleProductSelectorVisibility()
-                        }
-                        .id(addProductButton)
-                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                        .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
                         .renderedIf(presentationStyle != .sideBySide)
@@ -732,27 +690,6 @@ private struct ProductsSection: View {
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }
-            .sheet(isPresented: Binding<Bool>(
-                get: { viewModel.isProductSelectorPresented && !viewModel.sideBySideViewFeatureFlagEnabled },
-                set: { newValue in
-                    viewModel.isProductSelectorPresented = newValue
-                }
-            ), onDismiss: {
-                scroll.scrollTo(addProductButton)
-            }, content: {
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorNavigationView(
-                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        isPresented: $viewModel.isProductSelectorPresented,
-                        viewModel: productSelectorViewModel)
-                    .onDisappear {
-                        navigationButtonID = UUID()
-                    }
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
-                    }
-                }
-            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -814,7 +751,7 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 HStack() {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    Image(systemName: "barcode.viewfinder")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: Layout.scanImageSize * scale)
@@ -840,7 +777,7 @@ private extension ProductsSection {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
             } else {
-                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                Image(systemName: "barcode.viewfinder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.scanImageSize * scale)

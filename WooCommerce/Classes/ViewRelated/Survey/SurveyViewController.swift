@@ -69,33 +69,33 @@ extension SurveyViewController {
         case orderFormShippingLines
 
         fileprivate var url: URL {
-            switch self {
-            case .inAppFeedback:
-                return WooConstants.URLs.inAppFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .productsFeedback:
-                return WooConstants.URLs.productsFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .addOnsI1:
-                return WooConstants.URLs.orderAddOnI1Feedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .orderCreation:
-                return WooConstants.URLs.orderCreationFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            case .orderFormShippingLines:
-                return WooConstants.URLs.orderCreationShippingFeedback
-                    .asURL()
-                    .tagPlatform("ios")
-                    .tagAppVersion(Bundle.main.bundleVersion())
-            }
+            let url: URL = {
+                switch self {
+                case .inAppFeedback:
+                    return WooConstants.URLs.inAppFeedback
+                        .asURL()
+                case .productsFeedback:
+                    return WooConstants.URLs.productsFeedback
+                        .asURL()
+                case .addOnsI1:
+                    return WooConstants.URLs.orderAddOnI1Feedback
+                        .asURL()
+                case .orderCreation:
+                    return WooConstants.URLs.orderCreationFeedback
+                        .asURL()
+                case .orderFormShippingLines:
+                    return WooConstants.URLs.orderCreationShippingFeedback
+                        .asURL()
+                }
+            }()
+
+            let session = ServiceLocator.stores.sessionManager
+            return url
+                .tagPlatform("ios")
+                .tagAppVersion(Bundle.main.bundleVersion())
+                .tagSiteInfo(siteID: session.defaultSite?.siteID,
+                             storeUUID: session.defaultStoreUUID,
+                             storeURL: session.defaultSite?.url)
         }
 
         fileprivate var title: String {
@@ -168,6 +168,22 @@ extension URL {
         appendingQueryItem(URLQueryItem(name: Tags.surveyRequestAppVersionTag, value: version))
     }
 
+    func tagSiteInfo(siteID: Int64?,
+                     storeUUID: String?,
+                     storeURL: String?) -> URL {
+        var url = self
+        if let siteID = siteID {
+            url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestSiteIdTag, value: "\(siteID)"))
+        }
+        if let storeUUID = storeUUID {
+            url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestStoreUUIDTag, value: storeUUID))
+        }
+        if let storeURL = storeURL {
+            url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestStoreURLTag, value: storeURL))
+        }
+        return url
+    }
+
     private func appendingQueryItem(_ queryItem: URLQueryItem) -> URL {
         guard var urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
             assertionFailure("Cannot create URL components from \(self)")
@@ -185,6 +201,9 @@ extension URL {
     private enum Tags {
         static let surveyRequestPlatformTag = "woo-mobile-platform"
         static let surveyRequestAppVersionTag = "app-version"
+        static let surveyRequestSiteIdTag = "site-id"
+        static let surveyRequestStoreUUIDTag = "store-id"
+        static let surveyRequestStoreURLTag = "store-url"
     }
 }
 

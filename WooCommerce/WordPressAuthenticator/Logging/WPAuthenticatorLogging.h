@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-
-@import WordPressShared;
+@import WordPressSharedObjC;
 
 NS_ASSUME_NONNULL_BEGIN
 

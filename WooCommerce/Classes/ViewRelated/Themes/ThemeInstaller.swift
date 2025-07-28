@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import enum Networking.InstallThemeError
 import protocol WooFoundation.Analytics

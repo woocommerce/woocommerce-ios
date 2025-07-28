@@ -7,7 +7,6 @@ require 'yaml'
 require 'digest'
 
 PROJECT_DIR = __dir__
-SWIFTLINT_BIN = File.join(PROJECT_DIR, 'Pods', 'SwiftLint', 'swiftlint')
 XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
 XCODE_SCHEME = 'WooCommerce'
 XCODE_CONFIGURATION = 'Debug'
@@ -18,7 +17,7 @@ desc 'Install required dependencies'
 task dependencies: %w[dependencies:check]
 
 namespace :dependencies do
-  task check: %w[bundler:check bundle:check credentials:apply pod:check lint:check]
+  task check: %w[bundler:check bundle:check credentials:apply]
 
   namespace :bundler do
     task :check do
@@ -59,37 +58,6 @@ namespace :dependencies do
       next unless Dir.exist?(File.join(Dir.home, '.mobile-secrets/.git')) || ENV.key?('CONFIGURE_ENCRYPTION_KEY')
 
       sh('FASTLANE_SKIP_UPDATE_CHECK=1 FASTLANE_ENV_PRINTER=1 bundle exec fastlane run configure_apply force:true')
-    end
-  end
-
-  namespace :pod do
-    task :check do
-      unless podfile_locked? && lockfiles_match?
-        dependency_failed('CocoaPods')
-        Rake::Task['dependencies:pod:install'].invoke
-      end
-    end
-
-    task :install do
-      fold('install.cocoapds') do
-        pod %w[install --repo-update]
-      end
-    end
-
-    task :clean do
-      fold('clean.cocoapds') do
-        FileUtils.rm_rf('Pods')
-      end
-    end
-    CLOBBER << 'Pods'
-  end
-
-  namespace :lint do
-    task :check do
-      if swiftlint_needs_install
-        dependency_failed('SwiftLint')
-        Rake::Task['dependencies:pod:install'].invoke
-      end
     end
   end
 end
@@ -133,14 +101,14 @@ task :clean do
 end
 
 desc 'Checks the source for style errors'
-task lint: %w[dependencies:lint:check] do
-  swiftlint %w[lint --quiet]
+task :lint do
+  swiftlint
 end
 
 namespace :lint do
   desc 'Automatically corrects style errors where possible'
-  task autocorrect: %w[dependencies:lint:check] do
-    swiftlint %w[lint --autocorrect --quiet]
+  task :autocorrect do
+    swiftlint(additional_args: ['--fix'])
   end
 end
 
@@ -151,23 +119,8 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  %w[Hardware Networking Storage Yosemite WooCommerce WooFoundation].each do |prefix|
-    puts "\n\nGenerating Copiable for #{prefix}..."
-    puts '=' * 100
-
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Copiable/#{prefix}-Copiable.sourcery.yaml"
-  end
-
-  puts "\n\nDONE. Generated Copiable for all projects."
-
-  %w[Hardware Networking Yosemite WooFoundation].each do |prefix|
-    puts "\n\nGenerating Fakes for #{prefix}..."
-    puts '=' * 100
-
-    sh "./Pods/Sourcery/bin/sourcery --config CodeGeneration/Sourcery/Fakes/#{prefix}-Fakes.yaml"
-  end
-
-  puts "\n\nDONE. Generated Fakes."
+  # See note in BuildTools/.sourcery.yml for why we call without arguments
+  run_package_plugin(cmd: 'sourcery-command --disableCache')
 end
 
 def fold(label)
@@ -178,34 +131,6 @@ end
 
 def travis?
   !ENV['TRAVIS'].nil?
-end
-
-def pod(args)
-  args = %w[bundle exec pod] + args
-  sh(*args)
-end
-
-def lockfiles_match?
-  File.file?('Pods/Manifest.lock') && FileUtils.compare_file('Podfile.lock', 'Pods/Manifest.lock')
-end
-
-def podfile_locked?
-  podfile_checksum = Digest::SHA1.file('Podfile')
-  lockfile_checksum = YAML.load_file('Podfile.lock')['PODFILE CHECKSUM']
-
-  podfile_checksum == lockfile_checksum
-end
-
-def swiftlint_needs_install
-  # Notice that this doesn't check whether the local version is up-to-date.
-  # Given we are using CocoaPods to install SwiftLint, it's safe to assume SwiftLint will be up-to-date most of the time.
-  # We are trading being 100% sure we're up-to-date for a faster check.
-  File.exist?(SWIFTLINT_BIN) == false
-end
-
-def swiftlint(args)
-  args = [SWIFTLINT_BIN] + args
-  sh(*args)
 end
 
 def xcodebuild(*build_cmds)
@@ -248,4 +173,17 @@ def check_dependencies_hook
     puts e.message
     exit 1
   end
+end
+
+def swiftlint(additional_args: [])
+  run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
+end
+
+def run_package_plugin(cmd:)
+  run_in_build_tools(cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
+end
+
+# We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.
+def run_in_build_tools(cmd:)
+  sh "pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd"
 end

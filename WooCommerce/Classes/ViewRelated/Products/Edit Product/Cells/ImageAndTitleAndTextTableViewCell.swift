@@ -324,6 +324,8 @@ private extension ImageAndTitleAndTextTableViewCell {
     func configureImageView() {
         contentImageView.contentMode = .center
         contentImageView.setContentHuggingPriority(.required, for: .horizontal)
+        // set this to false and update the view model to support custom accessibility label if needed
+        contentImageView.accessibilityElementsHidden = true
     }
 
     func configureContentStackView() {

@@ -1,0 +1,187 @@
+import Foundation
+import enum Yosemite.POSItem
+import enum Yosemite.POSItemType
+import protocol WooFoundation.Analytics
+
+/// Protocol for handling actions on POS items
+@available(iOS 17.0, *)
+protocol POSItemActionHandler {
+    /// Handles a tap on an item
+    /// - Parameter item: The item that was tapped
+    func handleTap(_ item: POSItem)
+}
+
+@available(iOS 17.0, *)
+extension POSItemActionHandler {
+    /// Default implementation for analytics tracking
+    /// - Parameter item: The item that was tapped
+    /// - Parameter source: The source of the event
+    /// - Parameter sourceType: The type of the source
+    /// - Parameter using: The analytics service to track to
+    func trackTapAnalytics(
+        for item: POSItem,
+        sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+        sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
+        using analytics: Analytics
+    ) {
+        switch item {
+        case .simpleProduct:
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
+                    itemType: .product,
+                    productType: .simple
+                )
+            )
+        case .variation:
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
+                    itemType: .product,
+                    productType: .variation
+                )
+            )
+        case .coupon:
+            analytics.track(
+                event: .PointOfSale.addItemToCart(
+                    sourceView: sourceView,
+                    sourceViewType: sourceViewType,
+                    itemType: .coupon
+                )
+            )
+        default:
+            break
+        }
+    }
+
+    func shouldSkipDuplicate(_ item: POSItem, posModel: PointOfSaleAggregateModelProtocol) -> Bool {
+        switch item {
+        case .coupon:
+            return posModel.cart.coupons.contains(where: { $0.id == item.id })
+        default:
+            return false
+        }
+    }
+}
+
+/// Standard handler for handling item taps without any special context
+@available(iOS 17.0, *)
+final class StandardPOSItemActionHandler: POSItemActionHandler {
+    private let posModel: PointOfSaleAggregateModelProtocol
+    private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
+    private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
+    private let analytics: Analytics
+
+    init(posModel: PointOfSaleAggregateModelProtocol,
+         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
+         analytics: Analytics = ServiceLocator.analytics
+    ) {
+        self.posModel = posModel
+        self.sourceView = sourceView
+        self.sourceViewType = sourceViewType
+        self.analytics = analytics
+    }
+
+    func handleTap(_ item: POSItem) {
+        if shouldSkipDuplicate(item, posModel: posModel) {
+            return
+        }
+        posModel.addToCart(item)
+
+        trackTapAnalytics(
+            for: item,
+            sourceView: sourceView,
+            sourceViewType: sourceViewType,
+            using: analytics
+        )
+    }
+}
+
+/// Handler for handling taps on search result items, saving the search term
+@available(iOS 17.0, *)
+final class SearchResultItemActionHandler: POSItemActionHandler {
+    private let posModel: PointOfSaleAggregateModelProtocol
+    private let searchTerm: String
+    private let itemType: POSItemType
+    private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
+    private let analytics: Analytics
+
+    init(posModel: PointOfSaleAggregateModelProtocol,
+         searchTerm: String,
+         itemType: POSItemType,
+         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
+         analytics: Analytics = ServiceLocator.analytics) {
+        self.posModel = posModel
+        self.searchTerm = searchTerm
+        self.itemType = itemType
+        self.sourceView = sourceView
+        self.analytics = analytics
+    }
+
+    func handleTap(_ item: POSItem) {
+        if shouldSkipDuplicate(item, posModel: posModel) {
+            return
+        }
+
+        if searchTerm.isNotEmpty {
+            posModel.saveSearchTerm(searchTerm, for: itemType)
+        }
+
+        posModel.addToCart(item)
+
+        trackTapAnalytics(
+            for: item,
+            sourceView: sourceView,
+            sourceViewType: searchTerm.isEmpty ? .preSearch : .search,
+            using: analytics
+        )
+    }
+}
+
+@available(iOS 17.0, *)
+struct POSItemActionHandlerFactory {
+    static func itemActionHandler(
+        itemListType: ItemListType,
+        searchTerm: String,
+        posModel: PointOfSaleAggregateModelProtocol,
+        analytics: Analytics = ServiceLocator.analytics
+    ) -> POSItemActionHandler {
+        switch itemListType {
+        case .products(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, sourceView: .product, sourceViewType: .list, analytics: analytics)
+        case .coupons(search: false):
+            StandardPOSItemActionHandler(posModel: posModel, sourceView: .coupon, sourceViewType: .list, analytics: analytics)
+        case .products(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, sourceView: .product, analytics: analytics)
+        case .coupons(search: true):
+            SearchResultItemActionHandler(posModel: posModel, searchTerm: searchTerm, itemType: itemListType.itemType, sourceView: .coupon, analytics: analytics)
+        }
+    }
+
+    static func variationActionHandler(
+        itemListType: ItemListType,
+        searchTerm: String,
+        posModel: PointOfSaleAggregateModelProtocol,
+        analytics: Analytics = ServiceLocator.analytics
+    ) -> POSItemActionHandler {
+        if itemListType.isSearching {
+            SearchResultItemActionHandler(
+                posModel: posModel,
+                searchTerm: searchTerm,
+                itemType: itemListType.itemType,
+                sourceView: .variation,
+                analytics: analytics
+            )
+        } else {
+            StandardPOSItemActionHandler(
+                posModel: posModel,
+                sourceView: .variation,
+                sourceViewType: .list,
+                analytics: analytics
+            )
+        }
+    }
+}

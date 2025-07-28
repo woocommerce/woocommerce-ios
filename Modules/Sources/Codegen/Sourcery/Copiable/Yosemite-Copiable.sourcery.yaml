@@ -1,0 +1,8 @@
+sources:
+    include:
+        - ../../../../../Modules/Sources/Yosemite/
+templates:
+    - Models+Copiable.swifttemplate
+output: ../../../../../Modules/Sources/Yosemite/Model/Copiable/
+args:
+    moduleName: Yosemite

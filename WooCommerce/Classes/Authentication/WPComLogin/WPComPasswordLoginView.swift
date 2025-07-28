@@ -66,21 +66,7 @@ struct WPComPasswordLoginView: View {
                     .largeTitleStyle()
 
                 // Avatar and email
-                HStack(spacing: Constants.contentPadding) {
-                    viewModel.avatarURL.map { url in
-                        KFImage(url)
-                            .resizable()
-                            .clipShape(Circle())
-                            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
-                    }
-                    Text(viewModel.email)
-                    Spacer()
-                }
-                .padding(Constants.avatarPadding)
-                .background(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .strokeBorder(.gray, lineWidth: 1)
-                )
+                WPComLoginGravatarView(email: viewModel.email, gravatarURL: viewModel.avatarURL)
 
                 // Password field
                 AuthenticationFormFieldView(viewModel: .init(
@@ -141,8 +127,6 @@ private extension WPComPasswordLoginView {
         static let blockVerticalPadding: CGFloat = 32
         static let contentVerticalSpacing: CGFloat = 8
         static let contentPadding: CGFloat = 16
-        static let avatarSize: CGFloat = 32
-        static let avatarPadding: EdgeInsets = .init(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {

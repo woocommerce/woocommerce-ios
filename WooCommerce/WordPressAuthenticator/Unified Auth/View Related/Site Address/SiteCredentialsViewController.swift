@@ -20,6 +20,10 @@ final class SiteCredentialsViewController: LoginViewController {
     private let completionHandler: ((WordPressOrgCredentials) -> Void)?
     private let configuration = WordPressAuthenticator.shared.configuration
 
+    private var isWPCom: Bool {
+        return loginFields.siteAddress == "https://wordpress.com"
+    }
+
     init?(coder: NSCoder, isDismissible: Bool, onCompletion: @escaping (WordPressOrgCredentials) -> Void) {
         self.isDismissible = isDismissible
         self.completionHandler = onCompletion
@@ -293,8 +297,17 @@ private extension SiteCredentialsViewController {
     /// Configure the instruction cell.
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
-        let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
-        let text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
+        let text: String
+        if isWPCom {
+            text = NSLocalizedString(
+                "login.sitecredentials.wpcom_instructions",
+                value: "Enter your WordPress.com username and password to log in.",
+                comment: "Instructions for logging in to WordPress.com using username and password."
+            )
+        } else {
+            let displayURL = sanitizedSiteAddress(siteAddress: loginFields.siteAddress)
+            text = String.localizedStringWithFormat(WordPressAuthenticator.shared.displayStrings.siteCredentialInstructions, displayURL)
+        }
         cell.configureLabel(text: text, style: .body)
     }
 
@@ -303,7 +316,7 @@ private extension SiteCredentialsViewController {
     func configureUsernameTextField(_ cell: TextFieldTableViewCell) {
         cell.configure(withStyle: .username,
                        placeholder: WordPressAuthenticator.shared.displayStrings.usernamePlaceholder,
-                       text: loginFields.username)
+                       text: isWPCom ? nil : loginFields.username)
 
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
@@ -557,12 +570,13 @@ extension SiteCredentialsViewController {
     /// proceeds with the submit action.
     ///
     @objc func validateForm() {
-        guard configuration.enableManualSiteCredentialLogin else {
-            return validateFormAndLogin() // handles login with XMLRPC normally
+        if configuration.enableManualSiteCredentialLogin,
+           !isWPCom {
+            // asks the delegate to handle the login
+            validateFormAndTriggerDelegate()
+        } else {
+            validateFormAndLogin()
         }
-
-        // asks the delegate to handle the login
-        validateFormAndTriggerDelegate()
     }
 
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {

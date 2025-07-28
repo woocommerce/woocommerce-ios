@@ -21,7 +21,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
     let titleString: String
     let subtitleString: String
 
-    @Published var emailAddress: String = ""
+    @Published var emailOrUsername: String = ""
+    @Published var usernameOnly: Bool = false
 
     let termsAttributedString: NSAttributedString
 
@@ -29,7 +30,8 @@ final class WPComEmailLoginViewModel: ObservableObject {
     private let accountService: WordPressComAccountServiceProtocol
     private let analytics: Analytics
     private let onPasswordUIRequest: (String) -> Void
-    private let onMagicLinkUIRequest: (_ email: String, _ isSignup: Bool) -> Void
+    private let onMagicLinkRequest: (String) -> Void
+    private let onMagicLinkSent: (_ email: String, _ isSignup: Bool) -> Void
     private let onError: (String) -> Void
 
     private var emailFieldSubscription: AnyCancellable?
@@ -41,13 +43,15 @@ final class WPComEmailLoginViewModel: ObservableObject {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          analytics: Analytics = ServiceLocator.analytics,
          onPasswordUIRequest: @escaping (String) -> Void,
-         onMagicLinkUIRequest: @escaping (String, Bool) -> Void,
+         onMagicLinkRequest: @escaping (String) -> Void,
+         onMagicLinkSent: @escaping (String, Bool) -> Void,
          onError: @escaping (String) -> Void) {
         self.allowAccountCreation = allowAccountCreation
         self.analytics = analytics
         self.accountService = accountService
         self.onPasswordUIRequest = onPasswordUIRequest
-        self.onMagicLinkUIRequest = onMagicLinkUIRequest
+        self.onMagicLinkRequest = onMagicLinkRequest
+        self.onMagicLinkSent = onMagicLinkSent
         self.onError = onError
 
         self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
@@ -73,43 +77,48 @@ final class WPComEmailLoginViewModel: ObservableObject {
     }
 
     @MainActor
-    func checkWordPressComAccount(email: String) async {
+    func checkWordPressComAccount(emailOrUsername: String) async {
         do {
             let passwordless = try await withCheckedThrowingContinuation { continuation in
-                accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                accountService.isPasswordlessAccount(username: emailOrUsername, success: { passwordless in
                     continuation.resume(returning: passwordless)
                 }, failure: { error in
                     DDLogError("⛔️ Error checking for passwordless account: \(error)")
                     continuation.resume(throwing: error)
                 })
             }
-            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+            await startAuthentication(emailOrUsername: emailOrUsername, isPasswordlessAccount: passwordless)
         } catch {
-            guard allowAccountCreation,
-                  let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
-                  case .endpointError(let endpointError) = apiError,
-                  endpointError.apiErrorCode == Constants.unknownUserErrorCode else {
-                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
-                onError(error.localizedDescription)
+            let apiErrorCode: String? = {
+                if let apiError = error as? WordPressAPIError<WordPressComRestApiEndpointError>,
+                   case .endpointError(let endpointError) = apiError {
+                    return endpointError.apiErrorCode
+                }
+                return nil
+            }()
+
+            if allowAccountCreation,
+               apiErrorCode == Constants.unknownUserErrorCode {
+                await handleUnkownUserError(emailOrUsername: emailOrUsername, error: error)
                 return
             }
 
-            guard email.isValidEmail() else {
-                analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
-                onError(Localization.unknownUsername)
+            if apiErrorCode == Constants.emailNotAllowed {
+                onMagicLinkRequest(emailOrUsername)
                 return
             }
 
-            await requestAuthenticationLink(email: email, forAccountCreation: true)
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            onError(error.localizedDescription)
         }
     }
 
     @MainActor
-    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+    private func startAuthentication(emailOrUsername: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
-            await requestAuthenticationLink(email: email)
+            await requestAuthenticationLink(email: emailOrUsername)
         } else {
-            onPasswordUIRequest(email)
+            onPasswordUIRequest(emailOrUsername)
         }
     }
 
@@ -126,11 +135,24 @@ final class WPComEmailLoginViewModel: ObservableObject {
                     continuation.resume(throwing: error)
                 })
             }
-            onMagicLinkUIRequest(email, forAccountCreation)
+            onMagicLinkSent(email, forAccountCreation)
         } catch {
             onError(error.localizedDescription)
             analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, isSignup: forAccountCreation, failure: error))
         }
+    }
+}
+
+private extension WPComEmailLoginViewModel {
+    @MainActor
+    func handleUnkownUserError(emailOrUsername: String, error: Error) async {
+        guard emailOrUsername.isValidEmail() else {
+            analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, failure: error))
+            onError(Localization.unknownUsername)
+            return
+        }
+
+        await requestAuthenticationLink(email: emailOrUsername, forAccountCreation: true)
     }
 }
 
@@ -141,6 +163,7 @@ extension WPComEmailLoginViewModel {
         static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
         static let wpcomErrorCodeKey = "WordPressComRestApiErrorCodeKey"
         static let unknownUserErrorCode = "unknown_user"
+        static let emailNotAllowed = "email_login_not_allowed"
     }
 
     enum Localization {

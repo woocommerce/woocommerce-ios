@@ -11,6 +11,10 @@ struct SimpleProductCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
+    private var shouldShowProductLabels: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
+    }
+
     init(product: POSSimpleProduct) {
         self.product = product
     }
@@ -24,20 +28,26 @@ struct SimpleProductCardView: View {
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(product.name)
-                    .lineLimit(2)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
+
+                Text(POSStockFormatter.stockStatusLabel(for: product))
+                    .foregroundStyle(Constants.detailColor)
+                    .font(Constants.itemDetailFont)
+                    .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()
         }
-        .frame(maxWidth: .infinity, idealHeight: dimension)
+        .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(Constants.backgroundColor)
         .posItemCardBorderStyles()
     }
@@ -53,6 +63,9 @@ private extension SimpleProductCardView {
                                                     name: "Product name",
                                                     formattedPrice: "$3.00",
                                                     productID: 123,
-                                                    price: "3.00"))
+                                                    price: "3.00",
+                                                    manageStock: false,
+                                                    stockQuantity: nil,
+                                                    stockStatusKey: "instock"))
 }
 #endif

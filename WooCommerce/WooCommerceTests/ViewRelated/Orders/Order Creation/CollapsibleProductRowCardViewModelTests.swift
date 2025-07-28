@@ -303,16 +303,18 @@ final class CollapsibleProductRowCardViewModelTests: XCTestCase {
 
     func test_productRow_when_has_product_subscription_then_shouldShowProductSubscriptionsDetails() {
         // Given
+        let isSubscriptionsInOrderCreationUIEnabled = MockFeatureFlagService(isSubscriptionsInOrderCreationUIEnabled: true)
         let productSubscription: ProductSubscription = createFakeSubscription()
         let product = Product.fake().copy(productID: 12,
                                           name: "A subscription product",
                                           subscription: productSubscription)
 
         // When
-        let defaultViewModel = createViewModel()
+        let defaultViewModel = createViewModel(featureFlagService: isSubscriptionsInOrderCreationUIEnabled)
         let viewModelWithSubscriptionProduct = createViewModel(id: product.productID,
                                                                productSubscriptionDetails: product.subscription,
-                                                               name: product.name)
+                                                               name: product.name,
+                                                               featureFlagService: isSubscriptionsInOrderCreationUIEnabled)
 
         // Then
         XCTAssertFalse(defaultViewModel.shouldShowProductSubscriptionsDetails)
@@ -672,6 +674,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                          stepperViewModel: ProductStepperViewModel = .init(quantity: 1, name: "", quantityUpdatedCallback: { _ in }),
                          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings()),
                          analytics: Analytics = ServiceLocator.analytics,
+                         featureFlagService: MockFeatureFlagService = MockFeatureFlagService(),
                          configure: (() -> Void)? = nil) -> CollapsibleProductRowCardViewModel {
         CollapsibleProductRowCardViewModel(id: id,
                                            productOrVariationID: productOrVariationID,
@@ -692,6 +695,7 @@ private extension CollapsibleProductRowCardViewModelTests {
                                            stepperViewModel: stepperViewModel,
                                            currencyFormatter: currencyFormatter,
                                            analytics: analytics,
+                                           featureFlagService: featureFlagService,
                                            configure: configure)
     }
 

@@ -21,7 +21,10 @@ final class ProductFormBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: ProductFormBottomSheetAction) {
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
-        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title, text: model.subtitle, numberOfLinesForText: 0)
+        let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.title,
+                                                                    text: model.subtitle,
+                                                                    numberOfLinesForTitle: 0,
+                                                                    numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
     }
 

@@ -7,39 +7,288 @@ struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
+    @EnvironmentObject var modalManager: POSModalManager
 
-    @State private var showSimpleProductsModal: Bool = false
-    private var itemListState: ItemListState {
-        posModel.itemsViewState.itemsStack.root
+    @Binding var selectedItemListType: ItemListType
+    @Binding var searchTerm: String
+
+    private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
+        PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
     }
 
-    @AppStorage(BannerState.isSimpleProductsOnlyBannerDismissedKey)
-    private var isHeaderBannerDismissed: Bool = false
-
-    var body: some View {
-        NavigationStack {
-            VStack {
-                headerView
-                switch itemListState {
-                case .loading(let items),
-                        .loaded(let items, _),
-                        .inlineError(let items, _):
-                    listView(items)
-                case .error:
-                    // Currently unused, but this will show errors that are displayed inline with previously
-                    // loaded items, e.g. when loading a new page or refreshing.
-                    EmptyView()
+    private var _isSearching: Binding<Bool> {
+        Binding(
+            get: {
+                switch selectedItemListType {
+                case let .products(search), let .coupons(search):
+                    return search
+                }
+            },
+            set: { newValue in
+                switch selectedItemListType {
+                case .products:
+                    selectedItemListType = .products(search: newValue)
+                case .coupons:
+                    selectedItemListType = .coupons(search: newValue)
                 }
             }
-            .navigationDestination(for: POSItem.self, destination: { item in
-                childListView(parentItem: item)
-            })
-            .background(Color.posSurface)
+        )
+    }
+
+    private var isSearching: Bool {
+        _isSearching.wrappedValue
+    }
+
+    private var isBarcodeScanningEnabled: Binding<Bool> {
+        Binding(
+            get: { !isSearching && !modalManager.isPresented },
+            set: { _ in }
+        )
+    }
+
+    @State private var searchTask: Task<Void, Never>?
+    @State private var didFinishSearch = true
+
+    private var isBarcodeScani1FeatureEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
+    }
+
+    private var isBarcodeScanSimulatorEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
+    }
+
+    private var isAddingCouponAllowed: Bool {
+        guard case .coupons = selectedItemListType else { return false }
+        let itemListState = itemListState(selectedItemListType)
+        return itemListState.isLoaded || itemListState.isEmpty
+    }
+
+    private var shouldShowHeaderItems: Bool {
+        !isSearching
+    }
+
+    @State private var showCouponCreationModal: Bool = false
+
+    @State private var barcodeScanSimulatorIsPresented: Bool = false
+    @State private var barcodeScanSimulatorText: String = ""
+
+    var body: some View {
+        if #available(iOS 18.0, *) {
+            NavigationStack {
+                content
+            }
+        } else {
+            // On iOS 17, NavigationStack causes memory leaks when the POS is closed, NavigationView is a fallback.
+            NavigationView {
+                content
+            }
+            .navigationViewStyle(.stack)
         }
+    }
+
+    var content: some View {
+        VStack(spacing: 0) {
+            headerView
+
+            TabView(selection: $selectedItemListType) {
+                itemListTabContent(.products(search: false))
+                itemListTabContent(.coupons(search: false))
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.none, value: selectedItemListType)
+            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
+            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+        }
+        // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
+        // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
+        .navigationDestination(for: POSItem.self, destination: { item in
+            childListView(parentItem: item)
+        })
+        .background(Color.posSurface)
         .accessibilityElement(children: .contain)
-        .posModal(isPresented: $showSimpleProductsModal) {
-            SimpleProductsOnlyInformation(isPresented: $showSimpleProductsModal)
+        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
+            Task { @MainActor in
+                posModel.addToCart(couponItem)
+                await posModel.couponsController.refreshItems(base: .root)
+            }
+        })
+        .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
+            posModel.barcodeScanned(scannedCode)
         }
+    }
+
+    private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
+        switch selectedItemListType {
+        case .products:
+            return posModel.purchasableItemsSearchController
+        case .coupons:
+            return posModel.couponsSearchController
+        }
+    }
+
+    @ViewBuilder
+    private func itemListTabContent(_ itemListType: ItemListType) -> some View {
+        ZStack {
+            itemListContent(itemListType)
+                .accessibilityElement(children: isSearching ? .ignore : .contain)
+
+            if isSearching {
+                POSSearchContentView(
+                    searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                     itemsController: searchItemsController,
+                                                     searchHistoryProvider: posModel.searchHistoryService),
+                    searchTerm: $searchTerm
+                ) { _ in
+                    itemListContent(selectedItemListType)
+                }
+                .scrollDismissesKeyboard(.immediately)
+                .zIndex(1)
+            }
+        }
+        .tag(itemListType)
+        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+    }
+
+    @ViewBuilder
+    private func itemListContent(_ itemListType: ItemListType) -> some View {
+        switch itemListState(itemListType) {
+        case .loading(let items),
+                .loaded(let items, _),
+                .inlineError(let items, _, _):
+            listView(items, itemListType: itemListType)
+        case .error(let errorState):
+            errorView(errorState)
+        case .empty:
+            emptyView
+        }
+    }
+
+    @ViewBuilder
+    private func listView(_ items: [POSItem], itemListType: ItemListType) -> some View {
+        ItemList(
+            itemsController: itemsController(itemListType),
+            node: .root,
+            itemActionHandler: actionHandler(itemListType),
+            willLoadMore: {
+                analyticsTracker.trackNextPageWillLoad()
+            }
+        )
+        .refreshable {
+            analyticsTracker.trackRefresh()
+            await itemsController(itemListType).refreshItems(base: .root)
+        }
+    }
+
+    private func actionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
+        POSItemActionHandlerFactory.itemActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
+    }
+
+    private func variationActionHandler(_ itemListType: ItemListType) -> POSItemActionHandler {
+        POSItemActionHandlerFactory.variationActionHandler(
+            itemListType: itemListType,
+            searchTerm: searchTerm,
+            posModel: posModel
+        )
+    }
+
+    @ViewBuilder
+    func childListView(parentItem: POSItem) -> some View {
+        // Note that navigation is handled by the ItemList in iOS 17, so any changes to this should be reflected in ItemListRow.
+        switch parentItem {
+        case let .variableParentProduct(parentProduct):
+            ChildItemList(
+                parentItem: parentItem,
+                title: parentProduct.name,
+                itemsController: itemsController(selectedItemListType),
+                itemActionHandler: variationActionHandler(selectedItemListType),
+                analyticsTracker: PointOfSaleItemListAnalyticsTracker(
+                    sourceView: .variation,
+                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                )
+            )
+            .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
+                posModel.barcodeScanned(scannedCode)
+            }
+        default:
+            EmptyView()
+        }
+    }
+}
+
+/// Header view
+///
+@available(iOS 17.0, *)
+private extension ItemListView {
+    @ViewBuilder
+    var headerView: some View {
+        VStack {
+            POSPageHeaderView(items: headerViewItems, trailingContent: {
+                HStack {
+                    if isSearching {
+                        POSSearchField(
+                            searchTerm: $searchTerm,
+                            searchable: POSProductSearchable(itemListType: selectedItemListType,
+                                                             itemsController: searchItemsController,
+                                                             searchHistoryProvider: posModel.searchHistoryService),
+                            onBack: {
+                                setSearch(false)
+                            }
+                        )
+                        .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    } else {
+                        createCouponButton
+
+                        simulatedScanButton
+                            .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
+
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
+                            setSearch(true)
+                        }
+                        .transition(.opacity.combined(with: .scale))
+                    }
+
+                }
+            })
+
+            barcodeScanSimulator
+                .renderedIf(barcodeScanSimulatorIsPresented)
+        }
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
+        .animation(.easeInOut(duration: Constants.animationDuration), value: searchTerm)
+    }
+
+    var headerViewItems: [POSPageHeaderItem] {
+        guard shouldShowHeaderItems else {
+            return []
+        }
+        var items = [
+            POSPageHeaderItem(
+                title: Localization.productsTitle,
+                isSelected: selectedItemListType.isProducts,
+                action: {
+                    displayItemListType(.products(search: false))
+                }
+            )
+        ]
+
+        items.append(
+            POSPageHeaderItem(
+                title: Localization.couponsTitle,
+                isSelected: selectedItemListType.isCoupons,
+                action: {
+                    displayItemListType(.coupons(search: false))
+                }
+            )
+        )
+
+        return items
     }
 }
 
@@ -48,93 +297,123 @@ struct ItemListView: View {
 @available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
-    var headerView: some View {
-        VStack {
-            POSPageHeaderView(title: Localization.title, trailingContent: {
-                Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                    showSimpleProductsModal = true
-                }, label: {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(Constants.infoIconInset)
-                })
-                .renderedIf(!shouldShowHeaderBanner)
+    private var createCouponButton: some View {
+        POSPageHeaderActionButton(systemName: "plus") {
+            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+            showCouponCreationModal = true
+        }
+        .renderedIf(isAddingCouponAllowed)
+        .transition(.opacity.combined(with: .scale))
+    }
+
+    @ViewBuilder
+    private var simulatedScanButton: some View {
+        POSPageHeaderActionButton(systemName: "barcode") {
+            barcodeScanSimulatorIsPresented.toggle()
+        }
+        .transition(.opacity.combined(with: .scale))
+    }
+
+    @ViewBuilder
+    private var barcodeScanSimulator: some View {
+        HStack {
+            TextField(text: $barcodeScanSimulatorText) {
+                Text("Barcode value")
+            }
+
+            Button {
+                posModel.barcodeScanned(.success(barcodeScanSimulatorText))
+            } label: {
+                Text("Scan!")
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+        }
+        .padding([.bottom, .horizontal], 16)
+    }
+
+    @ViewBuilder
+    var emptyView: some View {
+        switch selectedItemListType {
+        case .products:
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemListType: selectedItemListType,
+                    baseItem: .root)) {
+                Task {
+                    await itemsController(selectedItemListType).loadItems(base: .root)
+                }
+            }
+        case .coupons:
+            PointOfSaleItemListEmptyView(
+                viewModel: PointOfSaleItemListEmptyViewModel(
+                    itemListType: selectedItemListType,
+                    baseItem: .root)) {
+                showCouponCreationModal = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    func errorView(_ errorState: PointOfSaleErrorState) -> some View {
+        switch errorState.errorType {
+        case .couponsDisabled:
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await posModel.couponsController.enableCoupons()
+                    ServiceLocator.analytics.track(.couponSettingEnabled)
+                }
             })
-            if !dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-                    .padding(.horizontal, Constants.bannerCardPadding)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            }
-        }
-    }
-
-    var bannerCardView: some View {
-        POSNoticeView(
-            title: headerBannerTitle,
-            icon: Image(systemName: "info.circle"),
-            onDismiss: {
-                isHeaderBannerDismissed = true
-            },
-            onTap: {
-                showSimpleProductsModal = true
-            }
-        ) {
-            VStack(alignment: .leading, spacing: Constants.bannerTextSpacing) {
-                Text(headerBannerSubtitle)
-                bannerHintAndLearnMoreText
-            }
-        }
-        .padding(.bottom, Constants.bannerCardPadding)
-    }
-
-    private var bannerHintAndLearnMoreText: some View {
-        Text("\(headerBannerHint) \(Localization.headerBannerLearnMoreHint)")
-            .font(.posBodySmallBold)
-            .foregroundColor(Color(.posPrimary))
-    }
-
-    @ViewBuilder
-    func listView(_ items: [POSItem]) -> some View {
-        ItemList(state: itemListState) {
-            if dynamicTypeSize.isAccessibilitySize, shouldShowHeaderBanner {
-                bannerCardView
-            }
-        }
-        .refreshable {
-            ServiceLocator.analytics.track(.pointOfSaleProductsPullToRefresh)
-            await posModel.refreshItems(base: .root)
-        }
-    }
-
-    @ViewBuilder
-    func childListView(parentItem: POSItem) -> some View {
-        switch parentItem {
-        case let .variableParentProduct(parentProduct):
-            ChildItemList(parentItem: parentItem, title: parentProduct.name)
         default:
-            EmptyView()
+            PointOfSaleItemListErrorView(error: errorState, onAction: {
+                Task {
+                    await itemsController(selectedItemListType).loadItems(base: .root)
+                }
+            })
         }
     }
 }
 
 @available(iOS 17.0, *)
 private extension ItemListView {
-    var shouldShowHeaderBanner: Bool {
-        itemListState.eligibleToShowSimpleProductsBanner && !isHeaderBannerDismissed
+    func displayItemListType(_ itemListType: ItemListType) {
+        // Clear search term when switching tabs
+        searchTerm = ""
+        selectedItemListType = itemListType
+        Task { @MainActor in
+            if itemListState(itemListType).items.isEmpty {
+                await itemsController(itemListType).loadItems(base: .root)
+            }
+        }
+
+        analyticsTracker.trackItemListSelected(itemListType: itemListType)
     }
 }
 
-private extension ItemListState {
-    var eligibleToShowSimpleProductsBanner: Bool {
-        switch self {
-        case .loading,
-                .loaded,
-                .inlineError:
-            return true
-        case .error:
-            return false
+@available(iOS 17.0, *)
+private extension ItemListView {
+    func itemsController(_ itemType: ItemListType) -> PointOfSaleItemsControllerProtocol {
+        switch itemType {
+        case .products(search: false):
+            posModel.purchasableItemsController
+        case .products(search: true):
+            posModel.purchasableItemsSearchController
+        case .coupons(search: false):
+            posModel.couponsController
+        case .coupons(search: true):
+            posModel.couponsSearchController
+        }
+    }
+
+    private func itemListState(_ itemType: ItemListType) -> ItemListState {
+        itemsController(itemType).itemsViewState.itemsStack.root
+    }
+
+    private func setSearch(_ isSearching: Bool) {
+        switch selectedItemListType {
+        case .products:
+            selectedItemListType = .products(search: isSearching)
+        case .coupons:
+            selectedItemListType = .coupons(search: isSearching)
         }
     }
 }
@@ -144,56 +423,24 @@ private extension ItemListState {
 @available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
-        static let infoIconInset: EdgeInsets = .init(top: 0, leading: 6, bottom: 0, trailing: 6)
-        static let bannerCardPadding: CGFloat = POSPadding.medium
-        static let bannerTextSpacing: CGFloat = POSSpacing.xSmall
+        static let animationDuration: CGFloat = 0.2
     }
 
     enum BannerState {
         static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
-    var headerBannerTitle: String {
-        Localization.headerBannerTitleSimpleAndVariable
-    }
-
-    var headerBannerSubtitle: String {
-        Localization.headerBannerSubtitleSimpleAndVariable
-    }
-
-    var headerBannerHint: String {
-        Localization.headerBannerHintSimpleAndVariable
-    }
-
     enum Localization {
-        static let title = NSLocalizedString(
+        static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
             comment: "Title at the top of the Point of Sale product selector screen."
         )
 
-        static let headerBannerTitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.title.simpleAndVariable",
-            value: "Showing simple and variable products only",
-            comment: "Title of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerSubtitleSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.subtitle.simpleAndVariable",
-            value: "Only simple and variable non-downloadable products can be used with POS right now.",
-            comment: "Subtitle of the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerHintSimpleAndVariable = NSLocalizedString(
-            "pos.itemlistview.headerBanner.hint.simpleAndVariable",
-            value: "Other product types will become available in future updates.",
-            comment: "Additional text within the product selector header banner, which explains current POS limitations"
-        )
-
-        static let headerBannerLearnMoreHint = NSLocalizedString(
-            "pos.itemlistview.headerBanner.learnMoreHint",
-            value: "Learn More",
-            comment: "Link to more information within the product selector header banner, which explains current POS limitations"
+        static let couponsTitle = NSLocalizedString(
+            "pos.itemlistview.couponsTitle",
+            value: "Coupons",
+            comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
         )
     }
 }
@@ -206,24 +453,17 @@ private extension ItemListView {
     Task { @MainActor in
         await itemsController.loadItems(base: .root)
     }
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: itemsController,
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
+    let posModel = POSPreviewHelpers.makePreviewAggregateModel(itemsController: itemsController)
+    return ItemListView(selectedItemListType: .constant(.products(search: false)),
+                        searchTerm: .constant(""))
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Loading") {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return ItemListView()
-        .environment(posModel)
+    ItemListView(selectedItemListType: .constant(.products(search: false)),
+                 searchTerm: .constant(""))
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
 #endif

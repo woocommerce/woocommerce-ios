@@ -10,8 +10,18 @@ enum PointOfSaleAssets: CaseIterable {
     case readerConnectionLowBattery
     case readerConnectionSuccess
     case readerDisconnected
+    case readerLocation
     case shoppingBags
     case successCheck
+    case coupons
+    case gears
+    case barcodeFieldScreenshot
+    case starBsh20SetupBarcode
+    case tera12002DHIDBarcode
+    case tera12002DPairBarcode
+    case netum1228BCHIDBarcode
+    case netum1228BCPairBarcode
+    case testEan13Barcode
 
     var imageName: String {
         switch self {
@@ -33,10 +43,30 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-reader-connection-complete"
         case .readerDisconnected:
             "pos-reader-disconnected"
+        case .readerLocation:
+            "location"
         case .shoppingBags:
             "shopping-bags"
         case .successCheck:
             "pos-success-check"
+        case .coupons:
+            "coupons"
+        case .gears:
+            "pos-gears"
+        case .barcodeFieldScreenshot:
+            "barcode-field-screenshot"
+        case .starBsh20SetupBarcode:
+            "star-bsh20-setup-barcode"
+        case .testEan13Barcode:
+            "test-ean13-barcode"
+        case .tera12002DHIDBarcode:
+            "tera-1200-2d-hid-barcode"
+        case .tera12002DPairBarcode:
+            "tera-1200-2d-pair-barcode"
+        case .netum1228BCHIDBarcode:
+            "netum-1228bc-hid-barcode"
+        case .netum1228BCPairBarcode:
+            "netum-1228bc-pair-barcode"
         }
     }
 }

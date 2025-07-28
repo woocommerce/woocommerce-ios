@@ -31,11 +31,11 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
-final class CollectOrderPaymentUseCase<BuiltInAlertProvider: CardReaderTransactionAlertsProviding,
+final class CollectOrderPaymentUseCase<TapToPayAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
     NSObject, CollectOrderPaymentProtocol
-where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
+where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
       BluetoothAlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// Currency Formatter
     ///
@@ -199,7 +199,7 @@ where BuiltInAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     private func paymentAlertProvider(for reader: CardReader) -> any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails> {
         switch reader.readerType {
-        case .appleBuiltIn:
+        case .tapToPay:
             return tapToPayAlertsProvider
         default:
             return bluetoothAlertsProvider
@@ -312,7 +312,7 @@ private extension CollectOrderPaymentUseCase {
                     for: self.order,
                     orderTotal: orderTotal,
                     paymentGatewayAccount: paymentGatewayAccount,
-                    paymentMethodTypes: self.configuration.paymentMethods.map(\.rawValue),
+                    paymentMethodTypes: self.configuration.paymentMethods,
                     stripeSmallestCurrencyUnitMultiplier: self.configuration.stripeSmallestCurrencyUnitMultiplier,
                     channel: channel,
                     onPreparingReader: { [weak self] in
@@ -335,6 +335,18 @@ private extension CollectOrderPaymentUseCase {
                                         onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
                                     }
                                 })
+                        )
+                    }, onCardInserted: { [weak self] in
+                        guard let self = self else { return }
+                        self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
+                            title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
+                                username: self.order.billingAddress?.firstName),
+                            amount: self.formattedAmount,
+                            onCancel: { [weak self] in
+                                self?.cancelPayment(from: .paymentWaitingForInput) {
+                                    onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+                                }
+                            })
                         )
                     }, onProcessingMessage: { [weak self] in
                         guard let self = self else { return }
@@ -549,8 +561,7 @@ private extension CollectOrderPaymentUseCase {
                                         self.handlePaymentCancellation(from: .other)
                                     }
                                 case .failure(let error):
-                                    let retryError = CollectOrderPaymentUseCaseError.alreadyRetried(error)
-                                    self.checkThenHandlePaymentFailureAndRetryPayment(retryError,
+                                    self.checkThenHandlePaymentFailureAndRetryPayment(error,
                                                                                       alertProvider: paymentAlerts,
                                                                                       paymentGatewayAccount: paymentGatewayAccount,
                                                                                       channel: channel,
@@ -772,9 +783,7 @@ private extension CollectOrderPaymentUseCase {
         let isErrorEligibleForSendingFailureReceiptAfterPayment: Bool = {
             switch error {
             case CardReaderServiceError.paymentCaptureWithPaymentMethod(.paymentDeclinedByPaymentProcessorAPI, _),
-                CardReaderServiceError.paymentCapture(.paymentDeclinedByPaymentProcessorAPI),
-                CollectOrderPaymentUseCaseError.alreadyRetried(CardReaderServiceError.paymentCaptureWithPaymentMethod(.paymentDeclinedByPaymentProcessorAPI, _)),
-                CollectOrderPaymentUseCaseError.alreadyRetried(CardReaderServiceError.paymentCapture(.paymentDeclinedByPaymentProcessorAPI)):
+                CardReaderServiceError.paymentCapture(.paymentDeclinedByPaymentProcessorAPI):
                 return true
             default:
                 return false
@@ -914,7 +923,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
     case orderTotalChanged
     case couldNotRefreshOrder(Error)
     case orderAlreadyPaid
-    case alreadyRetried(Error)
 
     var errorDescription: String? {
         switch self {
@@ -930,10 +938,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
             return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
         case .orderAlreadyPaid:
             return Localization.orderAlreadyPaidLocalizedDescription
-        case .alreadyRetried(let error as LocalizedError):
-            return error.errorDescription
-        case .alreadyRetried(let error):
-            return String.localizedStringWithFormat(Localization.couldNotRetryPaymentLocalizedDescription, error.localizedDescription)
         }
     }
 
@@ -962,10 +966,6 @@ enum CollectOrderPaymentUseCaseError: LocalizedError {
 
         static let paymentCancelledLocalizedDescription = NSLocalizedString(
             "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
-
-        static let couldNotRetryPaymentLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@",
-            comment: "Error message when retrying an In-Person Payment and an unknown error is received.")
     }
 }
 
@@ -1014,7 +1014,8 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
         switch underlyingError {
         case .notConnectedToReader,
                 .commandNotAllowedDuringCall,
-                .featureNotAvailableWithConnectedReader:
+                .featureNotAvailableWithConnectedReader,
+                .paymentMethodCollectionTimedOut:
             return false
         default:
             return true
@@ -1025,7 +1026,7 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
 extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
     var retryApproach: CardPaymentRetryApproach {
         switch self {
-        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried, .orderTotalChanged:
+        case .flowCanceledByUser, .orderAlreadyPaid, .orderTotalChanged:
             return .dontRetry
         case .paymentGatewayNotFound:
             return .restart
@@ -1035,12 +1036,7 @@ extension CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
     }
 
     var requiresFallbackPaymentMethod: Bool {
-        switch self {
-        case .alreadyRetried(let error as CardReaderServiceError):
-            return error.requiresFallbackPaymentMethod
-        default:
-            return false
-        }
+        false
     }
 }
 

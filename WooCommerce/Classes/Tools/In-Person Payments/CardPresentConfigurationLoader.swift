@@ -15,8 +15,7 @@ final class CardPresentConfigurationLoader {
         let countryCode = SiteAddress().countryCode
 
         return .init(
-            country: countryCode,
-            shouldAllowTapToPayInUK: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneInUK)
+            country: countryCode
         )
     }
 }

@@ -23,6 +23,7 @@ struct WooShippingCreateLabelsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.sizeCategory) private var sizeCategory
 
     private var isiPhonePortrait: Bool {
         verticalSizeClass == .regular && horizontalSizeClass == .compact
@@ -37,92 +38,43 @@ struct WooShippingCreateLabelsView: View {
     /// Whether the origin address list sheet is presented.
     @State private var isOriginAddressListPresented = false
 
+    @State private var showingCustomsForm = false
+    @State private var showingSplitShipments = false
+
     /// Whether the destination address is verified.
     private var isDestinationAddressVerified: Bool {
         viewModel.destinationAddressStatus == .verified
     }
 
+    /// Whether the "Purchase" button should be rendered
+    private var shouldShowPurchaseButton: Bool {
+        return isShipmentDetailsExpanded ||
+        !sizeCategory.isAccessibilityCategory ||
+        viewModel.isPurchaseButtonEnabled
+    }
+
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: Layout.verticalSpacing) {
-                    if viewModel.canViewLabel, let postPurchase = viewModel.postPurchase {
-                        WooShippingPostPurchaseView(viewModel: postPurchase)
+            Group {
+                switch viewModel.state {
+                case .loading:
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                case .ready:
+                    VStack(spacing: 0) {
+                        if viewModel.shipments.count > 1 {
+                            topTabView
+                            Divider()
+                        }
+                        mainView
                     }
-
-                    WooShippingItems(viewModel: viewModel.items)
-
-                    WooShippingHazmat(enabled: !viewModel.canViewLabel)
-
-                    WooShippingCustomsRow(informationIsCompleted: viewModel.customsInformationIsCompleted,
-                                          customsFormViewModel: viewModel.customsFormViewModel)
-                        .padding(.bottom, 16)
-                        .renderedIf(viewModel.customsFormRequired)
-
-                    if viewModel.canViewLabel {
-                        EmptyView()
-                    } else if let package = viewModel.selectedPackage,
-                              let shippingService = viewModel.shippingService {
-                        WooShippingSelectedPackageView(package: package,
-                                                       totalWeight: $viewModel.shipmentWeight,
-                                                       updateSelectedPackage: viewModel.selectPackage)
-                        WooShippingServiceView(viewModel: shippingService)
-                    } else {
-                        WooShippingPackageAndRatePlaceholder(onSelectPackage: viewModel.selectPackage)
-                    }
+                case .missingRequiredData:
+                    missingDataState
                 }
-                .padding(16)
             }
             .safeAreaInset(edge: .bottom) {
-                ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
-                    isShipmentDetailsExpanded = isExpanded
-                }) {
-                    VStack {
-                        collapsedBottomSheet
-                            .renderedIf(!isShipmentDetailsExpanded)
-                        bottomSheetPurchaseActions
-                            .renderedIf(!viewModel.canViewLabel)
-                    }
-                    .padding(.horizontal, Layout.bottomSheetPadding)
-                } expandableContent: {
-                    VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
-                        if isiPhonePortrait {
-                            Text(Localization.BottomSheet.orderDetails)
-                                .footnoteStyle()
-                        }
-                        CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
-                            shipFromAddress
-                            Divider()
-                            shipToAddress
-                        }
-                        .font(.subheadline)
-                        .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
-
-                        // Always use a VStack in iPhone portrait orientation.
-                        // CollapsibleHStack will use an HStack even if some text is truncated.
-                        if isiPhonePortrait {
-                            VStack(spacing: Layout.bottomSheetPadding) {
-                                orderDetails
-                                Divider()
-                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
-                                shipmentDetails
-                            }
-                        } else {
-                            HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
-                                orderDetails
-                                Divider()
-                                    .padding(.trailing, Layout.bottomSheetPadding * -1)
-                                shipmentDetails
-                            }
-                        }
-                    }
-                    .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
-                }
-                .ignoresSafeArea(edges: .horizontal)
-                .sheet(isPresented: $isOriginAddressListPresented) {
-                    WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
-                        .presentationDetents([.medium, .large])
-                        .presentationDragIndicator(.visible)
+                if viewModel.state == .ready && viewModel.hazmatNotice == nil {
+                    expandableBottomSheet
                 }
             }
             .shippingWeightUnit(viewModel.weightUnit)
@@ -134,7 +86,13 @@ struct WooShippingCreateLabelsView: View {
                     Button(viewModel.canViewLabel ? Localization.close : Localization.cancel) {
                         dismiss()
                     }
+                    .disabled(viewModel.isPurchasingLabel)
                 }
+            }
+            .sheet(isPresented: $isOriginAddressListPresented) {
+                WooShippingOriginAddressListView(viewModel: viewModel.originAddresses)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
             .sheet(item: $viewModel.addressToEdit) { addressToEdit in
                 NavigationStack {
@@ -143,21 +101,234 @@ struct WooShippingCreateLabelsView: View {
                         .navigationBarTitleDisplayMode(.inline)
                 }
             }
+            .sheet(isPresented: $showingCustomsForm) {
+                WooShippingCustomsForm(viewModel: viewModel.currentShipmentDetailsViewModel.customsFormViewModel)
+            }
+            .notice($viewModel.labelPurchaseErrorNotice, autoDismiss: false)
+            .notice($viewModel.hazmatNotice)
+            .notice($viewModel.refundNotice)
+            .fullScreenCover(isPresented: $showingSplitShipments) {
+                WooShippingSplitShipmentsView(viewModel: viewModel.splitShipmentsViewModel) { updatedShipments in
+                    viewModel.updateShipments(updatedShipments)
+                    isShipmentDetailsExpanded = false
+                }
+            }
+            .sheet(isPresented: $viewModel.showingPaymentMethods) {
+                if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
+                    WooShippingPaymentMethodsView(viewModel: paymentMethodsViewModel,
+                                                  onAccountSettingsUpdate: { settings in
+                        viewModel.didUpdateAccountSettings(settings)
+                        viewModel.showingPaymentMethods = false
+                    })
+                    .presentationDetents([.fraction(0.7), .large])
+                }
+            }
+            .sheet(isPresented: $viewModel.shouldShowUPSTermsAndConditions) {
+                if let termsViewModel = viewModel.upsTermsViewModel {
+                    UPSTermsView(viewModel: termsViewModel) {
+                        viewModel.shouldShowUPSTermsAndConditions = false
+                        Task { @MainActor in
+                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                        }
+                    }
+                    .presentationDetents([.large])
+                }
+            }
         }
     }
 }
 
 private extension WooShippingCreateLabelsView {
+    var tabs: [TopTabItem<EmptyView>] {
+        viewModel.shipments.enumerated().map { (index, shipment) in
+            TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
+                       icon: shipment.isPurchased ? Layout.purchasedIcon : nil,
+                       customAccessibilityValue: shipment.isPurchased ?
+                           Localization.Accessibility.shipmentTabFulfilled :
+                           Localization.Accessibility.shipmentTabUnfulfilled,
+                       content: {
+                EmptyView()
+            })
+        }
+    }
+
+    var topTabView: some View {
+        HStack(spacing: 0) {
+            TopTabView(tabs: tabs,
+                       showContent: false,
+                       showDividerBelowTabs: false,
+                       selectedTabIndex: $viewModel.selectedShipmentIndex,
+                       tabsContainerHorizontalPadding: nil,
+                       selectedStateColor: .accentColor,
+                       unselectedStateColor: .secondary,
+                       selectedTabIndicatorHeight: Layout.selectedTabIndicatorHeight,
+                       tabPadding: Layout.tabPadding,
+                       tabsNameFont: Font.subheadline.bold(),
+                       tabsIconSize: Layout.purchasedIconWidth,
+                       tabsIconAlignment: .trailing,
+                       tabsIconForegroundColor: Layout.green,
+                       tabItemContentHorizontalPadding: Layout.tabItemContentHorizontalPadding,
+                       tabItemContentVerticalPadding: Layout.tabItemContentVerticalPadding)
+            .overlay(alignment: .trailing) {
+                LinearGradient(gradient: Gradient(colors: [.clear, Color(.basicBackground)]), startPoint: .leading, endPoint: .center)
+                    .frame(width: Layout.gradientViewWidth)
+                    .renderedIf(viewModel.selectedShipmentIndex < viewModel.shipmentDetailViewModels.count - 1)
+            }
+
+            Button {
+                showingSplitShipments = true
+            } label: {
+                Image(systemName: "pencil")
+                    .padding(.horizontal)
+            }
+            .accessibilityHint(Localization.Accessibility.editButtonHint)
+            .renderedIf(viewModel.hasUnfulfilledShipments)
+        }
+        .disabled(viewModel.isPurchasingLabel)
+    }
+
+    @ViewBuilder
+    var mainView: some View {
+        ScrollView {
+            VStack(spacing: Layout.verticalSpacing) {
+                if viewModel.splitShipmentsAvailable {
+                    WooShippingSplitShipmentsRow(onShowingSplitShipments: {
+                        showingSplitShipments = true
+                    })
+                }
+                WooShippingShipmentDetailsView(viewModel: viewModel.currentShipmentDetailsViewModel)
+                    .disabled(viewModel.isPurchasingLabel)
+            }
+            .padding(Layout.contentSpacing)
+        }
+    }
+
+    var expandableBottomSheet: some View {
+        ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+            isShipmentDetailsExpanded = isExpanded
+        }) {
+            VStack {
+                collapsedBottomSheet
+                    .renderedIf(!isShipmentDetailsExpanded)
+                bottomSheetPurchaseActions
+                    .renderedIf(!viewModel.canViewLabel)
+            }
+            .padding(.horizontal, Layout.bottomSheetPadding)
+        } expandableContent: {
+            VStack(alignment: .leading, spacing: Layout.bottomSheetSpacing) {
+                if isiPhonePortrait {
+                    Text(Localization.BottomSheet.orderDetails)
+                        .footnoteStyle()
+                }
+                CollapsibleHStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: .zero) {
+                    shipFromAddress
+                    Divider()
+                    shipToAddress
+                }
+                .font(.subheadline)
+                .roundedBorder(cornerRadius: Layout.cornerRadius, lineColor: Color(.separator), lineWidth: 0.5)
+
+                // Always use a VStack in iPhone portrait orientation.
+                // CollapsibleHStack will use an HStack even if some text is truncated.
+                if isiPhonePortrait {
+                    VStack(spacing: Layout.bottomSheetPadding) {
+                        orderDetails
+                        Divider()
+                            .padding(.trailing, -Layout.bottomSheetPadding)
+                        if let line = viewModel.paymentMethodLine {
+                            paymentMethod(line)
+                            Divider()
+                                .padding(.trailing, -Layout.bottomSheetPadding)
+                        }
+                        shipmentDetails
+                    }
+                } else {
+                    HStack(alignment: .top, spacing: Layout.bottomSheetPadding) {
+                        VStack(spacing: Layout.bottomSheetPadding) {
+                            orderDetails
+                            if let line = viewModel.paymentMethodLine {
+                                Divider()
+                                paymentMethod(line)
+                            }
+                        }
+                        Divider()
+                            .padding(.trailing, -Layout.bottomSheetPadding)
+                        shipmentDetails
+                    }
+                }
+            }
+            .padding([.bottom, .horizontal], Layout.bottomSheetPadding)
+        }
+        .ignoresSafeArea(edges: .horizontal)
+    }
+
+    var missingDataState: some View {
+        VStack(spacing: Layout.contentSpacing) {
+            Image(uiImage: .grayErrorIcon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Layout.errorIconSize, height: Layout.errorIconSize)
+            Text(Localization.missingDataError)
+                .multilineTextAlignment(.center)
+            Button(Localization.retryCTA) {
+                Task {
+                    await viewModel.loadRequiredData()
+                }
+            }
+        }
+    }
+
     /// View for elements only displayed on the collapsed bottom sheet.
     var collapsedBottomSheet: some View {
         VStack {
             Text(Localization.BottomSheet.shipmentDetails)
                 .foregroundStyle(Color(.primary))
                 .bold()
-            addressVerificationNotice(with: viewModel.destinationAddressStatusNoticeLabel)
-                .onTapGesture {
-                    // TODO: Start address editing/verification flow if needed (if destination address is unverified).
+                .lineLimit(1)
+                .scaledToFill()
+                .minimumScaleFactor(0.5)
+
+            if viewModel.shouldShowNotices {
+                if let originAddressUnverifiedNoticeLabel = viewModel.originAddressUnverifiedNoticeLabel {
+                    // Unverified notice for origin address
+                    verificationNotice(with: originAddressUnverifiedNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.originAddressUnverifiedNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        viewModel.editSelectedOriginAddress()
+                    })
+                } else if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
+                    // Verification notice for destination address
+                    verificationNotice(with: destinationAddressStatusNoticeLabel,
+                                       isVerified: isDestinationAddressVerified,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.destinationAddressStatusNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        if !isDestinationAddressVerified {
+                            viewModel.editDestinationAddress()
+                        }
+                    })
+                } else if let itnMissingNoticeLabel = viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel {
+                    // Verification notice for missing ITN in customs form
+                    verificationNotice(with: itnMissingNoticeLabel,
+                                       isVerified: false,
+                                       onDismiss: {
+                        withAnimation {
+                            viewModel.currentShipmentDetailsViewModel.itnMissingNoticeLabel = nil
+                        }
+                    },
+                                       onTap: {
+                        showingCustomsForm = true
+                    })
                 }
+            }
         }
     }
 
@@ -166,24 +337,36 @@ private extension WooShippingCreateLabelsView {
         Group {
             if isiPhonePortrait {
                 VStack(spacing: Layout.bottomSheetSpacing) {
-                    if isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
+                    if isShipmentDetailsExpanded && !viewModel.isOrderCompleted {
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizePortrait)
+                        }
+                        .tint(Color(.primary))
                     }
-                    if isShipmentDetailsExpanded || viewModel.selectedPackage != nil {
+                    if shouldShowPurchaseButton || viewModel.currentShipmentDetailsViewModel.selectedPackage != nil {
                         purchaseButton
                     }
                 }
             }
             else {
                 HStack(spacing: Layout.bottomSheetSpacing) {
-                    if viewModel.selectedPackage != nil || isShipmentDetailsExpanded {
-                        Toggle(Localization.BottomSheet.markComplete, isOn: $viewModel.markOrderComplete)
-                            .font(.subheadline)
-                            .tint(Color(.primary))
-                            .fixedSize(horizontal: false, vertical: true)
-                        purchaseButton
+                    if viewModel.currentShipmentDetailsViewModel.selectedPackage != nil || isShipmentDetailsExpanded {
+                        Toggle(isOn: $viewModel.markOrderComplete) {
+                            Text(Localization.BottomSheet.markComplete)
+                                .font(.subheadline)
+                                .lineLimit(Layout.toggleTextLineLimit)
+                                .dynamicTypeSize(...Layout.toggleTextMaxDynamicTypeSizeLandscape)
+                        }
+                        .tint(Color(.primary))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .renderedIf(!viewModel.isOrderCompleted)
+
+                        if shouldShowPurchaseButton {
+                            purchaseButton
+                        }
                     }
                 }
             }
@@ -192,48 +375,84 @@ private extension WooShippingCreateLabelsView {
 
     /// View showing the origin ("Ship From") address.
     var shipFromAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipFrom)
                 .trackSize(size: $shipmentDetailsShipFromSize)
-            Button {
-                isOriginAddressListPresented = true
-            } label: {
-                HStack {
-                    Text(viewModel.originAddress)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Image(systemName: "ellipsis")
-                        .frame(width: Layout.ellipsisWidth)
-                        .bold()
+
+            if viewModel.canViewLabel {
+                Group {
+                    if let addressLines = viewModel.originAddressLines {
+                        AddressLinesView(addressLines: addressLines)
+                    } else {
+                        Spacer()
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            } else {
+                VStack(
+                    alignment: .leading,
+                    spacing: Layout.verticalSpacing
+                ) {
+                    Button {
+                        isOriginAddressListPresented = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.originAddress)
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            Image(systemName: "ellipsis")
+                                .frame(width: Layout.ellipsisWidth)
+                                .bold()
+                        }
+                    }
+                    .buttonStyle(TextButtonStyle())
+                    .disabled(viewModel.isPurchasingLabel)
+
+                    if viewModel.isOriginAddressUnverified {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.circle")
+                            Text(Localization.AddressVerification.unverified)
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Layout.red)
+                    }
                 }
             }
-            .buttonStyle(TextButtonStyle())
         }
         .padding(Layout.bottomSheetPadding)
     }
 
     /// View showing the destination ("Ship To") address.
     var shipToAddress: some View {
-        HStack(alignment: .firstTextBaseline, spacing: Layout.bottomSheetSpacing) {
+        AdaptiveStack(
+            horizontalAlignment: .leading,
+            verticalAlignment: .firstTextBaseline,
+            spacing: Layout.bottomSheetSpacing
+        ) {
             Text(Localization.BottomSheet.shipTo)
                 .frame(width: shipmentDetailsShipFromSize.width, alignment: .leading)
-            VStack(alignment: .leading) {
+            VStack(
+                alignment: .leading,
+                spacing: Layout.verticalSpacing
+            ) {
                 if let addressLines = viewModel.destinationAddressLines {
-                    ForEach(addressLines, id: \.self) { addressLine in
-                        Text(addressLine)
-                            .if(addressLine == addressLines.first) { line in
-                                line.bold()
-                            }
-                    }
+                    AddressLinesView(addressLines: addressLines)
                 }
                 addressVerificationLabel
+                    .renderedIf(!viewModel.canViewLabel)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             PencilEditButton {
                 viewModel.editDestinationAddress()
             }
             .buttonStyle(TextButtonStyle())
+            .renderedIf(!viewModel.canViewLabel)
+            .disabled(viewModel.isPurchasingLabel)
         }
         .padding(Layout.bottomSheetPadding)
     }
@@ -245,17 +464,16 @@ private extension WooShippingCreateLabelsView {
                 Text(Localization.BottomSheet.orderDetails)
                     .footnoteStyle()
             }
-            AdaptiveStack {
+            HStack {
                 Image(uiImage: .productIcon)
                     .frame(width: Layout.iconSize)
-                Text(viewModel.items.itemsCountLabel)
+                Text(viewModel.orderItems.itemsCountLabel)
                     .bold()
                 Spacer()
-                Text(viewModel.items.itemsPriceLabel)
+                Text(viewModel.orderItems.itemsPriceLabel)
             }
-            .frame(idealHeight: Layout.rowHeight)
             ForEach(viewModel.shippingLines) { shippingLine in
-                AdaptiveStack {
+                HStack {
                     Image(uiImage: .shippingIcon)
                         .frame(width: Layout.iconSize)
                     Text(shippingLine.title)
@@ -264,9 +482,59 @@ private extension WooShippingCreateLabelsView {
                     Spacer()
                     Text(shippingLine.formattedTotal)
                 }
-                .frame(idealHeight: Layout.rowHeight)
             }
         }
+    }
+
+    func paymentMethod(_ line: WooShippingPaymentMethodLine) -> some View {
+        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+            Text(Localization.BottomSheet.paymentMethod)
+                .footnoteStyle()
+            switch line {
+            case .add:
+                addPaymentMethodLine
+            case .card(let cardLineViewModel):
+                cardPaymentMethodLine(cardLineViewModel)
+            }
+        }
+    }
+
+    var addPaymentMethodLine: some View {
+        Button(action: {
+            viewModel.showingPaymentMethods = true
+        }) {
+            HStack {
+                Image(systemName: "plus")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                Text(Localization.BottomSheet.addPaymentMethod)
+                    .font(.body)
+                    .fontWeight(.regular)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+        }
+    }
+
+    func cardPaymentMethodLine(
+        _ cardLineViewModel: WooShippingPaymentMethodLine.CardPaymentMethodLineViewModel
+    ) -> some View {
+        Button(action: {
+            viewModel.showingPaymentMethods = true
+        }) {
+            HStack {
+                Text(cardLineViewModel.title)
+                    .font(.body)
+                    .fontWeight(.regular)
+                    .foregroundColor(.primary)
+                Spacer()
+                Image(systemName: "pencil")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .renderedIf(cardLineViewModel.isEditable)
+            }
+        }
+        .disabled(!cardLineViewModel.isEditable)
     }
 
     /// View showing the shipment details, such as shipping rate and additional costs.
@@ -285,12 +553,11 @@ private extension WooShippingCreateLabelsView {
                 shippingRateRow(label: Localization.BottomSheet.total, amount: viewModel.totalCost)
                     .bold()
             }
-            .frame(idealHeight: Layout.rowHeight)
         }
     }
 
     func shippingRateRow(label: String, amount: String?) -> some View {
-        AdaptiveStack {
+        HStack {
             Text(label)
             Spacer()
             Text(amount ?? "$0.00")
@@ -303,51 +570,68 @@ private extension WooShippingCreateLabelsView {
     /// View showing the shipping label purchase button.
     var purchaseButton: some View {
         Button {
-            viewModel.purchaseLabel()
+            Task {
+                await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+            }
         } label: {
             Text(Localization.BottomSheet.purchaseLabel(with: viewModel.totalCost))
+                .lineLimit(1)
+                .scaledToFill()
+                .minimumScaleFactor(0.5)
         }
         .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPurchasingLabel))
         .disabled(!viewModel.isPurchaseButtonEnabled)
     }
 
     /// View showing the address verification status for a destination address.
-    var addressVerificationLabel: some View {
-        HStack(spacing: 4) {
-            Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
-            Text(Localization.AddressVerification.label(for: viewModel.destinationAddressStatus))
-        }
-        .font(.subheadline)
-        .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
-    }
-
-    /// View showing a notice about the destination address verification status.
     @ViewBuilder
-    func addressVerificationNotice(with label: String?) -> some View {
-        if let label = viewModel.destinationAddressStatusNoticeLabel {
-            HStack(spacing: 8) {
+    var addressVerificationLabel: some View {
+        if let destinationAddressStatus = viewModel.destinationAddressStatus {
+            HStack(spacing: 4) {
                 Image(systemName: isDestinationAddressVerified ? "checkmark.circle" : "exclamationmark.circle")
-                Text(label)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Button {
-                    withAnimation {
-                        viewModel.destinationAddressStatusNoticeLabel = nil
-                    }
-                } label: {
-                    Image(systemName: "xmark")
-                        .renderedIf(!isDestinationAddressVerified)
-                }
+                Text(Localization.AddressVerification.label(for: destinationAddressStatus))
             }
             .font(.subheadline)
             .foregroundStyle(isDestinationAddressVerified ? Layout.green : Layout.red)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
-                .fill(Color(uiColor: isDestinationAddressVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
-            .onTapGesture {
-                if !isDestinationAddressVerified {
-                    viewModel.editDestinationAddress()
-                }
+        }
+    }
+
+    /// View showing a notice about a verification status.
+    @ViewBuilder
+    func verificationNotice(with label: String,
+                            isVerified: Bool,
+                            onDismiss: @escaping () -> Void,
+                            onTap: @escaping () -> Void) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: isVerified ? "checkmark.circle" : "exclamationmark.circle")
+            Text(label)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .renderedIf(!isVerified)
+            }
+        }
+        .font(.subheadline)
+        .foregroundStyle(isVerified ? Layout.green : Layout.red)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+            .fill(Color(uiColor: isVerified ? .withColorStudio(.green, shade: .shade0) : .withColorStudio(.red, shade: .shade0))))
+        .onTapGesture(perform: onTap)
+    }
+}
+
+private struct AddressLinesView: View {
+    let addressLines: [String]
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(addressLines, id: \.self) { addressLine in
+                Text(addressLine)
+                    .if(addressLine == addressLines.first) { line in
+                        line.bold()
+                    }
             }
         }
     }
@@ -377,12 +661,25 @@ private extension WooShippingCreateLabelsView {
         static let rowHeight: CGFloat = 32
         static let chevronSize: CGFloat = 30
         static let ellipsisWidth: CGFloat = 22
+        static let contentSpacing: CGFloat = 16
         static let bottomSheetSpacing: CGFloat = 16
         static let bottomSheetPadding: CGFloat = 16
+        static let errorIconSize: CGFloat = 86
         static let green = Color(UIColor(light: .withColorStudio(.green, shade: .shade60),
                                          dark: .withColorStudio(.green, shade: .shade40)))
         static let red = Color(UIColor(light: .withColorStudio(.red, shade: .shade60),
                                        dark: .withColorStudio(.red, shade: .shade40)))
+        static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let tabPadding: CGFloat = 9.0
+        static let tabItemContentHorizontalPadding: CGFloat = 16.0
+        static let tabItemContentVerticalPadding: CGFloat = 9.0
+        static let gradientViewWidth: CGFloat = 32
+        static let purchasedIconWidth: CGFloat = 16
+        static let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
+
+        static let toggleTextLineLimit = 3
+        static let toggleTextMaxDynamicTypeSizePortrait = DynamicTypeSize.accessibility1
+        static let toggleTextMaxDynamicTypeSizeLandscape = DynamicTypeSize.xxxLarge
     }
 
     enum Localization {
@@ -398,6 +695,21 @@ private extension WooShippingCreateLabelsView {
         static let close = NSLocalizedString("wooShipping.createLabel.closeButton",
                                              value: "Close",
                                              comment: "Title of the button to dismiss the shipping label screen")
+
+        enum Accessibility {
+            static let editButtonHint = NSLocalizedString(
+                "wooShipping.createLabel.editButton.accessibility.hint",
+                value: "Opens the shipments editing form.",
+                comment: "Accessibility hint of the button to open the shipments editing form.")
+            static let shipmentTabFulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled",
+                value: "Fulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is fulfilled.")
+            static let shipmentTabUnfulfilled = NSLocalizedString(
+                "wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled",
+                value: "Unfulfilled.",
+                comment: "Accessibility value indicating that the shipment of a tab is unfulfilled.")
+        }
 
         enum BottomSheet {
             static let shipmentDetails = NSLocalizedString("wooShipping.createLabels.bottomSheet.title",
@@ -430,6 +742,19 @@ private extension WooShippingCreateLabelsView {
             static let paperSize = NSLocalizedString("wooShipping.createLabels.bottomSheet.paperSize",
                                                      value: "Choose label paper size",
                                                      comment: "Label for the menu to select a paper size on the shipping label creation screen")
+
+            static let paymentMethod = NSLocalizedString(
+                "wooShipping.createLabels.bottomSheet.paymentMethod",
+                value: "Payment Method",
+                comment: "Header for payment method section on the shipping label creation screen"
+            ).localizedUppercase
+
+            static let addPaymentMethod = NSLocalizedString(
+                "wooShipping.createLabels.bottomSheet.addPaymentMethod",
+                value: "Add payment method",
+                comment: "Label for the option to add a payment method on the shipping label creation screen"
+            )
+
             static func purchaseLabel(with price: String?) -> String {
                 guard let price else {
                     return purchase
@@ -469,5 +794,21 @@ private extension WooShippingCreateLabelsView {
                                                    value: "Missing address",
                                                    comment: "Label when an address is missing on the shipping label creation screen")
         }
+
+        static let missingDataError = NSLocalizedString(
+            "wooShipping.createLabels.missingDataError",
+            value: "We are unable to load required data",
+            comment: "Error message when loading required data failed on the shipping label creation screen"
+        )
+        static let retryCTA = NSLocalizedString(
+            "wooShipping.createLabels.retryCTA",
+            value: "Retry",
+            comment: "Button to retry loading data on the shipping label creation screen"
+        )
+        static let shipmentFormat = NSLocalizedString(
+            "wooShipping.createLabels.shipmentFormat",
+            value: "Shipment %1$d",
+            comment: "Label for a shipment during shipping label creation. The placeholder is the index of the shipment. Reads like: 'Shipment 1'"
+        )
     }
 }

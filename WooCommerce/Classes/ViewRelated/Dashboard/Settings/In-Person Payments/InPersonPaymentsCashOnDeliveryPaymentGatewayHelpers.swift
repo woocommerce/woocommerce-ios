@@ -15,10 +15,6 @@ extension PaymentGateway {
                        instructions: Localization.cashOnDeliveryCheckoutInstructions)
     }
 
-    enum Constants {
-        static let cashOnDeliveryGatewayID = "cod"
-    }
-
     private enum Localization {
         static let cashOnDeliveryCheckoutTitle = NSLocalizedString(
             "Pay in Person",

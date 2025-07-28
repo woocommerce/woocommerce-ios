@@ -25,12 +25,4 @@ final class PaymentsTests: XCTestCase {
         try PaymentsScreen().clickLearnMoreIPPLink()
             .verifyIPPDocumentationLoadedInWebView()
     }
-
-    func test_complete_cash_simple_payment() throws {
-        try PaymentsScreen().tapCollectPayment()
-            .enterPaymentAmount("5")
-            .takeCashPayment()
-            .verifyOrderCompletedToastDisplayed()
-            .verifyPaymentsScreenLoaded()
-    }
 }

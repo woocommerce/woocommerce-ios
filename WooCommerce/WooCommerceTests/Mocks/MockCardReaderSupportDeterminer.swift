@@ -18,14 +18,14 @@ final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
         return shouldReturnHasPreviousTapToPayUsage
     }
 
-    var shouldReturnSiteSupportsLocalMobileReader: Bool = false
-    func siteSupportsLocalMobileReader() -> Bool {
-        return shouldReturnSiteSupportsLocalMobileReader
+    var shouldReturnSiteSupportsTapToPayReader: Bool = false
+    func siteSupportsTapToPayReader() -> Bool {
+        return shouldReturnSiteSupportsTapToPayReader
     }
 
-    var shouldReturnDeviceSupportsLocalMobileReader: Bool = false
-    func deviceSupportsLocalMobileReader() async -> Bool {
-        return shouldReturnDeviceSupportsLocalMobileReader
+    var shouldReturnDeviceSupportsTapToPayReader: Bool = false
+    func deviceSupportsTapToPayReader() async -> Bool {
+        return shouldReturnDeviceSupportsTapToPayReader
     }
 
     var mockFirstTapToPayTransactionDate: Date? = nil

@@ -24,7 +24,7 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
     private let onboardingStatePublisher: Published<CardPresentPaymentOnboardingState>.Publisher
     private let analytics: Analytics = ServiceLocator.analytics
 
-    var connectionController: BuiltInCardReaderConnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>? = nil
+    var connectionController: TapToPayCardReaderConnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>? = nil
     var alertsPresenter: CardPresentPaymentAlertsPresenter? = nil
 
     private(set) var noConnectedReader: CardReaderSettingsTriState = .isUnknown {
@@ -158,7 +158,7 @@ private extension [CardReader] {
     func includesBluetoothReader() -> Bool {
         return self.first(where: { reader in
             switch reader.readerType {
-            case .appleBuiltIn:
+            case .tapToPay:
                 return false
             default:
                 return true

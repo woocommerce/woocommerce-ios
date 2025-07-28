@@ -1,10 +1,6 @@
 import Foundation
 
-#if canImport(WooFoundation)
-import WooFoundation
-#elseif canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationCore
 
 /// Type to help formatting values for presentation.
 ///

@@ -7,8 +7,6 @@ import ViewControllerPresentationSpy
 @testable import WooCommerce
 
 final class OrderDetailsViewControllerTests: XCTestCase {
-
-
     @MainActor
     func test_products_cell_is_not_visible_on_order_with_no_items() throws {
         // Given
@@ -43,6 +41,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         // When
         _ = try XCTUnwrap(viewController.view)
         viewController.viewWillAppear(false)
+        viewModel.reloadSections()
 
         // Then
         let mirror = try Self.mirror(of: viewController)
@@ -65,6 +64,7 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         // When
         _ = try XCTUnwrap(viewController.view)
         viewController.viewWillAppear(false)
+        viewModel.reloadSections()
 
         let mirror = try Self.mirror(of: viewController)
         let (_, indexPath) = try XCTUnwrap(Self.findCell(type: ProductDetailsTableViewCell.self, on: mirror.tableView))
@@ -190,16 +190,6 @@ private struct OrderDetailStoreManagerFactory {
             }
         }
 
-        // Need to sync plugins first
-        storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
-                onCompletion(nil)
-            default:
-                break
-            }
-        }
-
         storesManager.whenReceivingAction(ofType: SubscriptionAction.self) { action in
             switch action {
             case let .loadSubscriptions(_, onCompletion):
@@ -210,7 +200,7 @@ private struct OrderDetailStoreManagerFactory {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
             case let .synchronizeShippingLabels(_, _, onCompletion):
-                onCompletion(.success(()))
+                onCompletion(.success([]))
             default:
                 break
             }

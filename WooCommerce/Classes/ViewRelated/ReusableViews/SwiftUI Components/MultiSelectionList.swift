@@ -71,6 +71,9 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         .onTapGesture {
                             toggleSelectAll()
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAddTraits(allItemsSelected ? .isSelected : [])
                     }
                 } header: {
                     if let headerMessage, query.isEmpty {
@@ -94,6 +97,9 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
                         .onTapGesture {
                             toggleItem(item)
                         }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAddTraits(isItemSelected(item) ? .isSelected : [])
                     }
                 } header: {
                     if let itemsSectionHeader, contents.isNotEmpty {

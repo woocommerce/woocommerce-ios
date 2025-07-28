@@ -8,9 +8,9 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
 
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
-    private var connectionControllerFactory: MockBuiltInCardReaderConnectionControllerFactory!
+    private var connectionControllerFactory: MockTapToPayCardReaderConnectionControllerFactory!
     private var onboardingCache: CardPresentPaymentOnboardingStateCache!
-    private var sut: TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>!
+    private var sut: TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>!
     private let sampleSiteID: Int64 = 12891
     private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
@@ -18,7 +18,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         let sessionManager = SessionManager.makeForTesting(authenticated: true)
         sessionManager.setStoreId(sampleSiteID)
         stores = MockStoresManager(sessionManager: sessionManager)
-        connectionControllerFactory = MockBuiltInCardReaderConnectionControllerFactory()
+        connectionControllerFactory = MockTapToPayCardReaderConnectionControllerFactory()
         onboardingCache = CardPresentPaymentOnboardingStateCache()
         onboardingCache.update(.completed(plugin: .wcPayPreferred))
         sut = TapToPayReconnectionController(stores: stores,
@@ -50,8 +50,8 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         let supportDeterminer = MockCardReaderSupportDeterminer()
         supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
-        supportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
-        supportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
+        supportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
         supportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
 
         waitFor { promise in
@@ -72,8 +72,8 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         let supportDeterminer = MockCardReaderSupportDeterminer()
         supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
-        supportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
-        supportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
+        supportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
         supportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
 
         waitFor { promise in

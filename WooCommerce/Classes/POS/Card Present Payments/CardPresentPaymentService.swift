@@ -212,10 +212,10 @@ private extension CardPresentPaymentService {
     }
 
     func createPreflightController() -> CardPresentPaymentPreflightController<
-        CardPresentPaymentBuiltInReaderConnectionAlertsProvider,
+        CardPresentPaymentTapToPayReaderConnectionAlertsProvider,
         CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
         CardPresentPaymentsAlertPresenterAdaptor> {
-            let alertProvider = CardPresentPaymentBuiltInReaderConnectionAlertsProvider()
+            let alertProvider = CardPresentPaymentTapToPayReaderConnectionAlertsProvider()
             return CardPresentPaymentPreflightController(
                 siteID: siteID,
                 configuration: cardPresentPaymentsConfiguration,
@@ -226,7 +226,7 @@ private extension CardPresentPaymentService {
                 externalReaderConnectionController: connectionControllerManager.externalReaderConnectionController,
                 tapToPayConnectionController: connectionControllerManager.tapToPayConnectionController,
                 tapToPayReconnectionController: TapToPayReconnectionController(
-                    connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
+                    connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
                         alertProvider: alertProvider)),
                 analyticsTracker: connectionControllerManager.analyticsTracker)
         }

@@ -268,14 +268,6 @@ private extension OrderPaymentSection {
                          isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowDiscountTotal)
     }
-
-    var rowsEditImage: Image {
-        viewModel.showNonEditableIndicators ? Image(uiImage: .lockImage) : Image(systemName: "pencil")
-    }
-
-    var editableRowsSelectionStyle: TitleAndValueRow.SelectionStyle {
-        viewModel.showNonEditableIndicators ? .none : .highlight
-    }
 }
 
 // MARK: Constants

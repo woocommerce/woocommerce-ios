@@ -31,27 +31,6 @@ struct HubMenu: View {
                 .onAppear {
                     viewModel.setupMenuElements()
                 }
-                .fullScreenCover(isPresented: $viewModel.showsPOS) {
-                    if let cardPresentPaymentService = viewModel.cardPresentPaymentService,
-                       let receiptService = POSReceiptService(siteID: viewModel.siteID,
-                                                              credentials: viewModel.credentials),
-                       let orderService = POSOrderService(siteID: viewModel.siteID,
-                                                          credentials: viewModel.credentials),
-                       #available(iOS 17.0, *) {
-                        PointOfSaleEntryPointView(
-                            itemsController: PointOfSaleItemsController(itemProvider: viewModel.posItemProvider),
-                            onPointOfSaleModeActiveStateChange: { isEnabled in
-                                viewModel.updateDefaultConfigurationForPointOfSale(isEnabled)
-                            },
-                            cardPresentPaymentService: cardPresentPaymentService,
-                            orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                        receiptService: receiptService),
-                            collectOrderPaymentAnalyticsTracker: viewModel.collectOrderPaymentAnalyticsTracker)
-                    } else {
-                        // TODO: When we have a singleton for the card payment service, this should not be required.
-                        Text("Error creating card payment service")
-                    }
-                }
         }
     }
 
@@ -67,8 +46,6 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-        case HubMenuViewModel.PointOfSaleEntryPoint.id:
-            viewModel.showsPOS = true
         default:
             break
         }
@@ -171,8 +148,6 @@ private extension HubMenu {
                     .navigationTitle(Localization.reviews)
             case .coupons:
                 couponListView
-            case .inAppPurchase:
-                InAppPurchasesDebugView()
             case .subscriptions:
                 SubscriptionsView(viewModel: .init())
             case .customers:
@@ -183,6 +158,8 @@ private extension HubMenu {
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, selectedCampaignID: campaignID)
             case .blazeCampaignCreation:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID, startsCampaignCreationOnAppear: true)
+            case .aiSettings:
+                AISettingsView()
             }
         }
         .navigationBarTitleDisplayMode(.inline)

@@ -1,5 +1,5 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
 
 /// Loads an order form a notification
 ///

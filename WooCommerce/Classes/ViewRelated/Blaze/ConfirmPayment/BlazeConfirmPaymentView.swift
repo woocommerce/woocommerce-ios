@@ -7,12 +7,15 @@ struct BlazeConfirmPaymentView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @ObservedObject private var viewModel: BlazeConfirmPaymentViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.sizeCategory) private var sizeCategory
 
     @State private var externalURL: URL?
     @State private var showingAddPaymentWebView: Bool = false
     @State private var isShowingSupport = false
 
-    private let agreementText: NSAttributedString = {
+    /// Computed property to ensure the attributed string is recreated with current accessibility font settings
+    /// when dynamic type size changes, rather than being fixed at initialization time.
+    private var agreementText: NSAttributedString {
         let content = String.localizedStringWithFormat(Localization.agreement, Localization.termsOfService, Localization.adPolicy, Localization.learnMore)
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
@@ -31,7 +34,7 @@ struct BlazeConfirmPaymentView: View {
         mutableAttributedText.setAsLink(textToFind: Localization.learnMore,
                                         linkURL: Constants.learnMoreLink)
         return mutableAttributedText
-    }()
+    }
 
     init(viewModel: BlazeConfirmPaymentViewModel) {
         self.viewModel = viewModel
@@ -60,7 +63,11 @@ struct BlazeConfirmPaymentView: View {
                         .padding(.horizontal, Layout.contentPadding)
                 }
 
-                Divider()
+                if sizeCategory.isAccessibilityCategory {
+                    footerView
+                } else {
+                    Divider()
+                }
             }
             .padding(.vertical, Layout.contentPadding)
         }
@@ -74,7 +81,9 @@ struct BlazeConfirmPaymentView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            footerView
+            if !sizeCategory.isAccessibilityCategory {
+                footerView
+            }
         }
         .task {
             await viewModel.updatePaymentInfo()
@@ -366,7 +375,8 @@ private extension BlazeConfirmPaymentView {
                             targetUrn: "",
                             type: "product",
                             objective: "sales",
-                            ctaText: "Shop now"),
+                            ctaText: "Shop now",
+                            acceptedTOS: false),
         image: .init(image: .wooLogoImage()!, source: .asset(asset: PHAsset())),
         onCompletion: {}))
 }

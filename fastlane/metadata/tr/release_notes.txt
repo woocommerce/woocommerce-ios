@@ -1,0 +1,1 @@
+En son güncellememiz, bölünmüş gönderim ekranlarını daha sorunsuz hale getirir ve gönderim etiketleri için erişilebilirliği artırır, ayrıca sipariş listesinde daha kolay etiket boyutu seçimi ve POS rozetleri bulunur. Satış Noktasında yeni bir barkod taraması akışı ve daha güvenli sepet temizleme düğmesinin keyfini çıkarın.

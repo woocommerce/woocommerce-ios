@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import WooFoundation
 
@@ -126,14 +127,18 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .shipmentTrackingMenuAction, properties: ["action": action.rawValue])
     }
 
-    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
+    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult, isRevampedFlow: Bool) -> WooAnalyticsEvent {
         switch result {
         case .success:
-            return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: ["action": result.rawValue])
+            return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
+                "action": result.rawValue,
+                "is_revamped_flow": isRevampedFlow
+            ])
         case .failed(let error):
             return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
                 "action": result.rawValue,
-                "error": error.localizedDescription
+                "error": error.localizedDescription,
+                "is_revamped_flow": isRevampedFlow
             ])
         }
     }
@@ -546,6 +551,7 @@ extension WooAnalyticsEvent {
             static let isGiftCardRemoved = "removed"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
+            static let errorType = "error_type"
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
@@ -826,12 +832,29 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
-        static func orderCreationFailed(usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+        /// Matches errors on Android for consistency
+        /// Only coupon tracking is relevant for now
+        enum OrderCreationErrorType: String {
+            case invalidCoupon = "INVALID_COUPON"
+        }
+
+        static func orderCreationFailed(
+            usesGiftCard: Bool,
+            errorContext: String,
+            errorDescription: String,
+            errorType: OrderCreationErrorType? = nil
+        ) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
                 Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
-            ])
+            ]
+
+            if let errorType {
+                properties[Keys.errorType] = errorType.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationFailed, properties: properties)
         }
 
         static func orderSyncFailed(flow: Flow, usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
@@ -1257,7 +1280,7 @@ extension WooAnalyticsEvent {
 
         enum CardReaderType: String {
             case external
-            case builtIn = "built_in"
+            case tapToPay = "built_in"
         }
 
         /// Common event keys
@@ -1436,8 +1459,8 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func cardReaderSelectTypeBuiltInTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .cardReaderSelectTypeBuiltInTapped,
+        static func cardReaderSelectTypeTapToPayTapped(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderSelectTypeTapToPayTapped,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: safeGatewayID(for: forGatewayID)
@@ -1467,8 +1490,8 @@ extension WooAnalyticsEvent {
         ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
         ///   - countryCode: the country code of the store.
         ///
-        static func manageCardReadersBuiltInReaderAutoDisconnect(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .manageCardReadersBuiltInReaderAutoDisconnect,
+        static func manageCardReadersTapToPayReaderAutoDisconnect(forGatewayID: String?, countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .manageCardReadersTapToPayReaderAutoDisconnect,
                               properties: [
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.gatewayID: safeGatewayID(for: forGatewayID)
@@ -2391,7 +2414,7 @@ extension WooAnalyticsEvent {
     }
 }
 
-private extension PaymentMethod {
+extension PaymentMethod {
     var analyticsValue: String {
         switch self {
         case .card, .cardPresent:

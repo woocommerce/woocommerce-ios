@@ -29,6 +29,7 @@ struct BlazeCampaignItemView: View {
                         .aspectRatio(contentMode: .fill)
                         .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                         .cornerRadius(Layout.cornerRadius)
+                        .accessibilityHidden(true)
                     Spacer()
                 }
 
@@ -51,7 +52,18 @@ struct BlazeCampaignItemView: View {
                 Image(systemName: "chevron.forward")
                     .foregroundColor(.secondary)
                     .font(.headline)
+                    .accessibilityHidden(true)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(
+                Localization.campaignAccessibilityLabel(
+                    campaignName: campaign.name,
+                    status: campaign.status.displayText
+                )
+            )
+            .accessibilityHint(Localization.campaignAccessibilityHint)
+
 
             // campaign stats
             CollapsibleHStack(horizontalAlignment: .leading,
@@ -70,8 +82,13 @@ struct BlazeCampaignItemView: View {
                      Text(Image(systemName: "arrow.forward")) +
                      Text(" \(campaign.humanReadableClicks)").font(.title2).fontWeight(.semibold))
                         .foregroundStyle(Color(.text))
+                        .accessibilityLabel(Localization.clickThroughAccessibilityLabel(
+                            impressions: campaign.impressions,
+                            clicks: campaign.clicks
+                        ))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -84,6 +101,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
 
                 Spacer()
 
@@ -125,6 +143,36 @@ private extension BlazeCampaignItemView {
             "blazeCampaignItemView.clickthroughs",
             value: "Click-throughs",
             comment: "Title label for the total impressions and clicks of a Blaze ads campaign"
+        )
+
+        static func campaignAccessibilityLabel(campaignName: String, status: String) -> String {
+            return String(format: blazeCampaignAccessibilityLabelFormat, campaignName, status)
+        }
+
+        private static let blazeCampaignAccessibilityLabelFormat = NSLocalizedString(
+            "blazeCampaignItemView.blazeCampaignAccessibilityLabelFormat",
+            value: "Blaze campaign for %1$@. %2$@",
+            comment: "Accessibility label format for a Blaze campaign card." +
+                " The %1$@ is a placeholder for the campaign name." +
+                " The %2$@ is a placeholder for the campaign status."
+        )
+
+        static let campaignAccessibilityHint = NSLocalizedString(
+            "blazeCampaignItemView.campaignAccessibilityHint",
+            value: "Tap to view campaign details",
+            comment: "Accessibility hint for a Blaze campaign card"
+        )
+
+        static func clickThroughAccessibilityLabel(impressions: Int64, clicks: Int64) -> String {
+            String(format: clickThroughAccessibilityLabelFormat, impressions, clicks)
+        }
+
+        static let clickThroughAccessibilityLabelFormat = NSLocalizedString(
+            "blazeCampaignItemView.clickThroughAccessibilityLabelFormat",
+            value: "%1$d impressions, %2$d clicks",
+            comment: "Accessibility label format for a Blaze campaign's click-through rates. " +
+            "The placeholders are numbers of impressions and clicks. " +
+            "Reads as: '20000 impressions, 200 clicks'"
         )
     }
 }

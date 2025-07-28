@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import UIKit
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -148,10 +149,26 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
                                               locale: locale,
                                               result.totalImpressionsMin,
                                               result.totalImpressionsMax)
-            forecastedImpressionState = .result(formattedResult: formattedImpressions)
+            forecastedImpressionState = .result(
+                formattedResult: formattedImpressions,
+                minValue: result.totalImpressionsMin,
+                maxValue: result.totalImpressionsMax
+            )
         } catch {
             DDLogError("⛔️ Error fetching forecasted impression: \(error)")
             forecastedImpressionState = .failure
+        }
+    }
+
+    /// Provides a combined accessibility label for the entire impressions section
+    var impressionsSectionAccessibilityLabel: String {
+        switch forecastedImpressionState {
+        case .result(_, let minValue, let maxValue):
+            return String.localizedStringWithFormat(Localization.impressionsSectionAccessibility, minValue, maxValue)
+        case .loading:
+            return Localization.impressionsLoading
+        case .failure:
+            return Localization.impressionsFailure
         }
     }
 }
@@ -227,7 +244,7 @@ extension BlazeBudgetSettingViewModel {
 
     enum ForecastedImpressionState: Equatable {
         case loading
-        case result(formattedResult: String)
+        case result(formattedResult: String, minValue: Int64, maxValue: Int64)
         case failure
     }
 
@@ -285,6 +302,22 @@ extension BlazeBudgetSettingViewModel {
             value: "%1$@ weekly spend",
             comment: "The total amount for weekly spend on the Blaze budget setting screen. " +
             "Reads like: $35 USD weekly spend"
+        )
+        static let impressionsSectionAccessibility = NSLocalizedString(
+            "blazeBudgetSettingViewModel.impressionsSectionAccessibility",
+            value: "Estimated total impressions range is from %1$lld to %2$lld",
+            comment: "The formatted estimated impression range for a Blaze campaign. " +
+            "Reads like: Estimated total impressions range is from 26100 to 35300"
+        )
+        static let impressionsLoading = NSLocalizedString(
+            "blazeBudgetSettingViewModel.impressionsLoading",
+            value: "Loading...",
+            comment: "The label for loading impressions"
+        )
+        static let impressionsFailure = NSLocalizedString(
+            "blazeBudgetSettingViewModel.impressionsFailure",
+            value: "Failed to load impressions",
+            comment: "The label for failed to load impressions"
         )
     }
 }

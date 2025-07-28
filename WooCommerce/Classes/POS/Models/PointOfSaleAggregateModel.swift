@@ -6,9 +6,13 @@ import protocol Yosemite.POSOrderableItem
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
-import struct Yosemite.POSCartItem
+import struct Yosemite.POSCoupon
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
+import protocol Yosemite.POSSearchHistoryProviding
+import enum Yosemite.POSItemType
+import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import enum Yosemite.PointOfSaleBarcodeScanError
 
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
@@ -24,16 +28,21 @@ protocol PointOfSaleAggregateModelProtocol {
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
-    var itemsViewState: ItemsViewState { get }
-    func loadItems(base: ItemListBaseItem) async
-    func loadNextItems(base: ItemListBaseItem) async
+    var purchasableItemsController: PointOfSaleItemsControllerProtocol { get }
+    var purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
+    var couponsController: PointOfSaleCouponsControllerProtocol { get }
+    var couponsSearchController: PointOfSaleSearchingItemsControllerProtocol { get }
 
-    var cart: [CartItem] { get }
+    var cart: Cart { get }
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>)
     func addToCart(_ item: POSItem)
     func remove(cartItem: CartItem)
-    func removeAllItemsFromCart()
+    func removeAllItemsFromCart(types: [CartItemType])
     func addMoreToCart()
     func startNewCart()
+
+    func saveSearchTerm(_ term: String, for itemType: POSItemType)
+    func searchHistory(for itemType: POSItemType) -> [String]
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
@@ -52,91 +61,110 @@ protocol PointOfSaleAggregateModelProtocol {
     var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
     private var onOnboardingCancellation: (() -> Void)?
 
-    var itemsViewState: ItemsViewState { itemsController.itemsViewState }
-
-    private(set) var cart: [CartItem] = []
+    private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
     private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
-    private let itemsController: PointOfSaleItemsControllerProtocol
+    let entryPointController: POSEntryPointController
+    let purchasableItemsController: PointOfSaleItemsControllerProtocol
+    let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
+    let couponsController: PointOfSaleCouponsControllerProtocol
+    let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let analytics: Analytics
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
+    let searchHistoryService: POSSearchHistoryProviding
+    private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
 
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
 
+    private let soundPlayer: PointOfSaleSoundPlayerProtocol
+
     private var cancellables: Set<AnyCancellable> = []
 
-    init(itemsController: PointOfSaleItemsControllerProtocol,
+    // Private storage of the concrete coordinator
+    private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
+
+    // Interface that only exposes reset functionality, for use in the aggregate model
+    private var viewStateCoordinator: PointOfSaleViewStateResettable {
+        _viewStateCoordinator
+    }
+
+    // Type-safe accessor specifically for the view
+    var viewStateCoordinatorForView: PointOfSaleViewStateCoordinator {
+        _viewStateCoordinator
+    }
+
+    init(entryPointController: POSEntryPointController,
+         itemsController: PointOfSaleItemsControllerProtocol,
+         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
+         couponsController: PointOfSaleCouponsControllerProtocol,
+         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         paymentState: PointOfSalePaymentState = .card(.idle)) {
-        self.itemsController = itemsController
+         searchHistoryService: POSSearchHistoryProviding,
+         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
+         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
+         paymentState: PointOfSalePaymentState = .idle) {
+        self.entryPointController = entryPointController
+        self.purchasableItemsController = itemsController
+        self.purchasableItemsSearchController = purchasableItemsSearchController
+        self.couponsController = couponsController
+        self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.searchHistoryService = searchHistoryService
         self.paymentState = paymentState
+        self.popularPurchasableItemsController = popularPurchasableItemsController
+        self.barcodeScanService = barcodeScanService
+        self.soundPlayer = soundPlayer
+
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
     }
 }
 
-// MARK: - ItemList
-@available(iOS 17.0, *)
-extension PointOfSaleAggregateModel {
-    @MainActor
-    func loadItems(base: ItemListBaseItem) async {
-        await itemsController.loadItems(base: base)
-    }
-
-    @MainActor
-    func refreshItems(base: ItemListBaseItem) async {
-        await itemsController.refreshItems(base: base)
-    }
-
-    @MainActor
-    func loadNextItems(base: ItemListBaseItem) async {
-        await itemsController.loadNextItems(base: base)
-    }
-}
-
 // MARK: - Cart
-
-private extension POSItem {
-    var cartItem: CartItem? {
-        switch self {
-        case .simpleProduct(let simpleProduct):
-            return CartItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
-        case .variation(let variation):
-            return CartItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
-        case .variableParentProduct:
-            return nil
-        }
-    }
-}
-
 @available(iOS 17.0, *)
 extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
-        guard let cartItem = item.cartItem else { return }
-        cart.insert(cartItem, at: cart.startIndex)
+        cart.add(item)
     }
 
     func remove(cartItem: CartItem) {
-        cart.removeAll(where: { $0.id == cartItem.id } )
+        switch cartItem.type {
+        case .purchasableItem:
+            cart.purchasableItems.removeAll { $0.id == cartItem.id }
+        case .coupon:
+            cart.coupons.removeAll { $0.id == cartItem.id }
+        }
     }
 
-    func removeAllItemsFromCart() {
-        cart.removeAll()
+    func cancelLoadingItem(id: UUID) {
+        cart.removeItem(id: id)
+    }
+
+    func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
+        for type in types {
+            switch type {
+            case .purchasableItem:
+                cart.purchasableItems.removeAll()
+            case .coupon:
+                cart.coupons.removeAll()
+            }
+        }
     }
 
     func addMoreToCart() {
@@ -147,12 +175,102 @@ extension PointOfSaleAggregateModel {
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
+        viewStateCoordinator.reset()
     }
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .card(.idle)
+        paymentState = .idle
         cardPresentPaymentInlineMessage = nil
+    }
+}
+
+// MARK: - Barcode Scanning
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            switch result {
+            case .success(let barcode):
+                await handleSuccessfulScan(barcode: barcode)
+            case .failure(let error):
+                await handleFailedScan(error: error)
+            }
+        }
+    }
+
+    @MainActor
+    private func handleSuccessfulScan(barcode: String) async {
+        let placeholderItemID = cart.addLoadingItem().id
+
+        analytics.track(
+            event: .PointOfSale.addItemToCart(
+                sourceViewType: .scanner,
+                itemType: .loading
+            )
+        )
+
+        do throws(PointOfSaleBarcodeScanError) {
+            let item = try await barcodeScanService.getItem(barcode: barcode)
+            if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
+                analytics.track(
+                    event: .PointOfSale.addItemToCart(
+                        sourceViewType: .scanner,
+                        itemType: .product,
+                        productType: .init(cartItem: cartItem)
+                    )
+                )
+
+                cart.accessibilityFocusedItemID = cartItem.id
+            }
+        } catch {
+            DDLogInfo("Failed to find item by barcode: \(error)")
+            if let _ = cart.updateLoadingItem(id: placeholderItemID, with: error) {
+                await handleErrorItemAdded(error)
+            }
+        }
+    }
+
+    @MainActor
+    private func handleFailedScan(error: Error) async {
+        let scanError = switch error {
+        case HIDBarcodeParserError.scanTooShort(let barcode):
+            PointOfSaleBarcodeScanError.scanTooShort(scannedCode: barcode)
+        case HIDBarcodeParserError.timedOut(let barcode):
+            PointOfSaleBarcodeScanError.timedOut(scannedCode: barcode)
+        default:
+            PointOfSaleBarcodeScanError.parsingError(underlyingError: error)
+        }
+
+        cart.addErrorItem(error: scanError)
+        await handleErrorItemAdded(scanError)
+    }
+
+    @MainActor
+    private func handleErrorItemAdded(_ error: PointOfSaleBarcodeScanError) async {
+        // Only play a sound and track analytics if the item still exists in the cart.
+        await soundPlayer.playSound(.barcodeScanFailure)
+
+        analytics.track(
+            event: .PointOfSale.addItemToCart(
+                sourceViewType: .scanner,
+                itemType: .error,
+                error: error
+            )
+        )
+    }
+}
+
+// MARK: - Search
+@available(iOS 17.0, *)
+extension PointOfSaleAggregateModel {
+    func saveSearchTerm(_ term: String, for itemType: POSItemType) {
+        searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
+    }
+
+    func searchHistory(for itemType: POSItemType) -> [String] {
+        return searchHistoryService.searchHistory(for: itemType)
     }
 }
 
@@ -162,18 +280,18 @@ private extension PointOfSaleAggregateModel {
     func trackCustomerInteractionStarted() {
         // At the moment we're assumming that an interaction starts simply when the cart is zero
         // but a more complex logic will be needed for other cases
-        if cart.count == 0 {
+        if cart.isEmpty {
             collectOrderPaymentAnalyticsTracker.trackCustomerInteractionStarted()
         }
     }
 
-    // Tracks when the order is created or updated successfully
+    // Tracks when the order is created successfully
     // pdfdoF-6hn#comment-7625-p2
     func trackOrderSyncState(_ result: Result<SyncOrderState, Error>) {
         switch result {
         case .success(let syncState):
             switch syncState {
-            case .newOrder, .orderUpdated:
+            case .newOrder:
                 collectOrderPaymentAnalyticsTracker.trackOrderSyncSuccess()
             default:
                 break
@@ -253,40 +371,34 @@ extension PointOfSaleAggregateModel {
     // Once we get the callback from the card service, we switch to cash collection state
     @MainActor
     func startCashPayment() async {
+        analytics.track(.pointOfSaleCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
-        paymentState = .cash(.collectingCash)
+        paymentState.cash = .collectingCash
     }
 
     @MainActor
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
-        paymentState = .card(.idle)
+        paymentState.cash = .idle
         if case .connected = cardReaderConnectionStatus {
             await collectCardPayment()
         }
     }
 
     private func cashPaymentSuccess() {
-        paymentState = .cash(.paymentSuccess)
+        paymentState.cash = .paymentSuccess
         collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
     }
 
     @MainActor
-    func collectCashPayment() async throws {
-        try await orderController.collectCashPayment()
+    func collectCashPayment(changeDueAmount: String?) async throws {
+        try await orderController.collectCashPayment(changeDueAmount: changeDueAmount)
         cashPaymentSuccess()
     }
 
     @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        do {
-            try await orderController.sendReceipt(recipientEmail: emailAddress)
-            analytics.track(.receiptEmailSuccess)
-        } catch {
-            // Catch and re-throw in order to capture the error event, but still allow the UI to handle the error state.
-            analytics.track(.receiptEmailFailed)
-            throw error
-        }
+        try await orderController.sendReceipt(recipientEmail: emailAddress)
     }
 
     @MainActor
@@ -323,8 +435,15 @@ extension PointOfSaleAggregateModel {
 
     private func cancelCardReaderPreparation() {
         cardPresentPaymentService.cancelPayment()
+        resetCardReaderObservation()
+    }
+
+    private func resetCardReaderObservation() {
+        // We set these to nil, so that we can check them when showing `Reader connected` on the Totals screen.
         startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
         cardReaderDisconnection?.cancel()
+        cardReaderDisconnection = nil
     }
 
     private func observeReaderReconnection() {
@@ -368,6 +487,13 @@ private extension PointOfSaleAggregateModel {
                 else {
                     return nil
                 }
+
+                // Filter connection success alerts when we're immediately starting a payment
+                if case .connectionSuccess = eventDetails,
+                   startPaymentOnCardReaderConnection != nil {
+                    return nil
+                }
+
                 return alertType
             }
             .sink(receiveValue: { [weak self] alertType in
@@ -385,24 +511,24 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent -> PointOfSalePaymentState? in
+            .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
                 guard let self else { return nil }
 
-                let newPaymentState = PointOfSalePaymentState(from: paymentEvent,
-                                                              using: presentationStyleDeterminerDependencies)
+                let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
+                                                                      using: presentationStyleDeterminerDependencies)
 
-                if case .card(.acceptingCard) = newPaymentState {
+                if case .acceptingCard = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
                 }
 
-                if case .card(.processingPayment) = newPaymentState {
+                if case .processingPayment = newCardPaymentState {
                     collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
                 }
 
-                return newPaymentState
+                return newCardPaymentState
             }
-            .sink(receiveValue: { [weak self] paymentState in
-                self?.paymentState = paymentState
+            .sink(receiveValue: { [weak self] cardPaymentState in
+                self?.paymentState.card = cardPaymentState
             })
             .store(in: &cancellables)
 
@@ -493,17 +619,13 @@ extension PointOfSaleAggregateModel {
             try await cardPresentPaymentService.cancelPayment()
         }
 
-        // Cancels payment task
-        cardPresentPaymentService.cancelPayment()
-
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
-        startPaymentOnCardReaderConnection?.cancel()
-        cardReaderDisconnection?.cancel()
+        resetCardReaderObservation()
         cancellables.forEach { $0.cancel() }
     }
 }

@@ -1039,7 +1039,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // When
         var onFailureCalled: Bool = false
-        viewModel.collectPayment(using: .localMobile, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+        viewModel.collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
             onFailureCalled = true
         })
 
@@ -1071,7 +1071,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
         // When
         var onFailureCalled: Bool = false
-        viewModel.collectPayment(using: .localMobile, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
+        viewModel.collectPayment(using: .tapToPay, on: UIViewController(), useCase: useCase, onSuccess: {}, onFailure: {
             onFailureCalled = true
         })
 
@@ -1130,7 +1130,7 @@ private extension PaymentMethodsViewModelTests {
     private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .checkDeviceSupport(_, _, .localMobile, _, completion):
+            case let .checkDeviceSupport(_, _, .tapToPay, _, completion):
                 completion(tapToPayDeviceAvailability)
             default:
                 break

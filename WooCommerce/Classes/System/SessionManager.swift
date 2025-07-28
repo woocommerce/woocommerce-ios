@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import UIKit
 import KeychainAccess
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
@@ -185,8 +186,15 @@ final class SessionManager: SessionManagerProtocol {
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
-        // Listens when the core data stack is rest.
-        NotificationCenter.default.addObserver(self, selector: #selector(handleStorageDidReset), name: .StorageManagerDidResetStorage, object: nil)
+        // Listens when the core data stack is reset.
+        NotificationCenter.default.addObserver(self, selector: #selector(resetTimestampsValues), name: .StorageManagerDidResetStorage, object: nil)
+
+
+        // Listens when the cached data is invalidated.
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(resetTimestampsValues),
+                                               name: .StorageManagerDidDropDatabase,
+                                               object: nil)
     }
 
     /// Nukes all of the known Session's properties.
@@ -226,6 +234,7 @@ final class SessionManager: SessionManagerProtocol {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress,
+                                                              deviceModelIdentifierInfo: UIDevice.current.deviceModelIdentifierInfo,
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
@@ -286,15 +295,9 @@ private extension SessionManager {
         defaults[.defaultCredentialsType] = nil
     }
 
-    /// Updates the timestamps that control when background data is fetched.
-    ///
-    @objc func handleStorageDidReset() {
-        resetTimestampsValues()
-    }
-
     /// Removes timestamp values.
     ///
-    func resetTimestampsValues() {
+    @objc func resetTimestampsValues() {
         defaults[.latestBackgroundOrderSyncDate] = nil
         DashboardTimestampStore.resetStore(store: defaults)
     }

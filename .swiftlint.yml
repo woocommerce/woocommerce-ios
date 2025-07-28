@@ -1,8 +1,11 @@
-swiftlint_version: 0.54.0
+swiftlint_version: 0.58.2
 
 excluded:
+  - BuildTools/.build
   - DerivedData
   - fastlane
+  - Modules/.build
+  - Modules/DerivedData
   - Pods
   - Scripts
   # Automattic's CI caching setup may generate this in the project folder

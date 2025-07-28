@@ -80,6 +80,13 @@ struct SelectableSecondaryButtonStyle: ButtonStyle {
     }
 }
 
+struct DestructiveButtonStyle: ButtonStyle {
+    var labelFont: Font = .headline
+    func makeBody(configuration: Configuration) -> some View {
+        DestructiveButton(configuration: configuration, labelFont: labelFont)
+    }
+}
+
 struct LinkButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         LinkButton(configuration: configuration)
@@ -424,6 +431,55 @@ private struct SelectableSecondaryButton: View {
     }
 }
 
+private struct DestructiveButton: View {
+    @Environment(\.isEnabled) var isEnabled
+
+    let configuration: ButtonStyleConfiguration
+    let labelFont: Font
+
+    var body: some View {
+        BaseButton(configuration: configuration)
+            .foregroundColor(Color(foregroundColor))
+            .font(labelFont)
+            .background(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .fill(Color(backgroundColor))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: Style.defaultCornerRadius)
+                    .strokeBorder(
+                        Color(borderColor),
+                        lineWidth: Style.defaultBorderWidth
+                    )
+            )
+    }
+
+    var foregroundColor: UIColor {
+        isEnabled ? .error : .buttonDisabledTitle
+    }
+
+    var backgroundColor: UIColor {
+        if isEnabled {
+            if configuration.isPressed {
+                return .secondaryButtonDownBackground
+            } else {
+                return .secondaryButtonBackground
+            }
+        } else {
+            return .buttonDisabledBackground
+        }
+    }
+
+    var borderColor: UIColor {
+        if isEnabled {
+            return .error
+        } else {
+            return .buttonDisabledBorder
+        }
+    }
+}
+
+
 private struct LinkButton: View {
     @Environment(\.isEnabled) var isEnabled
 
@@ -585,6 +641,15 @@ struct PrimaryButton_Previews: PreviewProvider {
             }
 
             Group {
+                Button("Destructive button") {}
+                    .buttonStyle(DestructiveButtonStyle())
+
+                Button("Destructive button (disabled)") {}
+                    .buttonStyle(DestructiveButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
                 Button("Link button") {}
                     .buttonStyle(LinkButtonStyle())
 
@@ -645,6 +710,15 @@ struct PrimaryButton_Previews: PreviewProvider {
 
                 Button("Selectable secondary button") {}
                     .buttonStyle(SelectableSecondaryButtonStyle(isSelected: false))
+            }
+
+            Group {
+                Button("Destructive button") {}
+                    .buttonStyle(DestructiveButtonStyle())
+
+                Button("Destructive button (disabled)") {}
+                    .buttonStyle(DestructiveButtonStyle())
+                    .disabled(true)
             }
 
             Group {

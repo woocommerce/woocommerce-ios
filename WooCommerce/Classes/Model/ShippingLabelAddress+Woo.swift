@@ -25,6 +25,10 @@ extension ShippingLabelAddress {
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)
     }
+
+    var formattedInlineAddress: String? {
+        formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ")
+    }
 }
 
 private extension ShippingLabelAddress {

@@ -213,7 +213,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
     /// Init method for coupon creation
     ///
-    init(siteID: Int64,
+    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          discountType: Coupon.DiscountType,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,

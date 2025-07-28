@@ -9,6 +9,7 @@ import WooFoundation
 @testable import Yosemite
 import SwiftUI
 
+@MainActor
 final class RemoteOrderSynchronizerTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
@@ -1109,15 +1110,17 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
     func test_order_is_created_with_draft_status_and_returned_with_selected_status() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in // Set version that supports auto-draft
-            switch action {
-            case let .fetchSystemPlugin(_, _, onCompletion):
-                onCompletion(.fake().copy(version: "6.3.0"))
-            default:
-                XCTFail("Unexpected action received: \(action)")
-            }
-        }
-        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
+
+        // Sets up plugin service to return a version that supports auto-draft.
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(version: "6.3.0")
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
+
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID,
+                                                   flow: .creation,
+                                                   stores: stores,
+                                                   pluginsService: mockPluginsService,
+                                                   debounceDuration: 0.0)
         XCTAssertEqual(synchronizer.order.status, .pending) // initial status
 
         // When

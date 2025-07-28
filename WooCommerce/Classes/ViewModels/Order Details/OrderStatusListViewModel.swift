@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType

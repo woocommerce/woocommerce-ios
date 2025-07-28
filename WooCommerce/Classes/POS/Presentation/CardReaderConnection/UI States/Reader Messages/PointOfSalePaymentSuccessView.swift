@@ -4,6 +4,7 @@ import SwiftUI
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isShowingReceiptNotEligibleBanner: Bool = false
@@ -24,6 +25,10 @@ struct PointOfSalePaymentSuccessView: View {
                 }
                 .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
+                .barcodeScanning { barcode in
+                    posModel.startNewCart()
+                    posModel.barcodeScanned(barcode)
+                }
             }
         }
         .onAppear {
@@ -96,7 +101,7 @@ struct PointOfSalePaymentSuccessView: View {
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .foregroundColor(checkmarkColor)
-                .frame(width: 52)
+                .frame(width: Constants.checkmarkSize)
                 .accessibilityHidden(true)
         }
     }
@@ -111,7 +116,7 @@ private extension PointOfSalePaymentSuccessView {
     enum Constants {
         static let imageName: String = "checkmark"
         static let imageSize: CGSize = .init(width: 165, height: 165)
-        static let checkmarkSize: CGFloat = 56
+        static let checkmarkSize: CGFloat = 52
         static let shadowOpacity: CGFloat = 0.16
         static let shadowRadius: CGFloat = 16
         static let shadowSize: CGSize = .init(width: 0, height: 8)
@@ -123,15 +128,10 @@ private extension PointOfSalePaymentSuccessView {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    let posModel = PointOfSaleAggregateModel(
-        itemsController: PointOfSalePreviewItemsController(),
-        cardPresentPaymentService: CardPresentPaymentPreviewService(),
-        orderController: PointOfSalePreviewOrderController(),
-        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalytics())
-    return PointOfSalePaymentSuccessView(
+    PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card)
     )
-    .environment(posModel)
+    .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

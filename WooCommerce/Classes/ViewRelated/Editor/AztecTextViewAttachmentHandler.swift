@@ -1,4 +1,5 @@
 import Aztec
+import UIKit
 
 /// Implements Aztec's `TextViewAttachmentDelegate` without media support.
 final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {

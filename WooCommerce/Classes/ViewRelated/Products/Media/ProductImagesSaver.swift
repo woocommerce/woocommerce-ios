@@ -129,7 +129,7 @@ private extension ProductImagesSaver {
             guard let self = self else { return }
             guard let index = self.imageStatusesToSave.firstIndex(where: { status -> Bool in
                 switch status {
-                case .uploading(let uploadingAsset):
+                case .uploading(let uploadingAsset, _, _):
                     return uploadingAsset == asset
                 default:
                     return false
@@ -148,7 +148,7 @@ private extension ProductImagesSaver {
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
-        imageStatusesToSave[index] = .remote(image: productImage)
+        imageStatusesToSave[index] = .remote(image: productImage, siteID: siteID, productID: productOrVariationID)
     }
 
     func updateProductImageStatus(at index: Int, error: Error?) {

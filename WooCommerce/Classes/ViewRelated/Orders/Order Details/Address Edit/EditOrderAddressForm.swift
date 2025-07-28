@@ -266,7 +266,8 @@ struct SingleAddressForm: View {
                                  text: $fields.firstName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
                 .accessibilityIdentifier("order-address-form-first-name-field")
 
             Divider()
@@ -277,7 +278,8 @@ struct SingleAddressForm: View {
                                  text: $fields.lastName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
@@ -288,7 +290,8 @@ struct SingleAddressForm: View {
                                      text: $fields.email,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .emailAddress)
+                                     keyboardType: .emailAddress,
+                                     autocapitalization: .never)
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
@@ -345,7 +348,8 @@ struct SingleAddressForm: View {
                                      text: $fields.company,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address1Field,
@@ -354,7 +358,8 @@ struct SingleAddressForm: View {
                                      text: $fields.address1,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,
@@ -363,7 +368,8 @@ struct SingleAddressForm: View {
                                      text: $fields.address2,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.cityField,
@@ -372,7 +378,8 @@ struct SingleAddressForm: View {
                                      text: $fields.city,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.postcodeField,
@@ -381,7 +388,8 @@ struct SingleAddressForm: View {
                                      text: $fields.postcode,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .characters)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
             }
@@ -444,7 +452,8 @@ struct SingleAddressForm: View {
                                  text: $fields.state,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
         }
     }
 }
@@ -497,62 +506,64 @@ private enum Localization {
 import struct Yosemite.Order
 import struct Yosemite.Address
 
-private let sampleOrder = Order(siteID: 123,
-                               orderID: 456,
-                               parentID: 2,
-                               customerID: 11,
-                               orderKey: "",
-                               isEditable: false,
-                               needsPayment: false,
-                               needsProcessing: false,
-                               number: "789",
-                               status: .processing,
-                               currency: "USD",
-                               currencySymbol: "$",
-                               customerNote: "",
-                               dateCreated: Date(),
-                               dateModified: Date(),
-                               datePaid: Date(),
-                               discountTotal: "0.00",
-                               discountTax: "0.00",
-                               shippingTotal: "0.00",
-                               shippingTax: "0.00",
-                               total: "31.20",
-                               totalTax: "1.20",
-                               paymentMethodID: "stripe",
-                               paymentMethodTitle: "Credit Card (Stripe)",
-                               paymentURL: nil,
-                               chargeID: nil,
-                               items: [],
-                               billingAddress: sampleAddress,
-                               shippingAddress: sampleAddress,
-                               shippingLines: [],
-                               coupons: [],
-                               refunds: [],
-                               fees: [],
-                               taxes: [],
-                               customFields: [],
-                               renewalSubscriptionID: nil,
-                               appliedGiftCards: [],
-                               attributionInfo: nil)
-
 private let sampleAddress = Address(firstName: "Johnny",
-                                   lastName: "Appleseed",
-                                   company: nil,
-                                   address1: "234 70th Street",
-                                   address2: nil,
-                                   city: "Niagara Falls",
-                                   state: "NY",
-                                   postcode: "14304",
-                                   country: "US",
-                                   phone: "333-333-3333",
-                                   email: "scrambled@scrambled.com")
+                                    lastName: "Appleseed",
+                                    company: nil,
+                                    address1: "234 70th Street",
+                                    address2: nil,
+                                    city: "Niagara Falls",
+                                    state: "NY",
+                                    postcode: "14304",
+                                    country: "US",
+                                    phone: "333-333-3333",
+                                    email: "scrambled@scrambled.com")
+
+private let sampleOrder = Order(siteID: 123,
+                                orderID: 456,
+                                parentID: 2,
+                                customerID: 11,
+                                orderKey: "",
+                                isEditable: false,
+                                needsPayment: false,
+                                needsProcessing: false,
+                                number: "789",
+                                status: .processing,
+                                currency: "USD",
+                                currencySymbol: "$",
+                                customerNote: "",
+                                dateCreated: Date(),
+                                dateModified: Date(),
+                                datePaid: Date(),
+                                discountTotal: "0.00",
+                                discountTax: "0.00",
+                                shippingTotal: "0.00",
+                                shippingTax: "0.00",
+                                total: "31.20",
+                                totalTax: "1.20",
+                                paymentMethodID: "stripe",
+                                paymentMethodTitle: "Credit Card (Stripe)",
+                                paymentURL: nil,
+                                chargeID: nil,
+                                items: [],
+                                billingAddress: sampleAddress,
+                                shippingAddress: sampleAddress,
+                                shippingLines: [],
+                                coupons: [],
+                                refunds: [],
+                                fees: [],
+                                taxes: [],
+                                customFields: [],
+                                renewalSubscriptionID: nil,
+                                appliedGiftCards: [],
+                                attributionInfo: nil,
+                                shippingLabels: [],
+                                createdVia: "rest-api")
 
 struct EditAddressForm_Previews: PreviewProvider {
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
-        NavigationStack {
+        NavigationView {
             EditOrderAddressForm(viewModel: sampleViewModel)
         }
     }

@@ -15,7 +15,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
-    private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+    private var useCase: CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                         MockCardPresentPaymentAlertsPresenter>!
     private var receiptEligibilityUseCase: MockReceiptEligibilityUseCase!
@@ -52,7 +52,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
-                                             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+                                             tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
                                              bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker,
@@ -127,7 +127,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
-        let useCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+        let useCase = CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                     BluetoothCardReaderPaymentAlertsProvider,
                                                     MockCardPresentPaymentAlertsPresenter>(
             siteID: 122,
@@ -138,7 +138,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             stores: stores,
             paymentOrchestrator: mockPaymentOrchestrator,
             alertsPresenter: alertsPresenter,
-            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: mockPreflightController,
             analyticsTracker: mockAnalyticsTracker)
@@ -368,6 +368,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in
@@ -380,6 +381,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in

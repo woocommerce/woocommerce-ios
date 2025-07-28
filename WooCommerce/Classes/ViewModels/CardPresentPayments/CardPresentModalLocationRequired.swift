@@ -3,7 +3,7 @@ import UIKit
 /// Modal presented when location permission is denied
 ///
 final class CardPresentModalLocationRequired: CardPresentPaymentsModalViewModel {
-    private let dismiss: () -> Void
+    private let cancel: () -> Void
 
     let textMode: PaymentsModalTextMode = .fullInfo
     let actionsMode: PaymentsModalActionsMode = .twoAction
@@ -19,8 +19,8 @@ final class CardPresentModalLocationRequired: CardPresentPaymentsModalViewModel 
         return topTitle + (bottomTitle ?? "")
     }
 
-    init(dismiss: @escaping () -> Void) {
-        self.dismiss = dismiss
+    init(cancel: @escaping () -> Void) {
+        self.cancel = cancel
     }
 
     func didTapPrimaryButton(in viewController: UIViewController?) {
@@ -32,7 +32,7 @@ final class CardPresentModalLocationRequired: CardPresentPaymentsModalViewModel 
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
         viewController?.dismiss(animated: true)
-        dismiss()
+        cancel()
     }
 
     func didTapAuxiliaryButton(in viewController: UIViewController?) {}

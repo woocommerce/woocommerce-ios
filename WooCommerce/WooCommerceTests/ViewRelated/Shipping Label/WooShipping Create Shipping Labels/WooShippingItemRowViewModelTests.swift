@@ -34,6 +34,7 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
     func test_inits_from_ShippingLabelPackageItem_with_expected_values() {
         // Given
         let item = ShippingLabelPackageItem(productOrVariationID: 1,
+                                            orderItemID: 123,
                                             name: "Little Nap Brazil",
                                             weight: 10,
                                             quantity: 3,
@@ -48,7 +49,7 @@ final class WooShippingItemRowViewModelTests: XCTestCase {
         assertEqual(URL(string: "https://woocommerce.com/woo.jpg"), row.imageUrl)
         assertEqual("3", row.quantityLabel)
         assertEqual("Little Nap Brazil", row.name)
-        assertEqual("15 x 10 x 8 in • Espresso, 10 oz", row.detailsLabel)
+        assertEqual("15 × 10 × 8 in • Espresso, 10 oz", row.detailsLabel)
         assertEqual("30 oz", row.weightLabel)
         assertEqual("£60.00", row.priceLabel)
     }

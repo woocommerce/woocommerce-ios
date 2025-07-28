@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import enum Networking.NetworkError

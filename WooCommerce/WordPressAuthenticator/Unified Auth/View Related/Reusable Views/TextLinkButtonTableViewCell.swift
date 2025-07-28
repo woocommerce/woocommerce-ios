@@ -10,6 +10,9 @@ class TextLinkButtonTableViewCell: UITableViewCell {
     @IBOutlet private weak var button: UIButton!
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var borderWidth: NSLayoutConstraint!
+    @IBOutlet private weak var iconViewWidth: NSLayoutConstraint!
+    @IBOutlet private weak var iconTrailingPadding: NSLayoutConstraint!
+
     @IBAction private func textLinkButtonTapped(_ sender: UIButton) {
         actionHandler?()
     }
@@ -44,8 +47,12 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         borderView.isHidden = !showBorder
 
         iconView.image = icon
-        iconView.isHidden = icon == nil
         iconView.tintColor = buttonTitleColor
+
+        let noIcon = icon == nil
+        iconView.isHidden = noIcon
+        iconViewWidth.constant = noIcon ? 0 : Constants.iconWidth
+        iconTrailingPadding.constant = noIcon ? 0 : Constants.iconTrailingPadding
     }
 
     /// Toggle button enabled / disabled
@@ -72,5 +79,7 @@ private extension TextLinkButtonTableViewCell {
 extension TextLinkButtonTableViewCell {
     struct Constants {
         static let passkeysID = "Passkeys"
+        static let iconWidth: CGFloat = 20
+        static let iconTrailingPadding: CGFloat = 16
     }
 }

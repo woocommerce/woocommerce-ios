@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 import Experiments
 import class WordPressShared.EmailFormatValidator

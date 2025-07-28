@@ -1440,7 +1440,7 @@ private extension ProductFormViewController {
     }
 
     func resetProductImages() {
-        productImageActionHandler.resetProductImages(to: viewModel.productModel)
+        productImageActionHandler.resetProductImages(to: viewModel.originalProductModel)
     }
 }
 
@@ -1601,8 +1601,7 @@ private extension ProductFormViewController {
             self.viewModel.updateProductCustomFields(customFields: customFields)
         })
 
-        let customFieldsListViewController = CustomFieldsListHostingController(isEditable: true,
-                                                                               viewModel: viewModel)
+        let customFieldsListViewController = CustomFieldsListHostingController(viewModel: viewModel)
 
         navigationController?.pushViewController(customFieldsListViewController, animated: true)
     }

@@ -1,6 +1,39 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 22.9
+This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We’ve also made the dedicated Point of Sale tab more widely available for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app’s size.
+
+## 22.8
+Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.
+
+## 22.7
+Say hello to smoother shipping and sales! We’ve enhanced Shipping Labels with UPS extras and smarter forms, fixed price and display glitches, and made shipment management easier. Plus, Point of Sale now has its own tab for eligible stores, barcode scanning, and smoother product refresh for faster checkout.
+
+## 22.6
+Shipping just got a major upgrade! Our revamped flow makes it easier than ever to create and manage shipping labels for stores using WooCommerce Shipping. We've also improved some icons and fixed a display issue with the order list's last updated time. This release includes some behind-the-scenes performance improvements too.
+
+## 22.5
+In this update we’ve fixed blurry payment icons, optimized image handling, improved accessibility, added a card payment timeout, and removed domain purchase features for a cleaner experience. We've also added new improvements to email receipts for POS (available from WooCommerce 10.0.0)
+
+## 22.4
+With this version of the Woo app, you'll be able to see receipts for failed transactions, and enter addresses more easily in order creation. On iPad, we've improved POS search by adding coupon search, and you'll see your most popular products before you search. We've also fixed a crash when reloading order details after a refund on the web.
+
+## 22.3
+This release brings major improvements to the WooCommerce Point of Sale (POS) experience, including the ability to search for products and apply coupons directly from the app. We’ve also improved the Tap to Pay onboarding flow and updated documentation links to ensure a smoother setup. Enhancements to the order form now make entering custom amounts more intuitive. Behind the scenes, we’ve made fixes to improve app stability and refined the POS interface for better usability.
+
+## 22.2
+We’ve tackled some important fixes for a smoother WooCommerce experience! This update resolves an issue where draft variable products couldn't be published. We've also improved the login flow during Jetpack setup for certain accounts, ensuring a more reliable connection. Update now!
+
+## 22.1
+We’ve squashed bugs and polished your WooCommerce experience! Enjoy smoother order creation with fixes for unsaved changes, recalculations, and multi-word names. Plus, sharper icons for scanning and payments. Behind the scenes, we’ve improved login flows, POS functionality, and app performance. Update now!
+
+## 22.0
+This update adds the option to set different notification preferences for each store. In Orders and Products, your filters stay around as you move through the app, and we've fixed a crash that could happen when you choose pictures for your products. Payments is improved too, with support for Puerto Rico in WooPayments, and better accessibility.
+
+## 21.9
+We're dedicated to enhancing your WooCommerce app experience! We've ironed out the issues related to discarding images during uploads in the Product Form. Plus, we've ramped up our login flow accessibility to make your journey smoother and more intuitive. Enjoy the fresh update and newly polished features!
+
 ## 21.8
 This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.
 

@@ -5,6 +5,7 @@ import WooFoundation
 import Networking
 import Combine
 
+@MainActor
 final class EditableOrderViewModelTests: XCTestCase {
     var viewModel: EditableOrderViewModel!
     var stores: MockStoresManager!
@@ -297,8 +298,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .immediate
@@ -317,8 +317,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -340,8 +339,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_doneButtonType_when_custom_amount_using_onRecalculateButtonTap_sync_approach() throws {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -366,8 +364,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onRecalculateButtonTap
@@ -396,8 +393,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(sideBySideViewForOrderForm: true))
+                                               storageManager: storageManager)
         viewModel.toggleProductSelectorVisibility()
 
         viewModel.selectionSyncApproach = .onSelectorButtonTap
@@ -3150,13 +3146,13 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_addCustomAmount_toggles_showAddCustomAmount_to_true_when_order_is_new() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
-        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+        XCTAssertFalse(viewModel.customAmountsSectionViewModel.showCustomAmountView)
 
         // When
         viewModel.addCustomAmount()
 
         // Then
-        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showAddCustomAmount)
+        XCTAssertTrue(viewModel.customAmountsSectionViewModel.showCustomAmountView)
     }
 
     func test_init_with_initialItem_which_is_a_parent_product_shows_notice() {
@@ -3311,6 +3307,45 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual(customerData.id, orderToUpdate.customerID)
         assertEqual(customerData.billing, orderToUpdate.billingAddress)
         assertEqual(customerData.shipping, orderToUpdate.shippingAddress)
+    }
+
+    func test_canBeDismissed_whenEditing_withNoChanges_returnsTrue() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = false
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_whenEditing_withPendingRecalculation_returnsFalse() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .onRecalculateButtonTap
+        viewModel.syncRequired = true
+
+        // Then
+        XCTAssertFalse(viewModel.canBeDismissed)
+    }
+
+    func test_canBeDismissed_whenEditing_withImmediateSync_returnsTrue() {
+        // Given
+        let initialOrder = Order.fake()
+        let viewModel = EditableOrderViewModel(siteID: 123, flow: .editing(initialOrder: initialOrder))
+
+        // When
+        viewModel.selectionSyncApproach = .immediate
+        viewModel.syncRequired = true
+
+        // Then
+        XCTAssertTrue(viewModel.canBeDismissed)
     }
 }
 

@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import UIKit
 import Yosemite
 import protocol WooFoundation.Analytics
 

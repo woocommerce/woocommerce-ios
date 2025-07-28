@@ -6,13 +6,17 @@ import protocol Storage.StorageManagerType
 ///
 final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
 
-    /// Indicates if the view model is updating the remote account settings or fetching remote account settings
+    /// Indicates if the view model is updating the remote account settings
     ///
-    @Published var isUpdating: Bool = false
+    @Published private(set) var isUpdating = false
+
+    /// Indicates if the view model is fetching remote account settings
+    ///
+    @Published private(set) var isReloading: Bool = false
 
     /// Shipping Label account settings from the remote API
     ///
-    private var accountSettings: ShippingLabelAccountSettings
+    private(set) var accountSettings: ShippingLabelAccountSettings
 
     @Published var selectedPaymentMethodID: Int64
     @Published var isEmailReceiptsEnabled: Bool
@@ -20,7 +24,13 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
     /// List of payment methods available to choose from
     ///
     var paymentMethods: [ShippingLabelPaymentMethod] {
-        accountSettings.paymentMethods
+        /// sort methods to display the selected one on the top
+        accountSettings.paymentMethods.sorted { lhs, rhs in
+            if lhs.paymentMethodID == accountSettings.selectedPaymentMethodID {
+                return true
+            }
+            return false
+        }
     }
 
     var storeOwnerUsername: String {
@@ -53,14 +63,34 @@ final class ShippingLabelPaymentMethodsViewModel: ObservableObject {
         accountSettings.canEditSettings
     }
 
+    /// Retrieves URL to add payment method from account settings.
+    /// If none exists, returns the default URL.
+    var addPaymentMethodURL: URL {
+        accountSettings.addPaymentMethodURL ?? WooConstants.URLs.addPaymentMethodWCShip.asURL()
+    }
+
     /// The URL path that will trigger the exit from the webview for adding a new payment method
     ///
     let fetchPaymentMethodURLPath = "me/purchases/payment-methods"
 
-    init(accountSettings: ShippingLabelAccountSettings) {
+    private let stores: StoresManager
+
+    init(accountSettings: ShippingLabelAccountSettings,
+         stores: StoresManager = ServiceLocator.stores) {
         self.accountSettings = accountSettings
         self.selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
         self.isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
+        self.stores = stores
+    }
+
+    func resetViewStates() {
+        selectedPaymentMethodID = accountSettings.selectedPaymentMethodID
+        isEmailReceiptsEnabled = accountSettings.isEmailReceiptsEnabled
+    }
+
+    func updateSettings(_ settings: ShippingLabelAccountSettings) {
+        accountSettings = settings
+        selectedPaymentMethodID = settings.selectedPaymentMethodID
     }
 
     func didSelectPaymentMethod(withID paymentMethodID: Int64) {
@@ -119,6 +149,38 @@ extension ShippingLabelPaymentMethodsViewModel {
         }
         ServiceLocator.stores.dispatch(action)
     }
+
+    @MainActor
+    func updateWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
+        isUpdating = true
+        let newSettings = accountSettings.copy(selectedPaymentMethodID: selectedPaymentMethodID,
+                                               isEmailReceiptsEnabled: isEmailReceiptsEnabled)
+        defer {
+            isUpdating = false
+        }
+        let success = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.updateAccountSettings(siteID: accountSettings.siteID,
+                                                                    settings: newSettings,
+                                                                    completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        return success ? newSettings : accountSettings
+    }
+
+    @MainActor
+    func syncWooShippingAccountSettings() async throws -> ShippingLabelAccountSettings {
+        isReloading = true
+        defer {
+            isReloading = false
+        }
+        let settings = try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(WooShippingAction.loadAccountSettings(siteID: accountSettings.siteID, completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+        return settings.accountSettings
+    }
 }
 
 // MARK: - Localization
@@ -137,7 +199,8 @@ extension ShippingLabelPaymentMethodsViewModel {
 
     static let samplePaymentMethodID: Int64 = 11743265
 
-    static func sampleAccountSettings(withPermissions: Bool = true) -> ShippingLabelAccountSettings {
+    static func sampleAccountSettings(withPermissions: Bool = true,
+                                      hasPaymentMethods: Bool = true) -> ShippingLabelAccountSettings {
         return ShippingLabelAccountSettings(siteID: 1234,
                                             canManagePayments: withPermissions,
                                             canEditSettings: withPermissions,
@@ -145,11 +208,13 @@ extension ShippingLabelPaymentMethodsViewModel {
                                             storeOwnerUsername: "admin",
                                             storeOwnerWpcomUsername: "username",
                                             storeOwnerWpcomEmail: "user@example.com",
-                                            paymentMethods: samplePaymentMethods(),
+                                            paymentMethods: hasPaymentMethods ? samplePaymentMethods() : [],
                                             selectedPaymentMethodID: 11743265,
                                             isEmailReceiptsEnabled: true,
                                             paperSize: .label,
-                                            lastSelectedPackageID: "small_flat_box")
+                                            lastSelectedPackageID: "small_flat_box",
+                                            lastOrderCompleted: false,
+                                            addPaymentMethodURL: nil)
     }
 
     static func samplePaymentMethods() -> [ShippingLabelPaymentMethod] {

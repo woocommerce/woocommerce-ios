@@ -12,8 +12,9 @@ struct WooAddCustomPackageView: View {
     @FocusState var packageTemplateNameFieldFocused: Bool
     @FocusState var focusedField: WooShippingPackageUnitType?
 
-    @State private var isSavingPackage: Bool = false
-    @State private var isAddingPackage: Bool = false
+    @State private var isSavingPackage = false
+    @State private var showingSavingError = false
+    @State private var foundInvalidDimensions = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -68,6 +69,14 @@ struct WooAddCustomPackageView: View {
                                     unitInputView(for: dimensionUnit, unit: dimensionsUnit)
                                 }
                             }
+
+                            if foundInvalidDimensions {
+                                Text(Localization.invalidDimensions)
+                                    .font(.footnote)
+                                    .foregroundColor(Color(.error))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
                                 unitInputView(for: WooShippingPackageUnitType.weight, unit: weightUnit)
@@ -130,14 +139,10 @@ struct WooAddCustomPackageView: View {
                         else {
                             Spacer()
                             Button(selectionButtonText) {
-                                Task { @MainActor in
-                                    isAddingPackage = true
-                                    await addPackageButtonTapped()
-                                    isAddingPackage = false
-                                }
+                                confirmPackage()
                             }
                             .disabled(selectionButtonDisabled)
-                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isAddingPackage))
+                            .buttonStyle(PrimaryButtonStyle())
                             .padding(.bottom)
                         }
                     }
@@ -161,22 +166,36 @@ struct WooAddCustomPackageView: View {
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .disabled(isSavingPackage)
+                .alert(Localization.SavingPackageError.title, isPresented: $showingSavingError, actions: {
+                    Button(role: .cancel) {} label: {
+                        Text(Localization.SavingPackageError.cancel)
+                    }
+                    Button {
+                        confirmPackage()
+                    } label: {
+                        Text(Localization.SavingPackageError.proceed)
+                    }
+                }, message: {
+                    Text(Localization.SavingPackageError.message)
+                })
             }
         }
     }
+}
 
-    private var selectionButtonDisabled: Bool {
+private extension WooAddCustomPackageView {
+    var selectionButtonDisabled: Bool {
         !viewModel.validateCustomPackageInputFields()
     }
 
-    private var selectionButtonText: String {
+    var selectionButtonText: String {
         if selectionButtonDisabled {
             return WooShippingAddPackageView.Localization.addPackageDetails
         }
         return WooShippingAddPackageView.Localization.addPackage
     }
 
-    private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
+    func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
         WooShippingAddPackageUnitInputView(unitType: unitType,
                                            unit: unit,
                                            fieldValue: Binding(get: {
@@ -188,33 +207,32 @@ struct WooAddCustomPackageView: View {
 
     // MARK: - actions
 
-    @MainActor
-    private func addPackageButtonTapped() async {
-        let packageDataResult = await viewModel.addPackageAction()
-        // call addPackageAction with data
-        switch packageDataResult {
-        case .success(let data):
-            addPackageAction(data)
-        case .failure(let failure):
-            // show failure
-            print(failure)
+    func confirmPackage() {
+        foundInvalidDimensions = !viewModel.allDimensionsValid
+        guard !foundInvalidDimensions, let packageData = viewModel.packageData else {
+            return
         }
+        addPackageAction(packageData)
     }
 
     @MainActor
-    private func savePackageAsTemplateButtonTapped() async {
+    func savePackageAsTemplateButtonTapped() async {
+        foundInvalidDimensions = !viewModel.allDimensionsValid
+        guard !foundInvalidDimensions else {
+            return
+        }
         let packageDataResult = await viewModel.savePackageAsTemplateAction()
         // call addPackageAction with data
         switch packageDataResult {
         case .success(let data):
             addPackageAction(data)
         case .failure(let failure):
-            // show failure
-            print(failure)
+            DDLogError("⛔️ Error saving package: \(failure)")
+            showingSavingError = true
         }
     }
 
-    private func onBackwardButtonTapped() {
+    func onBackwardButtonTapped() {
         switch focusedField {
         case .length:
             return
@@ -229,7 +247,7 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func onForwardButtonTapped() {
+    func onForwardButtonTapped() {
         switch focusedField {
         case .length:
             focusedField = .width
@@ -244,7 +262,7 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func dismissKeyboard() {
+    func dismissKeyboard() {
         focusedField = nil
         packageTemplateNameFieldFocused = false
     }
@@ -267,5 +285,34 @@ extension WooAddCustomPackageView {
         static let savePackageTemplatePlaceholder = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder",
                                                            value: "Enter a unique package name",
                                                            comment: "Placeholder text for package name field")
+        static let invalidDimensions = NSLocalizedString(
+            "wooShipping.createLabel.addPackage.invalidDimensions",
+            value: "Package dimensions should all be larger than 0",
+            comment: "Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow"
+        )
+        enum SavingPackageError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.title",
+                value: "We couldn't save your package as a template",
+                comment: "Title of the error alert when saving a package as template fails in the shipping label creation flow"
+            )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.message",
+                value: "Do you want to proceed without saving it?",
+                comment: "Message of the error alert when saving a package as template fails in the shipping label creation flow"
+            )
+            static let cancel = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.cancel",
+                value: "Cancel",
+                comment: "Button on the error alert when saving a package as template fails in the shipping label creation flow. " +
+                "Tapping on this button would cancel the saving."
+            )
+            static let proceed = NSLocalizedString(
+                "wooShipping.createLabel.addPackage.savingPackageError.proceed",
+                value: "Proceed",
+                comment: "Button on the error alert when saving a package as template fails in the shipping label creation flow. " +
+                "Tapping on this button would proceed with the creation flow without saving the package."
+            )
+        }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -21,13 +22,14 @@ struct POSRootModalViewModifier: ViewModifier {
                             modalManager.dismiss()
                         }
                     }
-                    // Don't scale/fade in the backdrop
+                // Don't scale/fade in the backdrop
                     .animation(nil, value: modalManager.isPresented)
                 ZStack {
                     modalManager.getContent()
+                        .environment(\.posModalParentSize, modalParentSize)
                         .background(Color.posSurfaceBright)
                         .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
-                        .posShadow(.large)
+                        .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
                         .padding()
                 }
                 .zIndex(1)
@@ -38,7 +40,16 @@ struct POSRootModalViewModifier: ViewModifier {
                 .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
             }
         }
+        .measureFrame { frame in
+            updateModalParentSize(with: frame.size)
+        }
         .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+    }
+
+    private func updateModalParentSize(with size: CGSize) {
+        if size != modalParentSize && size != .zero {
+            modalParentSize = size
+        }
     }
 }
 
@@ -176,5 +187,20 @@ extension View {
     /// Prevents a POS Modal from being dismissed by tapping on the background.
     func posInteractiveDismissDisabled(_ disabled: Bool = true) -> some View {
         self.modifier(POSInteractiveDismissModifier(disabled: disabled))
+    }
+}
+
+// MARK: - POS Modal Parent Size Environment
+
+/// Environment key for tracking the current screen size in POS modals
+struct POSModalParentSizeKey: EnvironmentKey {
+    static let defaultValue: CGSize = UIScreen.main.bounds.size
+}
+
+extension EnvironmentValues {
+    /// The current screen size available to the POS modal
+    var posModalParentSize: CGSize {
+        get { self[POSModalParentSizeKey.self] }
+        set { self[POSModalParentSizeKey.self] = newValue }
     }
 }

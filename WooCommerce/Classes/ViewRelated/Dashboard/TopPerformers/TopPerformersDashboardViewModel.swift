@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType

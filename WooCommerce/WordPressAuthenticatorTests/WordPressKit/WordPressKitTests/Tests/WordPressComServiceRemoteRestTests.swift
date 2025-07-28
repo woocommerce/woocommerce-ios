@@ -1,6 +1,7 @@
 import XCTest
 import WordPressAuthenticator
 import OHHTTPStubs
+import OHHTTPStubsSwift
 
 class WordPressComServiceRemoteRestTests: XCTestCase {
 

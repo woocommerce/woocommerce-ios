@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import Combine
 import protocol Experiments.FeatureFlagService

@@ -12,7 +12,7 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
         OrderFactory.newOrder(currency: .USD)
     )
 
-    func syncOrder(for cartProducts: [CartItem], retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
+    func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         return .success(.newOrder)
     }
 
@@ -20,6 +20,6 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
 
     func clearOrder() { }
 
-    func collectCashPayment() async throws {}
+    func collectCashPayment(changeDueAmount: String?) async throws {}
 }
 #endif

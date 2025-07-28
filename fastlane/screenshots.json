@@ -17,7 +17,7 @@
 			"device_frame_offset": [161, 595]
 		},
 		{
-			"name": "iPad Pro 12.9 (3rd Generation)",
+			"name": "iPad Pro 13-inch (M4)",
 			"canvas_size": [2048,2732],
 			"text_size": [1848, 559],
 			"text_offset": [100, 0],
@@ -74,45 +74,45 @@
 		},
 
 
-		/// iPad Pro 12.9 (3rd Generation)
+		/// iPad Pro 13-inch (M4)
 		// Track sales and bestselling products
 		{
-			"device": "iPad Pro 12.9 (3rd Generation)",
-			"filename": "iPad Pro (12.9-inch) (3rd generation)-01.png",
+			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-01.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-1-dark-order-dashboard.png",
+			"screenshot": "iPad Pro 13-inch (M4)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
-			"device": "iPad Pro 12.9 (3rd Generation)",
-			"filename": "iPad Pro (12.9-inch) (3rd generation)-02.png",
+			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-02.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-2-light-order-creation.png",
+			"screenshot": "iPad Pro 13-inch (M4)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
-			"device": "iPad Pro 12.9 (3rd Generation)",
-			"filename": "iPad Pro (12.9-inch) (3rd generation)-03.png",
+			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-03.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-3-dark-order-payment.png",
+			"screenshot": "iPad Pro 13-inch (M4)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
 		// Add and edit products with a touch
 		{
-			"device": "iPad Pro 12.9 (3rd Generation)",
-			"filename": "iPad Pro (12.9-inch) (3rd generation)-04.png",
+			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-04.png",
 			"background": "appstoreres/assets/ipad-background-2.png",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-4-light-product-add.png",
+			"screenshot": "iPad Pro 13-inch (M4)-4-light-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt"
 		},
 		// Get notified of every sale
 		{
-			"device": "iPad Pro 12.9 (3rd Generation)",
-			"filename": "iPad Pro (12.9-inch) (3rd generation)-05.png",
+			"device": "iPad Pro 13-inch (M4)",
+			"filename": "iPad Pro 13-inch (M4)-05.png",
 			"background": "appstoreres/assets/ipad-background-1.png",
-			"screenshot": "iPad Pro (12.9-inch) (3rd generation)-5-dark-order-notification.png",
+			"screenshot": "iPad Pro 13-inch (M4)-5-dark-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt"
 		}
 	]

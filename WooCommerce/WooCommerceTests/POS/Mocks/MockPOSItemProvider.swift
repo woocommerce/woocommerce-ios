@@ -1,11 +1,6 @@
 import Foundation
-import protocol Yosemite.PointOfSaleItemServiceProtocol
-import enum Yosemite.POSItem
-import protocol Yosemite.POSOrderableItem
-@testable import struct Yosemite.POSSimpleProduct
-@testable import struct Yosemite.POSVariation
-import struct Yosemite.PagedItems
-import struct Yosemite.POSVariableParentProduct
+@testable import Yosemite
+import struct Networking.PagedItems
 
 final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     /// An array of pages of items, returned when other flags are not set.
@@ -16,34 +11,40 @@ final class MockPointOfSaleItemService: PointOfSaleItemServiceProtocol {
     var shouldSimulateMorePages = false
 
     var spyLastRequestedPageNumber: Int?
-    func providePointOfSaleItems(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    var spyItemsFetchStrategy: PointOfSalePurchasableItemFetchStrategy?
+    func providePointOfSaleItems(pageNumber: Int, fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         spyLastRequestedPageNumber = pageNumber
+        spyItemsFetchStrategy = fetchStrategy
         if let errorToThrow {
             throw errorToThrow
         }
         if shouldReturnZeroItems {
-            return .init(items: [], hasMorePages: false)
+            return .init(items: [], hasMorePages: false, totalItems: 0)
         }
         if shouldSimulateTwoPages {
             return pageNumber > 1 ?
-                .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages):
-                .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages)
+                .init(items: MockPointOfSaleItemService.makeSecondPageItems(), hasMorePages: shouldSimulateMorePages, totalItems: 4):
+                .init(items: MockPointOfSaleItemService.makeInitialItems(), hasMorePages: shouldSimulateTwoPages, totalItems: 4)
         }
-        return .init(items: (itemPages[safe: pageNumber - 1] ?? []), hasMorePages: itemPages.count > pageNumber)
+        return .init(items: (itemPages[safe: pageNumber - 1] ?? []), hasMorePages: itemPages.count > pageNumber, totalItems: 2)
     }
 
     var shouldSimulateTwoPagesOfVariations = false
     var shouldSimulateMorePagesOfVariations = false
-    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct, pageNumber: Int) async throws -> PagedItems<POSItem> {
+    var spyVariationsFetchStrategy: PointOfSalePurchasableItemFetchStrategy?
+    func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,
+                                          pageNumber: Int,
+                                          fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
+        spyVariationsFetchStrategy = fetchStrategy
         if let errorToThrow {
             throw errorToThrow
         }
         if shouldSimulateTwoPagesOfVariations,
            pageNumber > 1 {
-            return .init(items: MockPointOfSaleItemService.makeSecondPageVariationItems(), hasMorePages: shouldSimulateMorePagesOfVariations)
+            return .init(items: MockPointOfSaleItemService.makeSecondPageVariationItems(), hasMorePages: shouldSimulateMorePagesOfVariations, totalItems: 4)
         }
 
-        return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations)
+        return .init(items: MockPointOfSaleItemService.makeInitialVariationItems(), hasMorePages: shouldSimulateTwoPagesOfVariations, totalItems: 2)
     }
 }
 
@@ -56,13 +57,19 @@ extension MockPointOfSaleItemService {
                                         name: "Choco",
                                         formattedPrice: "$2.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
 
         let product2 = POSSimpleProduct(id: fakeUUID2,
                                         name: "Vanilla",
                                         formattedPrice: "$3.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
         return [.simpleProduct(product1), .simpleProduct(product2)]
     }
 
@@ -74,13 +81,19 @@ extension MockPointOfSaleItemService {
                                         name: "Strawberry",
                                         formattedPrice: "$2.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
 
         let product4 = POSSimpleProduct(id: fakeUUID4,
                                         name: "Pistachio",
                                         formattedPrice: "$3.00",
                                         productID: 1,
-                                        price: "2.00")
+                                        price: "2.00",
+                                        manageStock: false,
+                                        stockQuantity: nil,
+                                        stockStatusKey: "")
         return [.simpleProduct(product3), .simpleProduct(product4)]
     }
 

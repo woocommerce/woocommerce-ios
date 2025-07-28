@@ -1,3 +1,4 @@
+import Foundation
 import Networking
 import Yosemite
 
@@ -15,7 +16,9 @@ public struct MockShippingLabelAccountSettings {
                                              selectedPaymentMethodID: Int64 = 0,
                                              isEmailReceiptsEnabled: Bool = true,
                                              paperSize: ShippingLabelPaperSize = .label,
-                                             lastSelectedPackageID: String = "") -> ShippingLabelAccountSettings {
+                                             lastSelectedPackageID: String = "",
+                                             lastOrderCompleted: Bool = false,
+                                             addPaymentMethodURL: URL? = nil) -> ShippingLabelAccountSettings {
         .init(siteID: siteID,
               canManagePayments: canManagePayments,
               canEditSettings: canEditSettings,
@@ -27,6 +30,8 @@ public struct MockShippingLabelAccountSettings {
               selectedPaymentMethodID: selectedPaymentMethodID,
               isEmailReceiptsEnabled: isEmailReceiptsEnabled,
               paperSize: paperSize,
-              lastSelectedPackageID: lastSelectedPackageID)
+              lastSelectedPackageID: lastSelectedPackageID,
+              lastOrderCompleted: lastOrderCompleted,
+              addPaymentMethodURL: addPaymentMethodURL)
     }
 }

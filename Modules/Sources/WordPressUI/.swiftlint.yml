@@ -1,0 +1,5 @@
+# At the time of folding WordPressUI in WooCommerce, it was simpler to loosen
+# the SwiftLint rules for WordPressUI than updating all the code to match the
+# WooCommerce standards.
+line_length:
+  warning: 261

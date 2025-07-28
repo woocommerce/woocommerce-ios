@@ -206,11 +206,13 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
+        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          blazeEligibilityChecker: blazeEligibilityChecker)
 
@@ -267,11 +269,13 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
+        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         let checker = MockGoogleAdsEligibilityChecker(isEligible: true)
 
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          googleAdsEligibilityChecker: checker)
         waitUntil {
@@ -564,10 +568,11 @@ final class HubMenuViewModelTests: XCTestCase {
     @MainActor
     func test_navigateToDestination_replaces_navigationPath_with_specified_destination() throws {
         // Given
-        let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
+        let generalAppSettings = try mockGeneralAppSettingsStorage()
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
+        let featureFlagService = MockFeatureFlagService(allowMerchantAIAPIKey: false)
         inboxEligibilityChecker.isEligible = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -578,6 +583,7 @@ final class HubMenuViewModelTests: XCTestCase {
         let navigationPath = NavigationPath(["testPath1", "testPath2"])
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         featureFlagService: featureFlagService,
                                          stores: stores,
                                          generalAppSettings: generalAppSettings,
                                          inboxEligibilityChecker: inboxEligibilityChecker,
@@ -589,7 +595,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
             .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
@@ -726,24 +731,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_trackMenuItemTapEvent_includes_payments_onboarding_state_for_pos_menu_item() throws {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         analytics: analytics)
-
-        // When
-        viewModel.trackMenuItemTapEvent(menu: HubMenuViewModel.PointOfSaleEntryPoint())
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "hub_menu_option_tapped" }))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("payments_onboarding_state") }))
-        XCTAssertNotNil(eventProperties["payments_onboarding_state"])
-    }
-
-    @MainActor
     func test_trackMenuItemTapEvent_does_not_include_payments_onboarding_state_for_non_pos_menu_items() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -754,7 +741,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.InAppPurchases(),
             HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),
@@ -778,11 +764,10 @@ final class HubMenuViewModelTests: XCTestCase {
 }
 
 private extension HubMenuViewModelTests {
-    func mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: Bool) throws -> GeneralAppSettingsStorage {
+    func mockGeneralAppSettingsStorage() throws -> GeneralAppSettingsStorage {
         let fileStorage = MockInMemoryStorage()
         let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
         var settings = GeneralAppSettings.default
-        settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
         try storage.saveSettings(settings)
         return storage
     }

@@ -231,7 +231,9 @@ let package = Package(
         .target(
             name: "PointOfSale",
             dependencies: [
-                // Dependencies will be added as needed when moving files
+                "Experiments",
+                "WooFoundation",
+                // Additional dependencies will be added as needed when moving files
             ]
         ),
         .testTarget(

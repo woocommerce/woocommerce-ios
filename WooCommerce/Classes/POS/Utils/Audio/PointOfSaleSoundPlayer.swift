@@ -1,6 +1,5 @@
 import Foundation
 import AVFoundation
-import CocoaLumberjackSwift
 
 struct PointOfSaleSound: Equatable, Hashable {
     let name: String

@@ -231,10 +231,7 @@ let package = Package(
         .target(
             name: "PointOfSale",
             dependencies: [
-                "Yosemite",
-                "WooFoundation",
-                "WordPressShared",
-                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                // Dependencies will be added as needed when moving files
             ]
         ),
         .testTarget(

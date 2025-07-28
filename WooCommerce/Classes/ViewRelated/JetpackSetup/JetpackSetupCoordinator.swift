@@ -60,7 +60,7 @@ final class JetpackSetupCoordinator {
 
         /// the authenticator needs to be initialized with configs
         /// to be used for requesting authentication link and handle login later.
-        WordPressAuthenticator.initializeWithCustomConfigs(dotcomAuthScheme: dotcomAuthScheme)
+        ServiceLocator.authenticationManager.initialize()
     }
 
     func showBenefitModal() {

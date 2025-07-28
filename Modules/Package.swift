@@ -67,6 +67,10 @@ let package = Package(
             name: "Yosemite",
             targets: ["Yosemite"]
         ),
+        .library(
+            name: "PointOfSale",
+            targets: ["PointOfSale"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -224,6 +228,12 @@ let package = Package(
                 .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
             ]
         ),
+        .target(
+            name: "PointOfSale",
+            dependencies: [
+                // Dependencies will be added as needed when moving files
+            ]
+        ),
         .testTarget(
             name: "ExperimentsTests",
             dependencies: [
@@ -288,6 +298,12 @@ let package = Package(
             resources: [
                 .process("Resources"),
                 .process("../NetworkingTests/Responses")
+            ]
+        ),
+        .testTarget(
+            name: "PointOfSaleTests",
+            dependencies: [
+                "PointOfSale"
             ]
         )
     ]

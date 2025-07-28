@@ -14478,7 +14478,6 @@
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
 			packageReferences = (
-				021C70502E37457200CC08FD /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -19044,17 +19043,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		021C70502E37457200CC08FD /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
-			requirement = {
-				kind = exactVersion;
-				version = 1.0.4;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		3F2B4ADB2DDC314900E5E49C /* XcodeTarget_WordPressAuthenticatorTests */ = {

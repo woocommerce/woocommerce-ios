@@ -69,6 +69,7 @@ let package = Package(
         ),
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.0.4"),
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
         .package(url: "https://github.com/AliSoftware/OHHTTPStubs", from: "9.0.0"),
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
@@ -381,6 +382,7 @@ enum XcodeSupport {
                     .product(name: "Inject", package: "Inject"),
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                     .product(name: "Kingfisher", package: "Kingfisher"),
+                    .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
                     .product(name: "ScrollViewSectionKit", package: "ScrollViewSectionKit"),
                     .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                     .product(name: "StripeTerminal", package: "stripe-terminal-ios"),

@@ -27,7 +27,7 @@ private struct DefaultPOSAnalytics: POSAnalyticsProviding {
 }
 
 /// Environment key for POS currency settings
-public struct POSCurrencyKey: EnvironmentKey {
+public struct POSCurrencySettingsKey: EnvironmentKey {
     public static let defaultValue: CurrencySettings = CurrencySettings()
 }
 
@@ -68,9 +68,9 @@ public extension EnvironmentValues {
         set { self[POSAnalyticsKey.self] = newValue }
     }
 
-    var posCurrency: CurrencySettings {
-        get { self[POSCurrencyKey.self] }
-        set { self[POSCurrencyKey.self] = newValue }
+    var posCurrencySettings: CurrencySettings {
+        get { self[POSCurrencySettingsKey.self] }
+        set { self[POSCurrencySettingsKey.self] = newValue }
     }
 
     var posStores: POSStoresProviding {

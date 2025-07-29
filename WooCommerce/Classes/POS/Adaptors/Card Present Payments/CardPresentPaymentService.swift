@@ -147,6 +147,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(currencySettings: currencySettings,
                                                                               paymentEventPublisher: paymentEventPublisher,
+                                                                              stores: stores,
                                                                               collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
         ).collectPaymentTask(
             for: order,

@@ -9,7 +9,7 @@ struct PointOfSaleCollectCashView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
-    private let viewHelper = CollectCashViewHelper()
+    private let viewHelper: CollectCashViewHelper
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
@@ -33,6 +33,7 @@ struct PointOfSaleCollectCashView: View {
                                                                                                  locale: Locale.autoupdatingCurrent,
                                                                                                  storeCurrencySettings: currencySettings,
                                                                                                  allowNegativeNumber: false))
+        self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
         self.orderTotal = orderTotal
     }
 

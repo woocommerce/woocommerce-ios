@@ -3,8 +3,13 @@ import SwiftUI
 import WooFoundation
 
 final class CollectCashViewHelper {
-    private let currencyFormatter: CurrencyFormatter = WooFoundation.CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-    private let currencySettings: CurrencySettings = ServiceLocator.currencySettings
+    private let currencyFormatter: CurrencyFormatter
+    private let currencySettings: CurrencySettings
+
+    init(currencySettings: CurrencySettings) {
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+    }
 
     // Configures the formatter as close as possible to use the Store's settings
     private lazy var numberFormatter: NumberFormatter = {

@@ -85,7 +85,9 @@ import WordPressUI
                                   displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
         guard privateInstance == nil else {
-            assertionFailure("Attempting to initialize WordPressAuthenticator more than once - this would cause the delegate to be reset. Aborting... 🙅⛔️")
+            if isRunningTests() == false { // avoid crashing in tests
+                assertionFailure("Attempting to initialize WordPressAuthenticator more than once - this would cause the delegate to be reset. Aborting... 🙅⛔️")
+            }
             return
         }
         privateInstance = WordPressAuthenticator(configuration: configuration,
@@ -489,5 +491,11 @@ public extension WordPressAuthenticator {
             NotificationCenter.default.removeObserver(observer)
         }
         appleIDCredentialObserver = nil
+    }
+}
+
+private extension WordPressAuthenticator {
+    static func isRunningTests() -> Bool {
+        return NSClassFromString("XCTestCase") != nil
     }
 }

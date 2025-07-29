@@ -42,11 +42,6 @@ public struct POSFeatureFlagsKey: EnvironmentKey {
     public static let defaultValue: POSFeatureFlagProviding = DefaultPOSFeatureFlags()
 }
 
-/// Environment key for POS storage service
-public struct POSStorageKey: EnvironmentKey {
-    public static let defaultValue: POSStorageProviding = DefaultPOSStorage()
-}
-
 // Default implementations for testing/previews
 private struct DefaultPOSStores: POSStoresProviding {
     func dispatch(_ action: Yosemite.Action) {}
@@ -54,9 +49,6 @@ private struct DefaultPOSStores: POSStoresProviding {
 
 private struct DefaultPOSSessionManager: POSSessionManagerProviding {
     var defaultSite: POSSiteProviding? = nil
-}
-
-private struct DefaultPOSStorage: POSStorageProviding {
 }
 
 private struct DefaultPOSFeatureFlags: POSFeatureFlagProviding {
@@ -82,10 +74,5 @@ public extension EnvironmentValues {
     var posFeatureFlags: POSFeatureFlagProviding {
         get { self[POSFeatureFlagsKey.self] }
         set { self[POSFeatureFlagsKey.self] = newValue }
-    }
-
-    var posStorage: POSStorageProviding {
-        get { self[POSStorageKey.self] }
-        set { self[POSStorageKey.self] = newValue }
     }
 }

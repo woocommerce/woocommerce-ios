@@ -45,7 +45,7 @@ protocol PointOfSaleOrderControllerProtocol {
          currencySettings: CurrencySettings,
          analytics: POSAnalyticsProviding,
          featureFlagService: POSFeatureFlagProviding,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         pluginsService: PluginsServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService

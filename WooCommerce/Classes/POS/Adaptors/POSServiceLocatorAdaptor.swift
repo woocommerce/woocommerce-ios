@@ -10,7 +10,6 @@ import protocol Yosemite.Action
 
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
-
     var analytics: POSAnalyticsProviding {
         return POSAnalyticsAdaptor()
     }
@@ -21,10 +20,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var currency: CurrencySettings {
         return ServiceLocator.currencySettings
-    }
-
-    var storage: POSStorageProviding {
-        return POSStorageAdaptor(storage: ServiceLocator.storageManager)
     }
 
     var featureFlags: POSFeatureFlagProviding {

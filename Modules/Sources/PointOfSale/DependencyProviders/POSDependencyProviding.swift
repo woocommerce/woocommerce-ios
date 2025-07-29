@@ -2,6 +2,7 @@ import Foundation
 import WooFoundation
 import Experiments
 import protocol Yosemite.Action
+import protocol Yosemite.SessionManagerProtocol
 
 /// Main dependency provider protocol for POS module
 /// This abstracts away direct ServiceLocator access
@@ -9,7 +10,6 @@ public protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
     var stores: POSStoresProviding { get }
     var currency: CurrencySettings { get }
-    var storage: POSStorageProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
 }
 

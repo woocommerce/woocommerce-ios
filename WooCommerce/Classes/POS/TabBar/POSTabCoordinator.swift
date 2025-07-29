@@ -131,7 +131,8 @@ private extension POSTabCoordinator {
                                                                 receiptService: receiptService,
                                                                 currencySettings: serviceAdaptor.currency,
                                                                 analytics: serviceAdaptor.analytics,
-                                                                featureFlagService: serviceAdaptor.featureFlags),
+                                                                featureFlagService: serviceAdaptor.featureFlags,
+                                                                pluginsService: PluginsService(storageManager: storageManager)),
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

@@ -26,7 +26,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
 
         // When
         await sut.syncOrder(for: .init(), retryHandler: {})
@@ -42,7 +43,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -65,7 +67,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         mockOrderService.simulateSyncing = true
         Task {
             await sut.syncOrder(for: .init(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
@@ -94,7 +97,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: currencySettings,
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
 
         // When
         await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
@@ -110,7 +114,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let cartItem = makeItem(quantity: 1)
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -134,7 +139,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -175,7 +181,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         mockOrderService.orderToReturn = nil
 
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -215,7 +222,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let email = "test@example.com"
 
         // When
@@ -236,7 +244,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -260,7 +269,8 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptService: mockReceiptService,
                                                  currencySettings: CurrencySettings(),
                                                  analytics: MockPOSAnalytics(),
-                                                 featureFlagService: MockFeatureFlagService())
+                                                 featureFlagService: MockFeatureFlagService(),
+                                                 pluginsService: MockPluginsService())
             try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
             // Then
@@ -278,6 +288,7 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService(),
                                              celebration: mockPaymentCelebration)
 
         let orderItem = OrderItem.fake()
@@ -301,7 +312,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
 
         let orderItem = OrderItem.fake()
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -324,7 +336,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake()
         let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -348,7 +361,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
 
@@ -374,7 +388,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -401,7 +416,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let cartItem = makeItem(quantity: 1)
 
         // When
@@ -423,7 +439,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -450,7 +467,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let initialCouponCode = "SAVE10"
         let initialCoupon = OrderCouponLine.fake().copy(code: initialCouponCode)
@@ -477,7 +495,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -504,7 +523,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
 
@@ -547,7 +567,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
         let errorMessage = "Coupon INVALID does not exist"
         let errorJSON = """
         {
@@ -597,7 +618,8 @@ struct PointOfSaleOrderControllerTests {
                                              receiptService: mockReceiptService,
                                              currencySettings: CurrencySettings(),
                                              analytics: MockPOSAnalytics(),
-                                             featureFlagService: MockFeatureFlagService())
+                                             featureFlagService: MockFeatureFlagService(),
+                                             pluginsService: MockPluginsService())
 
         // First create a successful order
         let orderItem = OrderItem.fake().copy(quantity: 1)
@@ -651,7 +673,8 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptService: receiptService,
                                                  currencySettings: CurrencySettings(),
                                                  analytics: analytics,
-                                                 featureFlagService: MockFeatureFlagService())
+                                                 featureFlagService: MockFeatureFlagService(),
+                                                 pluginsService: MockPluginsService())
             let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
             let fakeOrder = Order.fake()
             let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -671,7 +694,8 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptService: receiptService,
                                                  currencySettings: CurrencySettings(),
                                                  analytics: analytics,
-                                                 featureFlagService: MockFeatureFlagService())
+                                                 featureFlagService: MockFeatureFlagService(),
+                                                 pluginsService: MockPluginsService())
             orderService.orderToReturn = nil
 
             // When
@@ -691,7 +715,8 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptService: MockReceiptService(),
                                                  currencySettings: CurrencySettings(),
                                                  analytics: mockAnalytics,
-                                                 featureFlagService: MockFeatureFlagService())
+                                                 featureFlagService: MockFeatureFlagService(),
+                                                 pluginsService: MockPluginsService())
 
             // In order to test the order controller failure we need to succeed first in creating a successful order:
             let orderItem = OrderItem.fake()
@@ -750,7 +775,8 @@ struct PointOfSaleOrderControllerTests {
                                                  receiptService: receiptService,
                                                  currencySettings: CurrencySettings(),
                                                  analytics: analytics,
-                                                 featureFlagService: MockFeatureFlagService())
+                                                 featureFlagService: MockFeatureFlagService(),
+                                                 pluginsService: MockPluginsService())
 
             // When
             do {

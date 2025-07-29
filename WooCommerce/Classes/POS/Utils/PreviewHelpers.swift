@@ -295,7 +295,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var analytics: POSAnalyticsProviding = POSPreviewAnalytics()
     var stores: POSStoresProviding = POSPreviewStores()
     var currency: CurrencySettings = CurrencySettings()
-    var storage: POSStorageProviding = POSPreviewStorage()
     var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
 }
 
@@ -306,9 +305,6 @@ private struct POSPreviewStores: POSStoresProviding {
 
 private struct POSPreviewSessionManager: POSSessionManagerProviding {
     var defaultSite: POSSiteProviding? = nil
-}
-
-private struct POSPreviewStorage: POSStorageProviding {
 }
 
 private struct POSPreviewFeatureFlags: POSFeatureFlagProviding {

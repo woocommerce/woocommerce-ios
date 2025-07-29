@@ -44,7 +44,7 @@ protocol PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         currencySettings: CurrencySettings,
          analytics: POSAnalyticsProviding,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),

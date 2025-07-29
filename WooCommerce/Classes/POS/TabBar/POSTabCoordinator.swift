@@ -128,6 +128,7 @@ private extension POSTabCoordinator {
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
                                                                 receiptService: receiptService,
+                                                                currencySettings: serviceAdapter.currency,
                                                                 analytics: serviceAdapter.analytics),
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),

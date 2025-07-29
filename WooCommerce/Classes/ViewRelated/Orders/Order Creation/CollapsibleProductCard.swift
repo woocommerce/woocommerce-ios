@@ -5,17 +5,21 @@ import TipKit
 /// TipKit tip for explaining when product discounts are unavailable due to coupons
 @available(iOS 17.0, *)
 struct ProductDiscountTip: Tip {
-    
+    // Forcing a new ID recreates invalidates the existing tip marked as `seen` by the system,
+    // since we're creating a new instance each time is toggled
+    var id: String = UUID().uuidString
+
     var title: Text {
         Text("Tipkit: Discounts unavailable")
+            .font(.body)
+            .foregroundColor(.white)
+            .fontWeight(.bold)
     }
 
     var message: Text? {
         Text("To add a Product Discount, please remove all Coupons from your order")
-    }
-
-    var image: Image? {
-        Image(systemName: "questionmark.circle")
+            .font(.body)
+            .foregroundColor(.gray)
     }
 }
 /// Displays a single collapsible product row or grouped parent and child product rows
@@ -144,7 +148,7 @@ private struct CollapsibleProductRowCard: View {
     private var shouldShowBadgeCounter: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
     }
-    
+
     @available(iOS 17.0, *)
     private func configureTips() {
         do {
@@ -427,8 +431,8 @@ private struct CustomTooltipModifier: ViewModifier {
             content
                 .overlay(alignment: .topTrailing) {
                     if shouldShowInfoTooltip {
-                        TipView(ProductDiscountTip(), arrowEdge: .leading)
-                            .tipBackground(.regularMaterial)
+                        TipView(ProductDiscountTip(), arrowEdge: .top)
+                            .tipBackground(Color.black)
                             .onTapGesture {
                                 shouldShowInfoTooltip = false
                             }

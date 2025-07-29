@@ -736,7 +736,7 @@ struct PointOfSaleOrderControllerTests {
                 // Then
                 let indexOfEvent = try #require(analytics.events.firstIndex(where: { $0.eventName == "receipt_email_failed" }))
                 #expect(analytics.events.map(\.properties)[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == true)
-                #expect(analytics.events.map(\.properties)[indexOfEvent]["error_description"] as? String != nil)
+                #expect(analytics.events.map(\.error)[indexOfEvent] != nil)
             }
         }
     }

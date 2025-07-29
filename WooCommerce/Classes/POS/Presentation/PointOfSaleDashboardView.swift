@@ -4,6 +4,7 @@ import SwiftUI
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posSession) private var session
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -188,7 +189,7 @@ private extension PointOfSaleDashboardView {
         NavigationView {
             SupportForm(isPresented: $showSupport,
                         viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
+                                                        defaultSite: session.defaultSite))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.supportDone) {

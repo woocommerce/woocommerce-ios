@@ -435,7 +435,7 @@ private struct PurchasableItemsCartSection: View {
 
     private func cancelLoadingCallback(for cartItem: Cart.PurchasableItem) -> () -> Void {
         return {
-            ServiceLocator.analytics.track(
+            analytics.track(
                 event: .PointOfSale.itemRemovedFromCart(
                     sourceView: .cart,
                     itemType: .loading

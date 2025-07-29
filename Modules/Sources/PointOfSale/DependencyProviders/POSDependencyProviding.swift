@@ -2,7 +2,7 @@ import Foundation
 import WooFoundation
 import Experiments
 import protocol Yosemite.Action
-import protocol Yosemite.SessionManagerProtocol
+import struct Yosemite.Site
 
 /// Main dependency provider protocol for POS module
 /// This abstracts away direct ServiceLocator access
@@ -11,6 +11,7 @@ public protocol POSDependencyProviding {
     var stores: POSStoresProviding { get }
     var currency: CurrencySettings { get }
     var featureFlags: POSFeatureFlagProviding { get }
+    var session: POSSessionManagerProviding { get }
 }
 
 /// Analytics service abstraction
@@ -28,17 +29,7 @@ public protocol POSStoresProviding {
 
 /// Session manager abstraction
 public protocol POSSessionManagerProviding {
-    var defaultSite: POSSiteProviding? { get }
-}
-
-/// Site abstraction
-public protocol POSSiteProviding {
-    // Add site properties as needed during migration
-}
-
-/// Storage manager abstraction
-public protocol POSStorageProviding {
-    // Storage methods will be added as we migrate files
+    var defaultSite: Site? { get }
 }
 
 /// Feature flag service abstraction

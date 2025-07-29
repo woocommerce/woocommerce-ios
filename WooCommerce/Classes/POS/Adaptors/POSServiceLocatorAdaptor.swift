@@ -7,6 +7,7 @@ import protocol Yosemite.StoresManager
 import protocol Yosemite.SessionManagerProtocol
 import protocol Storage.StorageManagerType
 import protocol Yosemite.Action
+import struct Yosemite.Site
 
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
@@ -24,6 +25,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var featureFlags: POSFeatureFlagProviding {
         return POSFeatureFlagAdaptor(featureFlagService: ServiceLocator.featureFlagService)
+    }
+
+    var session: POSSessionManagerProviding {
+        return POSSessionManagerAdaptor(sessionManager: ServiceLocator.stores.sessionManager)
     }
 }
 
@@ -48,30 +53,9 @@ private struct POSSessionManagerAdaptor: POSSessionManagerProviding {
         self.sessionManager = sessionManager
     }
 
-    var defaultSite: POSSiteProviding? {
-        guard let site = sessionManager.defaultSite else { return nil }
-        return POSSiteAdaptor(site: site)
+    var defaultSite: Site? {
+        return sessionManager.defaultSite
     }
-}
-
-private struct POSSiteAdaptor: POSSiteProviding {
-    private let site: Site
-
-    init(site: Site) {
-        self.site = site
-    }
-
-    // Add site properties as needed during migration
-}
-
-private struct POSStorageAdaptor: POSStorageProviding {
-    private let storageManager: StorageManagerType
-
-    init(storage: StorageManagerType) {
-        self.storageManager = storage
-    }
-
-    // Storage methods will be added as we migrate files
 }
 
 private struct POSFeatureFlagAdaptor: POSFeatureFlagProviding {
@@ -86,8 +70,7 @@ private struct POSFeatureFlagAdaptor: POSFeatureFlagProviding {
     }
 }
 
-/// Adaptor that implements POSAnalyticsProviding using ServiceLocator
-final class POSAnalyticsAdaptor: POSAnalyticsProviding {
+private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
     func track(event: WooAnalyticsEvent) {
         let mainAppEvent = WooAnalyticsEvent(statName: event.statName, properties: event.properties, error: event.error)
         ServiceLocator.analytics.track(event: mainAppEvent)

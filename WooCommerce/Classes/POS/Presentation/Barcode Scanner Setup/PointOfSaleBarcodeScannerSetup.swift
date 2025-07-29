@@ -120,10 +120,12 @@ private extension PointOfSaleBarcodeScannerSetup {
 
 // MARK: - Previews
 
+#if DEBUG
 @available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: POSPreviewAnalytics())
 }
+#endif
 
 /// A container view that animates changes in its child content with a fade-out and fade-in transition,
 /// while also smoothly animating changes in height.

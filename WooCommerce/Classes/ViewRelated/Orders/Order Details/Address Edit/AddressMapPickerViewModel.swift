@@ -45,36 +45,74 @@ final class AddressMapPickerViewModel: NSObject {
         configureMap(with: fields)
     }
 
-    private func formatAddressString(
-        address1: String = "",
-        address2: String = "",
-        city: String = "",
-        state: String = "",
-        postcode: String = "",
-        country: String = ""
-    ) -> String {
-        [address1, address2, city, state, postcode, country]
-            .filter { !$0.isEmpty }
-            .joined(separator: ", ")
+    deinit {
+        searchCompleter.delegate = nil
     }
 
-    private func formatPlacemarkAddress(_ placemark: MKPlacemark) -> String {
-        placemark.postalAddress?.formatted(as: .mailingAddress) ?? ""
+    @MainActor
+    func startStream() async {
+        for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
+            if query.isEmpty {
+                searchResults = []
+            } else {
+                searchCompleter.queryFragment = query
+            }
+        }
     }
 
-    private func configureLocationServices() {
+    @MainActor
+    func selectLocation(_ result: MKLocalSearchCompletion) {
+        let searchRequest = MKLocalSearch.Request(completion: result)
+        let search = MKLocalSearch(request: searchRequest)
+
+        search.start { [weak self] (response, error) in
+            guard let self,
+                  let firstPlacemark = response?.mapItems.first?.placemark else {
+                return
+            }
+            self.onSelectedPlacemark(firstPlacemark, result: result)
+        }
+    }
+
+    func updateFields(_ fields: inout AddressFormFields) {
+        guard let place = selectedPlace,
+              let address = place.postalAddress else {
+            return
+        }
+
+        fields.address1 = address.street
+        fields.city = address.city
+        fields.postcode = address.postalCode
+        fields.country = address.isoCountryCode
+        if let country = countryByCode(address.isoCountryCode) {
+            fields.selectedCountry = country
+            if let state = country.states.first(where: { $0.code == address.state }) {
+                fields.selectedState = state
+            } else {
+                fields.state = address.state
+            }
+        } else {
+            fields.country = address.isoCountryCode
+            fields.state = address.state
+        }
+    }
+}
+
+@available(iOS 17, *)
+private extension AddressMapPickerViewModel {
+    func configureLocationServices() {
         let locationManager = CLLocationManager()
         if locationManager.authorizationStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
     }
 
-    private func configureSearchCompleter() {
+    func configureSearchCompleter() {
         searchCompleter.resultTypes = .address
         searchCompleter.delegate = self
     }
 
-    private func configureMap(with fields: AddressFormFields) {
+    func configureMap(with fields: AddressFormFields) {
         // If fields are empty and we have location permission, use current location for the initial map region.
         if fields.address1.isEmpty && fields.address2.isEmpty && fields.city.isEmpty {
             let locationManager = CLLocationManager()
@@ -87,7 +125,6 @@ final class AddressMapPickerViewModel: NSObject {
                         center: currentLocation.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
-                    annotations = [MapAnnotation(coordinate: currentLocation.coordinate)]
                 }
                 return
             }
@@ -124,32 +161,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     @MainActor
-    func startStream() async {
-        for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
-            if query.isEmpty {
-                searchResults = []
-            } else {
-                searchCompleter.queryFragment = query
-            }
-        }
-    }
-
-    @MainActor
-    func selectLocation(_ result: MKLocalSearchCompletion) {
-        let searchRequest = MKLocalSearch.Request(completion: result)
-        let search = MKLocalSearch(request: searchRequest)
-
-        search.start { [weak self] (response, error) in
-            guard let self,
-                  let firstPlacemark = response?.mapItems.first?.placemark else {
-                return
-            }
-            self.onSelectedPlacemark(firstPlacemark, result: result)
-        }
-    }
-
-    @MainActor
-    private func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) {
+    func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) {
         withAnimation { [weak self] in
             guard let self else { return }
             self.searchResults = []
@@ -163,31 +175,21 @@ final class AddressMapPickerViewModel: NSObject {
         }
     }
 
-    func updateFields(_ fields: inout AddressFormFields) {
-        guard let place = selectedPlace,
-              let address = place.postalAddress else {
-            return
-        }
-
-        fields.address1 = address.street
-        fields.city = address.city
-        fields.postcode = address.postalCode
-        fields.country = address.isoCountryCode
-        if let country = countryByCode(address.isoCountryCode) {
-            fields.selectedCountry = country
-            if let state = country.states.first(where: { $0.code == address.state }) {
-                fields.selectedState = state
-            } else {
-                fields.state = address.state
-            }
-        } else {
-            fields.country = address.isoCountryCode
-            fields.state = address.state
-        }
+    func formatAddressString(
+        address1: String = "",
+        address2: String = "",
+        city: String = "",
+        state: String = "",
+        postcode: String = "",
+        country: String = ""
+    ) -> String {
+        [address1, address2, city, state, postcode, country]
+            .filter { !$0.isEmpty }
+            .joined(separator: ", ")
     }
 
-    deinit {
-        searchCompleter.delegate = nil
+    func formatPlacemarkAddress(_ placemark: MKPlacemark) -> String {
+        placemark.postalAddress?.formatted(as: .mailingAddress) ?? ""
     }
 }
 
@@ -198,7 +200,7 @@ extension AddressMapPickerViewModel: MKLocalSearchCompleterDelegate {
     }
 
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        print("Search completer error: \(error)")
+        DDLogError("⛔️ Address map search error: \(error)")
     }
 }
 

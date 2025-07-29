@@ -151,7 +151,7 @@ private extension WooShippingCustomsItemViewModel {
 
             let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired) = result
 
-            let hsTariffNumberRequirementMet = hsTariffNumber.isEmpty && !isHSTariffNumberRequired || isValidTariffNumber && hsTariffNumber.isNotEmpty
+            let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) || (isValidTariffNumber && hsTariffNumber.isNotEmpty)
 
             requiredInformationIsEntered = description.isNotEmpty &&
             valuePerUnit.isNotEmpty &&

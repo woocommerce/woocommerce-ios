@@ -127,7 +127,6 @@ struct WooShippingCustomsItem: View {
                     .foregroundColor(warningRedColor)
                     .footnoteStyle()
                     .renderedIf(!viewModel.isValidTariffNumber)
-                ///
 
                 Button {
                     isShowingHSTarrifInfoWebView = true

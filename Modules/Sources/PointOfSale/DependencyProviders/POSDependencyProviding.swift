@@ -7,7 +7,7 @@ import Experiments
 public protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
     var stores: POSStoresProviding { get }
-    var currency: POSCurrencyProviding { get }
+    var currency: CurrencySettings { get }
     var storage: POSStorageProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
     var pushNotifications: POSPushNotificationProviding { get }
@@ -35,11 +35,6 @@ public protocol POSSessionManagerProviding {
 /// Site abstraction
 public protocol POSSiteProviding {
     // Add site properties as needed during migration
-}
-
-/// Currency settings and formatting abstraction
-public protocol POSCurrencyProviding {
-    // Currency-related methods will be added as we migrate files
 }
 
 /// Storage manager abstraction

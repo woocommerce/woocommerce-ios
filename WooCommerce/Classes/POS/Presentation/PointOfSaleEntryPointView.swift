@@ -21,6 +21,7 @@ struct PointOfSaleEntryPointView: View {
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let analytics: POSAnalyticsProviding
+    private let services: POSDependencyProviding
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -34,7 +35,8 @@ struct PointOfSaleEntryPointView: View {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         analytics: POSAnalyticsProviding) {
+         analytics: POSAnalyticsProviding,
+         services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -49,6 +51,7 @@ struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         self.analytics = analytics
+        self.services = services
     }
 
     var body: some View {
@@ -80,6 +83,7 @@ struct PointOfSaleEntryPointView: View {
         }
         .environmentObject(posModalManager)
         .environment(\.posAnalytics, analytics)
+        .environment(\.posServices, services)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -107,7 +111,8 @@ struct PointOfSaleEntryPointView: View {
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),
                               posEligibilityChecker: POSTabEligibilityChecker(siteID: 0),
-                              analytics: POSPreviewAnalytics())
+                              analytics: POSPreviewAnalytics(),
+                              services: POSPreviewServices())
 }
 
 #endif

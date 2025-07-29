@@ -94,6 +94,7 @@ private extension POSTabCoordinator {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let analyticsAdapter = POSAnalyticsAdapter()
+            let serviceAdapter = POSServiceAdapter()
             let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(analytics: analyticsAdapter)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
@@ -138,7 +139,8 @@ private extension POSTabCoordinator {
                     ),
                     barcodeScanService: barcodeScanService,
                     posEligibilityChecker: eligibilityChecker,
-                    analytics: analyticsAdapter
+                    analytics: analyticsAdapter,
+                    services: serviceAdapter
                 )
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen

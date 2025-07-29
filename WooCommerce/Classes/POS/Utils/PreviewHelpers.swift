@@ -2,6 +2,8 @@
 
 import Foundation
 import WooFoundation
+import protocol Experiments.FeatureFlagService
+import enum Experiments.FeatureFlag
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -285,6 +287,34 @@ final class POSPreviewAnalytics: POSAnalyticsProviding {
     func track(_ stat: WooFoundationCore.WooAnalyticsStat, parameters: [String: any WooFoundationCore.WooAnalyticsEventPropertyType]) {}
     func track(_ stat: WooFoundationCore.WooAnalyticsStat) {}
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {}
+}
+
+final class POSPreviewServices: POSDependencyProviding {
+    var analytics: POSAnalyticsProviding = POSPreviewAnalytics()
+    var stores: POSStoresProviding = POSPreviewStores()
+    var currency: CurrencySettings = CurrencySettings()
+    var storage: POSStorageProviding = POSPreviewStorage()
+    var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
+    var pushNotifications: POSPushNotificationProviding = POSPreviewPushNotifications()
+}
+
+// Preview implementations for all service types
+private struct POSPreviewStores: POSStoresProviding {
+    var sessionManager: POSSessionManagerProviding = POSPreviewSessionManager()
+}
+
+private struct POSPreviewSessionManager: POSSessionManagerProviding {
+    var defaultSite: POSSiteProviding? = nil
+}
+
+private struct POSPreviewStorage: POSStorageProviding {
+}
+
+private struct POSPreviewFeatureFlags: POSFeatureFlagProviding {
+    func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
+}
+
+private struct POSPreviewPushNotifications: POSPushNotificationProviding {
 }
 
 #endif

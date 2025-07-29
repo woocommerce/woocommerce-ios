@@ -6,6 +6,7 @@ import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
 import protocol Yosemite.StoresManager
+import class WooFoundation.CurrencySettings
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
@@ -26,6 +27,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private let siteID: Int64
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
+    private let currencySettings: CurrencySettings
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         CardPresentConfigurationLoader().configuration
@@ -34,7 +36,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
 
     @MainActor
-    init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
+         collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking,
+         currencySettings: CurrencySettings) async {
         self.siteID = siteID
         let onboardingAdaptor = CardPresentPaymentsOnboardingPresenterAdaptor()
         self.onboardingAdaptor = onboardingAdaptor
@@ -42,6 +47,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         self.paymentAlertsPresenterAdaptor = paymentAlertsPresenterAdaptor
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        self.currencySettings = currencySettings
 
         connectionControllerManager = CardPresentPaymentsConnectionControllerManager(
             siteID: siteID,
@@ -139,7 +145,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
         // TODO: Update the connected reader subject when we get a connection here.
 
-        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(paymentEventPublisher: paymentEventPublisher,
+        let paymentTask = CardPresentPaymentCollectOrderPaymentUseCaseAdaptor(currencySettings: currencySettings,
+                                                                              paymentEventPublisher: paymentEventPublisher,
                                                                               collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker
         ).collectPaymentTask(
             for: order,

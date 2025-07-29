@@ -13,11 +13,11 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
     private let stores: StoresManager
     private let collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking
 
-    init(currencyFormatter: CurrencyFormatter = .init(currencySettings: ServiceLocator.currencySettings),
+    init(currencySettings: CurrencySettings,
          paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>,
          stores: StoresManager = ServiceLocator.stores,
          collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) {
-        self.currencyFormatter = currencyFormatter
+        self.currencyFormatter = .init(currencySettings: currencySettings)
         self.stores = stores
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         paymentEventPublisher.assign(to: &$latestPaymentEvent)

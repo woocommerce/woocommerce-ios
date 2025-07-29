@@ -89,7 +89,6 @@ final class AppCoordinator {
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
-                        self.configureAuthenticator()
                         self.displayLoggedInUI()
                         self.synchronizeAndShowWhatsNew()
                     }
@@ -200,17 +199,11 @@ private extension AppCoordinator {
             presentLoginOnboarding { [weak self] in
                 guard let self = self else { return }
                 // Only displays the authenticator when dismissing onboarding to allow time for A/B test setup.
-                self.configureAndDisplayAuthenticator()
+                self.displayAuthenticator()
             }
         } else {
-            configureAndDisplayAuthenticator()
+            displayAuthenticator()
         }
-    }
-
-    /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
-    func configureAndDisplayAuthenticator() {
-        configureAuthenticator()
-        displayAuthenticator()
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.

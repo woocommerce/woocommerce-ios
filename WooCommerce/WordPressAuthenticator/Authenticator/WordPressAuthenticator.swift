@@ -84,6 +84,10 @@ import WordPressUI
                                   unifiedStyle: WordPressAuthenticatorUnifiedStyle?,
                                   displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
+        guard privateInstance == nil else {
+            assertionFailure("Attempting to initialize WordPressAuthenticator more than once - this would cause the delegate to be reset. Aborting... 🙅⛔️")
+            return
+        }
         privateInstance = WordPressAuthenticator(configuration: configuration,
                                                  style: style,
                                                  unifiedStyle: unifiedStyle,

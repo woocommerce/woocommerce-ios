@@ -369,7 +369,6 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        ServiceLocator.authenticationManager.initialize()
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }

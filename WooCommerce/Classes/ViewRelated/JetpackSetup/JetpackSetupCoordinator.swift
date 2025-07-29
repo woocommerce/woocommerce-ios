@@ -57,10 +57,6 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-
-        /// the authenticator needs to be initialized with configs
-        /// to be used for requesting authentication link and handle login later.
-        ServiceLocator.authenticationManager.initialize()
     }
 
     func showBenefitModal() {

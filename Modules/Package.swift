@@ -233,6 +233,7 @@ let package = Package(
             dependencies: [
                 "Experiments",
                 "WooFoundation",
+                "Yosemite"
                 // Additional dependencies will be added as needed when moving files
             ]
         ),
@@ -386,6 +387,7 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "PointOfSale",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),
@@ -423,6 +425,7 @@ enum XcodeSupport {
                     "Fakes",
                     "TestKit",
                     "WordPressShared",
+                    "PointOfSale", // TODO: Remove after POS modularization
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),

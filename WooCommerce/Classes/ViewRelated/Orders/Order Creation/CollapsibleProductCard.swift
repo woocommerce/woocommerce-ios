@@ -1,6 +1,23 @@
 import Yosemite
 import SwiftUI
+import TipKit
 
+/// TipKit tip for explaining when product discounts are unavailable due to coupons
+@available(iOS 17.0, *)
+struct ProductDiscountTip: Tip {
+    
+    var title: Text {
+        Text("Tipkit: Discounts unavailable")
+    }
+
+    var message: Text? {
+        Text("To add a Product Discount, please remove all Coupons from your order")
+    }
+
+    var image: Image? {
+        Image(systemName: "questionmark.circle")
+    }
+}
 /// Displays a single collapsible product row or grouped parent and child product rows
 struct CollapsibleProductCard: View {
     private let viewModel: CollapsibleProductCardViewModel
@@ -126,6 +143,17 @@ private struct CollapsibleProductRowCard: View {
 
     private var shouldShowBadgeCounter: Bool {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationUI)
+    }
+    
+    @available(iOS 17.0, *)
+    private func configureTips() {
+        do {
+            // Passing a configuration is necessary, despite not enforced on compile-time
+            // If no config is passed, the tip will not render, and show no feedback of why
+            try Tips.configure([.displayFrequency(.immediate)])
+        } catch {
+            debugPrint("🍍 Configure TipKit failed")
+        }
     }
 
     init(viewModel: CollapsibleProductRowCardViewModel,
@@ -292,7 +320,7 @@ private extension CollapsibleProductRowCard {
     }
 }
 
-private extension CollapsibleProductRowCard {
+extension CollapsibleProductRowCard {
     // Subscription details section. Renders all elements for a Subscription-type product
     @ViewBuilder var subscriptionDetailsSection: some View {
         VStack(spacing: Layout.subscriptionDetailsPadding) {
@@ -372,7 +400,11 @@ private extension CollapsibleProductRowCard {
             Group {
                 Spacer()
                 Button {
+                    if #available(iOS 17.0, *) {
+                        configureTips()
+                    }
                     shouldShowInfoTooltip.toggle()
+                    debugPrint("🍍 toggle tapped - shouldShowInfoTooltip: \(shouldShowInfoTooltip)")
                 } label: {
                     Image(systemName: "questionmark.circle")
                         .foregroundColor(Color(.wooCommercePurple(.shade60)))
@@ -380,9 +412,35 @@ private extension CollapsibleProductRowCard {
             }
             .renderedIf(shouldDisallowDiscounts)
         }
-        .tooltip(isPresented: $shouldShowInfoTooltip,
-                 toolTipTitle: Localization.discountTooltipTitle,
-                 toolTipDescription: Localization.discountTooltipDescription)
+        // Usage #1
+        .modifier(CustomTooltipModifier(shouldShowInfoTooltip: $shouldShowInfoTooltip))
+    }
+}
+
+/// ViewModifier that handles both TipKit (iOS 17+) and custom tooltip (iOS 16-)
+private struct CustomTooltipModifier: ViewModifier {
+    @Binding var shouldShowInfoTooltip: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 17.0, *) {
+            // TipKit
+            content
+                .overlay(alignment: .topTrailing) {
+                    if shouldShowInfoTooltip {
+                        TipView(ProductDiscountTip(), arrowEdge: .leading)
+                            .tipBackground(.regularMaterial)
+                            .onTapGesture {
+                                shouldShowInfoTooltip = false
+                            }
+                    }
+                }
+        } else {
+            // iOS 16 and below continues using the custom tooltip
+            content
+                .tooltip(isPresented: $shouldShowInfoTooltip,
+                         toolTipTitle: "Custom: Discounts unavailable",
+                         toolTipDescription: "To add a Product Discount, please remove all Coupons from your order.")
+        }
     }
 }
 

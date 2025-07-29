@@ -82,6 +82,7 @@ private extension AddOrderComponentsSection {
         .renderedIf(couponLineViewModel.couponLineRows.isEmpty)
         .padding()
         .accessibilityIdentifier("add-coupon-button")
+        // Usage #2
         .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
                  toolTipTitle: Localization.couponsTooltipTitle,
                  toolTipDescription: Localization.couponsTooltipDescription,

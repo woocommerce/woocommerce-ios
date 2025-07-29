@@ -368,56 +368,118 @@ extension CollapsibleProductRowCard {
     }
 
     @ViewBuilder var discountRow: some View {
-        HStack {
-            if !viewModel.hasDiscount || shouldDisallowDiscounts {
-                Button(Localization.addDiscountLabel) {
-                    trackAddDiscountTapped()
-                    onAddDiscount(viewModel.id)
-                }
-                .buttonStyle(PlusButtonStyle())
-                .disabled(shouldDisallowDiscounts || isLoading)
-            } else {
+        // Always render the row, overlay the tip if needed (iOS 17+), else fallback to .tooltip (iOS 16-)
+        if #available(iOS 17.0, *) {
+            ZStack {
+                // The row content
                 HStack {
-                    Button(action: {
-                        trackEditDiscountTapped()
-                        onAddDiscount(viewModel.id)
-                    }, label: {
-                        HStack {
-                            Text(Localization.discountLabel)
-                            Image(uiImage: .pencilImage)
-                                .resizable()
-                                .frame(width: Layout.iconSize, height: Layout.iconSize)
+                    if !viewModel.hasDiscount || shouldDisallowDiscounts {
+                        Button(Localization.addDiscountLabel) {
+                            trackAddDiscountTapped()
+                            onAddDiscount(viewModel.id)
                         }
-                    })
-                    .disabled(isLoading)
+                        .buttonStyle(PlusButtonStyle())
+                        .disabled(shouldDisallowDiscounts || isLoading)
+                    } else {
+                        HStack {
+                            Button(action: {
+                                trackEditDiscountTapped()
+                                onAddDiscount(viewModel.id)
+                            }, label: {
+                                HStack {
+                                    Text(Localization.discountLabel)
+                                    Image(uiImage: .pencilImage)
+                                        .resizable()
+                                        .frame(width: Layout.iconSize, height: Layout.iconSize)
+                                }
+                            })
+                            .disabled(isLoading)
+                            Spacer()
+                            if let discountLabel = viewModel.discountLabel {
+                                Text(minusSign + discountLabel)
+                                    .foregroundColor(.green)
+                                    .shimmering(active: isLoading)
+                            }
+                        }
+                        .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
+                    }
+                    Group {
+                        Spacer()
+                        Button {
+                            configureTips()
+                            shouldShowInfoTooltip.toggle()
+                            debugPrint("🍍 toggle tapped - shouldShowInfoTooltip: \(shouldShowInfoTooltip)")
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                        }
+                    }
+                    .renderedIf(shouldDisallowDiscounts)
+                }
+                // Overlay the TipView and a mostly opaque black background if tooltip is visible
+                if shouldShowInfoTooltip {
+                    Color.black.opacity(0.85)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
+                        .onTapGesture {
+                            shouldShowInfoTooltip = false
+                        }
+                    TipView(ProductDiscountTip(), arrowEdge: .top)
+                        .padding()
+                        .onTapGesture {
+                            shouldShowInfoTooltip = false
+                        }
+                }
+            }
+        } else {
+            // iOS 16 and below: use .tooltip as before
+            HStack {
+                if !viewModel.hasDiscount || shouldDisallowDiscounts {
+                    Button(Localization.addDiscountLabel) {
+                        trackAddDiscountTapped()
+                        onAddDiscount(viewModel.id)
+                    }
+                    .buttonStyle(PlusButtonStyle())
+                    .disabled(shouldDisallowDiscounts || isLoading)
+                } else {
+                    HStack {
+                        Button(action: {
+                            trackEditDiscountTapped()
+                            onAddDiscount(viewModel.id)
+                        }, label: {
+                            HStack {
+                                Text(Localization.discountLabel)
+                                Image(uiImage: .pencilImage)
+                                    .resizable()
+                                    .frame(width: Layout.iconSize, height: Layout.iconSize)
+                            }
+                        })
+                        .disabled(isLoading)
+                        Spacer()
+                        if let discountLabel = viewModel.discountLabel {
+                            Text(minusSign + discountLabel)
+                                .foregroundColor(.green)
+                                .shimmering(active: isLoading)
+                        }
+                    }
+                    .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
+                }
+                Group {
                     Spacer()
-                    if let discountLabel = viewModel.discountLabel {
-                        Text(minusSign + discountLabel)
-                            .foregroundColor(.green)
-                            .shimmering(active: isLoading)
+                    Button {
+                        shouldShowInfoTooltip.toggle()
+                        debugPrint("🍍 toggle tapped - shouldShowInfoTooltip: \(shouldShowInfoTooltip)")
+                    } label: {
+                        Image(systemName: "questionmark.circle")
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
                     }
                 }
-                // Redacts the discount editing row while product data is reloaded during remote sync.
-                // This avoids showing an out-of-date discount while hasn't synched
-                .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
+                .renderedIf(shouldDisallowDiscounts)
             }
-            Group {
-                Spacer()
-                Button {
-                    if #available(iOS 17.0, *) {
-                        configureTips()
-                    }
-                    shouldShowInfoTooltip.toggle()
-                    debugPrint("🍍 toggle tapped - shouldShowInfoTooltip: \(shouldShowInfoTooltip)")
-                } label: {
-                    Image(systemName: "questionmark.circle")
-                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                }
-            }
-            .renderedIf(shouldDisallowDiscounts)
+            .tooltip(isPresented: $shouldShowInfoTooltip,
+                     toolTipTitle: Localization.discountTooltipTitle,
+                     toolTipDescription: Localization.discountTooltipDescription)
         }
-        // Usage #1
-        .modifier(CustomTooltipModifier(shouldShowInfoTooltip: $shouldShowInfoTooltip))
     }
 }
 

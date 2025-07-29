@@ -418,13 +418,15 @@ extension CollapsibleProductRowCard {
                 }
                 // Overlay the TipView and a mostly opaque black background if tooltip is visible
                 if shouldShowInfoTooltip {
-                    Color.black.opacity(0.85)
+                    Color(.systemBackground).opacity(0.01)
                         .ignoresSafeArea()
+                        .contentShape(Rectangle())
                         .transition(.opacity)
                         .onTapGesture {
                             shouldShowInfoTooltip = false
                         }
                     TipView(ProductDiscountTip(), arrowEdge: .top)
+                        .tipBackground(Color.black)
                         .padding()
                         .onTapGesture {
                             shouldShowInfoTooltip = false

@@ -30,3 +30,11 @@ extension Storage.ProductAttribute: ReadOnlyConvertible {
                                 options: options ?? [String]())
     }
 }
+
+// MARK: - Storage.ProductAttribute: ListItemConvertible
+//
+extension Storage.ProductAttribute: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductAttribute {
+        return toReadOnly()
+    }
+}

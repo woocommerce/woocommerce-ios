@@ -28,3 +28,11 @@ extension Storage.ProductImage: ReadOnlyConvertible {
                             alt: alt)
     }
 }
+
+// MARK: - Storage.ProductImage: ListItemConvertible
+//
+extension Storage.ProductImage: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductImage {
+        return toReadOnly()
+    }
+}

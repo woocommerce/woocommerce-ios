@@ -30,3 +30,11 @@ extension Storage.ShipmentTracking: ReadOnlyConvertible {
                                 dateShipped: dateShipped)
     }
 }
+
+// MARK: - Storage.ShipmentTracking: ListItemConvertible
+//
+extension Storage.ShipmentTracking: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShipmentTracking {
+        return toReadOnly()
+    }
+}

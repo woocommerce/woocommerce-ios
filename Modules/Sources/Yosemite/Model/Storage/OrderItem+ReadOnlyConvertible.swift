@@ -59,3 +59,12 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          bundleConfiguration: [])
     }
 }
+
+
+// MARK: - Storage.OrderItem: ListItemConvertible
+//
+extension Storage.OrderItem: ListItemConvertible {
+    public func toListItem() -> Yosemite.OrderItem {
+        return toReadOnly()
+    }
+}

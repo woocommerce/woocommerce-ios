@@ -19,3 +19,11 @@ extension Storage.ShippingLineTax: ReadOnlyConvertible {
         return ShippingLineTax(taxID: taxID, subtotal: subtotal ?? "", total: total ?? "")
     }
 }
+
+// MARK: - Storage.ShippingLineTax: ListItemConvertible
+//
+extension Storage.ShippingLineTax: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShippingLineTax {
+        return toReadOnly()
+    }
+}

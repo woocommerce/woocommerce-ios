@@ -26,3 +26,11 @@ extension Storage.InboxAction: ReadOnlyConvertible {
                            url: url ?? "")
     }
 }
+
+// MARK: - Storage.InboxAction: ListItemConvertible
+//
+extension Storage.InboxAction: ListItemConvertible {
+    public func toListItem() -> Yosemite.InboxAction {
+        return toReadOnly()
+    }
+}

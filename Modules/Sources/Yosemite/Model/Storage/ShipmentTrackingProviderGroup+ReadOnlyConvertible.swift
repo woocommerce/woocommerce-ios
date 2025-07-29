@@ -19,3 +19,11 @@ extension Storage.ShipmentTrackingProviderGroup: ReadOnlyConvertible {
         return ShipmentTrackingProviderGroup(name: name ?? "", siteID: siteID, providers: groupProviders )
     }
 }
+
+// MARK: - Storage.ShipmentTrackingProviderGroup: ListItemConvertible
+//
+extension Storage.ShipmentTrackingProviderGroup: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShipmentTrackingProviderGroup {
+        return toReadOnly()
+    }
+}

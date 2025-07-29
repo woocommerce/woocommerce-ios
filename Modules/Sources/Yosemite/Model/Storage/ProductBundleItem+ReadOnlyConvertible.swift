@@ -46,6 +46,14 @@ extension Storage.ProductBundleItem: ReadOnlyConvertible {
     }
 }
 
+// MARK: - Storage.ProductBundleItem: ListItemConvertible
+//
+extension Storage.ProductBundleItem: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductBundleItem {
+        return toReadOnly()
+    }
+}
+
 private extension Storage.ProductBundleItem {
     var defaultVariationAttributesArray: [Storage.GenericAttribute] {
         return defaultVariationAttributes?.toArray() ?? []

@@ -132,3 +132,11 @@ extension Storage.Customer: ReadOnlyConvertible {
         )
     }
 }
+
+// MARK: - Storage.Customer: ListItemConvertible
+//
+extension Storage.Customer: ListItemConvertible {
+    public func toListItem() -> Yosemite.Customer {
+        return toReadOnly()
+    }
+}

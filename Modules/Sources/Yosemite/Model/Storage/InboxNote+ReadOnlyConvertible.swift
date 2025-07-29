@@ -37,3 +37,12 @@ extension Storage.InboxNote: ReadOnlyConvertible {
                                   dateCreated: dateCreated ?? Date())
     }
 }
+
+
+// MARK: - Storage.InboxNote: ListItemConvertible
+//
+extension Storage.InboxNote: ListItemConvertible {
+    public func toListItem() -> Yosemite.InboxNote {
+        return toReadOnly()
+    }
+}

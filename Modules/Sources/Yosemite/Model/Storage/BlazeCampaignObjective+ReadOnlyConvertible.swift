@@ -24,3 +24,11 @@ extension Storage.BlazeCampaignObjective: ReadOnlyConvertible {
                                locale: locale)
     }
 }
+
+// MARK: - Storage.BlazeCampaignObjective: ListItemConvertible
+//
+extension Storage.BlazeCampaignObjective: ListItemConvertible {
+    public func toListItem() -> BlazeCampaignObjective {
+        return toReadOnly()
+    }
+}

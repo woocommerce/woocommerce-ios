@@ -54,6 +54,14 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
     }
 }
 
+// MARK: - Storage.ShippingLabel: ListItemConvertible
+//
+extension Storage.ShippingLabel: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShippingLabel {
+        return toReadOnly()
+    }
+}
+
 private extension ShippingLabelAddress {
     static var empty: Self {
         .init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")

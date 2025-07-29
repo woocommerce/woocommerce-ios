@@ -18,3 +18,12 @@ extension Storage.OrderItemProductAddOn: ReadOnlyConvertible {
         .init(addOnID: addOnID?.int64Value, key: key, value: value)
     }
 }
+
+
+// MARK: - Storage.OrderItemProductAddOn: ListItemConvertible
+//
+extension Storage.OrderItemProductAddOn: ListItemConvertible {
+    public func toListItem() -> Yosemite.OrderItemProductAddOn {
+        return toReadOnly()
+    }
+}

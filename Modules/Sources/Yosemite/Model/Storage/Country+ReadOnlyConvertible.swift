@@ -21,3 +21,11 @@ extension Storage.Country: ReadOnlyConvertible {
                        states: states.map { $0.toReadOnly() })
     }
 }
+
+// MARK: - Storage.Country: ListItemConvertible
+//
+extension Storage.Country: ListItemConvertible {
+    public func toListItem() -> Yosemite.Country {
+        return toReadOnly()
+    }
+}

@@ -26,3 +26,11 @@ extension Storage.OrderNote: ReadOnlyConvertible {
                          author: author ?? "")
     }
 }
+
+// MARK: - Storage.OrderNote: ListItemConvertible
+//
+extension Storage.OrderNote: ListItemConvertible {
+    public func toListItem() -> Yosemite.OrderNote {
+        return toReadOnly()
+    }
+}

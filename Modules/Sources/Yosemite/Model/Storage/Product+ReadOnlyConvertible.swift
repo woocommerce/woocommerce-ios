@@ -218,3 +218,11 @@ extension Storage.Product: ReadOnlyConvertible {
         return array.map { Int64($0) }
     }
 }
+
+// MARK: - Storage.Product: ListItemConvertible
+//
+extension Storage.Product: ListItemConvertible {
+    public func toListItem() -> Yosemite.Product {
+        return toReadOnly()
+    }
+}

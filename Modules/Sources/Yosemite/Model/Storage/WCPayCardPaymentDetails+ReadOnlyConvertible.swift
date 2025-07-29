@@ -14,3 +14,11 @@ extension Storage.WCPayCardPaymentDetails: ReadOnlyConvertible {
                                 funding: WCPayCardFunding(rawValue: funding) ?? .unknown)
     }
 }
+
+// MARK: - Storage.WCPayCardPaymentDetails: ListItemConvertible
+//
+extension Storage.WCPayCardPaymentDetails: ListItemConvertible {
+    public func toListItem() -> Yosemite.WCPayCardPaymentDetails {
+        return toReadOnly()
+    }
+}

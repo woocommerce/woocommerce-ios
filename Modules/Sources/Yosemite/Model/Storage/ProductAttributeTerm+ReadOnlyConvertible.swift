@@ -25,3 +25,11 @@ extension Storage.ProductAttributeTerm: ReadOnlyConvertible {
                                     count: (Int)(count))
     }
 }
+
+// MARK: - Storage.ProductAttributeTerm: ListItemConvertible
+//
+extension Storage.ProductAttributeTerm: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductAttributeTerm {
+        return toReadOnly()
+    }
+}

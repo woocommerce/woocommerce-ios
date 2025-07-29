@@ -19,3 +19,11 @@ extension Storage.ShipmentTrackingProvider: ReadOnlyConvertible {
         return ShipmentTrackingProvider(siteID: siteID, name: name ?? "", url: url ?? "")
     }
 }
+
+// MARK: - Storage.ShipmentTrackingProvider: ListItemConvertible
+//
+extension Storage.ShipmentTrackingProvider: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShipmentTrackingProvider {
+        return toReadOnly()
+    }
+}

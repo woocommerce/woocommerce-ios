@@ -24,3 +24,14 @@ extension Storage.OrderCoupon: ReadOnlyConvertible {
                                discountTax: discountTax ?? "")
     }
 }
+
+// MARK: - Storage.OrderCoupon: ListItemConvertible
+//
+extension Storage.OrderCoupon: ListItemConvertible {
+
+    /// Returns a ListItem version of the receiver.
+    ///
+    public func toListItem() -> Yosemite.OrderCouponLine {
+        return toReadOnly()
+    }
+}

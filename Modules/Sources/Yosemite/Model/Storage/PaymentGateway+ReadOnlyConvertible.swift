@@ -29,3 +29,11 @@ extension Storage.PaymentGateway: ReadOnlyConvertible {
                        instructions: instructions)
     }
 }
+
+// MARK: - Storage.PaymentGateway: ListItemConvertible
+//
+extension Storage.PaymentGateway: ListItemConvertible {
+    public func toListItem() -> Yosemite.PaymentGateway {
+        return toReadOnly()
+    }
+}

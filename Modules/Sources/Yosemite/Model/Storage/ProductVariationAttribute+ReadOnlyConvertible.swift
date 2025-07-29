@@ -21,3 +21,11 @@ extension Storage.GenericAttribute: ReadOnlyConvertible {
                                          option: value)
     }
 }
+
+// MARK: - Storage.GenericAttribute: ListItemConvertible
+//
+extension Storage.GenericAttribute: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductVariationAttribute {
+        return toReadOnly()
+    }
+}

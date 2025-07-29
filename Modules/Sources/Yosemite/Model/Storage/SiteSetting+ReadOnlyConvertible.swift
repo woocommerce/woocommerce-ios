@@ -28,3 +28,11 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
                            settingGroupKey: settingGroupKey ?? SiteSettingGroup.general.rawValue) // Default to general group
     }
 }
+
+// MARK: - Storage.SiteSetting: ListItemConvertible
+//
+extension Storage.SiteSetting: ListItemConvertible {
+    public func toListItem() -> Yosemite.SiteSetting {
+        return toReadOnly()
+    }
+}

@@ -25,3 +25,11 @@ extension Storage.WooShippingShipment: ReadOnlyConvertible {
                                    shippingLabel: shipmentShippingLabel)
     }
 }
+
+// MARK: - Storage.WooShippingShipment: ListItemConvertible
+//
+extension Storage.WooShippingShipment: ListItemConvertible {
+    public func toListItem() -> Yosemite.WooShippingShipment {
+        return toReadOnly()
+    }
+}

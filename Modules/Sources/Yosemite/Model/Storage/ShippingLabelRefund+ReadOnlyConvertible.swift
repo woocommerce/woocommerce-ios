@@ -18,3 +18,11 @@ extension Storage.ShippingLabelRefund: ReadOnlyConvertible {
               status: .init(rawValue: status))
     }
 }
+
+// MARK: - Storage.ShippingLabelRefund: ListItemConvertible
+//
+extension Storage.ShippingLabelRefund: ListItemConvertible {
+    public func toListItem() -> Yosemite.ShippingLabelRefund {
+        return toReadOnly()
+    }
+}

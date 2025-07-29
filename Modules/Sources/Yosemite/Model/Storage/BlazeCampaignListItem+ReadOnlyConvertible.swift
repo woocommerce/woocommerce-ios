@@ -55,3 +55,11 @@ extension Storage.BlazeCampaignListItem: ReadOnlyConvertible {
                               startTime: startTime)
     }
 }
+
+// MARK: - Storage.BlazeCampaignListItem: ListItemConvertible
+//
+extension Storage.BlazeCampaignListItem: ListItemConvertible {
+    public func toListItem() -> BlazeCampaignListItem {
+        return toReadOnly()
+    }
+}

@@ -24,3 +24,11 @@ extension Storage.AccountSettings: ReadOnlyConvertible {
                                lastName: lastName)
     }
 }
+
+// MARK: - Storage.AccountSettings: ListItemConvertible
+//
+extension Storage.AccountSettings: ListItemConvertible {
+    public func toListItem() -> Yosemite.AccountSettings {
+        return toReadOnly()
+    }
+}

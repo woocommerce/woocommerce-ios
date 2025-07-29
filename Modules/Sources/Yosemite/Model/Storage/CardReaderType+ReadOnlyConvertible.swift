@@ -40,3 +40,11 @@ extension StorageCardReaderType: ReadOnlyConvertible {
         }
     }
 }
+
+// MARK: - StorageCardReaderType: ListItemConvertible
+//
+extension StorageCardReaderType: ListItemConvertible {
+    public func toListItem() -> CardReaderType {
+        return toReadOnly()
+    }
+}

@@ -44,3 +44,11 @@ extension Storage.WooShippingOriginAddress: ReadOnlyConvertible {
               isVerified: isVerified)
     }
 }
+
+// MARK: - Storage.WooShippingOriginAddress: ListItemConvertible
+//
+extension Storage.WooShippingOriginAddress: ListItemConvertible {
+    public func toListItem() -> Yosemite.WooShippingOriginAddress {
+        return toReadOnly()
+    }
+}

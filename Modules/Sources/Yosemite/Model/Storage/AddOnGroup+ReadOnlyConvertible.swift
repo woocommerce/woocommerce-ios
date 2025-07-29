@@ -23,3 +23,11 @@ extension StorageAddOnGroup: ReadOnlyConvertible {
                           addOns: addOnsArray.map { $0.toReadOnly() })
     }
 }
+
+// MARK: - StorageAddOnGroup: ListItemConvertible
+//
+extension StorageAddOnGroup: ListItemConvertible {
+    public func toListItem() -> AddOnGroup {
+        return toReadOnly()
+    }
+}

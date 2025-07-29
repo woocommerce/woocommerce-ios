@@ -22,3 +22,11 @@ extension Storage.OrderRefundCondensed: ReadOnlyConvertible {
                                     total: total ?? "")
     }
 }
+
+// MARK: - Storage.OrderRefundCondensed: ListItemConvertible
+//
+extension Storage.OrderRefundCondensed: ListItemConvertible {
+    public func toListItem() -> Yosemite.OrderRefundCondensed {
+        return toReadOnly()
+    }
+}

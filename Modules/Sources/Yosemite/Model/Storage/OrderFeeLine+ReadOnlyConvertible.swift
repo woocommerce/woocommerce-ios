@@ -33,3 +33,14 @@ extension Storage.OrderFeeLine: ReadOnlyConvertible {
                             attributes: feeAttributes)
     }
 }
+
+// MARK: - Storage.OrderFeeLine: ListItemConvertible
+//
+extension Storage.OrderFeeLine: ListItemConvertible {
+
+    /// Returns a ListItem version of the receiver.
+    ///
+    public func toListItem() -> Yosemite.OrderFeeLine {
+        return toReadOnly()
+    }
+}

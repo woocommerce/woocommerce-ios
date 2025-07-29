@@ -60,3 +60,11 @@ extension Storage.Site: ReadOnlyConvertible {
                     hasSSOEnabled: hasSSOEnabled)
     }
 }
+
+// MARK: - Storage.Site: ListItemConvertible
+//
+extension Storage.Site: ListItemConvertible {
+    public func toListItem() -> Yosemite.Site {
+        return toReadOnly()
+    }
+}

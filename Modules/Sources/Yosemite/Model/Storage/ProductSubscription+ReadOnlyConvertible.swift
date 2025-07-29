@@ -36,3 +36,11 @@ extension Storage.ProductSubscription: ReadOnlyConvertible {
                                    paymentSyncMonth: paymentSyncMonth ?? "")
     }
 }
+
+// MARK: - Storage.ProductSubscription: ListItemConvertible
+//
+extension Storage.ProductSubscription: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductSubscription {
+        return toReadOnly()
+    }
+}

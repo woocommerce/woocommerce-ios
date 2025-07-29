@@ -15,3 +15,11 @@ extension Storage.WCPayCardPresentReceiptDetails: ReadOnlyConvertible {
                                               dedicatedFileName: dedicatedFileName)
     }
 }
+
+// MARK: - Storage.WCPayCardPresentReceiptDetails: ListItemConvertible
+//
+extension Storage.WCPayCardPresentReceiptDetails: ListItemConvertible {
+    public func toListItem() -> Yosemite.WCPayCardPresentReceiptDetails {
+        return toReadOnly()
+    }
+}

@@ -26,3 +26,11 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
                                slug: slug)
     }
 }
+
+// MARK: - Storage.ProductCategory: ListItemConvertible
+//
+extension Storage.ProductCategory: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductCategory {
+        return toReadOnly()
+    }
+}

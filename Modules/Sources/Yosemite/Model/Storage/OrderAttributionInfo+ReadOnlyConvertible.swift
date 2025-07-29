@@ -25,3 +25,12 @@ extension Storage.OrderAttributionInfo: ReadOnlyConvertible {
                              sessionPageViews: sessionPageViews)
     }
 }
+
+
+// MARK: - Storage.OrderAttributionInfo: ListItemConvertible
+//
+extension Storage.OrderAttributionInfo: ListItemConvertible {
+    public func toListItem() -> Yosemite.OrderAttributionInfo {
+        return toReadOnly()
+    }
+}

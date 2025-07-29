@@ -122,6 +122,14 @@ extension Storage.ProductVariation: ReadOnlyConvertible {
     }
 }
 
+// MARK: - Storage.ProductVariation: ListItemConvertible
+//
+extension Storage.ProductVariation: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductVariation {
+        return toReadOnly()
+    }
+}
+
 // MARK: - Private Helpers
 //
 private extension Storage.ProductVariation {

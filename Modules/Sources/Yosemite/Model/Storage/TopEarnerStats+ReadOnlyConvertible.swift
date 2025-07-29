@@ -27,3 +27,11 @@ extension Storage.TopEarnerStats: ReadOnlyConvertible {
                               items: statItems)
     }
 }
+
+// MARK: - Storage.TopEarnerStats: ListItemConvertible
+//
+extension Storage.TopEarnerStats: ListItemConvertible {
+    public func toListItem() -> Yosemite.TopEarnerStats {
+        return toReadOnly()
+    }
+}

@@ -43,3 +43,11 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
                                      isInTestMode: isInTestMode)
     }
 }
+
+// MARK: - Storage.PaymentGatewayAccount: ListItemConvertible
+//
+extension Storage.PaymentGatewayAccount: ListItemConvertible {
+    public func toListItem() -> Yosemite.PaymentGatewayAccount {
+        return toReadOnly()
+    }
+}

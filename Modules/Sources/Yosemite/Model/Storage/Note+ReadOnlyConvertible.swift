@@ -46,3 +46,12 @@ extension Storage.Note: ReadOnlyConvertible {
                     meta: meta ?? Data())
     }
 }
+
+
+// MARK: - Storage.Note: ListItemConvertible
+//
+extension Storage.Note: ListItemConvertible {
+    public func toListItem() -> Yosemite.Note {
+        return toReadOnly()
+    }
+}

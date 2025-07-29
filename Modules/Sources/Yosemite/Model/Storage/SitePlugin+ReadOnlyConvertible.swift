@@ -43,3 +43,11 @@ extension Storage.SitePlugin: ReadOnlyConvertible {
               textDomain: textDomain)
     }
 }
+
+// MARK: - Storage.SitePlugin: ListItemConvertible
+//
+extension Storage.SitePlugin: ListItemConvertible {
+    public func toListItem() -> SitePlugin {
+        return toReadOnly()
+    }
+}

@@ -8,7 +8,6 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var posModalManager = POSModalManager()
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posAnalytics) private var analytics
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -21,6 +20,7 @@ struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let analytics: POSAnalyticsProviding
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -33,7 +33,8 @@ struct PointOfSaleEntryPointView: View {
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
-         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         analytics: POSAnalyticsProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -47,6 +48,7 @@ struct PointOfSaleEntryPointView: View {
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self.analytics = analytics
     }
 
     var body: some View {
@@ -77,6 +79,7 @@ struct PointOfSaleEntryPointView: View {
                 barcodeScanService: barcodeScanService)
         }
         .environmentObject(posModalManager)
+        .environment(\.posAnalytics, analytics)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -103,7 +106,8 @@ struct PointOfSaleEntryPointView: View {
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0))
+                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0),
+                              analytics: POSPreviewAnalytics())
 }
 
 #endif

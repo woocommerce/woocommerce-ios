@@ -137,9 +137,9 @@ private extension POSTabCoordinator {
                         analyticsProvider: analyticsAdapter
                     ),
                     barcodeScanService: barcodeScanService,
-                    posEligibilityChecker: eligibilityChecker
+                    posEligibilityChecker: eligibilityChecker,
+                    analytics: analyticsAdapter
                 )
-                .environment(\.posAnalytics, analyticsAdapter)
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)

@@ -3,6 +3,7 @@ import Combine
 import Networking
 import protocol WooFoundation.Analytics
 import class WooFoundation.CurrencySettings
+import enum WooFoundationCore.WooAnalyticsStat
 
 /// Type that syncs the necessary dependencies to the watch session.
 ///

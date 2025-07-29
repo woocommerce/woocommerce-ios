@@ -1,6 +1,7 @@
 import SwiftUI
 import WooFoundation
 import Experiments
+import protocol Yosemite.Action
 
 /// Environment key for POS analytics service
 public struct POSAnalyticsKey: EnvironmentKey {
@@ -48,7 +49,7 @@ public struct POSStorageKey: EnvironmentKey {
 
 // Default implementations for testing/previews
 private struct DefaultPOSStores: POSStoresProviding {
-    var sessionManager: POSSessionManagerProviding = DefaultPOSSessionManager()
+    func dispatch(_ action: Yosemite.Action) {}
 }
 
 private struct DefaultPOSSessionManager: POSSessionManagerProviding {

@@ -1,6 +1,7 @@
 import Foundation
 import WooFoundation
 import Experiments
+import protocol Yosemite.Action
 
 /// Main dependency provider protocol for POS module
 /// This abstracts away direct ServiceLocator access
@@ -22,8 +23,7 @@ public protocol POSAnalyticsProviding {
 
 /// Stores manager abstraction
 public protocol POSStoresProviding {
-    var sessionManager: POSSessionManagerProviding { get }
-    // Add other stores manager methods as needed
+    func dispatch(_ action: Yosemite.Action)
 }
 
 /// Session manager abstraction

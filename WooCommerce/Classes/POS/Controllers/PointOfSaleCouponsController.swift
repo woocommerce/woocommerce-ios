@@ -47,7 +47,8 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
-        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm, analytics: POSItemFetchAnalytics(itemType: .coupon, analytics: analyticsProvider))
+        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
+                                                            analytics: POSItemFetchAnalytics(itemType: .coupon, analytics: analyticsProvider))
         setSearchingState()
         await loadFirstPage()
     }

@@ -45,7 +45,7 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptService: POSReceiptServiceProtocol,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
+         analytics: POSAnalyticsProviding,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
@@ -66,7 +66,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencyFormatter: CurrencyFormatter
     private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let pluginsService: PluginsServiceProtocol
@@ -133,12 +133,12 @@ protocol PointOfSaleOrderControllerProtocol {
 
             try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
 
-            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": posReceiptEligibility])
+            analytics.track(.receiptEmailSuccess, parameters: ["eligible_for_pos_receipt": posReceiptEligibility])
         } catch {
             let properties = [
                 "eligible_for_pos_receipt": isEligibleForPOSReceipt
             ].compactMapValues( { $0 })
-            analytics.track(.receiptEmailFailed, properties: properties, error: error)
+            analytics.track(.receiptEmailFailed, parameters: properties, error: error)
             throw error
         }
     }

@@ -5,10 +5,11 @@ struct PointOfSaleBarcodeScannerSetup: View {
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
     @Environment(\.posModalParentSize) var parentSize
+    @Environment(\.posAnalytics) private var analytics
 
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
-        self.flowManager = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: isPresented)
+        self.flowManager = PointOfSaleBarcodeScannerSetupFlowManager(isPresented: isPresented, analytics: analytics)
     }
 
     var body: some View {
@@ -39,7 +40,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .background(Color.posSurfaceBright)
         }
         .onAppear {
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
+            analytics.track(.pointOfSaleBarcodeScannerSetupFlowShown)
         }
         .onDisappear {
             flowManager.onDisappear()
@@ -121,7 +122,7 @@ private extension PointOfSaleBarcodeScannerSetup {
 
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: POSPreviewAnalytics())
 }
 
 /// A container view that animates changes in its child content with a fade-out and fade-in transition,

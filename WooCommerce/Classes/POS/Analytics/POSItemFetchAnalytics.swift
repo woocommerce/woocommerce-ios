@@ -8,13 +8,13 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     /// The type of item being fetched
     private let itemType: POSItemType
     /// The analytics service to use for tracking
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     /// Creates a new analytics tracker for the given item type
     /// - Parameters:
     ///   - itemType: The type of item being fetched (e.g. "product", "variation")
-    ///   - analytics: The analytics service to use for tracking. Defaults to ServiceLocator.analytics
-    init(itemType: POSItemType, analytics: Analytics = ServiceLocator.analytics) {
+    ///   - analytics: The analytics service to use for tracking.
+    init(itemType: POSItemType, analytics: POSAnalyticsProviding) {
         self.itemType = itemType
         self.analytics = analytics
     }

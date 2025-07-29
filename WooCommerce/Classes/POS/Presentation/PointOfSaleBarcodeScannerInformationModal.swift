@@ -16,6 +16,8 @@ struct PointOfSaleBarcodeScannerInformationModal: View {
 }
 
 struct LegacyBarcodeScannerInformationContent: View {
+    @Environment(\.posAnalytics) private var analytics
+
     var body: some View {
         VStack(spacing: POSSpacing.medium) {
             PointOfSaleInformationModalParagraphView {
@@ -39,7 +41,7 @@ struct LegacyBarcodeScannerInformationContent: View {
             }
         }
         .onAppear(perform: {
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
+            analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
         })
     }
 
@@ -59,6 +61,8 @@ struct LegacyBarcodeScannerInformationContent: View {
 }
 
 struct BarcodeScannerInformation: View {
+    @Environment(\.posAnalytics) private var analytics
+
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
             Text(Localization.scannerInfoHeading)
@@ -86,13 +90,15 @@ struct BarcodeScannerInformation: View {
             }
         }
         .onAppear(perform: {
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
+            analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
         })
     }
 }
 
 @available(iOS 17.0, *)
 struct ProductBarcodeSetupInformation: View {
+    @Environment(\.posAnalytics) private var analytics
+
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
             Text(Localization.productBarcodeInfoHeading)
@@ -112,7 +118,7 @@ struct ProductBarcodeSetupInformation: View {
                 .aspectRatio(contentMode: .fit)
         }
         .onAppear(perform: {
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
+            analytics.track(.pointOfSaleBarcodeScanningExplanationDialogShown)
         })
     }
 

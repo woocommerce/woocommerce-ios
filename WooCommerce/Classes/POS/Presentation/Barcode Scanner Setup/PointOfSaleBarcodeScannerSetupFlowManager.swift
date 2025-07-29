@@ -9,14 +9,14 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection
     @ObservationIgnored @Binding var isPresented: Bool
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
     private var keyboardObserver: NSObjectProtocol?
 
     var currentStepKey: String? {
         currentFlow?.currentStepKey.rawValue
     }
 
-    init(isPresented: Binding<Bool>, analytics: Analytics = ServiceLocator.analytics) {
+    init(isPresented: Binding<Bool>, analytics: POSAnalyticsProviding) {
         self._isPresented = isPresented
         self.analytics = analytics
         setupKeyboardObserver()

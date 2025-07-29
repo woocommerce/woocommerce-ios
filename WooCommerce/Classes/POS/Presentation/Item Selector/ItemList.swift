@@ -88,7 +88,9 @@ struct ItemList<HeaderView: View>: View {
                                                 sourceViewType: .init(
                                                     isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
                                                     searchTerm: posModel.viewStateCoordinatorForView.searchTerm
-                                                )))
+                                                ),
+                                                analytics: POSPreviewAnalytics()
+                                               ))
                     .barcodeScanning { scannedCode in
                         posModel.barcodeScanned(scannedCode)
                     },

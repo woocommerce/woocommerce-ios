@@ -8,6 +8,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var posModalManager = POSModalManager()
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posAnalytics) private var analytics
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -69,6 +70,7 @@ struct PointOfSaleEntryPointView: View {
                 couponsSearchController: couponsSearchController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
+                analytics: analytics,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,

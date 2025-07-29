@@ -5,6 +5,7 @@ struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posAnalytics) private var analytics
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
@@ -23,7 +24,7 @@ struct POSFloatingControlView: View {
         HStack {
             Menu {
                 Button {
-                    ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+                    analytics.track(.pointOfSaleExitMenuItemTapped)
                     showExitPOSModal = true
                 } label: {
                     Label(
@@ -32,7 +33,7 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
+                    analytics.track(.pointOfSaleGetSupportTapped)
                     showSupport = true
                 } label: {
                     Label(
@@ -42,7 +43,7 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     showDocumentation = true
-                    ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
+                    analytics.track(.pointOfSaleViewDocsTapped)
                 } label: {
                     Label(
                         title: { Text(Localization.viewDocumentation) },
@@ -51,7 +52,7 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     showProductRestrictionsModal = true
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                    analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                 } label: {
                     Label(
                         title: { Text(Localization.productRestrictionsInfo) },
@@ -60,7 +61,7 @@ struct POSFloatingControlView: View {
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
                     Button {
                         showBarcodeScanningModal = true
-                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+                        analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
                     } label: {
                         Label(
                             title: { Text(Localization.barcodeScanning) },
@@ -94,7 +95,7 @@ struct POSFloatingControlView: View {
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             } else {
                 PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)
             }

@@ -5,6 +5,7 @@ import protocol Yosemite.POSOrderableItem
 @available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
@@ -14,7 +15,11 @@ struct ItemListView: View {
     @Binding var searchTerm: String
 
     private var analyticsTracker: PointOfSaleItemListAnalyticsTracker {
-        PointOfSaleItemListAnalyticsTracker(selectedItemListType: selectedItemListType, searchTerm: searchTerm)
+        PointOfSaleItemListAnalyticsTracker(
+            selectedItemListType: selectedItemListType,
+            searchTerm: searchTerm,
+            analytics: analytics
+        )
     }
 
     private var _isSearching: Binding<Bool> {
@@ -184,7 +189,8 @@ struct ItemListView: View {
         POSItemActionHandlerFactory.itemActionHandler(
             itemListType: itemListType,
             searchTerm: searchTerm,
-            posModel: posModel
+            posModel: posModel,
+            analytics: analytics
         )
     }
 
@@ -192,7 +198,8 @@ struct ItemListView: View {
         POSItemActionHandlerFactory.variationActionHandler(
             itemListType: itemListType,
             searchTerm: searchTerm,
-            posModel: posModel
+            posModel: posModel,
+            analytics: analytics
         )
     }
 
@@ -208,7 +215,8 @@ struct ItemListView: View {
                 itemActionHandler: variationActionHandler(selectedItemListType),
                 analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                     sourceView: .variation,
-                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm)
+                    sourceViewType: .init(isSearching: selectedItemListType.isSearching, searchTerm: searchTerm),
+                    analytics: analytics
                 )
             )
             .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
@@ -299,7 +307,7 @@ private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
-            ServiceLocator.analytics.track(.pointOfSaleCouponsCreateTapped)
+            analytics.track(.pointOfSaleCouponsCreateTapped)
             showCouponCreationModal = true
         }
         .renderedIf(isAddingCouponAllowed)
@@ -360,7 +368,7 @@ private extension ItemListView {
             PointOfSaleItemListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
-                    ServiceLocator.analytics.track(.couponSettingEnabled)
+                    analytics.track(.couponSettingEnabled)
                 }
             })
         default:

@@ -15,10 +15,13 @@ public protocol POSDependencyProviding {
 
 /// Analytics service abstraction
 public protocol POSAnalyticsProviding {
-    func track(event: String, parameters: [String: Any])
+    func track(event: WooAnalyticsEvent)
+    func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: Error)
+    func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType])
+    func track(_ stat: WooAnalyticsStat)
 }
 
-/// Stores manager abstraction  
+/// Stores manager abstraction
 public protocol POSStoresProviding {
     var sessionManager: POSSessionManagerProviding { get }
     // Add other stores manager methods as needed

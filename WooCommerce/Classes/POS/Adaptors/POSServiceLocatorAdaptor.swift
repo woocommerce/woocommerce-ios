@@ -7,7 +7,6 @@ import protocol Yosemite.StoresManager
 import protocol Yosemite.SessionManagerProtocol
 import protocol Storage.StorageManagerType
 import protocol Yosemite.Action
-import struct Yosemite.Site
 
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
 final class POSServiceLocatorAdaptor: POSDependencyProviding {

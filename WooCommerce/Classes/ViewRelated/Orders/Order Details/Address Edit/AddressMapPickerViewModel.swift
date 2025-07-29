@@ -19,11 +19,14 @@ final class AddressMapPickerViewModel: NSObject {
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
     var annotations: [MapAnnotation] = []
-    var showingSearchResults: Bool {
+    var showsSearchResults: Bool {
         searchResults.isEmpty == false
     }
     var hasValidSelection: Bool {
         selectedPlace != nil
+    }
+    var showsNoResultsMessage: Bool {
+        searchCompleter.isSearching == false && !searchQuery.isEmpty && searchResults.isEmpty && selectedPlace == nil
     }
 
     private(set) var selectedPlaceAddress: String = ""

@@ -31,7 +31,7 @@ struct AddressMapPickerView: View {
                         .padding()
                         .background(Color(.systemBackground))
 
-                    if viewModel.showingSearchResults {
+                    if viewModel.showsSearchResults {
                         List(viewModel.searchResults, id: \.self) { result in
                             Button(action: {
                                 isSearchFocused = false
@@ -51,6 +51,23 @@ struct AddressMapPickerView: View {
                         }
                         .listStyle(.plain)
                         .padding(.top, 0)
+                    } else if viewModel.showsNoResultsMessage {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Image(systemName: "exclamationmark.circle")
+                                    .foregroundColor(Color(uiColor: .warning))
+                                Text(Localization.noResultsTitle)
+                                    .font(.headline)
+                                    .foregroundColor(Color(uiColor: .warning))
+                            }
+
+                            Text(Localization.noResultsHint)
+                                .font(.body)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(.ultraThinMaterial)
                     } else if viewModel.selectedPlaceAddress.isNotEmpty {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(viewModel.selectedPlaceAddress)
@@ -118,10 +135,15 @@ struct AddressMapPickerView: View {
 @available(iOS 17, *)
 private extension AddressMapPickerView {
     enum Localization {
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Edit Address Form")
-        static let useThisAddress = NSLocalizedString("Use This Address", comment: "Button to confirm selected address from map")
-        static let searchPlaceholder = NSLocalizedString("Search for an address", comment: "Placeholder text for address search bar")
-        static let pickOnMap = NSLocalizedString("Pick on Map", comment: "Button to open map address picker")
+        static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "Text for the close button in the Edit Address Form.")
+        static let useThisAddress = NSLocalizedString("addressMapPicker.button.useThisAddress", value: "Use This Address", comment: "Button to confirm selected address from map.")
+        static let searchPlaceholder = NSLocalizedString("addressMapPicker.search.placeholder", value: "Search for an address", comment: "Placeholder text for address search bar.")
+        static let noResultsTitle = NSLocalizedString("addressMapPicker.noResults.title", value: "No Results Found", comment: "Title shown when address search returns no results.")
+        static let noResultsHint = NSLocalizedString(
+            "addressMapPicker.noResults.hint",
+            value: "Try searching without apartment, suite, or floor numbers. You can add those details to Address Line 2 later.",
+            comment: "Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2."
+        )
     }
 }
 

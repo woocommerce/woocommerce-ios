@@ -3,39 +3,47 @@ import protocol Yosemite.POSOrderableItem
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleBarcodeScanError
 
-struct Cart {
-    var purchasableItems: [Cart.PurchasableItem] = []
-    var coupons: [Cart.CouponItem] = []
+public struct Cart {
+    public var purchasableItems: [Cart.PurchasableItem] = []
+    public var coupons: [Cart.CouponItem] = []
 
-    var accessibilityFocusedItemID: UUID? = nil
+    public var accessibilityFocusedItemID: UUID? = nil
+
+    public init(purchasableItems: [Cart.PurchasableItem] = [],
+                coupons: [Cart.CouponItem] = [],
+                accessibilityFocusedItemID: UUID? = nil) {
+        self.purchasableItems = purchasableItems
+        self.coupons = coupons
+        self.accessibilityFocusedItemID = accessibilityFocusedItemID
+    }
 }
 
-protocol CartItem {
+public protocol CartItem {
     var id: UUID { get }
     var type: CartItemType { get }
 }
 
-enum CartItemType: CaseIterable {
+public enum CartItemType: CaseIterable {
     case purchasableItem
     case coupon
 }
 
-extension Cart {
+public extension Cart {
     struct PurchasableItem: CartItem {
-        let id: UUID
-        let title: String
-        let subtitle: String?
-        let quantity: Int
-        let type: CartItemType = .purchasableItem
-        let state: ItemState
-        let accessibilityLabel: String?
+        public let id: UUID
+        public let title: String
+        public let subtitle: String?
+        public let quantity: Int
+        public let type: CartItemType = .purchasableItem
+        public let state: ItemState
+        public let accessibilityLabel: String?
 
-        enum ItemState {
+        public enum ItemState {
             case loaded(POSOrderableItem)
             case loading
             case error
 
-            var isLoading: Bool {
+            public var isLoading: Bool {
                 switch self {
                 case .loading:
                     return true
@@ -45,7 +53,7 @@ extension Cart {
             }
         }
 
-        var formattedPrice: String? {
+        public var formattedPrice: String? {
             switch state {
             case .loaded(let item):
                 return item.formattedPrice
@@ -54,7 +62,7 @@ extension Cart {
             }
         }
 
-        init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState, accessibilityLabel: String? = nil) {
+        public init(id: UUID, title: String, subtitle: String?, quantity: Int, state: ItemState, accessibilityLabel: String? = nil) {
             self.id = id
             self.title = title
             self.subtitle = subtitle
@@ -63,7 +71,7 @@ extension Cart {
             self.accessibilityLabel = accessibilityLabel
         }
 
-        init(id: UUID, item: POSOrderableItem, title: String, subtitle: String?, quantity: Int) {
+        public init(id: UUID, item: POSOrderableItem, title: String, subtitle: String?, quantity: Int) {
             self.id = id
             self.title = title
             self.subtitle = subtitle
@@ -72,7 +80,7 @@ extension Cart {
             self.accessibilityLabel = nil
         }
 
-        static func loading(id: UUID) -> PurchasableItem {
+        public static func loading(id: UUID) -> PurchasableItem {
             PurchasableItem(
                 id: id,
                 title: "Loading...",
@@ -84,16 +92,22 @@ extension Cart {
     }
 
     struct CouponItem: CartItem {
-        let id: UUID
-        let code: String
-        let summary: String
-        let type: CartItemType = .coupon
+        public let id: UUID
+        public let code: String
+        public let summary: String
+        public let type: CartItemType = .coupon
+
+        public init(id: UUID, code: String, summary: String) {
+            self.id = id
+            self.code = code
+            self.summary = summary
+        }
     }
 }
 
 // MARK: - Helper Methods
 
-extension Cart {
+public extension Cart {
     mutating func add(_ posItem: POSItem) {
         if let purchasableItem = createPurchasableItem(id: UUID(), from: posItem) {
             purchasableItems.insert(purchasableItem, at: purchasableItems.startIndex)

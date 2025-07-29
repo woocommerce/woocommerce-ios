@@ -25,7 +25,6 @@ struct AddressMapPickerView: View {
                 }
                     .ignoresSafeArea()
 
-                // Search results list
                 VStack(spacing: 0) {
                     searchBar
                         .padding()
@@ -136,9 +135,21 @@ struct AddressMapPickerView: View {
 private extension AddressMapPickerView {
     enum Localization {
         static let close = NSLocalizedString("addressMapPicker.button.close", value: "Close", comment: "Text for the close button in the Edit Address Form.")
-        static let useThisAddress = NSLocalizedString("addressMapPicker.button.useThisAddress", value: "Use This Address", comment: "Button to confirm selected address from map.")
-        static let searchPlaceholder = NSLocalizedString("addressMapPicker.search.placeholder", value: "Search for an address", comment: "Placeholder text for address search bar.")
-        static let noResultsTitle = NSLocalizedString("addressMapPicker.noResults.title", value: "No Results Found", comment: "Title shown when address search returns no results.")
+        static let useThisAddress = NSLocalizedString(
+            "addressMapPicker.button.useThisAddress",
+            value: "Use This Address",
+            comment: "Button to confirm selected address from map."
+        )
+        static let searchPlaceholder = NSLocalizedString(
+            "addressMapPicker.search.placeholder",
+            value: "Search for an address",
+            comment: "Placeholder text for address search bar."
+        )
+        static let noResultsTitle = NSLocalizedString(
+            "addressMapPicker.noResults.title",
+            value: "No Results Found",
+            comment: "Title shown when address search returns no results."
+        )
         static let noResultsHint = NSLocalizedString(
             "addressMapPicker.noResults.hint",
             value: "Try searching without apartment, suite, or floor numbers. You can add those details to Address Line 2 later.",

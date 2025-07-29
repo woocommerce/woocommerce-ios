@@ -9,8 +9,10 @@ struct BarcodeScanningModifier: ViewModifier {
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
+    @Environment(\.posFeatureFlags) private var featureFlags
+
     private var isBarcodeScani1FeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
     }
 
     func body(content: Content) -> some View {

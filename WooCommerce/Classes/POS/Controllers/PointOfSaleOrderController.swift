@@ -44,7 +44,7 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptService: POSReceiptServiceProtocol,
          currencySettings: CurrencySettings,
          analytics: POSAnalyticsProviding,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         featureFlagService: POSFeatureFlagProviding,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
@@ -64,7 +64,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let celebration: PaymentCaptureCelebrationProtocol
     private let storeCurrency: CurrencyCode
     private let analytics: POSAnalyticsProviding
-    private let featureFlagService: FeatureFlagService
+    private let featureFlagService: POSFeatureFlagProviding
     private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle

@@ -47,7 +47,8 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker,
+                                                               featureFlagService: services.featureFlags)
         self.services = services
     }
 
@@ -81,6 +82,8 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencySettings, services.currency)
+        .environment(\.posStores, services.stores)
+        .environment(\.posFeatureFlags, services.featureFlags)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

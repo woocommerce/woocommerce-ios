@@ -29,10 +29,6 @@ final class POSServiceAdapter: POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding {
         return POSFeatureFlagAdapter(featureFlagService: ServiceLocator.featureFlagService)
     }
-
-    var pushNotifications: POSPushNotificationProviding {
-        return POSPushNotificationAdapter(pushNotesManager: ServiceLocator.pushNotesManager)
-    }
 }
 
 // MARK: - Individual Service Adapters
@@ -92,14 +88,4 @@ private struct POSFeatureFlagAdapter: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool {
         return featureFlagService.isFeatureFlagEnabled(flag)
     }
-}
-
-private struct POSPushNotificationAdapter: POSPushNotificationProviding {
-    private let pushNotesManager: PushNotesManager
-
-    init(pushNotesManager: PushNotesManager) {
-        self.pushNotesManager = pushNotesManager
-    }
-
-    // Push notification methods will be added as we migrate files
 }

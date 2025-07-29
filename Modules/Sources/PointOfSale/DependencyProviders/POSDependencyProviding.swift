@@ -10,7 +10,6 @@ public protocol POSDependencyProviding {
     var currency: CurrencySettings { get }
     var storage: POSStorageProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
-    var pushNotifications: POSPushNotificationProviding { get }
 }
 
 /// Analytics service abstraction
@@ -45,9 +44,4 @@ public protocol POSStorageProviding {
 /// Feature flag service abstraction
 public protocol POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool
-}
-
-/// Push notifications abstraction
-public protocol POSPushNotificationProviding {
-    // Push notification methods will be added as we migrate files
 }

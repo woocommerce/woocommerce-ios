@@ -295,7 +295,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var currency: CurrencySettings = CurrencySettings()
     var storage: POSStorageProviding = POSPreviewStorage()
     var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
-    var pushNotifications: POSPushNotificationProviding = POSPreviewPushNotifications()
 }
 
 // Preview implementations for all service types
@@ -312,9 +311,6 @@ private struct POSPreviewStorage: POSStorageProviding {
 
 private struct POSPreviewFeatureFlags: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
-}
-
-private struct POSPreviewPushNotifications: POSPushNotificationProviding {
 }
 
 #endif

@@ -138,7 +138,6 @@ private extension POSTabCoordinator {
                     ),
                     barcodeScanService: barcodeScanService,
                     posEligibilityChecker: eligibilityChecker,
-                    analytics: serviceAdapter.analytics,
                     services: serviceAdapter
                 )
                 let hostingController = UIHostingController(rootView: posView)

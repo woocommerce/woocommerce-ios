@@ -26,22 +26,27 @@ private struct DefaultPOSAnalytics: POSAnalyticsProviding {
     }
 }
 
-/// Environment key for POS services adapter
-public struct POSServicesKey: EnvironmentKey {
-    public static let defaultValue: POSDependencyProviding = DefaultPOSServices()
+/// Environment key for POS currency settings
+public struct POSCurrencyKey: EnvironmentKey {
+    public static let defaultValue: CurrencySettings = CurrencySettings()
 }
 
-/// Default implementation for previews/testing
-private struct DefaultPOSServices: POSDependencyProviding {
-    var analytics: POSAnalyticsProviding = DefaultPOSAnalytics()
-    var stores: POSStoresProviding = DefaultPOSStores()
-    var currency: CurrencySettings = CurrencySettings()
-    var storage: POSStorageProviding = DefaultPOSStorage()
-    var featureFlags: POSFeatureFlagProviding = DefaultPOSFeatureFlags()
-    var pushNotifications: POSPushNotificationProviding = DefaultPOSPushNotifications()
+/// Environment key for POS stores service
+public struct POSStoresKey: EnvironmentKey {
+    public static let defaultValue: POSStoresProviding = DefaultPOSStores()
 }
 
-// Default implementations for testing
+/// Environment key for POS feature flags service
+public struct POSFeatureFlagsKey: EnvironmentKey {
+    public static let defaultValue: POSFeatureFlagProviding = DefaultPOSFeatureFlags()
+}
+
+/// Environment key for POS storage service
+public struct POSStorageKey: EnvironmentKey {
+    public static let defaultValue: POSStorageProviding = DefaultPOSStorage()
+}
+
+// Default implementations for testing/previews
 private struct DefaultPOSStores: POSStoresProviding {
     var sessionManager: POSSessionManagerProviding = DefaultPOSSessionManager()
 }
@@ -57,17 +62,29 @@ private struct DefaultPOSFeatureFlags: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
 }
 
-private struct DefaultPOSPushNotifications: POSPushNotificationProviding {
-}
-
 public extension EnvironmentValues {
     var posAnalytics: POSAnalyticsProviding {
         get { self[POSAnalyticsKey.self] }
         set { self[POSAnalyticsKey.self] = newValue }
     }
 
-    var posServices: POSDependencyProviding {
-        get { self[POSServicesKey.self] }
-        set { self[POSServicesKey.self] = newValue }
+    var posCurrency: CurrencySettings {
+        get { self[POSCurrencyKey.self] }
+        set { self[POSCurrencyKey.self] = newValue }
+    }
+
+    var posStores: POSStoresProviding {
+        get { self[POSStoresKey.self] }
+        set { self[POSStoresKey.self] = newValue }
+    }
+
+    var posFeatureFlags: POSFeatureFlagProviding {
+        get { self[POSFeatureFlagsKey.self] }
+        set { self[POSFeatureFlagsKey.self] = newValue }
+    }
+
+    var posStorage: POSStorageProviding {
+        get { self[POSStorageKey.self] }
+        set { self[POSStorageKey.self] = newValue }
     }
 }

@@ -24,6 +24,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
+import protocol Yosemite.Action
 
 // MARK: - PreviewProvider helpers
 //
@@ -299,7 +300,7 @@ final class POSPreviewServices: POSDependencyProviding {
 
 // Preview implementations for all service types
 private struct POSPreviewStores: POSStoresProviding {
-    var sessionManager: POSSessionManagerProviding = POSPreviewSessionManager()
+    func dispatch(_ action: Yosemite.Action) {}
 }
 
 private struct POSPreviewSessionManager: POSSessionManagerProviding {

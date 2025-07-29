@@ -425,7 +425,7 @@ extension CollapsibleProductRowCard {
                         .onTapGesture {
                             shouldShowInfoTooltip = false
                         }
-                    TipView(ProductDiscountTip(), arrowEdge: .top)
+                    TipView(ProductDiscountTip(), arrowEdge: .trailing)
                         .tipBackground(Color.black)
                         .padding()
                         .onTapGesture {

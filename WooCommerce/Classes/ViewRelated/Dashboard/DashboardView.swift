@@ -70,11 +70,8 @@ struct DashboardView: View {
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
     private var shouldShowJetpackBenefitsBanner: Bool {
-        guard let currentSite, currentSite.isSimpleSite == false else {
-            return false
-        }
-        let isJetpackCPSite = currentSite.isJetpackCPConnected
-        let isNonJetpackSite = currentSite.isNonJetpackSite
+        let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
+        let isNonJetpackSite = currentSite?.isNonJetpackSite == true
         return (isJetpackCPSite || isNonJetpackSite) &&
             viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&

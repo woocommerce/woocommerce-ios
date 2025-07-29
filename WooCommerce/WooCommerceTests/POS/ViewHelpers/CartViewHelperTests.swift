@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 @testable import WooCommerce
+import PointOfSale
 
 struct CartViewHelperTests {
     let sut = CartViewHelper()

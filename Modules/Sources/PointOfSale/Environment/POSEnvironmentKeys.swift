@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 import WooFoundation
 import Experiments
 import protocol Yosemite.Action
@@ -48,6 +49,11 @@ public struct POSSessionManagerKey: EnvironmentKey {
     public static let defaultValue: POSSessionManagerProviding = DefaultPOSSessionManager()
 }
 
+/// Environment key for POS connectivity
+public struct POSConnectivityKey: EnvironmentKey {
+    public static let defaultValue: ConnectivityObserver = DefaultPOSConnectivity()
+}
+
 // Default implementations for testing/previews
 private struct DefaultPOSStores: POSStoresProviding {
     func dispatch(_ action: Yosemite.Action) {}
@@ -59,6 +65,13 @@ private struct DefaultPOSSessionManager: POSSessionManagerProviding {
 
 private struct DefaultPOSFeatureFlags: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
+}
+
+private class DefaultPOSConnectivity: ConnectivityObserver {
+    @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
+    func startObserving() {}
+    func stopObserving() {}
 }
 
 public extension EnvironmentValues {
@@ -85,5 +98,10 @@ public extension EnvironmentValues {
     var posSession: POSSessionManagerProviding {
         get { self[POSSessionManagerKey.self] }
         set { self[POSSessionManagerKey.self] = newValue }
+    }
+
+    var posConnectivity: ConnectivityObserver {
+        get { self[POSConnectivityKey.self] }
+        set { self[POSConnectivityKey.self] = newValue }
     }
 }

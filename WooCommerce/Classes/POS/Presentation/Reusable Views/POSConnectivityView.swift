@@ -1,10 +1,11 @@
 import SwiftUI
 import Combine
+import enum WooFoundation.ConnectivityStatus
 
 struct POSConnectivityView: View {
-    let connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver
     @State private var isVisible = false
     @State private var cancellable: AnyCancellable?
+    @Environment(\.posConnectivity) private var connectivityObserver
 
     var body: some View {
         ZStack(alignment: .top) {

@@ -2707,8 +2707,6 @@
 		DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7842F626F2E9340030C792 /* UIViewController+Connectivity.swift */; };
 		DE78DE422B2813E4002E58DE /* ThemesCarouselViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE412B2813E4002E58DE /* ThemesCarouselViewModel.swift */; };
 		DE78DE442B2846AF002E58DE /* ThemesCarouselViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE78DE432B2846AF002E58DE /* ThemesCarouselViewModelTests.swift */; };
-		DE792E1826EF35F40071200C /* ConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE792E1726EF35F40071200C /* ConnectivityObserver.swift */; };
-		DE792E1B26EF37ED0071200C /* DefaultConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE792E1A26EF37ED0071200C /* DefaultConnectivityObserver.swift */; };
 		DE7B17F52C0DF02800A6C7D8 /* InboxEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B17F42C0DF02800A6C7D8 /* InboxEligibilityUseCaseTests.swift */; };
 		DE7B17F92C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B17F82C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift */; };
 		DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */; };
@@ -5890,8 +5888,6 @@
 		DE7842F626F2E9340030C792 /* UIViewController+Connectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Connectivity.swift"; sourceTree = "<group>"; };
 		DE78DE412B2813E4002E58DE /* ThemesCarouselViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesCarouselViewModel.swift; sourceTree = "<group>"; };
 		DE78DE432B2846AF002E58DE /* ThemesCarouselViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemesCarouselViewModelTests.swift; sourceTree = "<group>"; };
-		DE792E1726EF35F40071200C /* ConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityObserver.swift; sourceTree = "<group>"; };
-		DE792E1A26EF37ED0071200C /* DefaultConnectivityObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultConnectivityObserver.swift; sourceTree = "<group>"; };
 		DE7B17F42C0DF02800A6C7D8 /* InboxEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		DE7B17F82C1AA26B00A6C7D8 /* MockWooSubscriptionProductsEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWooSubscriptionProductsEligibilityChecker.swift; sourceTree = "<group>"; };
 		DE7B478F27A153C20018742E /* CouponSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponSearchUICommand.swift; sourceTree = "<group>"; };
@@ -10598,7 +10594,6 @@
 				01BB6C082D09E9200094D55B /* Location */,
 				26BCA03E2C35E965000BE96C /* BackgroundTasks */,
 				EEADF61C281A3DB7001B40F1 /* ShippingValueLocalizer */,
-				DE792E1926EF37D80071200C /* Connectivity */,
 				CECC759A23D61BCC00486676 /* AggregateData */,
 				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
 				024A543222BA6DD500F4F38E /* Developer */,
@@ -13359,15 +13354,6 @@
 				DE74F2A427E41D740002FE59 /* EnableAnalyticsView.swift */,
 			);
 			path = EnableAnalytics;
-			sourceTree = "<group>";
-		};
-		DE792E1926EF37D80071200C /* Connectivity */ = {
-			isa = PBXGroup;
-			children = (
-				DE792E1726EF35F40071200C /* ConnectivityObserver.swift */,
-				DE792E1A26EF37ED0071200C /* DefaultConnectivityObserver.swift */,
-			);
-			path = Connectivity;
 			sourceTree = "<group>";
 		};
 		DE7B479127A38ABC0018742E /* CouponDetails */ = {
@@ -16380,7 +16366,6 @@
 				0269A63C2581D26C007B49ED /* ShippingLabelPrintingStepListView.swift in Sources */,
 				3188533C2639FE5800F66A9C /* PaymentSettingsFlowPresentedViewModel.swift in Sources */,
 				CE55F2D42B238C04005D53D7 /* CollapsibleProductCardPriceSummaryViewModel.swift in Sources */,
-				DE792E1B26EF37ED0071200C /* DefaultConnectivityObserver.swift in Sources */,
 				029F29FE24DA5B2D004751CA /* ProductInventorySettingsViewModel.swift in Sources */,
 				57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */,
 				023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */,
@@ -16692,7 +16677,6 @@
 				02A723282AB2E1C2003AEC7E /* GiftCardInputViewModel.swift in Sources */,
 				45977EBA2603F632006CDFB8 /* MapsHelper.swift in Sources */,
 				86023FAA2B15CAD800A28F07 /* ThemesEligibilityUseCase.swift in Sources */,
-				DE792E1826EF35F40071200C /* ConnectivityObserver.swift in Sources */,
 				CE9F60122C09D53500652E0A /* FeedbackBannerPopover.swift in Sources */,
 				B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */,
 				DE8C63AE2E1E2D2D00DA48AC /* OrderDetailsShipmentDetailsView.swift in Sources */,

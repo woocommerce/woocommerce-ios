@@ -12,6 +12,7 @@ public protocol POSDependencyProviding {
     var currency: CurrencySettings { get }
     var featureFlags: POSFeatureFlagProviding { get }
     var session: POSSessionManagerProviding { get }
+    var connectivity: ConnectivityObserver { get }
 }
 
 /// Analytics service abstraction

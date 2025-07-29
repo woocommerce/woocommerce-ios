@@ -2,7 +2,7 @@ import Combine
 
 /// Interface for the observing connectivity
 ///
-protocol ConnectivityObserver {
+public protocol ConnectivityObserver {
     /// Getter for current state of the connectivity.
     var currentStatus: ConnectivityStatus { get }
 
@@ -21,7 +21,7 @@ protocol ConnectivityObserver {
 /// - unknown:      It is unknown whether the network is reachable.
 /// - notReachable: The network is not reachable.
 /// - reachable:    The network is reachable.
-enum ConnectivityStatus: Equatable {
+public enum ConnectivityStatus: Equatable {
     case unknown
     case notReachable
     case reachable(type: ConnectionType)
@@ -32,7 +32,7 @@ enum ConnectivityStatus: Equatable {
 /// - ethernetOrWiFi: The connection type is either over Ethernet or WiFi.
 /// - cellular:       The connection type is a cellular connection.
 /// - other:          The connection type is via a local loopback network, virtual network or other unknown types.
-enum ConnectionType: Equatable {
+public enum ConnectionType: Equatable {
     case ethernetOrWiFi
     case cellular
     case other

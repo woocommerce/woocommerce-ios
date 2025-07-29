@@ -1,17 +1,21 @@
 import Combine
 import Network
 
-final class DefaultConnectivityObserver: ConnectivityObserver {
+public final class DefaultConnectivityObserver: ConnectivityObserver {
 
     /// Network monitor to evaluate connection.
     ///
     private let networkMonitor: NetworkMonitoring
     private let observingQueue: DispatchQueue = .global(qos: .background)
 
-    @Published private(set) var currentStatus: ConnectivityStatus = .unknown
+    @Published private(set) public var currentStatus: ConnectivityStatus = .unknown
 
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
+    public var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()
+    }
+
+    public convenience init() {
+        self.init(networkMonitor: NWPathMonitor())
     }
 
     init(networkMonitor: NetworkMonitoring = NWPathMonitor()) {
@@ -25,11 +29,11 @@ final class DefaultConnectivityObserver: ConnectivityObserver {
         }
     }
 
-    func startObserving() {
+    public func startObserving() {
         networkMonitor.start(queue: observingQueue)
     }
 
-    func stopObserving() {
+    public func stopObserving() {
         networkMonitor.cancel()
     }
 

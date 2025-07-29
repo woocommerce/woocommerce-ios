@@ -298,6 +298,7 @@ final class POSPreviewServices: POSDependencyProviding {
     var currency: CurrencySettings = CurrencySettings()
     var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
     var session: POSSessionManagerProviding = POSPreviewSessionManager()
+    var connectivity: ConnectivityObserver = POSPreviewConnectivity()
 }
 
 // Preview implementations for all service types
@@ -311,6 +312,13 @@ private struct POSPreviewSessionManager: POSSessionManagerProviding {
 
 private struct POSPreviewFeatureFlags: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
+}
+
+private class POSPreviewConnectivity: ConnectivityObserver {
+    @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
+    func startObserving() {}
+    func stopObserving() {}
 }
 
 #endif

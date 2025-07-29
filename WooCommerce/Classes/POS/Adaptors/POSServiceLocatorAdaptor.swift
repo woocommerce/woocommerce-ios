@@ -12,23 +12,27 @@ import struct Yosemite.Site
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     var analytics: POSAnalyticsProviding {
-        return POSAnalyticsAdaptor()
+        POSAnalyticsAdaptor()
     }
 
     var stores: POSStoresProviding {
-        return POSStoresAdaptor(stores: ServiceLocator.stores)
+        POSStoresAdaptor(stores: ServiceLocator.stores)
     }
 
     var currency: CurrencySettings {
-        return ServiceLocator.currencySettings
+        ServiceLocator.currencySettings
     }
 
     var featureFlags: POSFeatureFlagProviding {
-        return POSFeatureFlagAdaptor(featureFlagService: ServiceLocator.featureFlagService)
+        POSFeatureFlagAdaptor(featureFlagService: ServiceLocator.featureFlagService)
     }
 
     var session: POSSessionManagerProviding {
-        return POSSessionManagerAdaptor(sessionManager: ServiceLocator.stores.sessionManager)
+        POSSessionManagerAdaptor(sessionManager: ServiceLocator.stores.sessionManager)
+    }
+
+    var connectivity: ConnectivityObserver {
+        ServiceLocator.connectivityObserver
     }
 }
 

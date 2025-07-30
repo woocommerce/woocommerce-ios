@@ -25,6 +25,14 @@ build_arguments:
 - -xcconfig
 - config/WooCommerce.debug.xcconfig
 
+# A baseline is used to manage the large number of warnings from a mature codebase.
+# It contains a snapshot of all "existing/acceptable" warnings. Periphery will ignore all
+# warnings in this file, allowing you to focus on new issues in pull requests.
+#
+# After fixing existing warnings, regenerate this file with:
+# periphery scan --write-baseline periphery_baseline.json
+baseline: periphery_baseline.json
+
 exclude_targets:
 - GenerateCredentials
 - WooCommerceScreenshots

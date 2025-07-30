@@ -2,20 +2,19 @@ import Foundation
 import SwiftUI
 import MapKit
 import CoreLocation
-import NetworkingCore
+import struct Yosemite.Address
 
 @available(iOS 17.0, *)
 @Observable
 final class OrderDetailsShippingAddressMapViewModel {
-    let shippingAddress: Address?
+    enum MapState {
+        case loading
+        case loaded(coordinate: CLLocationCoordinate2D, cameraPosition: MapCameraPosition)
+        case failed
+    }
+    private(set) var mapState: MapState?
 
-    private(set) var coordinate: CLLocationCoordinate2D?
-    private(set) var isGeocoding: Bool = false
-    var cameraPosition: MapCameraPosition = .automatic
-
-    private let geocoder = CLGeocoder()
-
-    /// The height of the map view - 150px if valid address, 0 if invalid
+    /// The height of the map view - 150px if valid address, 0 if invalid.
     var mapHeight: CGFloat {
         isValidAddress ? 150 : 0
     }
@@ -34,19 +33,28 @@ final class OrderDetailsShippingAddressMapViewModel {
     /// Action handler for when the map is tapped
     var onMapTapped: (() -> Void)?
 
+    private let shippingAddress: Address?
+    private let geocoder = CLGeocoder()
+
     init(shippingAddress: Address?, onMapTapped: (() -> Void)? = nil) {
         self.shippingAddress = shippingAddress
         self.onMapTapped = onMapTapped
 
         if isValidAddress {
-            geocodeAddress()
+            Task {
+                await geocodeAddress()
+            }
         }
     }
+}
 
-    private func geocodeAddress() {
+@available(iOS 17.0, *)
+private extension OrderDetailsShippingAddressMapViewModel {
+    @MainActor
+    func geocodeAddress() async {
         guard let address = shippingAddress else { return }
 
-        isGeocoding = true
+        mapState = .loading
 
         let addressString = [
             address.address1,
@@ -57,29 +65,25 @@ final class OrderDetailsShippingAddressMapViewModel {
             address.country
         ].compactMap { $0?.isEmpty == false ? $0 : nil }.joined(separator: ", ")
 
-        geocoder.geocodeAddressString(addressString) { [weak self] placemarks, error in
-            DispatchQueue.main.async {
-                self?.isGeocoding = false
+        do {
+            let placemarks = try await geocoder.geocodeAddressString(addressString)
 
-                guard let placemark = placemarks?.first,
-                      let location = placemark.location else {
-                    // Fallback to a default coordinate if geocoding fails
-                    self?.coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-                    self?.cameraPosition = .region(MKCoordinateRegion(
-                        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
-                        latitudinalMeters: 10000,
-                        longitudinalMeters: 10000
-                    ))
-                    return
-                }
-                let coordinate = location.coordinate
-                self?.coordinate = coordinate
-                self?.cameraPosition = .region(MKCoordinateRegion(
-                    center: coordinate,
-                    latitudinalMeters: 1000,
-                    longitudinalMeters: 1000
-                ))
+            guard let placemark = placemarks.first,
+                  let location = placemark.location else {
+                mapState = .failed
+                return
             }
+
+            let coordinate = location.coordinate
+            let cameraPosition = MapCameraPosition.region(MKCoordinateRegion(
+                center: coordinate,
+                latitudinalMeters: 1000,
+                longitudinalMeters: 1000
+            ))
+
+            mapState = .loaded(coordinate: coordinate, cameraPosition: cameraPosition)
+        } catch {
+            mapState = .failed
         }
     }
 }

@@ -2402,7 +2402,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
         // Given
         let expectedString = NSLocalizedString("Calculated on shop base address.", comment: "")
-        
+
         // When
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {

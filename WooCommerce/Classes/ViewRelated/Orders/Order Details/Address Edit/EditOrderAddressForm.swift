@@ -3,7 +3,6 @@ import SwiftUI
 import UIKit
 import Yosemite
 import Experiments
-import MapKit
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///

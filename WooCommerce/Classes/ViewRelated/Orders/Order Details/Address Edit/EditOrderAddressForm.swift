@@ -327,7 +327,7 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if #available(iOS 17, *) {
+            if #available(iOS 17, *), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
                 Button(action: {
                     showMapPicker = true
                 }) {

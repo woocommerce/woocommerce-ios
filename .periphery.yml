@@ -14,13 +14,16 @@ retain_swift_ui_previews: true
 # Normally, Periphery would suggest changing public to internal or private in these cases to reduce the public API surface of a module.
 disable_redundant_public_analysis: false
 
-# This option suppresses all of Periphery's informational output, such as the progress bar and summary statistics. This is great for CI/CD environments or if you only want to see the warnings.
-quiet: true
-
 schemes:
 - WooCommerce
 
 project: WooCommerce.xcworkspace
+
+# Used for local run by `periphery scan`
+# This will not conflict with CI build configuration because of build skipping by `--skip-build` and `--index-store-path`
+build_arguments:
+- -xcconfig
+- config/WooCommerce.debug.xcconfig
 
 exclude_targets:
 - GenerateCredentials

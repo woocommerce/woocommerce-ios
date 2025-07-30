@@ -1,0 +1,52 @@
+# This option tells Periphery to not report any Swift code as unused if it's accessible from Objective-C. This includes any class that inherits from NSObject, and any method or property marked with the @objc or @objcMembers attribute.
+#  Woocommerce-ios, is a mixed Swift and Objective-C project. Swift code is often called from Objective-C and vice-versa. Without this flag, Periphery would incorrectly flag Swift code that is only used by Objective-C parts of the app as "unused," which would be a false positive. Setting this to true is essential for getting accurate results in a mixed-language codebase.
+retain_objc_accessible: true
+
+# This option prevents Periphery from flagging unused parameters in protocol method implementations.
+# Often, a protocol will define a method with parameters that are needed by some, but not all, conforming types. If a specific implementation doesn't need to use a parameter, Swift still requires that the method signature matches the protocol exactly. Periphery would normally see this unused parameter and flag it. However, removing it would cause a compile error because the method signature would no longer match the protocol. This flag tells Periphery to ignore these cases, avoiding false positives.
+retain_unused_protocol_func_params: true
+
+# This option retains all code within a previews struct that conforms to SwiftUI's PreviewProvider protocol.
+# SwiftUI Previews are a powerful feature for UI development in Xcode. The code you write for previews is often not directly called from your main application target; it's used by Xcode's canvas. Periphery would see this and incorrectly mark the preview code as unused. This flag correctly tells Periphery to always keep preview provider code, which is the desired behavior.
+retain_swift_ui_previews: true
+
+# This option disables the check for public declarations that are only used within their own module.
+# Normally, Periphery would suggest changing public to internal or private in these cases to reduce the public API surface of a module.
+disable_redundant_public_analysis: false
+
+# This option suppresses all of Periphery's informational output, such as the progress bar and summary statistics. This is great for CI/CD environments or if you only want to see the warnings.
+quiet: true
+
+schemes:
+- WooCommerce
+
+project: WooCommerce.xcworkspace
+
+exclude_targets:
+- GenerateCredentials
+- WooCommerceScreenshots
+- WordPressAuthenticator
+- WordPressAuthenticatorTests
+- WooCommerceTests
+- WooCommerceUITests
+- NotificationExtension
+- StoreWidgetsExtension
+- WatchWidgetsExtension
+- "Woo Watch App"
+- Fakes
+- XcodeTarget_WooCommerceTests
+- XcodeTarget_WooCommerceUITests
+- XcodeTarget_WordPressAuthenticatorTests
+
+index_exclude:
+- Pods/*
+- vendor/**
+- BuildTools/.build/**
+- "**/Tests/*"
+- "**/Test*/*"
+- "docs/*"
+- "fastlane/*"
+- "config/*"
+- "**/*.xib"
+- "**/*.storyboard"
+- "**/*.generated.swift"

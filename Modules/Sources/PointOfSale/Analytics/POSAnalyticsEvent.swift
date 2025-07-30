@@ -404,3 +404,34 @@ public extension PaymentMethod {
         }
     }
 }
+
+extension WooAnalyticsEvent {
+    struct Orders {
+        // MARK: - Order Creation Events
+
+        /// Matches errors on Android for consistency
+        /// Only coupon tracking is relevant for now
+        enum OrderCreationErrorType: String {
+            case invalidCoupon = "INVALID_COUPON"
+        }
+
+        static func orderCreationFailed(
+            usesGiftCard: Bool,
+            errorContext: String,
+            errorDescription: String,
+            errorType: OrderCreationErrorType? = nil
+        ) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                "use_gift_card": usesGiftCard,
+                "error_context": errorContext,
+                "error_description": errorDescription
+            ]
+
+            if let errorType {
+                properties["error_type"] = errorType.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderCreationFailed, properties: properties)
+        }
+    }
+}

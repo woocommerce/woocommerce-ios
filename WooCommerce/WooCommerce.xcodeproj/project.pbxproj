@@ -6500,6 +6500,8 @@
 				2004E2D52C08E1FA00D62521 /* CardPresentPaymentOnboardingAdaptor.swift */,
 				027179E12C08817F0049F0BD /* CardPresentPaymentService.swift */,
 				2004E2E42C0A206800D62521 /* CardPresentPaymentsAlertPresenterAdaptor.swift */,
+				2026ECE82C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */,
+				2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */,
 			);
 			path = "Card Present Payments";
 			sourceTree = "<group>";
@@ -8131,8 +8133,6 @@
 				20ADE9422C6B34D100C91265 /* CardPresentPaymentsRetryApproach.swift */,
 				20762BA22C18A6A300758305 /* CardPresentPaymentEventDetails.swift */,
 				204CB80F2C10BB88000C9773 /* CardPresentPaymentPreviewService.swift */,
-				2026ECE82C25D21F00BEF7E4 /* CardPresentPaymentInvalidatablePaymentOrchestrator.swift */,
-				2004E2E22C0A128400D62521 /* CardPresentPaymentsConnectionControllerManager.swift */,
 				2004E2E62C0DFB9E00D62521 /* CardPresentPaymentsModalButtonViewModel.swift */,
 			);
 			path = "Card Present Payments";

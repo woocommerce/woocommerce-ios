@@ -6,6 +6,7 @@ import WordPressAuthenticator
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
     private var navigationController: UINavigationController!
+    private let dotcomAuthScheme = "scheme"
 
     override func setUp() {
         navigationController = UINavigationController()
@@ -47,7 +48,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let url = try XCTUnwrap(URL(string: "example://handle-authentication"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -57,10 +58,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -70,10 +71,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://handle-authentication?token=test"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://handle-authentication?token=test"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -83,10 +84,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login?token=test"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertTrue(result)
@@ -97,7 +98,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultRoles: [.shopManager]))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login?token=test"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -113,7 +114,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertTrue(result)
@@ -127,7 +128,8 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login?token=test"))
+        let expectedScheme = "scheme"
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -143,7 +145,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertTrue(result)
@@ -158,7 +160,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let siteURL = "https://example.com"
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: siteURL)
         let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "\(ApiCredentials.dotcomAuthScheme)://magic-login?token=test"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -198,7 +200,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertTrue(result)

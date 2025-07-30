@@ -65,8 +65,8 @@ final class JetpackSetupCoordinator {
         rootViewController.present(benefitsController, animated: true, completion: nil)
     }
 
-    func handleAuthenticationUrl(_ url: URL) -> Bool {
-        let expectedPrefix = ApiCredentials.dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
+    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
+        let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
         guard url.absoluteString.hasPrefix(expectedPrefix) else {
             return false
         }

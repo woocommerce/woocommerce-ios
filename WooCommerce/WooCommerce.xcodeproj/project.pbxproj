@@ -800,7 +800,6 @@
 		2004E2C42C076D3800D62521 /* CardPresentPaymentEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2C32C076D3800D62521 /* CardPresentPaymentEvent.swift */; };
 		2004E2C62C076D4500D62521 /* CardPresentPaymentResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */; };
 		2004E2CA2C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */; };
-		2004E2CC2C07795E00D62521 /* CardPresentPaymentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */; };
 		2004E2CE2C077B0B00D62521 /* CardPresentPaymentCardReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */; };
 		2004E2D02C077D2800D62521 /* CardPresentPaymentTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */; };
 		2004E2D22C07878E00D62521 /* CardReaderConnectionMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */; };
@@ -3974,7 +3973,6 @@
 		2004E2C32C076D3800D62521 /* CardPresentPaymentEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentEvent.swift; sourceTree = "<group>"; };
 		2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentResult.swift; sourceTree = "<group>"; };
 		2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReaderConnectionResult.swift; sourceTree = "<group>"; };
-		2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentError.swift; sourceTree = "<group>"; };
 		2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentCardReader.swift; sourceTree = "<group>"; };
 		2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentTransaction.swift; sourceTree = "<group>"; };
 		2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionMethod.swift; sourceTree = "<group>"; };
@@ -8123,7 +8121,6 @@
 				2004E2C52C076D4500D62521 /* CardPresentPaymentResult.swift */,
 				2004E2C92C07771400D62521 /* CardPresentPaymentReaderConnectionResult.swift */,
 				2027F7552C90B013004BDF73 /* CardPresentPaymentReaderConnectionStatus.swift */,
-				2004E2CB2C07795E00D62521 /* CardPresentPaymentError.swift */,
 				2004E2CD2C077B0B00D62521 /* CardPresentPaymentCardReader.swift */,
 				2004E2D12C07878E00D62521 /* CardReaderConnectionMethod.swift */,
 				2004E2CF2C077D2800D62521 /* CardPresentPaymentTransaction.swift */,
@@ -15548,7 +15545,6 @@
 				027ADB752D218A8D009608DB /* POSItemCardBorderStylesModifier.swift in Sources */,
 				0215320B24231D5A003F2BBD /* UIStackView+Subviews.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
-				2004E2CC2C07795E00D62521 /* CardPresentPaymentError.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				68DF5A8F2CB38F20000154C9 /* OrderCouponSectionView.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,

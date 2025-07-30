@@ -7,7 +7,7 @@ fi
 ### Prepare
 
 echo '--- 📦 Downloading Build Artifacts'
-buildkite-agent artifact download build-products.tar 
+buildkite-agent artifact download build-products.tar .
 tar -xf build-products.tar
 
 ### Run the Tests

@@ -79,6 +79,11 @@ steps:
         agents:
           queue: linter
 
+      - label: "🧟 Detect unused code"
+        command: ".buildkite/commands/run-periphery.sh"
+        depends_on: build
+        plugins: [$CI_TOOLKIT]
+
       - label: 🧹 Lint Translations
         command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
         plugins:

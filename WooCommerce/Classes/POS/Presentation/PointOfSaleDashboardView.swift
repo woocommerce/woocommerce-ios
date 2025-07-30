@@ -1,4 +1,5 @@
 import SwiftUI
+import SafariServices
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
@@ -202,7 +203,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var documentationView: some View {
-        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+        DocumentationView()
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
@@ -244,6 +245,18 @@ extension EnvironmentValues {
         set { self[FloatingControlAreaSizeKey.self] = newValue }
     }
 }
+
+private struct DocumentationView: UIViewControllerRepresentable {
+    func makeUIViewController(context: UIViewControllerRepresentableContext<DocumentationView>) -> SFSafariViewController {
+        return SFSafariViewController(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController,
+                                context: UIViewControllerRepresentableContext<DocumentationView>) {
+
+    }
+}
+
 
 @available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {

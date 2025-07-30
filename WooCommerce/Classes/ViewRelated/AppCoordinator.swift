@@ -289,7 +289,6 @@ private extension AppCoordinator {
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return displayAuthenticatorWithOnboardingIfNeeded()
         }
-        configureAuthenticator()
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()

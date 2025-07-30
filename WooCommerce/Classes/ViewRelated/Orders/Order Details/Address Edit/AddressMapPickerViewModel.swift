@@ -59,20 +59,22 @@ final class AddressMapPickerViewModel: NSObject {
             }
         }
     }
-    
+
     /// Selects a location from the local map search results.
     /// - Parameter result: The selected search completion result.
     @MainActor
-    func selectLocation(_ result: MKLocalSearchCompletion) {
+    func selectLocation(_ result: MKLocalSearchCompletion) async {
         let searchRequest = MKLocalSearch.Request(completion: result)
         let search = MKLocalSearch(request: searchRequest)
 
-        search.start { [weak self] (response, error) in
-            guard let self,
-                  let firstPlacemark = response?.mapItems.first?.placemark else {
+        do {
+            let response = try await search.start()
+            guard let firstPlacemark = response.mapItems.first?.placemark else {
                 return
             }
-            onSelectedPlacemark(firstPlacemark, result: result)
+            await onSelectedPlacemark(firstPlacemark, result: result)
+        } catch {
+            DDLogError("⛔️ Map search error from selecting a search result: \(error)")
         }
     }
 
@@ -126,30 +128,30 @@ private extension AddressMapPickerViewModel {
         }
 
         // Tries to geocode the existing address if possible.
-        if !fields.address1.isEmpty && !fields.city.isEmpty {
-            let addressString = formatAddressString(fields: fields)
-
-            CLGeocoder().geocodeAddressString(addressString) { [weak self] placemarks, error in
-                guard let self,
-                      let location = placemarks?.first?.location else {
-                    return
-                }
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
+        let addressString = formatAddressString(fields: fields)
+        if addressString.isNotEmpty {
+            Task { @MainActor in
+                do {
+                    let placemarks = try await CLGeocoder().geocodeAddressString(addressString)
+                    guard let location = placemarks.first?.location else {
+                        return
+                    }
+                    
                     region = MKCoordinateRegion(
                         center: location.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
                     annotations = [MapAnnotation(coordinate: location.coordinate)]
+                } catch {
+                    DDLogError("⛔️ Error geocoding initial address: \(error)")
                 }
             }
         }
     }
 
     @MainActor
-    func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) {
-        withAnimation { [weak self] in
+    func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) async {
+        await withAnimation { [weak self] in
             guard let self else { return }
             searchResults = []
             region = MKCoordinateRegion(

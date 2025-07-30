@@ -33,8 +33,10 @@ struct AddressMapPickerView: View {
                     if viewModel.showsSearchResults {
                         List(viewModel.searchResults, id: \.self) { result in
                             Button(action: {
-                                isSearchFocused = false
-                                viewModel.selectLocation(result)
+                                Task { @MainActor in
+                                    isSearchFocused = false
+                                    await viewModel.selectLocation(result)
+                                }
                             }) {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(result.title)

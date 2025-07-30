@@ -836,6 +836,76 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
     }
 
+    func test_customs_form_is_incomplete_when_destination_country_is_eu_and_hsTariffNumber_is_empty() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+
+        let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+        let destinationAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
+
+        let usCountry = Country(code: "US", name: "United States", states: [])
+        let caCountry = Country(code: "CA", name: "Canada", states: [])
+        let euCountries = [
+            Country(code: "FR", name: "France", states: []),
+            Country(code: "DE", name: "Germany", states: []),
+            Country(code: "ES", name: "Spain", states: []),
+            Country(code: "IT", name: "Italy", states: []),
+            Country(code: "NL", name: "Netherlands", states: [])
+        ]
+        storageManager.insertSampleCountries(readOnlyCountries: [usCountry, caCountry] + euCountries)
+
+        let item = ShippingLabelPackageItem(
+            productOrVariationID: 1,
+            orderItemID: 1,
+            name: "Test Item",
+            weight: 1,
+            quantity: 1,
+            value: 10, // low value, shouldn't require HS Tariff # based on value
+            dimensions: .fake(),
+            attributes: [],
+            imageURL: nil
+        )
+        let shipment = Shipment(
+            contents: [CollapsibleShipmentItemCardViewModel(item: item, currency: "USD")],
+            currency: "USD",
+            currencySettings: ServiceLocator.currencySettings,
+            shippingSettingsService: ServiceLocator.shippingSettingsService
+        )
+
+        let viewModel = WooShippingShipmentDetailsViewModel(
+            order: Order.fake(),
+            shipment: shipment,
+            shippingLabel: nil,
+            originAddress: originAddressSubject.eraseToAnyPublisher(),
+            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+            stores: stores,
+            storageManager: storageManager
+        )
+
+        // When
+        let itemViewModel = viewModel.customsFormViewModel.itemsViewModels[0]
+        itemViewModel.hsTariffNumber = "" // Empty tariff number
+
+        originAddressSubject.send(sampleOriginAddress(country: usCountry.code, state: ""))
+        destinationAddressSubject.send(sampleDestinationAddress(country: caCountry.code, state: ""))
+
+        // Then: HS Tariff number should not be required for non EU destination countries regardless of value
+        XCTAssertTrue(
+            itemViewModel.requiredInformationIsEntered,
+            "HS Tariff number should not be required for \(usCountry.name)"
+        )
+
+        // And: HS Tariff number should be required for EU countries regardless of value
+        for euCountry in euCountries {
+            destinationAddressSubject.send(sampleDestinationAddress(country: euCountry.code, state: ""))
+            XCTAssertFalse(
+                itemViewModel.requiredInformationIsEntered,
+                "HS Tariff number should be required for \(euCountry.name)"
+            )
+        }
+    }
+
     func test_package_contains_complete_customs_form_when_required_data_is_prefilled() throws {
         // Setup
         let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()

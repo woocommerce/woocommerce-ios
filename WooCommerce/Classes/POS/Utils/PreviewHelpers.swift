@@ -286,18 +286,12 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackReceiptPrintFailed(error: any Error) {}
 }
 
-final class POSPreviewAnalytics: POSAnalyticsProviding {
-    func track(event: WooFoundationCore.WooAnalyticsEvent) {}
-    func track(_ stat: WooFoundationCore.WooAnalyticsStat, parameters: [String: any WooFoundationCore.WooAnalyticsEventPropertyType]) {}
-    func track(_ stat: WooFoundationCore.WooAnalyticsStat) {}
-    func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {}
-}
-
 final class POSPreviewServices: POSDependencyProviding {
     var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
     var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     var session: POSSessionManagerProviding = EmptyPOSSessionManager()
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
+    var navigation: POSNavigationProviding = EmptyPOSNavigation()
 }
 #endif

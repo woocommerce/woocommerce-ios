@@ -12,6 +12,7 @@ public protocol POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding { get }
     var session: POSSessionManagerProviding { get }
     var connectivity: POSConnectivityProviding { get }
+    var navigation: POSNavigationProviding { get }
 }
 
 public protocol POSAnalyticsProviding {
@@ -35,4 +36,8 @@ public protocol POSCurrencySettingsProviding {
 
 public protocol POSConnectivityProviding {
     var connectivityObserver: ConnectivityObserver { get }
+}
+
+public protocol POSNavigationProviding {
+    func navigateToCreateOrder()
 }

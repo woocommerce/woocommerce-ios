@@ -30,6 +30,11 @@ public struct POSConnectivityKey: EnvironmentKey {
     public static let defaultValue: POSConnectivityProviding = EmptyPOSConnectivityProvider()
 }
 
+/// Environment key for POS navigation service
+public struct POSNavigationKey: EnvironmentKey {
+    public static let defaultValue: POSNavigationProviding = EmptyPOSNavigation()
+}
+
 public extension EnvironmentValues {
     var posAnalytics: POSAnalyticsProviding {
         get { self[POSAnalyticsKey.self] }
@@ -55,9 +60,18 @@ public extension EnvironmentValues {
         get { self[POSConnectivityKey.self] }
         set { self[POSConnectivityKey.self] = newValue }
     }
+
+    var posNavigation: POSNavigationProviding {
+        get { self[POSNavigationKey.self] }
+        set { self[POSNavigationKey.self] = newValue }
+    }
 }
 
 // MARK: - Empty Default Values
+
+public struct EmptyPOSNavigation: POSNavigationProviding {
+    public func navigateToCreateOrder() {}
+}
 
 public struct EmptyPOSSessionManager: POSSessionManagerProviding {
     public var defaultSite: Site? = nil

@@ -85,6 +85,7 @@ struct PointOfSaleEntryPointView: View {
         .environment(\.posFeatureFlags, services.featureFlags)
         .environment(\.posSession, services.session)
         .environment(\.posConnectivityProvider, services.connectivity)
+        .environment(\.posNavigation, services.navigation)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

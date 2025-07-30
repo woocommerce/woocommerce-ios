@@ -31,6 +31,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
     var connectivity: POSConnectivityProviding {
         POSConnectivityAdaptor()
     }
+
+    var navigation: POSNavigationProviding {
+        POSNavigationAdaptor()
+    }
 }
 
 private struct POSSessionManagerAdaptor: POSSessionManagerProviding {
@@ -72,5 +76,11 @@ private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
 private struct POSConnectivityAdaptor: POSConnectivityProviding {
     var connectivityObserver: ConnectivityObserver {
         ServiceLocator.connectivityObserver
+    }
+}
+
+private struct POSNavigationAdaptor: POSNavigationProviding {
+    func navigateToCreateOrder() {
+        AppDelegate.shared.tabBarController.navigate(to: OrdersDestination.createOrder)
     }
 }

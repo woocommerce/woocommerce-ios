@@ -2379,6 +2379,10 @@ final class EditableOrderViewModelTests: XCTestCase {
     }
 
     func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() {
+        // Given
+        let expectedString = NSLocalizedString("Calculated on billing address.", comment: "")
+
+        // When
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
             case .retrieveTaxBasedOnSetting(_, let onCompletion):
@@ -2391,10 +2395,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, NSLocalizedString("Calculated on billing address.", comment: ""))
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
     func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
+        // Given
+        let expectedString = NSLocalizedString("Calculated on shop base address.", comment: "")
+        
+        // When
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
             case .retrieveTaxBasedOnSetting(_, let onCompletion):
@@ -2407,10 +2416,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, NSLocalizedString("Calculated on shop base address.", comment: ""))
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
     func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
+        // Given
+        let expectedString = NSLocalizedString("Calculated on shipping address.", comment: "")
+
+        // When
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
             case .retrieveTaxBasedOnSetting(_, let onCompletion):
@@ -2423,7 +2437,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, NSLocalizedString("Calculated on shipping address.", comment: ""))
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
     func test_payment_data_view_model_when_calling_onDismissWpAdminWebViewClosure_then_calls_to_update_elements() {

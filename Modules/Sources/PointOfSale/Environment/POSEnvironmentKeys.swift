@@ -5,7 +5,7 @@ import Experiments
 import protocol Yosemite.Action
 import struct Yosemite.Site
 
-/// Environment key for POS analytics service
+/// Environment key for POS analytics service in SwiftUI
 public struct POSAnalyticsKey: EnvironmentKey {
     public static let defaultValue: POSAnalyticsProviding = DefaultPOSAnalytics()
 }

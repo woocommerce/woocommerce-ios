@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import protocol Yosemite.StoresManager
+import SwiftUI
 
 /// This is really a re-implementation of the CardPresentPaymentsOnboardingPresenter, as it needs to take the calls to `showOnboardingIfRequired` and
 /// route the output to a SwiftUI view for display, rather than directly displaying on the viewController that's passed in.
@@ -46,9 +47,16 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
     }
 
     private func showOnboarding(readyToCollectPayment completion: @escaping () -> Void) {
-        onboardingScreenViewModelSubject.send(.showOnboarding(viewModel: onboardingViewModel, onCancel: { [weak self] in
-            self?.readinessSubscription = nil
-        }))
+        onboardingScreenViewModelSubject.send(.showOnboarding(
+            factory: .init(
+                configuration: onboardingViewModel,
+                createView: { [weak self] in
+                    guard let self else { return EmptyView() }
+                    return CardPresentPaymentsOnboardingView(viewModel: onboardingViewModel)
+                }), onCancel: { [weak self] in
+                    self?.readinessSubscription = nil
+                })
+        )
 
         readinessSubscription = readinessUseCase.$readiness
             .subscribe(on: DispatchQueue.main)
@@ -70,3 +78,5 @@ final class CardPresentPaymentsOnboardingPresenterAdaptor: CardPresentPaymentsOn
         onboardingUseCase.refreshIfNecessary()
     }
 }
+
+extension CardPresentPaymentsOnboardingViewModel: CardPresentPaymentsOnboardingViewConfiguration {}

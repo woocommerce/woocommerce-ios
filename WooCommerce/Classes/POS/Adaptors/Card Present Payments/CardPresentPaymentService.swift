@@ -52,8 +52,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         paymentEventPublisher = onboardingAdaptor.onboardingScreenViewModelPublisher
             .map { onboardingEvent -> CardPresentPaymentEvent in
                 switch onboardingEvent {
-                case let .showOnboarding(onboardingViewModel, onCancel):
-                    return .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: onCancel)
+                case let .showOnboarding(factory, onCancel):
+                    return .showOnboarding(factory: factory, onCancel: onCancel)
                 case .onboardingComplete:
                     return .idle
                 }

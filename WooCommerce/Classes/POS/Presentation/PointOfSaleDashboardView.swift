@@ -109,10 +109,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewFactory, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
-        }) { viewModel in
-            paymentsOnboardingView(from: viewModel)
+        }) { factory in
+            paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
@@ -205,12 +205,13 @@ private extension PointOfSaleDashboardView {
         DocumentationView()
     }
 
-    func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = { [weak posModel] in
+    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewFactory) -> some View {
+        factory.configuration.showSupport = { [weak posModel] in
             posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
-        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
+
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewFactory: factory,
                                                                             onDismissTap: {
             posModel.cancelCardPaymentsOnboarding()
         }))

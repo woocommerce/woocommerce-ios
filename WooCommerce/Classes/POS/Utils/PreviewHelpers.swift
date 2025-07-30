@@ -233,7 +233,7 @@ struct POSPreviewHelpers {
             couponsSearchController: couponsSearchController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
-            analytics: POSPreviewAnalytics(),
+            analytics: EmptyPOSAnalytics(),
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,

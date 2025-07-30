@@ -12,14 +12,9 @@ public protocol POSDependencyProviding {
     var currency: POSCurrencySettingsProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
     var session: POSSessionManagerProviding { get }
-<<<<<<< HEAD
     var connectivity: POSConnectivityProviding { get }
-    var navigation: POSNavigationProviding { get }
-=======
-    var connectivity: ConnectivityObserver { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
->>>>>>> f9fab6dba2 (Create POSExternalViewProvider to extract SupportForm away from POS)
 }
 
 public protocol POSAnalyticsProviding {
@@ -37,7 +32,6 @@ public protocol POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool
 }
 
-<<<<<<< HEAD
 public protocol POSCurrencySettingsProviding {
     var currencySettings: CurrencySettings { get }
 }
@@ -46,11 +40,8 @@ public protocol POSConnectivityProviding {
     var connectivityObserver: ConnectivityObserver { get }
 }
 
-public protocol POSNavigationProviding {
-=======
 /// Navigation to the Woo app service abstraction
 public protocol POSExternalNavigationProviding {
->>>>>>> f9fab6dba2 (Create POSExternalViewProvider to extract SupportForm away from POS)
     func navigateToCreateOrder()
 }
 

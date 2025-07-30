@@ -79,8 +79,9 @@ public extension EnvironmentValues {
 
 // MARK: - Empty Default Values
 
-public struct EmptyPOSExternalNavigation: POSNavigationProviding {
+public struct EmptyPOSExternalNavigation: POSExternalNavigationProviding {
     public func navigateToCreateOrder() {}
+    public init() {}
 }
 
 public struct EmptyPOSSessionManager: POSSessionManagerProviding {
@@ -121,4 +122,5 @@ public struct EmptyPOSAnalytics: POSAnalyticsProviding {
 
 public struct EmptyPOSExternalView: POSExternalViewProviding {
     public func createSupportFormView(isPresented: Binding<Bool>) -> AnyView { AnyView(EmptyView()) }
+    public init() {}
 }

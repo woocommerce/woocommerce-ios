@@ -123,7 +123,7 @@ private extension PointOfSaleBarcodeScannerSetup {
 #if DEBUG
 @available(iOS 17.0, *)
 #Preview {
-    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: POSPreviewAnalytics())
+    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true), analytics: EmptyPOSAnalytics())
 }
 #endif
 

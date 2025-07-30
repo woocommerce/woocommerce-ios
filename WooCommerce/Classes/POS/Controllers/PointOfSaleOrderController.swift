@@ -18,6 +18,7 @@ import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
+import class Yosemite.OrderTotalsCalculator
 
 enum SyncOrderState {
     case newOrder

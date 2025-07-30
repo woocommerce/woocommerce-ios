@@ -34,7 +34,7 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
     }
 
     var externalNavigation: POSExternalNavigationProviding {
-        POSExternalNavigationAdaptor(deepLinkNavigator: deepLinkNavigator)
+        POSExternalNavigationAdaptor()
     }
 
     var externalViews: POSExternalViewProviding {
@@ -88,7 +88,7 @@ private struct POSConnectivityAdaptor: POSConnectivityProviding {
 
 private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
     func navigateToCreateOrder() {
-        AppDelegate.shared.tabBarController.navigate(to: OrdersDestination.createOrder)
+        AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
     }
 }
 
@@ -96,8 +96,8 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>) -> AnyView {
         AnyView(
             SupportForm(isPresented: isPresented,
-                       viewModel: SupportFormViewModel(sourceTag: "pos",
-                                                     defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
+                        viewModel: SupportFormViewModel(sourceTag: "pos",
+                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
         )
     }
 }

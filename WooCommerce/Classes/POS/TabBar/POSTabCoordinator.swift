@@ -97,7 +97,7 @@ private extension POSTabCoordinator {
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
-                                                                            collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptory)
+                                                                            collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
                let orderService = POSOrderService(siteID: siteID,

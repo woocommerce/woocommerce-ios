@@ -178,7 +178,7 @@ private extension ChildItemList {
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
                             sourceViewType: .list,
-                            analytics: POSPreviewAnalytics()
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 
@@ -205,7 +205,7 @@ private extension ChildItemList {
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
                             sourceViewType: .list,
-                            analytics: POSPreviewAnalytics()
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 

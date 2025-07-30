@@ -1,10 +1,9 @@
 import Foundation
-import Yosemite
 import WooFoundation
 
 /// Helper to calculate the totals on an `Order`.
 ///
-final class OrderTotalsCalculator {
+final public class OrderTotalsCalculator {
     // MARK: Private properties
 
     private let order: Order
@@ -27,7 +26,7 @@ final class OrderTotalsCalculator {
 
     /// Total value of all items on an order.
     ///
-    var itemsTotal: NSDecimalNumber {
+    public var itemsTotal: NSDecimalNumber {
         order.items
             .map { $0.subtotal }
             .compactMap { currencyFormatter.convertToDecimal($0) }
@@ -36,7 +35,7 @@ final class OrderTotalsCalculator {
 
     /// Total value of all fee lines on an order.
     ///
-    var feesTotal: NSDecimalNumber {
+    public var feesTotal: NSDecimalNumber {
         order.fees
             .map { $0.total }
             .compactMap { currencyFormatter.convertToDecimal($0) }
@@ -45,7 +44,7 @@ final class OrderTotalsCalculator {
 
     /// Total value of discounts, including coupons and product discounts.
     ///
-    var discountTotal: NSDecimalNumber {
+    public var discountTotal: NSDecimalNumber {
         let itemsDiscountedTotal = order.items
             .map { $0.total }
             .compactMap { currencyFormatter.convertToDecimal($0) }
@@ -56,18 +55,18 @@ final class OrderTotalsCalculator {
 
     /// Order total
     ///
-    var orderTotal: NSDecimalNumber {
+    public var orderTotal: NSDecimalNumber {
         itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(discountTotal)
     }
 
-    init(for order: Order, using currencyFormatter: CurrencyFormatter) {
+    public init(for order: Order, using currencyFormatter: CurrencyFormatter) {
         self.order = order
         self.currencyFormatter = currencyFormatter
     }
 
     /// Returns a copy of the order with a new, locally calculated order total.
     ///
-    func updateOrderTotal() -> Order {
+    public func updateOrderTotal() -> Order {
         return order.copy(total: orderTotal.stringValue)
     }
 }

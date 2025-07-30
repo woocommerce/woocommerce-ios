@@ -8,13 +8,10 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
-    public let slug: String
-    public let permalink: String
 
     public let productTypeKey: String
     public let statusKey: String        // draft, pending, private, published
     public let sku: String?
-    public let globalUniqueID: String?
 
     public let price: String
     public let virtual: Bool
@@ -49,12 +46,9 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
-                slug: String,
-                permalink: String,
                 productTypeKey: String,
                 statusKey: String,
                 sku: String?,
-                globalUniqueID: String?,
                 price: String,
                 virtual: Bool,
                 stockQuantity: Decimal?,
@@ -67,12 +61,9 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.siteID = siteID
         self.productID = productID
         self.name = name
-        self.slug = slug
-        self.permalink = permalink
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.sku = sku
-        self.globalUniqueID = globalUniqueID
         self.price = price
         self.virtual = virtual
         self.stockQuantity = stockQuantity

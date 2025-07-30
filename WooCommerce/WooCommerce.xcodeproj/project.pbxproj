@@ -269,6 +269,9 @@
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024A8F1F2A588FA500ABF3EB /* EditableImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A8F1E2A588FA500ABF3EB /* EditableImageView.swift */; };
+		024B9B502E386D46007757E3 /* OrderDetailsShippingAddressMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024B9B4F2E386D3A007757E3 /* OrderDetailsShippingAddressMapView.swift */; };
+		024B9B532E3871A9007757E3 /* OrderDetailsShippingAddressMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024B9B522E3871A9007757E3 /* OrderDetailsShippingAddressMapViewModel.swift */; };
+		024B9B542E3871A9007757E3 /* OrderDetailsMapLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024B9B512E3871A9007757E3 /* OrderDetailsMapLauncher.swift */; };
 		024D4E842A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024D4E832A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
 		024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3062372C18D006658FE /* AztecUIConfigurator.swift */; };
@@ -3447,6 +3450,9 @@
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024A8F1E2A588FA500ABF3EB /* EditableImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableImageView.swift; sourceTree = "<group>"; };
+		024B9B4F2E386D3A007757E3 /* OrderDetailsShippingAddressMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsShippingAddressMapView.swift; sourceTree = "<group>"; };
+		024B9B512E3871A9007757E3 /* OrderDetailsMapLauncher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsMapLauncher.swift; sourceTree = "<group>"; };
+		024B9B522E3871A9007757E3 /* OrderDetailsShippingAddressMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsShippingAddressMapViewModel.swift; sourceTree = "<group>"; };
 		024D4E832A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductForm.swift"; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
 		024DF3062372C18D006658FE /* AztecUIConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUIConfigurator.swift; sourceTree = "<group>"; };
@@ -12873,6 +12879,9 @@
 				D817586122BB64C300289CFE /* OrderDetailsNotices.swift */,
 				D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */,
 				DE8C63AD2E1E2D1400DA48AC /* OrderDetailsShipmentDetailsView.swift */,
+				024B9B4F2E386D3A007757E3 /* OrderDetailsShippingAddressMapView.swift */,
+				024B9B512E3871A9007757E3 /* OrderDetailsMapLauncher.swift */,
+				024B9B522E3871A9007757E3 /* OrderDetailsShippingAddressMapViewModel.swift */,
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
 				D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */,
 				31316F9B25CB20FD00D9F129 /* OrderStatusListViewModel.swift */,
@@ -15045,6 +15054,8 @@
 				0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */,
 				26E7EE6E29300E8100793045 /* AnalyticsTopPerformersCard.swift in Sources */,
 				03E471DA29424E82001A58AD /* CardPresentModalTapToPaySuccess.swift in Sources */,
+				024B9B532E3871A9007757E3 /* OrderDetailsShippingAddressMapViewModel.swift in Sources */,
+				024B9B542E3871A9007757E3 /* OrderDetailsMapLauncher.swift in Sources */,
 				26E1BECE251CD9F80096D0A1 /* RefundItemViewModel.swift in Sources */,
 				DE7B479027A153C20018742E /* CouponSearchUICommand.swift in Sources */,
 				026826B52BF59E330036F959 /* CardReaderConnectionStatusView.swift in Sources */,
@@ -16394,6 +16405,7 @@
 				DE792E1B26EF37ED0071200C /* DefaultConnectivityObserver.swift in Sources */,
 				029F29FE24DA5B2D004751CA /* ProductInventorySettingsViewModel.swift in Sources */,
 				57CFCD28248845B4003F51EC /* PrimarySectionHeaderView.swift in Sources */,
+				024B9B502E386D46007757E3 /* OrderDetailsShippingAddressMapView.swift in Sources */,
 				023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */,
 				CEA455C92BB5DA4C00D932CF /* AnalyticsSessionsReportCard.swift in Sources */,
 				DEC75CC22BC4E53800763801 /* DashboardCustomizationView.swift in Sources */,

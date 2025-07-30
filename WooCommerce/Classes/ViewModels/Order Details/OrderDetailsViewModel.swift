@@ -448,10 +448,17 @@ extension OrderDetailsViewModel {
             TitleAndValueTableViewCell.self
         ]
 
-        let cellsWithoutNib = [
-            HostingConfigurationTableViewCell<ShippingLineRowView>.self,
-            HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>.self,
-        ]
+        let cellsWithoutNib: [UITableViewCell.Type] = {
+            let iOS17Cells: [UITableViewCell.Type] = if #available(iOS 17.0, *) {
+                [HostingConfigurationTableViewCell<OrderDetailsShippingAddressMapView>.self]
+            } else {
+                []
+            }
+            return iOS17Cells + [
+                HostingConfigurationTableViewCell<ShippingLineRowView>.self,
+                HostingConfigurationTableViewCell<OrderDetailsShipmentDetailsView>.self
+            ]
+        }()
 
         for cellClass in cellsWithNib {
             tableView.registerNib(for: cellClass)

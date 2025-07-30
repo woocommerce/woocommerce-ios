@@ -421,6 +421,8 @@ private extension OrderDetailsViewController {
             editCustomerNoteTapped()
         case .editShippingAddress:
             editShippingAddressTapped()
+        case .openShippingAddressMap:
+            openShippingAddressMapTapped()
         case .trashOrder:
             trashOrderTapped()
         }
@@ -654,6 +656,11 @@ private extension OrderDetailsViewController {
         let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
         let navigationController = WooNavigationController(rootViewController: editAddressViewController)
         present(navigationController, animated: true, completion: nil)
+    }
+
+    func openShippingAddressMapTapped() {
+        guard let shippingAddress = viewModel.order.shippingAddress else { return }
+        OrderDetailsMapLauncher.openAddress(shippingAddress, from: self)
     }
 
     func trashOrderTapped() {

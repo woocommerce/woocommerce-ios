@@ -448,6 +448,13 @@ private extension OrderDetailsDataSource {
         switch cell {
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             configureShippingAddress(cell: cell)
+        case let cell where row == .shippingAddressMap:
+            if #available(iOS 17.0, *) {
+                guard let cell = cell as? HostingConfigurationTableViewCell<OrderDetailsShippingAddressMapView> else {
+                    return assertionFailure("Expected HostingConfigurationTableViewCell<OrderDetailsShippingAddressMapView> for shippingAddressMap row")
+                }
+                configureShippingAddressMap(cell: cell)
+            }
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
@@ -1064,6 +1071,17 @@ private extension OrderDetailsDataSource {
         cell.configureLayout()
     }
 
+    @available(iOS 17.0, *)
+    private func configureShippingAddressMap(cell: HostingConfigurationTableViewCell<OrderDetailsShippingAddressMapView>) {
+        let viewModel = OrderDetailsShippingAddressMapViewModel(shippingAddress: order.shippingAddress) { [weak self] in
+            self?.onCellAction?(.openShippingAddressMap, nil)
+        }
+
+        let view = OrderDetailsShippingAddressMapView(viewModel: viewModel)
+        cell.host(view)
+        cell.selectionStyle = .none
+    }
+
     private func configureShippingLine(cell: HostingConfigurationTableViewCell<ShippingLineRowView>, at indexPath: IndexPath) {
         guard let shippingLine = shippingLines[safe: indexPath.row] else {
             ServiceLocator.crashLogging.logMessage(
@@ -1550,8 +1568,11 @@ extension OrderDetailsDataSource {
             }.allSatisfy { $0.virtual == true }
 
 
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+            if let shippingAddress = order.shippingAddress, orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
+                if shippingAddress.formattedPostalAddress != nil, #available(iOS 17.0, *) {
+                    rows.append(.shippingAddressMap)
+                }
             }
 
             /// Billing Address
@@ -2008,6 +2029,7 @@ extension OrderDetailsDataSource {
         case issueRefundButton
         case customerNote
         case shippingAddress
+        case shippingAddressMap
         case billingDetail
         case payment
         case customerPaid
@@ -2062,6 +2084,12 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
+            case .shippingAddressMap:
+                if #available(iOS 17.0, *) {
+                    return HostingConfigurationTableViewCell<OrderDetailsShippingAddressMapView>.reuseIdentifier
+                } else {
+                    return UITableViewCell.reuseIdentifier
+                }
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
@@ -2144,6 +2172,7 @@ extension OrderDetailsDataSource {
         case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
+        case openShippingAddressMap
         case trashOrder
     }
 

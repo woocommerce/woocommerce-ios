@@ -61,6 +61,9 @@
 		<string>fastmail</string>
 		<string>whatsapp</string>
 		<string>tg</string>
+		<string>googlemaps</string>
+		<string>comgooglemaps</string>
+		<string>maps</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

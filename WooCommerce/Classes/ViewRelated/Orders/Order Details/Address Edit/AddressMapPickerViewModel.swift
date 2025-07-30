@@ -40,7 +40,6 @@ final class AddressMapPickerViewModel: NSObject {
     init(fields: AddressFormFields, countryByCode: @escaping (_ countryCode: String) -> Country?) {
         self.countryByCode = countryByCode
         super.init()
-        configureLocationServices()
         configureSearchCompleter()
         configureMap(with: fields)
     }
@@ -100,13 +99,6 @@ final class AddressMapPickerViewModel: NSObject {
 
 @available(iOS 17, *)
 private extension AddressMapPickerViewModel {
-    func configureLocationServices() {
-        let locationManager = CLLocationManager()
-        if locationManager.authorizationStatus == .notDetermined {
-            locationManager.requestWhenInUseAuthorization()
-        }
-    }
-
     func configureSearchCompleter() {
         searchCompleter.resultTypes = .address
         searchCompleter.delegate = self

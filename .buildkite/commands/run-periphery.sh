@@ -1,5 +1,9 @@
 #!/bin/bash -eu
 
+if .buildkite/commands/should-skip-job.sh --job-type validation; then
+  exit 0
+fi
+
 ### Prepare
 
 echo '--- 📦 Downloading Build Artifacts'

@@ -136,7 +136,7 @@ private extension AddressMapPickerViewModel {
                     guard let location = placemarks.first?.location else {
                         return
                     }
-                    
+
                     region = MKCoordinateRegion(
                         center: location.coordinate,
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
@@ -151,15 +151,18 @@ private extension AddressMapPickerViewModel {
 
     @MainActor
     func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) async {
-        await withAnimation { [weak self] in
-            guard let self else { return }
-            searchResults = []
-            region = MKCoordinateRegion(
-                center: placemark.coordinate,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            )
-            annotations = [MapAnnotation(coordinate: placemark.coordinate)]
-            selectedPlace = placemark
+        await withCheckedContinuation { continuation in
+            withAnimation { [weak self] in
+                guard let self else { return }
+                searchResults = []
+                region = MKCoordinateRegion(
+                    center: placemark.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+                annotations = [MapAnnotation(coordinate: placemark.coordinate)]
+                selectedPlace = placemark
+                continuation.resume()
+            }
         }
     }
 

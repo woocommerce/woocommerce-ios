@@ -27,6 +27,7 @@ import struct Yosemite.PaymentIntent
 import protocol Yosemite.Action
 import struct Yosemite.Site
 import PointOfSale
+import SwiftUI
 
 // MARK: - PreviewProvider helpers
 //
@@ -292,6 +293,7 @@ final class POSPreviewServices: POSDependencyProviding {
     var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     var session: POSSessionManagerProviding = EmptyPOSSessionManager()
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
-    var navigation: POSNavigationProviding = EmptyPOSNavigation()
+    var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
+    var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
 }
 #endif

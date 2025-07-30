@@ -6,6 +6,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posSession) private var session
+    @Environment(\.posExternalViews) private var externalViews
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -188,16 +189,14 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: session.defaultSite))
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.supportDone) {
-                        showSupport = false
+            externalViews.createSupportFormView(isPresented: $showSupport)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.supportDone) {
+                            showSupport = false
+                        }
                     }
                 }
-            }
         }
         .navigationViewStyle(.stack)
     }

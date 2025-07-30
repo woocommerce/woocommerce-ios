@@ -31,8 +31,13 @@ public struct POSConnectivityKey: EnvironmentKey {
 }
 
 /// Environment key for POS navigation service
-public struct POSNavigationKey: EnvironmentKey {
-    public static let defaultValue: POSNavigationProviding = EmptyPOSNavigation()
+public struct POSExternalNavigationKey: EnvironmentKey {
+    public static let defaultValue: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
+}
+
+/// Environment key for POS external view service
+public struct POSExternalViewKey: EnvironmentKey {
+    public static let defaultValue: POSExternalViewProviding = EmptyPOSExternalView()
 }
 
 public extension EnvironmentValues {
@@ -61,15 +66,20 @@ public extension EnvironmentValues {
         set { self[POSConnectivityKey.self] = newValue }
     }
 
-    var posNavigation: POSNavigationProviding {
-        get { self[POSNavigationKey.self] }
-        set { self[POSNavigationKey.self] = newValue }
+    var posExternalNavigation: POSExternalNavigationProviding {
+        get { self[POSExternalNavigationKey.self] }
+        set { self[POSExternalNavigationKey.self] = newValue }
+    }
+
+    var posExternalViews: POSExternalViewProviding {
+        get { self[POSExternalViewKey.self] }
+        set { self[POSExternalViewKey.self] = newValue }
     }
 }
 
 // MARK: - Empty Default Values
 
-public struct EmptyPOSNavigation: POSNavigationProviding {
+public struct EmptyPOSExternalNavigation: POSNavigationProviding {
     public func navigateToCreateOrder() {}
 }
 
@@ -107,4 +117,8 @@ public struct EmptyPOSAnalytics: POSAnalyticsProviding {
     public func track(_ stat: WooAnalyticsStat) {}
     public func track(_ stat: WooFoundationCore.WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: any Error) {}
     public init() {}
+}
+
+public struct EmptyPOSExternalView: POSExternalViewProviding {
+    public func createSupportFormView(isPresented: Binding<Bool>) -> AnyView { AnyView(EmptyView()) }
 }

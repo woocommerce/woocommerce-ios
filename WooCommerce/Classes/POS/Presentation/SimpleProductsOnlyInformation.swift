@@ -4,7 +4,7 @@ import PointOfSale
 @available(iOS 17.0, *)
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
-    @Environment(\.posNavigation) private var navigation
+    @Environment(\.posExternalNavigation) private var navigation
 
     init(isPresented: Binding<Bool>) {
         self._isPresented = isPresented

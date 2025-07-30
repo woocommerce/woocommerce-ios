@@ -1,5 +1,6 @@
 import PointOfSale
 import WooFoundation
+import SwiftUI
 import protocol Experiments.FeatureFlagService
 import enum Experiments.FeatureFlag
 import struct Yosemite.Site
@@ -32,10 +33,16 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSConnectivityAdaptor()
     }
 
-    var navigation: POSNavigationProviding {
-        POSNavigationAdaptor()
+    var externalNavigation: POSExternalNavigationProviding {
+        POSExternalNavigationAdaptor(deepLinkNavigator: deepLinkNavigator)
+    }
+
+    var externalViews: POSExternalViewProviding {
+        POSExternalViewAdaptor()
     }
 }
+
+// MARK: - Individual Service Adaptors
 
 private struct POSSessionManagerAdaptor: POSSessionManagerProviding {
     var defaultSite: Site? {
@@ -79,8 +86,18 @@ private struct POSConnectivityAdaptor: POSConnectivityProviding {
     }
 }
 
-private struct POSNavigationAdaptor: POSNavigationProviding {
+private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
     func navigateToCreateOrder() {
         AppDelegate.shared.tabBarController.navigate(to: OrdersDestination.createOrder)
+    }
+}
+
+private struct POSExternalViewAdaptor: POSExternalViewProviding {
+    func createSupportFormView(isPresented: Binding<Bool>) -> AnyView {
+        AnyView(
+            SupportForm(isPresented: isPresented,
+                       viewModel: SupportFormViewModel(sourceTag: "pos",
+                                                     defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
+        )
     }
 }

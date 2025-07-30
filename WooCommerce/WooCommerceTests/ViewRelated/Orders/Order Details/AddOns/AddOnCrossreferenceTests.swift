@@ -16,7 +16,7 @@ class AddOnCrossreferenceTests: XCTestCase {
             OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
             OrderItemAttribute(metaID: 4, name: "NotOnProduct ($7.00)", value: ""),
         ]
-        let product = Product.fake().copy(addOns: [
+        let product = ProductListItem.fake().copy(addOns: [
             ProductAddOn.fake().copy(name: "Fast Delivery"),
             ProductAddOn.fake().copy(name: "Topping"),
             ProductAddOn.fake().copy(name: "Schedule"),
@@ -38,7 +38,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         let orderItemAttributes = [
             OrderItemAttribute(metaID: 3, name: "Fast (really) Delivery (fast) ($7.00)", value: ""),
         ]
-        let product = Product.fake().copy(addOns: [
+        let product = ProductListItem.fake().copy(addOns: [
             ProductAddOn.fake().copy(name: "Fast (really) Delivery (fast)"),
         ])
 
@@ -57,7 +57,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         let orderItemAttributes = [
             OrderItemAttribute(metaID: 3, name: "Engraving", value: ""),
         ]
-        let product = Product.fake().copy(addOns: [
+        let product = ProductListItem.fake().copy(addOns: [
             ProductAddOn.fake().copy(name: "Engraving"),
         ])
 
@@ -79,7 +79,7 @@ class AddOnCrossreferenceTests: XCTestCase {
             OrderItemAttribute(metaID: 3, name: "Fast Delivery (%7.00)", value: ""),
             OrderItemAttribute(metaID: 4, name: "NotOnProduct (%7.00)", value: ""),
         ]
-        let product = Product.fake()
+        let product = ProductListItem.fake()
 
         // When
         let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: [])
@@ -91,7 +91,7 @@ class AddOnCrossreferenceTests: XCTestCase {
 
     func tests_addOnAttributes_is_empty_when_orderItem_does_not_have_attributes() {
         // Given
-        let product = Product.fake().copy(addOns: [
+        let product = ProductListItem.fake().copy(addOns: [
             ProductAddOn.fake().copy(name: "Fast Delivery"),
             ProductAddOn.fake().copy(name: "Topping"),
             ProductAddOn.fake().copy(name: "Schedule"),
@@ -112,7 +112,7 @@ class AddOnCrossreferenceTests: XCTestCase {
             OrderItemAttribute(metaID: 2, name: "Random Attribute 1", value: ""),
             OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: "")
         ]
-        let product = Product.fake()
+        let product = ProductListItem.fake()
         let addOnGroups = [
             AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Fast Delivery")]),
             AddOnGroup.fake().copy(addOns: [ProductAddOn.fake().copy(name: "Topping")]),
@@ -137,7 +137,7 @@ class AddOnCrossreferenceTests: XCTestCase {
             OrderItemAttribute(metaID: 3, name: "Fast Delivery ($7.00)", value: ""),
             OrderItemAttribute(metaID: 4, name: "Gift Wrapping ($7.00)", value: ""),
         ]
-        let product = Product.fake().copy(addOns: [
+        let product = ProductListItem.fake().copy(addOns: [
             ProductAddOn.fake().copy(name: "Fast Delivery"),
             ProductAddOn.fake().copy(name: "Topping"),
             ProductAddOn.fake().copy(name: "Schedule"),

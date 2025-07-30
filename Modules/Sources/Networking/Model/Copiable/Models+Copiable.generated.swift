@@ -1972,6 +1972,60 @@ extension Networking.ProductImage {
     }
 }
 
+extension Networking.ProductListItem {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        productTypeKey: CopiableProp<String> = .copy,
+        statusKey: CopiableProp<String> = .copy,
+        sku: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
+        virtual: CopiableProp<Bool> = .copy,
+        stockQuantity: NullableCopiableProp<Decimal> = .copy,
+        stockStatusKey: CopiableProp<String> = .copy,
+        reviewsAllowed: CopiableProp<Bool> = .copy,
+        averageRating: CopiableProp<String> = .copy,
+        ratingCount: CopiableProp<Int> = .copy,
+        images: CopiableProp<[ProductImage]> = .copy,
+        addOns: CopiableProp<[ProductAddOn]> = .copy
+    ) -> Networking.ProductListItem {
+        let siteID = siteID ?? self.siteID
+        let productID = productID ?? self.productID
+        let name = name ?? self.name
+        let productTypeKey = productTypeKey ?? self.productTypeKey
+        let statusKey = statusKey ?? self.statusKey
+        let sku = sku ?? self.sku
+        let price = price ?? self.price
+        let virtual = virtual ?? self.virtual
+        let stockQuantity = stockQuantity ?? self.stockQuantity
+        let stockStatusKey = stockStatusKey ?? self.stockStatusKey
+        let reviewsAllowed = reviewsAllowed ?? self.reviewsAllowed
+        let averageRating = averageRating ?? self.averageRating
+        let ratingCount = ratingCount ?? self.ratingCount
+        let images = images ?? self.images
+        let addOns = addOns ?? self.addOns
+
+        return Networking.ProductListItem(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            productTypeKey: productTypeKey,
+            statusKey: statusKey,
+            sku: sku,
+            price: price,
+            virtual: virtual,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey,
+            reviewsAllowed: reviewsAllowed,
+            averageRating: averageRating,
+            ratingCount: ratingCount,
+            images: images,
+            addOns: addOns
+        )
+    }
+}
+
 extension Networking.ProductReport {
     public func copy(
         productID: CopiableProp<Int64> = .copy,

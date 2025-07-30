@@ -13,6 +13,10 @@ public protocol ListItemConvertible {
     ///
     associatedtype ListItemType
 
+    /// Updates the Receiver with the ReadOnly Instance.
+    ///
+    func update(with entity: ListItemType)
+
     /// Returns a ListItem version of the receiver.
     ///
     func toListItem() -> ListItemType

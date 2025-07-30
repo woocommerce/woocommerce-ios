@@ -100,8 +100,8 @@ final class OrderDetailsResultsControllers {
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return productResultsController.fetchedObjects
+    var products: [ProductListItem] {
+        return productResultsController.listItemObjects
     }
 
     /// ProductVariations from an Order

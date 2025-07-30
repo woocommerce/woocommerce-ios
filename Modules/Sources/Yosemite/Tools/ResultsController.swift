@@ -6,7 +6,7 @@ import CoreData
 
 // MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
 //
-public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
+public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible & ListItemConvertible
 
 
 // MARK: - ResultsController
@@ -201,6 +201,16 @@ public class ResultsController<T: ResultsControllerMutableType> {
         }
 
         return readOnlyObjects ?? []
+    }
+
+    /// Returns an array of all of List Item Fetched Objects.
+    ///
+    public var listItemObjects: [T.ListItemType] {
+        let listItemObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            mutableObject.toListItem()
+        }
+
+        return listItemObjects ?? []
     }
 
     /// Returns an array of SectionInfo Entitites.

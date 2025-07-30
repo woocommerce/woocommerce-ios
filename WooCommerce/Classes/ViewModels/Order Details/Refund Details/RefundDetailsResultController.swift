@@ -17,8 +17,8 @@ final class RefundDetailsResultController {
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return productResultsController.fetchedObjects
+    var products: [ProductListItem] {
+        return productResultsController.listItemObjects
     }
 
     private let siteID: Int64

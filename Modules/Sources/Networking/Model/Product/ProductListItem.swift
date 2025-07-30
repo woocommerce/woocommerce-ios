@@ -72,6 +72,8 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
 
     public let menuOrder: Int
 
+    public let addOns: [ProductAddOn] //TODO: migrate AddOns to MetaData
+
     /// Whether the product was added automatically for a trial store
     public let isSampleItem: Bool
 
@@ -179,7 +181,6 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
-                downloads: [ProductDownload],
                 downloadLimit: Int64,
                 downloadExpiry: Int64,
                 buttonText: String,
@@ -194,12 +195,10 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 backordered: Bool,
                 soldIndividually: Bool,
                 weight: String?,
-                dimensions: ProductDimensions,
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
                 shippingClassID: Int64,
-                productShippingClass: ProductShippingClass?,
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
@@ -207,6 +206,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 purchaseNote: String?,
                 images: [ProductImage],
                 menuOrder: Int,
+                addOns: [ProductAddOn],
                 isSampleItem: Bool,
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
@@ -278,6 +278,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.groupOfQuantity = groupOfQuantity.refinedMinMaxQuantityEmptyValue
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
+        self.addOns = addOns
     }
 
 }

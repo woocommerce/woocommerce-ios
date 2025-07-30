@@ -18,6 +18,13 @@ extension Product {
     }
 }
 
+extension ProductListItem {
+    /// Returns the URL of the first image, if available. Otherwise, nil is returned.
+    var imageURL: URL? {
+        images.first?.imageURL
+    }
+}
+
 extension ProductVariation {
     var imageURL: URL? {
         image?.imageURL

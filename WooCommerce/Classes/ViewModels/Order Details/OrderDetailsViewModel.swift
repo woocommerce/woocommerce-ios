@@ -63,14 +63,14 @@ final class OrderDetailsViewModel {
 
     /// Products from an Order
     ///
-    var products: [Product] {
+    var products: [ProductListItem] {
         return dataSource.products
     }
 
     /// If the products for all order items have been loaded, checks if all products are virtual to skip shipping related syncs.
     private var orderContainsOnlyVirtualProducts: Bool {
         let productIDs = order.items.map { $0.productID }
-        let orderProducts = productIDs.compactMap { productID -> Product? in
+        let orderProducts = productIDs.compactMap { productID -> ProductListItem? in
             products.first(where: { $0.productID == productID })
         }
         // Early returns `false` when the products haven't been fully loaded for all order items.
@@ -218,7 +218,7 @@ final class OrderDetailsViewModel {
         return dataSource.lookUpOrderStatus(for: order)
     }
 
-    func lookUpProduct(by productID: Int64) -> Product? {
+    func lookUpProduct(by productID: Int64) -> ProductListItem? {
         return dataSource.lookUpProduct(by: productID)
     }
 

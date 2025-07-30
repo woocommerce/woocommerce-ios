@@ -149,7 +149,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Products from an Order
     ///
-    var products: [Product] = []
+    var products: [ProductListItem] = []
 
     /// Product variations from an order
     ///
@@ -1234,7 +1234,7 @@ extension OrderDetailsDataSource {
         return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
-    func lookUpProduct(by productID: Int64) -> Product? {
+    func lookUpProduct(by productID: Int64) -> ProductListItem? {
         return products.filter({ $0.productID == productID }).first
     }
 

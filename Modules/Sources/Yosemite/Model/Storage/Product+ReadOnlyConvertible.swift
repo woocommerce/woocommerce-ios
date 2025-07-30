@@ -222,7 +222,80 @@ extension Storage.Product: ReadOnlyConvertible {
 // MARK: - Storage.Product: ListItemConvertible
 //
 extension Storage.Product: ListItemConvertible {
-    public func toListItem() -> Yosemite.Product {
-        return toReadOnly()
+    public func toListItem() -> Yosemite.ProductListItem {
+        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
+        let productImages = imagesArray.map { $0.toReadOnly() }
+
+        var quantity: Decimal?
+        if let stockQuantity = stockQuantity {
+            quantity = Decimal(string: stockQuantity)
+        }
+        var productBundleStockStatus: ProductStockStatus?
+        if let bundleStockStatus {
+            productBundleStockStatus = ProductStockStatus(rawValue: bundleStockStatus)
+        }
+
+        return ProductListItem(siteID: siteID,
+                               productID: productID,
+                               name: name,
+                               slug: slug,
+                               permalink: permalink,
+                               date: date ?? Date(timeIntervalSince1970: 0),
+                               dateCreated: dateCreated ?? Date(timeIntervalSince1970: 0),
+                               dateModified: dateModified,
+                               dateOnSaleStart: dateOnSaleStart,
+                               dateOnSaleEnd: dateOnSaleEnd,
+                               productTypeKey: productTypeKey,
+                               statusKey: statusKey,
+                               featured: featured,
+                               catalogVisibilityKey: catalogVisibilityKey,
+                               fullDescription: fullDescription,
+                               shortDescription: briefDescription,
+                               sku: sku,
+                               globalUniqueID: globalUniqueID,
+                               price: price,
+                               regularPrice: regularPrice,
+                               salePrice: salePrice,
+                               onSale: onSale,
+                               purchasable: purchasable,
+                               totalSales: Int(totalSales),
+                               virtual: virtual,
+                               downloadable: downloadable,
+                               downloadLimit: downloadLimit,
+                               downloadExpiry: downloadExpiry,
+                               buttonText: buttonText,
+                               externalURL: externalURL,
+                               taxStatusKey: taxStatusKey,
+                               taxClass: taxClass,
+                               manageStock: manageStock,
+                               stockQuantity: quantity,
+                               stockStatusKey: stockStatusKey,
+                               backordersKey: backordersKey,
+                               backordersAllowed: backordersAllowed,
+                               backordered: backordered,
+                               soldIndividually: soldIndividually,
+                               weight: weight,
+                               shippingRequired: shippingRequired,
+                               shippingTaxable: shippingTaxable,
+                               shippingClass: shippingClass,
+                               shippingClassID: shippingClassID,
+                               reviewsAllowed: reviewsAllowed,
+                               averageRating: averageRating,
+                               ratingCount: Int(ratingCount),
+                               parentID: parentID,
+                               purchaseNote: purchaseNote,
+                               images: productImages,
+                               menuOrder: Int(menuOrder),
+                               addOns: addOnsArray.map { $0.toReadOnly() },
+                               isSampleItem: isSampleItem,
+                               bundleStockStatus: productBundleStockStatus,
+                               bundleStockQuantity: bundleStockQuantity?.int64Value,
+                               bundleMinSize: bundleMinSize?.decimalValue,
+                               bundleMaxSize: bundleMaxSize?.decimalValue,
+                               password: password,
+                               minAllowedQuantity: minAllowedQuantity,
+                               maxAllowedQuantity: maxAllowedQuantity,
+                               groupOfQuantity: groupOfQuantity,
+                               combineVariationQuantities: combineVariationQuantities?.boolValue)
     }
 }

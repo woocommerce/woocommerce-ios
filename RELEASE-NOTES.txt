@@ -4,7 +4,7 @@
 23.0
 -----
 - [*] Fix initialization of authenticator to avoid crashes during login [https://github.com/woocommerce/woocommerce-ios/pull/15953]
-
+- [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
 
 22.9
 -----

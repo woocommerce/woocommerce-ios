@@ -64,6 +64,13 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
+    /// WOOMOB-891
+    /// Shipments with a EU destination address must contain HS tariff number
+    ///
+    /// Introduced to enforce tariff validation
+    /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
+    @Published private(set) var isHSTariffNumberRequired: Bool = false
+
     init(itemName: String,
          itemProductID: Int64,
          itemQuantity: Decimal,
@@ -71,6 +78,7 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemWeight: Double,
          currencySymbol: String,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
+         isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
@@ -88,6 +96,9 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
 
         originCountryCode?
             .assign(to: &$originCountryCode)
+
+        isHSTariffNumberRequired?
+            .assign(to: &$isHSTariffNumberRequired)
 
         fetchCountries()
 
@@ -128,15 +139,27 @@ private extension WooShippingCustomsItemViewModel {
     }
 
     func combineRequiredInformationIsEntered() {
-        Publishers.CombineLatest4($description, $valuePerUnit, $weightPerUnit, $selectedCountry)
-            .sink { [weak self] description, valuePerUnit, weightPerUnit, selectedCountry in
-                guard let self else { return }
-                requiredInformationIsEntered = description.isNotEmpty &&
-                valuePerUnit.isNotEmpty &&
-                Self.isWeightValid(weightPerUnit) &&
-                selectedCountry != nil
-            }
-            .store(in: &cancellables)
+        Publishers.CombineLatest4(
+            $description,
+            $valuePerUnit,
+            $weightPerUnit,
+            $selectedCountry
+        )
+        .combineLatest($hsTariffNumber, $isHSTariffNumberRequired)
+        .sink { [weak self] result in
+            guard let self else { return }
+
+            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired) = result
+
+            let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) || (isValidTariffNumber && hsTariffNumber.isNotEmpty)
+
+            requiredInformationIsEntered = description.isNotEmpty &&
+            valuePerUnit.isNotEmpty &&
+            Self.isWeightValid(weightPerUnit) &&
+            selectedCountry != nil &&
+            hsTariffNumberRequirementMet
+        }
+        .store(in: &cancellables)
     }
 
     func combineHSTariffNumberTotalValue() {

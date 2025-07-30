@@ -498,7 +498,11 @@ private enum Localization {
     static let hintOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
     static let hintSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
 
-    static let pickOnMap = NSLocalizedString("Address Search", comment: "Button to open map address picker")
+    static let pickOnMap = NSLocalizedString(
+        "editOrderAddressForm.pickOnMap",
+        value: "Find on Map",
+        comment: "Button to open map address picker."
+    )
 }
 
 #if DEBUG

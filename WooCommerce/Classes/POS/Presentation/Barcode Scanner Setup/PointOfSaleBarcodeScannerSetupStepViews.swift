@@ -37,6 +37,7 @@ extension PointOfSaleBarcodeScannerBarcodeView {
 }
 
 struct PointOfSaleBarcodeScannerPairingView: View {
+    @Environment(\.posAnalytics) private var analytics
     let scanner: PointOfSaleBarcodeScannerType
 
     var body: some View {
@@ -58,7 +59,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
             }
 
             Button {
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupOpenSystemSettingsTapped(scanner: scanner))
 
                 guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
                     return

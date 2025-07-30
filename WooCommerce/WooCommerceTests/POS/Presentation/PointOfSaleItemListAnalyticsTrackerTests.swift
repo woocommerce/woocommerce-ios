@@ -12,7 +12,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackItemListSelected_tracks_correct_event_products_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -27,7 +27,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackItemListSelected_tracks_correct_event_products_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "shoes", analytics: mockAnalytics)
 
         // When
@@ -42,7 +42,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackItemListSelected_tracks_correct_event_coupons_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -57,7 +57,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackItemListSelected_tracks_correct_event_coupons_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "discount", analytics: mockAnalytics)
 
         // When
@@ -72,7 +72,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_products_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -89,7 +89,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_products_preSearch() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -105,7 +105,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_products_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "shoes", analytics: mockAnalytics)
 
         // When
@@ -121,7 +121,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_coupons_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -137,7 +137,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_coupons_preSearch() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -153,7 +153,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackNextPageWillLoad_tracks_correct_event_coupons_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "discount", analytics: mockAnalytics)
 
         // When
@@ -169,7 +169,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_products_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -185,7 +185,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_products_preSearch() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -201,7 +201,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_products_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "shoes", analytics: mockAnalytics)
 
         // When
@@ -217,7 +217,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_coupons_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -233,7 +233,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_coupons_preSearch() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -249,7 +249,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackRefresh_tracks_correct_event_coupons_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "discount", analytics: mockAnalytics)
 
         // When
@@ -265,7 +265,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackSearchTapped_tracks_correct_event_products_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -280,7 +280,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackSearchTapped_tracks_correct_event_products_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .products(search: true), searchTerm: "shoes", analytics: mockAnalytics)
 
         // When
@@ -295,7 +295,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackSearchTapped_tracks_correct_event_coupons_list() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: false), searchTerm: "", analytics: mockAnalytics)
 
         // When
@@ -310,7 +310,7 @@ struct PointOfSaleItemListAnalyticsTrackerTests {
     @available(iOS 17.0, *)
     @Test func trackSearchTapped_tracks_correct_event_coupons_search() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let tracker = PointOfSaleItemListAnalyticsTracker(selectedItemListType: .coupons(search: true), searchTerm: "discount", analytics: mockAnalytics)
 
         // When

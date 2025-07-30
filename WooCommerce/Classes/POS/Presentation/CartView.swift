@@ -3,6 +3,7 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -182,7 +183,7 @@ private extension CartView {
         case .finalizing:
             let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
             return .init(state: state, action: {
-                ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
+                analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
             })
         }
@@ -215,6 +216,8 @@ private extension CartView {
 
 @available(iOS 17.0, *)
 private struct CartClearMenuButton: View {
+    @Environment(\.posAnalytics) private var analytics
+
     let removeAllItemsFromCart: () -> Void
 
     var body: some View {
@@ -222,7 +225,7 @@ private struct CartClearMenuButton: View {
             Button(role: .destructive,
                    action: {
                 removeAllItemsFromCart()
-                ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
+                analytics.track(.pointOfSaleClearCartTapped)
             }) {
                 Text(Localization.clearButtonTitle)
             }
@@ -354,6 +357,7 @@ private struct CartScrollViewContent: View {
 @available(iOS 17.0, *)
 private struct CouponsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
 
     private let viewHelper = CartViewHelper()
@@ -370,12 +374,10 @@ private struct CouponsCartSection: View {
                     ),
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: posModel.orderStage == .building ? {
-                        ServiceLocator.analytics.track(
-                            event: .PointOfSale.itemRemovedFromCart(
+                        analytics.track(event: .PointOfSale.itemRemovedFromCart(
                                 sourceView: .cart,
                                 itemType: .coupon
-                            )
-                        )
+                            ))
                         posModel.remove(cartItem: couponItem)
                     } : nil
                 )
@@ -389,6 +391,7 @@ private struct CouponsCartSection: View {
 @available(iOS 17.0, *)
 private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
@@ -419,7 +422,7 @@ private struct PurchasableItemsCartSection: View {
         guard posModel.orderStage == .building else { return nil }
 
         return {
-            ServiceLocator.analytics.track(
+            analytics.track(
                 event: .PointOfSale.itemRemovedFromCart(
                     sourceView: .cart,
                     itemType: .init(cartItem: cartItem),
@@ -448,7 +451,7 @@ private extension CartView {
     func trackCheckoutTapped() {
         let purchasableItems = posModel.cart.purchasableItems.count
         let coupons = posModel.cart.coupons.count
-        ServiceLocator.analytics.track(
+        analytics.track(
             event: .PointOfSale.checkoutTapped(
                 purchasableItemsInCart: purchasableItems,
                 couponsInCart: coupons

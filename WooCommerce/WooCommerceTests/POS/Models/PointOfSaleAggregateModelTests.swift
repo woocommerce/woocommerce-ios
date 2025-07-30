@@ -68,12 +68,10 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct CartTests {
-        private let analytics: WooAnalytics!
-        private let analyticsProvider: MockAnalyticsProvider!
+        private let analytics: MockPOSAnalytics
 
         init() {
-            analyticsProvider = MockAnalyticsProvider()
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
         }
 
         @available(iOS 17.0, *)
@@ -822,13 +820,12 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct AnalyticsTests {
-        private let analyticsProvider = MockAnalyticsProvider()
-        private let analytics: WooAnalytics
+        private let analytics: MockPOSAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
         init() {
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
             orderController.orderState = makeLoadedOrderState()
         }
 
@@ -854,8 +851,8 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
-            let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
         }
@@ -876,7 +873,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
         }
 
         @available(iOS 17.0, *)
@@ -893,7 +890,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
         }
 
         @available(iOS 17.0, *)
@@ -910,7 +907,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
         }
 
         @available(iOS 17.0, *)
@@ -940,21 +937,19 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
         }
 
         @available(iOS 17.0, *)
         @Test func startCashPayment_when_invoked_tracks_expected_event() async throws {
             // Given
-            let mockAnalyticsProvider = MockAnalyticsProvider()
-            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-            let sut = makePointOfSaleAggregateModel(analytics: mockAnalytics)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
             // When
             await sut.startCashPayment()
 
             // Then
-            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "cash_payment_tapped" }) != nil)
         }
     }
 
@@ -1017,7 +1012,7 @@ private func makePointOfSaleAggregateModel(
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
-    analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+    analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

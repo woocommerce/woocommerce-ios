@@ -7,6 +7,7 @@ import class WordPressShared.EmailFormatValidator
 struct POSSendReceiptView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
@@ -93,7 +94,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
+        analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText

@@ -13,6 +13,8 @@ struct BarcodeScannerContainer: View {
     /// Callback that is triggered when a barcode scan completes (success or failure)
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
+    @Environment(\.posAnalytics) private var analytics
+
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
@@ -24,6 +26,7 @@ struct BarcodeScannerContainer: View {
     var body: some View {
         BarcodeScannerContainerRepresentable(
             configuration: configuration,
+            analytics: analytics,
             onScan: onScan
         )
         .frame(width: 0, height: 0)
@@ -37,11 +40,13 @@ struct BarcodeScannerContainer: View {
 /// keyboard input for barcode scanning.
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let configuration: HIDBarcodeParserConfiguration
+    let analytics: POSAnalyticsProviding
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     func makeUIViewController(context: Context) -> UIViewController {
         return GameControllerBarcodeScannerHostingController(
             configuration: configuration,
+            analytics: analytics,
             onScan: onScan
         )
     }
@@ -56,11 +61,16 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     init(
         configuration: HIDBarcodeParserConfiguration,
+        analytics: POSAnalyticsProviding,
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
     ) {
         super.init(rootView: EmptyView())
 
-        gameControllerBarcodeObserver = GameControllerBarcodeObserver(configuration: configuration, onScan: onScan)
+        gameControllerBarcodeObserver = GameControllerBarcodeObserver(
+            configuration: configuration,
+            analytics: analytics,
+            onScan: onScan
+        )
     }
 
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {

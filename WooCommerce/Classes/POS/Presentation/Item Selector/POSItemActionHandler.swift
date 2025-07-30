@@ -22,7 +22,7 @@ extension POSItemActionHandler {
         for item: POSItem,
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-        using analytics: Analytics
+        using analytics: POSAnalyticsProviding
     ) {
         switch item {
         case .simpleProduct:
@@ -72,12 +72,12 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
     private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
          sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-         analytics: Analytics = ServiceLocator.analytics
+         analytics: POSAnalyticsProviding
     ) {
         self.posModel = posModel
         self.sourceView = sourceView
@@ -107,13 +107,13 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     private let searchTerm: String
     private let itemType: POSItemType
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     init(posModel: PointOfSaleAggregateModelProtocol,
          searchTerm: String,
          itemType: POSItemType,
          sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: POSAnalyticsProviding) {
         self.posModel = posModel
         self.searchTerm = searchTerm
         self.itemType = itemType
@@ -147,7 +147,7 @@ struct POSItemActionHandlerFactory {
         itemListType: ItemListType,
         searchTerm: String,
         posModel: PointOfSaleAggregateModelProtocol,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) -> POSItemActionHandler {
         switch itemListType {
         case .products(search: false):
@@ -165,7 +165,7 @@ struct POSItemActionHandlerFactory {
         itemListType: ItemListType,
         searchTerm: String,
         posModel: PointOfSaleAggregateModelProtocol,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) -> POSItemActionHandler {
         if itemListType.isSearching {
             SearchResultItemActionHandler(

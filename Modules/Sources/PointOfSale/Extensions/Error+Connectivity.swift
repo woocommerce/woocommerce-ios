@@ -1,7 +1,7 @@
 import Foundation
 import enum Alamofire.AFError
 
-extension Error {
+public extension Error {
     var isConnectivityError: Bool {
         if let afError = self as? AFError {
             if let underlyingError = afError.underlyingError {

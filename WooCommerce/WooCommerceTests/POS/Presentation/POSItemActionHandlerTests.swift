@@ -13,7 +13,8 @@ struct POSItemActionHandlerTests {
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
             sourceView: .coupon,
-            sourceViewType: .list
+            sourceViewType: .list,
+            analytics: MockPOSAnalytics()
         )
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
@@ -32,7 +33,8 @@ struct POSItemActionHandlerTests {
             posModel: aggregateModel,
             searchTerm: "",
             itemType: .coupon,
-            sourceView: .coupon
+            sourceView: .coupon,
+            analytics: MockPOSAnalytics()
         )
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
@@ -50,7 +52,8 @@ struct POSItemActionHandlerTests {
         let sut = StandardPOSItemActionHandler(
             posModel: aggregateModel,
             sourceView: .product,
-            sourceViewType: .list
+            sourceViewType: .list,
+            analytics: MockPOSAnalytics()
         )
 
         let product = makeProductItem()
@@ -69,7 +72,8 @@ struct POSItemActionHandlerTests {
             posModel: aggregateModel,
             searchTerm: "",
             itemType: .product,
-            sourceView: .product
+            sourceView: .product,
+            analytics: MockPOSAnalytics()
         )
 
         let product = makeProductItem()
@@ -106,6 +110,7 @@ private func makePointOfSaleAggregateModel(
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
+    analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -119,6 +124,7 @@ private func makePointOfSaleAggregateModel(
         couponsSearchController: couponsSearchController,
         cardPresentPaymentService: cardPresentPaymentService,
         orderController: orderController,
+        analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,

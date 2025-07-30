@@ -75,7 +75,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
@@ -107,7 +107,7 @@ protocol PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
-         analytics: Analytics = ServiceLocator.analytics,
+         analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,

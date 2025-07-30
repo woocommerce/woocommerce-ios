@@ -1,15 +1,18 @@
-extension WooAnalyticsEvent {
+import WooFoundation
+
+/// POS Ineligible UI specific analytics events
+public extension WooAnalyticsEvent {
     enum PointOfSaleIneligibleUI {
         /// Event property key.
         private enum Key {
             static let reason = "reason"
         }
 
-        static func ineligibleUIShown(reason: POSIneligibleReason) -> WooAnalyticsEvent {
+        public static func ineligibleUIShown(reason: POSIneligibleReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIShown, properties: [Key.reason: reason.analyticsValue])
         }
 
-        static func ineligibleUIRetryTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
+        public static func ineligibleUIRetryTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIRetryTapped, properties: [Key.reason: reason.analyticsValue])
         }
     }

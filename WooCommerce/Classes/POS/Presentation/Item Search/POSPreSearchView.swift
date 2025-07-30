@@ -4,6 +4,7 @@ import enum Yosemite.POSItem
 @available(iOS 17.0, *)
 struct POSPreSearchView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     @ScaledMetric private var chipHeight: CGFloat = 56.0
 
     let savedSearches: [String]
@@ -27,7 +28,8 @@ struct POSPreSearchView: View {
             itemActionHandler: StandardPOSItemActionHandler(
                 posModel: posModel,
                 sourceView: .init(itemListType: itemListType),
-                sourceViewType: .preSearch
+                sourceViewType: .preSearch,
+                analytics: analytics
             ),
             headerView: {
                 VStack(alignment: .leading, spacing: POSSpacing.none) {

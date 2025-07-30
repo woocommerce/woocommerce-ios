@@ -10,7 +10,7 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
     private var checkoutTapCount: Int = 0
     private var hasTrackedProcessingPayment = false
 
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     private var paymentGatewayAccount: PaymentGatewayAccount?
     private let configuration: CardPresentPaymentsConfiguration
@@ -19,7 +19,7 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
         connectedReader?.readerType.model
     }
 
-    init(analytics: Analytics = ServiceLocator.analytics,
+    init(analytics: POSAnalyticsProviding,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
         self.analytics = analytics
         self.configuration = configuration

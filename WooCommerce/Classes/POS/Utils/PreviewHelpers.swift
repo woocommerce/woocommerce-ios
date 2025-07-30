@@ -226,6 +226,7 @@ struct POSPreviewHelpers {
             couponsSearchController: couponsSearchController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
+            analytics: POSPreviewAnalytics(),
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
@@ -277,6 +278,13 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackReceiptPrintCanceled() {}
 
     func trackReceiptPrintFailed(error: any Error) {}
+}
+
+final class POSPreviewAnalytics: POSAnalyticsProviding {
+    func track(event: WooFoundationCore.WooAnalyticsEvent) {}
+    func track(_ stat: WooFoundationCore.WooAnalyticsStat, parameters: [String: any WooFoundationCore.WooAnalyticsEventPropertyType]) {}
+    func track(_ stat: WooFoundationCore.WooAnalyticsStat) {}
+    func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {}
 }
 
 #endif

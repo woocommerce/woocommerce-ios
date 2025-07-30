@@ -1,6 +1,6 @@
 import Foundation
 
-enum PointOfSaleAssets: CaseIterable {
+public enum PointOfSaleAssets: CaseIterable {
     case error
     case exclamationMark
     case magnifierNotFound
@@ -23,7 +23,7 @@ enum PointOfSaleAssets: CaseIterable {
     case netum1228BCPairBarcode
     case testEan13Barcode
 
-    var imageName: String {
+    public var imageName: String {
         switch self {
         case .error:
             "pos-error"

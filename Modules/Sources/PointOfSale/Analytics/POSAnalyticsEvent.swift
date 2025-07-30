@@ -3,10 +3,11 @@ import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
-import enum WooFoundation.CountryCode
 import enum Yosemite.PaymentMethod
+import WooFoundation
 
-extension WooAnalyticsEvent {
+/// POS-specific analytics events
+public extension WooAnalyticsEvent {
     enum PointOfSale {
         /// Event property Key.
         private enum Key {
@@ -39,16 +40,16 @@ extension WooAnalyticsEvent {
             static let scanValue = "scan_value"
         }
 
-        static func paymentsOnboardingShown() -> WooAnalyticsEvent {
+        public static func paymentsOnboardingShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSalePaymentsOnboardingShown, properties: [:])
         }
 
-        static func paymentsOnboardingDismissed(onboardingState: CardPresentPaymentOnboardingState) -> WooAnalyticsEvent {
+        public static func paymentsOnboardingDismissed(onboardingState: CardPresentPaymentOnboardingState) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSalePaymentsOnboardingDismissed,
                               properties: [Key.paymentsOnboardingState: onboardingState.reasonForAnalytics])
         }
 
-        static func addItemToCart(
+        public static func addItemToCart(
             sourceView: WooAnalyticsEvent.PointOfSale.SourceView? = nil,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
@@ -75,7 +76,7 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func itemRemovedFromCart(
+        public static func itemRemovedFromCart(
             sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil
@@ -95,7 +96,7 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
+        public static func checkoutTapped(purchasableItemsInCart: Int, couponsInCart: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleCheckoutTapped,
                 properties: [
@@ -108,11 +109,11 @@ extension WooAnalyticsEvent {
         /// Tracks the time elapsed preparing reader for payment, after successful order creation
         /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
         ///
-        static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
+        public static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
-        static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
+        public static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
                                                      cardReaderModel: String?,
@@ -134,34 +135,34 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: [
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
             ])
         }
 
-        static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+        public static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleSearchButtonTapped,
                 properties: [Key.sourceView: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
-        static func itemsHeaderTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+        public static func itemsHeaderTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSaleItemsHeaderTapped,
                 properties: [Key.type: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
-        static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
+        public static func preSearchRecentTermTapped(itemListType: ItemListType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
                 statName: .pointOfSalePreSearchRecentTermTapped,
                 properties: [Key.sourceView: SourceView(itemListType: itemListType).rawValue]
             )
         }
 
-        static func itemsPullToRefresh(
+        public static func itemsPullToRefresh(
             sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
         ) -> WooAnalyticsEvent {
@@ -171,7 +172,7 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func itemsNextPageLoaded(
+        public static func itemsNextPageLoaded(
             sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
         ) -> WooAnalyticsEvent {
@@ -181,7 +182,7 @@ extension WooAnalyticsEvent {
             )
         }
 
-        static func pointOfSaleSearchRemoteResultsFetched(itemType: POSItemType,
+        public static func pointOfSaleSearchRemoteResultsFetched(itemType: POSItemType,
                                                           resultsCount: Int,
                                                           millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchRemoteResultsFetched,
@@ -192,7 +193,7 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func pointOfSaleItemsFetched(itemType: POSItemType,
+        public static func pointOfSaleItemsFetched(itemType: POSItemType,
                                             totalItems: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleItemsFetched,
                               properties: [
@@ -201,7 +202,7 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {
+        public static func barcodeScanningSuccess(scanDurationMs: Int, barcodeLength: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningSuccess,
                               properties: [
                                 Key.scanDurationMs: "\(scanDurationMs)",
@@ -209,7 +210,7 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScanningFailed(scanDurationMs: Int, barcodeLength: Int, failReason: String) -> WooAnalyticsEvent {
+        public static func barcodeScanningFailed(scanDurationMs: Int, barcodeLength: Int, failReason: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScanningFailed,
                               properties: [
                                 Key.scanDurationMs: "\(scanDurationMs)",
@@ -218,12 +219,12 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScannerSetupScannerSelected(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupScannerSelected(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerSelected,
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupNextTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupNextTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupNextTapped,
                               properties: [
                                 Key.scanner: scanner.analyticsName,
@@ -231,7 +232,7 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScannerSetupBackTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupBackTapped(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupBackTapped,
                               properties: [
                                 Key.scanner: scanner.analyticsName,
@@ -239,17 +240,17 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScannerSetupOpenSystemSettingsTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupOpenSystemSettingsTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupOpenSystemSettingsTapped,
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupTestScanSuccess(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupTestScanSuccess(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanSuccess,
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupTestScanFailed(scanner: PointOfSaleBarcodeScannerType, scanValue: String) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupTestScanFailed(scanner: PointOfSaleBarcodeScannerType, scanValue: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanFailed,
                               properties: [
                                 Key.scanner: scanner.analyticsName,
@@ -257,12 +258,12 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func barcodeScannerSetupTestScanTimedOut(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupTestScanTimedOut(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupTestScanTimedOut,
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupDismissed(scanner: PointOfSaleBarcodeScannerType? = nil, step: String? = nil) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupDismissed(scanner: PointOfSaleBarcodeScannerType? = nil, step: String? = nil) -> WooAnalyticsEvent {
             var properties: [String: String] = [:]
             if let scanner {
                 properties[Key.scanner] = scanner.analyticsName
@@ -274,12 +275,12 @@ extension WooAnalyticsEvent {
                                      properties: properties)
         }
 
-        static func barcodeScannerSetupRetryTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupRetryTapped(scanner: PointOfSaleBarcodeScannerType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupRetryTapped,
                               properties: [Key.scanner: scanner.analyticsName])
         }
 
-        static func barcodeScannerSetupScannerConnected(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
+        public static func barcodeScannerSetupScannerConnected(scanner: PointOfSaleBarcodeScannerType, step: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerConnected,
                               properties: [Key.scanner: scanner.analyticsName])
         }
@@ -296,7 +297,7 @@ private extension WooAnalyticsEvent.PointOfSale {
     }
 }
 
-extension WooAnalyticsEvent.PointOfSale {
+public extension WooAnalyticsEvent.PointOfSale {
     /// Source of the event where the event is triggered
     /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
     ///
@@ -307,7 +308,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case cart
         case error
 
-        init(itemType: POSItemType) {
+        public init(itemType: POSItemType) {
             switch itemType {
             case .product:
                 self = .product
@@ -318,7 +319,7 @@ extension WooAnalyticsEvent.PointOfSale {
             }
         }
 
-        init(itemListType: ItemListType) {
+        public init(itemListType: ItemListType) {
             switch itemListType {
             case .products:
                 self = .product
@@ -337,7 +338,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case preSearch = "pre_search"
         case scanner
 
-        init(isSearching: Bool, searchTerm: String = "") {
+        public init(isSearching: Bool, searchTerm: String = "") {
             switch (isSearching, searchTerm.isEmpty) {
             case (false, _):
                 self = .list
@@ -357,7 +358,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case loading
         case error
 
-        init(cartItem: Cart.PurchasableItem) {
+        public init(cartItem: Cart.PurchasableItem) {
             switch cartItem.state {
             case .loaded:
                 self = .product
@@ -375,7 +376,7 @@ extension WooAnalyticsEvent.PointOfSale {
         case simple
         case variation
 
-        init?(cartItem: Cart.PurchasableItem) {
+        public init?(cartItem: Cart.PurchasableItem) {
             guard case let .loaded(item) = cartItem.state else {
                 return nil
             }
@@ -387,6 +388,19 @@ extension WooAnalyticsEvent.PointOfSale {
             } else {
                 return nil
             }
+        }
+    }
+}
+
+public extension PaymentMethod {
+    var analyticsValue: String {
+        switch self {
+        case .card, .cardPresent:
+            return "card"
+        case .interacPresent:
+            return "card_interac"
+        case .unknown:
+            return "unknown"
         }
     }
 }

@@ -19,7 +19,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
-    private let dotcomAuthScheme: String
 
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
@@ -43,14 +42,12 @@ final class JetpackSetupCoordinator {
     }
 
     init(site: Site,
-         dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
-        self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
         self.accountService = accountService
@@ -69,7 +66,7 @@ final class JetpackSetupCoordinator {
     }
 
     func handleAuthenticationUrl(_ url: URL) -> Bool {
-        let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
+        let expectedPrefix = ApiCredentials.dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
         guard url.absoluteString.hasPrefix(expectedPrefix) else {
             return false
         }

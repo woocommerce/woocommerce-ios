@@ -4,6 +4,7 @@
 23.0
 -----
 - [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
+- [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
 
 22.9
 -----

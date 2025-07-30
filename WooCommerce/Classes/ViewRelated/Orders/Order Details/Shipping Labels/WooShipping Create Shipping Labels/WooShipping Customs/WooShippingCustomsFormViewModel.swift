@@ -42,6 +42,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     init(order: Order,
          shipment: Shipment,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
+         isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          onFormReady: @escaping (ShippingLabelCustomsForm) -> ()) {
         self.onFormReady = onFormReady
@@ -54,6 +55,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
                                             itemWeight: $0.weight,
                                             currencySymbol: currencySymbol(from: order),
                                             originCountryCode: originCountryCode,
+                                            isHSTariffNumberRequired: isHSTariffNumberRequired,
                                             storageManager: storageManager)
         }
 

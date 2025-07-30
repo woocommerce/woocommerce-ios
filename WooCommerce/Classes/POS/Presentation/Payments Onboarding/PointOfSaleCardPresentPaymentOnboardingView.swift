@@ -44,10 +44,7 @@ class PreviewOnboardingViewFactoryConfiguration: CardPresentPaymentsOnboardingVi
 
 #Preview {
     PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
-        onboardingViewFactory: .init(
-            configuration: PreviewOnboardingViewFactoryConfiguration(),
-            createView: { EmptyView() }),
-        onDismissTap: nil)
+        onboardingViewFactory: .init(configuration: PreviewOnboardingViewFactoryConfiguration()), onDismissTap: nil)
     )
 }
 #endif

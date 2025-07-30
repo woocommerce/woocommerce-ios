@@ -12,7 +12,7 @@ final class CardPresentPaymentOnboardingViewFactory: Equatable, Identifiable {
     var configuration: CardPresentPaymentsOnboardingViewConfiguration
     let createView: () -> any View
 
-    init(configuration: CardPresentPaymentsOnboardingViewConfiguration, createView: @escaping () -> any View) {
+    init(configuration: CardPresentPaymentsOnboardingViewConfiguration, createView: @escaping () -> any View = { EmptyView() }) {
         self.configuration = configuration
         self.createView = createView
     }

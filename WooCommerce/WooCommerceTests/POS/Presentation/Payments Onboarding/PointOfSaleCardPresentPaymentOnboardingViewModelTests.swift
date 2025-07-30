@@ -1,11 +1,14 @@
 import XCTest
 @testable import WooCommerce
+import SwiftUI
 
 final class PointOfSaleCardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_onDismissTap_is_invoked_when_cancelOnboarding_is_called() throws {
         // Given
         var isDismissTapInvoked = false
-        let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(onboardingViewModel: .init(fixedState: .genericError),
+        let configuration = MockOnboardingViewFactoryConfiguration()
+        let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(
+            onboardingViewFactory: .init(configuration: configuration),
             onDismissTap: {
                 isDismissTapInvoked = true
             })
@@ -19,13 +22,15 @@ final class PointOfSaleCardPresentPaymentOnboardingViewModelTests: XCTestCase {
 
     func test_onboardingURL_is_set_when_onboarding_vm_showURL_is_invoked() throws {
         // Given
-        let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(fixedState: .noConnectionError)
-        let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(onboardingViewModel: onboardingViewModel, onDismissTap: nil)
+        let configuration = MockOnboardingViewFactoryConfiguration()
+        let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(
+            onboardingViewFactory: .init(configuration: configuration),
+            onDismissTap: nil)
         XCTAssertNil(sut.onboardingURL)
 
         // When
         let url = try XCTUnwrap(URL(string: "https://example.com"))
-        onboardingViewModel.showURL?(url)
+        configuration.showURL?(url)
 
         // Then
         XCTAssertEqual(sut.onboardingURL, url)

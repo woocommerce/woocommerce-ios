@@ -96,6 +96,7 @@
 		01BD774A2C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */; };
 		01BD774C2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */; };
 		01BE94042DDCC7670063541C /* PointOfSaleEmptyErrorStateViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BE94032DDCC7650063541C /* PointOfSaleEmptyErrorStateViewLayout.swift */; };
+		01C230E92E3A334D00621DB0 /* MockOnboardingViewFactoryConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C230E82E3A334A00621DB0 /* MockOnboardingViewFactoryConfiguration.swift */; };
 		01C9C59F2DA3D98400CD81D8 /* CartRowRemoveButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */; };
 		01D082402C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */; };
 		01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F067EC2D0C5D56001C5805 /* MockLocationService.swift */; };
@@ -3264,6 +3265,7 @@
 		01BD77492C58D29700147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageView.swift; sourceTree = "<group>"; };
 		01BD774B2C58D2BE00147191 /* PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentDisconnectedMessageViewModel.swift; sourceTree = "<group>"; };
 		01BE94032DDCC7650063541C /* PointOfSaleEmptyErrorStateViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleEmptyErrorStateViewLayout.swift; sourceTree = "<group>"; };
+		01C230E82E3A334A00621DB0 /* MockOnboardingViewFactoryConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOnboardingViewFactoryConfiguration.swift; sourceTree = "<group>"; };
 		01C9C59E2DA3D97E00CD81D8 /* CartRowRemoveButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartRowRemoveButton.swift; sourceTree = "<group>"; };
 		01D0823F2C5B9EAB007FE81F /* POSBackgroundAppearanceKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSBackgroundAppearanceKey.swift; sourceTree = "<group>"; };
 		01F067EC2D0C5D56001C5805 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
@@ -7721,6 +7723,7 @@
 		02CD3BFC2C35D01600E575C4 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				01C230E82E3A334A00621DB0 /* MockOnboardingViewFactoryConfiguration.swift */,
 				01F935582DFC0D4800B50B03 /* MockPointOfSaleSoundPlayer.swift */,
 				01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */,
 				686A71B72DC9EB6D0006E835 /* MockPOSSearchHistoryService.swift */,
@@ -17249,6 +17252,7 @@
 				262EB5B3298D66FE009DCC36 /* SupportDataSourcesTests.swift in Sources */,
 				68A5221B2BA1804900A6A584 /* PluginDetailsViewModelTests.swift in Sources */,
 				0286837727B25930000E5785 /* HubMenuViewModelTests.swift in Sources */,
+				01C230E92E3A334D00621DB0 /* MockOnboardingViewFactoryConfiguration.swift in Sources */,
 				02C7EE902B22EFB9008B7DF8 /* CollapsibleProductRowCardViewModelTests.swift in Sources */,
 				CC0324A3263AD9F40056C6B7 /* MockShippingLabelAccountSettings.swift in Sources */,
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,

@@ -746,25 +746,24 @@ struct PointOfSaleAggregateModelTests {
 
         // MARK: Onboarding
         @available(iOS 17.0, *)
-        @Test func cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() async throws {
+        @Test func cardPresentPaymentOnboardingViewFactory_is_non_nil_when_onboarding_is_required() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .pluginNotActivated(plugin: .stripe),
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotActivated(plugin: .stripe))
-            )
+            let configuration = MockOnboardingViewFactoryConfiguration()
+            configuration.state = .pluginNotActivated(plugin: .stripe)
+            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
-            try #require(sut.cardPresentPaymentOnboardingViewModel == nil)
+            try #require(sut.cardPresentPaymentOnboardingViewFactory == nil)
 
             // When
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // Then
-            #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
+            #expect(sut.cardPresentPaymentOnboardingViewFactory?.configuration.state == .pluginNotActivated(plugin: .stripe))
         }
 
         @available(iOS 17.0, *)
@@ -841,11 +840,11 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(makePurchasableItem())
 
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .noConnectionError,
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .noConnectionError)
-            )
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            let configuration = MockOnboardingViewFactoryConfiguration()
+            configuration.state = .noConnectionError
+            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
+
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // When
             sut.cancelCardPaymentsOnboarding()

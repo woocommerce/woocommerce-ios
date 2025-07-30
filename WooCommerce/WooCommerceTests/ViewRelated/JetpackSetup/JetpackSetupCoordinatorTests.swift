@@ -14,6 +14,9 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
+
+        AuthenticationManager().initialize()
+
         super.setUp()
     }
 

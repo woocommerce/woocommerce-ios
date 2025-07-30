@@ -2603,7 +2603,7 @@ private extension EditableOrderViewModel {
 }
 
 extension TaxBasedOnSetting {
-    var displayString: String {
+    var displayTaxCalculationHint: String {
         switch self {
         case .customerBillingAddress:
             return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerBillingAddress",

@@ -20,11 +20,3 @@ extension Storage.StateOfACountry: ReadOnlyConvertible {
                                name: name)
     }
 }
-
-// MARK: - Storage.StateOfACountry: ListItemConvertible
-//
-extension Storage.StateOfACountry: ListItemConvertible {
-    public func toListItem() -> Yosemite.StateOfACountry {
-        return toReadOnly()
-    }
-}

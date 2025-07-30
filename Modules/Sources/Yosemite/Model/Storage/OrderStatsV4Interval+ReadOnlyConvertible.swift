@@ -34,11 +34,3 @@ extension Storage.OrderStatsV4Interval: ReadOnlyConvertible {
                                   averageOrderValue: 0)
     }
 }
-
-// MARK: - Storage.OrderStatsV4Interval: ListItemConvertible
-//
-extension Storage.OrderStatsV4Interval: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderStatsV4Interval {
-        return toReadOnly()
-    }
-}

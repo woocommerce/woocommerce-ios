@@ -53,11 +53,3 @@ extension Storage.Refund: ReadOnlyConvertible {
                       shippingLines: readOnlyShippingLines)
     }
 }
-
-// MARK: - Storage.Refund: ListItemConvertible
-//
-extension Storage.Refund: ListItemConvertible {
-    public func toListItem() -> Yosemite.Refund {
-        return toReadOnly()
-    }
-}

@@ -24,11 +24,3 @@ extension Storage.WooShippingCustomPackage: ReadOnlyConvertible {
               boxWeight: boxWeight)
     }
 }
-
-// MARK: - Storage.WooShippingCustomPackage: ListItemConvertible
-//
-extension Storage.WooShippingCustomPackage: ListItemConvertible {
-    public func toListItem() -> Yosemite.WooShippingCustomPackage {
-        return toReadOnly()
-    }
-}

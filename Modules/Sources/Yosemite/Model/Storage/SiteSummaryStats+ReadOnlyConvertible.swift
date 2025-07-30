@@ -26,11 +26,3 @@ extension Storage.SiteSummaryStats: ReadOnlyConvertible {
                          views: Int(views))
     }
 }
-
-// MARK: - Storage.SiteSummaryStats: ListItemConvertible
-//
-extension Storage.SiteSummaryStats: ListItemConvertible {
-    public func toListItem() -> Yosemite.SiteSummaryStats {
-        return toReadOnly()
-    }
-}

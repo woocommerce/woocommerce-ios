@@ -22,12 +22,3 @@ extension Storage.OrderItemTax: ReadOnlyConvertible {
                             total: total ?? "")
     }
 }
-
-
-// MARK: - Storage.OrderItemTax: ListItemConvertible
-//
-extension Storage.OrderItemTax: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderItemTax {
-        return toReadOnly()
-    }
-}

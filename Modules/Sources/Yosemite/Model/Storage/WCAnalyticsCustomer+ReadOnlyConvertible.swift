@@ -47,11 +47,3 @@ extension Storage.WCAnalyticsCustomer: ReadOnlyConvertible {
                                    postcode: postcode ?? String())
     }
 }
-
-// MARK: - Storage.WCAnalyticsCustomer: ListItemConvertible
-//
-extension Storage.WCAnalyticsCustomer: ListItemConvertible {
-    public func toListItem() -> Yosemite.WCAnalyticsCustomer {
-        return toReadOnly()
-    }
-}

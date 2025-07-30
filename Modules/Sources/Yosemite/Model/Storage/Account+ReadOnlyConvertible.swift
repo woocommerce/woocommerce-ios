@@ -26,11 +26,3 @@ extension Storage.Account: ReadOnlyConvertible {
                        gravatarUrl: gravatarUrl)
     }
 }
-
-// MARK: - Storage.Account: ListItemConvertible
-//
-extension Storage.Account: ListItemConvertible {
-    public func toListItem() -> Yosemite.Account {
-        return toReadOnly()
-    }
-}

@@ -36,11 +36,3 @@ extension Storage.OrderTaxLine: ReadOnlyConvertible {
                             attributes: taxAttributes)
     }
 }
-
-// MARK: - Storage.OrderTaxLine: ListItemConvertible
-//
-extension Storage.OrderTaxLine: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderTaxLine {
-        return toReadOnly()
-    }
-}

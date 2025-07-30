@@ -45,11 +45,3 @@ extension Storage.TaxRate: ReadOnlyConvertible {
               cities: cities ?? [])
     }
 }
-
-// MARK: - Storage.TaxRate: ListItemConvertible
-//
-extension Storage.TaxRate: ListItemConvertible {
-    public func toListItem() -> Yosemite.TaxRate {
-        return toReadOnly()
-    }
-}

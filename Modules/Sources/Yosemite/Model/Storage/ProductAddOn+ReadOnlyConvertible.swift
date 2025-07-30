@@ -41,11 +41,3 @@ extension Storage.ProductAddOn: ReadOnlyConvertible {
                             options: optionsArray.map { $0.toReadOnly() } )
     }
 }
-
-// MARK: - Storage.ProductAddOn: ListItemConvertible
-//
-extension Storage.ProductAddOn: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductAddOn {
-        return toReadOnly()
-    }
-}

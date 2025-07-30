@@ -35,11 +35,3 @@ extension Storage.SystemPlugin: ReadOnlyConvertible {
               active: active)
     }
 }
-
-// MARK: - Storage.SystemPlugin: ListItemConvertible
-//
-extension Storage.SystemPlugin: ListItemConvertible {
-    public func toListItem() -> SystemPlugin {
-        return toReadOnly()
-    }
-}

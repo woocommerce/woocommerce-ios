@@ -24,11 +24,3 @@ extension Storage.ProductTag: ReadOnlyConvertible {
                           slug: slug)
     }
 }
-
-// MARK: - Storage.ProductTag: ListItemConvertible
-//
-extension Storage.ProductTag: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductTag {
-        return toReadOnly()
-    }
-}

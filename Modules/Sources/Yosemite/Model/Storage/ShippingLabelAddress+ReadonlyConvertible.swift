@@ -32,11 +32,3 @@ extension Storage.ShippingLabelAddress: ReadOnlyConvertible {
               postcode: postcode)
     }
 }
-
-// MARK: - Storage.ShippingLabelAddress: ListItemConvertible
-//
-extension Storage.ShippingLabelAddress: ListItemConvertible {
-    public func toListItem() -> Yosemite.ShippingLabelAddress {
-        return toReadOnly()
-    }
-}

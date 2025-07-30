@@ -22,11 +22,3 @@ extension Storage.ProductDefaultAttribute: ReadOnlyConvertible {
                                        option: option)
     }
 }
-
-// MARK: - Storage.ProductDefaultAttribute: ListItemConvertible
-//
-extension Storage.ProductDefaultAttribute: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductDefaultAttribute {
-        return toReadOnly()
-    }
-}

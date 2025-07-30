@@ -26,11 +26,3 @@ extension Storage.WooShippingPredefinedPackage: ReadOnlyConvertible {
               groupId: groupID ?? "")
     }
 }
-
-// MARK: - Storage.WooShippingPredefinedPackage: ListItemConvertible
-//
-extension Storage.WooShippingPredefinedPackage: ListItemConvertible {
-    public func toListItem() -> Yosemite.WooShippingPredefinedPackage {
-        return toReadOnly()
-    }
-}

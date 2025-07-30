@@ -22,11 +22,3 @@ extension Storage.ProductDownload: ReadOnlyConvertible {
                                fileURL: fileURL ?? "")
     }
 }
-
-// MARK: - Storage.ProductDownload: ListItemConvertible
-//
-extension Storage.ProductDownload: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductDownload {
-        return toReadOnly()
-    }
-}

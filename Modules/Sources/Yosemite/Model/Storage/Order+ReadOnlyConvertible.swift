@@ -167,14 +167,6 @@ extension Storage.Order: ReadOnlyConvertible {
     }
 }
 
-// MARK: - Storage.Order: ListItemConvertible
-//
-extension Storage.Order: ListItemConvertible {
-    public func toListItem() -> Yosemite.Order {
-        return toReadOnly()
-    }
-}
-
 extension Storage.Order {
     var orderItemsArray: [Storage.OrderItem] {
         return items?.toTypeCheckedArray() ?? [Storage.OrderItem]()

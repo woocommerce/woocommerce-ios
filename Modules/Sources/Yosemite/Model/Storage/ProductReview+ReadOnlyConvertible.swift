@@ -38,11 +38,3 @@ extension Storage.ProductReview: ReadOnlyConvertible {
                              verified: verified)
     }
 }
-
-// MARK: - Storage.ProductReview: ListItemConvertible
-//
-extension Storage.ProductReview: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductReview {
-        return toReadOnly()
-    }
-}

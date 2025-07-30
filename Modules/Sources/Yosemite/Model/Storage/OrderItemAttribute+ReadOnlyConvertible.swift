@@ -20,12 +20,3 @@ extension Storage.OrderItemAttribute: ReadOnlyConvertible {
         return OrderItemAttribute(metaID: metaID, name: name, value: value)
     }
 }
-
-
-// MARK: - Storage.OrderItemAttribute: ListItemConvertible
-//
-extension Storage.OrderItemAttribute: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderItemAttribute {
-        return toReadOnly()
-    }
-}

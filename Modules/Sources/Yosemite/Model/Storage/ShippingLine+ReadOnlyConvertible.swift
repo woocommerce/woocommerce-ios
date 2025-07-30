@@ -28,11 +28,3 @@ extension Storage.ShippingLine: ReadOnlyConvertible {
                             taxes: lineTaxes)
     }
 }
-
-// MARK: - Storage.ShippingLine: ListItemConvertible
-//
-extension Storage.ShippingLine: ListItemConvertible {
-    public func toListItem() -> Yosemite.ShippingLine {
-        return toReadOnly()
-    }
-}

@@ -30,11 +30,3 @@ extension Storage.ProductCompositeComponent: ReadOnlyConvertible {
                                          defaultOptionID: defaultOptionID ?? "")
     }
 }
-
-// MARK: - Storage.ProductCompositeComponent: ListItemConvertible
-//
-extension Storage.ProductCompositeComponent: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductCompositeComponent {
-        return toReadOnly()
-    }
-}

@@ -28,11 +28,3 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
                                   imageUrl: imageUrl ?? "")
     }
 }
-
-// MARK: - Storage.TopEarnerStatsItem: ListItemConvertible
-//
-extension Storage.TopEarnerStatsItem: ListItemConvertible {
-    public func toListItem() -> Yosemite.TopEarnerStatsItem {
-        return toReadOnly()
-    }
-}

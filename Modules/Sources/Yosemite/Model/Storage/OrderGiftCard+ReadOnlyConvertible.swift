@@ -22,11 +22,3 @@ extension Storage.OrderGiftCard: ReadOnlyConvertible {
                       amount: amount)
     }
 }
-
-// MARK: - Storage.OrderGiftCard: ListItemConvertible
-//
-extension Storage.OrderGiftCard: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderGiftCard {
-        return toReadOnly()
-    }
-}

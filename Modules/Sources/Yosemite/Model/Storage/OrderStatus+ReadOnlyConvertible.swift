@@ -21,11 +21,3 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
         return OrderStatus(name: name, siteID: siteID, slug: slug, total: Int(total))
     }
 }
-
-// MARK: - Storage.OrderStatus: ListItemConvertible
-//
-extension Storage.OrderStatus: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderStatus {
-        return toReadOnly()
-    }
-}

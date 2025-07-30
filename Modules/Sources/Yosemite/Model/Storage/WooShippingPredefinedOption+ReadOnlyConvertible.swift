@@ -20,11 +20,3 @@ extension Storage.WooShippingPredefinedOption: ReadOnlyConvertible {
               predefinedPackages: predefinedPackages?.map { $0.toReadOnly() } ?? [])
     }
 }
-
-// MARK: - Storage.WooShippingPredefinedOption: ListItemConvertible
-//
-extension Storage.WooShippingPredefinedOption: ListItemConvertible {
-    public func toListItem() -> Yosemite.WooShippingPredefinedOption {
-        return toReadOnly()
-    }
-}

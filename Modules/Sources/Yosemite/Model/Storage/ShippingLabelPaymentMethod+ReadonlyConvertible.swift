@@ -25,11 +25,3 @@ extension Storage.ShippingLabelPaymentMethod: ReadOnlyConvertible {
               expiry: expiry)
     }
 }
-
-// MARK: - Storage.ShippingLabelPaymentMethod: ListItemConvertible
-//
-extension Storage.ShippingLabelPaymentMethod: ListItemConvertible {
-    public func toListItem() -> Yosemite.ShippingLabelPaymentMethod {
-        return toReadOnly()
-    }
-}

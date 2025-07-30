@@ -18,11 +18,3 @@ extension Storage.ShippingLabelSettings: ReadOnlyConvertible {
         .init(siteID: siteID, orderID: orderID, paperSize: .init(rawValue: paperSize))
     }
 }
-
-// MARK: - Storage.ShippingLabelSettings: ListItemConvertible
-//
-extension Storage.ShippingLabelSettings: ListItemConvertible {
-    public func toListItem() -> Yosemite.ShippingLabelSettings {
-        return toReadOnly()
-    }
-}

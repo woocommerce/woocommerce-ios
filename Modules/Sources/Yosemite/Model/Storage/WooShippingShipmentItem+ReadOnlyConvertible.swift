@@ -17,11 +17,3 @@ extension Storage.WooShippingShipmentItem: ReadOnlyConvertible {
         WooShippingShipmentItem(id: id, subItems: subItems as? [String])
     }
 }
-
-// MARK: - Storage.WooShippingShipmentItem: ListItemConvertible
-//
-extension Storage.WooShippingShipmentItem: ListItemConvertible {
-    public func toListItem() -> Yosemite.WooShippingShipmentItem {
-        return toReadOnly()
-    }
-}

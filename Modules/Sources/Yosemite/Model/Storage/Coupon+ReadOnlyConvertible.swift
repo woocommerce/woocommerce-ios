@@ -64,11 +64,3 @@ extension Storage.Coupon: ReadOnlyConvertible {
                       usedBy: usedBy ?? [])
     }
 }
-
-// MARK: - Storage.Coupon: ListItemConvertible
-//
-extension Storage.Coupon: ListItemConvertible {
-    public func toListItem() -> Coupon {
-        return toReadOnly()
-    }
-}

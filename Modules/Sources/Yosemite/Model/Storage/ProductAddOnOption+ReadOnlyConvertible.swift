@@ -17,11 +17,3 @@ extension Storage.ProductAddOnOption: ReadOnlyConvertible {
                            imageID: imageID)
     }
 }
-
-// MARK: - Storage.ProductAddOnOption: ListItemConvertible
-//
-extension Storage.ProductAddOnOption: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductAddOnOption {
-        return toReadOnly()
-    }
-}

@@ -18,11 +18,3 @@ extension Storage.BlazeTargetTopic: ReadOnlyConvertible {
         .init(id: id, name: name, locale: locale)
     }
 }
-
-// MARK: - Storage.BlazeTargetTopic: ListItemConvertible
-//
-extension Storage.BlazeTargetTopic: ListItemConvertible {
-    public func toListItem() -> BlazeTargetTopic {
-        return toReadOnly()
-    }
-}

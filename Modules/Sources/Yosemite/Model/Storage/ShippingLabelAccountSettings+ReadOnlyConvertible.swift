@@ -45,11 +45,3 @@ extension Storage.ShippingLabelAccountSettings: ReadOnlyConvertible {
                                             addPaymentMethodURL: URL(string: addPaymentMethodURL ?? ""))
     }
 }
-
-// MARK: - Storage.ShippingLabelAccountSettings: ListItemConvertible
-//
-extension Storage.ShippingLabelAccountSettings: ListItemConvertible {
-    public func toListItem() -> Yosemite.ShippingLabelAccountSettings {
-        return toReadOnly()
-    }
-}

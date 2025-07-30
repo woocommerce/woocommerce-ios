@@ -22,12 +22,3 @@ extension Storage.MetaData: ReadOnlyConvertible {
                              value: value ?? "")
     }
 }
-
-
-// MARK: - Storage.MetaData: ListItemConvertible
-//
-extension Storage.MetaData: ListItemConvertible {
-    public func toListItem() -> Yosemite.MetaData {
-        return toReadOnly()
-    }
-}

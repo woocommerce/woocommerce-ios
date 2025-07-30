@@ -20,11 +20,3 @@ extension Storage.ProductDimensions: ReadOnlyConvertible {
         return ProductDimensions(length: length, width: width, height: height)
     }
 }
-
-// MARK: - Storage.ProductDimensions: ListItemConvertible
-//
-extension Storage.ProductDimensions: ListItemConvertible {
-    public func toListItem() -> Yosemite.ProductDimensions {
-        return toReadOnly()
-    }
-}

@@ -80,11 +80,3 @@ private extension WCPayPaymentMethodDetails {
         }
     }
 }
-
-// MARK: - Storage.WCPayCharge: ListItemConvertible
-//
-extension Storage.WCPayCharge: ListItemConvertible {
-    public func toListItem() -> Yosemite.WCPayCharge {
-        return toReadOnly()
-    }
-}

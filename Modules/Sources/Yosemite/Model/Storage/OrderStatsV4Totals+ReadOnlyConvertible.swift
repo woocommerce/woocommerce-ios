@@ -26,11 +26,3 @@ extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
                                   averageOrderValue: averageOrderValue.decimalValue)
     }
 }
-
-// MARK: - Storage.OrderStatsV4Totals: ListItemConvertible
-//
-extension Storage.OrderStatsV4Totals: ListItemConvertible {
-    public func toListItem() -> Yosemite.OrderStatsV4Totals {
-        return toReadOnly()
-    }
-}

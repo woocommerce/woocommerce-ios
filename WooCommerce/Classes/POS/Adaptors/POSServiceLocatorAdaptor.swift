@@ -10,28 +10,47 @@ import protocol Yosemite.Action
 
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
+    private let featureFlagService: FeatureFlagService
+    private let storesManager: StoresManager
+    private let connectivityObserver: ConnectivityObserver
+    private let currencySettings: CurrencySettings
+    private let serviceAnalytics: Analytics
+
+    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         storesManager: StoresManager = ServiceLocator.stores,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics
+    ) {
+        self.featureFlagService = featureFlagService
+        self.storesManager = storesManager
+        self.connectivityObserver = connectivityObserver
+        self.currencySettings = currencySettings
+        self.serviceAnalytics = analytics
+    }
+
     var analytics: POSAnalyticsProviding {
-        POSAnalyticsAdaptor()
+        POSAnalyticsAdaptor(analytics: serviceAnalytics)
     }
 
     var stores: POSStoresProviding {
-        POSStoresAdaptor(stores: ServiceLocator.stores)
+        POSStoresAdaptor(stores: storesManager)
     }
 
     var currency: CurrencySettings {
-        ServiceLocator.currencySettings
+        currencySettings
     }
 
     var featureFlags: POSFeatureFlagProviding {
-        POSFeatureFlagAdaptor(featureFlagService: ServiceLocator.featureFlagService)
+        POSFeatureFlagAdaptor(featureFlagService: featureFlagService)
     }
 
     var session: POSSessionManagerProviding {
-        POSSessionManagerAdaptor(sessionManager: ServiceLocator.stores.sessionManager)
+        POSSessionManagerAdaptor(sessionManager: storesManager.sessionManager)
     }
 
     var connectivity: ConnectivityObserver {
-        ServiceLocator.connectivityObserver
+        connectivityObserver
     }
 }
 
@@ -74,9 +93,14 @@ private struct POSFeatureFlagAdaptor: POSFeatureFlagProviding {
 }
 
 private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
+    private let analytics: Analytics
+
+    init(analytics: Analytics = ServiceLocator.analytics) {
+        self.analytics = analytics
+    }
+
     func track(event: WooAnalyticsEvent) {
-        let mainAppEvent = WooAnalyticsEvent(statName: event.statName, properties: event.properties, error: event.error)
-        ServiceLocator.analytics.track(event: mainAppEvent)
+        analytics.track(event: event)
     }
 
     func track(_ stat: WooAnalyticsStat) {
@@ -84,10 +108,10 @@ private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
     }
 
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:]) {
-        ServiceLocator.analytics.track(stat, withProperties: parameters)
+        analytics.track(stat, withProperties: parameters)
     }
 
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {
-        ServiceLocator.analytics.track(stat, properties: parameters, error: error)
+        analytics.track(stat, properties: parameters, error: error)
     }
 }

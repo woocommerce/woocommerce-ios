@@ -3,7 +3,7 @@
 
 23.0
 -----
-
+- [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
 
 22.9
 -----

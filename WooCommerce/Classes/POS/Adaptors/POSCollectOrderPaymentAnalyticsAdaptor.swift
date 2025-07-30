@@ -2,7 +2,9 @@ import Foundation
 import protocol WooFoundation.Analytics
 import Yosemite
 
-final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+/// Overrides the default event tracking for card present payments on IPP in Order Creation flow
+///
+final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
@@ -128,7 +130,7 @@ final class POSCollectOrderPaymentAnalytics: POSCollectOrderPaymentAnalyticsTrac
 }
 
 // Helpers
-private extension POSCollectOrderPaymentAnalytics {
+private extension POSCollectOrderPaymentAnalyticsAdaptor {
     func trackCurrentTime() -> Double {
         Date().timeIntervalSince1970
     }

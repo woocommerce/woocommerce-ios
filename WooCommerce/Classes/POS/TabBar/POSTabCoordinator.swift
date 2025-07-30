@@ -94,10 +94,10 @@ private extension POSTabCoordinator {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let serviceAdaptor = POSServiceLocatorAdaptor()
-            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(analytics: serviceAdaptor.analytics)
+            let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
-                                                                            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+                                                                            collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptory)
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
                let orderService = POSOrderService(siteID: siteID,
@@ -132,7 +132,7 @@ private extension POSTabCoordinator {
                                                                 analytics: serviceAdaptor.analytics,
                                                                 featureFlagService: serviceAdaptor.featureFlags,
                                                                 pluginsService: PluginsService(storageManager: storageManager)),
-                    collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+                    collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(currencySettings: currencySettings),

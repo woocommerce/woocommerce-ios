@@ -4,7 +4,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import enum WooFoundation.CountryCode
 import Testing
 
-struct POSCollectOrderPaymentAnalyticsTests {
+struct POSCollectOrderPaymentAnalyticsAdaptorTests {
     private let analytics: MockPOSAnalytics
 
     init() {
@@ -15,7 +15,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         let siteID: Int64 = 123
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        let sut = POSCollectOrderPaymentAnalytics(analytics: analytics, configuration: configuration)
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
         let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: .cardPresent(details: .fake()), receiptParameters: nil)
         let expectedEvent = "card_present_collect_payment_success"
         let expectedProperties = [

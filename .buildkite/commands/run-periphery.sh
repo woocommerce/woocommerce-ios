@@ -1,0 +1,32 @@
+#!/bin/bash -eu
+
+### Prepare
+
+echo '--- 📦 Downloading Build Artifacts'
+download_artifact build-products.tar
+tar -xf build-products.tar
+
+### Run the Tests
+
+echo '+++ :periphery: Detecting unused code'
+set +e
+# This is the script in the root.
+./Scripts/Periphery/setup-and-run-periphery.sh --strict --quiet --skip-build --index-store-path 'DerivedData/Index.noindex/DataStore/'
+TESTS_EXIT_STATUS=$?
+set -e
+
+# Handle the result of the periphery scan
+if [[ "$TESTS_EXIT_STATUS" -ne 0 ]]; then
+  echo '😱 Unused code detected!'
+  echo ''
+  echo '💡 You can run Periphery locally by calling `setup-and-run-periphery.sh` from `./Scripts/Periphery/` in the repo.'
+  echo ''
+  echo 'If you think there is a false positive violation, please check the known issues of Periphery at https://github.com/peripheryapp/periphery/issues.'
+  echo 'If you think a violation is valid but it should be surpressed for any reason, please apply the `// periphery: ignore - {your-reason-here}` comment.'
+  echo ''
+else
+  echo '😊 No unused code found.'
+fi
+
+echo '--- 🚦 Report Exit code'
+exit $TESTS_EXIT_STATUS

@@ -28,8 +28,9 @@ final class AddressMapPickerViewModel: NSObject {
     var showsNoResultsMessage: Bool {
         searchCompleter.isSearching == false && !searchQuery.isEmpty && searchResults.isEmpty && selectedPlace == nil
     }
-
-    private(set) var selectedPlaceAddress: String = ""
+    var selectedPlaceAddress: String {
+        selectedPlace?.postalAddress?.formatted(as: .mailingAddress) ?? ""
+    }
 
     private let (searchQueryStream, searchQueryContinuation) = AsyncStream.makeStream(of: String.self)
     private let searchCompleter: MKLocalSearchCompleter = .init()
@@ -49,7 +50,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     @MainActor
-    func startStream() async {
+    func startObservingSearchQuery() async {
         for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
             if query.isEmpty {
                 searchResults = []
@@ -58,7 +59,9 @@ final class AddressMapPickerViewModel: NSObject {
             }
         }
     }
-
+    
+    /// Selects a location from the local map search results.
+    /// - Parameter result: The selected search completion result.
     @MainActor
     func selectLocation(_ result: MKLocalSearchCompletion) {
         let searchRequest = MKLocalSearch.Request(completion: result)
@@ -69,7 +72,7 @@ final class AddressMapPickerViewModel: NSObject {
                   let firstPlacemark = response?.mapItems.first?.placemark else {
                 return
             }
-            self.onSelectedPlacemark(firstPlacemark, result: result)
+            onSelectedPlacemark(firstPlacemark, result: result)
         }
     }
 
@@ -122,16 +125,9 @@ private extension AddressMapPickerViewModel {
             }
         }
 
-        // Try to geocode the address if we have enough information
+        // Tries to geocode the existing address if possible.
         if !fields.address1.isEmpty && !fields.city.isEmpty {
-            let addressString = formatAddressString(
-                address1: fields.address1,
-                address2: fields.address2,
-                city: fields.city,
-                state: fields.state,
-                postcode: fields.postcode,
-                country: fields.country
-            )
+            let addressString = formatAddressString(fields: fields)
 
             CLGeocoder().geocodeAddressString(addressString) { [weak self] placemarks, error in
                 guard let self,
@@ -146,7 +142,6 @@ private extension AddressMapPickerViewModel {
                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                     )
                     annotations = [MapAnnotation(coordinate: location.coordinate)]
-                    selectedPlaceAddress = addressString
                 }
             }
         }
@@ -156,32 +151,20 @@ private extension AddressMapPickerViewModel {
     func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) {
         withAnimation { [weak self] in
             guard let self else { return }
-            self.searchResults = []
-            self.region = MKCoordinateRegion(
+            searchResults = []
+            region = MKCoordinateRegion(
                 center: placemark.coordinate,
                 span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
             )
-            self.annotations = [MapAnnotation(coordinate: placemark.coordinate)]
-            self.selectedPlace = placemark
-            self.selectedPlaceAddress = formatPlacemarkAddress(placemark)
+            annotations = [MapAnnotation(coordinate: placemark.coordinate)]
+            selectedPlace = placemark
         }
     }
 
-    func formatAddressString(
-        address1: String = "",
-        address2: String = "",
-        city: String = "",
-        state: String = "",
-        postcode: String = "",
-        country: String = ""
-    ) -> String {
-        [address1, address2, city, state, postcode, country]
+    func formatAddressString(fields: AddressFormFields) -> String {
+        [fields.address1, fields.address2, fields.city, fields.state, fields.postcode, fields.country]
             .filter { !$0.isEmpty }
             .joined(separator: ", ")
-    }
-
-    func formatPlacemarkAddress(_ placemark: MKPlacemark) -> String {
-        placemark.postalAddress?.formatted(as: .mailingAddress) ?? ""
     }
 }
 

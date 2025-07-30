@@ -100,7 +100,7 @@ struct AddressMapPickerView: View {
             isSearchFocused = true
         }
         .task {
-            await viewModel.startStream()
+            await viewModel.startObservingSearchQuery()
         }
     }
 

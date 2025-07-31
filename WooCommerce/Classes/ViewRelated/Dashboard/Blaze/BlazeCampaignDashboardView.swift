@@ -1,5 +1,5 @@
 import SwiftUI
-import struct Yosemite.Product
+import struct Yosemite.ProductListItem
 import Kingfisher
 import struct Yosemite.DashboardCard
 
@@ -294,9 +294,9 @@ private struct ProductInfoView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let product: Product
+    private let product: ProductListItem
 
-    init(product: Product) {
+    init(product: ProductListItem) {
         self.product = product
     }
 

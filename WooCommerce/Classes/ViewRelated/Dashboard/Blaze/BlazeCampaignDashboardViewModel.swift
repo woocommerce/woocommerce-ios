@@ -14,7 +14,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows info about the latest Blaze campaign
         case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
-        case showProduct(product: Product)
+        case showProduct(product: ProductListItem)
         /// When there is no campaign or published product
         case empty
     }
@@ -100,8 +100,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
                                                  sortOrder: .dateDescending)
     }()
 
-    var latestPublishedProduct: Product? {
-        productResultsController.fetchedObjects.first
+    var latestPublishedProduct: ProductListItem? {
+        productResultsController.listItemObjects.first
     }
 
     private var subscriptions: Set<AnyCancellable> = []

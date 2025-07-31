@@ -5,7 +5,7 @@ import Yosemite
 /// Enables the user to select multiple products from a paginated list.
 final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource {
     var customResultsSortOrder: ((ProductListItem, ProductListItem) -> Bool)?
-    
+
     typealias StorageModel = StorageProduct
 
     // Observable list of the latest product IDs

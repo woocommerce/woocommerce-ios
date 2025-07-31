@@ -209,4 +209,3 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
 
     }
 }
-

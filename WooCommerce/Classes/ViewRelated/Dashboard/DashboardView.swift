@@ -5,6 +5,7 @@ import struct Yosemite.StoreOnboardingTask
 import struct Yosemite.Coupon
 import struct Yosemite.Order
 import struct Yosemite.DashboardCard
+import enum WooFoundation.ConnectivityStatus
 
 /// View for the dashboard screen
 ///

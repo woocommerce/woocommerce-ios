@@ -6,13 +6,14 @@ struct SimpleProductCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posFeatureFlags) private var featureFlags
 
     private var dimension: CGFloat {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
     private var shouldShowProductLabels: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
+        featureFlags.isFeatureFlagEnabled(.inventoryProductLabelsInPOS)
     }
 
     init(product: POSSimpleProduct) {

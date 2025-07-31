@@ -9,6 +9,7 @@ struct ItemListView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posFeatureFlags) private var featureFlags
     @EnvironmentObject var modalManager: POSModalManager
 
     @Binding var selectedItemListType: ItemListType
@@ -56,11 +57,11 @@ struct ItemListView: View {
     @State private var didFinishSearch = true
 
     private var isBarcodeScani1FeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
     }
 
     private var isBarcodeScanSimulatorEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
+        featureFlags.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
     }
 
     private var isAddingCouponAllowed: Bool {

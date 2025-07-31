@@ -93,8 +93,8 @@ private extension POSTabCoordinator {
     func presentPOSView() {
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let analyticsAdapter = POSAnalyticsAdapter()
-            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(analytics: analyticsAdapter)
+            let serviceAdaptor = POSServiceLocatorAdaptor()
+            let collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics(analytics: serviceAdaptor.analytics)
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
@@ -108,37 +108,40 @@ private extension POSTabCoordinator {
                         itemProvider: PointOfSaleItemService(
                             currencySettings: currencySettings),
                         itemFetchStrategyFactory: posItemFetchStrategyFactory,
-                        analyticsProvider: analyticsAdapter),
+                        analyticsProvider: serviceAdaptor.analytics),
                     purchasableItemsSearchController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
                             currencySettings: currencySettings),
                         itemFetchStrategyFactory: posItemFetchStrategyFactory,
                         initialState: .init(containerState: .content,
                                             itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:])),
-                        analyticsProvider: analyticsAdapter),
+                        analyticsProvider: serviceAdaptor.analytics),
                     couponsController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                     fetchStrategyFactory: posCouponFetchStrategyFactory,
-                                                                    analyticsProvider: analyticsAdapter),
+                                                                    analyticsProvider: serviceAdaptor.analytics),
                     couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                           fetchStrategyFactory: posCouponFetchStrategyFactory,
-                                                                          analyticsProvider: analyticsAdapter),
+                                                                          analyticsProvider: serviceAdaptor.analytics),
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
                                                                 receiptService: receiptService,
-                                                                analytics: analyticsAdapter),
+                                                                currencySettingsProvider: serviceAdaptor.currency,
+                                                                analytics: serviceAdaptor.analytics,
+                                                                featureFlagService: serviceAdaptor.featureFlags,
+                                                                pluginsService: PluginsService(storageManager: storageManager)),
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(currencySettings: currencySettings),
                         itemFetchStrategyFactory: posPopularItemFetchStrategyFactory,
-                        analyticsProvider: analyticsAdapter
+                        analyticsProvider: serviceAdaptor.analytics
                     ),
                     barcodeScanService: barcodeScanService,
                     posEligibilityChecker: eligibilityChecker,
-                    analytics: analyticsAdapter
+                    services: serviceAdaptor
                 )
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen

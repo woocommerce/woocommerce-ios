@@ -6,6 +6,7 @@ struct POSFloatingControlView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
@@ -58,7 +59,7 @@ struct POSFloatingControlView: View {
                         title: { Text(Localization.productRestrictionsInfo) },
                         icon: { Image(systemName: "magnifyingglass") })
                 }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
+                if featureFlags.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
                     Button {
                         showBarcodeScanningModal = true
                         analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
@@ -94,7 +95,7 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
                 PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             } else {
                 PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)

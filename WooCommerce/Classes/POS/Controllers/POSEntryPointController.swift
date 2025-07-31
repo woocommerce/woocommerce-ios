@@ -5,10 +5,10 @@ import protocol Experiments.FeatureFlagService
 @Observable final class POSEntryPointController {
     private(set) var eligibilityState: POSEligibilityState?
     private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol
-    private let featureFlagService: FeatureFlagService
+    private let featureFlagService: POSFeatureFlagProviding
 
     init(eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: POSFeatureFlagProviding) {
         self.posEligibilityChecker = eligibilityChecker
         self.featureFlagService = featureFlagService
 

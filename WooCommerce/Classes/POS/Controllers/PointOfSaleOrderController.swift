@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 import protocol Experiments.FeatureFlagService
-import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
@@ -43,17 +42,14 @@ protocol PointOfSaleOrderControllerProtocol {
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
-         stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         featureFlagService: POSFeatureFlagProviding,
+         pluginsService: PluginsServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
-        self.stores = stores
-        self.storeCurrency = currencySettings.currencyCode
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.pluginsService = pluginsService
@@ -62,17 +58,22 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private let orderService: POSOrderServiceProtocol
     private let receiptService: POSReceiptServiceProtocol
-
-    private let currencyFormatter: CurrencyFormatter
+    private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
-    private let storeCurrency: CurrencyCode
     private let analytics: POSAnalyticsProviding
-    private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
+    private let featureFlagService: POSFeatureFlagProviding
     private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+
+    private var currencyFormatter: CurrencyFormatter {
+        CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
+    }
+
+    private var storeCurrency: CurrencyCode {
+        currencySettingsProvider.currencySettings.currencyCode
+    }
 
     @MainActor @discardableResult
     func syncOrder(for cart: Cart,

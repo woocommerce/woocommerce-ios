@@ -1,7 +1,7 @@
 @testable import WooCommerce
 import Experiments
 
-final class MockFeatureFlagService: FeatureFlagService {
+final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isInboxOn: Bool
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool

@@ -2,6 +2,8 @@
 
 import Foundation
 import WooFoundation
+import protocol Experiments.FeatureFlagService
+import enum Experiments.FeatureFlag
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
 import struct Yosemite.POSSimpleProduct
@@ -22,6 +24,9 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
+import protocol Yosemite.Action
+import struct Yosemite.Site
+import PointOfSale
 
 // MARK: - PreviewProvider helpers
 //
@@ -219,7 +224,8 @@ struct POSPreviewHelpers {
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0)),
+            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0),
+                                                          featureFlagService: EmptyPOSFeatureFlags()),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -287,4 +293,11 @@ final class POSPreviewAnalytics: POSAnalyticsProviding {
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {}
 }
 
+final class POSPreviewServices: POSDependencyProviding {
+    var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+    var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
+    var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+    var session: POSSessionManagerProviding = EmptyPOSSessionManager()
+    var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
+}
 #endif

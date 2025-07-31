@@ -329,6 +329,7 @@ struct SingleAddressForm: View {
             if #available(iOS 17, *), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
                 Button(action: {
                     showMapPicker = true
+                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped)
                 }) {
                     HStack {
                         Image(systemName: "map")

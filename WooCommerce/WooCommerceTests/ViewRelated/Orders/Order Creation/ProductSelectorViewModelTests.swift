@@ -1710,6 +1710,78 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
     }
+
+    func test_isSubscriptionProduct_returns_true_for_subscription_product() {
+        // Given
+        let subscriptionProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                      productID: 1,
+                                                      productTypeKey: ProductType.subscription.rawValue,
+                                                      purchasable: true)
+        insert(subscriptionProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // When
+        let result = viewModel.isSubscriptionProduct(productOrVariationID: subscriptionProduct.productID)
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_isSubscriptionProduct_returns_true_for_variable_subscription_product() {
+        // Given
+        let variableSubscriptionProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                              productID: 2,
+                                                              productTypeKey: ProductType.variableSubscription.rawValue,
+                                                              purchasable: true)
+        insert(variableSubscriptionProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // When
+        let result = viewModel.isSubscriptionProduct(productOrVariationID: variableSubscriptionProduct.productID)
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_isSubscriptionProduct_returns_false_for_simple_product() {
+        // Given
+        let simpleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: 3,
+                                                productTypeKey: ProductType.simple.rawValue,
+                                                purchasable: true)
+        insert(simpleProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // When
+        let result = viewModel.isSubscriptionProduct(productOrVariationID: simpleProduct.productID)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func test_isSubscriptionProduct_returns_false_for_variable_product() {
+        // Given
+        let variableProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                  productID: 4,
+                                                  productTypeKey: ProductType.variable.rawValue,
+                                                  purchasable: true)
+        insert(variableProduct)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // When
+        let result = viewModel.isSubscriptionProduct(productOrVariationID: variableProduct.productID)
+
+        // Then
+        XCTAssertFalse(result)
+    }
 }
 
 // MARK: - Utils

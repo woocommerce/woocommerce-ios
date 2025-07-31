@@ -42,15 +42,14 @@ protocol PointOfSaleOrderControllerProtocol {
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
-         currencySettings: CurrencySettings,
+         currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
          featureFlagService: POSFeatureFlagProviding,
          pluginsService: PluginsServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptService = receiptService
-        self.storeCurrency = currencySettings.currencyCode
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.pluginsService = pluginsService
@@ -59,16 +58,22 @@ protocol PointOfSaleOrderControllerProtocol {
 
     private let orderService: POSOrderServiceProtocol
     private let receiptService: POSReceiptServiceProtocol
-
-    private let currencyFormatter: CurrencyFormatter
+    private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
-    private let storeCurrency: CurrencyCode
     private let analytics: POSAnalyticsProviding
     private let featureFlagService: POSFeatureFlagProviding
     private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+
+    private var currencyFormatter: CurrencyFormatter {
+        CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
+    }
+
+    private var storeCurrency: CurrencyCode {
+        currencySettingsProvider.currencySettings.currencyCode
+    }
 
     @MainActor @discardableResult
     func syncOrder(for cart: Cart,

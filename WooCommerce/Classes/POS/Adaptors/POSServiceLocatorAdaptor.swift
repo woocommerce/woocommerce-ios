@@ -9,80 +9,51 @@ import protocol Storage.StorageManagerType
 import protocol Yosemite.Action
 
 /// Adaptor that bridges main app ServiceLocator to POS dependency abstraction to support POS modularization
+/// ServiceLocator is used directly in getters to always get the latest version of services at the moment they are used
+///
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
-    private let featureFlagService: FeatureFlagService
-    private let storesManager: StoresManager
-    private let connectivityObserver: ConnectivityObserver
-    private let currencySettings: CurrencySettings
-    private let serviceAnalytics: Analytics
-
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         storesManager: StoresManager = ServiceLocator.stores,
-         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics
-    ) {
-        self.featureFlagService = featureFlagService
-        self.storesManager = storesManager
-        self.connectivityObserver = connectivityObserver
-        self.currencySettings = currencySettings
-        self.serviceAnalytics = analytics
-    }
-
     var analytics: POSAnalyticsProviding {
-        POSAnalyticsAdaptor(analytics: serviceAnalytics)
+        POSAnalyticsAdaptor()
     }
 
-    var currency: CurrencySettings {
-        currencySettings
+    var currency: POSCurrencySettingsProviding {
+        POSCurrencySettingsAdaptor()
     }
 
     var featureFlags: POSFeatureFlagProviding {
-        POSFeatureFlagAdaptor(featureFlagService: featureFlagService)
+        POSFeatureFlagAdaptor()
     }
 
     var session: POSSessionManagerProviding {
-        POSSessionManagerAdaptor(sessionManager: storesManager.sessionManager)
+        POSSessionManagerAdaptor()
     }
 
-    var connectivity: ConnectivityObserver {
-        connectivityObserver
+    var connectivity: POSConnectivityProviding {
+        POSConnectivityAdaptor()
     }
 }
 
 private struct POSSessionManagerAdaptor: POSSessionManagerProviding {
-    private let sessionManager: SessionManagerProtocol
-
-    init(sessionManager: SessionManagerProtocol) {
-        self.sessionManager = sessionManager
-    }
-
     var defaultSite: Site? {
-        return sessionManager.defaultSite
+        return ServiceLocator.stores.sessionManager.defaultSite
+    }
+}
+
+private struct POSCurrencySettingsAdaptor: POSCurrencySettingsProviding {
+    var currencySettings: CurrencySettings {
+        ServiceLocator.currencySettings
     }
 }
 
 private struct POSFeatureFlagAdaptor: POSFeatureFlagProviding {
-    private let featureFlagService: FeatureFlagService
-
-    init(featureFlagService: FeatureFlagService) {
-        self.featureFlagService = featureFlagService
-    }
-
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool {
-        return featureFlagService.isFeatureFlagEnabled(flag)
+        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(flag)
     }
 }
 
 private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
-    private let analytics: Analytics
-
-    init(analytics: Analytics = ServiceLocator.analytics) {
-        self.analytics = analytics
-    }
-
     func track(event: WooAnalyticsEvent) {
-        analytics.track(event: event)
+        ServiceLocator.analytics.track(event: event)
     }
 
     func track(_ stat: WooAnalyticsStat) {
@@ -90,10 +61,16 @@ private struct POSAnalyticsAdaptor: POSAnalyticsProviding {
     }
 
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:]) {
-        analytics.track(stat, withProperties: parameters)
+        ServiceLocator.analytics.track(stat, withProperties: parameters)
     }
 
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType] = [:], error: Error) {
-        analytics.track(stat, properties: parameters, error: error)
+        ServiceLocator.analytics.track(stat, properties: parameters, error: error)
+    }
+}
+
+private struct POSConnectivityAdaptor: POSConnectivityProviding {
+    var connectivityObserver: ConnectivityObserver {
+        ServiceLocator.connectivityObserver
     }
 }

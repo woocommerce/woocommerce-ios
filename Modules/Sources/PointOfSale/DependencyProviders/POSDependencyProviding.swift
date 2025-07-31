@@ -8,13 +8,12 @@ import struct Yosemite.Site
 /// This abstracts away direct ServiceLocator access
 public protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
-    var currency: CurrencySettings { get }
+    var currency: POSCurrencySettingsProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
     var session: POSSessionManagerProviding { get }
-    var connectivity: ConnectivityObserver { get }
+    var connectivity: POSConnectivityProviding { get }
 }
 
-/// Analytics service abstraction
 public protocol POSAnalyticsProviding {
     func track(event: WooAnalyticsEvent)
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: Error)
@@ -22,12 +21,18 @@ public protocol POSAnalyticsProviding {
     func track(_ stat: WooAnalyticsStat)
 }
 
-/// Session manager abstraction
 public protocol POSSessionManagerProviding {
     var defaultSite: Site? { get }
 }
 
-/// Feature flag service abstraction
 public protocol POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool
+}
+
+public protocol POSCurrencySettingsProviding {
+    var currencySettings: CurrencySettings { get }
+}
+
+public protocol POSConnectivityProviding {
+    var connectivityObserver: ConnectivityObserver { get }
 }

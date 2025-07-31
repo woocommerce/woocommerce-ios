@@ -24,7 +24,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -41,7 +41,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -65,7 +65,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -95,7 +95,7 @@ struct PointOfSaleOrderControllerTests {
                                                 numberOfDecimals: 2)
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: currencySettings,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(currencySettings: currencySettings),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -112,7 +112,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -137,7 +137,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -179,7 +179,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -220,7 +220,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -242,7 +242,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -267,7 +267,7 @@ struct PointOfSaleOrderControllerTests {
             // Given/When
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
                                                  featureFlagService: MockFeatureFlagService(),
                                                  pluginsService: MockPluginsService())
@@ -285,7 +285,7 @@ struct PointOfSaleOrderControllerTests {
         let mockPaymentCelebration = MockPaymentCaptureCelebration()
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService(),
@@ -310,7 +310,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -334,7 +334,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -359,7 +359,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -386,7 +386,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -414,7 +414,7 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_orderService_fails_then_returns_syncOrderState_failure() async throws {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -437,7 +437,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -465,7 +465,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -493,7 +493,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -521,7 +521,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -565,7 +565,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -616,7 +616,7 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService,
-                                             currencySettings: CurrencySettings(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics(),
                                              featureFlagService: MockFeatureFlagService(),
                                              pluginsService: MockPluginsService())
@@ -671,7 +671,7 @@ struct PointOfSaleOrderControllerTests {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
                                                  featureFlagService: MockFeatureFlagService(),
                                                  pluginsService: MockPluginsService())
@@ -692,7 +692,7 @@ struct PointOfSaleOrderControllerTests {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
                                                  featureFlagService: MockFeatureFlagService(),
                                                  pluginsService: MockPluginsService())
@@ -713,7 +713,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: MockReceiptService(),
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: mockAnalytics,
                                                  featureFlagService: MockFeatureFlagService(),
                                                  pluginsService: MockPluginsService())
@@ -750,7 +750,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
                                                  featureFlagService: featureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -773,7 +773,7 @@ struct PointOfSaleOrderControllerTests {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
                                                  featureFlagService: MockFeatureFlagService(),
                                                  pluginsService: MockPluginsService())
@@ -801,7 +801,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics,
                                                  featureFlagService: featureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -845,7 +845,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
                                                  featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -881,7 +881,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
                                                  featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -913,7 +913,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
                                                  featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -946,7 +946,7 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
-                                                 currencySettings: CurrencySettings(),
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: MockPOSAnalytics(),
                                                  featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
@@ -981,4 +981,12 @@ private func makeItem(name: String = "",
                  title: name,
                  subtitle: nil,
                  quantity: quantity)
+}
+
+private final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
+    var currencySettings: CurrencySettings = CurrencySettings()
+
+    init(currencySettings: CurrencySettings = CurrencySettings()) {
+        self.currencySettings = currencySettings
+    }
 }

@@ -81,10 +81,10 @@ struct PointOfSaleEntryPointView: View {
         }
         .environmentObject(posModalManager)
         .environment(\.posAnalytics, services.analytics)
-        .environment(\.posCurrencySettings, services.currency)
+        .environment(\.posCurrencyProvider, services.currency)
         .environment(\.posFeatureFlags, services.featureFlags)
         .environment(\.posSession, services.session)
-        .environment(\.posConnectivity, services.connectivity)
+        .environment(\.posConnectivityProvider, services.connectivity)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

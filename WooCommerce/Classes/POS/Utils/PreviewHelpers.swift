@@ -26,6 +26,7 @@ import Combine
 import struct Yosemite.PaymentIntent
 import protocol Yosemite.Action
 import struct Yosemite.Site
+import PointOfSale
 
 // MARK: - PreviewProvider helpers
 //
@@ -224,7 +225,7 @@ struct POSPreviewHelpers {
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0),
-                                                          featureFlagService: POSPreviewFeatureFlags()),
+                                                          featureFlagService: EmptyPOSFeatureFlags()),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -293,26 +294,10 @@ final class POSPreviewAnalytics: POSAnalyticsProviding {
 }
 
 final class POSPreviewServices: POSDependencyProviding {
-    var analytics: POSAnalyticsProviding = POSPreviewAnalytics()
-    var currency: CurrencySettings = CurrencySettings()
-    var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
-    var session: POSSessionManagerProviding = POSPreviewSessionManager()
-    var connectivity: ConnectivityObserver = POSPreviewConnectivity()
+    var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+    var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
+    var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+    var session: POSSessionManagerProviding = EmptyPOSSessionManager()
+    var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
 }
-
-private struct POSPreviewSessionManager: POSSessionManagerProviding {
-    var defaultSite: Site? = nil
-}
-
-private struct POSPreviewFeatureFlags: POSFeatureFlagProviding {
-    func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool { false }
-}
-
-private class POSPreviewConnectivity: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
-    func startObserving() {}
-    func stopObserving() {}
-}
-
 #endif

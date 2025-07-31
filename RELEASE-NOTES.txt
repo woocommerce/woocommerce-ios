@@ -5,6 +5,7 @@
 -----
 - [*] Fix initialization of authenticator to avoid crashes during login [https://github.com/woocommerce/woocommerce-ios/pull/15953]
 - [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
+- [*] Order Details > Edit Shipping/Billing Address: Added map-based address lookup support for iOS 17+. [https://github.com/woocommerce/woocommerce-ios/pull/15964]
 
 22.9
 -----

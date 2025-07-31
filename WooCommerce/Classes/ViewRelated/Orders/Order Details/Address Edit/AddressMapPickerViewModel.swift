@@ -46,6 +46,7 @@ final class AddressMapPickerViewModel: NSObject {
     }
 
     deinit {
+        searchQueryContinuation.finish()
         searchCompleter.delegate = nil
     }
 

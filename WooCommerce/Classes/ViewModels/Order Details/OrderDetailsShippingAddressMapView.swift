@@ -56,6 +56,14 @@ private extension OrderDetailsShippingAddressMapView {
     enum Layout {
         static let cornerRadius: CGFloat = 8
     }
+    
+    enum Localization {
+        static let tapToOpenInMaps = NSLocalizedString(
+            "orderDetails.shippingAddress.map.tapToOpen",
+            value: "Tap to open in Maps",
+            comment: "Text shown to indicate users can tap the map to open the address in Maps app"
+        )
+    }
 }
 
 #if DEBUG

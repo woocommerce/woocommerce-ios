@@ -15,6 +15,28 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     @State private var viewRotation: Angle = .radians(0)
     @State private var arcTimer: Timer?
 
+    public init(
+        size: CGFloat,
+        lineWidth: CGFloat = Constants.lineWidth,
+        lineCap: CGLineCap = .round,
+        circleColor: Color = Color(.primaryButtonBackground).opacity(Constants.backgroundOpacity),
+        fillColor: Color = Color(.primaryButtonBackground),
+        arcEnd: Double = Constants.initialArcEnd,
+        rotation: Angle = Constants.threeQuarterRotation,
+        viewRotation: Angle = .radians(0),
+        arcTimer: Timer? = nil
+    ) {
+        self.size = size
+        self.lineWidth = lineWidth
+        self.lineCap = lineCap
+        self.circleColor = circleColor
+        self.fillColor = fillColor
+        self.arcEnd = arcEnd
+        self.rotation = rotation
+        self.viewRotation = viewRotation
+        self.arcTimer = arcTimer
+    }
+
     public func makeBody(configuration: ProgressViewStyleConfiguration) -> some View {
         VStack {
             ZStack {
@@ -78,20 +100,20 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     }
 }
 
-private extension IndefiniteCircularProgressViewStyle {
-    enum Constants {
-        static let lineWidth: CGFloat = 10.0
-        static let backgroundOpacity: CGFloat = 0.2
+public extension IndefiniteCircularProgressViewStyle {
+    public enum Constants {
+        public static let lineWidth: CGFloat = 10.0
+        public static let backgroundOpacity: CGFloat = 0.2
 
-        static let initialArcStart: Double = 0
-        static let initialArcEnd: Double = 0.05
-        static let fullCircle: Double = 1
+        public static let initialArcStart: Double = 0
+        public static let initialArcEnd: Double = 0.05
+        public static let fullCircle: Double = 1
 
-        static let threeQuarterRotation: Angle = .radians((9 * Double.pi)/6)
-        static let fullRotation: Angle = .radians(Double.pi * 2)
+        public static let threeQuarterRotation: Angle = .radians((9 * Double.pi)/6)
+        public static let fullRotation: Angle = .radians(Double.pi * 2)
     }
 
-    enum Localization {
+    public enum Localization {
         static let inProgressAccessibilityLabel = NSLocalizedString(
             "In progress",
             comment: "Accessibility label for an indeterminate loading indicator")

@@ -1,10 +1,10 @@
 import SwiftUI
 
 /// Preference key for communicating sizes
-struct SizePreferenceKey: PreferenceKey {
-    static var defaultValue: CGSize? = nil
+public struct SizePreferenceKey: PreferenceKey {
+    public static var defaultValue: CGSize? = nil
 
-    static func reduce(value: inout CGSize?, nextValue: () -> CGSize?) {
+    public static func reduce(value: inout CGSize?, nextValue: () -> CGSize?) {
         // Take the response of the first child which updates the key. Disallow further updates from its children.
         value = value ?? nextValue()
     }
@@ -12,11 +12,11 @@ struct SizePreferenceKey: PreferenceKey {
 
 /// View modifier that conditionally wraps the `content` in a `ScrollView` if the `content` height exceeds the view height.
 ///
-struct ConditionalVerticalScrollModifier: ViewModifier {
+public struct ConditionalVerticalScrollModifier: ViewModifier {
     /// Defines if the content should scroll or not.
     @State private var shouldScroll: Bool = false
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         GeometryReader { parentGeometry in
             Group {
                 if shouldScroll {
@@ -52,7 +52,7 @@ struct ConditionalVerticalScrollModifier: ViewModifier {
 
 // MARK: View Extensions
 
-extension View {
+public extension View {
     /// Allows the view to scroll vertically when the content height is greater than its parent height.
     ///
     func scrollVerticallyIfNeeded() -> some View {

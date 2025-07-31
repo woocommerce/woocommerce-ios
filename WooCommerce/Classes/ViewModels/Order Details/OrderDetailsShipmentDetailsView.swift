@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 struct OrderDetailsShipmentDetailsView: View {
     let shipment: WooShippingShipment

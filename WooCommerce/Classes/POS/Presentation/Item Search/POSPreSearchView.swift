@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct POSPreSearchView: View {

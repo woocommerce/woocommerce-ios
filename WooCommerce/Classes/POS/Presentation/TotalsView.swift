@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct TotalsView: View {

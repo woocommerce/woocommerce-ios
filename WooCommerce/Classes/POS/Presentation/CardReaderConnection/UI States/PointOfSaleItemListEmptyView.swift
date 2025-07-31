@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 @available(iOS 17.0, *)
 struct PointOfSaleItemListEmptyView: View {

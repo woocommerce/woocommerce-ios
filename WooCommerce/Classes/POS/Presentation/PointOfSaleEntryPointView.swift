@@ -1,6 +1,7 @@
 import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// The size variant of the POS button.
 enum POSButtonSize {

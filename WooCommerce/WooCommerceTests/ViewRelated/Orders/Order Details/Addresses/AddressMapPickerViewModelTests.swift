@@ -1,6 +1,5 @@
 import Testing
 import MapKit
-import CoreLocation
 import Contacts
 import Yosemite
 @testable import WooCommerce

@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Text field has a rounded border that has a thicker border and brighter border color when the field is focused.
-struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
+public struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     private let focused: Bool
     private let focusedBorderColor: Color
     private let unfocusedBorderColor: Color
@@ -19,7 +19,7 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     ///   - insets: The insets between the background border and the text input.
     ///   - height: An optional fixed height for the field.
     ///   - content: Optional closure to wrap the text field content.
-    init(focused: Bool,
+    public init(focused: Bool,
          focusedBorderColor: Color = Defaults.focusedBorderColor,
          unfocusedBorderColor: Color = Defaults.unfocusedBorderColor,
          backgroundColor: Color = .clear,
@@ -37,7 +37,7 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
         self.content = content
     }
 
-    func _body(configuration: TextField<Self._Label>) -> some View {
+    public func _body(configuration: TextField<Self._Label>) -> some View {
         let styledContent = content?(configuration) ?? AnyView(configuration)
 
         styledContent
@@ -53,11 +53,11 @@ struct WooRoundedBorderTextFieldStyle: TextFieldStyle {
     }
 }
 
-extension WooRoundedBorderTextFieldStyle {
+public extension WooRoundedBorderTextFieldStyle {
     enum Defaults {
-        static let focusedBorderColor: Color = .init(uiColor: .brand)
-        static let unfocusedBorderColor: Color = .gray
-        static let insets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+        public static let focusedBorderColor: Color = .init(.brand)
+        public static let unfocusedBorderColor: Color = .gray
+        public static let insets = EdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
     }
 }
 

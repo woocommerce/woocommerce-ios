@@ -14,6 +14,11 @@ retain_swift_ui_previews: true
 # Normally, Periphery would suggest changing public to internal or private in these cases to reduce the public API surface of a module.
 disable_redundant_public_analysis: false
 
+# By default, Periphery will scan all targets in your project, including test targets. 
+# This can lead to false positives, as test code is not part of the main application. 
+# This option tells Periphery to exclude all test targets from the scan, ensuring that only the application code is analyzed.
+exclude_tests: true
+
 schemes:
 - WooCommerce
 

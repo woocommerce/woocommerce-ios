@@ -16,6 +16,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let price: String
     public let virtual: Bool
 
+    public let manageStock: Bool
     public let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
     public let stockStatusKey: String   // instock, outofstock, backorder
 
@@ -26,6 +27,16 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let images: [ProductImage]
 
     public let addOns: [ProductAddOn] //TODO: migrate AddOns to MetaData
+
+    public let variations: [Int64]
+
+    // MARK: Product Bundle properties
+
+    /// Stock status of this bundle, taking bundled product quantity requirements and limitations into account. Applicable for bundle-type products only.
+    public let bundleStockStatus: ProductStockStatus?
+
+    /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
+    public let bundleStockQuantity: Int64?
 
     /// Computed Properties
     ///
@@ -51,13 +62,17 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 sku: String?,
                 price: String,
                 virtual: Bool,
+                manageStock: Bool,
                 stockQuantity: Decimal?,
                 stockStatusKey: String,
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
                 images: [ProductImage],
-                addOns: [ProductAddOn]) {
+                addOns: [ProductAddOn],
+                variations: [Int64],
+                bundleStockStatus: ProductStockStatus?,
+                bundleStockQuantity: Int64?) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -66,6 +81,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.sku = sku
         self.price = price
         self.virtual = virtual
+        self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
         self.reviewsAllowed = reviewsAllowed
@@ -73,6 +89,9 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.ratingCount = ratingCount
         self.images = images
         self.addOns = addOns
+        self.variations = variations
+        self.bundleStockStatus = bundleStockStatus
+        self.bundleStockQuantity = bundleStockQuantity
     }
 
 }

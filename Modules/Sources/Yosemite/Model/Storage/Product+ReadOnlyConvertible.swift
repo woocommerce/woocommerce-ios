@@ -228,6 +228,7 @@ extension Storage.Product: ListItemConvertible {
         name = item.name
         productTypeKey = item.productTypeKey
         statusKey = item.statusKey
+        manageStock = item.manageStock
         sku = item.sku
         price = item.price
         virtual = item.virtual
@@ -241,6 +242,9 @@ extension Storage.Product: ListItemConvertible {
         reviewsAllowed = item.reviewsAllowed
         averageRating = item.averageRating
         ratingCount = Int64(item.ratingCount)
+        variations = item.variations
+        bundleStockQuantity = item.bundleStockQuantity as? NSNumber
+        bundleStockStatus = item.bundleStockStatus?.rawValue
     }
 
     public func toListItem() -> Yosemite.ProductListItem {
@@ -252,6 +256,11 @@ extension Storage.Product: ListItemConvertible {
             quantity = Decimal(string: stockQuantity)
         }
 
+        var productBundleStockStatus: ProductStockStatus?
+        if let bundleStockStatus {
+            productBundleStockStatus = ProductStockStatus(rawValue: bundleStockStatus)
+        }
+
         return ProductListItem(siteID: siteID,
                                productID: productID,
                                name: name,
@@ -260,12 +269,16 @@ extension Storage.Product: ListItemConvertible {
                                sku: sku,
                                price: price,
                                virtual: virtual,
+                               manageStock: manageStock,
                                stockQuantity: quantity,
                                stockStatusKey: stockStatusKey,
                                reviewsAllowed: reviewsAllowed,
                                averageRating: averageRating,
                                ratingCount: Int(ratingCount),
                                images: productImages,
-                               addOns: addOnsArray.map { $0.toReadOnly() })
+                               addOns: addOnsArray.map { $0.toReadOnly() },
+                               variations: variations ?? [],
+                               bundleStockStatus: productBundleStockStatus,
+                               bundleStockQuantity: bundleStockQuantity as? Int64)
     }
 }

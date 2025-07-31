@@ -1982,13 +1982,17 @@ extension Networking.ProductListItem {
         sku: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         virtual: CopiableProp<Bool> = .copy,
+        manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
         reviewsAllowed: CopiableProp<Bool> = .copy,
         averageRating: CopiableProp<String> = .copy,
         ratingCount: CopiableProp<Int> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
-        addOns: CopiableProp<[ProductAddOn]> = .copy
+        addOns: CopiableProp<[ProductAddOn]> = .copy,
+        variations: CopiableProp<[Int64]> = .copy,
+        bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
+        bundleStockQuantity: NullableCopiableProp<Int64> = .copy
     ) -> Networking.ProductListItem {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1998,6 +2002,7 @@ extension Networking.ProductListItem {
         let sku = sku ?? self.sku
         let price = price ?? self.price
         let virtual = virtual ?? self.virtual
+        let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
         let reviewsAllowed = reviewsAllowed ?? self.reviewsAllowed
@@ -2005,6 +2010,9 @@ extension Networking.ProductListItem {
         let ratingCount = ratingCount ?? self.ratingCount
         let images = images ?? self.images
         let addOns = addOns ?? self.addOns
+        let variations = variations ?? self.variations
+        let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
+        let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
 
         return Networking.ProductListItem(
             siteID: siteID,
@@ -2015,13 +2023,17 @@ extension Networking.ProductListItem {
             sku: sku,
             price: price,
             virtual: virtual,
+            manageStock: manageStock,
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,
             reviewsAllowed: reviewsAllowed,
             averageRating: averageRating,
             ratingCount: ratingCount,
             images: images,
-            addOns: addOns
+            addOns: addOns,
+            variations: variations,
+            bundleStockStatus: bundleStockStatus,
+            bundleStockQuantity: bundleStockQuantity
         )
     }
 }

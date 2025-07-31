@@ -1162,13 +1162,17 @@ extension Networking.ProductListItem {
             sku: .fake(),
             price: .fake(),
             virtual: .fake(),
+            manageStock: .fake(),
             stockQuantity: .fake(),
             stockStatusKey: .fake(),
             reviewsAllowed: .fake(),
             averageRating: .fake(),
             ratingCount: .fake(),
             images: .fake(),
-            addOns: .fake()
+            addOns: .fake(),
+            variations: .fake(),
+            bundleStockStatus: .fake(),
+            bundleStockQuantity: .fake()
         )
     }
 }

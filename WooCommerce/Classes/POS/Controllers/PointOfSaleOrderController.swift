@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import protocol Experiments.FeatureFlagService
+import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol

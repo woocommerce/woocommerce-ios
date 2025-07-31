@@ -1,5 +1,6 @@
 import Yosemite
 import Storage
+import class WooFoundation.VersionHelpers
 
 final class ProductPasswordEligibilityUseCase {
     private let stores: StoresManager

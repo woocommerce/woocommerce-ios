@@ -1,5 +1,6 @@
 import Yosemite
 import Experiments
+import class WooFoundation.VersionHelpers
 
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)

@@ -3,6 +3,7 @@ import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
+import class WooFoundation.VersionHelpers
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import protocol Yosemite.POSEligibilityServiceProtocol

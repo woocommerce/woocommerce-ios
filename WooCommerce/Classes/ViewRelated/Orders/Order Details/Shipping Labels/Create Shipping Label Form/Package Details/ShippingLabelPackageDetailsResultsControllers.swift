@@ -7,14 +7,14 @@ final class ShippingLabelPackageDetailsResultsControllers {
     private let siteID: Int64
     private let orderItems: [OrderItem]
     private let storageManager: StorageManagerType
-    private var onProductReload: (([Product]) -> Void)?
+    private var onProductReload: (([ProductListItem]) -> Void)?
     private var onProductVariationsReload: (([ProductVariation]) -> Void)?
 
     /// Get the products found in Core Data and that match the predicate.
     ///
-    var products: [Product] {
+    var products: [ProductListItem] {
         try? productResultsController.performFetch()
-        return productResultsController.fetchedObjects
+        return productResultsController.listItemObjects
     }
 
     /// Get the product variations in Core Data and that match the predicate.
@@ -60,7 +60,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
     init(siteID: Int64,
          orderItems: [OrderItem],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         onProductReload: @escaping ([Product]) -> Void,
+         onProductReload: @escaping ([ProductListItem]) -> Void,
          onProductVariationsReload: @escaping ([ProductVariation]) -> Void) {
         self.siteID = siteID
         self.orderItems = orderItems
@@ -69,16 +69,16 @@ final class ShippingLabelPackageDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onProductVariationsReload)
     }
 
-    private func configureProductResultsController(onReload: @escaping ([Product]) -> ()) {
+    private func configureProductResultsController(onReload: @escaping ([ProductListItem]) -> ()) {
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
-            onReload(self.productResultsController.fetchedObjects)
+            onReload(self.productResultsController.listItemObjects)
         }
 
         productResultsController.onDidResetContent = { [weak self] in
             guard let self = self else { return }
             try? self.productResultsController.performFetch()
-            onReload(self.productResultsController.fetchedObjects)
+            onReload(self.productResultsController.listItemObjects)
         }
 
         do {

@@ -61,7 +61,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// Products contained inside the Order and fetched from Core Data
     ///
-    @Published private var products: [Product] = []
+    @Published private var products: [ProductListItem] = []
 
     /// ProductVariations contained inside the Order and fetched from Core Data
     ///

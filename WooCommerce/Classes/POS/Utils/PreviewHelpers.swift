@@ -291,7 +291,6 @@ final class POSPreviewServices: POSDependencyProviding {
     var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
     var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
-    var session: POSSessionManagerProviding = EmptyPOSSessionManager()
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()

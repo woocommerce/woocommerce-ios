@@ -11,7 +11,6 @@ public protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
     var currency: POSCurrencySettingsProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }
-    var session: POSSessionManagerProviding { get }
     var connectivity: POSConnectivityProviding { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
@@ -22,10 +21,6 @@ public protocol POSAnalyticsProviding {
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: Error)
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType])
     func track(_ stat: WooAnalyticsStat)
-}
-
-public protocol POSSessionManagerProviding {
-    var defaultSite: Site? { get }
 }
 
 public protocol POSFeatureFlagProviding {

@@ -5,7 +5,6 @@ import SafariServices
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.posSession) private var session
     @Environment(\.posExternalViews) private var externalViews
 
     @State private var showExitPOSModal: Bool = false

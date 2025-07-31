@@ -25,10 +25,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSFeatureFlagAdaptor()
     }
 
-    var session: POSSessionManagerProviding {
-        POSSessionManagerAdaptor()
-    }
-
     var connectivity: POSConnectivityProviding {
         POSConnectivityAdaptor()
     }
@@ -43,12 +39,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 }
 
 // MARK: - Individual Service Adaptors
-
-private struct POSSessionManagerAdaptor: POSSessionManagerProviding {
-    var defaultSite: Site? {
-        return ServiceLocator.stores.sessionManager.defaultSite
-    }
-}
 
 private struct POSCurrencySettingsAdaptor: POSCurrencySettingsProviding {
     var currencySettings: CurrencySettings {

@@ -20,11 +20,6 @@ public struct POSFeatureFlagsKey: EnvironmentKey {
     public static let defaultValue: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
 }
 
-/// Environment key for POS session manager
-public struct POSSessionManagerKey: EnvironmentKey {
-    public static let defaultValue: POSSessionManagerProviding = EmptyPOSSessionManager()
-}
-
 /// Environment key for POS connectivity
 public struct POSConnectivityKey: EnvironmentKey {
     public static let defaultValue: POSConnectivityProviding = EmptyPOSConnectivityProvider()
@@ -56,11 +51,6 @@ public extension EnvironmentValues {
         set { self[POSFeatureFlagsKey.self] = newValue }
     }
 
-    var posSession: POSSessionManagerProviding {
-        get { self[POSSessionManagerKey.self] }
-        set { self[POSSessionManagerKey.self] = newValue }
-    }
-
     var posConnectivityProvider: POSConnectivityProviding {
         get { self[POSConnectivityKey.self] }
         set { self[POSConnectivityKey.self] = newValue }
@@ -81,11 +71,6 @@ public extension EnvironmentValues {
 
 public struct EmptyPOSExternalNavigation: POSExternalNavigationProviding {
     public func navigateToCreateOrder() {}
-    public init() {}
-}
-
-public struct EmptyPOSSessionManager: POSSessionManagerProviding {
-    public var defaultSite: Site? = nil
     public init() {}
 }
 

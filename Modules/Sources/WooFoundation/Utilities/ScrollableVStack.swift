@@ -1,14 +1,15 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// Wraps a VStack inside a ScrollView, ensuring the content expands to fill the available space
 ///
-struct ScrollableVStack<Content: View>: View {
+public struct ScrollableVStack<Content: View>: View {
     let alignment: HorizontalAlignment
     let padding: CGFloat
     let spacing: CGFloat?
     let content: Content
 
-    init(
+    public init(
         alignment: HorizontalAlignment = .center,
         padding: CGFloat = 24,
         spacing: CGFloat? = nil,
@@ -20,7 +21,7 @@ struct ScrollableVStack<Content: View>: View {
         self.content = content()
     }
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: alignment, spacing: spacing) {

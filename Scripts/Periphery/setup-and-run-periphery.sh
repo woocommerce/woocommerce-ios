@@ -17,9 +17,6 @@ update_and_run() {
     # Download the zip file
     curl -L "https://github.com/peripheryapp/periphery/releases/download/${PERIPHERY_VERSION}/periphery-${PERIPHERY_VERSION}.zip" -o "periphery.zip"
 
-    # Make sure the path is writable
-    chmod u+w "$PERIPHERY_FOLDER_PATH"
-
     # Create target directory if it doesn't exist
     mkdir -p "$PERIPHERY_FOLDER_PATH"
 

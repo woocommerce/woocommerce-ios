@@ -1875,7 +1875,7 @@ private extension ProductFormViewController {
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.groupedProductsViewTitle,
                                                                                            trackingContext: "grouped_products")
 
-        let viewController = LinkedProductsListSelectorViewController(product: product.product,
+        let viewController = LinkedProductsListSelectorViewController(product: product.product.toListItem(),
                                                                       linkedProductIDs: product.product.groupedProducts,
                                                                       viewConfiguration: viewConfiguration) { [weak self] groupedProductIDs in
             self?.onEditGroupedProductsCompletion(groupedProductIDs: groupedProductIDs)

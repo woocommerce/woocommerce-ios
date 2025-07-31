@@ -4,6 +4,7 @@ import Yosemite
 
 /// Implementation of `SearchUICommand` for selecting linked products to a grouped product from search UI.
 final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
+    typealias ListItemModel = ProductListItem
     typealias Model = Product
     typealias CellViewModel = ProductsTabProductViewModel
     typealias ResultsControllerModel = StorageProduct
@@ -70,7 +71,7 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
         }
     }
 
-    func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
+    func createCellViewModel(model: ProductListItem) -> ProductsTabProductViewModel {
         return ProductsTabProductViewModel(product: model, isSelected: isProductSelected(model))
     }
 
@@ -135,12 +136,12 @@ private extension ProductListMultiSelectorSearchUICommand {
         selectedProductIDs.isNotEmpty
     }
 
-    func isProductSelected(_ product: Product) -> Bool {
+    func isProductSelected(_ product: ProductListItem) -> Bool {
         return selectedProductIDs.contains(product.productID)
     }
 
     func onProductSelected(_ product: Product) {
-        if isProductSelected(product) {
+        if isProductSelected(product.toListItem()) {
             // Unselects the product if it is currently selected.
             selectedProductIDs.removeAll { $0 == product.productID }
         } else {

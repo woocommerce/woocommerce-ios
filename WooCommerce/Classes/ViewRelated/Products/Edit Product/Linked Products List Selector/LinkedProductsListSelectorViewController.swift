@@ -19,7 +19,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
     private let dataSource: LinkedProductListSelectorDataSource
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
-        <LinkedProductListSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
+        <LinkedProductListSelectorDataSource, ProductListItem, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: Localization.noResultsPlaceholder,
                                                                      noResultsPlaceholderImage: .groupedProductsImage,
@@ -36,7 +36,7 @@ final class LinkedProductsListSelectorViewController: UIViewController {
     typealias Completion = (_ linkedProductIDs: [Int64]) -> Void
     private let onCompletion: Completion
 
-    init(product: Product,
+    init(product: ProductListItem,
          linkedProductIDs: [Int64],
          imageService: ImageService = ServiceLocator.imageService,
          viewConfiguration: ViewConfiguration,

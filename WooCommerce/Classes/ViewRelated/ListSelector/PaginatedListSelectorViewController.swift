@@ -8,26 +8,26 @@ import class AutomatticTracks.CrashLogging
 /// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
 ///
 protocol PaginatedListSelectorDataSource {
-    associatedtype StorageModel: ResultsControllerMutableType
+    associatedtype StorageModel: ResultsControllerMutableType & ListItemConvertible
     associatedtype Cell: UITableViewCell
 
     /// Optional custom sorting strategy for storage models in the paginated list. Default is `nil`.
-    var customResultsSortOrder: ((StorageModel.ReadOnlyType, StorageModel.ReadOnlyType) -> Bool)? { get }
+    var customResultsSortOrder: ((StorageModel.ListItemType, StorageModel.ListItemType) -> Bool)? { get }
 
     /// The model that is currently selected in the list.
-    var selected: StorageModel.ReadOnlyType? { get }
+    var selected: StorageModel.ListItemType? { get }
 
     /// Creates a results controller that defines the data to fetch.
     func createResultsController() -> ResultsController<StorageModel>
 
     /// Called when a different model is selected.
-    mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
+    mutating func handleSelectedChange(selected: StorageModel.ListItemType)
 
     /// Configures the selected UI.
-    func isSelected(model: StorageModel.ReadOnlyType) -> Bool
+    func isSelected(model: StorageModel.ListItemType) -> Bool
 
     /// Configures the cell with the given model.
-    func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
+    func configureCell(cell: Cell, model: StorageModel.ListItemType)
 
     /// Called when the UI is requesting to sync another page of data.
     /// - Parameters:
@@ -55,7 +55,10 @@ extension PaginatedListSelectorDataSource {
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
     UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate, GhostableViewController
-where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
+where DataSource.StorageModel == StorageModel,
+      Model == DataSource.StorageModel.ListItemType,
+      Model: Equatable,
+      DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
@@ -196,9 +199,9 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     private func object(at indexPath: IndexPath) -> Model {
         guard let customResultsSortOrder = dataSource.customResultsSortOrder else {
-            return resultsController.object(at: indexPath)
+            return resultsController.listItem(at: indexPath)
         }
-        let objects = resultsController.sections[indexPath.section].objects
+        let objects = resultsController.listItemObjects(in: indexPath.section)
             .sorted(by: { (lhs, rhs) -> Bool in
                 return customResultsSortOrder(lhs, rhs)
             })
@@ -215,7 +218,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let selected = resultsController.object(at: indexPath)
+        let selected = resultsController.listItem(at: indexPath)
         dataSource.handleSelectedChange(selected: selected)
         tableView.reloadData()
     }

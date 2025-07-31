@@ -4,6 +4,8 @@ import Yosemite
 
 /// Enables the user to select multiple products from a paginated list.
 final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource {
+    var customResultsSortOrder: ((ProductListItem, ProductListItem) -> Bool)?
+    
     typealias StorageModel = StorageProduct
 
     // Observable list of the latest product IDs
@@ -13,7 +15,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
 
     // Not used: since multiple products can be selected in this use case, the single selected product is not used.
-    var selected: Product?
+    var selected: ProductListItem?
 
     private let siteID: Int64
     private let excludedProductIDs: [Int64]
@@ -40,7 +42,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
                                                  sortOrder: .nameAscending)
     }
 
-    func handleSelectedChange(selected: Product) {
+    func handleSelectedChange(selected: ProductListItem) {
         if isProductSelected(selected) {
             selectedProductIDs.removeAll { $0 == selected.productID }
         } else {
@@ -48,11 +50,11 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
         }
     }
 
-    func isSelected(model: Product) -> Bool {
+    func isSelected(model: ProductListItem) -> Bool {
         return isProductSelected(model)
     }
 
-    func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
+    func configureCell(cell: ProductsTabProductTableViewCell, model: ProductListItem) {
         cell.selectionStyle = .default
 
         let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))
@@ -91,7 +93,7 @@ extension ProductListMultiSelectorDataSource {
 }
 
 private extension ProductListMultiSelectorDataSource {
-    func isProductSelected(_ product: Product) -> Bool {
+    func isProductSelected(_ product: ProductListItem) -> Bool {
         return selectedProductIDs.contains(product.productID)
     }
 }

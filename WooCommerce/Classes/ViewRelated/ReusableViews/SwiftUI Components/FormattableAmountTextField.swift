@@ -1,5 +1,4 @@
 import SwiftUI
-import struct WooFoundation.AutofocusTextModifier
 
 /// This numeric Text Field updates the user input to show the formatted amount
 ///

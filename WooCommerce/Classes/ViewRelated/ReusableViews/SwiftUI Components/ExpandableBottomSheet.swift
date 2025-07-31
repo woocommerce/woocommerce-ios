@@ -210,25 +210,3 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
     }
 }
 
-struct SizeTracker: ViewModifier {
-    @Binding var size: CGSize
-
-    func body(content: Content) -> some View {
-        content
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        self.size = proxy.size
-                    }
-                    .onChange(of: proxy.size) { newSize in
-                        self.size = newSize
-                    }
-            })
-    }
-}
-
-extension View {
-    func trackSize(size: Binding<CGSize>) -> some View {
-        modifier(SizeTracker(size: size))
-    }
-}

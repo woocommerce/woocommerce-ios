@@ -7,7 +7,7 @@ import struct Yosemite.Country
 struct AddressMapPickerView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var viewModel: AddressMapPickerViewModel
-    @Binding var fields: AddressFormFields
+    @Binding private var fields: AddressFormFields
     @FocusState private var isSearchFocused: Bool
 
     init(fields: Binding<AddressFormFields>, countryByCode: @escaping (_ countryCode: String) -> Country?) {

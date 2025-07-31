@@ -72,7 +72,7 @@ final class AddressMapPickerViewModel: NSObject {
             guard let firstPlacemark = response.mapItems.first?.placemark else {
                 return
             }
-            await onSelectedPlacemark(firstPlacemark, result: result)
+            await onSelectedPlacemark(firstPlacemark)
         } catch {
             DDLogError("⛔️ Map search error from selecting a search result: \(error)")
         }
@@ -150,7 +150,7 @@ private extension AddressMapPickerViewModel {
     }
 
     @MainActor
-    func onSelectedPlacemark(_ placemark: MKPlacemark, result: MKLocalSearchCompletion) async {
+    func onSelectedPlacemark(_ placemark: MKPlacemark) async {
         await withCheckedContinuation { continuation in
             withAnimation { [weak self] in
                 guard let self else { return }

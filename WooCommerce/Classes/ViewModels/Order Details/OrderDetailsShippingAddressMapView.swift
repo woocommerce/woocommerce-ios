@@ -36,9 +36,14 @@ struct OrderDetailsShippingAddressMapView: View {
                 RoundedRectangle(cornerRadius: Layout.cornerRadius)
                     .fill(Color.gray.opacity(0.2))
                     .overlay(
-                        Image(systemName: "map")
-                            .foregroundColor(.gray)
-                            .font(.title2)
+                        VStack(spacing: 8) {
+                            Image(systemName: "map")
+                                .foregroundColor(.gray)
+                                .font(.title2)
+                            Text(Localization.tapToOpenInMaps)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
                     )
                     .contentShape(Rectangle())
                     .onTapGesture {

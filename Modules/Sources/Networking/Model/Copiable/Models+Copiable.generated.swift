@@ -1977,8 +1977,11 @@ extension Networking.ProductListItem {
         siteID: CopiableProp<Int64> = .copy,
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
+        permalink: CopiableProp<String> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
         statusKey: CopiableProp<String> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         virtual: CopiableProp<Bool> = .copy,
@@ -1987,14 +1990,19 @@ extension Networking.ProductListItem {
         reviewsAllowed: CopiableProp<Bool> = .copy,
         averageRating: CopiableProp<String> = .copy,
         ratingCount: CopiableProp<Int> = .copy,
+        weight: NullableCopiableProp<String> = .copy,
+        dimensions: CopiableProp<ProductDimensions> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
         addOns: CopiableProp<[ProductAddOn]> = .copy
     ) -> Networking.ProductListItem {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
         let name = name ?? self.name
+        let permalink = permalink ?? self.permalink
         let productTypeKey = productTypeKey ?? self.productTypeKey
         let statusKey = statusKey ?? self.statusKey
+        let fullDescription = fullDescription ?? self.fullDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let price = price ?? self.price
         let virtual = virtual ?? self.virtual
@@ -2003,6 +2011,8 @@ extension Networking.ProductListItem {
         let reviewsAllowed = reviewsAllowed ?? self.reviewsAllowed
         let averageRating = averageRating ?? self.averageRating
         let ratingCount = ratingCount ?? self.ratingCount
+        let weight = weight ?? self.weight
+        let dimensions = dimensions ?? self.dimensions
         let images = images ?? self.images
         let addOns = addOns ?? self.addOns
 
@@ -2010,8 +2020,11 @@ extension Networking.ProductListItem {
             siteID: siteID,
             productID: productID,
             name: name,
+            permalink: permalink,
             productTypeKey: productTypeKey,
             statusKey: statusKey,
+            fullDescription: fullDescription,
+            shortDescription: shortDescription,
             sku: sku,
             price: price,
             virtual: virtual,
@@ -2020,6 +2033,8 @@ extension Networking.ProductListItem {
             reviewsAllowed: reviewsAllowed,
             averageRating: averageRating,
             ratingCount: ratingCount,
+            weight: weight,
+            dimensions: dimensions,
             images: images,
             addOns: addOns
         )

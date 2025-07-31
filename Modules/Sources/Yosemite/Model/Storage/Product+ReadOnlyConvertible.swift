@@ -226,8 +226,11 @@ extension Storage.Product: ListItemConvertible {
         siteID = item.siteID
         productID = item.productID
         name = item.name
+        permalink = item.permalink
         productTypeKey = item.productTypeKey
         statusKey = item.statusKey
+        fullDescription = item.fullDescription
+        briefDescription = item.shortDescription
         sku = item.sku
         price = item.price
         virtual = item.virtual
@@ -241,6 +244,7 @@ extension Storage.Product: ListItemConvertible {
         reviewsAllowed = item.reviewsAllowed
         averageRating = item.averageRating
         ratingCount = Int64(item.ratingCount)
+        weight = item.weight
     }
 
     public func toListItem() -> Yosemite.ProductListItem {
@@ -255,8 +259,11 @@ extension Storage.Product: ListItemConvertible {
         return ProductListItem(siteID: siteID,
                                productID: productID,
                                name: name,
+                               permalink: permalink,
                                productTypeKey: productTypeKey,
                                statusKey: statusKey,
+                               fullDescription: fullDescription,
+                               shortDescription: briefDescription,
                                sku: sku,
                                price: price,
                                virtual: virtual,
@@ -265,6 +272,8 @@ extension Storage.Product: ListItemConvertible {
                                reviewsAllowed: reviewsAllowed,
                                averageRating: averageRating,
                                ratingCount: Int(ratingCount),
+                               weight: weight,
+                               dimensions: createReadOnlyDimensions(),
                                images: productImages,
                                addOns: addOnsArray.map { $0.toReadOnly() })
     }

@@ -8,9 +8,13 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
     public let name: String
+    public let permalink: String
 
     public let productTypeKey: String
     public let statusKey: String        // draft, pending, private, published
+
+    public let fullDescription: String?
+    public let shortDescription: String?
     public let sku: String?
 
     public let price: String
@@ -22,6 +26,9 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let reviewsAllowed: Bool
     public let averageRating: String
     public let ratingCount: Int
+
+    public let weight: String?
+    public let dimensions: ProductDimensions
 
     public let images: [ProductImage]
 
@@ -46,8 +53,11 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public init(siteID: Int64,
                 productID: Int64,
                 name: String,
+                permalink: String,
                 productTypeKey: String,
                 statusKey: String,
+                fullDescription: String?,
+                shortDescription: String?,
                 sku: String?,
                 price: String,
                 virtual: Bool,
@@ -56,13 +66,18 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
+                weight: String?,
+                dimensions: ProductDimensions,
                 images: [ProductImage],
                 addOns: [ProductAddOn]) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
+        self.permalink = permalink
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
+        self.fullDescription = fullDescription
+        self.shortDescription = shortDescription
         self.sku = sku
         self.price = price
         self.virtual = virtual
@@ -71,6 +86,8 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.reviewsAllowed = reviewsAllowed
         self.averageRating = averageRating
         self.ratingCount = ratingCount
+        self.weight = weight
+        self.dimensions = dimensions
         self.images = images
         self.addOns = addOns
     }

@@ -1157,8 +1157,11 @@ extension Networking.ProductListItem {
             siteID: .fake(),
             productID: .fake(),
             name: .fake(),
+            permalink: .fake(),
             productTypeKey: .fake(),
             statusKey: .fake(),
+            fullDescription: .fake(),
+            shortDescription: .fake(),
             sku: .fake(),
             price: .fake(),
             virtual: .fake(),
@@ -1167,6 +1170,8 @@ extension Networking.ProductListItem {
             reviewsAllowed: .fake(),
             averageRating: .fake(),
             ratingCount: .fake(),
+            weight: .fake(),
+            dimensions: .fake(),
             images: .fake(),
             addOns: .fake()
         )

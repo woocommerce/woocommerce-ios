@@ -29,3 +29,9 @@ extension Storage.ProductShippingClass: ReadOnlyConvertible {
                                     slug: slug)
     }
 }
+
+extension Storage.ProductShippingClass: ListItemConvertible {
+    public func toListItem() -> Yosemite.ProductShippingClass {
+        toReadOnly()
+    }
+}

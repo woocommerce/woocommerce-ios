@@ -64,3 +64,9 @@ extension Storage.Coupon: ReadOnlyConvertible {
                       usedBy: usedBy ?? [])
     }
 }
+
+extension Storage.Coupon: ListItemConvertible {
+    public func toListItem() -> Yosemite.Coupon {
+        toReadOnly()
+    }
+}

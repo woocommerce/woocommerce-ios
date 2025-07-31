@@ -20,3 +20,9 @@ extension Storage.TaxClass: ReadOnlyConvertible {
         return TaxClass(siteID: siteID, name: name, slug: slug)
     }
 }
+
+extension StorageTaxClass: ListItemConvertible {
+    public func toListItem() -> Yosemite.TaxClass {
+        toReadOnly()
+    }
+}

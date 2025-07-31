@@ -26,7 +26,7 @@ final class AddressMapPickerViewModel: NSObject {
         selectedPlace != nil
     }
     var showsNoResultsMessage: Bool {
-        searchCompleter.isSearching == false && !searchQuery.isEmpty && searchResults.isEmpty && selectedPlace == nil
+        searchCompleter.isSearching == false && searchQuery.count >= 2 && searchResults.isEmpty && selectedPlace == nil
     }
     var selectedPlaceAddress: String {
         selectedPlace?.postalAddress?.formatted(as: .mailingAddress) ?? ""

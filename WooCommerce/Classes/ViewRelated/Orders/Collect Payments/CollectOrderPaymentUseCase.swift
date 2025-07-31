@@ -179,9 +179,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                               alertProvider: paymentAlertProvider,
                                                               onCompleted: onCompleted)
                             }
+                            onPaymentCompletion()
                         }
                     }
-                    onPaymentCompletion()
                 })
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)

@@ -162,6 +162,7 @@ private extension AddressMapPickerViewModel {
                 )
                 annotations = [MapAnnotation(coordinate: placemark.coordinate)]
                 selectedPlace = placemark
+            } completion: {
                 continuation.resume()
             }
         }

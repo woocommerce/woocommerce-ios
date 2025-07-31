@@ -33,10 +33,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSAnalyticsAdaptor(analytics: serviceAnalytics)
     }
 
-    var stores: POSStoresProviding {
-        POSStoresAdaptor(stores: storesManager)
-    }
-
     var currency: CurrencySettings {
         currencySettings
     }
@@ -51,20 +47,6 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var connectivity: ConnectivityObserver {
         connectivityObserver
-    }
-}
-
-// MARK: - Individual Service Adaptors
-
-private struct POSStoresAdaptor: POSStoresProviding {
-    private let storesManager: StoresManager
-
-    init(stores: StoresManager) {
-        self.storesManager = stores
-    }
-
-    func dispatch(_ action: any Action) {
-        storesManager.dispatch(action)
     }
 }
 

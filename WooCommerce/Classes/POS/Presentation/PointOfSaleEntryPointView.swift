@@ -82,7 +82,6 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencySettings, services.currency)
-        .environment(\.posStores, services.stores)
         .environment(\.posFeatureFlags, services.featureFlags)
         .environment(\.posSession, services.session)
         .environment(\.posConnectivity, services.connectivity)

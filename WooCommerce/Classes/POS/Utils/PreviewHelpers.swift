@@ -294,16 +294,10 @@ final class POSPreviewAnalytics: POSAnalyticsProviding {
 
 final class POSPreviewServices: POSDependencyProviding {
     var analytics: POSAnalyticsProviding = POSPreviewAnalytics()
-    var stores: POSStoresProviding = POSPreviewStores()
     var currency: CurrencySettings = CurrencySettings()
     var featureFlags: POSFeatureFlagProviding = POSPreviewFeatureFlags()
     var session: POSSessionManagerProviding = POSPreviewSessionManager()
     var connectivity: ConnectivityObserver = POSPreviewConnectivity()
-}
-
-// Preview implementations for all service types
-private struct POSPreviewStores: POSStoresProviding {
-    func dispatch(_ action: Yosemite.Action) {}
 }
 
 private struct POSPreviewSessionManager: POSSessionManagerProviding {

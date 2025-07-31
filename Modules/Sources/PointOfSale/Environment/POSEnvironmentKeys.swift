@@ -34,11 +34,6 @@ public struct POSCurrencySettingsKey: EnvironmentKey {
     public static let defaultValue: CurrencySettings = CurrencySettings()
 }
 
-/// Environment key for POS stores service
-public struct POSStoresKey: EnvironmentKey {
-    public static let defaultValue: POSStoresProviding = DefaultPOSStores()
-}
-
 /// Environment key for POS feature flags service
 public struct POSFeatureFlagsKey: EnvironmentKey {
     public static let defaultValue: POSFeatureFlagProviding = DefaultPOSFeatureFlags()
@@ -52,11 +47,6 @@ public struct POSSessionManagerKey: EnvironmentKey {
 /// Environment key for POS connectivity
 public struct POSConnectivityKey: EnvironmentKey {
     public static let defaultValue: ConnectivityObserver = DefaultPOSConnectivity()
-}
-
-// Default implementations for testing/previews
-private struct DefaultPOSStores: POSStoresProviding {
-    func dispatch(_ action: Yosemite.Action) {}
 }
 
 private struct DefaultPOSSessionManager: POSSessionManagerProviding {
@@ -83,11 +73,6 @@ public extension EnvironmentValues {
     var posCurrencySettings: CurrencySettings {
         get { self[POSCurrencySettingsKey.self] }
         set { self[POSCurrencySettingsKey.self] = newValue }
-    }
-
-    var posStores: POSStoresProviding {
-        get { self[POSStoresKey.self] }
-        set { self[POSStoresKey.self] = newValue }
     }
 
     var posFeatureFlags: POSFeatureFlagProviding {

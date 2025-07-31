@@ -2,11 +2,13 @@ import SwiftUI
 
 /// Autofocus for `TextField` and `TextEditor` in iOS 15 and later
 ///
-struct AutofocusTextModifier: ViewModifier {
+public struct AutofocusTextModifier: ViewModifier {
 
     @FocusState private var textFieldIsFocused: Bool
 
-    func body(content: Content) -> some View {
+    public init() {}
+
+    public func body(content: Content) -> some View {
         content
             .focused($textFieldIsFocused)
             .onAppear {
@@ -21,7 +23,7 @@ struct AutofocusTextModifier: ViewModifier {
 
 // MARK: View extension
 
-extension View {
+public extension View {
 
     /// Autofocus in `TextField` and `TextEditor` is available only for iOS15+
     ///

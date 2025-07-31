@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import struct WooFoundation.AutofocusTextModifier
 
 /// Hosting controller that wraps a `ReviewDetailsReply` view.
 ///

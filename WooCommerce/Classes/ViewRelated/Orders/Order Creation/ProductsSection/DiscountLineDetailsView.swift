@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.AutofocusTextModifier
 
 struct DiscountLineDetailsView: View {
     @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel

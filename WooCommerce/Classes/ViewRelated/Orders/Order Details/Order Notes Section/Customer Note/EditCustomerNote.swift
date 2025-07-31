@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import struct WooFoundation.AutofocusTextModifier
 
 /// Hosting controller that wraps an `EditCustomerNote` view.
 ///

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.AutofocusTextModifier
 
 struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel

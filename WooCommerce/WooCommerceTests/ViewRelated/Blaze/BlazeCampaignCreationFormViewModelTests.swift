@@ -13,7 +13,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private let sampleSiteAddress = "https://example.com"
     private let sampleProductID: Int64 = 433
 
-    private var sampleProduct: Product {
+    private var sampleProduct: ProductListItem {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
                      name: "My Woo Product",
@@ -37,11 +37,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
-
-    /// View storage for tests
-    private var storage: StorageType {
-        storageManager.viewStorage
-    }
 
     private var stores: MockStoresManager!
 
@@ -219,11 +214,11 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockDownloadImage(sampleImage)
-        var triggeredFetchAISuggestions = false
+        var fetchAISuggestionsTriggers = 0
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchAISuggestions(_, _, completion):
-                triggeredFetchAISuggestions = true
+                fetchAISuggestionsTriggers += 1
                 completion(.failure(MockError()))
             default:
                 break
@@ -238,13 +233,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Preload AI suggestions and reset the flag
         await viewModel.onLoad()
-        triggeredFetchAISuggestions = false
 
         // When
         await viewModel.onLoad()
 
         // Then
-        XCTAssertFalse(triggeredFetchAISuggestions)
+        XCTAssertEqual(fetchAISuggestionsTriggers, 1)
     }
 
     @MainActor
@@ -1126,22 +1120,24 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
     ///
-    func insertProduct(_ readOnlyProduct: Product) {
-        let product = storage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
+    func insertProduct(_ readOnlyProduct: ProductListItem) {
+        storageManager.performAndSave({ storage in
+            let product = storage.insertNewObject(ofType: StorageProduct.self)
+            product.update(with: readOnlyProduct)
 
-        for readOnlyImage in readOnlyProduct.images {
-            let productImage = storage.insertNewObject(ofType: StorageProductImage.self)
-            productImage.update(with: readOnlyImage)
-            productImage.product = product
-        }
-        storage.saveIfNeeded()
+            for readOnlyImage in readOnlyProduct.images {
+                let productImage = storage.insertNewObject(ofType: StorageProductImage.self)
+                productImage.update(with: readOnlyImage)
+                productImage.product = product
+            }
+        }, completion: {}, on: .main)
     }
 
     func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
-        let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
-        objective.update(with: readOnlyObjective)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
+            objective.update(with: readOnlyObjective)
+        }, completion: {}, on: .main)
     }
 }
 

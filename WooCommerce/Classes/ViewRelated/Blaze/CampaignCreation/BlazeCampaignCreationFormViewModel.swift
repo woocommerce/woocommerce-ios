@@ -203,8 +203,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var isUsingAISuggestions: Bool = false
 
     private let storage: StorageManagerType
-    private var product: Product? {
-        guard let product = productsResultsController.fetchedObjects.first else {
+    private var product: ProductListItem? {
+        guard let product = productsResultsController.listItemObjects.first else {
             assertionFailure("Unable to fetch product with ID: \(productID)")
             return nil
         }

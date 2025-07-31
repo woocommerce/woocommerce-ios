@@ -216,11 +216,15 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    if !viewModel.isSubscriptionProduct(productOrVariationID: rowViewModel.productOrVariationID) {
+                        viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    if !viewModel.isSubscriptionProduct(productOrVariationID: rowViewModel.productOrVariationID) {
+                        viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    }
                 }
                 .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)

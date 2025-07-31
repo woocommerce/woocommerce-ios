@@ -1,9 +1,8 @@
 import Foundation
 
-
 // MARK: - Array Helpers
 //
-extension Array {
+public extension Array {
     /// Removes and returns the first element in the array. If any!
     ///
     mutating func popFirst() -> Element? {
@@ -27,7 +26,7 @@ extension Array {
 
 // MARK: - Sequence Helpers
 //
-extension Sequence {
+public extension Sequence {
     /// Get the keypaths for a elemtents in a sequence.
     ///
     func map<T>(_ keyPath: KeyPath<Element, T>) -> [T] {
@@ -40,12 +39,12 @@ extension Sequence {
     }
 }
 
-extension Sequence where Element: Numeric {
+public extension Sequence where Element: Numeric {
     /// Returns the sum of all elements in the collection.
     func sum() -> Element { return reduce(0, +) }
 }
 
-extension Sequence where Element: Equatable {
+public extension Sequence where Element: Equatable {
     /// Returns the sequence with any duplicate elements after the first one removed.
     func removingDuplicates() -> [Element] {
         var result = [Element]()

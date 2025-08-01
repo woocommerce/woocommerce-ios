@@ -662,8 +662,22 @@ struct ParticleOverlayView<Content: View>: View {
 
 extension View {
     func snowEffect() -> some View {
-        ParticleOverlayView {
-            self
+        if Self.isHolidaySeason() {
+            return AnyView(ParticleOverlayView {
+                self
+            })
+        } else {
+            return AnyView(self)
         }
+    }
+
+    /// For now set to Dec 25-31 because why not
+    private static func isHolidaySeason() -> Bool {
+        let now = Date()
+        let calendar = Calendar.current
+        let month = calendar.component(.month, from: now)
+        let day = calendar.component(.day, from: now)
+
+        return month == 12 && day >= 25
     }
 }

@@ -230,6 +230,7 @@ struct ProductSelectorView: View {
                 .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
+                    .renderedIf(rowViewModel.selectionEnabled)
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {

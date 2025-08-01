@@ -145,30 +145,6 @@ private extension AggregatedShippingLabelOrderItems {
                          attributes: orderItem?.attributes ?? [],
                          addOns: orderItem?.addOns ?? [],
                          parent: orderItem?.parent)
-        case .product(let product, let orderItem, let name):
-            let itemID = orderItem?.itemID.description ?? "0"
-            let productName = orderItem?.name ?? name
-            let price = orderItem?.price ??
-                currencyFormatter.convertToDecimal(product.price) ?? 0
-            let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
-            let imageURL: URL?
-            if let encodedImageURLString = product.images.first?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                imageURL = URL(string: encodedImageURLString)
-            } else {
-                imageURL = nil
-            }
-            return .init(itemID: itemID,
-                         productID: product.productID,
-                         variationID: 0,
-                         name: productName,
-                         price: price,
-                         quantity: Decimal(quantity),
-                         sku: orderItem?.sku ?? product.sku,
-                         total: totalPrice,
-                         imageURL: imageURL,
-                         attributes: orderItem?.attributes ?? [],
-                         addOns: orderItem?.addOns ?? [],
-                         parent: orderItem?.parent)
         case .productVariation(let variation, let orderItem, let name):
             let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
@@ -215,7 +191,6 @@ private extension AggregatedShippingLabelOrderItems {
     /// The underlying model for an order item.
     enum OrderItemModel {
         case productName(name: String)
-        case product(product: Product, orderItem: OrderItem?, name: String)
         case productVariation(productVariation: ProductVariation, orderItem: OrderItem?, name: String)
         case productListItem(item: ProductListItem, orderItem: OrderItem?, name: String)
     }

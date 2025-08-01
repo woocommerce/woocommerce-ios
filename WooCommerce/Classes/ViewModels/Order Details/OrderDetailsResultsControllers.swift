@@ -374,6 +374,7 @@ private extension OrderDetailsResultsControllers {
         try? shippingMethodsResultsController.performFetch()
     }
 
+    func updateShippingLabels() {
         guard shipments.isEmpty else {
             shippingLabels = shipments.compactMap { $0.shippingLabel }
             return

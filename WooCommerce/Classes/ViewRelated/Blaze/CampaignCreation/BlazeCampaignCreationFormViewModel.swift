@@ -203,13 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var isUsingAISuggestions: Bool = false
 
     private let storage: StorageManagerType
-    private var product: ProductListItem? {
-        guard let product = productsResultsController.listItemObjects.first else {
-            assertionFailure("Unable to fetch product with ID: \(productID)")
-            return nil
-        }
-        return product
-    }
+    private var product: ProductListItem?
 
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
@@ -305,6 +299,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+
+        product = productsResultsController.listItemObjects.first
 
         initializeCampaignObjective()
         updateBudgetDetails()

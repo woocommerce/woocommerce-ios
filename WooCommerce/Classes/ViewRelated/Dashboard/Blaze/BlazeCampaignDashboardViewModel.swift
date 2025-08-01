@@ -100,9 +100,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
                                                  sortOrder: .dateDescending)
     }()
 
-    var latestPublishedProduct: ProductListItem? {
-        productResultsController.listItemObjects.first
-    }
+    private(set) var latestPublishedProduct: ProductListItem?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -315,8 +313,10 @@ private extension BlazeCampaignDashboardViewModel {
         }
 
         productResultsController.onDidChangeContent = { [weak self] in
-            self?.updateAvailability()
-            self?.updateResults()
+            guard let self else { return }
+            latestPublishedProduct = productResultsController.listItemObjects.first
+            updateAvailability()
+            updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
             self?.updateAvailability()
@@ -326,6 +326,7 @@ private extension BlazeCampaignDashboardViewModel {
         do {
             try blazeCampaignResultsController.performFetch()
             try productResultsController.performFetch()
+            latestPublishedProduct = productResultsController.listItemObjects.first
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)

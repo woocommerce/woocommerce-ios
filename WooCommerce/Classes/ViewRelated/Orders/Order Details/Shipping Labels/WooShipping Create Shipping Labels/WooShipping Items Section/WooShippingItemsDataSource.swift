@@ -30,10 +30,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
 
     /// Stored products that match the items in the order.
     ///
-    private var products: [ProductListItem] {
-        try? productResultsController.performFetch()
-        return productResultsController.listItemObjects
-    }
+    private var products: [ProductListItem] = []
 
     /// Stored product variations that match the items in the order.
     ///
@@ -79,6 +76,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     private func configureProductResultsController() {
         do {
             try productResultsController.performFetch()
+            products = productResultsController.listItemObjects
         } catch {
             DDLogError("⛔️ Error fetching products for Woo Shipping label creation: \(error)")
         }

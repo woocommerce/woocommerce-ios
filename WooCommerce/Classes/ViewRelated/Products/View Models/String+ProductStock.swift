@@ -9,7 +9,7 @@ extension String {
                                 stockStatus: ProductStockStatus,
                                 stockQuantity: Decimal?,
                                 bundleStockStatus: ProductStockStatus?,
-                                bundleStockQuantity: Int64?,) -> String {
+                                bundleStockQuantity: Int64?) -> String {
         if productType == .bundle {
             return createProductBundleStockText(manageStock: manageStock,
                                                 productStockStatus: stockStatus,

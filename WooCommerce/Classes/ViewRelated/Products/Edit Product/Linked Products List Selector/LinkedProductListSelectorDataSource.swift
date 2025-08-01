@@ -7,7 +7,7 @@ import Yosemite
 final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource {
     typealias StorageModel = StorageProduct
 
-    lazy var customResultsSortOrder: ((ProductListItem, ProductListItem) -> Bool)? = { [weak self] (lhs, rhs) in
+    lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
         guard let self = self else {
             return true
         }
@@ -36,14 +36,14 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     }
 
     // Not used: a product's linked product list is not selectable in this use case.
-    var selected: ProductListItem?
+    var selected: Product?
 
     private let siteID: Int64
-    private let product: ProductListItem
+    private let product: Product
     private let imageService: ImageService
     private let trackingContext: String
 
-    init(product: ProductListItem,
+    init(product: Product,
          linkedProductIDs: [Int64],
          imageService: ImageService = ServiceLocator.imageService,
          trackingContext: String) {
@@ -63,18 +63,18 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
                                                  sortOrder: .nameAscending)
     }
 
-    func handleSelectedChange(selected: ProductListItem) {
+    func handleSelectedChange(selected: Product) {
         // no-op: a product's linked product list is not selectable in this use case.
     }
 
-    func isSelected(model: ProductListItem) -> Bool {
+    func isSelected(model: Product) -> Bool {
         return model == selected
     }
 
-    func configureCell(cell: ProductsTabProductTableViewCell, model: ProductListItem) {
+    func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .none
 
-        let viewModel = ProductsTabProductViewModel(product: model, isDraggable: true)
+        let viewModel = ProductsTabProductViewModel(product: model.toListItem(), isDraggable: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
@@ -105,7 +105,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
 //
 extension LinkedProductListSelectorDataSource {
     /// Called when the user deletes a product from the product list.
-    func deleteProduct(_ product: ProductListItem) {
+    func deleteProduct(_ product: Product) {
         guard let index = linkedProductIDs.firstIndex(where: { $0 == product.productID }) else {
             return
         }

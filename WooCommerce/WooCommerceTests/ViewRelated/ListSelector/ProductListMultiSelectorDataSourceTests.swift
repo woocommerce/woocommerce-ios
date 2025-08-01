@@ -56,7 +56,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         }
 
         // Action
-        let product = ProductListItem.fake().copy(productID: 17)
+        let product = Product.fake().copy(productID: 17)
         dataSource.handleSelectedChange(selected: product)
         dataSource.handleSelectedChange(selected: product)
 
@@ -71,7 +71,7 @@ final class ProductListMultiSelectorDataSourceTests: XCTestCase {
         // Arrange
         let siteID: Int64 = 1
         let dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: [])
-        let product = ProductListItem.fake().copy(productID: 17)
+        let product = Product.fake().copy(productID: 17)
         XCTAssertFalse(dataSource.isSelected(model: product))
 
         // Action - step 1: select product

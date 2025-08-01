@@ -155,7 +155,7 @@ private extension LinkedProductsViewController {
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddUpsellProducts,
                                                                                            trackingContext: "upsells")
 
-        let viewController = LinkedProductsListSelectorViewController(product: product.product.toListItem(),
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.upsellIDs,
                                                                       viewConfiguration: viewConfiguration) { [weak self] upsellIDs in
             self?.viewModel.handleUpsellIDsChange(upsellIDs)
@@ -178,7 +178,7 @@ private extension LinkedProductsViewController {
         let viewConfiguration = LinkedProductsListSelectorViewController.ViewConfiguration(title: Localization.titleScreenAddCrossSellProducts,
                                                                                            trackingContext: "cross_sells")
 
-        let viewController = LinkedProductsListSelectorViewController(product: product.product.toListItem(),
+        let viewController = LinkedProductsListSelectorViewController(product: product.product,
                                                                       linkedProductIDs: viewModel.crossSellIDs,
                                                                       viewConfiguration: viewConfiguration) { [weak self] crossSellIDs in
             self?.viewModel.handleCrossSellIDsChange(crossSellIDs)

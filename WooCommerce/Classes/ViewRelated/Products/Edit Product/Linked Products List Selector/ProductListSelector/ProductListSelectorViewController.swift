@@ -20,7 +20,7 @@ final class ProductListSelectorViewController: UIViewController {
     private lazy var dataSource = ProductListMultiSelectorDataSource(siteID: siteID, excludedProductIDs: excludedProductIDs)
 
     private lazy var paginatedListSelector: PaginatedListSelectorViewController
-        <ProductListMultiSelectorDataSource, ProductListItem, StorageProduct, ProductsTabProductTableViewCell> = {
+        <ProductListMultiSelectorDataSource, Product, StorageProduct, ProductsTabProductTableViewCell> = {
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: nil,
                                                                      noResultsPlaceholderText: Localization.noResultsPlaceholder,
                                                                      noResultsPlaceholderImage: .emptyProductsImage,

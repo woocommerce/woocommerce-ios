@@ -4,7 +4,7 @@ import Yosemite
 
 /// Enables the user to select multiple products from a paginated list.
 final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource {
-    var customResultsSortOrder: ((ProductListItem, ProductListItem) -> Bool)?
+    var customResultsSortOrder: ((Product, Product) -> Bool)?
 
     typealias StorageModel = StorageProduct
 
@@ -15,7 +15,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     private let productIDsSubject: PassthroughSubject<[Int64], Never> = PassthroughSubject<[Int64], Never>()
 
     // Not used: since multiple products can be selected in this use case, the single selected product is not used.
-    var selected: ProductListItem?
+    var selected: Product?
 
     private let siteID: Int64
     private let excludedProductIDs: [Int64]
@@ -42,7 +42,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
                                                  sortOrder: .nameAscending)
     }
 
-    func handleSelectedChange(selected: ProductListItem) {
+    func handleSelectedChange(selected: Product) {
         if isProductSelected(selected) {
             selectedProductIDs.removeAll { $0 == selected.productID }
         } else {
@@ -50,14 +50,14 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
         }
     }
 
-    func isSelected(model: ProductListItem) -> Bool {
+    func isSelected(model: Product) -> Bool {
         return isProductSelected(model)
     }
 
-    func configureCell(cell: ProductsTabProductTableViewCell, model: ProductListItem) {
+    func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .default
 
-        let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))
+        let viewModel = ProductsTabProductViewModel(product: model.toListItem(), isSelected: isSelected(model: model))
         cell.update(viewModel: viewModel, imageService: imageService)
     }
 
@@ -93,7 +93,7 @@ extension ProductListMultiSelectorDataSource {
 }
 
 private extension ProductListMultiSelectorDataSource {
-    func isProductSelected(_ product: ProductListItem) -> Bool {
+    func isProductSelected(_ product: Product) -> Bool {
         return selectedProductIDs.contains(product.productID)
     }
 }

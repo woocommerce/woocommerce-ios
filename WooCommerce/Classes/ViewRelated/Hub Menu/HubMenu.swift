@@ -286,7 +286,7 @@ private extension HubMenu {
                                         Image(uiImage: asset)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
-                                            .applyRecolorShader() // By adding it here applies the shader to the full frame of the image.
+                                            .applyRecolorShader()
                                             .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                                     }
 
@@ -337,7 +337,7 @@ private extension HubMenu {
                 Image(uiImage: chevron.asset)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .applyRecolorShader() // By adding it here applies the shader to the full frame of the image.
+                    .applyRecolorShader()
                     .frame(width: HubMenu.Constants.chevronSize * scale, height: HubMenu.Constants.chevronSize * scale)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))

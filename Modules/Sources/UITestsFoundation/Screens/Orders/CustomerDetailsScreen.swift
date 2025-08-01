@@ -40,8 +40,11 @@ public final class CustomerDetailsScreen: ScreenObject {
     @discardableResult
     public func enterCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         billingFirstNameField.tap()
-        billingFirstNameField.typeText(name)
+        billingFirstNameField.typeText("\(name)\n")
+        let tableView = app.tables.firstMatch
+        tableView.swipeUp()
         addressToggleSet(to: "1")
+        tableView.swipeUp()
         shippingFirstNameField.tap()
         shippingFirstNameField.typeText(name)
         doneButton.tap()

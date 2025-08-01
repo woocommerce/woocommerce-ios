@@ -559,6 +559,8 @@
 		02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */; };
 		02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */; };
 		02C27BD0282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C27BCF282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift */; };
+		02C34C732D50F370004BFB50 /* AddressMapPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C34C722D50F370004BFB50 /* AddressMapPickerView.swift */; };
+		02C34C752D50F4C3004BFB50 /* AddressMapPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C34C742D50F4C3004BFB50 /* AddressMapPickerViewModel.swift */; };
 		02C3FACE282A93020095440A /* WooAnalyticsEvent+Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */; };
 		02C3FDEA251091CE009569EE /* ProductFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C3FDE9251091CE009569EE /* ProductFactoryTests.swift */; };
 		02C7EE8A2B21B951008B7DF8 /* ProductWithQuantityStepperViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C7EE892B21B951008B7DF8 /* ProductWithQuantityStepperViewModel.swift */; };
@@ -3739,6 +3741,8 @@
 		02C2756E24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingSettingsViewModel+ProductVariationTests.swift"; sourceTree = "<group>"; };
 		02C27BCD282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReceiptEmailCoordinator.swift; sourceTree = "<group>"; };
 		02C27BCF282CDF9E0065471A /* CardPresentPaymentReceiptEmailCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentReceiptEmailCoordinatorTests.swift; sourceTree = "<group>"; };
+		02C34C722D50F370004BFB50 /* AddressMapPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressMapPickerView.swift; sourceTree = "<group>"; };
+		02C34C742D50F4C3004BFB50 /* AddressMapPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressMapPickerViewModel.swift; sourceTree = "<group>"; };
 		02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Dashboard.swift"; sourceTree = "<group>"; };
 		02C3FDE9251091CE009569EE /* ProductFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFactoryTests.swift; sourceTree = "<group>"; };
 		02C7EE892B21B951008B7DF8 /* ProductWithQuantityStepperViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductWithQuantityStepperViewModel.swift; sourceTree = "<group>"; };
@@ -10436,6 +10440,8 @@
 				26C6E8DF26E2B7BD00C7BB0F /* CountrySelectorViewModel.swift */,
 				26C6E8E526E6B5F500C7BB0F /* StateSelectorViewModel.swift */,
 				B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */,
+				02C34C722D50F370004BFB50 /* AddressMapPickerView.swift */,
+				02C34C742D50F4C3004BFB50 /* AddressMapPickerViewModel.swift */,
 			);
 			path = "Address Edit";
 			sourceTree = "<group>";
@@ -14471,6 +14477,8 @@
 				nl,
 			);
 			mainGroup = B56DB3BD2049BFAA00D4AA8E;
+			packageReferences = (
+			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -15534,6 +15542,7 @@
 				03F5CB012A0BA3D40026877A /* ModalOverlay.swift in Sources */,
 				01C9C59F2DA3D98400CD81D8 /* CartRowRemoveButton.swift in Sources */,
 				457509E4267B9E91005FA2EA /* AggregatedProductListViewController.swift in Sources */,
+				02C34C752D50F4C3004BFB50 /* AddressMapPickerViewModel.swift in Sources */,
 				D8815B0D263861A400EDAD62 /* CardPresentModalSuccess.swift in Sources */,
 				02ABF9BB2DF7F8F100348186 /* POSTabCoordinator.swift in Sources */,
 				CCE73D2529EDAB5C0064E797 /* SubscriptionPeriod+UI.swift in Sources */,
@@ -16583,6 +16592,7 @@
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				EE5B5BB32AB30C0A009BCBD6 /* ProductCreationAIEligibilityChecker.swift in Sources */,
 				DE87F40E2D30C90B00869522 /* WooAnalyticsEvent+FilterHistory.swift in Sources */,
+				02C34C732D50F370004BFB50 /* AddressMapPickerView.swift in Sources */,
 				20897C9E2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift in Sources */,
 				B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */,
 				262EB5AE298C70EF009DCC36 /* SupportFormViewModel.swift in Sources */,

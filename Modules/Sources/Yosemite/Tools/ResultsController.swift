@@ -194,6 +194,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
     }
 
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
+    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
     ///
     public var fetchedObjects: [T.ReadOnlyType] {
         let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
@@ -346,7 +347,8 @@ public extension ResultsController {
 
 
 public extension ResultsController where T: ListItemConvertible {
-    /// Returns an array of all list items mapped from the fetched objects
+    /// Returns an array of all list items mapped from the fetched objects.
+    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
     ///
     var listItemObjects: [T.ListItemType] {
         let listItemObjects = controller.fetchedObjects?.compactMap { mutableObject in

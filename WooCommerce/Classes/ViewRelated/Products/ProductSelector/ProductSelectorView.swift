@@ -212,18 +212,17 @@ struct ProductSelectorView: View {
     @ViewBuilder private func createProductRow(rowViewModel: ProductRowViewModel) -> some View {
         if viewModel.isVariableProduct(productOrVariationID: rowViewModel.productOrVariationID),
            configuration.treatsAllProductsAsSimple == false {
-            let isSubscription = viewModel.isSubscriptionProduct(productOrVariationID: rowViewModel.productOrVariationID)
             HStack {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    if !isSubscription {
+                    if rowViewModel.selectionEnabled {
                         viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
                     }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    if !isSubscription {
+                    if rowViewModel.selectionEnabled {
                         viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
                     }
                 }

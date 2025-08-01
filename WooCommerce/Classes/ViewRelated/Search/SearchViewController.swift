@@ -208,7 +208,7 @@ where Cell.SearchModel == Command.CellViewModel {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(Cell.self, for: indexPath)
 
-        let model = resultsController.listItem(at: indexPath)
+        let model = resultsController.object(at: indexPath)
         let cellModel = searchUICommand.createCellViewModel(model: model)
         cell.configureCell(searchModel: cellModel)
         return cell

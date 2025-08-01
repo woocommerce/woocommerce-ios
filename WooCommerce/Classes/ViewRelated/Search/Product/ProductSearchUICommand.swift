@@ -6,7 +6,6 @@ import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Product search.
 final class ProductSearchUICommand: SearchUICommand {
-    typealias ListItemModel = ProductListItem
     typealias Model = Product
     typealias CellViewModel = ProductsTabProductViewModel
     typealias ResultsControllerModel = StorageProduct
@@ -113,9 +112,9 @@ final class ProductSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
     }
 
-    func createCellViewModel(model: ProductListItem) -> ProductsTabProductViewModel {
+    func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
         let hasPendingUploads = activeUploadIds.contains(where: { $0 ==  model.productID })
-        return ProductsTabProductViewModel(product: model, hasPendingUploads: hasPendingUploads, isSKUShown: true)
+        return ProductsTabProductViewModel(product: model.toListItem(), hasPendingUploads: hasPendingUploads, isSKUShown: true)
     }
 
     /// Synchronizes the Products matching a given Keyword

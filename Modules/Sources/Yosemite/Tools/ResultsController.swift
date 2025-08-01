@@ -361,17 +361,4 @@ public extension ResultsController where T: ListItemConvertible {
     func listItem(at indexPath: IndexPath) -> T.ListItemType {
         return controller.object(at: indexPath).toListItem()
     }
-
-    func listItemObjects(in section: Int) -> [T.ListItemType] {
-        let objects = controller.sections?[safe: section].map { $0.objects }
-        guard let objects else {
-            return []
-        }
-        guard let castedObjects = objects as? [T] else {
-            assertionFailure("Failed to cast objects into an array of \(T.self)")
-            return []
-        }
-
-        return castedObjects.map { $0.toListItem() }
-    }
 }

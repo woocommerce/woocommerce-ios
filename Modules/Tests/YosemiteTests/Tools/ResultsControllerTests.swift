@@ -516,58 +516,6 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertEqual(listItem.name, "Product 2")
         XCTAssertEqual(listItem.price, "20.00")
     }
-
-    func test_listItemObjects_in_section_returns_list_items_for_specified_section() throws {
-        // Given
-        let categoryA = createSampleProductListItem(productID: 1, name: "Product A1", price: "10.00")
-        let categoryA2 = createSampleProductListItem(productID: 2, name: "Product A2", price: "15.00")
-        let categoryB = createSampleProductListItem(productID: 3, name: "Product B1", price: "20.00")
-
-        // Insert products and manually set product type for section grouping
-        let storageProductA = storageManager.insertSampleProductListItem(item: categoryA)
-        storageProductA.productTypeKey = "simple"
-        let storageProductA2 = storageManager.insertSampleProductListItem(item: categoryA2)
-        storageProductA2.productTypeKey = "simple"
-        let storageProductB = storageManager.insertSampleProductListItem(item: categoryB)
-        storageProductB.productTypeKey = "variable"
-
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
-        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage,
-                                                                 sectionNameKeyPath: #keyPath(StorageProduct.productTypeKey),
-                                                                 sortedBy: [sortDescriptor])
-        try resultsController.performFetch()
-
-        // When
-        let section0Items = resultsController.listItemObjects(in: 0)
-        let section1Items = resultsController.listItemObjects(in: 1)
-
-        // Then
-        XCTAssertEqual(section0Items.count, 2)
-        XCTAssertEqual(section0Items[0].productID, 1)
-        XCTAssertEqual(section0Items[0].name, "Product A1")
-        XCTAssertEqual(section0Items[1].productID, 2)
-        XCTAssertEqual(section0Items[1].name, "Product A2")
-
-        XCTAssertEqual(section1Items.count, 1)
-        XCTAssertEqual(section1Items[0].productID, 3)
-        XCTAssertEqual(section1Items[0].name, "Product B1")
-    }
-
-    func test_listItemObjects_in_section_returns_empty_array_for_nonexistent_section() throws {
-        // Given
-        let product = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
-        storageManager.insertSampleProductListItem(item: product)
-
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
-        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
-        try resultsController.performFetch()
-
-        // When
-        let items = resultsController.listItemObjects(in: 5)
-
-        // Then
-        XCTAssertTrue(items.isEmpty)
-    }
 }
 
 // MARK: - Utils

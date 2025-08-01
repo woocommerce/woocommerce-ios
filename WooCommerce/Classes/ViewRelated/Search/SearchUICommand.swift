@@ -2,9 +2,8 @@ import Combine
 import UIKit
 import Yosemite
 
-/// An interface for search UI associated with a generic list item model, full model, and cell view model.
+/// An interface for search UI associated with a generic model and cell view model.
 protocol SearchUICommand {
-    associatedtype ListItemModel // model to display on list items
     associatedtype Model // model to send to selection closure
     associatedtype CellViewModel
     associatedtype EmptyStateViewControllerType: UIViewController = EmptyStateViewController
@@ -44,10 +43,8 @@ protocol SearchUICommand {
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
 
-    associatedtype ResultsControllerModel: ResultsControllerMutableType & ListItemConvertible where
-    ResultsControllerModel.ReadOnlyType == Model,
-    ResultsControllerModel.ListItemType == ListItemModel
-
+    associatedtype ResultsControllerModel: ResultsControllerMutableType & ReadOnlyConvertible where
+    ResultsControllerModel.ReadOnlyType == Model
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
 
@@ -102,7 +99,7 @@ protocol SearchUICommand {
     ///
     /// - Parameter model: search result model used to display on list items.
     /// - Returns: a view model based on the search result model.
-    func createCellViewModel(model: ListItemModel) -> CellViewModel
+    func createCellViewModel(model: Model) -> CellViewModel
 
     /// Synchronizes the models matching a given keyword.
     func synchronizeModels(siteID: Int64,

@@ -88,72 +88,41 @@ final class OrderDetailsResultsControllers {
 
     /// Order shipment tracking list
     ///
-    var orderTracking: [ShipmentTracking] {
-        return trackingResultsController.fetchedObjects
-    }
+    private(set) var orderTracking: [ShipmentTracking] = []
 
     /// Order statuses list
     ///
-    var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
+    private(set) var currentSiteStatuses: [OrderStatus] = []
 
     /// Products from an Order
     ///
-    var products: [ProductListItem] {
-        productResultsController.listItemObjects
-    }
+    private(set) var products: [ProductListItem] = []
 
     /// ProductVariations from an Order
     ///
-    var productVariations: [ProductVariation] {
-        return productVariationResultsController.fetchedObjects
-    }
+    private(set) var productVariations: [ProductVariation] = []
 
     /// Refunds in an Order
     ///
-    var refunds: [Refund] {
-        return refundResultsController.fetchedObjects
-    }
+    private(set) var refunds: [Refund] = []
 
     /// Shipping labels for an Order
     ///
-    var shippingLabels: [ShippingLabel] {
-        guard shipments.isEmpty else {
-            return shipments.compactMap { $0.shippingLabel }
-        }
-        return order.shippingLabels.sorted(by: { label1, label2 in
-            if let shipmentID1 = label1.shipmentID,
-               let shipmentID2 = label2.shipmentID {
-                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
-            }
-            return label1.dateCreated < label2.dateCreated
-        })
-    }
+    private(set) var shippingLabels: [ShippingLabel] = []
 
-    var shipments: [WooShippingShipment] {
-        shipmentResultsController.fetchedObjects
-    }
+    private(set) var shipments: [WooShippingShipment] = []
 
     /// Site's add-on groups.
     ///
-    var addOnGroups: [AddOnGroup] {
-        return addOnGroupResultsController.fetchedObjects
-    }
+    private(set) var addOnGroups: [AddOnGroup] = []
 
-    var sitePlugins: [SitePlugin] {
-        return sitePluginsResultsController.fetchedObjects
-    }
+    private(set) var sitePlugins: [SitePlugin] = []
 
-    var feeLines: [OrderFeeLine] {
-        return order.fees
-    }
+    private(set) var feeLines: [OrderFeeLine] = []
 
     /// Shipping methods list
     ///
-    var siteShippingMethods: [ShippingMethod] {
-        return shippingMethodsResultsController.fetchedObjects
-    }
+    private(set) var siteShippingMethods: [ShippingMethod] = []
 
     /// Completion handler for when results controllers reload.
     ///
@@ -164,6 +133,8 @@ final class OrderDetailsResultsControllers {
         self.order = order
         self.siteID = order.siteID
         self.storageManager = storageManager
+        feeLines = order.fees
+        updateShippingLabels()
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
@@ -181,6 +152,8 @@ final class OrderDetailsResultsControllers {
 
     func update(order: Order) {
         self.order = order
+        feeLines = order.fees
+        updateShippingLabels()
         // Product variation results controller depends on order items to load variations,
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
@@ -202,7 +175,9 @@ private extension OrderDetailsResultsControllers {
     }
 
     func configureShipmentResultsController(onReload: @escaping () -> Void) {
-        shipmentResultsController.onDidChangeContent = {
+        shipmentResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            shipments = shipmentResultsController.fetchedObjects
             onReload()
         }
 
@@ -216,6 +191,7 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try shipmentResultsController.performFetch()
+            shipments = shipmentResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch shipments: \(error)")
         }
@@ -224,13 +200,16 @@ private extension OrderDetailsResultsControllers {
     func configureStatusResultsController() {
         do {
             try statusResultsController.performFetch()
+            currentSiteStatuses = statusResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Order Statuses: \(error)")
         }
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
-        trackingResultsController.onDidChangeContent = {
+        trackingResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            orderTracking = trackingResultsController.fetchedObjects
             onReload()
         }
 
@@ -244,13 +223,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try trackingResultsController.performFetch()
+            orderTracking = trackingResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Order \(order.orderID) shipment tracking details: \(error)")
         }
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
-        productResultsController.onDidChangeContent = {
+        productResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            products = productResultsController.listItemObjects
             onReload()
         }
 
@@ -264,13 +246,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try productResultsController.performFetch()
+            products = productResultsController.listItemObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
         }
     }
 
     private func configureProductVariationResultsController(onReload: @escaping () -> Void) {
-        productVariationResultsController.onDidChangeContent = {
+        productVariationResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            productVariations = productVariationResultsController.fetchedObjects
             onReload()
         }
 
@@ -284,13 +269,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try productVariationResultsController.performFetch()
+            productVariations = productVariationResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Error fetching ProductVariations for Order \(order.orderID): \(error)")
         }
     }
 
     private func configureRefundResultsController(onReload: @escaping () -> Void) {
-        refundResultsController.onDidChangeContent = {
+        refundResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            refunds = refundResultsController.fetchedObjects
             onReload()
         }
 
@@ -304,13 +292,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try refundResultsController.performFetch()
+            refunds = refundResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Refunds for Site \(siteID) and Order \(order.orderID): \(error)")
         }
     }
 
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
-        addOnGroupResultsController.onDidChangeContent = {
+        addOnGroupResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            addOnGroups = addOnGroupResultsController.fetchedObjects
             onReload()
         }
 
@@ -322,13 +313,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try addOnGroupResultsController.performFetch()
+            addOnGroups = addOnGroupResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch AddOnGroups for Site \(siteID): \(error)")
         }
     }
 
     private func configureSitePluginsResultsController(onReload: @escaping () -> Void) {
-        sitePluginsResultsController.onDidChangeContent = {
+        sitePluginsResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            sitePlugins = sitePluginsResultsController.fetchedObjects
             onReload()
         }
 
@@ -340,13 +334,16 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try sitePluginsResultsController.performFetch()
+            sitePlugins = sitePluginsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Site Plugins for Site \(siteID): \(error)")
         }
     }
 
     private func configureShippingMethodsResultsController(onReload: @escaping () -> Void) {
-        shippingMethodsResultsController.onDidChangeContent = {
+        shippingMethodsResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            siteShippingMethods = shippingMethodsResultsController.fetchedObjects
             onReload()
         }
 
@@ -358,6 +355,7 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try shippingMethodsResultsController.performFetch()
+            siteShippingMethods = shippingMethodsResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Shipping Methods for Site \(siteID): \(error)")
         }
@@ -374,5 +372,19 @@ private extension OrderDetailsResultsControllers {
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
         try? shippingMethodsResultsController.performFetch()
+    }
+
+    func updateShippingLabels() {
+        guard shipments.isEmpty else {
+            shippingLabels = shipments.compactMap { $0.shippingLabel }
+            return
+        }
+        shippingLabels =  order.shippingLabels.sorted(by: { label1, label2 in
+            if let shipmentID1 = label1.shipmentID,
+               let shipmentID2 = label2.shipmentID {
+                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
+            }
+            return label1.dateCreated < label2.dateCreated
+        })
     }
 }

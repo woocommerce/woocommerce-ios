@@ -286,6 +286,7 @@ private extension HubMenu {
                                         Image(uiImage: asset)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
+                                            .applyRecolorShader() // By adding it here applies the shader to the full frame of the image.
                                             .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                                     }
 
@@ -336,6 +337,7 @@ private extension HubMenu {
                 Image(uiImage: chevron.asset)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .applyRecolorShader() // By adding it here applies the shader to the full frame of the image.
                     .frame(width: HubMenu.Constants.chevronSize * scale, height: HubMenu.Constants.chevronSize * scale)
                     .flipsForRightToLeftLayoutDirection(true)
                     .foregroundColor(Color(.textSubtle))
@@ -385,6 +387,30 @@ private extension HubMenu {
             value: "Coupons",
             comment: "Title of the view containing Coupons list"
         )
+    }
+}
+
+private extension View {
+    /// Applies experimental recolor shader effect for testing Metal functionality
+    /// Only available on iOS 17+ and gracefully falls back on older versions
+    @ViewBuilder
+    func applyRecolorShader(newColor: Color = .purple, blendAmount: Float = 0.5) -> some View {
+        if #available(iOS 17.0, *) {
+            self.colorEffect(
+                Shader(
+                    function: ShaderFunction(
+                        library: .default,
+                        name: "recolor"
+                    ),
+                    arguments: [
+                        .color(newColor),
+                        .float(blendAmount)
+                    ]
+                )
+            )
+        } else {
+            self
+        }
     }
 }
 

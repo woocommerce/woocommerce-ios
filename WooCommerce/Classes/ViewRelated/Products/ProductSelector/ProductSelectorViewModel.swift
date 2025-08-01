@@ -373,13 +373,6 @@ final class ProductSelectorViewModel: ObservableObject {
         return variableProduct(for: productOrVariationID) != nil
     }
 
-    func isSubscriptionProduct(productOrVariationID: Int64) -> Bool {
-        guard let product = products.first(where: { $0.productID == productOrVariationID }) else {
-            return false
-        }
-        return product.productType == .subscription || product.productType == .variableSubscription
-    }
-
     func variationCheckboxTapped(for productOrVariationID: Int64) {
         if toggleAllVariationsOnSelection {
             toggleSelectionForAllVariations(of: productOrVariationID)

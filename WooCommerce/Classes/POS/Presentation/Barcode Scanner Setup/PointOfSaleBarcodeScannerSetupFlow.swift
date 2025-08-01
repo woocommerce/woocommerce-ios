@@ -377,7 +377,11 @@ struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: P
     }
 
     private enum Localization {
-        static let informationButtonTitle = "How to set up barcodes on products"
+        static let informationButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.productBarcodeInformation.button.title",
+            value: "How to set up barcodes on products",
+            comment: "Button title for accessing product barcode setup information"
+        )
     }
 }
 
@@ -451,9 +455,20 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
             comment: "Title for the done button in barcode scanner setup navigation"
         )
 
-        //TODO: WOOMOB-792
-        static let scannerSetUpBarcodeStepTitleFormat = "Scanner Setup"
-        static let setUpBarcodeHIDStepInstruction = "Scan the Bluetooth HID symbol."
-        static let setUpBarcodePairStepInstruction = "Scan the Pair symbol to get the scanner ready for pairing."
+        static let scannerSetUpBarcodeStepTitleFormat = NSLocalizedString(
+            "pos.barcodeScannerSetup.scanner.setup.title.format",
+            value: "Scanner setup",
+            comment: "Title format for barcode scanner setup step"
+        )
+        static let setUpBarcodeHIDStepInstruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.hidSetup.instruction",
+            value: "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.",
+            comment: "Instruction for scanning the Bluetooth HID barcode during scanner setup"
+        )
+        static let setUpBarcodePairStepInstruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairSetup.instruction",
+            value: "Use your barcode scanner to scan the code below to enter pairing mode.",
+            comment: "Instruction for scanning the Pair barcode to prepare scanner for pairing"
+        )
     }
 }

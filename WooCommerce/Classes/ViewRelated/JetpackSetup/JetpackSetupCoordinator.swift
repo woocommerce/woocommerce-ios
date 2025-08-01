@@ -19,7 +19,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
-    private let dotcomAuthScheme: String
 
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
@@ -43,24 +42,18 @@ final class JetpackSetupCoordinator {
     }
 
     init(site: Site,
-         dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.site = site
-        self.dotcomAuthScheme = dotcomAuthScheme
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
         self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-
-        /// the authenticator needs to be initialized with configs
-        /// to be used for requesting authentication link and handle login later.
-        WordPressAuthenticator.initializeWithCustomConfigs(dotcomAuthScheme: dotcomAuthScheme)
     }
 
     func showBenefitModal() {
@@ -72,7 +65,7 @@ final class JetpackSetupCoordinator {
         rootViewController.present(benefitsController, animated: true, completion: nil)
     }
 
-    func handleAuthenticationUrl(_ url: URL) -> Bool {
+    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
         let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
         guard url.absoluteString.hasPrefix(expectedPrefix) else {
             return false
@@ -346,8 +339,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if let plugin = systemInformation.systemPlugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
-                       plugin.active {
+                    if let plugin = systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)
@@ -504,7 +496,6 @@ private extension JetpackSetupCoordinator {
 
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
-        static let jetpackPluginName = "Jetpack"
     }
 
     enum Localization {

@@ -1269,6 +1269,7 @@ final class OrderStoreTests: XCTestCase {
             "currency",
             "customer_id",
             "customer_note",
+            "dp",
             "fee_lines",
             "line_items",
             "meta_data",
@@ -1297,6 +1298,7 @@ final class OrderStoreTests: XCTestCase {
             "currency",
             "customer_id",
             "customer_note",
+            "dp",
             "fee_lines",
             "gift_cards",
             "line_items",
@@ -1359,7 +1361,8 @@ final class OrderStoreTests: XCTestCase {
         let expectedKeys = [
             "gift_cards"
         ]
-        assertEqual(expectedKeys, receivedKeys)
+        // Updating an order will also contain `dp` (decimal point), but in this case we're only interested in `gift_cards`
+        XCTAssertTrue(receivedKeys.contains(expectedKeys))
     }
 
     func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {

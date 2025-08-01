@@ -71,18 +71,12 @@ private extension BlazeEligibilityChecker {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    let plugin = info.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .blaze && $0.active })
                     continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)
                 }
             })
         }
-    }
-}
-
-private extension BlazeEligibilityChecker {
-    enum Constants {
-        static let pluginSlug = "blaze-ads/blaze-ads.php"
     }
 }

@@ -43,7 +43,7 @@ protocol SearchUICommand {
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
 
-    associatedtype ResultsControllerModel: ResultsControllerMutableType & ReadOnlyConvertible where ResultsControllerModel.ReadOnlyType == Model
+    associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
 

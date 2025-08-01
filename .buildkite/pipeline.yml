@@ -104,7 +104,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 16"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\// || build.branch == "fix/WOOMOB-957-ui-test-failure-address-form"
+    if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -116,7 +116,7 @@ steps:
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M4)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\// || build.branch == "fix/WOOMOB-957-ui-test-failure-address-form"
+    if: build.branch == "trunk" || build.branch =~ /^release\//
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*

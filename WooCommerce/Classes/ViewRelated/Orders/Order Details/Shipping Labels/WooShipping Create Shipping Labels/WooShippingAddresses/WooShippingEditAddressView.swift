@@ -24,6 +24,7 @@ struct WooShippingEditAddressView: View {
 
     @State private var isPresentingCountrySelector: Bool = false
     @State private var isPresentingStateSelector: Bool = false
+    @State private var isPresentingMapPicker: Bool = false
     @State private var actionType: ActionType?
 
     var body: some View {
@@ -45,6 +46,18 @@ struct WooShippingEditAddressView: View {
                     .buttonStyle(PlusButtonStyle())
                     .font(.subheadline)
                     .bold()
+                }
+                if #available(iOS 17, *), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
+                    Button(action: {
+                        isPresentingMapPicker = true
+                    }) {
+                        HStack {
+                            Image(systemName: "map")
+                            Text(Localization.findOnMap)
+                        }
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    // .padding(.vertical, 8)
                 }
                 AddressSelection(field: viewModel.country) {
                     isPresentingCountrySelector = true
@@ -162,6 +175,16 @@ struct WooShippingEditAddressView: View {
                             }
                         }
                     }
+            }
+        }
+        .sheet(isPresented: $isPresentingMapPicker) {
+            if #available(iOS 17, *) {
+                AddressMapPickerView(fields: Binding(
+                    get: { createAddressFormFields(from: viewModel) },
+                    set: { newFields in updateViewModel(viewModel, with: newFields) }
+                ), countryByCode: { code in
+                    viewModel.countries.first { $0.code == code }
+                })
             }
         }
         .alert(
@@ -374,6 +397,36 @@ extension WooShippingEditAddressView {
     private func dismissKeyboard() {
         focusedField = nil
     }
+
+    /// Creates AddressFormFields from WooShippingEditAddressViewModel for map picker integration.
+    private func createAddressFormFields(from viewModel: WooShippingEditAddressViewModel) -> AddressFormFields {
+        var fields = AddressFormFields()
+        fields.address1 = viewModel.address.value
+        fields.address2 = ""
+        fields.city = viewModel.city.value
+        fields.state = viewModel.state.value
+        fields.postcode = viewModel.postalCode.value
+        fields.country = viewModel.country.value
+
+        // Set selected country and state objects
+        if let selectedCountry = viewModel.countries.first(where: { $0.code == viewModel.country.value }) {
+            fields.selectedCountry = selectedCountry
+            if let selectedState = selectedCountry.states.first(where: { $0.code == viewModel.state.value }) {
+                fields.selectedState = selectedState
+            }
+        }
+
+        return fields
+    }
+
+    /// Updates WooShippingEditAddressViewModel with values from AddressFormFields after map picker selection.
+    private func updateViewModel(_ viewModel: WooShippingEditAddressViewModel, with fields: AddressFormFields) {
+        viewModel.address.value = fields.address1
+        viewModel.city.value = fields.city
+        viewModel.state.value = fields.state
+        viewModel.postalCode.value = fields.postcode
+        viewModel.country.value = fields.country
+    }
 }
 
 private extension WooShippingEditAddressView {
@@ -463,6 +516,11 @@ private extension WooShippingEditAddressView {
             "wooShipping.createLabels.editAddress.useAddressAsEntered",
             value: "Use address as entered",
             comment: "Button to proceed with the input address even when validation fails"
+        )
+        static let findOnMap = NSLocalizedString(
+            "wooShipping.createLabels.editAddress.findOnMap",
+            value: "Search Map for Address",
+            comment: "Button to open map address picker in Woo Shipping label creation flow"
         )
 
         enum Button {

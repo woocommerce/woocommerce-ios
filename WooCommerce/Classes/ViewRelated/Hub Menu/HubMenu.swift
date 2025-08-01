@@ -16,6 +16,8 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
+    @State private var animationTime: TimeInterval = 0
+
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
     }
@@ -30,6 +32,7 @@ struct HubMenu: View {
                 }
                 .onAppear {
                     viewModel.setupMenuElements()
+                    startShaderAnimation()
                 }
         }
     }
@@ -52,6 +55,12 @@ struct HubMenu: View {
 
         viewModel.navigateToDestination(menu.navigationDestination)
     }
+
+    private func startShaderAnimation() {
+        Timer.scheduledTimer(withTimeInterval: 1/60.0, repeats: true) { _ in
+            animationTime += 1/60.0
+        }
+    }
 }
 
 // MARK: SubViews
@@ -73,7 +82,8 @@ private extension HubMenu {
                         chevron: viewModel.switchStoreEnabled ? .down : .none,
                         titleAccessibilityID: "store-title",
                         descriptionAccessibilityID: "store-url",
-                        chevronAccessibilityID: "switch-store-button")
+                        chevronAccessibilityID: "switch-store-button",
+                        animationTime: animationTime)
                     .lineLimit(1)
                 }
                 .disabled(!viewModel.switchStoreEnabled)
@@ -115,7 +125,8 @@ private extension HubMenu {
                 iconBadge: menu.iconBadge,
                 description: menu.description,
                 icon: .local(menu.icon),
-                chevron: chevron)
+                chevron: chevron,
+                animationTime: animationTime)
             .foregroundColor(Color(menu.iconColor))
         }
         .accessibilityIdentifier(menu.accessibilityIdentifier)
@@ -267,6 +278,8 @@ private extension HubMenu {
         var descriptionAccessibilityID: String?
         var chevronAccessibilityID: String?
 
+        var animationTime: TimeInterval = 0
+
         @Environment(\.sizeCategory) private var sizeCategory
         @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -286,7 +299,7 @@ private extension HubMenu {
                                         Image(uiImage: asset)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
-                                            .applyRecolorShader()
+                                            .applyAnimatedRecolorShader(newColor: .blue, animationTime: animationTime)
                                             .frame(width: HubMenu.Constants.iconSize, height: HubMenu.Constants.iconSize)
                                     }
 
@@ -391,7 +404,7 @@ private extension HubMenu {
 }
 
 private extension View {
-    /// Applies experimental recolor shader effect for testing Metal functionality
+    /// Applies recolor shader effect for testing Metal functionality
     /// Only available on iOS 17+ and gracefully falls back on older versions
     @ViewBuilder
     func applyRecolorShader(newColor: Color = .purple, blendAmount: Float = 0.5) -> some View {
@@ -405,6 +418,28 @@ private extension View {
                     arguments: [
                         .color(newColor),
                         .float(blendAmount)
+                    ]
+                )
+            )
+        } else {
+            self
+        }
+    }
+    
+    /// Applies animated recolor shader effect with pulsing animation
+    /// Only available on iOS 17+ and gracefully falls back on older versions
+    @ViewBuilder
+    func applyAnimatedRecolorShader(newColor: Color = .orange, animationTime: TimeInterval) -> some View {
+        if #available(iOS 17.0, *) {
+            self.colorEffect(
+                Shader(
+                    function: ShaderFunction(
+                        library: .default,
+                        name: "recolorAnimated"
+                    ),
+                    arguments: [
+                        .color(newColor),
+                        .float(Float(animationTime))
                     ]
                 )
             )

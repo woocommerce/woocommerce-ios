@@ -40,6 +40,7 @@ public final class CustomerDetailsScreen: ScreenObject {
     @discardableResult
     public func enterCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         billingFirstNameField.tap()
+        // `\n` was added after the first name input in order to dismiss the keyboard so that the address toggle is interactive in shorter screens.
         billingFirstNameField.typeText("\(name)\n")
         let tableView = app.tables.firstMatch
         tableView.swipeUp()

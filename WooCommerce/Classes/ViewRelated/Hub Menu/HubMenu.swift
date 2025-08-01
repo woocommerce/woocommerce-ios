@@ -35,6 +35,7 @@ struct HubMenu: View {
                     startShaderAnimation()
                 }
         }
+        .snowEffect()
     }
 
     /// Handle navigation when tapping a list menu row.
@@ -425,7 +426,7 @@ private extension View {
             self
         }
     }
-    
+
     /// Applies animated recolor shader effect with pulsing animation
     /// Only available on iOS 17+ and gracefully falls back on older versions
     @ViewBuilder
@@ -463,5 +464,206 @@ struct HubMenu_Previews: PreviewProvider {
 
         HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
             .previewLayout(.fixed(width: 1024, height: 768))
+    }
+}
+
+struct ParticleEffect {
+    let id = UUID()
+    var position: CGPoint
+    var velocity: CGVector
+    var life: TimeInterval
+    var maxLife: TimeInterval
+    var size: CGFloat
+    var opacity: Double
+    var color: Color
+
+    static func snowflake(startX: CGFloat, canvasHeight: CGFloat) -> ParticleEffect {
+        return ParticleEffect(
+            position: CGPoint(x: startX, y: -10), // Start above screen
+            velocity: CGVector(
+                dx: Double.random(in: -20...20), // Slight horizontal drift
+                dy: Double.random(in: 30...80)   // Falling speed
+            ),
+            life: 0,
+            maxLife: TimeInterval.random(in: 8...15), // 8-15 seconds lifetime
+            size: CGFloat.random(in: 3...8),          // Various sizes
+            opacity: Double.random(in: 0.3...0.8),   // Semi-transparent
+            color: .white
+        )
+    }
+
+    mutating func update(deltaTime: TimeInterval, canvasSize: CGSize) {
+        // Update position based on velocity
+        position.x += velocity.dx * deltaTime
+        position.y += velocity.dy * deltaTime
+
+        // Add some wind effect (sine wave horizontal movement)
+        let windStrength = sin(life * 2.0) * 10.0
+        position.x += windStrength * deltaTime
+
+        // Update life
+        life += deltaTime
+
+        // Fade out as particle ages
+        let lifeRatio = life / maxLife
+        opacity = max(0, 1.0 - lifeRatio)
+    }
+
+    /// Check if particle is still alive and visible
+    var isAlive: Bool {
+        return life < maxLife &&
+               position.y < 1000 && // Don't let particles fall too far
+               opacity > 0.01
+    }
+}
+
+final class ParticleEffectService: ObservableObject {
+    @Published private var particles: [ParticleEffect] = []
+    private var lastUpdateTime: TimeInterval = 0
+    private var particleSpawnTimer: TimeInterval = 0
+
+    /// Snow effect configuration
+    private let snowConfig = SnowConfig(
+        spawnRate: 2.0,        // Particles per second
+        maxParticles: 150      // Maximum particles on screen
+    )
+
+    private struct SnowConfig {
+        let spawnRate: Double
+        let maxParticles: Int
+    }
+
+    func addParticles(_ newParticles: [ParticleEffect]) {
+        DispatchQueue.main.async {
+            self.particles.append(contentsOf: newParticles)
+            
+            // Limit total particles (performance)
+            if self.particles.count > self.snowConfig.maxParticles {
+                self.particles = Array(self.particles.suffix(self.snowConfig.maxParticles))
+            }
+        }
+    }
+
+    func getActiveParticles(currentTime: TimeInterval, canvasSize: CGSize) -> [ParticleEffect] {
+        let deltaTime = lastUpdateTime == 0 ? 0 : currentTime - lastUpdateTime
+        lastUpdateTime = currentTime
+        var updatedParticles = particles
+
+        for i in updatedParticles.indices.reversed() {
+            updatedParticles[i].update(deltaTime: deltaTime, canvasSize: canvasSize)
+            // Remove expired particles
+            if !updatedParticles[i].isAlive {
+                updatedParticles.remove(at: i)
+            }
+        }
+
+        spawnSnowParticles(deltaTime: deltaTime, canvasSize: canvasSize, particles: &updatedParticles)
+
+        // Update the published property asynchronously to avoid view update conflicts
+        DispatchQueue.main.async {
+            self.particles = updatedParticles
+        }
+
+        return updatedParticles
+    }
+
+    private func spawnSnowParticles(deltaTime: TimeInterval, canvasSize: CGSize, particles: inout [ParticleEffect]) {
+        guard canvasSize.width > 0 && canvasSize.height > 0 else { return }
+
+        particleSpawnTimer += deltaTime
+
+        // Check if it's time to start spawning
+        let spawnInterval = 1.0 / snowConfig.spawnRate
+
+        while particleSpawnTimer >= spawnInterval && particles.count < snowConfig.maxParticles {
+            let startX = CGFloat.random(in: -50...(canvasSize.width + 50)) // Start slightly outside the view
+            let snowflake = ParticleEffect.snowflake(startX: startX, canvasHeight: canvasSize.height)
+
+            particles.append(snowflake)
+            particleSpawnTimer -= spawnInterval
+        }
+    }
+
+    func clearAllParticles() {
+        DispatchQueue.main.async {
+            self.particles.removeAll()
+            self.particleSpawnTimer = 0
+            self.lastUpdateTime = 0
+        }
+    }
+    
+    var particleCount: Int {
+        particles.count
+    }
+}
+
+struct ParticleOverlayView<Content: View>: View {
+    let content: Content
+    @StateObject private var particleService = ParticleEffectService()
+
+    init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    var body: some View {
+        content
+            .overlay {
+                TimelineView(.animation) { timeline in
+                    Canvas { context, size in
+                        let currentTime = timeline.date.timeIntervalSince1970
+                        let activeParticles = particleService.getActiveParticles(
+                            currentTime: currentTime,
+                            canvasSize: size
+                        )
+
+                        for particle in activeParticles {
+                            drawParticle(particle, in: context)
+                        }
+                    }
+                }
+                .allowsHitTesting(false) // So particles don't interfere with UI interactions
+            }
+    }
+
+    private func drawParticle(_ particle: ParticleEffect, in context: GraphicsContext) {
+        let center = particle.position
+        let radius = particle.size / 2
+
+        let rect = CGRect(
+            x: center.x - radius,
+            y: center.y - radius,
+            width: particle.size,
+            height: particle.size
+        )
+
+        var particleContext = context
+        particleContext.opacity = particle.opacity
+        particleContext.fill(
+            Path(ellipseIn: rect),
+            with: .color(particle.color)
+        )
+
+        if particle.color == .white {
+            let glowRect = CGRect(
+                x: center.x - radius * 1.5,
+                y: center.y - radius * 1.5,
+                width: particle.size * 1.5,
+                height: particle.size * 1.5
+            )
+            var glowContext = context
+            glowContext.opacity = particle.opacity * 0.3
+            glowContext.fill(
+                Path(ellipseIn: glowRect),
+                with: .color(.white)
+            )
+        }
+    }
+}
+
+extension View {
+    func snowEffect() -> some View {
+        ParticleOverlayView {
+            self
+        }
     }
 }

@@ -234,7 +234,7 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var taxBasedOnLine: some View {
         HStack(spacing: Constants.taxBasedOnLineTextPadding) {
-            Text(viewModel.taxBasedOnSetting?.displayString ?? "")
+            Text(viewModel.taxBasedOnSetting?.displayTaxCalculationHint ?? "")
                 .footnoteStyle()
                 .multilineTextAlignment(.leading)
             Text(Localization.taxInformationLearnMore)

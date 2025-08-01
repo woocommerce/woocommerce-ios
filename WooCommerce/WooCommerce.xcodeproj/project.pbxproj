@@ -2747,6 +2747,7 @@
 		DE96844B2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96844A2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift */; };
 		DE96844D2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE96844C2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift */; };
 		DE971219290A9615000C0BD3 /* AddStoreFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */; };
+		DE972D422E3C7238008C2EAE /* Product+ListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE972D412E3C7231008C2EAE /* Product+ListItem.swift */; };
 		DE9A02A32A44441200193ABF /* RequirementsCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */; };
 		DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */; };
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
@@ -5936,6 +5937,7 @@
 		DE96844A2A331AD2000FBF4E /* WooAnalyticsEvent+ProductSharingAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ProductSharingAI.swift"; sourceTree = "<group>"; };
 		DE96844C2A332CC2000FBF4E /* ShareProductCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareProductCoordinatorTests.swift; sourceTree = "<group>"; };
 		DE971218290A9615000C0BD3 /* AddStoreFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddStoreFooterView.swift; sourceTree = "<group>"; };
+		DE972D412E3C7231008C2EAE /* Product+ListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ListItem.swift"; sourceTree = "<group>"; };
 		DE9A02A22A44441200193ABF /* RequirementsCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequirementsCheckerTests.swift; sourceTree = "<group>"; };
 		DE9F2D282A1B1AB2004E5957 /* FirstProductCreatedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstProductCreatedView.swift; sourceTree = "<group>"; };
 		DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsGranularityV4+UI.swift"; sourceTree = "<group>"; };
@@ -12042,6 +12044,7 @@
 				57612988245888E2007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlus.swift */,
 				02BA12842461674B008D8325 /* Optional+String.swift */,
 				02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */,
+				DE972D412E3C7231008C2EAE /* Product+ListItem.swift */,
 				571CDD59250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift */,
 				025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */,
 				023D877825EC8BCB00625963 /* UIScrollView+LargeTitleWorkaround.swift */,
@@ -16418,6 +16421,7 @@
 				B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */,
 				0290C25A2D2C0C5C0090C55C /* InfiniteScrollView.swift in Sources */,
 				AEDDDA0A25CA9C980077F9B2 /* AttributePickerViewController.swift in Sources */,
+				DE972D422E3C7238008C2EAE /* Product+ListItem.swift in Sources */,
 				7E7C5F862719A93C00315B61 /* ProductCategoryViewModelBuilder.swift in Sources */,
 				204D1D622C5A50840064A6BE /* POSModalViewModifier.swift in Sources */,
 				8601C29A2B9769C200C59D93 /* FancyAlertViewController+Stats.swift in Sources */,

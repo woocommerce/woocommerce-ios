@@ -8,7 +8,7 @@ import class AutomatticTracks.CrashLogging
 /// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
 ///
 protocol PaginatedListSelectorDataSource {
-    associatedtype StorageModel: ResultsControllerMutableType & ReadOnlyConvertible
+    associatedtype StorageModel: ResultsControllerMutableType
     associatedtype Cell: UITableViewCell
 
     /// Optional custom sorting strategy for storage models in the paginated list. Default is `nil`.
@@ -55,10 +55,7 @@ extension PaginatedListSelectorDataSource {
 ///
 final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
     UITableViewDataSource, UITableViewDelegate, UITableViewDragDelegate, PaginationTrackerDelegate, GhostableViewController
-where DataSource.StorageModel == StorageModel,
-      Model == DataSource.StorageModel.ReadOnlyType,
-      Model: Equatable,
-      DataSource.Cell == Cell {
+where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void

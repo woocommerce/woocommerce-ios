@@ -24,7 +24,8 @@ final class OrderDetailsResultsControllers {
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let productIDs = order.items.map { $0.productID }
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

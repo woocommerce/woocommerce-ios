@@ -24,4 +24,3 @@ extension Product {
                         bundleStockQuantity: bundleStockQuantity)
     }
 }
-

@@ -56,7 +56,6 @@ final class ResultsControllerTests: XCTestCase {
     ///
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
@@ -70,11 +69,10 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that ResultsController does pick up entities inserted after being instantiated.
     ///
     func testResultsControllerPicksUpEntitiesInsertedAfterInstantiation() {
+        storageManager.insertSampleAccount()
+
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
-
-        storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         XCTAssertEqual(resultsController.sections.count, 1)
         XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
@@ -85,18 +83,16 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `sectionNameKeyPath` effectively causes the ResultsController to produce multiple sections, based on the grouping parameter.
     ///
     func testResultsControllerGroupSectionsBySectionNameKeypath() {
-        let sectionNameKeyPath = "userID"
-        let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
-                                                                   sectionNameKeyPath: sectionNameKeyPath,
-                                                                   sortedBy: [sampleSortDescriptor])
-        try? resultsController.performFetch()
-
         let numberOfAccounts = 100
         for _ in 0 ..< numberOfAccounts {
             storageManager.insertSampleAccount()
         }
 
-        viewStorage.saveIfNeeded()
+        let sectionNameKeyPath = "userID"
+        let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: sectionNameKeyPath,
+                                                                   sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
 
         XCTAssertEqual(resultsController.sections.count, numberOfAccounts)
 
@@ -109,14 +105,12 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `object(at indexPath:)` effectively returns the expected (ReadOnly) Entity.
     ///
     func testObjectAtIndexPathReturnsExpectedEntity() {
+        let mutableAccount = storageManager.insertSampleAccount()
         let sectionNameKeyPath = "userID"
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
                                                                    sectionNameKeyPath: sectionNameKeyPath,
                                                                    sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
-
-        let mutableAccount = storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         let indexPath = IndexPath(row: 0, section: 0)
         let readOnlyAccount = resultsController.object(at: indexPath)
@@ -144,7 +138,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -167,7 +160,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -189,7 +181,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -211,7 +202,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -228,7 +218,6 @@ final class ResultsControllerTests: XCTestCase {
         let second = storageManager.insertSampleAccount().toReadOnly()
         let expected = [first.userID: first, second.userID: second]
 
-        viewStorage.saveIfNeeded()
 
         for retrieved in resultsController.fetchedObjects {
             XCTAssertEqual(retrieved.username, expected[retrieved.userID]?.username)
@@ -239,14 +228,13 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
     func testResettingStorageIsMappedIntoOnResetClosure() {
+        storageManager.insertSampleAccount()
+        storageManager.insertSampleAccount()
+
         let sortDescriptor = NSSortDescriptor(key: #selector(getter: StorageAccount.userID).description, ascending: true)
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
         try? resultsController.performFetch()
 
-        storageManager.insertSampleAccount()
-        storageManager.insertSampleAccount()
-
-        viewStorage.saveIfNeeded()
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
 
         let expectation = self.expectation(description: "OnDidReset")
@@ -295,8 +283,6 @@ final class ResultsControllerTests: XCTestCase {
                 account.displayName = "\(section)"
             }
         }
-
-        viewStorage.saveIfNeeded()
 
         for (sectionNumber, sectionObject) in resultsController.sections.enumerated() {
             for (row, object) in sectionObject.objects.enumerated() {
@@ -464,6 +450,124 @@ final class ResultsControllerTests: XCTestCase {
         // Then
         XCTAssertNil(resultsController.indexPath(forObjectMatching: { $0.displayName == "B" }))
     }
+
+    // MARK: - List Item Tests
+
+    func test_listItemObjects_returns_empty_array_when_no_products() throws {
+        // Given
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
+        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let listItems = resultsController.listItemObjects
+
+        // Then
+        XCTAssertTrue(listItems.isEmpty)
+    }
+
+    func test_listItemObjects_returns_all_list_items_from_fetched_products() throws {
+        // Given
+        let product1 = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
+        let product2 = createSampleProductListItem(productID: 2, name: "Product 2", price: "20.00")
+        let product3 = createSampleProductListItem(productID: 3, name: "Product 3", price: "30.00")
+
+        storageManager.insertSampleProductListItem(item: product1)
+        storageManager.insertSampleProductListItem(item: product2)
+        storageManager.insertSampleProductListItem(item: product3)
+
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
+        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let listItems = resultsController.listItemObjects
+
+        // Then
+        XCTAssertEqual(listItems.count, 3)
+        XCTAssertEqual(listItems[0].productID, 1)
+        XCTAssertEqual(listItems[0].name, "Product 1")
+        XCTAssertEqual(listItems[0].price, "10.00")
+        XCTAssertEqual(listItems[1].productID, 2)
+        XCTAssertEqual(listItems[1].name, "Product 2")
+        XCTAssertEqual(listItems[1].price, "20.00")
+        XCTAssertEqual(listItems[2].productID, 3)
+        XCTAssertEqual(listItems[2].name, "Product 3")
+        XCTAssertEqual(listItems[2].price, "30.00")
+    }
+
+    func test_listItem_at_indexPath_returns_expected_list_item() throws {
+        // Given
+        let product1 = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
+        let product2 = createSampleProductListItem(productID: 2, name: "Product 2", price: "20.00")
+
+        storageManager.insertSampleProductListItem(item: product1)
+        storageManager.insertSampleProductListItem(item: product2)
+
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
+        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let listItem = resultsController.listItem(at: IndexPath(row: 1, section: 0))
+
+        // Then
+        XCTAssertEqual(listItem.productID, 2)
+        XCTAssertEqual(listItem.name, "Product 2")
+        XCTAssertEqual(listItem.price, "20.00")
+    }
+
+    func test_listItemObjects_in_section_returns_list_items_for_specified_section() throws {
+        // Given
+        let categoryA = createSampleProductListItem(productID: 1, name: "Product A1", price: "10.00")
+        let categoryA2 = createSampleProductListItem(productID: 2, name: "Product A2", price: "15.00")
+        let categoryB = createSampleProductListItem(productID: 3, name: "Product B1", price: "20.00")
+
+        // Insert products and manually set product type for section grouping
+        let storageProductA = storageManager.insertSampleProductListItem(item: categoryA)
+        storageProductA.productTypeKey = "simple"
+        let storageProductA2 = storageManager.insertSampleProductListItem(item: categoryA2)
+        storageProductA2.productTypeKey = "simple"
+        let storageProductB = storageManager.insertSampleProductListItem(item: categoryB)
+        storageProductB.productTypeKey = "variable"
+
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
+        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage,
+                                                                 sectionNameKeyPath: #keyPath(StorageProduct.productTypeKey),
+                                                                 sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let section0Items = resultsController.listItemObjects(in: 0)
+        let section1Items = resultsController.listItemObjects(in: 1)
+
+        // Then
+        XCTAssertEqual(section0Items.count, 2)
+        XCTAssertEqual(section0Items[0].productID, 1)
+        XCTAssertEqual(section0Items[0].name, "Product A1")
+        XCTAssertEqual(section0Items[1].productID, 2)
+        XCTAssertEqual(section0Items[1].name, "Product A2")
+
+        XCTAssertEqual(section1Items.count, 1)
+        XCTAssertEqual(section1Items[0].productID, 3)
+        XCTAssertEqual(section1Items[0].name, "Product B1")
+    }
+
+    func test_listItemObjects_in_section_returns_empty_array_for_nonexistent_section() throws {
+        // Given
+        let product = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
+        storageManager.insertSampleProductListItem(item: product)
+
+        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
+        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
+        try resultsController.performFetch()
+
+        // When
+        let items = resultsController.listItemObjects(in: 5)
+
+        // Then
+        XCTAssertTrue(items.isEmpty)
+    }
 }
 
 // MARK: - Utils
@@ -475,5 +579,24 @@ private extension ResultsControllerTests {
         account.displayName = displayName
         account.username = username
         return account
+    }
+
+    func createSampleProductListItem(siteID: Int64 = 123, productID: Int64, name: String, price: String) -> ProductListItem {
+        return ProductListItem.fake().copy(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            productTypeKey: "simple",
+            statusKey: "publish",
+            sku: nil,
+            price: price,
+            virtual: false,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock",
+            reviewsAllowed: true,
+            averageRating: "0",
+            ratingCount: 0
+        )
     }
 }

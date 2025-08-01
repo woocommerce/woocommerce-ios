@@ -5,6 +5,7 @@
 -----
 - [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
 - [*] Order Details: Attempt to improve performance by using a simplified version of product objects. [https://github.com/woocommerce/woocommerce-ios/pull/15959]
+- [*] Product List: Load list with simplified product objects to improve performance. [https://teamkiwip2.wordpress.com/2025/08/01/hack-week-improving-performance-when-loading-cached-products/]
 
 22.9
 -----

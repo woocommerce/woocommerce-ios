@@ -1158,6 +1158,7 @@ extension Networking.ProductListItem {
             productID: .fake(),
             name: .fake(),
             permalink: .fake(),
+            date: .fake(),
             productTypeKey: .fake(),
             statusKey: .fake(),
             fullDescription: .fake(),

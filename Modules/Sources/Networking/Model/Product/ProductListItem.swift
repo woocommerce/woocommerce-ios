@@ -9,6 +9,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
     public let productID: Int64
     public let name: String
     public let permalink: String
+    public let date: Date
 
     public let productTypeKey: String
     public let statusKey: String        // draft, pending, private, published
@@ -54,6 +55,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
                 productID: Int64,
                 name: String,
                 permalink: String,
+                date: Date,
                 productTypeKey: String,
                 statusKey: String,
                 fullDescription: String?,
@@ -74,6 +76,7 @@ public struct ProductListItem: GeneratedCopiable, Equatable, GeneratedFakeable {
         self.productID = productID
         self.name = name
         self.permalink = permalink
+        self.date = date
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.fullDescription = fullDescription

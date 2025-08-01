@@ -1978,6 +1978,7 @@ extension Networking.ProductListItem {
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         permalink: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
         statusKey: CopiableProp<String> = .copy,
         fullDescription: NullableCopiableProp<String> = .copy,
@@ -1999,6 +2000,7 @@ extension Networking.ProductListItem {
         let productID = productID ?? self.productID
         let name = name ?? self.name
         let permalink = permalink ?? self.permalink
+        let date = date ?? self.date
         let productTypeKey = productTypeKey ?? self.productTypeKey
         let statusKey = statusKey ?? self.statusKey
         let fullDescription = fullDescription ?? self.fullDescription
@@ -2021,6 +2023,7 @@ extension Networking.ProductListItem {
             productID: productID,
             name: name,
             permalink: permalink,
+            date: date,
             productTypeKey: productTypeKey,
             statusKey: statusKey,
             fullDescription: fullDescription,

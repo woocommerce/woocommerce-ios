@@ -227,6 +227,7 @@ extension Storage.Product: ListItemConvertible {
         productID = item.productID
         name = item.name
         permalink = item.permalink
+        date = item.date
         productTypeKey = item.productTypeKey
         statusKey = item.statusKey
         fullDescription = item.fullDescription
@@ -260,6 +261,7 @@ extension Storage.Product: ListItemConvertible {
                                productID: productID,
                                name: name,
                                permalink: permalink,
+                               date: date ?? Date(timeIntervalSince1970: 0),
                                productTypeKey: productTypeKey,
                                statusKey: statusKey,
                                fullDescription: fullDescription,

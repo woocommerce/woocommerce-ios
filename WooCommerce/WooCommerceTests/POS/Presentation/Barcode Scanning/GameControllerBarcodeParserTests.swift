@@ -8,7 +8,7 @@ struct GameControllerBarcodeParserTests {
 
     struct ConfigurationTests {
         @Test("default configuration has expected values")
-        func defaultConfiguration_whenRequested_hasExpectedValues() {
+        func default_configuration_when_requested_has_expected_values() {
             // Given
             let configuration = HIDBarcodeParserConfiguration.default
 
@@ -19,7 +19,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("custom configuration accepts specified values")
-        func customConfiguration_whenCreated_acceptsSpecifiedValues() {
+        func custom_configuration_when_created_accepts_specified_values() {
             // Given
             let customTerminators: Set<String> = ["\t", " ", "\r"]
             let customMinLength = 4
@@ -43,7 +43,7 @@ struct GameControllerBarcodeParserTests {
 
     struct BasicScanningTests {
         @Test("complete scan succeeds with valid barcode")
-        func validBarcode_whenScannedCompletely_succeeds() {
+        func valid_barcode_when_scanned_completely_succeeds() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -70,7 +70,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("multiple consecutive scans work correctly")
-        func multipleBarcodes_whenScannedConsecutively_workCorrectly() {
+        func multiple_barcodes_when_scanned_consecutively_work_correctly() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -105,7 +105,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("cancelled scan clears buffer and allows new scan")
-        func partialScan_whenCancelled_clearsBufferAndAllowsNewScan() {
+        func partial_scan_when_cancelled_clears_buffer_and_allows_new_scan() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -148,7 +148,7 @@ struct GameControllerBarcodeParserTests {
 
     struct ErrorHandlingTests {
         @Test("scan too short triggers error with default configuration")
-        func shortBarcode_whenScannedWithDefaultConfig_triggersError() {
+        func short_barcode_when_scanned_with_default_config_triggers_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -179,7 +179,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("scan too short triggers error with custom configuration")
-        func shortBarcode_whenScannedWithCustomConfig_triggersError() {
+        func short_barcode_when_scanned_with_custom_config_triggers_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -217,7 +217,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("slow typing triggers timeout error")
-        func slowTyping_whenExceedsTimeout_triggersError() {
+        func slow_typing_when_exceeds_timeout_triggers_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -264,7 +264,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("fast typing within timeout succeeds")
-        func fastTyping_whenWithinTimeout_succeeds() {
+        func fast_typing_when_within_timeout_succeeds() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration.default
@@ -300,7 +300,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("proactive timeout triggers error without next character")
-        func timeout_whenTimerFires_triggersTimeoutError() {
+        func timeout_when_timer_fires_triggers_timeout_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -338,7 +338,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("timer cancelled on successful scan completion")
-        func timerCancelled_whenScanCompletes_preventsTimeoutError() {
+        func timer_cancelled_when_scan_completes_prevents_timeout_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -372,7 +372,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("timer cancelled on manual scan cancellation")
-        func timerCancelled_whenScanCancelled_preventsTimeoutError() {
+        func timer_cancelled_when_scan_cancelled_prevents_timeout_error() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -401,7 +401,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("new character input cancels previous timer and starts new one")
-        func newCharacterInput_whenReceived_cancelsOldTimerAndStartsNew() {
+        func new_character_input_when_received_cancels_old_timer_and_starts_new() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -444,7 +444,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("scan duration is properly tracked for successful scan")
-        func scanDuration_whenSuccessfulScan_isProperlyTracked() {
+        func scan_duration_when_successful_scan_is_properly_tracked() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let mockTimeProvider = MockTimeProvider()
@@ -477,7 +477,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("scan duration is properly tracked for failed scan")
-        func scanDuration_whenFailedScan_isProperlyTracked() {
+        func scan_duration_when_failed_scan_is_properly_tracked() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let mockTimeProvider = MockTimeProvider()
@@ -509,7 +509,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("empty scan with only terminator is ignored")
-        func emptyBuffer_whenTerminatorSent_isIgnored() {
+        func empty_buffer_when_terminator_sent_is_ignored() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -536,7 +536,7 @@ struct GameControllerBarcodeParserTests {
 
     struct ExcludedKeysTests {
         @Test("modifier keys are excluded from scan input")
-        func modifierKeys_whenPressed_areExcludedFromScanInput() {
+        func modifier_keys_when_pressed_are_excluded_from_scan_input() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -564,7 +564,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("arrow keys are excluded from scan input")
-        func arrowKeys_whenPressed_areExcludedFromScanInput() {
+        func arrow_keys_when_pressed_are_excluded_from_scan_input() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -591,7 +591,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("function and system keys are excluded from scan input")
-        func systemKeys_whenPressed_areExcludedFromScanInput() {
+        func system_keys_when_pressed_are_excluded_from_scan_input() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -619,7 +619,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("navigation keys are excluded from scan input")
-        func navigationKeys_whenPressed_areExcludedFromScanInput() {
+        func navigation_keys_when_pressed_are_excluded_from_scan_input() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -659,7 +659,7 @@ struct GameControllerBarcodeParserTests {
 
     struct TerminatorTests {
         @Test("carriage return terminates scan")
-        func carriageReturn_whenPressed_terminatesScan() {
+        func carriage_return_when_pressed_terminates_scan() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -683,7 +683,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("multiple terminating strings work correctly")
-        func multipleTerminators_whenConfigured_workCorrectly() {
+        func multiple_terminators_when_configured_work_correctly() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -735,7 +735,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("terminator at start of empty buffer is ignored")
-        func emptyBuffer_whenTerminatorPressed_isIgnored() {
+        func empty_buffer_when_terminator_pressed_is_ignored() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let parser = GameControllerBarcodeParser(
@@ -753,7 +753,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("terminator in middle of scan is included in barcode")
-        func nonTerminatorCharacter_whenPressed_isIncludedInBarcode() {
+        func non_terminator_character_when_pressed_is_included_in_barcode() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let configuration = HIDBarcodeParserConfiguration(
@@ -778,7 +778,7 @@ struct GameControllerBarcodeParserTests {
         }
 
         @Test("parser does not start a timeout for an ignored character")
-        func emptyBuffer_whenIgnoredCharacterPressed_doesNotStartTimeout() {
+        func empty_buffer_when_ignored_character_pressed_does_not_start_timeout() {
             // Given
             var results: [HIDBarcodeParserResult] = []
             let mockTimeProvider = MockTimeProvider()

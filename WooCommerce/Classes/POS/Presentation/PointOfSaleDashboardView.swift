@@ -6,7 +6,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
-    @State private var showSupport: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
@@ -89,7 +88,7 @@ struct PointOfSaleDashboardView: View {
             }
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
-                                   showSupport: $showSupport,
+                                   showSupport: .constant(false),
                                    showDocumentation: .constant(false),
                                    showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
@@ -124,10 +123,6 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $showSupport) {
-            supportForm
-                .interactiveDismissDisabled(true)
-        }
         .fullScreenCover(isPresented: $showSettings) {
             PointOfSaleSettingsView()
         }
@@ -185,26 +180,11 @@ struct PointOfSaleDashboardView: View {
 
 @available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
-    var supportForm: some View {
-        NavigationView {
-            SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.supportDone) {
-                        showSupport = false
-                    }
-                }
-            }
-        }
-        .navigationViewStyle(.stack)
-    }
-
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = { [weak posModel] in
             posModel?.cancelCardPaymentsOnboarding()
-            showSupport = true
+            #warning("TODO: Support when onboarding view needs to be handled")
+            //showSupport = true
         }
         return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
                                                                             onDismissTap: {
@@ -300,11 +280,31 @@ struct PointOfSaleSettingsView: View {
     }
 
     @State private var showDocumentation = false
+    @State private var showSupport = false
 
     var documentationDestinationView: some View {
         SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
             .navigationTitle("Documentation")
             .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    var supportDestinationView: some View {
+        NavigationView {
+            SupportForm(isPresented: $showSupport,
+                        viewModel: SupportFormViewModel(
+                            sourceTag: "origin:point-of-sale",
+                            defaultSite: ServiceLocator.stores.sessionManager.defaultSite
+                        )
+            )
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        showSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 
     @State private var selectedSection: Section? = .store
@@ -353,7 +353,9 @@ struct PointOfSaleSettingsView: View {
                                         // The next sheet will be presented when the currently presented sheet gets dismissed.
                                         showDocumentation = true
                                     }
-                                    Button("Get Support") { /* ... */ }
+                                    Button("Get Support") {
+                                        showSupport = true
+                                    }
                                 }
                             }
                         }
@@ -377,6 +379,11 @@ struct PointOfSaleSettingsView: View {
                 ) {
                     EmptyView()
                 }
+                .hidden()
+                NavigationLink(
+                    destination: supportDestinationView,
+                    isActive: $showSupport
+                ) { EmptyView() }
                 .hidden()
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {

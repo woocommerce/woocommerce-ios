@@ -44,15 +44,6 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
-                    showSupport = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.getSupport) },
-                        icon: { Image(systemName: "questionmark.circle") }
-                    )
-                }
-                Button {
                     showProductRestrictionsModal = true
                     ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
                 } label: {

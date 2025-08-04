@@ -63,7 +63,13 @@ struct POSFloatingControlView: View {
                         ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
                     } label: {
                         Label(
-                            title: { Text(Localization.barcodeScanning) },
+                            title: {
+                                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
+                                    Text(Localization.barcodeScanningSetup)
+                                } else {
+                                    Text(Localization.barcodeScanning)
+                                }
+                            },
                             icon: { Image(systemName: "barcode.viewfinder") })
                     }
                 }
@@ -172,6 +178,12 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.barcodeScanning.button.title",
             value: "Barcode scanning",
             comment: "The title of the menu button to view barcode scanner documentation, shown in a popover menu."
+        )
+
+        static let barcodeScanningSetup = NSLocalizedString(
+            "pointOfSale.floatingButtons.barcodeScanningSetup.button.title",
+            value: "Initial barcode scanner setup",
+            comment: "The title of the menu button to start a barcode scanner setup flow."
         )
     }
 }

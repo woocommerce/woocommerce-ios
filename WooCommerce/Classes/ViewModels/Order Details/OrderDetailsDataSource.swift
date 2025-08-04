@@ -149,7 +149,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Products from an Order
     ///
-    var products: [ProductListItem] = []
+    var products: [OrderDetailsProduct] = []
 
     /// Product variations from an order
     ///
@@ -891,13 +891,14 @@ private extension OrderDetailsDataSource {
         }
 
         let imageURL: URL? = {
-            guard let imageURLString = aggregateItem.variationID != 0 ?
-                    lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src:
-                    lookUpProduct(by: aggregateItem.productID)?.images.first?.src,
-                  let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-                return nil
+            if aggregateItem.variationID != 0 {
+                guard let imageURLString = lookUpProductVariation(productID: aggregateItem.productID, variationID: aggregateItem.variationID)?.image?.src,
+                      let encodedImageURLString = imageURLString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
+                    return nil
+                }
+                return URL(string: encodedImageURLString)
             }
-            return URL(string: encodedImageURLString)
+            return lookUpProduct(by: aggregateItem.productID)?.imageURL
         }()
 
         let addOns: [OrderItemProductAddOn] = {
@@ -1234,7 +1235,7 @@ extension OrderDetailsDataSource {
         return currentSiteStatuses.filter({$0.status == order.status}).first
     }
 
-    func lookUpProduct(by productID: Int64) -> ProductListItem? {
+    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return products.filter({ $0.productID == productID }).first
     }
 

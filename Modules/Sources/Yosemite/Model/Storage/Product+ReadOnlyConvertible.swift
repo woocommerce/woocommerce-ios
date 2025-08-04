@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 extension Storage.Product {
-    var imagesArray: [Storage.ProductImage] {
+    public var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
     var tagsArray: [Storage.ProductTag] {
@@ -216,35 +216,5 @@ extension Storage.Product: ReadOnlyConvertible {
         }
 
         return array.map { Int64($0) }
-    }
-}
-
-// MARK: - Storage.Product: ListItemConvertible
-//
-extension Storage.Product {
-    public func toListItem() -> Yosemite.ProductListItem {
-        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
-        let productImages = imagesArray.map { $0.toReadOnly() }
-
-        var quantity: Decimal?
-        if let stockQuantity = stockQuantity {
-            quantity = Decimal(string: stockQuantity)
-        }
-
-        return ProductListItem(siteID: siteID,
-                               productID: productID,
-                               name: name,
-                               productTypeKey: productTypeKey,
-                               statusKey: statusKey,
-                               sku: sku,
-                               price: price,
-                               virtual: virtual,
-                               stockQuantity: quantity,
-                               stockStatusKey: stockStatusKey,
-                               reviewsAllowed: reviewsAllowed,
-                               averageRating: averageRating,
-                               ratingCount: Int(ratingCount),
-                               images: productImages,
-                               addOns: addOnsArray.map { $0.toReadOnly() })
     }
 }

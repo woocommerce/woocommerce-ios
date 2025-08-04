@@ -23,7 +23,7 @@ final class OrderDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: GenericResultsController<StorageProduct, ProductListItem> = createProductResultsController()
+    private lazy var productResultsController: GenericResultsController<StorageProduct, OrderDetailsProduct> = createProductResultsController()
 
     /// ProductVariation ResultsController.
     ///
@@ -95,7 +95,7 @@ final class OrderDetailsResultsControllers {
 
     /// Products from an Order
     ///
-    private(set) var products: [ProductListItem] = []
+    private(set) var products: [OrderDetailsProduct] = []
 
     /// ProductVariations from an Order
     ///
@@ -375,16 +375,16 @@ private extension OrderDetailsResultsControllers {
         try? shippingMethodsResultsController.performFetch()
     }
 
-    func createProductResultsController() -> GenericResultsController<StorageProduct, ProductListItem> {
+    func createProductResultsController() -> GenericResultsController<StorageProduct, OrderDetailsProduct> {
         let productIDs = order.items.map { $0.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return GenericResultsController<StorageProduct, ProductListItem>(
+        return GenericResultsController<StorageProduct, OrderDetailsProduct>(
             storageManager: storageManager,
             matching: predicate,
             sortedBy: [descriptor],
-            transformer: { $0.toListItem() }
+            transformer: { OrderDetailsProduct(storageProduct: $0) }
         )
     }
 }

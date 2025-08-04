@@ -6,6 +6,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
+    @StateObject private var posSheetManager = POSSheetManager()
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -75,7 +76,7 @@ struct PointOfSaleEntryPointView: View {
                 barcodeScanService: barcodeScanService)
         }
         .environmentObject(posModalManager)
-        .posRootSheet()
+        .environmentObject(posSheetManager)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

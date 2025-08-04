@@ -458,6 +458,8 @@ private extension ItemListView {
     return ItemListView(selectedItemListType: .constant(.products(search: false)),
                         searchTerm: .constant(""))
         .environment(posModel)
+        .environmentObject(POSModalManager())
+        .environmentObject(POSSheetManager())
 }
 
 @available(iOS 17.0, *)
@@ -465,6 +467,8 @@ private extension ItemListView {
     ItemListView(selectedItemListType: .constant(.products(search: false)),
                  searchTerm: .constant(""))
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
+        .environmentObject(POSModalManager())
+        .environmentObject(POSSheetManager())
 }
 
 #endif

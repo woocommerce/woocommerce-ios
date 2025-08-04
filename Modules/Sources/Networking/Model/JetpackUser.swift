@@ -19,13 +19,22 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
     /// Gravatar link of the user
     public let gravatar: String?
 
+    /// WP blog ID, available only if site has once connected to Jetpack.
+    public let blogID: Int64?
+
     /// Member-wise initializer
-    public init(isConnected: Bool, isPrimary: Bool, username: String, wpcomUser: DotcomUser?, gravatar: String?) {
+    public init(isConnected: Bool,
+                isPrimary: Bool,
+                username: String,
+                wpcomUser: DotcomUser?,
+                gravatar: String?,
+                blogID: Int64?) {
         self.isConnected = isConnected
         self.isPrimary = isPrimary
         self.username = username
         self.wpcomUser = wpcomUser
         self.gravatar = gravatar
+        self.blogID = blogID
     }
 
     public init(from decoder: Decoder) throws {
@@ -35,6 +44,7 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
         username = try container.decode(String.self, forKey: .username)
         wpcomUser = try? container.decode(DotcomUser.self, forKey: .wpcomUser)
         gravatar = try? container.decode(String.self, forKey: .gravatar)
+        blogID = try? container.decodeIfPresent(Int64.self, forKey: .blogId)
     }
 }
 
@@ -48,5 +58,6 @@ private extension JetpackUser {
         case username
         case wpcomUser
         case gravatar
+        case blogId
     }
 }

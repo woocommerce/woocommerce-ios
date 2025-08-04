@@ -321,7 +321,7 @@ private extension JetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success(let connectionData):
-                guard let connectedEmail = connectionData.user.wpcomUser?.email else {
+                guard let connectedEmail = connectionData.currentUser.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
                     let missingWpcomUserError = NSError(domain: Constants.errorDomain,
                                                         code: Constants.errorCodeNoWPComUser,

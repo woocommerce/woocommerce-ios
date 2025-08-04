@@ -30,30 +30,29 @@ public struct JetpackConnectionData: Decodable, GeneratedFakeable, GeneratedCopi
     public let connectionOwner: String?
 
     /// WP blog ID, available only if site has once connected to Jetpack.
-    public let blogId: Int64?
+    public let blogID: Int64?
 
     public init(currentUser: JetpackUser,
                 isRegistered: Bool?,
                 connectionOwner: String?,
-                blogId: Int64?) {
+                blogID: Int64?) {
         self.currentUser = currentUser
         self.isRegistered = isRegistered
         self.connectionOwner = connectionOwner
-        self.blogId = blogId
+        self.blogID = blogID
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         currentUser = try container.decode(JetpackUser.self, forKey: .currentUser)
         isRegistered = try container.decodeIfPresent(Bool.self, forKey: .isRegistered)
-        connectionOwner = try? container.decode(String.self, forKey: .connectionOwner)
-        blogId = try? container.decode(Int64.self, forKey: .blogID)
+        connectionOwner = try? container.decodeIfPresent(String.self, forKey: .connectionOwner)
+        blogID = currentUser.blogID // moved to data for easier access
     }
 
     private enum CodingKeys: String, CodingKey {
         case currentUser
         case isRegistered
         case connectionOwner
-        case blogID
     }
 }

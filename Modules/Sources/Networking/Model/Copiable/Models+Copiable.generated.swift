@@ -999,18 +999,18 @@ extension Networking.JetpackConnectionData {
         currentUser: CopiableProp<JetpackUser> = .copy,
         isRegistered: NullableCopiableProp<Bool> = .copy,
         connectionOwner: NullableCopiableProp<String> = .copy,
-        blogId: NullableCopiableProp<Int64> = .copy
+        blogID: NullableCopiableProp<Int64> = .copy
     ) -> Networking.JetpackConnectionData {
         let currentUser = currentUser ?? self.currentUser
         let isRegistered = isRegistered ?? self.isRegistered
         let connectionOwner = connectionOwner ?? self.connectionOwner
-        let blogId = blogId ?? self.blogId
+        let blogID = blogID ?? self.blogID
 
         return Networking.JetpackConnectionData(
             currentUser: currentUser,
             isRegistered: isRegistered,
             connectionOwner: connectionOwner,
-            blogId: blogId
+            blogID: blogID
         )
     }
 }
@@ -1021,20 +1021,23 @@ extension Networking.JetpackUser {
         isPrimary: CopiableProp<Bool> = .copy,
         username: CopiableProp<String> = .copy,
         wpcomUser: NullableCopiableProp<DotcomUser> = .copy,
-        gravatar: NullableCopiableProp<String> = .copy
+        gravatar: NullableCopiableProp<String> = .copy,
+        blogID: NullableCopiableProp<Int64> = .copy
     ) -> Networking.JetpackUser {
         let isConnected = isConnected ?? self.isConnected
         let isPrimary = isPrimary ?? self.isPrimary
         let username = username ?? self.username
         let wpcomUser = wpcomUser ?? self.wpcomUser
         let gravatar = gravatar ?? self.gravatar
+        let blogID = blogID ?? self.blogID
 
         return Networking.JetpackUser(
             isConnected: isConnected,
             isPrimary: isPrimary,
             username: username,
             wpcomUser: wpcomUser,
-            gravatar: gravatar
+            gravatar: gravatar,
+            blogID: blogID
         )
     }
 }

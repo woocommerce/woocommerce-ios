@@ -639,7 +639,7 @@ extension Networking.JetpackConnectionData {
             currentUser: .fake(),
             isRegistered: .fake(),
             connectionOwner: .fake(),
-            blogId: .fake()
+            blogID: .fake()
         )
     }
 }
@@ -648,12 +648,12 @@ extension Networking.JetpackUser {
     ///
     public static func fake() -> Networking.JetpackUser {
         .init(
-            blogId: .fake(),
             isConnected: .fake(),
             isPrimary: .fake(),
             username: .fake(),
             wpcomUser: .fake(),
-            gravatar: .fake()
+            gravatar: .fake(),
+            blogID: .fake()
         )
     }
 }

@@ -272,6 +272,7 @@ private extension PointOfSaleDashboardView {
 struct PointOfSaleSettingsView: View {
     enum SettingsSection: String, CaseIterable, Identifiable {
         case store = "Store"
+        case productCatalog = "Product Catalog"
         case hardware = "Hardware"
         case help = "Help"
 
@@ -430,6 +431,8 @@ struct PointOfSaleSettingsView: View {
                             switch section {
                             case .store:
                                 storeDetailsView
+                            case .productCatalog:
+                                Text("😀")
                             case .hardware:
                                 hardwareView
                             case .help:
@@ -449,17 +452,6 @@ struct PointOfSaleSettingsView: View {
                             }
                         }
                     }
-
-                    Button(action: {
-                        // TODO: Handle saves
-                        dismiss()
-                    }) {
-                        Text("Save Changes")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
                 }
                 
                 NavigationLink(

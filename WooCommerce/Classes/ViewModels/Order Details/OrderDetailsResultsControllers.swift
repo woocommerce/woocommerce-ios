@@ -23,13 +23,7 @@ final class OrderDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let productIDs = order.items.map { $0.productID }
-        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    private lazy var productResultsController: ResultsController<StorageProduct> = createProductResultsController()
 
     /// ProductVariation ResultsController.
     ///
@@ -156,10 +150,14 @@ final class OrderDetailsResultsControllers {
         feeLines = order.fees
         updateShippingLabels()
         // Product variation results controller depends on order items to load variations,
+        // Product and variation results controller depends on order items to load variations,
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
+        self.productResultsController = createProductResultsController()
+        self.productResultsController = createProductResultsController()
         if let onReload = onReload {
             configureProductVariationResultsController(onReload: onReload)
+            configureProductResultsController(onReload: onReload)
         }
     }
 }
@@ -387,5 +385,11 @@ private extension OrderDetailsResultsControllers {
             }
             return label1.dateCreated < label2.dateCreated
         })
+    func createProductResultsController() -> ResultsController<StorageProduct> {
+        let productIDs = order.items.map { $0.productID }
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }

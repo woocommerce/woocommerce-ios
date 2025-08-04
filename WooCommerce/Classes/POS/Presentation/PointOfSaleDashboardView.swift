@@ -123,11 +123,11 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $showSupport) {
+        .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .sheet(isPresented: $showDocumentation) {
+        .posSheet(isPresented: $showDocumentation) {
             documentationView
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in

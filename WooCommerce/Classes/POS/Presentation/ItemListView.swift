@@ -9,6 +9,7 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
     @EnvironmentObject var modalManager: POSModalManager
+    @EnvironmentObject var sheetManager: POSSheetManager
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -42,7 +43,7 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented },
+            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented },
             set: { _ in }
         )
     }

@@ -309,6 +309,19 @@ final class OrdersRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_updateOrder_status_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
+    }
+
     func test_update_order_properly_encodes_shipping_lines_for_removal_from_order() throws {
         // Given
         let remote = OrdersRemote(network: network)
@@ -515,6 +528,20 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertNil(request.parameters["meta_data"])
+    }
+
+    func test_updateOrder_with_fields_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.customerNote]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
     }
 
     // MARK: - Load Order Notes Tests
@@ -804,6 +831,20 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertNil(request.parameters["created_via"])
+    }
+
+    func test_createOrder_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
     }
 
     // MARK: - Delete order tests

@@ -8,20 +8,32 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>) {
+         showDocumentation: Binding<Bool>,
+         showSettings: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
+        self._showSettings = showSettings
     }
 
     var body: some View {
         HStack {
             Menu {
+                Button {
+                    //ServiceLocator.analytics.track(.pointOfSaleSettingsTapped)
+                    showSettings = true
+                } label: {
+                    Label(
+                        title: { Text("Settings") },
+                        icon: { Image(systemName: "gear") }
+                    )
+                }
                 Button {
                     ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
                     showExitPOSModal = true
@@ -180,7 +192,7 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -192,14 +204,14 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

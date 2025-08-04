@@ -8,6 +8,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -90,7 +91,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation)
+                                   showDocumentation: $showDocumentation,
+                                   showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -127,6 +129,10 @@ struct PointOfSaleDashboardView: View {
             supportForm
                 .interactiveDismissDisabled(true)
         }
+        .sheet(isPresented: $showSettings) {
+            PointOfSaleSettingsView()
+        }
+        .posRootModal()
         .sheet(isPresented: $showDocumentation) {
             documentationView
         }
@@ -290,3 +296,46 @@ private extension PointOfSaleDashboardView {
 }
 
 #endif
+
+
+struct PointOfSaleSettingsView: View {
+    enum Section: String, CaseIterable, Identifiable {
+        case store = "Store"
+        case payments = "Payments"
+
+        var id: String { rawValue }
+    }
+
+    @State private var selectedSection: Section? = .store
+    @State private var enableStoreOption = false
+    @State private var paymentMethodEnabled = true
+
+    var body: some View {
+        NavigationSplitView {
+            List(Section.allCases, selection: $selectedSection) { section in
+                Text(section.rawValue)
+                    .tag(section)
+            }
+            .navigationTitle("Settings")
+        } detail: {
+            if let section = selectedSection {
+                switch section {
+                case .store:
+                    Form {
+                        Toggle("Enable Store Option", isOn: $enableStoreOption)
+                        Button("Do Store Thing") { /* ... */ }
+                    }
+                    .navigationTitle("Store Settings")
+                case .payments:
+                    Form {
+                        Toggle("Payment Method Enabled", isOn: $paymentMethodEnabled)
+                    }
+                    .navigationTitle("Payment Settings")
+                }
+            } else {
+                Text("Select a section")
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}

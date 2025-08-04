@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-16 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-29 15:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -4956,9 +4956,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "Плагины";
-
-/* Title of the POS menu in the hub menu */
-"Point of Sale Mode" = "Режим «Пункт продажи»";
 
 /* Country option for a site address. */
 "Poland" = "Польша";
@@ -10135,9 +10132,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "Аналитика по клиентам";
 
-/* Description of the POS menu in the hub menu */
-"hubMenu.pointOfSale.description" = "Принимать платежи в офлайн-магазине";
-
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "Обзор товара";
 
@@ -10693,6 +10687,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "Доставка";
 
+/* Title of Shipping Labels Section in Order Details screen. */
+"orderDetailsDataSource.title.shippingLabels" = "Транспортные этикетки";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "Отправить этот заказ в корзину.";
 
@@ -10701,6 +10698,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button title to trash an order */
 "orderDetailsDataSource.trashOrder.button.title" = "Отправить в корзину";
+
+/* Button to copy the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.copyTrackingNumber" = "Копировать номер отправления";
+
+/* Button to create a shipping label for a shipment */
+"orderDetailsShipmentDetailsView.createShippingLabel" = "Создать транспортную этикетку";
+
+/* Plural item count for a shipment. Reads like: 2 items */
+"orderDetailsShipmentDetailsView.itemCountPlural" = "Товары (%1$d)";
+
+/* Singular item count for a shipment. Reads like: 1 item */
+"orderDetailsShipmentDetailsView.itemCountSingular" = "Товары (%1$d)";
+
+/* Button to print the customs form for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.printCustomsForm" = "Распечатать таможенную форму";
+
+/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
+"orderDetailsShipmentDetailsView.printShippingLabel" = "Напечатать транспортную этикетку (%1$@)";
+
+/* Message for a refunded shipping label. */
+"orderDetailsShipmentDetailsView.refundMessage" = "Запрос на возврат средств успешно отправлен. Вы можете приобрести новую этикетку.";
+
+/* Button to request a refund for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.requestRefund" = "Запросить возврат средств";
+
+/* Order shipment title format. The placeholder indicates the index of the shipping label package. */
+"orderDetailsShipmentDetailsView.title" = "Доставка %1$@";
+
+/* Title for the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.trackingNumber" = "Номер отправления";
+
+/* Button to view details of a shipping label */
+"orderDetailsShipmentDetailsView.viewShippingLabel" = "Просмотреть приобретённую транспортную этикетку";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Индивидуальные суммы";
@@ -11317,6 +11347,27 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Сканирование штрихкодов";
 
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• Подключите сканер штрихкодов в настройках Bluetooth iOS.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "Первое. Подключите сканер штрихкодов в настройках Bluetooth iOS.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "Чтобы быстро сформировать корзину, можно сканировать штрихкоды внешним сканером.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "Второе. Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• Убедитесь, что поле поиска не включено при сканировании штрихкодов.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "Третье. Убедитесь, что поле поиска не включено при сканировании штрихкодов.";
+
 /* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
 "pos.barcodeInfoModal.introMessage" = "Чтобы быстро сформировать корзину, можно сканировать штрихкоды внешним сканером.";
 
@@ -11331,6 +11382,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.primaryMessage.accessible" = "Первое: настройте штрихкоды в поле «G-T-I-N, U-P-C, E-A-N, I-S-B-N», перейдя в раздел «Товары», затем в «Сведения о товаре» и «Запасы».";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "сверьтесь с документацией";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "Можно настроить штрихкоды в поле «GTIN, UPC, EAN, ISBN» на вкладке запасов товара. Дополнительные сведения: %1$@.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "Можно настроить штрихкоды в поле «G-T-I-N, U-P-C, E-A-N, I-S-B-N» на вкладке запасов товара. Дополнительные сведения см. в документации по ссылке.";
 
 /* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
 "pos.barcodeInfoModal.quaternaryMessage" = "• Сканируйте штрихкоды в списке товаров, чтобы добавлять товары в корзину.";
@@ -11359,38 +11419,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Готово";
 
-/* Heading for the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.heading" = "Настройка сканера штрихкодов";
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "Назад";
 
-/* Introductory message in the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.introMessage" = "Выберите сканер штрихкодов, чтобы начать процесс настройки.";
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "Повторить";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
 
 /* Title for the next button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.next.button.title" = "Далее";
 
-/* Subtitle for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.subtitle" = "Общие инструкции по настройке сканера";
-
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Другой";
-
-/* Subtitle for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.subtitle" = "Небольшой портативный сканер с зарядной док-станцией или подставкой";
-
-/* Title for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
-
-/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.subtitle" = "Эргономичный сканер с подставкой";
 
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
-/* Subtitle for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.subtitle" = "Рекомендуемый сканер";
-
-/* Title for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.title" = "Сканер TBC";
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Нажмите на товар, чтобы \n добавить его в корзину";
@@ -11428,32 +11476,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Выйти из режима POS";
 
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Включить функцию POS";
+
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Повторить";
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled" = "Чтобы продолжать, необходимо активировать режим Point of Sale (Пункт продажи). Включите режим POS в консоли WordPress в разделе «Настройки WooCommerce > Расширенные > Функции».";
-
-/* Suggestion for feature switch sync failure: relaunch or check connection */
-"pos.ineligible.suggestion.featureSwitchSyncFailure" = "Попробуйте перезапустить приложение или проверьте подключение к Интернету и повторите попытку.";
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "Чтобы продолжить, необходимо активировать режим Point of Sale (Пункт продажи). Включите режим POS ниже или в консоли WordPress в разделе «Настройки WooCommerce > Расширенные > Функции» и повторите попытку.";
 
 /* Suggestion for self deallocated: relaunch */
 "pos.ineligible.suggestion.selfDeallocated" = "Попробуйте перезапустить приложение, чтобы решить эту проблему.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable" = "Проверьте подключение к Интернету и попробуйте перезапустить приложение. Если решить проблему не удалось, обратитесь в службу поддержки.";
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "Не удалось загрузить сведения о настройках сайта. Проверьте подключение к Интернету и повторите попытку. Если решить проблему не удалось, обратитесь в службу поддержки.";
 
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency" = "Система POS не поддерживает валюту вашего магазина. В настоящее время поддерживается только %1$@. Проверьте настройки валюты магазина или обратитесь за помощью в службу поддержки.";
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "Система POS не поддерживает валюту вашего магазина. В %1$@ сейчас поддерживается только %2$@. Проверьте настройки валюты магазина или обратитесь за помощью в службу поддержки.";
 
 /* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion" = "Для работы Point of Sale требуется iOS 17 или более поздней версии. Чтобы использовать эту функцию, обновите ваше устройство до версии iOS 17 или более поздней.";
+"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "Системе POS требуется iOS 17 или более поздней версии. Чтобы использовать эту функцию, обновите ваше устройство до версии iOS 17 или более поздней.";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "Ваша версия WooCommerce не поддерживается. Для работы системы POS требуется WooCommerce версии %1$@ или более поздней. Обновите WooCommerce до последней версии.";
 
 /* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound" = "Установите и активируйте плагин WooCommerce через WordPress admin.";
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "Не удалось загрузить сведения о плагине WooCommerce. Необходимо установить плагин WooCommerce и активировать его через учётную запись администратора WordPress. Если решить проблему не удалось, обратитесь в службу поддержки.";
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Не удалось загрузить";
@@ -12067,6 +12115,12 @@ which should be translated separately and considered part of this sentence. */
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "Отложено";
 
+/* Description for the Sales channel filter option, when selecting 'Any' order */
+"salesChannelFilter.row.any.description" = "Любой";
+
+/* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
+"salesChannelFilter.row.pos.description" = "Пункт продажи";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "Отмена";
 
@@ -12091,6 +12145,18 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "обмениваться сведениями";
+
+/* Accessibility hint to collapse the product items section */
+"shipping-labels.packages.items.collapse.accessibility-hint" = "Коснитесь дважды, чтобы скрыть все элементы";
+
+/* Accessibility hint to expand the product items section */
+"shipping-labels.packages.items.expand.accessibility-hint" = "Коснитесь дважды, чтобы показать все элементы";
+
+/* Accessibility label for collapsible products section */
+"shipping-labels.packages.items.header.accessibilityLabel" = "Раздел товаров";
+
+/* Accessibility label for the summary of product items in a shipment. The %1$@ is items count. The %2$@ is total weight. The %3$@ is total price. */
+"shipping-labels.packages.items.summary.accessibility-label" = "%1$@ общим весом %2$@ и общей стоимостью %3$@";
 
 /* Body for the custom items description educational dialog */
 "shipping.customs.descriptionInfoDialogBody" = "Отправляя товары в страны, где действуют таможенные правила Европейского союза (ЕС), вы должны точно и понятно описать каждую позицию. Так, при отправке одежды необходимо указать её тип (например, мужские рубашки, жилет для девочки, куртка для мальчика), чтобы описание считалось приемлемым. В противном случае доставка может быть приостановлена или задержана таможней.";
@@ -12133,6 +12199,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "Изменить доставку";
+
+/* Accessibility value for a shipping item row. The %1$@ is details text. The %2$@ is weight. The %3$@ is a total price */
+"shipping_item_row.accessibility_value.format" = "%1$@, вес: %2$@, общая цена: %3$@";
+
+/* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
+"shipping_item_row.quantity.format" = "%1$d шт. %2$@";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "Отмена";
@@ -12717,6 +12789,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "Высота";
 
+/* Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.invalidDimensions" = "Размеры посылки должны быть больше 0";
+
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "Готово";
 
@@ -12768,6 +12843,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "Закрыть";
 
+/* Accessibility hint of the button to open the shipments editing form. */
+"wooShipping.createLabel.editButton.accessibility.hint" = "Открывает форму редактирования доставки.";
+
 /* Title for the Edit Package screen Done button */
 "wooShipping.createLabel.editPackage.done" = "Готово";
 
@@ -12785,6 +12863,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Value for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatRow.yes" = "Да";
+
+/* Accessibility value indicating that the shipment of a tab is fulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled" = "Выполнено.";
+
+/* Accessibility value indicating that the shipment of a tab is unfulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled" = "Не выполнено.";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "Введите размеры посылки или выберите одну из упаковок перевозчика, чтобы узнать доступные тарифы на доставку.";
@@ -12932,6 +13016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the address is unverified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.unverified" = "Неподтверждённый адрес";
+
+/* Button to proceed with the input address even when validation fails */
+"wooShipping.createLabels.editAddress.useAddressAsEntered" = "Использовать введённый адрес";
 
 /* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
 "wooShipping.createLabels.editAddress.validateAddress" = "Подтвердить и сохранить";
@@ -13362,8 +13449,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "Не удалось сохранить упаковку";
 
-/* Message when the ITN field is invalid in the customs form of a shipping label */
-"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "Введите действительный номер ITN в одном из следующих форматов: X12345678901234, AES X12345678901234 или NOEEI 30.37(a).";
+/* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "Введите действительный номер ITN в одном из следующих форматов: AES X12345678901234 или NOEEI 30.37(a).";
 
 /* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
 "wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "Для доставки в страну назначения необходим международный номер транзакции (ITN).";

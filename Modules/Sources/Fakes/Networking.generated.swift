@@ -631,11 +631,24 @@ extension Networking.InboxNote {
         )
     }
 }
+extension Networking.JetpackConnectionData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.JetpackConnectionData {
+        .init(
+            currentUser: .fake(),
+            isRegistered: .fake(),
+            connectionOwner: .fake(),
+            blogId: .fake()
+        )
+    }
+}
 extension Networking.JetpackUser {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> Networking.JetpackUser {
         .init(
+            blogId: .fake(),
             isConnected: .fake(),
             isPrimary: .fake(),
             username: .fake(),

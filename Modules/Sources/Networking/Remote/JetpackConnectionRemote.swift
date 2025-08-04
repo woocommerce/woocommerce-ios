@@ -49,11 +49,11 @@ public final class JetpackConnectionRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Fetches the user connection state with the site's Jetpack.
+    /// Fetches the connection state with the site's Jetpack for the authenticated user.
     ///
-    public func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionUser)
-        let mapper = JetpackUserMapper()
+    public func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionData)
+        let mapper = JetpackConnectionDataMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 }
@@ -68,7 +68,7 @@ public extension JetpackConnectionRemote {
 private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
-        static let jetpackConnectionUser = "/jetpack/v4/connection/data"
+        static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let plugins = "/wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }

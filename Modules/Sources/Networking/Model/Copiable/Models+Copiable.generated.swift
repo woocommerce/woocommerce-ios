@@ -994,6 +994,27 @@ extension Networking.InboxNote {
     }
 }
 
+extension Networking.JetpackConnectionData {
+    public func copy(
+        currentUser: CopiableProp<JetpackUser> = .copy,
+        isRegistered: NullableCopiableProp<Bool> = .copy,
+        connectionOwner: NullableCopiableProp<String> = .copy,
+        blogId: NullableCopiableProp<Int64> = .copy
+    ) -> Networking.JetpackConnectionData {
+        let currentUser = currentUser ?? self.currentUser
+        let isRegistered = isRegistered ?? self.isRegistered
+        let connectionOwner = connectionOwner ?? self.connectionOwner
+        let blogId = blogId ?? self.blogId
+
+        return Networking.JetpackConnectionData(
+            currentUser: currentUser,
+            isRegistered: isRegistered,
+            connectionOwner: connectionOwner,
+            blogId: blogId
+        )
+    }
+}
+
 extension Networking.JetpackUser {
     public func copy(
         isConnected: CopiableProp<Bool> = .copy,

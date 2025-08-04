@@ -203,7 +203,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackUser_correctly_returns_parsed_user() throws {
+    func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
@@ -213,8 +213,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 promise(result)
             }
             store.onAction(action)
@@ -222,12 +222,12 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let user = try XCTUnwrap(result.get())
+        let user = try XCTUnwrap(result.get().currentUser)
         XCTAssertTrue(user.isConnected)
         XCTAssertNotNil(user.wpcomUser)
     }
 
-    func test_fetchJetpackUser_properly_relays_errors() {
+    func test_fetchJetpackConnectionData_properly_relays_errors() {
         // Given
         let siteURL = "http://test.com"
         let urlSuffix = "/jetpack/v4/connection/data"
@@ -239,8 +239,8 @@ final class JetpackConnectionStoreTests: XCTestCase {
         store.onAction(setupAction)
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 promise(result)
             }
             store.onAction(action)

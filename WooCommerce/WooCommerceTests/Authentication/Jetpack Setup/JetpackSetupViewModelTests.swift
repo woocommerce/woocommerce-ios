@@ -234,11 +234,13 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -560,16 +562,16 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.jetpackConnectionURL, URL(string: expectedURL))
     }
 
-    func test_authorizeJetpackConnection_sets_connection_status_to_in_progress_and_triggers_fetching_jetpack_user() {
+    func test_authorizeJetpackConnection_sets_connection_status_to_in_progress_and_triggers_fetching_jetpack_connection() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
 
-        var triggeredFetchingJetpackUser = false
+        var triggeredFetchingJetpackConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser:
-                triggeredFetchingJetpackUser = true
+            case .fetchJetpackConnectionData:
+                triggeredFetchingJetpackConnection = true
             default:
                 break
             }
@@ -579,20 +581,22 @@ final class JetpackSetupViewModelTests: XCTestCase {
         viewModel.didAuthorizeJetpackConnection()
 
         // Then
-        XCTAssertTrue(triggeredFetchingJetpackUser)
+        XCTAssertTrue(triggeredFetchingJetpackConnection)
         XCTAssertEqual(viewModel.currentConnectionStep, .inProgress)
     }
 
-    func test_authorizeJetpackConnection_updates_connection_status_and_setup_step_correctly_when_fetching_jetpack_user_successfully() {
+    func test_authorizeJetpackConnection_updates_connection_status_and_setup_step_correctly_when_fetching_jetpack_connection_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -751,16 +755,16 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
-    func test_checkJetpackConnection_hits_fetchJetpackUser_3_times_when_encountering_error_consistently_and_relays_error() {
+    func test_checkJetpackConnection_hits_fetchJetpackConnection_3_times_when_encountering_error_consistently_and_relays_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        var fetchJetpackUserTriggerCount = 0
+        var fetchJetpackConnectionTriggerCount = 0
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                fetchJetpackUserTriggerCount += 1
+            case .fetchJetpackConnectionData(let completion):
+                fetchJetpackConnectionTriggerCount += 1
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -774,23 +778,23 @@ final class JetpackSetupViewModelTests: XCTestCase {
         waitUntil {
             viewModel.setupFailed
         }
-        XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
+        XCTAssertEqual(fetchJetpackConnectionTriggerCount, 3)
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
                                                          setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
                                                          errorCode: -1001))
     }
 
-    func test_checkJetpackConnection_hits_fetchJetpackUser_3_times_when_failing_to_fetch_connected_wpcom_user() {
+    func test_checkJetpackConnection_hits_fetchJetpackConnectionData_3_times_when_failing_to_fetch_connected_wpcom_user() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, delayBeforeRetry: 0)
-        var fetchJetpackUserTriggerCount = 0
+        var fetchJetpackConnectionTriggerCount = 0
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                fetchJetpackUserTriggerCount += 1
-                completion(.success(JetpackUser.fake().copy(wpcomUser: nil)))
+            case .fetchJetpackConnectionData(let completion):
+                fetchJetpackConnectionTriggerCount += 1
+                completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: nil))))
             default:
                 break
             }
@@ -803,7 +807,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         waitUntil {
             viewModel.setupFailed
         }
-        XCTAssertEqual(fetchJetpackUserTriggerCount, 3)
+        XCTAssertEqual(fetchJetpackConnectionTriggerCount, 3)
         XCTAssertEqual(viewModel.setupErrorDetail, .init(setupErrorMessage: JetpackSetupViewModel.Localization.genericErrorMessage,
                                                          setupErrorSuggestion: JetpackSetupViewModel.Localization.communicationErrorSuggestion,
                                                          errorCode: 99))
@@ -1007,11 +1011,13 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        let data = JetpackConnectionData.fake().copy(
+            currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@mail.com"))
+        )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -1032,11 +1038,11 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, stores: stores, analytics: analytics, delayBeforeRetry: 0)
 
-        let user = JetpackUser.fake().copy(isConnected: true, wpcomUser: nil)
+        let data = JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true, wpcomUser: nil))
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
-                completion(.success(user))
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(data))
             default:
                 break
             }
@@ -1060,7 +1066,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let error = NSError(domain: "Test", code: 1)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackUser(let completion):
+            case .fetchJetpackConnectionData(let completion):
                 completion(.failure(error))
             default:
                 break

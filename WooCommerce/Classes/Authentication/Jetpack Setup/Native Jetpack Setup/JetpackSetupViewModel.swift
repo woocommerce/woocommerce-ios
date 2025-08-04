@@ -317,11 +317,11 @@ private extension JetpackSetupViewModel {
             return
         }
         currentConnectionStep = .inProgress
-        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
+        let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success(let user):
-                guard let connectedEmail = user.wpcomUser?.email else {
+            case .success(let connectionData):
+                guard let connectedEmail = connectionData.user.wpcomUser?.email else {
                     DDLogWarn("⚠️ Cannot find connected WPcom user")
                     let missingWpcomUserError = NSError(domain: Constants.errorDomain,
                                                         code: Constants.errorCodeNoWPComUser,

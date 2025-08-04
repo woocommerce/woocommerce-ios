@@ -43,7 +43,7 @@ private extension JetpackUserMapperTests {
             throw FileNotFoundError()
         }
 
-        return try JetpackUserMapper().map(response: response)
+        return try JetpackConnectionDataMapper().map(response: response).currentUser
     }
 
     func mapNotConnectedUserFromMockResponse() throws -> JetpackUser {
@@ -51,7 +51,7 @@ private extension JetpackUserMapperTests {
             throw FileNotFoundError()
         }
 
-        return try JetpackUserMapper().map(response: response)
+        return try JetpackConnectionDataMapper().map(response: response).currentUser
     }
 
     struct FileNotFoundError: Error {}

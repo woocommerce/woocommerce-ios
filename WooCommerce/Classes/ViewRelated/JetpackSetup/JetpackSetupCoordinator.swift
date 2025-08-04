@@ -146,7 +146,7 @@ private extension JetpackSetupCoordinator {
     ///
     func checkJetpackConnectionState() async throws {
         do {
-            let user = try await fetchJetpackUser()
+            let user = try await fetchJetpackConnectionData().currentUser
             jetpackConnectedEmail = user.wpcomUser?.email
         } catch NetworkError.notFound {
             /// 404 error means Jetpack is not installed or activated yet.
@@ -319,14 +319,14 @@ private extension JetpackSetupCoordinator {
     }
 
     @MainActor
-    func fetchJetpackUser() async throws -> JetpackUser {
+    func fetchJetpackConnectionData() async throws -> JetpackConnectionData {
         /// Jetpack setup will fail anyway without admin role, so check that first.
         let roles = stores.sessionManager.defaultRoles
         guard roles.contains(.administrator) else {
             throw JetpackCheckError.missingPermission
         }
         return try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.fetchJetpackUser { result in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 continuation.resume(with: result)
             }
             stores.dispatch(action)
@@ -339,7 +339,7 @@ private extension JetpackSetupCoordinator {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
                 case let .success(systemInformation):
-                    if let plugin = systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) {
+                    if systemInformation.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .jetpack && $0.active }) != nil {
                         continuation.resume(returning: true)
                     } else {
                         continuation.resume(returning: false)

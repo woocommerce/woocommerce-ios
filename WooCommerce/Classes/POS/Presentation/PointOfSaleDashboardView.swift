@@ -302,13 +302,16 @@ struct PointOfSaleSettingsView: View {
     enum Section: String, CaseIterable, Identifiable {
         case store = "Store"
         case payments = "Payments"
+        case hardware = "Hardware"
+        case help = "Help"
 
         var id: String { rawValue }
     }
 
     @State private var selectedSection: Section? = .store
-    @State private var enableStoreOption = false
-    @State private var paymentMethodEnabled = true
+    @State private var isSomeToggleEnabled = false
+
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationSplitView {
@@ -318,23 +321,57 @@ struct PointOfSaleSettingsView: View {
             }
             .navigationTitle("Settings")
         } detail: {
-            if let section = selectedSection {
-                switch section {
-                case .store:
-                    Form {
-                        Toggle("Enable Store Option", isOn: $enableStoreOption)
-                        Button("Do Store Thing") { /* ... */ }
+            VStack {
+                Group {
+                    // Most likely this will end being a scroll view
+                    if let section = selectedSection {
+                        switch section {
+                        case .store:
+                            Form {
+                                Toggle("Enable Store Option", isOn: $isSomeToggleEnabled)
+                                Button("Do Store Thing") { /* ... */ }
+                            }
+                            .navigationTitle("Store")
+                        case .payments:
+                            Form {
+                                Toggle("Payment Method Enabled", isOn: $isSomeToggleEnabled)
+                            }
+                            .navigationTitle("Payments")
+                        case .hardware:
+                            Form {
+                                Toggle("Card readers", isOn: $isSomeToggleEnabled)
+                                Toggle("Barcode scanners", isOn: $isSomeToggleEnabled)
+                            }
+                            .navigationTitle("Hardware")
+                        case .help:
+                            Form {
+                                Button("Where are my products?") { /* Collapsable content, open modal, deeplinking, etc, ... based on case */ }
+                                Button("Documentation") { /* ... */ }
+                                Button("Get Support") { /* ... */ }
+                            }
+                        }
                     }
-                    .navigationTitle("Store Settings")
-                case .payments:
-                    Form {
-                        Toggle("Payment Method Enabled", isOn: $paymentMethodEnabled)
-                    }
-                    .navigationTitle("Payment Settings")
                 }
-            } else {
-                Text("Select a section")
-                    .foregroundStyle(.secondary)
+
+                Button(action: {
+                    // TODO: Handle saves
+                    dismiss()
+                }) {
+                    Text("Save Changes")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .padding()
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                         dismiss()
+                     } label: {
+                         Image(systemName: "xmark")
+                     }
+                }
             }
         }
     }

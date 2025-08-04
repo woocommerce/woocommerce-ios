@@ -81,7 +81,7 @@ extension View {
     /// This works exactly like the native .sheet() modifier but automatically tracks
     /// presentation state.
     ///
-    /// This will only work in a view hierarchy containing a `posRootSheet` modifier.
+    /// This will only work in a view hierarchy containing a `POSSheetManager` environment object.
     ///
     /// - Parameters:
     ///   - isPresented: Binding to control when the sheet is shown.
@@ -107,7 +107,7 @@ extension View {
     /// This works exactly like the native .sheet(item:) modifier but automatically tracks
     /// presentation state.
     ///
-    /// This will only work in a view hierarchy containing a `posRootSheet` modifier.
+    /// This will only work in a view hierarchy containing a `POSSheetManager` environment object.
     ///
     /// - Parameters:
     ///   - item: Binding to control when the sheet is shown. When non-nil, the item is used to build the content.

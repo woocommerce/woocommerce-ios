@@ -56,12 +56,27 @@ public final class JetpackConnectionRemote: Remote {
         let mapper = JetpackConnectionDataMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Establishes a site-level connection between the site and WordPress.com using Jetpack.
+    /// Returns WPCom `blogID` of the connected site.
+    ///
+    public func registerSite() async throws -> Int64 {
+        let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionRegister)
+        let mapper = JetpackConnectionRegistrationMapper()
+        let authorizationURL = try await enqueue(request, mapper: mapper).authorizeUrl
+        guard let components = URLComponents(string: authorizationURL),
+              let blogID = components.queryItems?.first(where: { $0.name == Constants.clientID }) as? Int64 else {
+            throw ConnectionError.invalidAuthorizationURL
+        }
+        return blogID
+    }
 }
 
 public extension JetpackConnectionRemote {
     enum ConnectionError: Int, Error {
         case malformedURL
         case accountConnectionURLNotFound
+        case invalidAuthorizationURL
     }
 }
 
@@ -69,6 +84,7 @@ private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
+        static let jetpackConnectionRegister = "/jetpack/v4/connection/register"
         static let plugins = "/wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }
@@ -83,5 +99,6 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginName = "jetpack/jetpack"
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
+        static let clientID = "client_id"
     }
 }

@@ -23,12 +23,17 @@ final class OrderDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
+    private lazy var productResultsController: GenericResultsController<StorageProduct, ProductListItem> = {
         let productIDs = order.items.map { $0.productID }
         let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return GenericResultsController<StorageProduct, ProductListItem>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor],
+            transformer: { $0.toListItem() }
+        )
     }()
 
     /// ProductVariation ResultsController.
@@ -233,7 +238,7 @@ private extension OrderDetailsResultsControllers {
     private func configureProductResultsController(onReload: @escaping () -> Void) {
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
-            products = productResultsController.listItemObjects
+            products = productResultsController.fetchedObjects
             onReload()
         }
 
@@ -247,7 +252,7 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try productResultsController.performFetch()
-            products = productResultsController.listItemObjects
+            products = productResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
         }

@@ -9,9 +9,9 @@ import CoreData
 public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
 
 
-// MARK: - ResultsController
+// MARK: - GenericResultsController (Core Implementation)
 //
-public class ResultsController<T: ResultsControllerMutableType> {
+public class GenericResultsController<T: ResultsControllerMutableType, Output> {
 
     /// The `StorageType` used to fetch objects.
     ///
@@ -79,7 +79,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
     /// Closure to be executed whenever an Object is updated.
     ///
-    public var onDidChangeObject: ((_ object: T.ReadOnlyType, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
+    public var onDidChangeObject: ((_ object: Output, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
 
     /// Closure to be executed whenever an entire Section is updated.
     ///
@@ -94,19 +94,25 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     private let fetchLimit: Int?
 
+    /// Transformer closure to convert T to Output type.
+    ///
+    private let transformer: (T) -> Output
+
     /// Designated Initializer.
     ///
     public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 fetchLimit: Int? = nil,
-                sortedBy descriptors: [NSSortDescriptor]) {
+                sortedBy descriptors: [NSSortDescriptor],
+                transformer: @escaping (T) -> Output) {
 
         self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.fetchLimit = fetchLimit
         self.sortDescriptors = descriptors
+        self.transformer = transformer
 
         setupResultsController()
         setupEventsForwarding()
@@ -119,13 +125,15 @@ public class ResultsController<T: ResultsControllerMutableType> {
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             fetchLimit: Int? = nil,
-                            sortedBy descriptors: [NSSortDescriptor]) {
+                            sortedBy descriptors: [NSSortDescriptor],
+                            transformer: @escaping (T) -> Output) {
 
         self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   fetchLimit: fetchLimit,
-                  sortedBy: descriptors)
+                  sortedBy: descriptors,
+                  transformer: transformer)
     }
 
 
@@ -139,14 +147,14 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     /// Prefer to use `safeObject(at:)` instead.
     ///
-    public func object(at indexPath: IndexPath) -> T.ReadOnlyType {
-        return controller.object(at: indexPath).toReadOnly()
+    public func object(at indexPath: IndexPath) -> Output {
+        return transformer(controller.object(at: indexPath))
     }
 
     /// Returns the fetched object at the given `indexPath`. Returns `nil` if the `indexPath`
     /// does not exist.
     ///
-    public func safeObject(at indexPath: IndexPath) -> T.ReadOnlyType? {
+    public func safeObject(at indexPath: IndexPath) -> Output? {
         guard !isEmpty else {
             return nil
         }
@@ -160,7 +168,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
             return nil
         }
 
-        return controller.object(at: indexPath).toReadOnly()
+        return transformer(controller.object(at: indexPath))
     }
 
     /// Returns the Plain ObjectIndex corresponding to a given IndexPath. You can use this index to map the
@@ -196,22 +204,22 @@ public class ResultsController<T: ResultsControllerMutableType> {
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
     /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
     ///
-    public var fetchedObjects: [T.ReadOnlyType] {
-        let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
-            mutableObject.toReadOnly()
+    public var fetchedObjects: [Output] {
+        let transformedObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            transformer(mutableObject)
         }
 
-        return readOnlyObjects ?? []
+        return transformedObjects ?? []
     }
 
     /// Returns an array of SectionInfo Entitites.
     ///
     public var sections: [SectionInfo] {
-        let readOnlySections = controller.sections?.compactMap { mutableSection in
-            SectionInfo(mutableSection: mutableSection)
+        let transformedSections = controller.sections?.compactMap { mutableSection in
+            SectionInfo(mutableSection: mutableSection, transformer: transformer)
         }
 
-        return readOnlySections ?? []
+        return transformedSections ?? []
     }
 
     /// Returns an optional index path of the first matching object.
@@ -261,8 +269,8 @@ public class ResultsController<T: ResultsControllerMutableType> {
                 return
             }
 
-            let readOnlyObject = object.toReadOnly()
-            self.onDidChangeObject?(readOnlyObject, indexPath, type, newIndexPath)
+            let transformedObject = transformer(object)
+            self.onDidChangeObject?(transformedObject, indexPath, type, newIndexPath)
         }
 
         internalDelegate.onDidChangeSection = { [weak self] (mutableSection, sectionIndex, type) in
@@ -270,8 +278,8 @@ public class ResultsController<T: ResultsControllerMutableType> {
                 return
             }
 
-            let readOnlySection = SectionInfo(mutableSection: mutableSection)
-            self.onDidChangeSection?(readOnlySection, sectionIndex, type)
+            let transformedSection = SectionInfo(mutableSection: mutableSection, transformer: transformer)
+            self.onDidChangeSection?(transformedSection, sectionIndex, type)
         }
     }
 
@@ -295,7 +303,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
 
 // MARK: - Nested Types
 //
-public extension ResultsController {
+public extension GenericResultsController {
 
     // MARK: - ResultsController.ChangeType
     //
@@ -323,9 +331,13 @@ public extension ResultsController {
             mutableSectionInfo.numberOfObjects
         }
 
-        /// Returns the array of (ReadOnly) objects in the section.
+        /// Transformer closure to convert objects in the section.
         ///
-        private(set) public lazy var objects: [T.ReadOnlyType] = {
+        private let transformer: (T) -> Output
+
+        /// Returns the array of transformed objects in the section.
+        ///
+        private(set) public lazy var objects: [Output] = {
             guard let objects = mutableSectionInfo.objects else {
                 return []
             }
@@ -334,27 +346,47 @@ public extension ResultsController {
                 return []
             }
 
-            return castedObjects.map { $0.toReadOnly() }
+            return castedObjects.map { transformer($0) }
         }()
 
         /// Designated Initializer
         ///
-        init(mutableSection: NSFetchedResultsSectionInfo) {
+        init(mutableSection: NSFetchedResultsSectionInfo, transformer: @escaping (T) -> Output) {
             mutableSectionInfo = mutableSection
+            self.transformer = transformer
         }
     }
 }
 
-
-public extension ResultsController where T: ListItemConvertible {
-    /// Returns an array of all list items mapped from the fetched objects.
-    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
+// MARK: - ResultsController (Backward Compatible Specialization)
+//
+public class ResultsController<T: ResultsControllerMutableType>: GenericResultsController<T, T.ReadOnlyType> {
+    /// Designated Initializer.
     ///
-    var listItemObjects: [T.ListItemType] {
-        let listItemObjects = controller.fetchedObjects?.compactMap { mutableObject in
-            mutableObject.toListItem()
-        }
+    public init(viewStorage: StorageType,
+                sectionNameKeyPath: String? = nil,
+                matching predicate: NSPredicate? = nil,
+                fetchLimit: Int? = nil,
+                sortedBy descriptors: [NSSortDescriptor]) {
+        super.init(viewStorage: viewStorage,
+                   sectionNameKeyPath: sectionNameKeyPath,
+                   matching: predicate,
+                   fetchLimit: fetchLimit,
+                   sortedBy: descriptors,
+                   transformer: { $0.toReadOnly() })
+    }
 
-        return listItemObjects ?? []
+    /// Convenience Initializer.
+    ///
+    public convenience init(storageManager: StorageManagerType,
+                            sectionNameKeyPath: String? = nil,
+                            matching predicate: NSPredicate? = nil,
+                            fetchLimit: Int? = nil,
+                            sortedBy descriptors: [NSSortDescriptor]) {
+        self.init(viewStorage: storageManager.viewStorage,
+                  sectionNameKeyPath: sectionNameKeyPath,
+                  matching: predicate,
+                  fetchLimit: fetchLimit,
+                  sortedBy: descriptors)
     }
 }

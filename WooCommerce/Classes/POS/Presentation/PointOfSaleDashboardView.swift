@@ -7,7 +7,6 @@ struct PointOfSaleDashboardView: View {
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
-    @State private var showDocumentation: Bool = false
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
@@ -91,7 +90,7 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation,
+                                   showDocumentation: .constant(false),
                                    showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
@@ -130,10 +129,7 @@ struct PointOfSaleDashboardView: View {
                 .interactiveDismissDisabled(true)
         }
         .fullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView(showDocumentation: $showDocumentation)
-        }
-        .sheet(isPresented: $showDocumentation) {
-            documentationView
+            PointOfSaleSettingsView()
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -203,10 +199,6 @@ private extension PointOfSaleDashboardView {
             }
         }
         .navigationViewStyle(.stack)
-    }
-
-    var documentationView: some View {
-        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
@@ -307,7 +299,13 @@ struct PointOfSaleSettingsView: View {
         var id: String { rawValue }
     }
 
-    @Binding var showDocumentation: Bool
+    @State private var showDocumentation = false
+
+    var documentationDestinationView: some View {
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+            .navigationTitle("Documentation")
+            .navigationBarTitleDisplayMode(.inline)
+    }
 
     @State private var selectedSection: Section? = .store
     @State private var isSomeToggleEnabled = false
@@ -322,62 +320,72 @@ struct PointOfSaleSettingsView: View {
             }
             .navigationTitle("Settings")
         } detail: {
-            VStack {
-                Group {
-                    // Most likely this will end being a scroll view
-                    if let section = selectedSection {
-                        switch section {
-                        case .store:
-                            Form {
-                                Toggle("Enable Store Option", isOn: $isSomeToggleEnabled)
-                                Button("Do Store Thing") { /* ... */ }
-                            }
-                            .navigationTitle("Store")
-                        case .payments:
-                            Form {
-                                Toggle("Payment Method Enabled", isOn: $isSomeToggleEnabled)
-                            }
-                            .navigationTitle("Payments")
-                        case .hardware:
-                            Form {
-                                Toggle("Card readers", isOn: $isSomeToggleEnabled)
-                                Toggle("Barcode scanners", isOn: $isSomeToggleEnabled)
-                            }
-                            .navigationTitle("Hardware")
-                        case .help:
-                            Form {
-                                // Collapsable content, open modal, deeplinking, etc, ... based on case
-                                Button("Where are my products?") { /* ... */ }
-                                Button("Documentation") {
-                                    // Problem if we attempt to present multiple sheets:
-                                    // Currently, only presenting a single sheet is supported.
-                                    // The next sheet will be presented when the currently presented sheet gets dismissed.
-                                    showDocumentation = true
+            NavigationStack {
+                VStack {
+                    Group {
+                        // Most likely this will end being a scroll view
+                        if let section = selectedSection {
+                            switch section {
+                            case .store:
+                                Form {
+                                    Toggle("Enable Store Option", isOn: $isSomeToggleEnabled)
+                                    Button("Do Store Thing") { /* ... */ }
                                 }
-                                Button("Get Support") { /* ... */ }
+                                .navigationTitle("Store")
+                            case .payments:
+                                Form {
+                                    Toggle("Payment Method Enabled", isOn: $isSomeToggleEnabled)
+                                }
+                                .navigationTitle("Payments")
+                            case .hardware:
+                                Form {
+                                    Toggle("Card readers", isOn: $isSomeToggleEnabled)
+                                    Toggle("Barcode scanners", isOn: $isSomeToggleEnabled)
+                                }
+                                .navigationTitle("Hardware")
+                            case .help:
+                                Form {
+                                    // Collapsable content, open modal, deeplinking, etc, ... based on case
+                                    Button("Where are my products?") { /* ... */ }
+                                    Button("Documentation") {
+                                        // Problem if we attempt to present multiple sheets:
+                                        // Currently, only presenting a single sheet is supported.
+                                        // The next sheet will be presented when the currently presented sheet gets dismissed.
+                                        showDocumentation = true
+                                    }
+                                    Button("Get Support") { /* ... */ }
+                                }
                             }
                         }
                     }
-                }
 
-                Button(action: {
-                    // TODO: Handle saves
-                    dismiss()
-                }) {
-                    Text("Save Changes")
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
+                    Button(action: {
+                        // TODO: Handle saves
+                        dismiss()
+                    }) {
+                        Text("Save Changes")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
                 }
-                .buttonStyle(.borderedProminent)
-                .padding()
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                         dismiss()
-                     } label: {
-                         Image(systemName: "xmark")
-                     }
+                
+                NavigationLink(
+                    destination: documentationDestinationView,
+                    isActive: $showDocumentation
+                ) {
+                    EmptyView()
+                }
+                .hidden()
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                             dismiss()
+                         } label: {
+                             Image(systemName: "xmark")
+                         }
+                    }
                 }
             }
         }

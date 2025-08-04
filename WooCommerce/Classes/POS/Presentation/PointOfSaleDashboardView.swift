@@ -376,6 +376,39 @@ struct PointOfSaleSettingsView: View {
             }
         }
     }
+    
+    private var productCatalogView: some View {
+        Form {
+            Section {
+                HStack {
+                    Text("Last sync")
+                    Spacer()
+                    Text(Date().description)
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Next scheduled sync")
+                    Spacer()
+                    Text(Date().description)
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Button(action: {
+                        // Handle
+                    }) {
+                        Text("Sync Catalog")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                }
+
+            } header: {
+                Text("Product Catalog")
+            }
+        }
+    }
 
     private var storeDetailsView: some View {
         Form {
@@ -432,7 +465,7 @@ struct PointOfSaleSettingsView: View {
                             case .store:
                                 storeDetailsView
                             case .productCatalog:
-                                Text("😀")
+                                productCatalogView
                             case .hardware:
                                 hardwareView
                             case .help:

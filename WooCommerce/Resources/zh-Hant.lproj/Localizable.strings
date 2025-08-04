@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-17 11:54:03+0000 */
+/* Translation-Revision-Date: 2025-07-29 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -4956,9 +4956,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "外掛程式";
-
-/* Title of the POS menu in the hub menu */
-"Point of Sale Mode" = "銷售時點情報系統模式";
 
 /* Country option for a site address. */
 "Poland" = "波蘭";
@@ -10132,9 +10129,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "取得顧客洞察報告";
 
-/* Description of the POS menu in the hub menu */
-"hubMenu.pointOfSale.description" = "在實體店面接受付款";
-
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "商品評論";
 
@@ -10690,6 +10684,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "運送方式";
 
+/* Title of Shipping Labels Section in Order Details screen. */
+"orderDetailsDataSource.title.shippingLabels" = "貨運標籤";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "將此訂單移至垃圾桶。";
 
@@ -10698,6 +10695,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button title to trash an order */
 "orderDetailsDataSource.trashOrder.button.title" = "移至垃圾桶";
+
+/* Button to copy the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.copyTrackingNumber" = "複製追蹤號碼";
+
+/* Button to create a shipping label for a shipment */
+"orderDetailsShipmentDetailsView.createShippingLabel" = "建立貨運標籤";
+
+/* Plural item count for a shipment. Reads like: 2 items */
+"orderDetailsShipmentDetailsView.itemCountPlural" = "%1$d 件品項";
+
+/* Singular item count for a shipment. Reads like: 1 item */
+"orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d 件品項";
+
+/* Button to print the customs form for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.printCustomsForm" = "印製海關表單";
+
+/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
+"orderDetailsShipmentDetailsView.printShippingLabel" = "印製貨運標籤 (%1$@)";
+
+/* Message for a refunded shipping label. */
+"orderDetailsShipmentDetailsView.refundMessage" = "你已成功提交退款要求。 你可以購買新標籤。";
+
+/* Button to request a refund for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.requestRefund" = "要求退款";
+
+/* Order shipment title format. The placeholder indicates the index of the shipping label package. */
+"orderDetailsShipmentDetailsView.title" = "貨件：%1$@";
+
+/* Title for the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.trackingNumber" = "追蹤號碼";
+
+/* Button to view details of a shipping label */
+"orderDetailsShipmentDetailsView.viewShippingLabel" = "檢視已購買的貨運標籤";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "自訂金額";
@@ -11314,6 +11344,27 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "掃描條碼";
 
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• 請於 iOS 藍牙設定中，找到藍牙條碼掃描器。";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "第一步：請於 iOS 藍牙設定中，找到藍牙條碼掃描器。";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "若要快速建立購物車，可以使用外部掃描器掃描條碼。";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• 在項目清單上掃描條碼，將商品加入購物車。";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "第二步：在項目清單上掃描條碼，將商品加入購物車。";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• 確認掃描條碼時未啟用搜尋欄位。";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "第三步：確認掃描條碼時未啟用搜尋欄位。";
+
 /* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
 "pos.barcodeInfoModal.introMessage" = "若要快速建立購物車，可以使用外部掃描器掃描條碼。";
 
@@ -11328,6 +11379,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.primaryMessage.accessible" = "1：請依序導覽至「商品」、「商品詳細資料」、「庫存」，然後在「G-T-I-N、U-P-C、E-A-N、I-S-B-N」欄位設定條碼。";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "請參閱文件說明";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "你可以前往商品的「庫存」分頁，並在「GTIN、UPC、EAN、ISBN」欄位設定條碼。 如需更多詳細資料，%1$@。";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "你可以前往商品的「庫存」分頁，並在「G-T-I-N、U-P-C、E-A-N、I-S-B-N」欄位設定條碼。 如需更多詳細資料，請參閱文件說明，連結。";
 
 /* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
 "pos.barcodeInfoModal.quaternaryMessage" = "• 在項目清單上掃描條碼，將商品加入購物車。";
@@ -11356,38 +11416,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "完成";
 
-/* Heading for the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.heading" = "條碼掃描器設定";
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "返回";
 
-/* Introductory message in the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.introMessage" = "選擇條碼掃描器，即可開始進行設定流程。";
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "重試";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
 
 /* Title for the next button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.next.button.title" = "下一個";
 
-/* Subtitle for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.subtitle" = "掃描器一般設定指示";
-
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "其他";
-
-/* Subtitle for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.subtitle" = "小型掌上型掃描器 (含充電底座或支架)";
-
-/* Title for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
-
-/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.subtitle" = "人體工學掃描器 (含支架)";
 
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
-/* Subtitle for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.subtitle" = "推薦的掃描器";
-
-/* Title for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.title" = "掃描器 TBC";
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "點選商品即可\n 新增至購物車";
@@ -11425,32 +11473,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "結束 POS";
 
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "啟用 POS 功能";
+
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "重試";
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled" = "必須啟用「銷售時點情報系統」才能繼續。 若要啟用 POS 功能，請依序點擊 WordPress 管理員的「WooCommerce 設定」>「進階」>「功能」。";
-
-/* Suggestion for feature switch sync failure: relaunch or check connection */
-"pos.ineligible.suggestion.featureSwitchSyncFailure" = "請嘗試重新啟動應用程式，或檢查你的網際網路連線，然後再試一次。";
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "必須啟用「銷售時點情報系統」才能繼續。 請於下方啟用 POS 功能，或依序前往「WooCommerce 設定」>「進階」>「功能」，然後從下方的 WordPress 管理員啟用功能，然後再試一次。";
 
 /* Suggestion for self deallocated: relaunch */
 "pos.ineligible.suggestion.selfDeallocated" = "若要解決此問題，請嘗試重新啟動應用程式。";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable" = "請檢查網際網路連線並嘗試重新啟動應用程式。萬一問題持續發生，請聯絡支援團隊。";
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "我們無法載入網站設定資訊。 請檢查你的網際網路連線並再試一次。 萬一問題持續發生，請聯絡支援團隊尋求協助。";
 
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency" = "你的商店幣別無法使用 POS 系統。 目前僅支援：%1$@。 請檢查你的商店幣別設定，或聯絡支援團隊尋求協助。";
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "POS 系統不支援商店的幣別。 「%1$@」目前僅支援：%2$@。 請檢查商店的幣別設定，或聯絡支援團隊尋求協助。";
 
 /* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion" = "銷售時點情報系統需要 iOS 17 或更新版本。 若要使用此功能，請將裝置更新至 iOS 17 以上版本。";
+"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "POS 系統僅適用於 iOS 17 以上版本。 若要使用此功能，請將裝置更新至 iOS 17 以上版本。";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "系統不支援你的 WooCommerce 版本。 POS 系統需要 WooCommerce %1$@ 或更新版本。 請更新至最新版本的 WooCommerce。";
 
 /* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound" = "從你的 WordPress 管理員安裝並啟用 WooCommerce 外掛程式。";
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "我們無法載入 WooCommerce 外掛程式資訊。 請確認是否安裝 WooCommerce 外掛程式，然後從 WordPress 管理員啟用程式。 萬一還是遇到問題，請聯絡支援團隊尋求協助。";
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "無法載入";
@@ -12067,6 +12115,12 @@ which should be translated separately and considered part of this sentence. */
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "保留";
 
+/* Description for the Sales channel filter option, when selecting 'Any' order */
+"salesChannelFilter.row.any.description" = "任何";
+
+/* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
+"salesChannelFilter.row.pos.description" = "銷售時點情報系統";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "取消";
 
@@ -12091,6 +12145,18 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "分享詳細資訊";
+
+/* Accessibility hint to collapse the product items section */
+"shipping-labels.packages.items.collapse.accessibility-hint" = "點選兩下以隱藏所有商品";
+
+/* Accessibility hint to expand the product items section */
+"shipping-labels.packages.items.expand.accessibility-hint" = "點選兩下以顯示所有商品";
+
+/* Accessibility label for collapsible products section */
+"shipping-labels.packages.items.header.accessibilityLabel" = "「商品」區段";
+
+/* Accessibility label for the summary of product items in a shipment. The %1$@ is items count. The %2$@ is total weight. The %3$@ is total price. */
+"shipping-labels.packages.items.summary.accessibility-label" = "數量：%1$@，總重：%2$@，總價：%3$@";
 
 /* Body for the custom items description educational dialog */
 "shipping.customs.descriptionInfoDialogBody" = "運送到遵循歐盟 (EU) 海關規定的國家\/地區時，請針對各個項目提供清楚明確的描述。 舉例來說，若要寄送衣服，請指明衣服種類 (例如，男性襯衫、女童背心、男童外套)，海關才會採納相關資訊， 否則貨件可能會在海關檢查時遭遇延誤或中斷。";
@@ -12133,6 +12199,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "編輯運送方式";
+
+/* Accessibility value for a shipping item row. The %1$@ is details text. The %2$@ is weight. The %3$@ is a total price */
+"shipping_item_row.accessibility_value.format" = "%1$@，重量：%2$@，總價：%3$@";
+
+/* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
+"shipping_item_row.quantity.format" = "「%2$@」數量：%1$d";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "取消";
@@ -12717,6 +12789,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "高度";
 
+/* Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.invalidDimensions" = "所有包裹尺寸皆應大於 0";
+
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "完成";
 
@@ -12768,6 +12843,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "關閉";
 
+/* Accessibility hint of the button to open the shipments editing form. */
+"wooShipping.createLabel.editButton.accessibility.hint" = "開啟貨件編輯表單。";
+
 /* Title for the Edit Package screen Done button */
 "wooShipping.createLabel.editPackage.done" = "完成";
 
@@ -12785,6 +12863,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Value for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatRow.yes" = "是";
+
+/* Accessibility value indicating that the shipment of a tab is fulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled" = "已履行。";
+
+/* Accessibility value indicating that the shipment of a tab is unfulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled" = "未履行。";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "輸入包裹尺寸，或挑選貨運業者專用包裝選項，以查看適用的貨運費率。";
@@ -12932,6 +13016,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the address is unverified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.unverified" = "未通過驗證的地址";
+
+/* Button to proceed with the input address even when validation fails */
+"wooShipping.createLabels.editAddress.useAddressAsEntered" = "使用輸入的地址";
 
 /* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
 "wooShipping.createLabels.editAddress.validateAddress" = "驗證並儲存";
@@ -13362,8 +13449,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "無法儲存包裹";
 
-/* Message when the ITN field is invalid in the customs form of a shipping label */
-"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "請從以下任意格式，擇一輸入有效的 ITN：X12345678901234、AES X12345678901234 或 NOEEI 30.37(a)。";
+/* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "請從以下格式中，擇一輸入有效的國際交易號碼：AES X12345678901234 或 NOEEI 30.37(a)。";
 
 /* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
 "wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "若要運送至目的地國家\/地區，請提供國際交易號碼。";

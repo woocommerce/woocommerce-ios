@@ -228,6 +228,8 @@ public class OrdersRemote: Remote {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
                 }
 
+                params[ParameterKeys.decimalPlaces] = OrdersRemote.Defaults.decimalPoints
+
                 return params
             }()
 
@@ -253,7 +255,10 @@ public class OrdersRemote: Remote {
     ///
     public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: OrderStatusEnum, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
-        let parameters = [ParameterKeys.statusKey: statusKey.rawValue]
+        let parameters = [
+            ParameterKeys.statusKey: statusKey.rawValue,
+            ParameterKeys.decimalPlaces: OrdersRemote.Defaults.decimalPoints
+        ]
         let mapper = OrderMapper(siteID: siteID)
 
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -327,6 +332,9 @@ public class OrdersRemote: Remote {
                                                                                key: NestedFieldKeys.cashPaymentChangeDueAmount,
                                                                                value: cashPaymentChangeDueAmount).toDictionary()]
                 }
+
+                // Add decimal places parameter for better precision
+                params[ParameterKeys.decimalPlaces] = OrdersRemote.Defaults.decimalPoints
 
                 return params
             }()
@@ -449,8 +457,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
 //
 public extension OrdersRemote {
     enum Defaults {
-        public static let pageSize: Int     = 25
-        public static let pageNumber: Int   = 1
+        public static let pageSize: Int = 25
+        public static let pageNumber: Int = 1
+        public static let decimalPoints: String = "8"
         public static let statusAny: String = "any"
     }
 
@@ -477,6 +486,7 @@ public extension OrdersRemote {
         static let customer = "customer"
         static let product = "product"
         static let createdVia = "created_via"
+        static let decimalPlaces = "dp"
     }
 
     enum ParameterValues {

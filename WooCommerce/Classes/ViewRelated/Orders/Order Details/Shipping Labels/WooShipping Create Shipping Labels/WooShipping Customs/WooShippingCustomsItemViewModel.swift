@@ -56,9 +56,20 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
         HSTariffNumberValidator.sanitize(hsTariffNumber)
     }
 
+    var isValidWeight: Bool {
+        return Self.isWeightValid(weightPerUnit)
+    }
+
     @Published var requiredInformationIsEntered: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
+
+    /// WOOMOB-891
+    /// Shipments with a EU destination address must contain HS tariff number
+    ///
+    /// Introduced to enforce tariff validation
+    /// if `true` then `hsTariffNumber` must be valid for `requiredInformationIsEntered` to be `true`
+    @Published private(set) var isHSTariffNumberRequired: Bool = false
 
     init(itemName: String,
          itemProductID: Int64,
@@ -67,18 +78,27 @@ final class WooShippingCustomsItemViewModel: ObservableObject {
          itemWeight: Double,
          currencySymbol: String,
          originCountryCode: AnyPublisher<String?, Never>? = nil,
+         isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.title = itemName
         self.description = itemName
         self.itemProductID = itemProductID
         self.itemQuantity = itemQuantity
         self.valuePerUnit = String(itemValue)
-        self.weightPerUnit = String(itemWeight)
+
+        /// Skip zero weight
+        if Self.isWeightNonZero(itemWeight) {
+            self.weightPerUnit = String(itemWeight)
+        }
+
         self.currencySymbol = currencySymbol
         self.storageManager = storageManager
 
         originCountryCode?
             .assign(to: &$originCountryCode)
+
+        isHSTariffNumberRequired?
+            .assign(to: &$isHSTariffNumberRequired)
 
         fetchCountries()
 
@@ -119,11 +139,27 @@ private extension WooShippingCustomsItemViewModel {
     }
 
     func combineRequiredInformationIsEntered() {
-        Publishers.CombineLatest4($description, $valuePerUnit, $weightPerUnit, $selectedCountry)
-            .sink { [weak self] description, valuePerUnit, weightPerUnit, selectedCountry in
-                self?.requiredInformationIsEntered = description.isNotEmpty && valuePerUnit.isNotEmpty && weightPerUnit.isNotEmpty && selectedCountry != nil
-            }
-            .store(in: &cancellables)
+        Publishers.CombineLatest4(
+            $description,
+            $valuePerUnit,
+            $weightPerUnit,
+            $selectedCountry
+        )
+        .combineLatest($hsTariffNumber, $isHSTariffNumberRequired)
+        .sink { [weak self] result in
+            guard let self else { return }
+
+            let ((description, valuePerUnit, weightPerUnit, selectedCountry), hsTariffNumber, isHSTariffNumberRequired) = result
+
+            let hsTariffNumberRequirementMet = (hsTariffNumber.isEmpty && !isHSTariffNumberRequired) || (isValidTariffNumber && hsTariffNumber.isNotEmpty)
+
+            requiredInformationIsEntered = description.isNotEmpty &&
+            valuePerUnit.isNotEmpty &&
+            Self.isWeightValid(weightPerUnit) &&
+            selectedCountry != nil &&
+            hsTariffNumberRequirementMet
+        }
+        .store(in: &cancellables)
     }
 
     func combineHSTariffNumberTotalValue() {
@@ -142,6 +178,15 @@ private extension WooShippingCustomsItemViewModel {
                 self.hsTariffNumberTotalValue = (hsTariffNumber, valuePerUnitDecimal * itemQuantity)
             }
             .store(in: &cancellables)
+    }
+
+    /// Specifically introduced to check for a `0` value
+    static func isWeightValid(_ weightString: String) -> Bool {
+        return isWeightNonZero(Double(weightString) ?? 0)
+    }
+
+    static func isWeightNonZero(_ weightValue: Double) -> Bool {
+        return weightValue > 0
     }
 }
 

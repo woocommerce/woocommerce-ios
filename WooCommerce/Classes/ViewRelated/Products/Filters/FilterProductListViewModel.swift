@@ -289,10 +289,10 @@ extension FilterProductListViewModel.ProductListFilter {
     /// Builds the products types filter array identifying which extension is available or not.
     ///
     private func buildPromotableTypes(siteID: Int64, storageManager: StorageManagerType) -> [PromotableProductType?] {
-        let activePluginNames = fetchActivePluginNames(siteID: siteID, storageManager: storageManager)
-        let isSubscriptionsAvailable = Set(activePluginNames).intersection(SitePlugin.SupportedPlugin.WCSubscriptions).count > 0
-        let isCompositeProductsAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCCompositeProducts)
-        let isProductBundlesAvailable = activePluginNames.contains(where: SitePlugin.SupportedPlugin.WCProductBundles.contains)
+        let activePlugins = fetchActivePlugins(siteID: siteID, storageManager: storageManager)
+        let isSubscriptionsAvailable = activePlugins.contains(.wooSubscriptions)
+        let isCompositeProductsAvailable = activePlugins.contains(.wooCompositeProducts)
+        let isProductBundlesAvailable = activePlugins.contains(.wooProductBundles)
 
         return [nil,
                 .init(productType: .simple, isAvailable: true, promoteUrl: nil),
@@ -313,14 +313,14 @@ extension FilterProductListViewModel.ProductListFilter {
                       promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())]
     }
 
-    /// Fetches the active plugin names for the provided site IDs using a `ResultsController`
+    /// Fetches the active known plugins for the provided site IDs using a `ResultsController`
     ///
-    private func fetchActivePluginNames(siteID: Int64, storageManager: StorageManagerType) -> [String] {
+    private func fetchActivePlugins(siteID: Int64, storageManager: StorageManagerType) -> [Plugin] {
         let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, sortedBy: [])
         resultsController.predicate = predicate
 
         try? resultsController.performFetch()
-        return resultsController.fetchedObjects.map { $0.name }
+        return resultsController.fetchedObjects.compactMap { Plugin(systemPlugin: $0) }
     }
 }

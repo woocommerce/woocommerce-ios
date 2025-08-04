@@ -22,9 +22,9 @@ struct POSModalCloseButton: ViewModifier {
                 Spacer()
                 Button(action: closeAction, label: {
                     Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolSmall)
+                        .font(.posButtonSymbolMedium)
                 })
-                .foregroundColor(Color.posOnSurfaceVariantLowest)
+                .foregroundColor(Color.posOnSurface)
                 .accessibilityLabel(accessibilityLabel)
             }
 

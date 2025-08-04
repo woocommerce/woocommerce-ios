@@ -49,7 +49,7 @@ private extension DefaultGoogleAdsEligibilityChecker {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    let plugin = info.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .googleListingsAndAds && $0.active })
                     continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)
@@ -76,8 +76,6 @@ private extension DefaultGoogleAdsEligibilityChecker {
     }
 
     enum Constants {
-        static let pluginSlug = "google-listings-and-ads/google-listings-and-ads.php"
-
         /// Version 2.7.7 is required for an optimized experience of the plugin on the mobile web.
         /// Ref: https://github.com/woocommerce/google-listings-and-ads/releases/tag/2.7.7.
         /// We can remove this limit once we support native experience.

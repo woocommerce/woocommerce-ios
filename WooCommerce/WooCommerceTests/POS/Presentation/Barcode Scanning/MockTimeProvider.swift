@@ -3,7 +3,7 @@ import Foundation
 
 final class MockTimer: Timer {
     var isCancelled = false
-    let mockTimeProvider: MockTimeProvider
+    weak var mockTimeProvider: MockTimeProvider?
     let timerInterval: TimeInterval
     let target: Any
     let selector: Selector
@@ -20,7 +20,7 @@ final class MockTimer: Timer {
 
     override func invalidate() {
         isCancelled = true
-        mockTimeProvider.removeTimer(self)
+        mockTimeProvider?.removeTimer(self)
     }
 }
 

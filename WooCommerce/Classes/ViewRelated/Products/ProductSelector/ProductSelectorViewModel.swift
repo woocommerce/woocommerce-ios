@@ -848,6 +848,8 @@ private extension ProductSelectorViewModel {
                 switch (source, product.productType, product.variations) {
                 case (.orderForm, .booking, _):
                     return .unsupported(reason: Localization.bookableProductUnsupportedReason)
+                case (.orderForm, .subscription, _), (.orderForm, .variableSubscription, _):
+                    return .unsupported(reason: Localization.subscriptionProductUnsupportedReason)
                 case (_, _, let variations) where variations.isEmpty:
                     return selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
                 default:
@@ -980,6 +982,11 @@ private extension ProductSelectorViewModel {
             "productSelectorViewModel.bookableProductUnsupportedReason",
             value: "Bookable products are not supported for order creation",
             comment: "Message explaining unsupported bookable products for order creation"
+        )
+        static let subscriptionProductUnsupportedReason = NSLocalizedString(
+            "productSelectorViewModel.subscriptionProductUnsupportedReason",
+            value: "Subscription products are not supported for order creation",
+            comment: "Message explaining unsupported subscription products for order creation"
         )
     }
 }

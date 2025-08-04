@@ -129,10 +129,9 @@ struct PointOfSaleDashboardView: View {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .sheet(isPresented: $showSettings) {
-            PointOfSaleSettingsView()
+        .fullScreenCover(isPresented: $showSettings) {
+            PointOfSaleSettingsView(showDocumentation: $showDocumentation)
         }
-        .posRootModal()
         .sheet(isPresented: $showDocumentation) {
             documentationView
         }
@@ -308,6 +307,8 @@ struct PointOfSaleSettingsView: View {
         var id: String { rawValue }
     }
 
+    @Binding var showDocumentation: Bool
+
     @State private var selectedSection: Section? = .store
     @State private var isSomeToggleEnabled = false
 
@@ -345,8 +346,14 @@ struct PointOfSaleSettingsView: View {
                             .navigationTitle("Hardware")
                         case .help:
                             Form {
-                                Button("Where are my products?") { /* Collapsable content, open modal, deeplinking, etc, ... based on case */ }
-                                Button("Documentation") { /* ... */ }
+                                // Collapsable content, open modal, deeplinking, etc, ... based on case
+                                Button("Where are my products?") { /* ... */ }
+                                Button("Documentation") {
+                                    // Problem if we attempt to present multiple sheets:
+                                    // Currently, only presenting a single sheet is supported.
+                                    // The next sheet will be presented when the currently presented sheet gets dismissed.
+                                    showDocumentation = true
+                                }
                                 Button("Get Support") { /* ... */ }
                             }
                         }

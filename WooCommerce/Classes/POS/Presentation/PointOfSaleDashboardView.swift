@@ -270,9 +270,8 @@ private extension PointOfSaleDashboardView {
 
 
 struct PointOfSaleSettingsView: View {
-    enum Section: String, CaseIterable, Identifiable {
+    enum SettingsSection: String, CaseIterable, Identifiable {
         case store = "Store"
-        case payments = "Payments"
         case hardware = "Hardware"
         case help = "Help"
 
@@ -287,7 +286,7 @@ struct PointOfSaleSettingsView: View {
             .navigationTitle("Documentation")
             .navigationBarTitleDisplayMode(.inline)
     }
-    
+
     var supportDestinationView: some View {
         NavigationView {
             SupportForm(isPresented: $showSupport,
@@ -307,14 +306,117 @@ struct PointOfSaleSettingsView: View {
         .navigationViewStyle(.stack)
     }
 
-    @State private var selectedSection: Section? = .store
+    private var hardwareView: some View {
+        Form {
+            Section {
+                HStack {
+                    Text("Model")
+                    Spacer()
+                    Text("Wisepad 3")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Battery")
+                    Spacer()
+                    Text("87%")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Software Update")
+                    Spacer()
+                    Text("2024-07-01")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Button(action: {
+                        // Handle
+                    }) {
+                        Text("Connect Card Reader")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                    Button(action: {
+                        // Handle
+                    }) {
+                        Text("Software Update")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                }
+
+            } header: {
+                Text("Card Readers")
+            }
+            Section {
+                HStack {
+                    Text("Model")
+                    Spacer()
+                    Text("Eyoyo")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Battery")
+                    Spacer()
+                    Text("68%")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Software Update")
+                    Spacer()
+                    Text("2024-07-01")
+                        .foregroundColor(.secondary)
+                }
+            } header: {
+                Text("Barcode Scanner")
+            }
+        }
+    }
+
+    private var storeDetailsView: some View {
+        Form {
+            Section {
+                HStack {
+                    Text("Store Name")
+                    Spacer()
+                    Text("My WooCommerce Store")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Address")
+                    Spacer()
+                    Text("123 Main Street, City, State 12345")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Phone")
+                    Spacer()
+                    Text("+1 (555) 123-4567")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Email")
+                    Spacer()
+                    Text("store@example.com")
+                        .foregroundColor(.secondary)
+                }
+            } header: {
+                Text("Store Information")
+            }
+        }
+    }
+
+    @State private var selectedSection: SettingsSection? = .store
     @State private var isSomeToggleEnabled = false
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationSplitView {
-            List(Section.allCases, selection: $selectedSection) { section in
+            List(SettingsSection.allCases, selection: $selectedSection) { section in
                 Text(section.rawValue)
                     .tag(section)
             }
@@ -327,22 +429,9 @@ struct PointOfSaleSettingsView: View {
                         if let section = selectedSection {
                             switch section {
                             case .store:
-                                Form {
-                                    Toggle("Enable Store Option", isOn: $isSomeToggleEnabled)
-                                    Button("Do Store Thing") { /* ... */ }
-                                }
-                                .navigationTitle("Store")
-                            case .payments:
-                                Form {
-                                    Toggle("Payment Method Enabled", isOn: $isSomeToggleEnabled)
-                                }
-                                .navigationTitle("Payments")
+                                storeDetailsView
                             case .hardware:
-                                Form {
-                                    Toggle("Card readers", isOn: $isSomeToggleEnabled)
-                                    Toggle("Barcode scanners", isOn: $isSomeToggleEnabled)
-                                }
-                                .navigationTitle("Hardware")
+                                hardwareView
                             case .help:
                                 Form {
                                     // Collapsable content, open modal, deeplinking, etc, ... based on case

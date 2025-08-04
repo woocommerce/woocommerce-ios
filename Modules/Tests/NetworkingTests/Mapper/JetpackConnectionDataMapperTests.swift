@@ -36,7 +36,7 @@ final class JetpackConnectionDataMapperTests: XCTestCase {
 
         // Then
         XCTAssertNil(data.isRegistered)
-        XCTAssertNil(data.connectionOwner)
+        XCTAssertEqual(data.connectionOwner, "demo")
         XCTAssertNil(data.blogID)
 
         XCTAssertFalse(user.isPrimary)

@@ -221,28 +221,7 @@ extension Storage.Product: ReadOnlyConvertible {
 
 // MARK: - Storage.Product: ListItemConvertible
 //
-extension Storage.Product: ListItemConvertible {
-    public func update(with item: Yosemite.ProductListItem) {
-        siteID = item.siteID
-        productID = item.productID
-        name = item.name
-        productTypeKey = item.productTypeKey
-        statusKey = item.statusKey
-        sku = item.sku
-        price = item.price
-        virtual = item.virtual
-        stockQuantity = {
-            if let stockQuantity = item.stockQuantity {
-                return stockQuantity.description
-            }
-            return nil
-        }()
-        stockStatusKey = item.stockStatusKey
-        reviewsAllowed = item.reviewsAllowed
-        averageRating = item.averageRating
-        ratingCount = Int64(item.ratingCount)
-    }
-
+extension Storage.Product {
     public func toListItem() -> Yosemite.ProductListItem {
         let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
         let productImages = imagesArray.map { $0.toReadOnly() }

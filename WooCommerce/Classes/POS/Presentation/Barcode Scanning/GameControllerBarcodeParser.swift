@@ -15,6 +15,7 @@ final class GameControllerBarcodeParser {
     private var buffer = ""
     private var lastKeyPressTime: Date?
     private var scanStartTime: Date?
+    private var timeoutTimer: Timer?
 
     init(configuration: HIDBarcodeParserConfiguration,
          onScan: @escaping (HIDBarcodeParserResult) -> Void,
@@ -49,6 +50,7 @@ final class GameControllerBarcodeParser {
             }
 
             buffer.append(character)
+            scheduleTimeoutTimer()
         }
     }
 
@@ -186,6 +188,31 @@ final class GameControllerBarcodeParser {
         buffer = ""
         lastKeyPressTime = nil
         scanStartTime = nil
+        cancelTimeoutTimer()
+    }
+
+    private func scheduleTimeoutTimer() {
+        cancelTimeoutTimer()
+        timeoutTimer = timeProvider.scheduleTimer(
+            timeInterval: configuration.maximumInterCharacterTime,
+            target: self,
+            selector: #selector(handleTimeoutExpiry)
+        )
+    }
+
+    private func cancelTimeoutTimer() {
+        timeoutTimer?.invalidate()
+        timeoutTimer = nil
+    }
+
+    @objc private func handleTimeoutExpiry() {
+        guard !buffer.isEmpty else { return }
+
+        let scanDurationMs = calculateScanDurationMs()
+        let result = HIDBarcodeParserResult.failure(error: HIDBarcodeParserError.timedOut(barcode: buffer), scanDurationMs: scanDurationMs)
+
+        onScan(result)
+        resetScan()
     }
 
     private func calculateScanDurationMs() -> Int {
@@ -194,6 +221,7 @@ final class GameControllerBarcodeParser {
     }
 
     private func processScan() {
+        cancelTimeoutTimer()
         checkForTimeoutBetweenKeystrokes()
         let scanDurationMs = calculateScanDurationMs()
 

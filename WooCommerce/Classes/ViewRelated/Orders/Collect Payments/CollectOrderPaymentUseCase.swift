@@ -261,15 +261,17 @@ private extension CollectOrderPaymentUseCase {
             guard let self = self else { return }
 
             switch result {
-                case .success(let order):
-                    guard order.total == self.order.total else {
-                        return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.orderTotalChanged))
-                    }
+            case .success(let order):
+                let orderTotal = currencyFormatter.convertToDecimal(order.total)
+                let originalOrderTotal = currencyFormatter.convertToDecimal(self.order.total)
+                guard orderTotal == originalOrderTotal else {
+                    return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.orderTotalChanged))
+                }
 
-                    self.order = order
-                case .failure(let error):
-                    DDLogError("⛔️ Error synchronizing Order: \(error.localizedDescription)")
-                    return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.couldNotRefreshOrder(error)))
+                self.order = order
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing Order: \(error.localizedDescription)")
+                return onCheckCompletion(.failure(CollectOrderPaymentUseCaseError.couldNotRefreshOrder(error)))
             }
 
             guard self.isTotalAmountValid() else {

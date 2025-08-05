@@ -96,15 +96,26 @@ public final class JetpackConnectionRemote: Remote {
                                      path: Path.wpcomConnection,
                                      parameters: parameters,
                                      availableAsRESTRequest: false)
-        return try await enqueue(request)
+        let mapper = JetpackConnectionResultMapper()
+        let result = try await enqueue(request, mapper: mapper)
+        switch result.code {
+        case Constants.success:
+            return
+        case Constants.alreadyConnected:
+            throw ConnectionError.alreadyConnected
+        default:
+            throw ConnectionError.connectionRequestFailed(message: result.message)
+        }
     }
 }
 
 public extension JetpackConnectionRemote {
-    enum ConnectionError: Int, Error {
+    enum ConnectionError: Error, Equatable {
         case malformedURL
         case accountConnectionURLNotFound
         case invalidAuthorizationURL
+        case alreadyConnected
+        case connectionRequestFailed(message: String)
     }
 }
 
@@ -130,6 +141,8 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
         static let clientID = "client_id"
+        static let success = "success"
+        static let alreadyConnected = "already_connected"
     }
 
     enum Parameters {

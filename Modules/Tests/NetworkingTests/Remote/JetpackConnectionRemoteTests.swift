@@ -312,15 +312,14 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         let siteID: Int64 = 12345
         let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
         let urlSuffix = "jetpack-remote-connect-user"
-        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
-        network.simulateError(requestUrlSuffix: urlSuffix, error: expectedError)
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
 
         do {
             // When
             _ = try await remote.finalizeConnection(siteID: siteID, provisionResponse: provisionResponse)
         } catch {
             // Then
-            XCTAssertEqual(error as? NetworkError, expectedError)
+            XCTAssertEqual(error as? JetpackConnectionRemote.ConnectionError, .alreadyConnected)
         }
     }
 }

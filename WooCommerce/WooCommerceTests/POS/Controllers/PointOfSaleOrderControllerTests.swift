@@ -573,6 +573,91 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @MainActor
+    @available(iOS 17.0, *)
+    @Test func clearOrder_when_no_order_then_does_not_dispatch_delete_action() async throws {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores)
+
+        var deleteActionWasDispatched = false
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case .deleteOrder = action {
+                deleteActionWasDispatched = true
+            }
+        }
+
+        // When
+        sut.clearOrder()
+
+        // Then
+        #expect(deleteActionWasDispatched == false)
+        #expect(sut.orderState == .idle)
+    }
+
+    @MainActor
+    @available(iOS 17.0, *)
+    @Test func clearOrder_when_autodraft_order_then_dispatches_delete_action() async throws {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores)
+
+        let autoDraftOrder = Order.fake().copy(siteID: 123, status: .autoDraft)
+        mockOrderService.orderToReturn = autoDraftOrder
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
+
+        var deleteActionWasDispatched = false
+        var dispatchedOrder: Order?
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case let .deleteOrder(_, order, deletePermanently, _) = action {
+                deleteActionWasDispatched = true
+                dispatchedOrder = order
+                #expect(deletePermanently == true)
+            }
+        }
+
+        // When
+        sut.clearOrder()
+
+        // Then
+        #expect(deleteActionWasDispatched == true)
+        #expect(dispatchedOrder?.orderID == autoDraftOrder.orderID)
+        #expect(dispatchedOrder?.status == .autoDraft)
+        #expect(sut.orderState == .idle)
+    }
+
+    @MainActor
+    @available(iOS 17.0, *)
+    @Test func clearOrder_when_completed_order_then_does_not_dispatch_delete_action() async throws {
+        // Given
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptService: mockReceiptService,
+                                             stores: mockStores)
+
+        let completedOrder = Order.fake().copy(status: .completed)
+        mockOrderService.orderToReturn = completedOrder
+        await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: {})
+
+        var deleteActionWasDispatched = false
+        mockStores.whenReceivingAction(ofType: OrderAction.self) { action in
+            if case .deleteOrder = action {
+                deleteActionWasDispatched = true
+            }
+        }
+
+        // When
+        sut.clearOrder()
+
+        // Then
+        #expect(deleteActionWasDispatched == false)
+        #expect(sut.orderState == .idle)
+    }
+
+    @MainActor
     struct AnalyticsTests {
         private let analytics: WooAnalytics
         private let analyticsProvider = MockAnalyticsProvider()

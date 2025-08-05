@@ -226,9 +226,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     /// ResultController to get the product for the given product ID
     ///
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+    private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
         let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
-        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        let controller = GenericResultsController<StorageProduct, BlazeCampaignProduct>(
+            storageManager: storage,
+            matching: predicate,
+            sortedBy: [],
+            transformer: { BlazeCampaignProduct(storageProduct: $0) }
+        )
         do {
             try controller.performFetch()
         } catch {
@@ -300,7 +305,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
-        product = productsResultsController.transformedObjects(using: { BlazeCampaignProduct(storageProduct: $0) }).first
+        product = productsResultsController.fetchedObjects.first
 
         initializeCampaignObjective()
         updateBudgetDetails()

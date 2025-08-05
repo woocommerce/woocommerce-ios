@@ -32,7 +32,7 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
     ///
     private var products: [ShippingLabelProduct] {
         try? productResultsController.performFetch()
-        return productResultsController.transformedObjects(using: { ShippingLabelProduct(storageProduct: $0) })
+        return productResultsController.fetchedObjects
     }
 
     /// Stored product variations that match the items in the order.
@@ -44,12 +44,17 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
+    private lazy var productResultsController: GenericResultsController<StorageProduct, ShippingLabelProduct> = {
         let productIDs = order.items.map(\.productID)
         let predicate = NSPredicate(format: "siteID == %lld AND productID in %@", order.siteID, productIDs)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return GenericResultsController<StorageProduct, ShippingLabelProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor],
+            transformer: { ShippingLabelProduct(storageProduct: $0) }
+        )
     }()
 
     /// ProductVariation ResultsController.

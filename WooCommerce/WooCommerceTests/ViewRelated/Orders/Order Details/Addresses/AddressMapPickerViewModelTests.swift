@@ -73,7 +73,7 @@ struct AddressMapPickerViewModelTests {
     }
 
     @available(iOS 17, *)
-    @Test func updateFields_with_unknown_country_sets_country_and_state_strings() async {
+    @Test func updateFields_when_country_not_found_in_countryByCode_sets_country_and_state_as_strings() async {
         // Given
         let mockSearchProvider = MockAddressMapLocalSearchProvider.withFrenchAddress()
         let sut = AddressMapPickerViewModel(fields: .init(), countryByCode: mockCountryByCode, searchProvider: mockSearchProvider)
@@ -91,12 +91,12 @@ struct AddressMapPickerViewModelTests {
         #expect(updatedFields.postcode == "75007")
         #expect(updatedFields.country == "FR")
         #expect(updatedFields.state == "Île-de-France")
-        #expect(updatedFields.selectedCountry == nil) // Unknown country
+        #expect(updatedFields.selectedCountry == nil) // Country is not found in countryByCode dictionary
         #expect(updatedFields.selectedState == nil)
     }
 
    @available(iOS 17, *)
-   @Test func updateFields_with_known_country_sets_selected_country_and_state() async {
+   @Test func updateFields_when_country_is_found_in_countryByCode_sets_selected_country_and_state() async {
        // Given
        let mockSearchProvider = MockAddressMapLocalSearchProvider.withUSAddress()
        let sut = AddressMapPickerViewModel(fields: .init(), countryByCode: mockCountryByCode, searchProvider: mockSearchProvider)

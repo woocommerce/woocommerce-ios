@@ -26,15 +26,6 @@ struct POSFloatingControlView: View {
         HStack {
             Menu {
                 Button {
-                    //ServiceLocator.analytics.track(.pointOfSaleSettingsTapped)
-                    showSettings = true
-                } label: {
-                    Label(
-                        title: { Text("Settings") },
-                        icon: { Image(systemName: "gear") }
-                    )
-                }
-                Button {
                     ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
                     showExitPOSModal = true
                 } label: {
@@ -44,13 +35,23 @@ struct POSFloatingControlView: View {
                     )
                 }
                 Button {
-                    showProductRestrictionsModal = true
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+                    // TODO tracking
+                    showSettings = true
                 } label: {
                     Label(
-                        title: { Text(Localization.productRestrictionsInfo) },
-                        icon: { Image(systemName: "magnifyingglass") })
+                        title: { Text("Settings") },
+                        icon: { Image(systemName: "gear") }
+                    )
                 }
+                // TODO move this to dialog to Help section in settings
+//                Button {
+//                    showProductRestrictionsModal = true
+//                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+//                } label: {
+//                    Label(
+//                        title: { Text(Localization.productRestrictionsInfo) },
+//                        icon: { Image(systemName: "magnifyingglass") })
+//                }
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
                     Button {
                         showBarcodeScanningModal = true

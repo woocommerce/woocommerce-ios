@@ -49,18 +49,30 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
 }
 
-/// A UIHostingController that handles GameController keyboard input events for barcode scanning.
-/// This controller uses GameController framework exclusively for language-independent barcode scanning.
+/// A UIHostingController that dynamically switches between GameController and UIKit barcode scanning
+/// based on VoiceOver state. Uses GameController framework for optimal performance when possible,
+/// and falls back to UIKit UIPress events when VoiceOver is enabled.
 final class GameControllerBarcodeScannerHostingController: UIHostingController<EmptyView> {
-    private var gameControllerBarcodeObserver: GameControllerBarcodeObserver?
+    private(set) var gameControllerObserver: GameControllerBarcodeObserver?
+    private(set) var uiKitObserver: UIKitBarcodeObserver?
 
+    private let configuration: HIDBarcodeParserConfiguration
+    private let onScan: (Result<String, HIDBarcodeParserError>) -> Void
+    private let voiceOverStateProvider: VoiceOverStateProvider
+
+    // Public initializer for production use
     init(
         configuration: HIDBarcodeParserConfiguration,
-        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void
+        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
+        voiceOverStateProvider: VoiceOverStateProvider = SystemVoiceOverStateProvider()
     ) {
+        self.configuration = configuration
+        self.onScan = onScan
+        self.voiceOverStateProvider = voiceOverStateProvider
         super.init(rootView: EmptyView())
 
-        gameControllerBarcodeObserver = GameControllerBarcodeObserver(configuration: configuration, onScan: onScan)
+        setupInitialObserver()
+        observeVoiceOverChanges()
     }
 
     @MainActor required dynamic init?(coder aDecoder: NSCoder) {
@@ -68,52 +80,79 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     deinit {
-        gameControllerBarcodeObserver = nil
+        NotificationCenter.default.removeObserver(self)
+        cleanupObservers()
     }
 
-    // MARK: - VoiceOver Support
-    /// Barcode scanner  input is not received through GameController framework keyChangeHandler if VoiceOver is enabled.
+    // MARK: - Observer Management
 
-    override var canBecomeFirstResponder: Bool {
-        // Only become first responder when VoiceOver is running as fallback for GameController limitations
-        return UIAccessibility.isVoiceOverRunning
+    private func setupInitialObserver() {
+        switchToAppropriateObserver()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        guard UIAccessibility.isVoiceOverRunning else { return }
-
-        becomeFirstResponder()
+    private func observeVoiceOverChanges() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(voiceOverStatusChanged),
+            name: UIAccessibility.voiceOverStatusDidChangeNotification,
+            object: nil
+        )
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        guard UIAccessibility.isVoiceOverRunning else { return }
-
-        resignFirstResponder()
+    @objc private func voiceOverStatusChanged() {
+        switchToAppropriateObserver()
     }
 
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        // Don't call super to prevent system from hiding software keyboard
+    private func switchToAppropriateObserver() {
+        // Clean up current observers
+        cleanupObservers()
+
+        // Set up appropriate observer based on VoiceOver state
+        if voiceOverStateProvider.isVoiceOverRunning {
+            uiKitObserver = UIKitBarcodeObserver(
+                configuration: configuration,
+                onScan: onScan
+            )
+        } else {
+            gameControllerObserver = GameControllerBarcodeObserver(
+                configuration: configuration,
+                onScan: onScan
+            )
+        }
     }
 
+    private func cleanupObservers() {
+        gameControllerObserver = nil
+        uiKitObserver = nil
+    }
+
+    // MARK: - UIPress Event Handling
+    
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        // When VoiceOver is running, use UIPress fallback since GameController keyChangeHandler doesn't work
-        guard UIAccessibility.isVoiceOverRunning else { return }
-
-        gameControllerBarcodeObserver?.processUIPress(presses)
-        // Don't call super to prevent other responders from handling our barcode input
+        // Forward UIPress events to UIKit observer if active
+        if let uiKitObserver = uiKitObserver {
+            uiKitObserver.processUIPress(presses)
+        } else {
+            super.pressesEnded(presses, with: event)
+        }
     }
-
+    
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        // Don't call super to prevent system from hiding software keyboard when UIKit observer is active
+        if uiKitObserver == nil {
+            super.pressesBegan(presses, with: event)
+        }
+    }
+    
     override func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesChanged(presses, with: event)
     }
-
+    
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if UIAccessibility.isVoiceOverRunning {
-            gameControllerBarcodeObserver?.barcodeParser?.cancel()
+        if let uiKitObserver = uiKitObserver {
+            uiKitObserver.barcodeParser?.cancel()
         }
         super.pressesCancelled(presses, with: event)
     }
 }
+

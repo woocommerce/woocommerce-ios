@@ -29,7 +29,7 @@ extension CardReaderType {
         case .wisepad3:
             return "WISEPAD_3"
         case .tapToPay:
-            return "COTS_DEVICE"
+            return "TAP_TO_PAY_DEVICE"
         default:
             return "UNKNOWN"
         }

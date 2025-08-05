@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 extension Storage.Product {
-    var imagesArray: [Storage.ProductImage] {
+    public var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
     var tagsArray: [Storage.ProductTag] {
@@ -216,67 +216,5 @@ extension Storage.Product: ReadOnlyConvertible {
         }
 
         return array.map { Int64($0) }
-    }
-}
-
-// MARK: - Storage.Product: ListItemConvertible
-//
-extension Storage.Product: ListItemConvertible {
-    public func update(with item: Yosemite.ProductListItem) {
-        siteID = item.siteID
-        productID = item.productID
-        name = item.name
-        permalink = item.permalink
-        date = item.date
-        productTypeKey = item.productTypeKey
-        statusKey = item.statusKey
-        fullDescription = item.fullDescription
-        briefDescription = item.shortDescription
-        sku = item.sku
-        price = item.price
-        virtual = item.virtual
-        stockQuantity = {
-            if let stockQuantity = item.stockQuantity {
-                return stockQuantity.description
-            }
-            return nil
-        }()
-        stockStatusKey = item.stockStatusKey
-        reviewsAllowed = item.reviewsAllowed
-        averageRating = item.averageRating
-        ratingCount = Int64(item.ratingCount)
-        weight = item.weight
-    }
-
-    public func toListItem() -> Yosemite.ProductListItem {
-        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
-        let productImages = imagesArray.map { $0.toReadOnly() }
-
-        var quantity: Decimal?
-        if let stockQuantity = stockQuantity {
-            quantity = Decimal(string: stockQuantity)
-        }
-
-        return ProductListItem(siteID: siteID,
-                               productID: productID,
-                               name: name,
-                               permalink: permalink,
-                               date: date ?? Date(timeIntervalSince1970: 0),
-                               productTypeKey: productTypeKey,
-                               statusKey: statusKey,
-                               fullDescription: fullDescription,
-                               shortDescription: briefDescription,
-                               sku: sku,
-                               price: price,
-                               virtual: virtual,
-                               stockQuantity: quantity,
-                               stockStatusKey: stockStatusKey,
-                               reviewsAllowed: reviewsAllowed,
-                               averageRating: averageRating,
-                               ratingCount: Int(ratingCount),
-                               weight: weight,
-                               dimensions: createReadOnlyDimensions(),
-                               images: productImages,
-                               addOns: addOnsArray.map { $0.toReadOnly() })
     }
 }

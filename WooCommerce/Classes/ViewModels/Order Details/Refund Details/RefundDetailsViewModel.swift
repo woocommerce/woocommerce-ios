@@ -27,7 +27,7 @@ final class RefundDetailsViewModel {
 
     /// Products from a Refund
     ///
-    var products: [ProductListItem] {
+    var products: [OrderDetailsProduct] {
         return dataSource.products
     }
 

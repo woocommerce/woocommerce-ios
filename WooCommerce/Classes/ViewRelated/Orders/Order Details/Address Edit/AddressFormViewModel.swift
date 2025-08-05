@@ -184,6 +184,10 @@ open class AddressFormViewModel: ObservableObject {
         return StateSelectorViewModel(states: states, selected: selectedStateBinding)
     }
 
+    func findCountry(by code: String) -> Country? {
+        allCountries.first { $0.code == code }
+    }
+
     /// Creates a view model to be used when selecting a country for secondary fields
     ///
     func createSecondaryCountryViewModel() -> CountrySelectorViewModel {

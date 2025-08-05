@@ -2,8 +2,6 @@ import Foundation
 import Storage
 import CoreData
 
-
-
 // MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
 //
 public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
@@ -181,6 +179,21 @@ public class ResultsController<T: ResultsControllerMutableType> {
         return output
     }
 
+    /// Returns an array of all of the transformed fetched objects.
+    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
+    ///
+    public func transformedObjects<U>(using transformation: (T) -> U) -> [U] {
+        controller.fetchedObjects?.compactMap { mutableObject in
+            transformation(mutableObject)
+        } ?? []
+    }
+
+    /// Returns a transformed object at a given index
+    ///
+    public func transformedObject<U>(at indexPath: IndexPath, using transformation: (T) -> U) -> U {
+        transformation(controller.object(at: indexPath))
+    }
+
     /// Indicates if there are any Objects matching the specified criteria.
     ///
     public var isEmpty: Bool {
@@ -342,19 +355,5 @@ public extension ResultsController {
         init(mutableSection: NSFetchedResultsSectionInfo) {
             mutableSectionInfo = mutableSection
         }
-    }
-}
-
-
-public extension ResultsController where T: ListItemConvertible {
-    /// Returns an array of all list items mapped from the fetched objects.
-    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
-    ///
-    var listItemObjects: [T.ListItemType] {
-        let listItemObjects = controller.fetchedObjects?.compactMap { mutableObject in
-            mutableObject.toListItem()
-        }
-
-        return listItemObjects ?? []
     }
 }

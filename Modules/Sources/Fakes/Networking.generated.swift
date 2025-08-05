@@ -1149,35 +1149,6 @@ extension Networking.ProductImage {
         )
     }
 }
-extension Networking.ProductListItem {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.ProductListItem {
-        .init(
-            siteID: .fake(),
-            productID: .fake(),
-            name: .fake(),
-            permalink: .fake(),
-            date: .fake(),
-            productTypeKey: .fake(),
-            statusKey: .fake(),
-            fullDescription: .fake(),
-            shortDescription: .fake(),
-            sku: .fake(),
-            price: .fake(),
-            virtual: .fake(),
-            stockQuantity: .fake(),
-            stockStatusKey: .fake(),
-            reviewsAllowed: .fake(),
-            averageRating: .fake(),
-            ratingCount: .fake(),
-            weight: .fake(),
-            dimensions: .fake(),
-            images: .fake(),
-            addOns: .fake()
-        )
-    }
-}
 extension Networking.ProductReport {
     /// Returns a "ready to use" type filled with fake values.
     ///

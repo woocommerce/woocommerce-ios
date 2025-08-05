@@ -12,13 +12,17 @@ final class RefundDetailsResultController {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor]
+        )
     }()
 
     /// Products from an Order
     ///
-    var products: [ProductListItem] {
-        productResultsController.listItemObjects
+    var products: [OrderDetailsProduct] {
+        productResultsController.transformedObjects(using: { OrderDetailsProduct(storageProduct: $0) })
     }
 
     private let siteID: Int64

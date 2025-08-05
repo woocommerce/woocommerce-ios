@@ -60,57 +60,42 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
-    func testLoadAllOrdersProperlyReturnsParsedOrders() throws {
+    func testLoadAllOrdersProperlyReturnsParsedOrders() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        var result: Result<[Order], Error>?
-        waitForExpectation { expectation in
-            remote.loadAllOrders(for: sampleSiteID) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
-        }
+        let orders = try await remote.loadAllOrders(for: sampleSiteID)
 
         // Then
-        let orders = try XCTUnwrap(result?.get())
         XCTAssert(orders.count == 4)
     }
 
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
-    func testLoadAllOrdersProperlyRelaysNetworkingErrors() throws {
+    func testLoadAllOrdersProperlyRelaysNetworkingErrors() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
-        // When
-        var result: Result<[Order], Error>?
-        waitForExpectation { expectation in
-            remote.loadAllOrders(for: sampleSiteID) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
+        // When & Then
+        do {
+            _ = try await remote.loadAllOrders(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
-    func test_loadAllOrders_includes_modifiedAfter_parameter_when_provided() {
+    func test_loadAllOrders_includes_modifiedAfter_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let modifiedAfter = Date()
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, modifiedAfter: modifiedAfter) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, modifiedAfter: modifiedAfter)
 
         // Then
         guard let queryParameters = network.queryParameters else {
@@ -123,18 +108,14 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
-    func test_loadAllOrders_includes_customer_parameter_when_provided() {
+    func test_loadAllOrders_includes_customer_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedCustomerID: Int64 = 123
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, customerID: expectedCustomerID) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, customerID: expectedCustomerID)
 
         // Then
         guard let queryParameters = network.queryParameters else {
@@ -146,18 +127,14 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
-    func test_loadAllOrders_includes_product_parameter_when_provided() {
+    func test_loadAllOrders_includes_product_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedProductID: Int64 = 13
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, productID: expectedProductID) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, productID: expectedProductID)
 
         // Then
         guard let queryParameters = network.queryParameters else {

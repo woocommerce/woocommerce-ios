@@ -155,18 +155,19 @@ private extension OrderStore {
 
         let pageNumber = OrdersRemote.Defaults.pageNumber
         let startTime = Date()
-        self.remote.loadAllOrders(for: siteID,
-                                  statuses: statuses,
-                                  after: after,
-                                  before: before,
-                                  modifiedAfter: modifiedAfter,
-                                  customerID: customerID,
-                                  productID: productID,
-                                  createdVia: createdVia,
-                                  pageNumber: pageNumber,
-                                  pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .success(let orders):
+        Task { @MainActor [weak self] in
+            do {
+                let orders = try await self?.remote.loadAllOrders(for: siteID,
+                                                                  statuses: statuses,
+                                                                  after: after,
+                                                                  before: before,
+                                                                  modifiedAfter: modifiedAfter,
+                                                                  customerID: customerID,
+                                                                  productID: productID,
+                                                                  createdVia: createdVia,
+                                                                  pageNumber: pageNumber,
+                                                                  pageSize: pageSize) ?? []
+                let result: Result<[Order], Error> = .success(orders)
                 switch writeStrategy {
                 case .doNotSave:
                     onCompletion(Date().timeIntervalSince(startTime), result)
@@ -176,7 +177,8 @@ private extension OrderStore {
                         onCompletion(Date().timeIntervalSince(startTime), result)
                     }
                 }
-            case .failure:
+            } catch {
+                let result: Result<[Order], Error> = .failure(error)
                 onCompletion(Date().timeIntervalSince(startTime), result)
             }
         }
@@ -196,22 +198,22 @@ private extension OrderStore {
                            pageSize: Int,
                            onCompletion: @escaping (TimeInterval, Error?) -> Void) {
         let startTime = Date()
-        remote.loadAllOrders(for: siteID,
-                             statuses: statuses,
-                             after: after,
-                             before: before,
-                             modifiedAfter: modifiedAfter,
-                             customerID: customerID,
-                             productID: productID,
-                             createdVia: createdVia,
-                             pageNumber: pageNumber,
-                             pageSize: pageSize) { [weak self] result in
-            switch result {
-            case .success(let orders):
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+        Task { @MainActor in
+            do {
+                let orders = try await remote.loadAllOrders(for: siteID,
+                                                                  statuses: statuses,
+                                                                  after: after,
+                                                                  before: before,
+                                                                  modifiedAfter: modifiedAfter,
+                                                                  customerID: customerID,
+                                                                  productID: productID,
+                                                                  createdVia: createdVia,
+                                                                  pageNumber: pageNumber,
+                                                                  pageSize: pageSize)
+                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }
-            case .failure(let error):
+            } catch {
                 onCompletion(Date().timeIntervalSince(startTime), error)
             }
         }
@@ -228,11 +230,11 @@ private extension OrderStore {
         }
 
         // If there are no locally stored orders, then check remote.
-        remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1) { result in
-            switch result {
-            case .success(let orders):
+        Task { @MainActor in
+            do {
+                let orders = try await remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1)
                 onCompletion(.success(orders.isEmpty == false))
-            case .failure(let error):
+            } catch {
                 onCompletion(.failure(error))
             }
         }

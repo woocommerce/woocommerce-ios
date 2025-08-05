@@ -149,6 +149,8 @@ final class GameControllerBarcodeObserver {
     /// Barcode scanner input is not received through GameController framework keyChangeHandler if VoiceOver is enabled.
     /// Process UIPress events as fallback when VoiceOver is enabled.
     /// Translates UIKey input to GCKeyCode and feeds to existing parser infrastructure.
+    /// As a limitation, this won't always work as expected when iOS Software Keyboard is not in US-English.
+    ///
     func processUIPress(_ presses: Set<UIPress>) {
         // Lazily initialize parser for VoiceOver fallback if needed
         if barcodeParser == nil {

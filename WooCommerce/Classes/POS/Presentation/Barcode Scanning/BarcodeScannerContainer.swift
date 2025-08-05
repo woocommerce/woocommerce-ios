@@ -70,4 +70,50 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     deinit {
         gameControllerBarcodeObserver = nil
     }
+
+    // MARK: - VoiceOver Support
+    /// Barcode scanner  input is not received through GameController framework keyChangeHandler if VoiceOver is enabled.
+
+    override var canBecomeFirstResponder: Bool {
+        // Only become first responder when VoiceOver is running as fallback for GameController limitations
+        return UIAccessibility.isVoiceOverRunning
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        guard UIAccessibility.isVoiceOverRunning else { return }
+
+        becomeFirstResponder()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        guard UIAccessibility.isVoiceOverRunning else { return }
+
+        resignFirstResponder()
+    }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        // Don't call super to prevent system from hiding software keyboard
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        // When VoiceOver is running, use UIPress fallback since GameController keyChangeHandler doesn't work
+        guard UIAccessibility.isVoiceOverRunning else { return }
+
+        gameControllerBarcodeObserver?.processUIPress(presses)
+        // Don't call super to prevent other responders from handling our barcode input
+    }
+
+    override func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesChanged(presses, with: event)
+    }
+
+    override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        if UIAccessibility.isVoiceOverRunning {
+            gameControllerBarcodeObserver?.barcodeParser?.cancel()
+        }
+        super.pressesCancelled(presses, with: event)
+    }
 }

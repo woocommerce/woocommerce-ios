@@ -1,5 +1,6 @@
 import Testing
 import GameController
+import UIKit
 @testable import WooCommerce
 
 struct GameControllerBarcodeParserTests {
@@ -825,5 +826,245 @@ struct GameControllerBarcodeParserTests {
             minimumBarcodeLength: 3,
             maximumInterCharacterTime: 0.05
         )
+    }
+
+    // MARK: - VoiceOver Fallback Tests
+    // Using UIViewController.pressesEnded when VoiceOver is enabled to cover keyChange
+
+    struct VoiceOverFallbackTests {
+        @Test("UIKey to GCKeyCode translation works for numbers")
+        func uikey_numbers_when_translated_produce_correct_gckeycode() {
+            // Given
+            let observer = GameControllerBarcodeObserver(onScan: { _ in })
+
+            // When & Then - Test number translations
+            let numberKeys: [(UIKeyboardHIDUsage, GCKeyCode)] = [
+                (.keyboard0, .zero),
+                (.keyboard1, .one),
+                (.keyboard2, .two),
+                (.keyboard3, .three),
+                (.keyboard4, .four),
+                (.keyboard5, .five),
+                (.keyboard6, .six),
+                (.keyboard7, .seven),
+                (.keyboard8, .eight),
+                (.keyboard9, .nine)
+            ]
+
+            for (hidUsage, expectedGCKey) in numberKeys {
+                let uiKey = MockUIKey(keyCode: hidUsage, modifierFlags: [])
+                let result = observer.uiKeyToGCKeyCode(uiKey)
+                #expect(result == expectedGCKey)
+            }
+        }
+
+        @Test("UIKey to GCKeyCode translation works for letters")
+        func uikey_letters_when_translated_produce_correct_gckeycode() {
+            // Given
+            let observer = GameControllerBarcodeObserver(onScan: { _ in })
+
+            // When & Then - Test letter translations
+            let letterKeys: [(UIKeyboardHIDUsage, GCKeyCode)] = [
+                (.keyboardA, .keyA),
+                (.keyboardB, .keyB),
+                (.keyboardC, .keyC),
+                (.keyboardD, .keyD),
+                (.keyboardE, .keyE),
+                (.keyboardF, .keyF),
+                (.keyboardG, .keyG),
+                (.keyboardH, .keyH),
+                (.keyboardI, .keyI),
+                (.keyboardJ, .keyJ),
+                (.keyboardK, .keyK),
+                (.keyboardL, .keyL),
+                (.keyboardM, .keyM),
+                (.keyboardN, .keyN),
+                (.keyboardO, .keyO),
+                (.keyboardP, .keyP),
+                (.keyboardQ, .keyQ),
+                (.keyboardR, .keyR),
+                (.keyboardS, .keyS),
+                (.keyboardT, .keyT),
+                (.keyboardU, .keyU),
+                (.keyboardV, .keyV),
+                (.keyboardW, .keyW),
+                (.keyboardX, .keyX),
+                (.keyboardY, .keyY),
+                (.keyboardZ, .keyZ)
+            ]
+
+            for (hidUsage, expectedGCKey) in letterKeys {
+                let uiKey = MockUIKey(keyCode: hidUsage, modifierFlags: [])
+                let result = observer.uiKeyToGCKeyCode(uiKey)
+                #expect(result == expectedGCKey)
+            }
+        }
+
+        @Test("UIKey to GCKeyCode translation works for punctuation")
+        func uikey_punctuation_when_translated_produces_correct_gckeycode() {
+            // Given
+            let observer = GameControllerBarcodeObserver(onScan: { _ in })
+
+            // When & Then - Test punctuation translations
+            let punctuationKeys: [(UIKeyboardHIDUsage, GCKeyCode)] = [
+                (.keyboardSpacebar, .spacebar),
+                (.keyboardHyphen, .hyphen),
+                (.keyboardEqualSign, .equalSign),
+                (.keyboardOpenBracket, .openBracket),
+                (.keyboardCloseBracket, .closeBracket),
+                (.keyboardBackslash, .backslash),
+                (.keyboardSemicolon, .semicolon),
+                (.keyboardQuote, .quote),
+                (.keyboardComma, .comma),
+                (.keyboardPeriod, .period),
+                (.keyboardSlash, .slash),
+                (.keyboardGraveAccentAndTilde, .graveAccentAndTilde),
+                (.keyboardReturnOrEnter, .returnOrEnter),
+                (.keyboardTab, .tab)
+            ]
+
+            for (hidUsage, expectedGCKey) in punctuationKeys {
+                let uiKey = MockUIKey(keyCode: hidUsage, modifierFlags: [])
+                let result = observer.uiKeyToGCKeyCode(uiKey)
+                #expect(result == expectedGCKey)
+            }
+        }
+
+        @Test("UIKey to GCKeyCode translation returns nil for unsupported keys")
+        func uikey_unsupported_when_translated_returns_nil() {
+            // Given
+            let observer = GameControllerBarcodeObserver(onScan: { _ in })
+
+            // When & Then - Test unsupported key codes
+            let unsupportedKeys: [UIKeyboardHIDUsage] = [
+                .keyboardF1,
+                .keyboardF2,
+                .keyboardCapsLock,
+                .keyboardLeftShift,
+                .keyboardRightShift,
+                .keyboardUpArrow,
+                .keyboardDownArrow
+            ]
+
+            for hidUsage in unsupportedKeys {
+                let uiKey = MockUIKey(keyCode: hidUsage, modifierFlags: [])
+                let result = observer.uiKeyToGCKeyCode(uiKey)
+                #expect(result == nil)
+            }
+        }
+
+        @Test("UIPress processing with shift modifier translates correctly")
+        func uipress_with_shift_when_processed_translates_shift_state_correctly() {
+            // Given
+            var results: [Result<String, HIDBarcodeParserError>] = []
+            let observer = GameControllerBarcodeObserver(
+                configuration: Self.testConfiguration,
+                onScan: { results.append($0) }
+            )
+
+            // When - Simulate UIPress events with shift modifier
+            let shiftedKey = MockUIKey(keyCode: .keyboardA, modifierFlags: [.shift])
+            let normalKey = MockUIKey(keyCode: .keyboardB, modifierFlags: [])
+            let enterKey = MockUIKey(keyCode: .keyboardReturnOrEnter, modifierFlags: [])
+
+            let shiftedPress = MockUIPress(key: shiftedKey)
+            let normalPress = MockUIPress(key: normalKey)
+            let enterPress = MockUIPress(key: enterKey)
+
+            observer.processUIPress([shiftedPress, normalPress, enterPress])
+
+            // Then
+            #expect(results.count == 1)
+            if case .success(let barcode) = results.first {
+                #expect(barcode == "Ab")
+            } else {
+                Issue.record("Expected successful scan with correct shift handling")
+            }
+        }
+
+        @Test("UIPress processing without valid key is ignored")
+        func uipress_without_key_when_processed_is_ignored() {
+            // Given
+            var results: [Result<String, HIDBarcodeParserError>] = []
+            let observer = GameControllerBarcodeObserver(
+                configuration: Self.testConfiguration,
+                onScan: { results.append($0) }
+            )
+
+            // When - Process UIPress without key
+            let pressWithoutKey = MockUIPress(key: nil)
+            observer.processUIPress([pressWithoutKey])
+
+            // Then
+            #expect(results.isEmpty)
+        }
+
+        @Test("UIPress processing with untranslatable key is ignored")
+        func uipress_with_untranslatable_key_when_processed_is_ignored() {
+            // Given
+            var results: [Result<String, HIDBarcodeParserError>] = []
+            let observer = GameControllerBarcodeObserver(
+                configuration: Self.testConfiguration,
+                onScan: { results.append($0) }
+            )
+
+            // When - Process UIPress with key that can't be translated
+            let unsupportedKey = MockUIKey(keyCode: .keyboardF1, modifierFlags: [])
+            let enterKey = MockUIKey(keyCode: .keyboardReturnOrEnter, modifierFlags: [])
+
+            let unsupportedPress = MockUIPress(key: unsupportedKey)
+            let enterPress = MockUIPress(key: enterKey)
+
+            observer.processUIPress([unsupportedPress, enterPress])
+
+            // Then - Should have no results because no valid characters were processed
+            #expect(results.isEmpty)
+        }
+
+        // MARK: - Helpers
+
+        static let testConfiguration = HIDBarcodeParserConfiguration(
+            terminatingStrings: ["\r", "\n"],
+            minimumBarcodeLength: 2,
+            maximumInterCharacterTime: 0.05
+        )
+    }
+}
+
+// MARK: - Mock Classes for Testing
+
+private class MockUIKey: UIKey {
+    private let _keyCode: UIKeyboardHIDUsage
+    private let _modifierFlags: UIKeyModifierFlags
+
+    init(keyCode: UIKeyboardHIDUsage, modifierFlags: UIKeyModifierFlags) {
+        self._keyCode = keyCode
+        self._modifierFlags = modifierFlags
+        super.init()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override var keyCode: UIKeyboardHIDUsage {
+        return _keyCode
+    }
+
+    override var modifierFlags: UIKeyModifierFlags {
+        return _modifierFlags
+    }
+}
+
+private class MockUIPress: UIPress {
+    private let _key: UIKey?
+
+    init(key: UIKey?) {
+        self._key = key
+        super.init()
+    }
+
+    override var key: UIKey? {
+        return _key
     }
 }

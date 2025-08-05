@@ -20,7 +20,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         // Then it tracks the scanner selected event
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerSelected.rawValue)
-        #expect(event?.properties["scanner"] as? String == "Star_BSH_20B")
+        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.starBSH20B.analyticsName)
     }
 
     @available(iOS 17.0, *)
@@ -42,7 +42,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         // Then it tracks the dismissal event
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed.rawValue)
-        #expect(event?.properties["scanner"] as? String == "Star_BSH_20B")
+        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.starBSH20B.analyticsName)
         #expect(event?.properties["step"] as? String == "setup_barcode_hid")
     }
 
@@ -84,7 +84,7 @@ struct PointOfSaleBarcodeScannerSetupFlowManagerTests {
         // Then it tracks the scanner connected event
         let event = mockAnalytics.events.first
         #expect(event?.eventName == WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected.rawValue)
-        #expect(event?.properties["scanner"] as? String == "Netum_1228BC")
+        #expect(event?.properties["scanner"] as? String == PointOfSaleBarcodeScannerType.netum1228BC.analyticsName)
     }
 
     @available(iOS 17.0, *)

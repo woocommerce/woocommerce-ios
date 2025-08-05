@@ -69,7 +69,7 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressPreviewView: V
                 showsSheet = true
             }
         }
-        .sheet(isPresented: $showsSheet) {
+        .posSheet(isPresented: $showsSheet) {
             PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView(viewModel: .init(
                 progress: 0.6, cancel: nil
             ), animation: .init(namespace: namespace))

@@ -1,6 +1,5 @@
 import Testing
 import GameController
-import UIKit
 @testable import WooCommerce
 
 struct GameControllerBarcodeParserTests {
@@ -827,5 +826,4 @@ struct GameControllerBarcodeParserTests {
             maximumInterCharacterTime: 0.05
         )
     }
-
 }

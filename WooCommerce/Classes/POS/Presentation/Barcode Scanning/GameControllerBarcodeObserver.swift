@@ -1,6 +1,5 @@
 import Foundation
 import GameController
-import UIKit
 
 /// An observer that uses the `GameController` framework to monitor for connected barcode scanners/keyboards
 /// and parse their input into barcode strings.

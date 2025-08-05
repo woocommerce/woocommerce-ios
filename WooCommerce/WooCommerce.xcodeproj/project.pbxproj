@@ -21,6 +21,10 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		0105865C2E426FAA002FADD1 /* BarcodeAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0105865B2E426FAA002FADD1 /* BarcodeAnalyticsTracker.swift */; };
+		0105865E2E426FDC002FADD1 /* UIKitBarcodeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0105865D2E426FDB002FADD1 /* UIKitBarcodeObserver.swift */; };
+		01058DD02E42716A002FADD1 /* BarcodeScannerContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01058DCF2E42716A002FADD1 /* BarcodeScannerContainerTests.swift */; };
+		01058DD22E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01058DD12E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift */; };
 		011D396F2D09FCD200DB1445 /* CardPresentModalLocationRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */; };
 		011D39712D0A324200DB1445 /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D39702D0A324100DB1445 /* LocationServiceTests.swift */; };
 		011D7A332CEC877A0007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */; };
@@ -3203,6 +3207,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0105865B2E426FAA002FADD1 /* BarcodeAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeAnalyticsTracker.swift; sourceTree = "<group>"; };
+		0105865D2E426FDB002FADD1 /* UIKitBarcodeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitBarcodeObserver.swift; sourceTree = "<group>"; };
+		01058DCF2E42716A002FADD1 /* BarcodeScannerContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerContainerTests.swift; sourceTree = "<group>"; };
+		01058DD12E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitBarcodeObserverTests.swift; sourceTree = "<group>"; };
 		011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationRequired.swift; sourceTree = "<group>"; };
 		011D39702D0A324100DB1445 /* LocationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTests.swift; sourceTree = "<group>"; };
 		011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableErrorEmailSent.swift; sourceTree = "<group>"; };
@@ -8378,6 +8386,8 @@
 		20D557572DF9D57800D9EC8B /* Barcode Scanning */ = {
 			isa = PBXGroup;
 			children = (
+				0105865D2E426FDB002FADD1 /* UIKitBarcodeObserver.swift */,
+				0105865B2E426FAA002FADD1 /* BarcodeAnalyticsTracker.swift */,
 				016910972E1D019500B731DA /* GameControllerBarcodeObserver.swift */,
 				0177250B2E1CFF7F00016148 /* GameControllerBarcodeParser.swift */,
 				20CEBF222E02C760001F3300 /* TimeProvider.swift */,
@@ -8390,6 +8400,8 @@
 		20D5575E2DFAE3D500D9EC8B /* Barcode Scanning */ = {
 			isa = PBXGroup;
 			children = (
+				01058DD12E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift */,
+				01058DCF2E42716A002FADD1 /* BarcodeScannerContainerTests.swift */,
 				0177250D2E1CFF9B00016148 /* GameControllerBarcodeParserTests.swift */,
 				20CEBF242E02C7E6001F3300 /* MockTimeProvider.swift */,
 			);
@@ -15813,6 +15825,7 @@
 				0258B4DA2B159A0F008FEA07 /* Publisher+WithPrevious.swift in Sources */,
 				D881FE062579DC78008DE6F2 /* NotWPAccountViewModel.swift in Sources */,
 				311D21ED264AF0E700102316 /* CardReaderSettingsAlerts.swift in Sources */,
+				0105865E2E426FDC002FADD1 /* UIKitBarcodeObserver.swift in Sources */,
 				867EA0AF2B8F15740064BCA7 /* CustomerFilter+Analytics.swift in Sources */,
 				02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */,
 				26ABCE532518EAF300721CB0 /* IssueRefundTableViewCell.swift in Sources */,
@@ -16112,6 +16125,7 @@
 				03AA165E2719B7EF005CCB7B /* ReceiptActionCoordinator.swift in Sources */,
 				B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,
+				0105865C2E426FAA002FADD1 /* BarcodeAnalyticsTracker.swift in Sources */,
 				02ED3D212C2330F400ED6F3E /* PointOfSaleCardPresentPaymentReaderUpdateFailedAlertViewModel.swift in Sources */,
 				CE2409F1215D12D30091F887 /* WooNavigationController.swift in Sources */,
 				0250BE8C2AC425F9006D067A /* OrderFormGiftCardRow.swift in Sources */,
@@ -17163,6 +17177,7 @@
 				DE50295728BF595200551736 /* WordPressOrgCredentialsAuthenticatorTests.swift in Sources */,
 				D8610BF7256F5F0900A5DF27 /* ULErrorViewControllerTests.swift in Sources */,
 				02279594237A60FD00787C63 /* AztecHeaderFormatBarCommandTests.swift in Sources */,
+				01058DD02E42716A002FADD1 /* BarcodeScannerContainerTests.swift in Sources */,
 				0259EF77246BF4EC00B84FDF /* ProductDetailsFactoryTests.swift in Sources */,
 				EE289AEC2C9D7CF7004AB1A6 /* ImageTextScannerTests.swift in Sources */,
 				EE0EE7A828B74EF300F6061E /* CustomHelpCenterContentTests.swift in Sources */,
@@ -17229,6 +17244,7 @@
 				DE2004532BF4A37B00660A72 /* InboxDashboardCardViewModelTests.swift in Sources */,
 				027B8BBD23FE0DE10040944E /* ProductImageActionHandlerTests.swift in Sources */,
 				EEEDA916290A799E004B001D /* WordPressAuthenticator+Internal.swift in Sources */,
+				01058DD22E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift in Sources */,
 				CC53FB3E2758E2D500C4CA4F /* ProductRowViewModelTests.swift in Sources */,
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				FEEB2F61268A215E0075A6E0 /* StorageEligibilityErrorInfoWooTests.swift in Sources */,

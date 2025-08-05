@@ -7,23 +7,22 @@ import Yosemite
 final class RefundDetailsResultController {
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: GenericResultsController<StorageProduct, OrderDetailsProduct> = {
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return GenericResultsController<StorageProduct, OrderDetailsProduct>(
+        return ResultsController<StorageProduct>(
             storageManager: storageManager,
             matching: predicate,
-            sortedBy: [descriptor],
-            transformer: { OrderDetailsProduct(storageProduct: $0) }
+            sortedBy: [descriptor]
         )
     }()
 
     /// Products from an Order
     ///
     var products: [OrderDetailsProduct] {
-        productResultsController.fetchedObjects
+        productResultsController.transformedObjects(using: { OrderDetailsProduct(storageProduct: $0) })
     }
 
     private let siteID: Int64

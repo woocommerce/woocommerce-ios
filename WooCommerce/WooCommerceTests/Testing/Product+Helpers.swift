@@ -1,4 +1,4 @@
-import WooCommerce
+@testable import WooCommerce
 import Yosemite
 
 extension Product {

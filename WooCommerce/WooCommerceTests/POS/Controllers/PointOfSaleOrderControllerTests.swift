@@ -621,6 +621,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         sut.clearOrder()
+        try await Task.sleep(nanoseconds: 100_000_000)
 
         // Then
         #expect(deleteActionWasDispatched == true)

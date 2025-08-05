@@ -203,7 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var isUsingAISuggestions: Bool = false
 
     private let storage: StorageManagerType
-    private var product: ProductListItem?
+    private var product: BlazeCampaignProduct?
 
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
@@ -300,7 +300,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
 
-        product = productsResultsController.listItemObjects.first
+        product = productsResultsController.transformedObjects(using: { BlazeCampaignProduct(storageProduct: $0) }).first
 
         initializeCampaignObjective()
         updateBudgetDetails()
@@ -487,7 +487,7 @@ extension BlazeCampaignCreationFormViewModel {
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func loadProductImage() async -> MediaPickerImage? {
-        guard let firstImage = product?.images.first,
+        guard let firstImage = product?.firstImage,
               let image = try? await productImageLoader.requestImage(productImage: firstImage) else {
             return nil
         }

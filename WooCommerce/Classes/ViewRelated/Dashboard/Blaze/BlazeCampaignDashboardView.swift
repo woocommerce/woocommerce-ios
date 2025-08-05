@@ -1,5 +1,4 @@
 import SwiftUI
-import struct Yosemite.ProductListItem
 import Kingfisher
 import struct Yosemite.DashboardCard
 
@@ -294,15 +293,15 @@ private struct ProductInfoView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let product: ProductListItem
+    private let product: BlazeCampaignProduct
 
-    init(product: ProductListItem) {
+    init(product: BlazeCampaignProduct) {
         self.product = product
     }
 
     var body: some View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
-            KFImage(product.imageURL)
+            KFImage(product.firstImage?.imageURL)
                 .placeholder {
                     Image(uiImage: .productPlaceholderImage)
                 }

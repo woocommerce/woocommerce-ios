@@ -14,7 +14,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows info about the latest Blaze campaign
         case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
-        case showProduct(product: ProductListItem)
+        case showProduct(product: BlazeCampaignProduct)
         /// When there is no campaign or published product
         case empty
     }
@@ -100,7 +100,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
                                                  sortOrder: .dateDescending)
     }()
 
-    private(set) var latestPublishedProduct: ProductListItem?
+    private(set) var latestPublishedProduct: BlazeCampaignProduct?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -312,9 +312,12 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
 
+        let productTransformer: (StorageProduct) -> BlazeCampaignProduct = {
+            BlazeCampaignProduct(storageProduct: $0)
+        }
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
-            latestPublishedProduct = productResultsController.listItemObjects.first
+            latestPublishedProduct = productResultsController.transformedObjects(using: productTransformer).first
             updateAvailability()
             updateResults()
         }
@@ -326,7 +329,7 @@ private extension BlazeCampaignDashboardViewModel {
         do {
             try blazeCampaignResultsController.performFetch()
             try productResultsController.performFetch()
-            latestPublishedProduct = productResultsController.listItemObjects.first
+            latestPublishedProduct = productResultsController.transformedObjects(using: productTransformer).first
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)

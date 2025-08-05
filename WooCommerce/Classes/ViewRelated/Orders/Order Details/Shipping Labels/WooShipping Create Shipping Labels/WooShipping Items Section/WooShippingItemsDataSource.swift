@@ -30,9 +30,9 @@ final class DefaultWooShippingItemsDataSource: WooShippingItemsDataSource {
 
     /// Stored products that match the items in the order.
     ///
-    private var products: [ProductListItem] {
+    private var products: [ShippingLabelProduct] {
         try? productResultsController.performFetch()
-        return productResultsController.listItemObjects
+        return productResultsController.transformedObjects(using: { ShippingLabelProduct(storageProduct: $0) })
     }
 
     /// Stored product variations that match the items in the order.

@@ -50,7 +50,7 @@ extension ShippingLabelPackageItem {
         self.imageURL = copy.imageURL
     }
 
-    init?(orderItem: OrderItem, products: [ProductListItem], productVariations: [ProductVariation]) {
+    init?(orderItem: OrderItem, products: [ShippingLabelProduct], productVariations: [ProductVariation]) {
         self.name = orderItem.name
         self.orderItemID = orderItem.itemID
         self.quantity = orderItem.quantity

@@ -32,14 +32,14 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
 
     func test_it_inits_with_expected_items_from_remote() {
         // Given
-        let product = ProductListItem.fake().copy(productID: 13)
+        let product = Product.fake().copy(productID: 13)
         let variation = ProductVariation.fake().copy(productVariationID: 14)
         let order = Order.fake().copy(items: [OrderItem.fake().copy(productID: product.productID),
                                               OrderItem.fake().copy(variationID: variation.productVariationID)])
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case .requestMissingProducts:
-                self.storageManager.insertSampleProductListItem(item: product)
+                self.storageManager.insertSampleProduct(readOnlyProduct: product)
             default:
                 XCTFail("Received unexpected action: \(action)")
             }

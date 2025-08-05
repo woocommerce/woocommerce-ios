@@ -13,7 +13,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private let sampleSiteAddress = "https://example.com"
     private let sampleProductID: Int64 = 433
 
-    private var sampleProduct: ProductListItem {
+    private var sampleProduct: Product {
         .fake().copy(siteID: sampleSiteID,
                      productID: sampleProductID,
                      name: "My Woo Product",
@@ -1120,7 +1120,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
     ///
-    func insertProduct(_ readOnlyProduct: ProductListItem) {
+    func insertProduct(_ readOnlyProduct: Product) {
         storageManager.performAndSave({ storage in
             let product = storage.insertNewObject(ofType: StorageProduct.self)
             product.update(with: readOnlyProduct)

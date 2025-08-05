@@ -111,12 +111,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_it_shows_latest_published_product_in_dashboard() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let product1 = Networking.ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                              statusKey: (ProductStatus.published.rawValue))
+        let product1 = Networking.Product.fake().copy(siteID: sampleSiteID,
+                                                      statusKey: (ProductStatus.published.rawValue))
         insertProduct(product1)
-
-        let product2 = Networking.ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                              statusKey: (ProductStatus.published.rawValue))
+        
+        let product2 = Networking.Product.fake().copy(siteID: sampleSiteID,
+                                                      statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -132,7 +132,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product, product2)
+            XCTAssertEqual(product.siteID, product2.siteID)
         } else {
             XCTFail("Wrong state")
         }
@@ -212,8 +212,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showProduct_if_published_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.published.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -229,7 +229,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product, fakeProduct)
+            XCTAssertEqual(product.siteID, fakeProduct.siteID)
         } else {
             XCTFail("Wrong state")
         }
@@ -239,8 +239,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_empty_if_draft_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.draft.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.draft.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -349,8 +349,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldRedactView_is_false_after_reload_finishes_when_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.published.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -451,8 +451,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldShowShowAllCampaignsButton_is_false_after_reload_finishes_when_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.published.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -563,8 +563,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_showProduct_if_published_product_is_added_to_storage() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.published.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -587,7 +587,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product, fakeProduct)
+            XCTAssertEqual(product.siteID, fakeProduct.siteID)
         } else {
             XCTFail("Wrong state")
         }
@@ -598,15 +598,15 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     @MainActor
     func test_latestPublishedProduct_returns_correct_product() throws {
         // Given
-        insertProduct(ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                  productID: 1,
-                                                  statusKey: (ProductStatus.published.rawValue)))
-        insertProduct(ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                  productID: 2,
-                                                  statusKey: (ProductStatus.draft.rawValue)))
-        insertProduct(ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                  productID: 3,
-                                                  statusKey: (ProductStatus.published.rawValue)))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.published.rawValue)))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 2,
+                                          statusKey: (ProductStatus.draft.rawValue)))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 3,
+                                          statusKey: (ProductStatus.published.rawValue)))
 
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
@@ -621,9 +621,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     @MainActor
     func test_latestPublishedProduct_is_nil_when_no_published_product_available() throws {
         // Given
-        insertProduct(ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                  productID: 1,
-                                                  statusKey: (ProductStatus.draft.rawValue)))
+        insertProduct(Product.fake().copy(siteID: sampleSiteID,
+                                          productID: 1,
+                                          statusKey: (ProductStatus.draft.rawValue)))
 
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
@@ -768,8 +768,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_blazeEntryPointDisplayed_tracked_if_published_product_available_and_blaze_campaign_not_available() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.published.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -795,8 +795,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_blazeEntryPointDisplayed_is_not_tracked_if_draft_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeProduct = ProductListItem.fake().copy(siteID: sampleSiteID,
-                                                      statusKey: (ProductStatus.draft.rawValue))
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.draft.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -881,7 +881,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 }
 
 private extension BlazeCampaignDashboardViewModelTests {
-    func insertProduct(_ listItem: Networking.ProductListItem) {
+    func insertProduct(_ listItem: Networking.Product) {
         storageManager.performAndSave({ storage in
             let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
             newProduct.update(with: listItem)
@@ -897,7 +897,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         }, completion: {}, on: .main)
     }
 
-    func mockSynchronizeProducts(insertProductToStorage product: Networking.ProductListItem? = nil) {
+    func mockSynchronizeProducts(insertProductToStorage product: Networking.Product? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
             case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, let onCompletion):

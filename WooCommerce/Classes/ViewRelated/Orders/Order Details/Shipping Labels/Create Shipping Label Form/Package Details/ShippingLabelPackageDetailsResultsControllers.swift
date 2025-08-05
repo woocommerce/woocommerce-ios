@@ -7,14 +7,14 @@ final class ShippingLabelPackageDetailsResultsControllers {
     private let siteID: Int64
     private let orderItems: [OrderItem]
     private let storageManager: StorageManagerType
-    private var onProductReload: (([ProductListItem]) -> Void)?
+    private var onProductReload: (([ShippingLabelProduct]) -> Void)?
     private var onProductVariationsReload: (([ProductVariation]) -> Void)?
 
     /// Get the products found in Core Data and that match the predicate.
     ///
-    var products: [ProductListItem] {
+    var products: [ShippingLabelProduct] {
         try? productResultsController.performFetch()
-        return productResultsController.listItemObjects
+        return productResultsController.transformedObjects(using: { ShippingLabelProduct(storageProduct: $0) })
     }
 
     /// Get the product variations in Core Data and that match the predicate.
@@ -60,7 +60,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
     init(siteID: Int64,
          orderItems: [OrderItem],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         onProductReload: @escaping ([ProductListItem]) -> Void,
+         onProductReload: @escaping ([ShippingLabelProduct]) -> Void,
          onProductVariationsReload: @escaping ([ProductVariation]) -> Void) {
         self.siteID = siteID
         self.orderItems = orderItems
@@ -69,16 +69,19 @@ final class ShippingLabelPackageDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onProductVariationsReload)
     }
 
-    private func configureProductResultsController(onReload: @escaping ([ProductListItem]) -> ()) {
+    private func configureProductResultsController(onReload: @escaping ([ShippingLabelProduct]) -> ()) {
+        let transformation: (StorageProduct) -> ShippingLabelProduct = {
+            ShippingLabelProduct(storageProduct: $0)
+        }
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
-            onReload(self.productResultsController.listItemObjects)
+            onReload(self.productResultsController.transformedObjects(using: transformation))
         }
 
         productResultsController.onDidResetContent = { [weak self] in
             guard let self = self else { return }
             try? self.productResultsController.performFetch()
-            onReload(self.productResultsController.listItemObjects)
+            onReload(self.productResultsController.transformedObjects(using: transformation))
         }
 
         do {

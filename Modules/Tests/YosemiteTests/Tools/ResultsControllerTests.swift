@@ -450,72 +450,6 @@ final class ResultsControllerTests: XCTestCase {
         // Then
         XCTAssertNil(resultsController.indexPath(forObjectMatching: { $0.displayName == "B" }))
     }
-
-    // MARK: - List Item Tests
-
-    func test_listItemObjects_returns_empty_array_when_no_products() throws {
-        // Given
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
-        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
-        try resultsController.performFetch()
-
-        // When
-        let listItems = resultsController.listItemObjects
-
-        // Then
-        XCTAssertTrue(listItems.isEmpty)
-    }
-
-    func test_listItemObjects_returns_all_list_items_from_fetched_products() throws {
-        // Given
-        let product1 = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
-        let product2 = createSampleProductListItem(productID: 2, name: "Product 2", price: "20.00")
-        let product3 = createSampleProductListItem(productID: 3, name: "Product 3", price: "30.00")
-
-        storageManager.insertSampleProductListItem(item: product1)
-        storageManager.insertSampleProductListItem(item: product2)
-        storageManager.insertSampleProductListItem(item: product3)
-
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
-        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
-        try resultsController.performFetch()
-
-        // When
-        let listItems = resultsController.listItemObjects
-
-        // Then
-        XCTAssertEqual(listItems.count, 3)
-        XCTAssertEqual(listItems[0].productID, 1)
-        XCTAssertEqual(listItems[0].name, "Product 1")
-        XCTAssertEqual(listItems[0].price, "10.00")
-        XCTAssertEqual(listItems[1].productID, 2)
-        XCTAssertEqual(listItems[1].name, "Product 2")
-        XCTAssertEqual(listItems[1].price, "20.00")
-        XCTAssertEqual(listItems[2].productID, 3)
-        XCTAssertEqual(listItems[2].name, "Product 3")
-        XCTAssertEqual(listItems[2].price, "30.00")
-    }
-
-    func test_listItem_at_indexPath_returns_expected_list_item() throws {
-        // Given
-        let product1 = createSampleProductListItem(productID: 1, name: "Product 1", price: "10.00")
-        let product2 = createSampleProductListItem(productID: 2, name: "Product 2", price: "20.00")
-
-        storageManager.insertSampleProductListItem(item: product1)
-        storageManager.insertSampleProductListItem(item: product2)
-
-        let sortDescriptor = NSSortDescriptor(key: #keyPath(StorageProduct.productID), ascending: true)
-        let resultsController = ResultsController<StorageProduct>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
-        try resultsController.performFetch()
-
-        // When
-        let listItem = resultsController.listItem(at: IndexPath(row: 1, section: 0))
-
-        // Then
-        XCTAssertEqual(listItem.productID, 2)
-        XCTAssertEqual(listItem.name, "Product 2")
-        XCTAssertEqual(listItem.price, "20.00")
-    }
 }
 
 // MARK: - Utils
@@ -527,24 +461,5 @@ private extension ResultsControllerTests {
         account.displayName = displayName
         account.username = username
         return account
-    }
-
-    func createSampleProductListItem(siteID: Int64 = 123, productID: Int64, name: String, price: String) -> ProductListItem {
-        return ProductListItem.fake().copy(
-            siteID: siteID,
-            productID: productID,
-            name: name,
-            productTypeKey: "simple",
-            statusKey: "publish",
-            sku: nil,
-            price: price,
-            virtual: false,
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: "instock",
-            reviewsAllowed: true,
-            averageRating: "0",
-            ratingCount: 0
-        )
     }
 }

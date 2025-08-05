@@ -144,8 +144,18 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     func clearOrder() {
+        clearAutoDraftIfNeeded(for: order)
         order = nil
         orderState = .idle
+    }
+
+    private func clearAutoDraftIfNeeded(for order: Order?) {
+        if let order, order.status == .autoDraft {
+            DispatchQueue.main.async { [weak self] in
+                let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in }
+                self?.stores.dispatch(action)
+            }
+        }
     }
 
     private func celebrate() {

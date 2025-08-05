@@ -127,7 +127,32 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     // MARK: - UIPress Event Handling
-    
+
+    override var canBecomeFirstResponder: Bool {
+        voiceOverStateProvider.isVoiceOverRunning
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if voiceOverStateProvider.isVoiceOverRunning {
+            becomeFirstResponder()
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if voiceOverStateProvider.isVoiceOverRunning {
+            resignFirstResponder()
+        }
+    }
+
+    /// Handles the end of keyboard press events, interpreting them as barcode input.
+    /// When a terminating character is detected, the accumulated buffer is treated as a complete
+    /// barcode and passed to the onScan callback.
+    /// We don't call `super` when UIKitObserver is active because we don't other responder chain items to handle our barcode as well,
+    /// as this could cause unexpected behavior.
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         // Forward UIPress events to UIKit observer if active
         if let uiKitObserver = uiKitObserver {
@@ -136,18 +161,18 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
             super.pressesEnded(presses, with: event)
         }
     }
-    
+
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        // Don't call super to prevent system from hiding software keyboard when UIKit observer is active
-        if uiKitObserver == nil {
-            super.pressesBegan(presses, with: event)
-        }
+        // Don't call super to prevent system from hiding software keyboard
     }
-    
+
     override func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesChanged(presses, with: event)
     }
-    
+
+    /// `pressesCancelled` is rarely called, but Apple's documentation suggests it's possible and that crashes may occur if it's not handled.
+    /// It makes sense to clear the buffer when this happens.
+    /// We call super in case other presses are handled elsewhere in the responder chain.
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         if let uiKitObserver = uiKitObserver {
             uiKitObserver.barcodeParser?.cancel()
@@ -155,4 +180,3 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
         super.pressesCancelled(presses, with: event)
     }
 }
-

@@ -65,10 +65,11 @@ public final class JetpackConnectionRemote: Remote {
         let mapper = JetpackConnectionRegistrationMapper()
         let authorizationURL = try await enqueue(request, mapper: mapper).authorizeUrl
         guard let components = URLComponents(string: authorizationURL),
-              let blogID = components.queryItems?.first(where: { $0.name == Constants.clientID }) as? Int64 else {
+              let blogID = components.queryItems?.first(where: { $0.name == Constants.clientID })?.value as? String,
+              let numericID = Int64(blogID) else {
             throw ConnectionError.invalidAuthorizationURL
         }
-        return blogID
+        return numericID
     }
 
     /// Provisions the connection between the site and WordPress.com using Jetpack.

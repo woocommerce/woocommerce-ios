@@ -1,4 +1,3 @@
-import Codegen
 import Foundation
 
 /// Mapper: Jetpack connection registration

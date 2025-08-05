@@ -42,6 +42,12 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             fetchJetpackConnectionURL(completion: completion)
         case .fetchJetpackConnectionData(let completion):
             fetchJetpackConnectionData(completion: completion)
+        case .registerSite(let completion):
+            registerSite(completion: completion)
+        case .provisionConnection(let completion):
+            provisionConnection(completion: completion)
+        case .finalizeConnection(let siteID, let provisionResponse, let completion):
+            finalizeConnection(siteID: siteID, provisionResponse: provisionResponse, completion: completion)
         case .loadWPComAccount(let network, let onCompletion):
             loadWPComAccount(network: network, onCompletion: onCompletion)
         }
@@ -85,6 +91,42 @@ private extension JetpackConnectionStore {
 
     func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
         jetpackConnectionRemote?.fetchJetpackConnectionData(completion: completion)
+    }
+
+    func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {
+        guard let jetpackConnectionRemote else { return }
+        Task { @MainActor in
+            do {
+                let blogID = try await jetpackConnectionRemote.registerSite()
+                completion(.success(blogID))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func provisionConnection(completion: @escaping (Result<JetpackConnectionProvisionResponse, Error>) -> Void) {
+        guard let jetpackConnectionRemote else { return }
+        Task { @MainActor in
+            do {
+                let response = try await jetpackConnectionRemote.provisionConnection()
+                completion(.success(response))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func finalizeConnection(siteID: Int64, provisionResponse: JetpackConnectionProvisionResponse, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let jetpackConnectionRemote else { return }
+        Task { @MainActor in
+            do {
+                try await jetpackConnectionRemote.finalizeConnection(siteID: siteID, provisionResponse: provisionResponse)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
     }
 
     func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {

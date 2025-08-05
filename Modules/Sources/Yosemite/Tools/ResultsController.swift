@@ -2,16 +2,14 @@ import Foundation
 import Storage
 import CoreData
 
-
-
 // MARK: - MutableType: Storage.framework Type that will be retrieved (and converted into ReadOnly)
 //
 public typealias ResultsControllerMutableType = NSManagedObject & ReadOnlyConvertible
 
 
-// MARK: - GenericResultsController (Core Implementation)
+// MARK: - ResultsController
 //
-public class GenericResultsController<T: ResultsControllerMutableType, Output> {
+public class ResultsController<T: ResultsControllerMutableType> {
 
     /// The `StorageType` used to fetch objects.
     ///
@@ -79,7 +77,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
 
     /// Closure to be executed whenever an Object is updated.
     ///
-    public var onDidChangeObject: ((_ object: Output, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
+    public var onDidChangeObject: ((_ object: T.ReadOnlyType, _ indexPath: IndexPath?, _ type: ChangeType, _ newIndexPath: IndexPath?) -> Void)?
 
     /// Closure to be executed whenever an entire Section is updated.
     ///
@@ -94,25 +92,19 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     ///
     private let fetchLimit: Int?
 
-    /// Transformer closure to convert T to Output type.
-    ///
-    private let transformer: (T) -> Output
-
     /// Designated Initializer.
     ///
     public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
                 fetchLimit: Int? = nil,
-                sortedBy descriptors: [NSSortDescriptor],
-                transformer: @escaping (T) -> Output) {
+                sortedBy descriptors: [NSSortDescriptor]) {
 
         self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
         self.fetchLimit = fetchLimit
         self.sortDescriptors = descriptors
-        self.transformer = transformer
 
         setupResultsController()
         setupEventsForwarding()
@@ -125,15 +117,13 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
                             fetchLimit: Int? = nil,
-                            sortedBy descriptors: [NSSortDescriptor],
-                            transformer: @escaping (T) -> Output) {
+                            sortedBy descriptors: [NSSortDescriptor]) {
 
         self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
                   fetchLimit: fetchLimit,
-                  sortedBy: descriptors,
-                  transformer: transformer)
+                  sortedBy: descriptors)
     }
 
 
@@ -147,14 +137,14 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     ///
     /// Prefer to use `safeObject(at:)` instead.
     ///
-    public func object(at indexPath: IndexPath) -> Output {
-        return transformer(controller.object(at: indexPath))
+    public func object(at indexPath: IndexPath) -> T.ReadOnlyType {
+        return controller.object(at: indexPath).toReadOnly()
     }
 
     /// Returns the fetched object at the given `indexPath`. Returns `nil` if the `indexPath`
     /// does not exist.
     ///
-    public func safeObject(at indexPath: IndexPath) -> Output? {
+    public func safeObject(at indexPath: IndexPath) -> T.ReadOnlyType? {
         guard !isEmpty else {
             return nil
         }
@@ -168,7 +158,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
             return nil
         }
 
-        return transformer(controller.object(at: indexPath))
+        return controller.object(at: indexPath).toReadOnly()
     }
 
     /// Returns the Plain ObjectIndex corresponding to a given IndexPath. You can use this index to map the
@@ -189,6 +179,21 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
         return output
     }
 
+    /// Returns an array of all of the transformed fetched objects.
+    /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
+    ///
+    public func transformedObjects<U>(using transformation: (T) -> U) -> [U] {
+        controller.fetchedObjects?.compactMap { mutableObject in
+            transformation(mutableObject)
+        } ?? []
+    }
+
+    /// Returns a transformed object at a given index
+    ///
+    public func transformedObject<U>(at indexPath: IndexPath, using transformation: (T) -> U) -> U {
+        transformation(controller.object(at: indexPath))
+    }
+
     /// Indicates if there are any Objects matching the specified criteria.
     ///
     public var isEmpty: Bool {
@@ -204,22 +209,22 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     /// Returns an array of all of the (ReadOnly) Fetched Objects.
     /// Note: Avoid calling this in computed variables as the conversion of storage items can be costly.
     ///
-    public var fetchedObjects: [Output] {
-        let transformedObjects = controller.fetchedObjects?.compactMap { mutableObject in
-            transformer(mutableObject)
+    public var fetchedObjects: [T.ReadOnlyType] {
+        let readOnlyObjects = controller.fetchedObjects?.compactMap { mutableObject in
+            mutableObject.toReadOnly()
         }
 
-        return transformedObjects ?? []
+        return readOnlyObjects ?? []
     }
 
     /// Returns an array of SectionInfo Entitites.
     ///
     public var sections: [SectionInfo] {
-        let transformedSections = controller.sections?.compactMap { mutableSection in
-            SectionInfo(mutableSection: mutableSection, transformer: transformer)
+        let readOnlySections = controller.sections?.compactMap { mutableSection in
+            SectionInfo(mutableSection: mutableSection)
         }
 
-        return transformedSections ?? []
+        return readOnlySections ?? []
     }
 
     /// Returns an optional index path of the first matching object.
@@ -269,8 +274,8 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
                 return
             }
 
-            let transformedObject = transformer(object)
-            self.onDidChangeObject?(transformedObject, indexPath, type, newIndexPath)
+            let readOnlyObject = object.toReadOnly()
+            self.onDidChangeObject?(readOnlyObject, indexPath, type, newIndexPath)
         }
 
         internalDelegate.onDidChangeSection = { [weak self] (mutableSection, sectionIndex, type) in
@@ -278,8 +283,8 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
                 return
             }
 
-            let transformedSection = SectionInfo(mutableSection: mutableSection, transformer: transformer)
-            self.onDidChangeSection?(transformedSection, sectionIndex, type)
+            let readOnlySection = SectionInfo(mutableSection: mutableSection)
+            self.onDidChangeSection?(readOnlySection, sectionIndex, type)
         }
     }
 
@@ -303,7 +308,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
 
 // MARK: - Nested Types
 //
-public extension GenericResultsController {
+public extension ResultsController {
 
     // MARK: - ResultsController.ChangeType
     //
@@ -331,13 +336,9 @@ public extension GenericResultsController {
             mutableSectionInfo.numberOfObjects
         }
 
-        /// Transformer closure to convert objects in the section.
+        /// Returns the array of (ReadOnly) objects in the section.
         ///
-        private let transformer: (T) -> Output
-
-        /// Returns the array of transformed objects in the section.
-        ///
-        private(set) public lazy var objects: [Output] = {
+        private(set) public lazy var objects: [T.ReadOnlyType] = {
             guard let objects = mutableSectionInfo.objects else {
                 return []
             }
@@ -346,47 +347,13 @@ public extension GenericResultsController {
                 return []
             }
 
-            return castedObjects.map { transformer($0) }
+            return castedObjects.map { $0.toReadOnly() }
         }()
 
         /// Designated Initializer
         ///
-        init(mutableSection: NSFetchedResultsSectionInfo, transformer: @escaping (T) -> Output) {
+        init(mutableSection: NSFetchedResultsSectionInfo) {
             mutableSectionInfo = mutableSection
-            self.transformer = transformer
         }
-    }
-}
-
-// MARK: - ResultsController (Backward Compatible Specialization)
-//
-public class ResultsController<T: ResultsControllerMutableType>: GenericResultsController<T, T.ReadOnlyType> {
-    /// Designated Initializer.
-    ///
-    public init(viewStorage: StorageType,
-                sectionNameKeyPath: String? = nil,
-                matching predicate: NSPredicate? = nil,
-                fetchLimit: Int? = nil,
-                sortedBy descriptors: [NSSortDescriptor]) {
-        super.init(viewStorage: viewStorage,
-                   sectionNameKeyPath: sectionNameKeyPath,
-                   matching: predicate,
-                   fetchLimit: fetchLimit,
-                   sortedBy: descriptors,
-                   transformer: { $0.toReadOnly() })
-    }
-
-    /// Convenience Initializer.
-    ///
-    public convenience init(storageManager: StorageManagerType,
-                            sectionNameKeyPath: String? = nil,
-                            matching predicate: NSPredicate? = nil,
-                            fetchLimit: Int? = nil,
-                            sortedBy descriptors: [NSSortDescriptor]) {
-        self.init(viewStorage: storageManager.viewStorage,
-                  sectionNameKeyPath: sectionNameKeyPath,
-                  matching: predicate,
-                  fetchLimit: fetchLimit,
-                  sortedBy: descriptors)
     }
 }

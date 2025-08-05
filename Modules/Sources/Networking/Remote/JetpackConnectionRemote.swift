@@ -71,13 +71,31 @@ public final class JetpackConnectionRemote: Remote {
         return blogID
     }
 
-    /// Provision the connection between the site and WordPress.com using Jetpack.
+    /// Provisions the connection between the site and WordPress.com using Jetpack.
     /// Returns a response containing scope and secret to be sent for finalizing the connection.
     ///
     public func provisionConnection() async throws -> JetpackConnectionProvisionResponse {
         let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionProvision)
         let mapper = JetpackConnectionProvisionMapper()
         return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Finalizes the connection by sending a request to WPCom.
+    ///
+    public func finalizeConnection(siteID: Int64, provisionResponse: JetpackConnectionProvisionResponse) async throws {
+        let parameters: [String: Any] = [
+            Parameters.secret: provisionResponse.secret,
+            Parameters.scope: provisionResponse.scope,
+            Parameters.externalUserID: provisionResponse.userId,
+            Parameters.redirectURI: siteURL
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark2,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.wpcomConnection,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: false)
+        return try await enqueue(request)
     }
 }
 
@@ -95,6 +113,7 @@ private extension JetpackConnectionRemote {
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let jetpackConnectionRegister = "/jetpack/v4/connection/register"
         static let jetpackConnectionProvision = "/jetpack/v4/remote_provision"
+        static let wpcomConnection = "jetpack-remote-connect-user"
         static let plugins = "/wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }
@@ -110,5 +129,12 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
         static let clientID = "client_id"
+    }
+
+    enum Parameters {
+        static let secret = "secret"
+        static let externalUserID = "external_user_id"
+        static let redirectURI = "redirect_uri"
+        static let scope = "scope"
     }
 }

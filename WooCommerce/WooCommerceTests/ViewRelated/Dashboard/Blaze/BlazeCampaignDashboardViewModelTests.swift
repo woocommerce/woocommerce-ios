@@ -114,7 +114,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let product1 = Networking.Product.fake().copy(siteID: sampleSiteID,
                                                       statusKey: (ProductStatus.published.rawValue))
         insertProduct(product1)
-        
+
         let product2 = Networking.Product.fake().copy(siteID: sampleSiteID,
                                                       statusKey: (ProductStatus.published.rawValue))
 

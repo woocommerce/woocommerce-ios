@@ -84,7 +84,6 @@ public typealias OrderCreateField = Networking.OrdersRemote.CreateOrderField
 public typealias PaymentGateway = Networking.PaymentGateway
 public typealias PaymentGatewayAccount = Networking.PaymentGatewayAccount
 public typealias Product = Networking.Product
-public typealias ProductListItem = Networking.ProductListItem
 public typealias POSProduct = Networking.POSProduct
 public typealias POSProductVariation = Networking.POSProductVariation
 public typealias ProductAddOn = Networking.ProductAddOn

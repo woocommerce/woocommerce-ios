@@ -361,6 +361,55 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
     }
+
+    func test_completion_called_after_alert_presentation() throws {
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+        enum Event {
+            case receiptEligibilityCheck
+            case alertPresented
+            case paymentCompletion
+        }
+        var eventOrder: [Event] = []
+
+        receiptEligibilityUseCase.mockIsEligibleForBackendReceiptsHandler = { completion in
+            // Force receiptEligibilityCheck completion delay
+            DispatchQueue.main.async {
+                eventOrder.append(.receiptEligibilityCheck)
+                completion(true)
+            }
+        }
+
+        // Track when receipt alert is presented
+        alertsPresenter.onPresentCalled = { viewModel in
+            if viewModel is CardPresentModalSuccessWithoutEmail ||
+               viewModel is CardPresentModalSuccessEmailSent {
+                eventOrder.append(.alertPresented)
+            }
+        }
+
+        // When payment succeeds
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { _ in },
+                onCancel: {},
+                onPaymentCompletion: {
+                    eventOrder.append(.paymentCompletion)
+                    promise(())
+                },
+                onCompleted: {}
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then ensure payment completion happens after alert presentation to avoid CollectOrderPaymentUseCase deinit before alert presentation
+        XCTAssertEqual(eventOrder, [.receiptEligibilityCheck, .alertPresented, .paymentCompletion])
+    }
 }
 
 private extension CollectOrderPaymentUseCaseTests {

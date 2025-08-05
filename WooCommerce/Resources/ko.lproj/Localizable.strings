@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-16 09:54:04+0000 */
+/* Translation-Revision-Date: 2025-07-29 09:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -4956,9 +4956,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* My Store > Settings > Plugins section title
    Navigates to Plugins screen. */
 "Plugins" = "플러그인";
-
-/* Title of the POS menu in the hub menu */
-"Point of Sale Mode" = "판매 지점 모드";
 
 /* Country option for a site address. */
 "Poland" = "폴란드";
@@ -10135,9 +10132,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of one of the hub menu options */
 "hubMenu.customersDescription" = "고객 인사이트 받기";
 
-/* Description of the POS menu in the hub menu */
-"hubMenu.pointOfSale.description" = "실제 매장에서 결제받기";
-
 /* Title of the view containing a single Product Review */
 "hubMenu.productReview" = "상품 리뷰";
 
@@ -10693,6 +10687,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of Shipping Section in Order Details screen */
 "orderDetailsDataSource.shippingLines.title" = "배송";
 
+/* Title of Shipping Labels Section in Order Details screen. */
+"orderDetailsDataSource.title.shippingLabels" = "배송 레이블";
+
 /* VoiceOver accessibility hint, informing the user that the button can be used to view the order custom fields information. */
 "orderDetailsDataSource.trashOrder.accessibilityHint" = "이 주문을 휴지통에 넣습니다.";
 
@@ -10701,6 +10698,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button title to trash an order */
 "orderDetailsDataSource.trashOrder.button.title" = "휴지통으로 이동";
+
+/* Button to copy the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.copyTrackingNumber" = "추적 번호 복사";
+
+/* Button to create a shipping label for a shipment */
+"orderDetailsShipmentDetailsView.createShippingLabel" = "배송 레이블 만들기";
+
+/* Plural item count for a shipment. Reads like: 2 items */
+"orderDetailsShipmentDetailsView.itemCountPlural" = "%1$d개 아이템";
+
+/* Singular item count for a shipment. Reads like: 1 item */
+"orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d개 아이템";
+
+/* Button to print the customs form for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.printCustomsForm" = "세관 양식 인쇄";
+
+/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
+"orderDetailsShipmentDetailsView.printShippingLabel" = "배송 레이블 인쇄(%1$@)";
+
+/* Message for a refunded shipping label. */
+"orderDetailsShipmentDetailsView.refundMessage" = "환불 요청이 제출되었습니다. 새 레이블을 구매할 수 있습니다.";
+
+/* Button to request a refund for a purchased shipping label. */
+"orderDetailsShipmentDetailsView.requestRefund" = "환불 요청";
+
+/* Order shipment title format. The placeholder indicates the index of the shipping label package. */
+"orderDetailsShipmentDetailsView.title" = "배송 %1$@";
+
+/* Title for the tracking number of a shipping label */
+"orderDetailsShipmentDetailsView.trackingNumber" = "추적 번호";
+
+/* Button to view details of a shipping label */
+"orderDetailsShipmentDetailsView.viewShippingLabel" = "구매한 배송 레이블 보기";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "사용자 정의 금액";
@@ -11317,6 +11347,27 @@ which should be translated separately and considered part of this sentence. */
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "바코드 스캔 중";
 
+/* New message about Bluetooth barcode scanner settings */
+"pos.barcodeInfoModal.i2.bluetoothMessage" = "• iOS 블루투스 설정에서 블루투스 바코드 스캐너를 조회합니다.";
+
+/* Accessible version of Bluetooth message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.bluetoothMessage.accessible" = "첫째: iOS 블루투스 설정에서 블루투스 바코드 스캐너를 조회합니다.";
+
+/* New introductory message for barcode scanner information */
+"pos.barcodeInfoModal.i2.introMessage" = "외부 스캐너로 바코드를 스캔하여 빠르게 장바구니를 만들 수 있습니다.";
+
+/* New message about scanning barcodes on item list */
+"pos.barcodeInfoModal.i2.scanMessage" = "• 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
+
+/* Accessible version of scan message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.scanMessage.accessible" = "둘째: 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
+
+/* New message about ensuring search field is disabled during scanning */
+"pos.barcodeInfoModal.i2.searchMessage" = "• 바코드를 스캔하는 동안 검색 필드가 활성화되지 않았는지 확인합니다.";
+
+/* Accessible version of search message without bullet character for screen readers */
+"pos.barcodeInfoModal.i2.searchMessage.accessible" = "셋째: 바코드를 스캔하는 동안 검색 필드가 활성화되지 않았는지 확인합니다.";
+
 /* Introductory message in the barcode info modal in POS, explaining the use of external barcode scanners */
 "pos.barcodeInfoModal.introMessage" = "외부 스캐너로 바코드를 스캔하여 빠르게 장바구니를 만들 수 있습니다.";
 
@@ -11331,6 +11382,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessible version of primary bullet point in barcode info modal, without bullet character for screen readers */
 "pos.barcodeInfoModal.primaryMessage.accessible" = "첫째: 상품, 상품 상세 정보, 재고로 차례로 이동하여 \"G-T-I-N, U-P-C, E-A-N, I-S-B-N\" 필드에서 바코드를 설정합니다.";
+
+/* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
+"pos.barcodeInfoModal.productSetup.linkText" = "설명서로 이동";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "상품의 일람표 탭의 GTIN, UPC, EAN, ISBN 필드에서 바코드를 설정할 수 있습니다. 자세히 알아보려면 %1$@하세요.";
+
+/* Accessible version of product setup message, announcing link for screen readers */
+"pos.barcodeInfoModal.productSetup.message.accessible" = "상품의 일람표 탭의 G-T-I-N, U-P-C, E-A-N, I-S-B-N 필드에서 바코드를 설정할 수 있습니다. 자세한 내용은 설명서(링크)를 참조하세요.";
 
 /* Quaternary bullet point in the barcode info modal in POS, instructing to scan barcodes on item list to add to cart */
 "pos.barcodeInfoModal.quaternaryMessage" = "• 아이템 목록에 있는 동안 바코드를 스캔하여 장바구니에 상품을 추가합니다.";
@@ -11359,38 +11419,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "완료";
 
-/* Heading for the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.heading" = "바코드 스캐너 설정";
+/* Title for the back button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.back.button.title" = "뒤로";
 
-/* Introductory message in the barcode scanner setup flow in POS */
-"pos.barcodeScannerSetup.introMessage" = "설정 프로세스를 시작하려면 바코드 스캐너를 선택하세요.";
+/* Title for the retry button in barcode scanner setup error step */
+"pos.barcodeScannerSetup.error.retry.button.title" = "다시 시도";
+
+/* Title for Netum 1228BC scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
 
 /* Title for the next button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.next.button.title" = "다음";
 
-/* Subtitle for other scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.other.subtitle" = "일반 스캐너 설정 지침";
-
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "기타";
-
-/* Subtitle for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.subtitle" = "충전 도크 또는 스탠드가 있는 소형 휴대용 스캐너";
-
-/* Title for Socket S720 scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.socketS720.title" = "Socket S720";
-
-/* Subtitle for Star BSH-20B scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.starBSH20B.subtitle" = "스탠드가 있는 인체공학적 스캐너";
 
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
-/* Subtitle for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.subtitle" = "추천 스캐너";
-
-/* Title for TBC scanner option in barcode scanner setup */
-"pos.barcodeScannerSetup.tbcScanner.title" = "스캐너 TBC";
+/* Title for Tera 1200 2D scanner option in barcode scanner setup */
+"pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "상품을 눌러 \n 장바구니에 추가";
@@ -11428,32 +11476,32 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS 종료";
 
+/* Button title to enable the POS feature switch and refresh POS eligibility check */
+"pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS 활성화";
+
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "다시 시도";
 
 /* Suggestion for disabled feature switch: enable feature in WooCommerce settings */
-"pos.ineligible.suggestion.featureSwitchDisabled" = "계속하려면 판매 지점을 활성화해야 합니다. 우커머스 설정 > 고급 > 기능에서 워드프레스 관리자의 POS 기능을 활성화하세요.";
-
-/* Suggestion for feature switch sync failure: relaunch or check connection */
-"pos.ineligible.suggestion.featureSwitchSyncFailure" = "앱을 다시 시작해 보거나 인터넷 연결을 확인하고 다시 시도해 보세요.";
+"pos.ineligible.suggestion.featureSwitchDisabled.3" = "계속하려면 판매 지점을 활성화해야 합니다. 아래 또는 우커머스 설정 > 고급 > 기능의 워드프레스 관리자에서 POS 기능을 활성화하고 다시 시도하세요.";
 
 /* Suggestion for self deallocated: relaunch */
 "pos.ineligible.suggestion.selfDeallocated" = "앱을 다시 시작하여 이 문제를 해결해 보세요.";
 
 /* Suggestion for site settings unavailable: check connection or contact support */
-"pos.ineligible.suggestion.siteSettingsNotAvailable" = "인터넷 연결을 확인하고 앱을 다시 시작해 보세요. 문제가 계속 발생하면 지원을 문의해 주세요.";
+"pos.ineligible.suggestion.siteSettingsNotAvailable.1" = "사이트 설정 정보를 로드할 수 없었습니다. 인터넷 연결을 확인하고 다시 시도하세요. 문제가 계속 발생하는 경우 도움이 필요하면 지원을 문의하세요.";
 
-/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized list of supported currency codes. */
-"pos.ineligible.suggestion.unsupportedCurrency" = "스토어의 통화에는 POS 시스템을 사용할 수 없습니다. 현재 %1$@만 지원됩니다. 스토어 통화 설정을 확인하거나 도움이 필요하면 지원을 문의해 주세요.";
+/* Suggestion for unsupported currency with list of supported currencies. %1$@ is a placeholder for the localized country name, and %2$@ is a placeholder for the localized list of supported currency codes. */
+"pos.ineligible.suggestion.unsupportedCurrency.1" = "스토어의 통화에는 POS 시스템을 사용할 수 없습니다. %1$@에서는 현재 %2$@만 지원됩니다. 스토어 통화 설정을 확인하거나 도움이 필요하면 지원을 문의해 주세요.";
 
 /* Suggestion for unsupported iOS version: update iOS */
-"pos.ineligible.suggestion.unsupportedIOSVersion" = "판매 지점에는 iOS 17 이상이 필요합니다. 이 기능을 사용하려면 기기를 iOS 17 이상으로 업데이트하세요.";
+"pos.ineligible.suggestion.unsupportedIOSVersion.1" = "POS 시스템에는 iOS 17 이상이 필요합니다. 이 기능을 사용하려면 기기를 iOS 17 이상으로 업데이트하세요.";
 
 /* Suggestion for unsupported WooCommerce version: update plugin. %1$@ is a placeholder for the minimum required version. */
 "pos.ineligible.suggestion.unsupportedWooCommerceVersion" = "회원님의 우커머스 버전은 지원되지 않습니다. POS 시스템에는 우커머스 버전 %1$@ 이상이 필요합니다. 우커머스를 최신 버전으로 업데이트하세요.";
 
 /* Suggestion for missing WooCommerce plugin: install plugin */
-"pos.ineligible.suggestion.wooCommercePluginNotFound" = "워드프레스 관리자에서 우커머스 플러그인을 설치하고 활성화하세요.";
+"pos.ineligible.suggestion.wooCommercePluginNotFound.3" = "우커머스 플러그인 정보를 로드할 수 없습니다. 워드프레스 관리자에서 우커머스 플러그인이 설치되고 활성화되었는지 확인하세요. 문제가 계속 발생하는 경우 도움이 필요하면 지원을 문의하세요.";
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "로드할 수 없음";
@@ -12070,6 +12118,12 @@ which should be translated separately and considered part of this sentence. */
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "보류";
 
+/* Description for the Sales channel filter option, when selecting 'Any' order */
+"salesChannelFilter.row.any.description" = "모두";
+
+/* Description for the Sales channel filter option, when selecting 'Point of Sale' orders */
+"salesChannelFilter.row.pos.description" = "판매 지점";
+
 /* The title for the cancel button in the search screen. */
 "searchViewController.cancelButton.tilet" = "취소";
 
@@ -12094,6 +12148,18 @@ which should be translated separately and considered part of this sentence. */
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
 "share details" = "상세 정보 공유";
+
+/* Accessibility hint to collapse the product items section */
+"shipping-labels.packages.items.collapse.accessibility-hint" = "두 번 눌러 모든 아이템 숨기기";
+
+/* Accessibility hint to expand the product items section */
+"shipping-labels.packages.items.expand.accessibility-hint" = "두 번 눌러 모든 아이템 표시하기";
+
+/* Accessibility label for collapsible products section */
+"shipping-labels.packages.items.header.accessibilityLabel" = "상품 섹션";
+
+/* Accessibility label for the summary of product items in a shipment. The %1$@ is items count. The %2$@ is total weight. The %3$@ is total price. */
+"shipping-labels.packages.items.summary.accessibility-label" = "%1$@(총 무게 %2$@, 총 가격 %3$@)";
 
 /* Body for the custom items description educational dialog */
 "shipping.customs.descriptionInfoDialogBody" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송할 때는 아이템마다 명확하고 구체적인 설명을 제공해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇게 하지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
@@ -12136,6 +12202,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility title for the edit button on a shipping line row. */
 "shippingLine.edit.button.accessibilityLabel" = "배송 수정";
+
+/* Accessibility value for a shipping item row. The %1$@ is details text. The %2$@ is weight. The %3$@ is a total price */
+"shipping_item_row.accessibility_value.format" = "%1$@, 무게: %2$@, 총 가격: %3$@";
+
+/* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
+"shipping_item_row.quantity.format" = "%2$@의 %1$d개 아이템";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "취소";
@@ -12720,6 +12792,9 @@ which should be translated separately and considered part of this sentence. */
 /* Info label for height input field */
 "wooShipping.createLabel.addPackage.height" = "높이";
 
+/* Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow */
+"wooShipping.createLabel.addPackage.invalidDimensions" = "패키지 치수 모두 0보다 커야 함";
+
 /* The title for a button to dismiss the keyboard on the order creation/editing screen */
 "wooShipping.createLabel.addPackage.keyboard.toolbar.done.button.title" = "완료";
 
@@ -12771,6 +12846,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button to dismiss the shipping label screen */
 "wooShipping.createLabel.closeButton" = "닫기";
 
+/* Accessibility hint of the button to open the shipments editing form. */
+"wooShipping.createLabel.editButton.accessibility.hint" = "배송 편집 양식을 엽니다.";
+
 /* Title for the Edit Package screen Done button */
 "wooShipping.createLabel.editPackage.done" = "완료";
 
@@ -12788,6 +12866,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Value for section in shipping label creation to declare when a package contains hazardous materials. */
 "wooShipping.createLabel.hazmatRow.yes" = "예";
+
+/* Accessibility value indicating that the shipment of a tab is fulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.fulfilled" = "처리되었습니다.";
+
+/* Accessibility value indicating that the shipment of a tab is unfulfilled. */
+"wooShipping.createLabel.shipmentTab.accessibility.value.unfulfilled" = "처리되지 않았습니다.";
 
 /* Message in the shipping rate section during shipping label creation, when there is no selected package. */
 "wooShipping.createLabel.shippingRate.placeholderMessage" = "패키지의 크기를 입력하거나 배송업체 패키지 옵션을 선택하여 적용 가능한 배송비를 확인하세요.";
@@ -12935,6 +13019,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label when the address is unverified in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.unverified" = "미확인된 주소";
+
+/* Button to proceed with the input address even when validation fails */
+"wooShipping.createLabels.editAddress.useAddressAsEntered" = "입력된 주소 사용";
 
 /* Button label indicating the address needs to be validated and saved for a Woo Shipping label */
 "wooShipping.createLabels.editAddress.validateAddress" = "확인 및 저장";
@@ -13365,8 +13452,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message on a notice when saving a package fails in the shipping creation flow */
 "wooShippingAddPackageViewModel.savingPackageFailure" = "패키지를 저장할 수 없음";
 
-/* Message when the ITN field is invalid in the customs form of a shipping label */
-"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat" = "X12345678901234, AES X12345678901234 또는 NOEII 30.37(a) 형식 중 하나로 유효한 ITN을 입력하세요.";
+/* Message when the ITN field is invalid in the customs form of a shipping label. Doesn't contain X12345678901234 format example. */
+"wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES" = "AES X12345678901234 또는 NOEEI 30.37(a) 형식 중 하나로 유효한 ITN을 입력하세요.";
 
 /* Message when the ITN field is missing in the customs form of a shipping label to the given destination country */
 "wooShippingCustomsFormViewModel.ITNValidationError.missingForDestination" = "목적지 국가로 배송하려면 국제 거래 번호가 필요합니다.";

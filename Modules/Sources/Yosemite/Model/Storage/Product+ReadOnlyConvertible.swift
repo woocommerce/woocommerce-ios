@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 extension Storage.Product {
-    var imagesArray: [Storage.ProductImage] {
+    public var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
     var tagsArray: [Storage.ProductTag] {
@@ -216,69 +216,5 @@ extension Storage.Product: ReadOnlyConvertible {
         }
 
         return array.map { Int64($0) }
-    }
-}
-
-// MARK: - Storage.Product: ListItemConvertible
-//
-extension Storage.Product: ListItemConvertible {
-    public func update(with item: Yosemite.ProductListItem) {
-        siteID = item.siteID
-        productID = item.productID
-        name = item.name
-        productTypeKey = item.productTypeKey
-        statusKey = item.statusKey
-        manageStock = item.manageStock
-        sku = item.sku
-        price = item.price
-        virtual = item.virtual
-        stockQuantity = {
-            if let stockQuantity = item.stockQuantity {
-                return stockQuantity.description
-            }
-            return nil
-        }()
-        stockStatusKey = item.stockStatusKey
-        reviewsAllowed = item.reviewsAllowed
-        averageRating = item.averageRating
-        ratingCount = Int64(item.ratingCount)
-        variations = item.variations
-        bundleStockQuantity = item.bundleStockQuantity as? NSNumber
-        bundleStockStatus = item.bundleStockStatus?.rawValue
-    }
-
-    public func toListItem() -> Yosemite.ProductListItem {
-        let addOnsArray: [StorageProductAddOn] = addOns?.toArray() ?? []
-        let productImages = imagesArray.map { $0.toReadOnly() }
-
-        var quantity: Decimal?
-        if let stockQuantity = stockQuantity {
-            quantity = Decimal(string: stockQuantity)
-        }
-
-        var productBundleStockStatus: ProductStockStatus?
-        if let bundleStockStatus {
-            productBundleStockStatus = ProductStockStatus(rawValue: bundleStockStatus)
-        }
-
-        return ProductListItem(siteID: siteID,
-                               productID: productID,
-                               name: name,
-                               productTypeKey: productTypeKey,
-                               statusKey: statusKey,
-                               sku: sku,
-                               price: price,
-                               virtual: virtual,
-                               manageStock: manageStock,
-                               stockQuantity: quantity,
-                               stockStatusKey: stockStatusKey,
-                               reviewsAllowed: reviewsAllowed,
-                               averageRating: averageRating,
-                               ratingCount: Int(ratingCount),
-                               images: productImages,
-                               addOns: addOnsArray.map { $0.toReadOnly() },
-                               variations: variations ?? [],
-                               bundleStockStatus: productBundleStockStatus,
-                               bundleStockQuantity: bundleStockQuantity as? Int64)
     }
 }

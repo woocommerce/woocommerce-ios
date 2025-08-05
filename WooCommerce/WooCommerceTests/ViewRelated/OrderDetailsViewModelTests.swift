@@ -712,13 +712,13 @@ private extension OrderDetailsViewModelTests {
         return plugin
     }
 
-    func configureOrderWithProductsInStorage(products: [ProductListItem]) {
+    func configureOrderWithProductsInStorage(products: [Product]) {
         order = MockOrders().sampleOrder().copy(items: products.map { OrderItem.fake().copy(productID: $0.productID) })
         viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
 
         // Inserts products to storage.
         products.forEach { product in
-            storageManager.insertSampleProductListItem(item: product)
+            storageManager.insertSampleProduct(readOnlyProduct: product)
         }
     }
 

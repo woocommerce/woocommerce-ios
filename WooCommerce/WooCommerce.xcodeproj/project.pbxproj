@@ -2754,6 +2754,7 @@
 		DEA0D0682BA82EA2007786F2 /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */; };
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA64C532E40B04700791018 /* OrderDetailsProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA64C522E40B04000791018 /* OrderDetailsProduct.swift */; };
+		DEA64C552E41A2D000791018 /* Product+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA64C542E41A2CA00791018 /* Product+Helpers.swift */; };
 		DEA6BCAF2BC6A9B10017D671 /* StoreStatsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */; };
 		DEA6BCB12BC6AA040017D671 /* StoreStatsChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */; };
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
@@ -5946,6 +5947,7 @@
 		DEA0D0672BA82EA2007786F2 /* StatsGranularityV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsGranularityV4+UI.swift"; sourceTree = "<group>"; };
 		DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModelTests.swift; sourceTree = "<group>"; };
 		DEA64C522E40B04000791018 /* OrderDetailsProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsProduct.swift; sourceTree = "<group>"; };
+		DEA64C542E41A2CA00791018 /* Product+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Helpers.swift"; sourceTree = "<group>"; };
 		DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChart.swift; sourceTree = "<group>"; };
 		DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartViewModel.swift; sourceTree = "<group>"; };
 		DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -9881,6 +9883,7 @@
 		6856D6E9B1C3C89938DCAD5C /* Testing */ = {
 			isa = PBXGroup;
 			children = (
+				DEA64C542E41A2CA00791018 /* Product+Helpers.swift */,
 				6856D66A1963092C34D20674 /* Calendar+Extensions.swift */,
 				571FDDAD24C768DC00D486A5 /* MockZendeskManager.swift */,
 				2084B7A32C776A6900EFBD2E /* XCTestCase+PropertyCount.swift */,
@@ -17349,6 +17352,7 @@
 				01A3093C2DAE768600B672F6 /* MockPointOfSaleCouponService.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				CEEF742C2B9A052300B03948 /* OrdersReportCardViewModelTests.swift in Sources */,
+				DEA64C552E41A2D000791018 /* Product+Helpers.swift in Sources */,
 				DEFE1B242DF2C6C8005B3D39 /* UPSTermsViewModelTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,
 				EEC2D27F292CF60E0072132E /* JetpackSetupHostingControllerTests.swift in Sources */,

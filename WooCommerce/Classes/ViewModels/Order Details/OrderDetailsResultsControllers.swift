@@ -178,7 +178,6 @@ final class OrderDetailsResultsControllers {
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
         self.productResultsController = createProductResultsController()
-        self.productResultsController = createProductResultsController()
         if let onReload = onReload {
             configureProductVariationResultsController(onReload: onReload)
             configureProductResultsController(onReload: onReload)

@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Represents a Product Entity with basic details to display in the product list.
+/// Represents a Product Entity with basic details to display in the product section of order details screen.
 ///
 struct OrderDetailsProduct: Equatable {
     let siteID: Int64
@@ -67,20 +67,5 @@ struct OrderDetailsProduct: Equatable {
 
         let addOnsArray: [StorageProductAddOn] = storageProduct.addOns?.toArray() ?? []
         self.addOns = addOnsArray.map { $0.toReadOnly() }
-    }
-}
-
-extension Product {
-    func toOrderDetailsProduct() -> OrderDetailsProduct {
-        OrderDetailsProduct(siteID: siteID,
-                            productID: productID,
-                            name: name,
-                            productTypeKey: productTypeKey,
-                            sku: sku,
-                            price: price,
-                            virtual: virtual,
-                            stockQuantity: stockQuantity,
-                            imageURL: imageURL,
-                            addOns: addOns)
     }
 }

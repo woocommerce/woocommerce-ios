@@ -37,7 +37,7 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     }
 
     var clearOrderWasCalled: Bool = false
-    func clearOrder() {
+    func clearOrder() async {
         clearOrderWasCalled = true
     }
 

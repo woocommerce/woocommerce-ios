@@ -589,7 +589,7 @@ struct PointOfSaleOrderControllerTests {
         }
 
         // When
-        sut.clearOrder()
+        await sut.clearOrder()
 
         // Then
         #expect(deleteActionWasDispatched == false)
@@ -620,8 +620,7 @@ struct PointOfSaleOrderControllerTests {
         }
 
         // When
-        sut.clearOrder()
-        try await Task.sleep(nanoseconds: 100_000_000)
+        await sut.clearOrder()
 
         // Then
         #expect(deleteActionWasDispatched == true)
@@ -651,7 +650,7 @@ struct PointOfSaleOrderControllerTests {
         }
 
         // When
-        sut.clearOrder()
+        await sut.clearOrder()
 
         // Then
         #expect(deleteActionWasDispatched == false)

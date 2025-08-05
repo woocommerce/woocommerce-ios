@@ -35,7 +35,7 @@ protocol PointOfSaleOrderControllerProtocol {
     @discardableResult
     func syncOrder(for cart: Cart, retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error>
     func sendReceipt(recipientEmail: String) async throws
-    func clearOrder()
+    func clearOrder() async
     func collectCashPayment(changeDueAmount: String?) async throws
 }
 
@@ -143,16 +143,20 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    func clearOrder() {
-        clearAutoDraftIfNeeded(for: order)
+    func clearOrder() async {
+        await clearAutoDraftIfNeeded(for: order)
         order = nil
         orderState = .idle
     }
 
-    private func clearAutoDraftIfNeeded(for order: Order?) {
-        if let order, order.status == .autoDraft {
-            DispatchQueue.main.async { [weak self] in
-                let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in }
+    private func clearAutoDraftIfNeeded(for order: Order?) async {
+        guard let order, order.status == .autoDraft else { return }
+
+        await withCheckedContinuation { continuation in
+            Task { @MainActor [weak self] in
+                let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in
+                    continuation.resume()
+                }
                 self?.stores.dispatch(action)
             }
         }

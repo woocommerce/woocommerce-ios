@@ -39,7 +39,7 @@ struct ProductsTabProductViewModel {
          isSKUShown: Bool = false,
          imageService: ImageService = ServiceLocator.imageService) {
 
-        imageUrl = product.images.first?.src
+        imageUrl = product.imageURL?.absoluteString
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected

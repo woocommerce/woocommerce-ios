@@ -123,12 +123,12 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {
         // Given
-        let product = ProductListItem.fake().copy(productTypeKey: "bundle",
-                                                  manageStock: false,
-                                                  stockQuantity: 5,
-                                                  stockStatusKey: "instock",
-                                                  bundleStockStatus: .insufficientStock,
-                                                  bundleStockQuantity: 0)
+        let product = Product.fake().copy(productTypeKey: "bundle",
+                                          manageStock: false,
+                                          stockQuantity: 5,
+                                          stockStatusKey: "instock",
+                                          bundleStockStatus: .insufficientStock,
+                                          bundleStockQuantity: 0).toListItem()
 
         // When
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -142,12 +142,12 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_for_product_bundle_contain_product_stock_status_when_product_is_backordered() {
         // Given
-        let product = ProductListItem.fake().copy(productTypeKey: "bundle",
-                                                  manageStock: false,
-                                                  stockQuantity: 5,
-                                                  stockStatusKey: "onbackorder",
-                                                  bundleStockStatus: .inStock,
-                                                  bundleStockQuantity: 0)
+        let product = Product.fake().copy(productTypeKey: "bundle",
+                                          manageStock: false,
+                                          stockQuantity: 5,
+                                          stockStatusKey: "onbackorder",
+                                          bundleStockStatus: .inStock,
+                                          bundleStockQuantity: 0).toListItem()
 
         // When
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -161,12 +161,12 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_quantity_is_set() {
         // Arrange
-        let product = ProductListItem.fake().copy(productTypeKey: "bundle",
-                                                  manageStock: false,
-                                                  stockQuantity: 5,
-                                                  stockStatusKey: "instock",
-                                                  bundleStockStatus: .inStock,
-                                                  bundleStockQuantity: 1)
+        let product = Product.fake().copy(productTypeKey: "bundle",
+                                          manageStock: false,
+                                          stockQuantity: 5,
+                                          stockStatusKey: "instock",
+                                          bundleStockStatus: .inStock,
+                                          bundleStockQuantity: 1).toListItem()
 
         // Action
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -181,12 +181,12 @@ final class ProductsTabProductViewModelTests: XCTestCase {
 
     func test_details_for_product_bundle_contain_stock_status_with_bundle_stock_quantity_when_manageStock_enabled() {
         // Arrange
-        let product = ProductListItem.fake().copy(productTypeKey: "bundle",
-                                                  manageStock: true,
-                                                  stockQuantity: 5,
-                                                  stockStatusKey: "instock",
-                                                  bundleStockStatus: .inStock,
-                                                  bundleStockQuantity: 1)
+        let product = Product.fake().copy(productTypeKey: "bundle",
+                                          manageStock: true,
+                                          stockQuantity: 5,
+                                          stockStatusKey: "instock",
+                                          bundleStockStatus: .inStock,
+                                          bundleStockQuantity: 1).toListItem()
 
         // Action
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -207,11 +207,11 @@ extension ProductsTabProductViewModelTests {
                      variations: [Int64] = [],
                      images: [ProductImage] = []) -> ProductListItem {
 
-        return ProductListItem.fake().copy(name: name,
-                                           stockQuantity: stockQuantity,
-                                           stockStatusKey: stockStatus.rawValue,
-                                           images: images,
-                                           variations: variations)
+        return Product.fake().copy(name: name,
+                                   stockQuantity: stockQuantity,
+                                   stockStatusKey: stockStatus.rawValue,
+                                   images: images,
+                                   variations: variations).toListItem()
     }
 }
 

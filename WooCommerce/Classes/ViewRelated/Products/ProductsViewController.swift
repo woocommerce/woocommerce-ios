@@ -1026,7 +1026,8 @@ private extension ProductsViewController {
                     .map { $0.productOrVariationID.id }
 
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.listItemObjects.enumerated() {
+                let listItems = resultsController.transformedObjects(using: { ProductListItem(storageProduct: $0) })
+                for (index, object) in listItems.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
@@ -1114,7 +1115,7 @@ extension ProductsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.listItem(at: indexPath)
+        let product = resultsController.transformedObject(at: indexPath, using: { ProductListItem(storageProduct: $0) })
 
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)

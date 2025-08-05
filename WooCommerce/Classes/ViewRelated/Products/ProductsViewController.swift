@@ -1709,8 +1709,10 @@ private extension ProductsViewController {
     }
 }
 
-/// This is a workaround since the batch product update feature makes it hard to convert the results controller to GenericResultsController<StorageProduct, ProductListItem>.
+/// This is a workaround since the batch product update feature makes it hard
+/// to convert the results controller to GenericResultsController<StorageProduct, ProductListItem>.
 /// We should consider updating batch update to accept product IDs and clean this up.
+///
 extension ResultsController<StorageProduct> {
     var listItems: [ProductListItem] {
         controller.fetchedObjects?.compactMap { mutableObject in

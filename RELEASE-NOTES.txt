@@ -6,6 +6,8 @@
 - [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
 - [*] Fix initialization of authenticator to avoid crashes during login [https://github.com/woocommerce/woocommerce-ios/pull/15953]
 - [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
+- [*] Order Details > Edit Shipping/Billing Address: Added map-based address lookup support for iOS 17+. [https://github.com/woocommerce/woocommerce-ios/pull/15964]
+- [*] Order Creation: Prevent subscription products to be added to an order [https://github.com/woocommerce/woocommerce-ios/pull/15960]
 - [internal] Replace COTS_DEVICE reader model name with TAP_TO_PAY_DEVICE. [https://github.com/woocommerce/woocommerce-ios/pull/15961]
 
 22.9

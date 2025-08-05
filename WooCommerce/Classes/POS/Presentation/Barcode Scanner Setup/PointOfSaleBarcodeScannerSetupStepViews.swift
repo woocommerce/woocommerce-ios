@@ -196,9 +196,9 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
             comment: "Title shown when scanner setup is successfully completed"
         )
         static let instruction = NSLocalizedString(
-            "pos.barcodeScannerSetup.complete.instruction",
-            value: "You are ready to start scanning products. \nRead more about barcode and QR code scanner support.",
-            comment: "Message shown when scanner setup is complete, with additional information link"
+            "pos.barcodeScannerSetup.complete.instruction.2",
+            value: "You are ready to start scanning products. Next time you need to connect your scanner, just turn it on and it will reconnect automatically.",
+            comment: "Message shown when scanner setup is complete"
         )
     }
 }

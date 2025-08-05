@@ -51,7 +51,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
 
     /// Internal NSFetchedResultsController Instance.
     ///
-    private lazy var controller: NSFetchedResultsController<T> = {
+    public private(set) lazy var controller: NSFetchedResultsController<T> = {
         viewStorage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: sectionNameKeyPath,

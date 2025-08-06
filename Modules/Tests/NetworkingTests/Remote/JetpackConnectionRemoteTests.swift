@@ -255,7 +255,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
             _ = try await remote.registerSite()
         } catch {
             // Then
-            XCTAssertEqual(error as? JetpackConnectionRemote.ConnectionError, .invalidAuthorizationURL)
+            XCTAssertEqual(error as? JetpackConnectionError, .invalidAuthorizationURL)
         }
     }
 
@@ -290,36 +290,4 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         }
     }
 
-    func test_finalizeConnection_successfully_completes() async {
-        // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
-        let siteID: Int64 = 12345
-        let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
-        let urlSuffix = "jetpack-remote-connect-user"
-        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-success")
-
-        // When & Then
-        do {
-            try await remote.finalizeConnection(siteID: siteID, provisionResponse: provisionResponse)
-        } catch {
-            XCTFail("Unexpected failure: \(error)")
-        }
-    }
-
-    func test_finalizeConnection_properly_relays_errors() async {
-        // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
-        let siteID: Int64 = 12345
-        let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
-        let urlSuffix = "jetpack-remote-connect-user"
-        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
-
-        do {
-            // When
-            _ = try await remote.finalizeConnection(siteID: siteID, provisionResponse: provisionResponse)
-        } catch {
-            // Then
-            XCTAssertEqual(error as? JetpackConnectionRemote.ConnectionError, .alreadyConnected)
-        }
-    }
 }

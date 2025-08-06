@@ -117,18 +117,6 @@ private extension JetpackConnectionStore {
         }
     }
 
-    func finalizeConnection(siteID: Int64, provisionResponse: JetpackConnectionProvisionResponse, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let jetpackConnectionRemote else { return }
-        Task { @MainActor in
-            do {
-                try await jetpackConnectionRemote.finalizeConnection(siteID: siteID, provisionResponse: provisionResponse)
-                completion(.success(()))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-    }
-
     func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.loadAccount { result in

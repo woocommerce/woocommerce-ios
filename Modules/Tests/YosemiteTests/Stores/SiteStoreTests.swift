@@ -2,6 +2,7 @@ import XCTest
 import enum Networking.DotcomError
 import enum Networking.SiteCreationError
 import enum Networking.WordPressApiError
+import enum Networking.JetpackConnectionError
 import struct Networking.Site
 @testable import class Networking.MockNetwork
 @testable import Yosemite
@@ -364,6 +365,45 @@ final class SiteStoreTests: XCTestCase {
        let error = try XCTUnwrap(result.failure)
        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
    }
+
+    // MARK: - `finalizeJetpackConnection`
+
+    func test_finalizeJetpackConnection_returns_success_on_success() throws {
+        // Given
+        remote.whenFinalizingJetpackConnection(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            self.store.onAction(SiteAction.finalizeJetpackConnection(siteID: 134, 
+                                                                     siteURL: "http://test.com", 
+                                                                     provisionResponse: provisionResponse) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_finalizeJetpackConnection_returns_error_on_failure() throws {
+        // Given
+        remote.whenFinalizingJetpackConnection(thenReturn: .failure(JetpackConnectionError.alreadyConnected))
+
+        // When
+        let result = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            self.store.onAction(SiteAction.finalizeJetpackConnection(siteID: 134, 
+                                                                     siteURL: "http://test.com", 
+                                                                     provisionResponse: provisionResponse) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? JetpackConnectionError, .alreadyConnected)
+    }
 }
 
 private extension SiteStoreTests {

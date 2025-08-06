@@ -56,6 +56,8 @@ public final class SiteStore: Store {
             updateSiteTitle(siteID: siteID, title: title, completion: completion)
         case let .uploadStoreProfilerAnswers(siteID, answers, completion):
             uploadStoreProfilerAnswers(siteID: siteID, answers: answers, completion: completion)
+        case let .finalizeJetpackConnection(siteID, siteURL, provisionResponse, completion):
+            finalizeJetpackConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse, completion: completion)
         }
     }
 }
@@ -153,6 +155,20 @@ private extension SiteStore {
         Task { @MainActor in
             do {
                 try await remote.uploadStoreProfilerAnswers(siteID: siteID, answers: answers)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func finalizeJetpackConnection(siteID: Int64, 
+                                   siteURL: String, 
+                                   provisionResponse: JetpackConnectionProvisionResponse, 
+                                   completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.finalizeJetpackConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse)
                 completion(.success(()))
             } catch {
                 completion(.failure(error))

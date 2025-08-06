@@ -20,8 +20,6 @@ public enum JetpackConnectionAction: Action {
     case registerSite(completion: (Result<Int64, Error>) -> Void)
     /// Provisions connection and returns provision response with scope and secret.
     case provisionConnection(completion: (Result<JetpackConnectionProvisionResponse, Error>) -> Void)
-    /// Finalizes connection to WordPress.com using provision response.
-    case finalizeConnection(siteID: Int64, provisionResponse: JetpackConnectionProvisionResponse, completion: (Result<Void, Error>) -> Void)
     /// Fetches the WPCom account with the given network
     case loadWPComAccount(network: Network, onCompletion: (Account?) -> Void)
 }

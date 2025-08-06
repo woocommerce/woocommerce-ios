@@ -29,11 +29,11 @@ enum PointOfSaleBarcodeScannerType {
     var analyticsName: String {
         switch self {
         case .starBSH20B:
-            return "Star_BSH_20B"
+            return "star_bsh_20b"
         case .tera12002D:
-            return "Tera_1200_2D"
+            return "tera_1200_2d"
         case .netum1228BC:
-            return "Netum_1228BC"
+            return "netum_1228bc"
         case .other:
             return "other"
         }

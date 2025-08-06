@@ -5,6 +5,26 @@ import AsyncAlgorithms
 import CoreLocation
 import struct Yosemite.Country
 
+/// Protocol for providing local search functionality for address map picker.
+/// Abstracts MKLocalSearch to enable testing with mock implementations.
+protocol AddressMapLocalSearchProviding {
+    /// Performs a local search based on the provided search completion.
+    /// - Parameter completion: The search completion containing location query information.
+    /// - Returns: A search response containing map items with placemarks.
+    /// - Throws: MapKit errors if the search fails.
+    func search(for completion: MKLocalSearchCompletion) async throws -> MKLocalSearch.Response
+}
+
+/// Default implementation of AddressMapLocalSearchProviding that uses MKLocalSearch.
+/// This is the production implementation that makes real network requests to MapKit services.
+final class DefaultAddressMapLocalSearchProvider: AddressMapLocalSearchProviding {
+    func search(for completion: MKLocalSearchCompletion) async throws -> MKLocalSearch.Response {
+        let searchRequest = MKLocalSearch.Request(completion: completion)
+        let search = MKLocalSearch(request: searchRequest)
+        return try await search.start()
+    }
+}
+
 @available(iOS 17, *)
 @Observable
 final class AddressMapPickerViewModel: NSObject {
@@ -13,7 +33,7 @@ final class AddressMapPickerViewModel: NSObject {
             searchQueryContinuation.yield(newValue)
         }
     }
-    var searchResults: [MKLocalSearchCompletion] = []
+    private(set) var searchResults: [MKLocalSearchCompletion] = []
     var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.3361, longitude: -122.0380),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
@@ -37,9 +57,13 @@ final class AddressMapPickerViewModel: NSObject {
     private var selectedPlace: MKPlacemark?
 
     private let countryByCode: (_ countryCode: String) -> Country?
+    private let searchProvider: AddressMapLocalSearchProviding
 
-    init(fields: AddressFormFields, countryByCode: @escaping (_ countryCode: String) -> Country?) {
+    init(fields: AddressFormFields,
+         countryByCode: @escaping (_ countryCode: String) -> Country?,
+         searchProvider: AddressMapLocalSearchProviding = DefaultAddressMapLocalSearchProvider()) {
         self.countryByCode = countryByCode
+        self.searchProvider = searchProvider
         super.init()
         configureSearchCompleter()
         configureMap(with: fields)
@@ -65,11 +89,8 @@ final class AddressMapPickerViewModel: NSObject {
     /// - Parameter result: The selected search completion result.
     @MainActor
     func selectLocation(_ result: MKLocalSearchCompletion) async {
-        let searchRequest = MKLocalSearch.Request(completion: result)
-        let search = MKLocalSearch(request: searchRequest)
-
         do {
-            let response = try await search.start()
+            let response = try await searchProvider.search(for: result)
             guard let firstPlacemark = response.mapItems.first?.placemark else {
                 return
             }

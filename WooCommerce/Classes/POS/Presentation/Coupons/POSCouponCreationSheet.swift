@@ -22,7 +22,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
+            .posSheet(item: $selectedType) { (posDiscountType: POSCouponDiscountType) in
                 POSCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
@@ -89,7 +89,7 @@ private extension View {
         isPresented: Binding<Bool>,
         onSelection: @escaping (POSCouponDiscountType) -> Void
     ) -> some View {
-        sheet(isPresented: isPresented) {
+        posSheet(isPresented: isPresented) {
             let command = DiscountTypeBottomSheetListSelectorCommand(selected: nil) { type in
                 onSelection(.init(discountType: type))
             }

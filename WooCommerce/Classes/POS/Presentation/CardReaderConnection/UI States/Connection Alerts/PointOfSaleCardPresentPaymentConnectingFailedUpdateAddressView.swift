@@ -28,7 +28,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
-        .sheet(isPresented: $viewModel.shouldShowSettingsWebView) {
+        .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
             WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
                               completion: viewModel.settingsWebViewWasDismissed)
         }

@@ -46,8 +46,6 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             registerSite(completion: completion)
         case .provisionConnection(let completion):
             provisionConnection(completion: completion)
-        case .finalizeConnection(let siteID, let provisionResponse, let completion):
-            finalizeConnection(siteID: siteID, provisionResponse: provisionResponse, completion: completion)
         case .loadWPComAccount(let network, let onCompletion):
             loadWPComAccount(network: network, onCompletion: onCompletion)
         }

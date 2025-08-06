@@ -44,8 +44,9 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(
         viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(tryPaymentAgainButtonAction: {}),
         animation: .init(namespace: namespace)

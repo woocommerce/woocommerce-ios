@@ -38,10 +38,10 @@ update_and_run() {
 if [ -x "$PERIPHERY_PATH" ]; then
     echo "Executable found. Checking version..."
     # Get the current installed version
-    CURRENT_VERSION=$($PERIPHERY_PATH version)
-    
+    CURRENT_VERSION=$("$PERIPHERY_PATH" version)
+
     # Compare the current version with the desired version
-    if version_gt $PERIPHERY_VERSION $CURRENT_VERSION; then
+    if version_gt "$PERIPHERY_VERSION" "$CURRENT_VERSION"; then
         echo "Current version ($CURRENT_VERSION) is older than $PERIPHERY_VERSION. Updating..."
         update_and_run "$@"
     else

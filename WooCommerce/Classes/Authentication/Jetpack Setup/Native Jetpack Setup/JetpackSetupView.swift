@@ -11,7 +11,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     init(siteURL: String,
          connectionOnly: Bool,
-         wpcomCredentials: Credentials? = nil,
+         wpcomCredentials: Credentials?,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,

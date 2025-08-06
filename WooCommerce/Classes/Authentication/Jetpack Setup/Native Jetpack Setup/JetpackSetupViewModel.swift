@@ -450,8 +450,10 @@ private extension JetpackSetupViewModel {
     }
 
     func finalizeSiteConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) {
-        guard let wpcomCredentials else {
-            return // TODO: what now?
+        guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
+            /// WPCom credentials are necessary to finalize connection through API
+            /// If this is unavailable, fall back to the web flow.
+            return fetchJetpackConnectionURL()
         }
         let network = AlamofireNetwork(credentials: wpcomCredentials)
         stores.dispatch(JetpackConnectionAction.finalizeConnection(

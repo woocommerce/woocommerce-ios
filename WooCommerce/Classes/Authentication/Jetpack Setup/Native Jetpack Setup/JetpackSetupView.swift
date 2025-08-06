@@ -7,22 +7,23 @@ import protocol WooFoundation.Analytics
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
     private let authentication: Authentication
-    private let connectionWebViewCredentials: Credentials?
+    private let wpcomCredentials: Credentials?
 
     init(siteURL: String,
          connectionOnly: Bool,
-         connectionWebViewCredentials: Credentials? = nil,
+         wpcomCredentials: Credentials? = nil,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
                                                connectionOnly: connectionOnly,
+                                               wpcomCredentials: wpcomCredentials,
                                                stores: stores,
                                                analytics: analytics,
                                                onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
-        self.connectionWebViewCredentials = connectionWebViewCredentials
+        self.wpcomCredentials = wpcomCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
@@ -92,7 +93,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true
         })
-        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: connectionWebViewCredentials)
+        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: wpcomCredentials)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
@@ -325,12 +326,5 @@ private extension JetpackSetupView {
         static let supportImageSize: CGFloat = 18
         static let errorContentSpacing: CGFloat = 16
         static let interruptedConnectionActionHandlerDelayTime: Double = 0.3
-    }
-}
-
-struct JetpackSetupView_Previews: PreviewProvider {
-    static var previews: some View {
-        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
-        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
     }
 }

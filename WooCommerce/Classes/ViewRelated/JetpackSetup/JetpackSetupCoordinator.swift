@@ -222,7 +222,7 @@ private extension JetpackSetupCoordinator {
         }
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
                                                     connectionOnly: requiresConnectionOnly,
-                                                    connectionWebViewCredentials: credentials,
+                                                    wpcomCredentials: credentials,
                                                     onStoreNavigation: { [weak self] _ in
             DDLogInfo("🎉 Jetpack setup completes!")
             self?.rootViewController.topmostPresentedViewController.dismiss(animated: true, completion: {

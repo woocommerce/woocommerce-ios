@@ -12,8 +12,8 @@ PERIPHERY_PATH="${PERIPHERY_FOLDER_PATH}/periphery"
 version_gt() { test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1"; }
 
 # Function to update and run Periphery
-update_and_run() {
-    echo "Downloading the latest version..."
+update_periphery() {
+    echo "Downloading version $PERIPHERY_VERSION..."
     # Download the zip file
     curl -L "https://github.com/peripheryapp/periphery/releases/download/${PERIPHERY_VERSION}/periphery-${PERIPHERY_VERSION}.zip" -o "periphery.zip"
 
@@ -29,9 +29,7 @@ update_and_run() {
     # Make sure the executable is executable
     chmod +x "$PERIPHERY_PATH"
     
-    echo "Download and setup complete. Running periphery scan..."
-    # Run periphery scan with additional arguments
-    $PERIPHERY_PATH scan "$@"
+    echo "Download and setup complete."
 }
 
 # Check if the executable exists and is executable
@@ -43,12 +41,15 @@ if [ -x "$PERIPHERY_PATH" ]; then
     # Compare the current version with the desired version
     if version_gt "$PERIPHERY_VERSION" "$CURRENT_VERSION"; then
         echo "Current version ($CURRENT_VERSION) is older than $PERIPHERY_VERSION. Updating..."
-        update_and_run "$@"
+        update_periphery
     else
-        echo "Current version ($CURRENT_VERSION) is up-to-date. Running periphery scan..."
-        $PERIPHERY_PATH scan "$@"
+        echo "Current version ($CURRENT_VERSION) is up-to-date."
     fi
 else
     echo "Executable not found. Downloading..."
-    update_and_run "$@"
+    update_periphery
 fi
+
+echo "Running periphery scan..."
+# Run periphery scan with additional arguments
+"$PERIPHERY_PATH" scan --disable-update-check --relative-results "$@"

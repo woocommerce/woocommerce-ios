@@ -1,6 +1,11 @@
 import Codegen
 import Foundation
 
+struct SomeMoreUnusedCode {
+    let name: String
+    let age: Int
+}
+
 /// The various card brands for a card.
 @frozen public enum CardBrand: String, CaseIterable, Codable, GeneratedFakeable {
     /// Visa card

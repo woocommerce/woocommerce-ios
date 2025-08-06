@@ -113,14 +113,14 @@ private extension OrderStore {
     /// Searches all of the orders that contain a given Keyword.
     ///
     func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
-        remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
-            guard let orders = orders else {
+        Task { @MainActor in
+            do {
+                let orders = try await remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+                upsertSearchResultsInBackground(for: siteID, keyword: keyword, readOnlyOrders: orders) {
+                    onCompletion(nil)
+                }
+            } catch {
                 onCompletion(error)
-                return
-            }
-
-            self?.upsertSearchResultsInBackground(for: siteID, keyword: keyword, readOnlyOrders: orders) {
-                onCompletion(nil)
             }
         }
     }

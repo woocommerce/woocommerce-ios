@@ -220,35 +220,33 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that searchOrders properly parses the `orders-load-all` sample response.
     ///
-    func testSearchOrdersProperlyReturnsParsedOrders() {
+    func test_searchOrders_properly_returns_parsed_orders() async throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(orders)
-            XCTAssert(orders!.count == 4)
-            expectation.fulfill()
-        }
+        // When
+        let orders = try await remote.searchOrders(for: sampleSiteID, keyword: String())
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssert(orders.count == 4)
     }
 
     /// Verifies that searchOrders properly relays Networking Layer errors.
     ///
-    func testSearchOrdersProperlyRelaysNetworkingErrors() {
+    func test_searchOrders_properly_relays_networking_error() async throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
-        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
-            XCTAssertNil(orders)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        do {
+            // When
+            _ = try await remote.searchOrders(for: sampleSiteID, keyword: String())
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
 

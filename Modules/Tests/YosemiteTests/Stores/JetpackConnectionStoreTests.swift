@@ -379,4 +379,49 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
+
+    func test_finalizeJetpackConnection_returns_success_on_success() throws {
+        // Given
+        let urlSuffix = "sites/134/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-success")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
+                                                                    siteURL: "http://test.com",
+                                                                    provisionResponse: provisionResponse,
+                                                                    network: self.network) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_finalizeJetpackConnection_returns_error_on_failure() throws {
+        // Given
+        let urlSuffix = "sites/134/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
+                                                                    siteURL: "http://test.com",
+                                                                    provisionResponse: provisionResponse,
+                                                                    network: self.network) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? JetpackConnectionError, .alreadyConnected)
+    }
 }

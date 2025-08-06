@@ -22,8 +22,6 @@ final class MockSiteRemote {
     /// The result to return in `updateSiteTitle`
     private var updateSiteTitleResult: Result<Void, Error>?
 
-    /// The result to return in `finalizeJetpackConnection`
-    private var finalizeJetpackConnectionResult: Result<Void, Error>?
 
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
@@ -54,20 +52,11 @@ final class MockSiteRemote {
         updateSiteTitleResult = result
     }
 
-    /// Returns the value when `finalizeJetpackConnection` is called.
-    func whenFinalizingJetpackConnection(thenReturn result: Result<Void, Error>) {
-        finalizeJetpackConnectionResult = result
-    }
 }
 
 extension MockSiteRemote: SiteRemoteProtocol {
     func finalizeJetpackConnection(siteID: Int64, siteURL: String, provisionResponse: JetpackConnectionProvisionResponse) async throws {
-        guard let result = finalizeJetpackConnectionResult else {
-            XCTFail("Could not find result for finalizing Jetpack connection.")
-            throw NetworkError.notFound()
-        }
-
-        return try result.get()
+        // no-op
     }
 
     func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse {

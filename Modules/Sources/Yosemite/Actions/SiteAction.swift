@@ -46,17 +46,6 @@ public enum SiteAction: Action {
     /// Upload store profiler answers
     ///
     case uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: (Result<Void, Error>) -> Void)
-
-    /// Finalizes the Jetpack connection by sending a request to WPCom.
-    /// - Parameters:
-    ///   - siteID: ID of the site
-    ///   - siteURL: URL of the site
-    ///   - provisionResponse: Response from the provision connection call
-    ///   - completion: Called when the result of the finalization is available.
-    case finalizeJetpackConnection(siteID: Int64, 
-                                   siteURL: String, 
-                                   provisionResponse: JetpackConnectionProvisionResponse, 
-                                   completion: (Result<Void, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

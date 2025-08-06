@@ -8,6 +8,7 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
     // Keep strong references to remotes to keep requests alive
     private var jetpackConnectionRemote: JetpackConnectionRemote?
     private var accountRemote: AccountRemote?
+    private var siteRemote: SiteRemote?
 
     public override init(dispatcher: Dispatcher) {
         super.init(dispatcher: dispatcher)
@@ -46,6 +47,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             registerSite(completion: completion)
         case .provisionConnection(let completion):
             provisionConnection(completion: completion)
+        case .finalizeConnection(let siteID, let siteURL, let provisionResponse, let network, let completion):
+            finalizeConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse, network: network, completion: completion)
         case .loadWPComAccount(let network, let onCompletion):
             loadWPComAccount(network: network, onCompletion: onCompletion)
         }
@@ -113,6 +116,23 @@ private extension JetpackConnectionStore {
                 completion(.failure(error))
             }
         }
+    }
+
+    func finalizeConnection(siteID: Int64,
+                            siteURL: String,
+                            provisionResponse: JetpackConnectionProvisionResponse,
+                            network: Network,
+                            completion: @escaping (Result<Void, Error>) -> Void) {
+        let remote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
+        Task { @MainActor in
+            do {
+                try await remote.finalizeJetpackConnection(siteID: siteID, siteURL: siteURL, provisionResponse: provisionResponse)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+        self.siteRemote = remote
     }
 
     func loadWPComAccount(network: Network, onCompletion: @escaping (Account?) -> Void) {

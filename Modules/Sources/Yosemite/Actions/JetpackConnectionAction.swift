@@ -20,6 +20,18 @@ public enum JetpackConnectionAction: Action {
     case registerSite(completion: (Result<Int64, Error>) -> Void)
     /// Provisions connection and returns provision response with scope and secret.
     case provisionConnection(completion: (Result<JetpackConnectionProvisionResponse, Error>) -> Void)
+    /// Finalizes the Jetpack connection by sending a request to WPCom.
+    /// - Parameters:
+    ///   - siteID: ID of the site
+    ///   - siteURL: URL of the site  
+    ///   - provisionResponse: Response from the provision connection call
+    ///   - network: Network instance to create SiteRemote
+    ///   - completion: Called when the result of the finalization is available.
+    case finalizeConnection(siteID: Int64,
+                            siteURL: String,
+                            provisionResponse: JetpackConnectionProvisionResponse,
+                            network: Network,
+                            completion: (Result<Void, Error>) -> Void)
     /// Fetches the WPCom account with the given network
     case loadWPComAccount(network: Network, onCompletion: (Account?) -> Void)
 }

@@ -67,7 +67,7 @@ public final class JetpackConnectionRemote: Remote {
         guard let components = URLComponents(string: authorizationURL),
               let blogID = components.queryItems?.first(where: { $0.name == Constants.clientID })?.value as? String,
               let numericID = Int64(blogID) else {
-            throw ConnectionError.invalidAuthorizationURL
+            throw JetpackConnectionError.invalidAuthorizationURL
         }
         return numericID
     }
@@ -80,43 +80,14 @@ public final class JetpackConnectionRemote: Remote {
         let mapper = JetpackConnectionProvisionMapper()
         return try await enqueue(request, mapper: mapper)
     }
-
-    /// Finalizes the connection by sending a request to WPCom.
-    ///
-    public func finalizeConnection(siteID: Int64, provisionResponse: JetpackConnectionProvisionResponse) async throws {
-        let parameters: [String: Any] = [
-            Parameters.secret: provisionResponse.secret,
-            Parameters.scope: provisionResponse.scope,
-            Parameters.externalUserID: provisionResponse.userId,
-            Parameters.redirectURI: siteURL
-        ]
-        let request = JetpackRequest(wooApiVersion: .mark2,
-                                     method: .post,
-                                     siteID: siteID,
-                                     path: Path.wpcomConnection,
-                                     parameters: parameters,
-                                     availableAsRESTRequest: false)
-        let mapper = JetpackConnectionResultMapper()
-        let result = try await enqueue(request, mapper: mapper)
-        switch result.code {
-        case Constants.success:
-            return
-        case Constants.alreadyConnected:
-            throw ConnectionError.alreadyConnected
-        default:
-            throw ConnectionError.connectionRequestFailed(message: result.message)
-        }
-    }
 }
 
-public extension JetpackConnectionRemote {
-    enum ConnectionError: Error, Equatable {
-        case malformedURL
-        case accountConnectionURLNotFound
-        case invalidAuthorizationURL
-        case alreadyConnected
-        case connectionRequestFailed(message: String)
-    }
+public enum JetpackConnectionError: Error, Equatable {
+    case malformedURL
+    case accountConnectionURLNotFound
+    case invalidAuthorizationURL
+    case alreadyConnected
+    case connectionRequestFailed(message: String)
 }
 
 private extension JetpackConnectionRemote {
@@ -125,7 +96,6 @@ private extension JetpackConnectionRemote {
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let jetpackConnectionRegister = "/jetpack/v4/connection/register"
         static let jetpackConnectionProvision = "/jetpack/v4/remote_provision"
-        static let wpcomConnection = "jetpack-remote-connect-user"
         static let plugins = "/wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }
@@ -141,14 +111,5 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
         static let clientID = "client_id"
-        static let success = "success"
-        static let alreadyConnected = "already_connected"
-    }
-
-    enum Parameters {
-        static let secret = "secret"
-        static let externalUserID = "external_user_id"
-        static let redirectURI = "redirect_uri"
-        static let scope = "scope"
     }
 }

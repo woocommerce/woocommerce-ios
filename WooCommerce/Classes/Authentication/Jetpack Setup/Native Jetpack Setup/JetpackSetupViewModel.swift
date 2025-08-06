@@ -342,8 +342,10 @@ private extension JetpackSetupViewModel {
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
     func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        currentSetupStep = .connection
-        trackSetupAfterLogin()
+        if afterConnection == false {
+            currentSetupStep = .connection
+            trackSetupAfterLogin()
+        }
         guard retryCount <= Constants.maxRetryCount else {
             return didFailJetpackConnection()
         }

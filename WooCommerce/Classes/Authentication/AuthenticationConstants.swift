@@ -1,8 +1,6 @@
 import Foundation
 
 struct AuthenticationConstants {
-    static let someUnusedConstant = "someUnusedConstant"
-
     // MARK: - WordPress Authenticator display text customizations
     //
 

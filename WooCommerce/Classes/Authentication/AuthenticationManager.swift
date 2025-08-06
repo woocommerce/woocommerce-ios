@@ -22,8 +22,6 @@ import struct Experiments.CachedABTestVariationProvider
 class AuthenticationManager: Authentication {
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
-    private var someUnusedProperty: String = "someUnusedProperty"
-
     /// Store Picker Coordinator
     ///
     private var storePickerCoordinator: StorePickerCoordinator?

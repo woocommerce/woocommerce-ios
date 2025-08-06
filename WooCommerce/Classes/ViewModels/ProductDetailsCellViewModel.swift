@@ -2,9 +2,6 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-struct UnusedTypeHere {
-  let prop: String
-}
 
 // MARK: - View Model for a product details cell
 //

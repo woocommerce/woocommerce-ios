@@ -815,7 +815,6 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
       derived_data_path: 'DerivedData',
-      xcargs: "-xcconfig 'config/WooCommerce.debug.xcconfig'",
       build_for_testing: true,
       device: device,
       deployment_target_version: ios_version

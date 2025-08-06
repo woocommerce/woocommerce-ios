@@ -186,15 +186,22 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                                     method: .post,
                                     path: String(format: Path.jetpackConnection, siteID),
                                     parameters: parameters)
-        let mapper = JetpackConnectionResultMapper()
-        let result = try await enqueue(request, mapper: mapper)
-        switch result.code {
-        case Constants.success:
-            return
-        case Constants.alreadyConnected:
-            throw JetpackConnectionError.alreadyConnected
-        default:
-            throw JetpackConnectionError.connectionRequestFailed(message: result.message)
+        do {
+            try await enqueue(request)
+        } catch let error as WordPressApiError {
+            switch error {
+            case let .unknown(code, message):
+                if code == Constants.success {
+                    return
+                } else if code == Constants.alreadyConnected {
+                    throw JetpackConnectionError.alreadyConnected
+                }
+                throw JetpackConnectionError.connectionRequestFailed(message: message)
+            default:
+                throw error
+            }
+        } catch {
+            throw error
         }
     }
 }

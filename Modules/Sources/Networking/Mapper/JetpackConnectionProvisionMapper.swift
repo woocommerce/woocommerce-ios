@@ -17,4 +17,10 @@ public struct JetpackConnectionProvisionResponse: Decodable {
     public let userId: Int64
     public let scope: String
     public let secret: String
+
+    public init(userId: Int64, scope: String, secret: String) {
+        self.userId = userId
+        self.scope = scope
+        self.secret = secret
+    }
 }

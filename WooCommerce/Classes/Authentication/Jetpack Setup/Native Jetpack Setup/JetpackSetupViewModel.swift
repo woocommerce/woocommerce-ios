@@ -272,7 +272,7 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success:
                 self.trackSetupDuringLogin(.loginJetpackSetupActivationSuccessful)
-                self.fetchJetpackConnectionURL()
+                self.checkJetpackConnection(afterConnection: false)
             case .failure(let error):
                 self.trackSetupDuringLogin(.loginJetpackSetupActivationFailed, failure: error)
                 self.trackSetupAfterLogin(failure: error)

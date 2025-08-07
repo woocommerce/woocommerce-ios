@@ -2,6 +2,7 @@ import Foundation
 
 /// Mapper: Jetpack connection registration
 ///
+/// periphery: ignore - used in `JetpackConnectionRemote`
 struct JetpackConnectionProvisionMapper: Mapper {
 
     /// (Attempts) to extract the updated `currentUser` field from a given JSON Encoded response.

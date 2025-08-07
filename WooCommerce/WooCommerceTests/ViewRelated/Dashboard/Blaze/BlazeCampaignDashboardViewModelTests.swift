@@ -112,10 +112,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let product1 = Networking.Product.fake().copy(siteID: sampleSiteID,
+                                                      productID: 124,
                                                       statusKey: (ProductStatus.published.rawValue))
         insertProduct(product1)
 
         let product2 = Networking.Product.fake().copy(siteID: sampleSiteID,
+                                                      productID: 123,
                                                       statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
@@ -132,7 +134,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product.siteID, product2.siteID)
+            XCTAssertEqual(product.productID, product2.productID)
         } else {
             XCTFail("Wrong state")
         }
@@ -213,6 +215,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              productID: 123,
                                               statusKey: (ProductStatus.published.rawValue))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
@@ -229,7 +232,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product.siteID, fakeProduct.siteID)
+            XCTAssertEqual(product.productID, fakeProduct.productID)
         } else {
             XCTFail("Wrong state")
         }
@@ -564,6 +567,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              productID: 123,
                                               statusKey: (ProductStatus.published.rawValue))
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -587,7 +591,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         if case .showProduct(let product) = sut.state {
-            XCTAssertEqual(product.siteID, fakeProduct.siteID)
+            XCTAssertEqual(product.productID, fakeProduct.productID)
         } else {
             XCTFail("Wrong state")
         }

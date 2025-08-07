@@ -331,7 +331,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Then
         XCTAssertEqual(foundVersion?.name, "Model 10")
     }
-    
+
     func test_findSourceVersion_when_unknown_model_then_returns_nil() throws {
         // Given
         let fakeModel = NSManagedObjectModel()
@@ -342,7 +342,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         // Then
         XCTAssertNil(foundVersion)
     }
-    
+
     func test_findSourceVersion_when_invoked_then_handles_base_model() throws {
         // Given
         let baseVersion = ManagedObjectModelsInventory.ModelVersion(name: "Model")

@@ -199,9 +199,9 @@ private extension CoreDataIterativeMigrator {
         let shouldDestroy = versionNumber < destroyThreshold
 
         if shouldDestroy {
-            DDLogInfo("Purge migration: Source version \(sourceVersion.name) (\(versionNumber)) is older than threshold \(destroyThreshold). Will nuke database.")
+            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(destroyThreshold). Nuke database.")
         } else {
-            DDLogInfo("Iterative migration: Source version \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(destroyThreshold). Will migrate incrementally.")
+            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(destroyThreshold). Migrate incrementally.")
         }
         return shouldDestroy
     }
@@ -211,7 +211,7 @@ private extension CoreDataIterativeMigrator {
             try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
             DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
         } catch {
-            DDLogError("[CoreDataIterativeMigrator] Failed to destroy database during direct migration path. Error \(error). Will fall back to iterative migration.")
+            DDLogError("[CoreDataIterativeMigrator] Failed direct migration. Will fall back to iterative migration. Error \(error)")
         }
     }
 }

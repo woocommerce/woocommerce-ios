@@ -218,6 +218,6 @@ private extension CoreDataIterativeMigrator {
 
 private extension CoreDataIterativeMigrator {
     enum Constants {
-        static let oldestSupportedDataModel: Int = 0
+        static let oldestSupportedDataModel: Int = 30
     }
 }

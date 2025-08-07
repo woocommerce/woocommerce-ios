@@ -59,6 +59,17 @@ final class CoreDataIterativeMigrator {
         // Find the current model used by the store.
         let sourceModel = try model(for: sourceMetadata)
 
+        // Check if we should nuke the DB entirely based on the oldest supported data model.
+        // We will attempt to either move the merchant to the latest model version, or perform an iterative migration
+        // The persistent store coordinator will automatically create a fresh store with the current model as needed.
+        if shouldDestroyPersistentStore(for: sourceModel) {
+            do {
+                try destroyPersistentStore(sourceStoreURL: sourceStoreURL, storeType: storeType)
+            } catch {
+                DDLogError("[CoreDataIterativeMigrator] Direct migration failed. Error: \(error). Falling back to iterative migration.")
+            }
+        }
+
         // Get the steps to perform the migration.
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
         guard !steps.isEmpty else {
@@ -176,40 +187,32 @@ private extension CoreDataIterativeMigrator {
             .appendingPathComponent("migration_\(UUID().uuidString)")
             .appendingPathExtension("sqlite")
     }
-struct CoreDataMigratorUtils {
-    /// Finds the ModelVersion that corresponds to the given NSManagedObjectModel
-    static func findSourceVersion(for sourceModel: NSManagedObjectModel,
-                                  in modelsInventory: ManagedObjectModelsInventory) -> ManagedObjectModelsInventory.ModelVersion? {
-        do {
-            let allModels = try modelsInventory.models(for: modelsInventory.versions)
-            for (index, model) in allModels.enumerated() {
-                if model.isEqual(sourceModel) {
-                    return modelsInventory.versions[index]
-                }
-            }
-        } catch {
-            DDLogError("[CoreDataMigratorUtils] Error loading models for version detection: \(error)")
+
+    func shouldDestroyPersistentStore(for sourceModel: NSManagedObjectModel) -> Bool {
+        guard let sourceVersion = CoreDataMigratorUtils.findSourceVersion(for: sourceModel, in: modelsInventory) else {
+            DDLogInfo("Could not determine source model version. Using iterative migration.")
+            return false
         }
-        return nil
+        // If the merchant is on a model version older than this, nuke the DB and migrate them to the latest one without iterative process
+        let destroyThreshold = Constants.oldestSupportedDataModel
+        let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: sourceVersion.name)
+        let shouldDestroy = versionNumber < destroyThreshold
+
+        if shouldDestroy {
+            DDLogInfo("Purge migration: Source version \(sourceVersion.name) (\(versionNumber)) is older than threshold \(destroyThreshold). Will nuke database.")
+        } else {
+            DDLogInfo("Iterative migration: Source version \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(destroyThreshold). Will migrate incrementally.")
+        }
+        return shouldDestroy
     }
 
-    /// Extract version number from model version name
-    /// Examples: "Model" -> 0, "Model 10" -> 10, "Model 124" -> 124
-    static func extractVersionNumber(from versionName: String) -> Int {
-        // Handle the base "Model" case (version 0)
-        if versionName == "Model" {
-            return 0
+    func destroyPersistentStore(sourceStoreURL: URL, storeType: String) throws {
+        do {
+            try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
+            DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
+        } catch {
+            DDLogError("[CoreDataIterativeMigrator] Failed to destroy database during direct migration path. Error \(error). Will fall back to iterative migration.")
         }
-
-        // Extract number from "Model N" pattern
-        let components = versionName.components(separatedBy: " ")
-        if components.count == 2, let versionNumber = Int(components[1]) {
-            return versionNumber
-        }
-
-        // Fallback: couldn't parse version, assume it's very old (version 0)
-        DDLogWarn("[CoreDataMigratorUtils] Could not parse version number from '\(versionName)'. Assuming version 0.")
-        return 0
     }
 }
 

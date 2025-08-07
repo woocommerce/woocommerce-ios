@@ -23,12 +23,7 @@ final class OrderDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    private lazy var productResultsController: GenericResultsController<StorageProduct, OrderDetailsProduct> = createProductResultsController()
 
     /// ProductVariation ResultsController.
     ///
@@ -100,9 +95,7 @@ final class OrderDetailsResultsControllers {
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return productResultsController.fetchedObjects
-    }
+    private(set) var products: [OrderDetailsProduct] = []
 
     /// ProductVariations from an Order
     ///
@@ -181,11 +174,13 @@ final class OrderDetailsResultsControllers {
 
     func update(order: Order) {
         self.order = order
-        // Product variation results controller depends on order items to load variations,
+        // Product and variation results controller depends on order items to load variations,
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
+        self.productResultsController = createProductResultsController()
         if let onReload = onReload {
             configureProductVariationResultsController(onReload: onReload)
+            configureProductResultsController(onReload: onReload)
         }
     }
 }
@@ -250,7 +245,9 @@ private extension OrderDetailsResultsControllers {
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
-        productResultsController.onDidChangeContent = {
+        productResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            products = productResultsController.fetchedObjects
             onReload()
         }
 
@@ -264,6 +261,7 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try productResultsController.performFetch()
+            products = productResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
         }
@@ -374,5 +372,18 @@ private extension OrderDetailsResultsControllers {
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
         try? shippingMethodsResultsController.performFetch()
+    }
+
+    func createProductResultsController() -> GenericResultsController<StorageProduct, OrderDetailsProduct> {
+        let productIDs = order.items.map { $0.productID }
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return GenericResultsController<StorageProduct, OrderDetailsProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor],
+            transformer: { OrderDetailsProduct(storageProduct: $0) }
+        )
     }
 }

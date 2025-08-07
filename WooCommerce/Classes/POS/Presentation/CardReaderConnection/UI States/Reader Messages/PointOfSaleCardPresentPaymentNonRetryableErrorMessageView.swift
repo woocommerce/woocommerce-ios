@@ -51,8 +51,9 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentNonRetryableErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(

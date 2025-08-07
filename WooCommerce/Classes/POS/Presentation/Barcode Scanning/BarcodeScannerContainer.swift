@@ -53,7 +53,9 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
 /// based on VoiceOver state. Uses GameController framework for optimal performance when possible,
 /// and falls back to UIKit UIPress events when VoiceOver is enabled.
 final class GameControllerBarcodeScannerHostingController: UIHostingController<EmptyView> {
+    /// periphery: ignore - retain `gameControllerObserver` to keep it alive
     private(set) var gameControllerObserver: GameControllerBarcodeObserver?
+
     private(set) var uiKitObserver: UIKitBarcodeObserver?
 
     private let configuration: HIDBarcodeParserConfiguration

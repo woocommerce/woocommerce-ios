@@ -35,8 +35,9 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentScanningForReadersFailedView(
         viewModel: PointOfSaleCardPresentPaymentScanningFailedAlertViewModel(
             error: NSError(domain: "", code: 1, userInfo: nil),

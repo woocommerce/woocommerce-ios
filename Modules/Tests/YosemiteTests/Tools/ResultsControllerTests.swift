@@ -56,7 +56,6 @@ final class ResultsControllerTests: XCTestCase {
     ///
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
@@ -70,11 +69,10 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that ResultsController does pick up entities inserted after being instantiated.
     ///
     func testResultsControllerPicksUpEntitiesInsertedAfterInstantiation() {
+        storageManager.insertSampleAccount()
+
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
-
-        storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         XCTAssertEqual(resultsController.sections.count, 1)
         XCTAssertEqual(resultsController.sections.first?.objects.count, 1)
@@ -85,18 +83,16 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `sectionNameKeyPath` effectively causes the ResultsController to produce multiple sections, based on the grouping parameter.
     ///
     func testResultsControllerGroupSectionsBySectionNameKeypath() {
-        let sectionNameKeyPath = "userID"
-        let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
-                                                                   sectionNameKeyPath: sectionNameKeyPath,
-                                                                   sortedBy: [sampleSortDescriptor])
-        try? resultsController.performFetch()
-
         let numberOfAccounts = 100
         for _ in 0 ..< numberOfAccounts {
             storageManager.insertSampleAccount()
         }
 
-        viewStorage.saveIfNeeded()
+        let sectionNameKeyPath = "userID"
+        let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: sectionNameKeyPath,
+                                                                   sortedBy: [sampleSortDescriptor])
+        try? resultsController.performFetch()
 
         XCTAssertEqual(resultsController.sections.count, numberOfAccounts)
 
@@ -109,14 +105,12 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `object(at indexPath:)` effectively returns the expected (ReadOnly) Entity.
     ///
     func testObjectAtIndexPathReturnsExpectedEntity() {
+        let mutableAccount = storageManager.insertSampleAccount()
         let sectionNameKeyPath = "userID"
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
                                                                    sectionNameKeyPath: sectionNameKeyPath,
                                                                    sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
-
-        let mutableAccount = storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         let indexPath = IndexPath(row: 0, section: 0)
         let readOnlyAccount = resultsController.object(at: indexPath)
@@ -144,7 +138,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -167,7 +160,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -189,7 +181,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -211,7 +202,6 @@ final class ResultsControllerTests: XCTestCase {
         }
 
         storageManager.insertSampleAccount()
-        viewStorage.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
@@ -228,7 +218,6 @@ final class ResultsControllerTests: XCTestCase {
         let second = storageManager.insertSampleAccount().toReadOnly()
         let expected = [first.userID: first, second.userID: second]
 
-        viewStorage.saveIfNeeded()
 
         for retrieved in resultsController.fetchedObjects {
             XCTAssertEqual(retrieved.username, expected[retrieved.userID]?.username)
@@ -239,14 +228,13 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
     func testResettingStorageIsMappedIntoOnResetClosure() {
+        storageManager.insertSampleAccount()
+        storageManager.insertSampleAccount()
+
         let sortDescriptor = NSSortDescriptor(key: #selector(getter: StorageAccount.userID).description, ascending: true)
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
         try? resultsController.performFetch()
 
-        storageManager.insertSampleAccount()
-        storageManager.insertSampleAccount()
-
-        viewStorage.saveIfNeeded()
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
 
         let expectation = self.expectation(description: "OnDidReset")
@@ -295,8 +283,6 @@ final class ResultsControllerTests: XCTestCase {
                 account.displayName = "\(section)"
             }
         }
-
-        viewStorage.saveIfNeeded()
 
         for (sectionNumber, sectionObject) in resultsController.sections.enumerated() {
             for (row, object) in sectionObject.objects.enumerated() {

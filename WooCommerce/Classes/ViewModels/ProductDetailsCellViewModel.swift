@@ -92,6 +92,29 @@ struct ProductDetailsCellViewModel {
         self.isChildProduct = isChildProduct
     }
 
+    /// periphery: ignore - used in test module
+    /// Order Item initializer
+    ///
+    init(item: OrderItem,
+         currency: String,
+         formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         product: OrderDetailsProduct? = nil,
+         hasAddOns: Bool,
+         isChildWithParent: Bool) {
+        self.init(currency: currency,
+                  currencyFormatter: formatter,
+                  imageURL: product?.imageURL,
+                  name: item.name,
+                  positiveQuantity: abs(item.quantity),
+                  total: formatter.convertToDecimal(item.total) ?? NSDecimalNumber.zero,
+                  price: item.price,
+                  skuText: item.sku,
+                  attributes: item.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) },
+                  addOns: .init(addOns: item.addOns),
+                  hasAddOns: hasAddOns,
+                  isChildProduct: isChildWithParent)
+    }
+
     /// Aggregate Order Item initializer
     ///
     init(aggregateItem: AggregateOrderItem,

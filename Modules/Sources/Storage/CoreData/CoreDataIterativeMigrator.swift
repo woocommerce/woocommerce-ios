@@ -194,14 +194,14 @@ private extension CoreDataIterativeMigrator {
             return false
         }
         // If the merchant is on a model version older than this, nuke the DB and migrate them to the latest one without iterative process
-        let destroyThreshold = Constants.oldestSupportedDataModel
+        let oldestModelThreshold = Constants.oldestSupportedDataModel
         let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: sourceVersion.name)
-        let shouldDestroy = versionNumber < destroyThreshold
+        let shouldDestroy = versionNumber < oldestModelThreshold
 
         if shouldDestroy {
-            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(destroyThreshold). Nuke database.")
+            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(oldestModelThreshold). Nuke database.")
         } else {
-            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(destroyThreshold). Migrate incrementally.")
+            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(oldestModelThreshold). Migrate incrementally.")
         }
         return shouldDestroy
     }

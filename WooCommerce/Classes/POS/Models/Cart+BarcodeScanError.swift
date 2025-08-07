@@ -121,9 +121,9 @@ extension PointOfSaleBarcodeScanError {
         )
 
         static let incompleteScan = NSLocalizedString(
-            "pointOfSale.barcodeScan.error.incompleteScan",
-            value: "Partial barcode scan",
-            comment: "Error message shown when scan is incomplete."
+            "pointOfSale.barcodeScan.error.incompleteScan.2",
+            value: "The scanner did not send an end-of-line character",
+            comment: "Error message shown when scanner times out without sending end-of-line character."
         )
 
         static let parsingError = NSLocalizedString(

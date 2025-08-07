@@ -285,4 +285,143 @@ final class JetpackConnectionStoreTests: XCTestCase {
         // Then
         XCTAssertNil(result)
     }
+
+    func test_registerSite_returns_correct_blogID() throws {
+        // Given
+        let urlSuffix = "/jetpack/v4/connection/register"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.registerSite { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let blogID = try XCTUnwrap(result.get())
+        XCTAssertEqual(blogID, 1234567890)
+    }
+
+    func test_registerSite_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/jetpack/v4/connection/register"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<Int64, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.registerSite { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
+    func test_provisionConnection_returns_correct_provision_response() throws {
+        // Given
+        let urlSuffix = "/jetpack/v4/remote_provision"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-provision")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<JetpackConnectionProvisionResponse, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.provisionConnection { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.userId, 123456789)
+        XCTAssertEqual(response.scope, "administrator")
+        XCTAssertEqual(response.secret, "secret_token_12345")
+    }
+
+    func test_provisionConnection_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/jetpack/v4/remote_provision"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<JetpackConnectionProvisionResponse, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.provisionConnection { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
+    func test_finalizeJetpackConnection_returns_success_on_success() throws {
+        // Given
+        let urlSuffix = "sites/134/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-success")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
+                                                                    siteURL: "http://test.com",
+                                                                    provisionResponse: provisionResponse,
+                                                                    network: self.network) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_finalizeJetpackConnection_returns_error_on_failure() throws {
+        // Given
+        let urlSuffix = "sites/134/jetpack-remote-connect-user"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-finalize-error")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let provisionResponse = JetpackConnectionProvisionResponse(userId: 123456789, scope: "administrator", secret: "secret_token_12345")
+            let action = JetpackConnectionAction.finalizeConnection(siteID: 134,
+                                                                    siteURL: "http://test.com",
+                                                                    provisionResponse: provisionResponse,
+                                                                    network: self.network) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? JetpackConnectionError, .alreadyConnected)
+    }
 }

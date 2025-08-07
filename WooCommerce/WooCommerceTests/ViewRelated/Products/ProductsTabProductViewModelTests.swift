@@ -128,7 +128,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           stockQuantity: 5,
                                           stockStatusKey: "instock",
                                           bundleStockStatus: .insufficientStock,
-                                          bundleStockQuantity: 0)
+                                          bundleStockQuantity: 0).toListItem()
 
         // When
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -147,7 +147,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           stockQuantity: 5,
                                           stockStatusKey: "onbackorder",
                                           bundleStockStatus: .inStock,
-                                          bundleStockQuantity: 0)
+                                          bundleStockQuantity: 0).toListItem()
 
         // When
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -166,7 +166,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           stockQuantity: 5,
                                           stockStatusKey: "instock",
                                           bundleStockStatus: .inStock,
-                                          bundleStockQuantity: 1)
+                                          bundleStockQuantity: 1).toListItem()
 
         // Action
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -186,7 +186,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
                                           stockQuantity: 5,
                                           stockStatusKey: "instock",
                                           bundleStockStatus: .inStock,
-                                          bundleStockQuantity: 1)
+                                          bundleStockQuantity: 1).toListItem()
 
         // Action
         let viewModel = ProductsTabProductViewModel(product: product)
@@ -205,13 +205,13 @@ extension ProductsTabProductViewModelTests {
                      stockQuantity: Decimal? = nil,
                      stockStatus: ProductStockStatus = .inStock,
                      variations: [Int64] = [],
-                     images: [ProductImage] = []) -> Product {
+                     images: [ProductImage] = []) -> ProductListItem {
 
         return Product.fake().copy(name: name,
                                    stockQuantity: stockQuantity,
                                    stockStatusKey: stockStatus.rawValue,
                                    images: images,
-                                   variations: variations)
+                                   variations: variations).toListItem()
     }
 }
 

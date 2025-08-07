@@ -51,7 +51,7 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
 
     /// Internal NSFetchedResultsController Instance.
     ///
-    private lazy var controller: NSFetchedResultsController<T> = {
+    public private(set) lazy var controller: NSFetchedResultsController<T> = {
         viewStorage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: sectionNameKeyPath,
@@ -64,10 +64,6 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     // TODO: This being an internal delegate it needs to be stored strongly, or it will be immediately released. Is this approach appropriate?
     // swiftlint:disable:next weak_delegate
     private let internalDelegate = FetchedResultsControllerDelegateWrapper()
-
-    /// NotificationCenter ObserverBlock Token
-    ///
-    private var notificationCenterToken: Any?
 
     /// Closure to be executed before the results are changed.
     ///

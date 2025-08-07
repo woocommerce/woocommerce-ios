@@ -71,8 +71,6 @@ protocol ProductFormDataModel {
 
     // Product Bundles
     var bundledItems: [ProductBundleItem] { get }
-    var bundleStockStatus: ProductStockStatus? { get }
-    var bundleStockQuantity: Int64? { get }
 
     // Password
     var password: String? { get }

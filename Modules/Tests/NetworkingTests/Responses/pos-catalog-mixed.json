@@ -1,0 +1,17 @@
+[
+    {
+        "id": 123,
+        "name": "Test Product",
+        "type": "simple",
+        "status": "publish",
+        "sku": "TEST-001",
+        "price": "19.99"
+    },
+    {
+        "id": 124,
+        "type": "variation",
+        "parent_id": 123,
+        "sku": "TEST-001-VAR",
+        "price": "19.99"
+    }
+]

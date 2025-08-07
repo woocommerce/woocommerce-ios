@@ -1,0 +1,14 @@
+[
+    {
+        "id": 123,
+        "name": "Test Product",
+        "type": "simple",
+        "status": "publish",
+        "sku": "TEST-001",
+        "price": "19.99",
+        "regular_price": "19.99",
+        "stock_status": "instock",
+        "date_created": "2023-01-01T10:00:00",
+        "date_modified": "2023-01-02T10:00:00"
+    }
+]

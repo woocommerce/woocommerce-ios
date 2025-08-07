@@ -176,27 +176,27 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackUser_correctly_returns_parsed_user() throws {
+    func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
         // Given
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            remote.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionData { result in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let user = try XCTUnwrap(result.get())
+        let user = try XCTUnwrap(result.get().currentUser)
         XCTAssertTrue(user.isConnected)
         XCTAssertNotNil(user.wpcomUser)
     }
 
-    func test_fetchJetpackUser_properly_relays_errors() {
+    func test_fetchJetpackConnectionData_properly_relays_errors() {
         // Given
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
@@ -204,8 +204,8 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            remote.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionData { result in
                 promise(result)
             }
         }

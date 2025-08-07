@@ -14,8 +14,8 @@ public enum JetpackConnectionAction: Action {
     case activateJetpackPlugin(completion: (Result<Void, Error>) -> Void)
     /// Fetches the URL used for setting up Jetpack connection.
     case fetchJetpackConnectionURL(completion: (Result<URL, Error>) -> Void)
-    /// Fetches the user connection state with the given site's Jetpack.
-    case fetchJetpackUser(completion: (Result<JetpackUser, Error>) -> Void)
+    /// Fetches connection state with the given site's Jetpack.
+    case fetchJetpackConnectionData(completion: (Result<JetpackConnectionData, Error>) -> Void)
     /// Fetches the WPCom account with the given network
     case loadWPComAccount(network: Network, onCompletion: (Account?) -> Void)
 }

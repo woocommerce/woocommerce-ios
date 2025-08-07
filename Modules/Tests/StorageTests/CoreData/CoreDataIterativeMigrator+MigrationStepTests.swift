@@ -24,8 +24,8 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
     func test_steps_returns_MigrationSteps_from_source_to_the_target_model() throws {
         // Given
-        let modelVersion23 = ModelVersion(name: "Model 23")
-        let modelVersion31 = ModelVersion(name: "Model 31")
+        let modelVersion23 = ModelVersion(name: "Model 33")
+        let modelVersion31 = ModelVersion(name: "Model 41")
         let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion23))
         let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion31))
 
@@ -34,18 +34,18 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
         // Then
         // There should be 8 steps:
-        //   - 23 to 24
-        //   - 24 to 25
-        //   - 25 to 26
-        //   - 26 to 27
-        //   - 27 to 28
-        //   - 28 to 29
-        //   - 29 to 30
-        //   - 30 to 31
+        //   - 33 to 34
+        //   - 34 to 35
+        //   - 35 to 36
+        //   - 36 to 37
+        //   - 37 to 38
+        //   - 38 to 39
+        //   - 39 to 40
+        //   - 40 to 41
         XCTAssertEqual(steps.count, 8)
 
         // Assert the values of first and last steps.
-        let modelVersion24 = ModelVersion(name: "Model 24")
+        let modelVersion24 = ModelVersion(name: "Model 34")
 
         let expectedFirstStep = MigrationStep(sourceVersion: modelVersion23,
                                               sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion23)),
@@ -54,7 +54,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let actualFirstStep = try XCTUnwrap(steps.first)
         XCTAssertEqual(actualFirstStep, expectedFirstStep)
 
-        let modelVersion30 = ModelVersion(name: "Model 30")
+        let modelVersion30 = ModelVersion(name: "Model 40")
 
         let expectedLastStep = MigrationStep(sourceVersion: modelVersion30,
                                               sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion30)),
@@ -130,23 +130,5 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
         // Then
         assertEmpty(steps)
-    }
-
-    /// If the `source` and `target` are the same models, `steps()` will return steps from **that**
-    /// model version up to the latest version in the inventory.
-    ///
-    /// This seems like a bug in the `steps()` loop that has existed for a long time. I would have
-    /// expected that 0 steps are returned. I'm just keeping it as is for now. We don't
-    /// reach this condition because of the precondition checks in `CoreDataIterativeMigrator`.
-    func test_steps_returns_source_to_latest_version_MigrationSteps_if_the_source_and_target_are_the_same() throws {
-        // Given
-        let modelVersion37 = ModelVersion(name: "Model 37")
-        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
-
-        // When
-        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: sourceModel)
-
-        // Then
-        XCTAssertEqual(steps.count, modelsInventory.versions.count - 37)
     }
 }

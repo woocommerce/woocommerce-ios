@@ -201,15 +201,15 @@ private extension OrderStore {
         Task { @MainActor in
             do {
                 let orders = try await remote.loadAllOrders(for: siteID,
-                                                                  statuses: statuses,
-                                                                  after: after,
-                                                                  before: before,
-                                                                  modifiedAfter: modifiedAfter,
-                                                                  customerID: customerID,
-                                                                  productID: productID,
-                                                                  createdVia: createdVia,
-                                                                  pageNumber: pageNumber,
-                                                                  pageSize: pageSize)
+                                                            statuses: statuses,
+                                                            after: after,
+                                                            before: before,
+                                                            modifiedAfter: modifiedAfter,
+                                                            customerID: customerID,
+                                                            productID: productID,
+                                                            createdVia: createdVia,
+                                                            pageNumber: pageNumber,
+                                                            pageSize: pageSize)
                 upsertStoredOrdersInBackground(readOnlyOrders: orders) {
                     onCompletion(Date().timeIntervalSince(startTime), nil)
                 }

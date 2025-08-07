@@ -93,6 +93,7 @@ struct AddressMapPickerView: View {
                         isSearchFocused = false
                         viewModel.updateFields(&fields)
                         dismiss()
+                        ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerUseAddressTapped)
                     }
                     .disabled(!viewModel.hasValidSelection)
                 }

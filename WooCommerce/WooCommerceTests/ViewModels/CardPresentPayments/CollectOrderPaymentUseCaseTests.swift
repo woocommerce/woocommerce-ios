@@ -410,6 +410,62 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then ensure payment completion happens after alert presentation to avoid CollectOrderPaymentUseCase deinit before alert presentation
         XCTAssertEqual(eventOrder, [.receiptEligibilityCheck, .alertPresented, .paymentCompletion])
     }
+
+    func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
+        // Given an order with 2 decimal place precision
+        let initialOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56")
+
+        // And the retrieved order has 8 decimal place precision (same value, different formatting)
+        let retrievedOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56000000")
+
+        setUpUseCase(order: initialOrder)
+
+        // Mock the order retrieval to return the 8dp version
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(retrievedOrder))
+            default:
+                break
+            }
+        }
+
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+
+        // When collecting payment
+        var paymentCompleted = false
+        var paymentFailed = false
+
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { error in
+                    paymentFailed = true
+                    // This should not happen with the decimal comparison fix
+                    XCTFail("Payment should not fail due to precision mismatch. Error: \(error)")
+                    promise(())
+                },
+                onCancel: {
+                    XCTFail("Payment should not be canceled")
+                    promise(())
+                },
+                onPaymentCompletion: {
+                    paymentCompleted = true
+                    promise(())
+                },
+                onCompleted: {}
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then payment should succeed (with decimal comparison, "22.56" equals "22.56000000")
+        XCTAssertTrue(paymentCompleted)
+        XCTAssertFalse(paymentFailed)
+    }
 }
 
 private extension CollectOrderPaymentUseCaseTests {

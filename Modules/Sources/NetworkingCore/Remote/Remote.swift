@@ -370,7 +370,7 @@ public extension Remote {
         public static let firstPageNumber: Int = 1
     }
 
-    public enum PaginationHeaderKey {
+    enum PaginationHeaderKey {
         public static let totalPagesCount = "x-wp-totalpages"
         public static let totalCount = "x-wp-total"
     }

@@ -33,8 +33,9 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentReaderUpdateFailedNonRetryableView(
         viewModel: .init(cancelUpdateAction: {}),
         animation: .init(namespace: namespace)

@@ -8,6 +8,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
     // Keep strong references to remotes to keep requests alive
     private var jetpackConnectionRemote: JetpackConnectionRemote?
     private var accountRemote: AccountRemote?
+
+    /// periphery: ignore - kept with strong reference to keep network requests alive.
     private var siteRemote: SiteRemote?
 
     public override init(dispatcher: Dispatcher) {

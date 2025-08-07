@@ -21,6 +21,7 @@ struct OrderDetailsProduct: Equatable {
         return ProductType(rawValue: productTypeKey)
     }
 
+    /// periphery: ignore - used in test module
     init(productID: Int64,
          productTypeKey: String,
          sku: String?,

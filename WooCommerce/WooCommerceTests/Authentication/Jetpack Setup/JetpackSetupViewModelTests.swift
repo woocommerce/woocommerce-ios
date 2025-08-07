@@ -426,7 +426,9 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 triggeredInstallation = true
             case .activateJetpackPlugin:
                 triggeredActivation = true
-            case .fetchJetpackConnectionData:
+            case .fetchJetpackConnectionData(let completion):
+                completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
+            case .provisionConnection:
                 triggeredConnection = true
             default:
                 break

@@ -19,6 +19,7 @@ public struct JetpackConnectionProvisionResponse: Decodable {
     public let scope: String
     public let secret: String
 
+    /// periphery: ignore - used in UI module
     public init(userId: Int64, scope: String, secret: String) {
         self.userId = userId
         self.scope = scope

@@ -299,7 +299,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard let firstProduct = resultsController.fetchedObjects.first else {
+        guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
@@ -1026,7 +1026,7 @@ private extension ProductsViewController {
                     .map { $0.productOrVariationID.id }
 
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.fetchedObjects.enumerated() {
+                for (index, object) in resultsController.listItems.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
@@ -1114,8 +1114,7 @@ extension ProductsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.object(at: indexPath)
-
+        let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
         cell.update(viewModel: viewModel, imageService: imageService)
@@ -1707,5 +1706,22 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
+    }
+}
+
+/// This is a workaround since the batch product update feature makes it hard
+/// to convert the results controller to GenericResultsController<StorageProduct, ProductListItem>.
+/// We should consider updating batch update to accept product IDs and clean this up.
+///
+extension ResultsController<StorageProduct> {
+    var listItems: [ProductListItem] {
+        controller.fetchedObjects?.compactMap { mutableObject in
+            ProductListItem(storageProduct: mutableObject)
+        } ?? []
+    }
+
+    func listItem(at indexPath: IndexPath) -> ProductListItem {
+        let mutableObject = controller.object(at: indexPath)
+        return ProductListItem(storageProduct: mutableObject)
     }
 }

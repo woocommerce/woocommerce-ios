@@ -92,6 +92,7 @@ struct ProductDetailsCellViewModel {
         self.isChildProduct = isChildProduct
     }
 
+    /// periphery: ignore - used in test module
     /// Order Item initializer
     ///
     init(item: OrderItem,

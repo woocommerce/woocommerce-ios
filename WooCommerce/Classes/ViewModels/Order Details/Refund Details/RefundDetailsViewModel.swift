@@ -25,12 +25,6 @@ final class RefundDetailsViewModel {
         self.refund = refund
     }
 
-    /// Products from a Refund
-    ///
-    var products: [OrderDetailsProduct] {
-        return dataSource.products
-    }
-
     /// Subtotal from all refunded products
     ///
     var itemSubtotal: String {

@@ -484,11 +484,13 @@ private extension JetpackSetupCoordinator {
 }
 
 // MARK: - Subtypes
-private extension JetpackSetupCoordinator {
+extension JetpackSetupCoordinator {
     enum JetpackCheckError: Int, Error {
         case missingPermission = 403
     }
+}
 
+private extension JetpackSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
     }

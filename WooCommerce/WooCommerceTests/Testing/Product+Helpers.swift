@@ -9,7 +9,6 @@ extension Product {
                             sku: sku,
                             price: price,
                             virtual: virtual,
-                            stockQuantity: stockQuantity,
                             imageURL: imageURL,
                             addOns: addOns)
     }

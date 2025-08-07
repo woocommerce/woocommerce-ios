@@ -11,8 +11,6 @@ struct OrderDetailsProduct: Equatable {
     let price: String
     let virtual: Bool
 
-    let stockQuantity: Decimal?
-
     let imageURL: URL?
 
     let addOns: [Yosemite.ProductAddOn]
@@ -27,7 +25,6 @@ struct OrderDetailsProduct: Equatable {
          sku: String?,
          price: String,
          virtual: Bool,
-         stockQuantity: Decimal?,
          imageURL: URL?,
          addOns: [Yosemite.ProductAddOn]) {
         self.productID = productID
@@ -35,7 +32,6 @@ struct OrderDetailsProduct: Equatable {
         self.sku = sku
         self.price = price
         self.virtual = virtual
-        self.stockQuantity = stockQuantity
         self.imageURL = imageURL
         self.addOns = addOns
     }
@@ -46,14 +42,6 @@ struct OrderDetailsProduct: Equatable {
         self.sku = storageProduct.sku
         self.price = storageProduct.price
         self.virtual = storageProduct.virtual
-
-        self.stockQuantity = {
-            var quantity: Decimal?
-            if let stockQuantity = storageProduct.stockQuantity {
-                quantity = Decimal(string: stockQuantity)
-            }
-            return quantity
-        }()
 
         self.imageURL = storageProduct.imagesArray.first?.toReadOnly().imageURL
 

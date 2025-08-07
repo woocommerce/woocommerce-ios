@@ -14,7 +14,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         /// Shows info about the latest Blaze campaign
         case showCampaign(campaign: BlazeCampaignListItem)
         /// Shows info about the latest published Product
-        case showProduct(product: Product)
+        case showProduct(product: BlazeCampaignProduct)
         /// When there is no campaign or published product
         case empty
     }
@@ -90,19 +90,20 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }()
 
     /// Product ResultsController.
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
+    private lazy var productResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@",
                                     siteID,
                                     ProductStatus.published.rawValue)
-        return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                 matching: predicate,
-                                                 fetchLimit: 1,
-                                                 sortOrder: .dateDescending)
+        return GenericResultsController<StorageProduct, BlazeCampaignProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            fetchLimit: 1,
+            sortedBy: [NSSortDescriptor(key: "date", ascending: false)],
+            transformer: { BlazeCampaignProduct(storageProduct: $0) }
+        )
     }()
 
-    var latestPublishedProduct: Product? {
-        productResultsController.fetchedObjects.first
-    }
+    private(set) var latestPublishedProduct: BlazeCampaignProduct?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -314,9 +315,14 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
 
+        let productTransformer: (StorageProduct) -> BlazeCampaignProduct = {
+            BlazeCampaignProduct(storageProduct: $0)
+        }
         productResultsController.onDidChangeContent = { [weak self] in
-            self?.updateAvailability()
-            self?.updateResults()
+            guard let self else { return }
+            latestPublishedProduct = productResultsController.fetchedObjects.first
+            updateAvailability()
+            updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
             self?.updateAvailability()
@@ -326,6 +332,7 @@ private extension BlazeCampaignDashboardViewModel {
         do {
             try blazeCampaignResultsController.performFetch()
             try productResultsController.performFetch()
+            latestPublishedProduct = productResultsController.fetchedObjects.first
             updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)

@@ -43,6 +43,8 @@ public protocol SiteRemoteProtocol {
     ///   - siteID: Remote ID of the site
     ///   - siteURL: URL of the site
     ///   - provisionResponse: Response from the provision connection call
+    /// periphery: ignore - used in test module
+    ///
     func finalizeJetpackConnection(siteID: Int64,
                                    siteURL: String,
                                    provisionResponse: JetpackConnectionProvisionResponse) async throws
@@ -172,6 +174,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     }
 
     /// Finalizes the Jetpack connection by sending a request to WPCom.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
     ///
     public func finalizeJetpackConnection(siteID: Int64,
                                           siteURL: String,

@@ -26,6 +26,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .padding(POSPadding.medium)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+                .accessibilityLabel(Localization.barcodeImageAccesibilityLabel)
         }
     }
 }
@@ -33,6 +34,14 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
 extension PointOfSaleBarcodeScannerBarcodeView {
     enum Constants {
         static let maxBarcodeSize: CGFloat = 168
+    }
+
+    enum Localization {
+        static let barcodeImageAccesibilityLabel = NSLocalizedString(
+            "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel",
+            value: "Image of a code to be scanned by a barcode scanner.",
+            comment: "Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner."
+        )
     }
 }
 
@@ -196,9 +205,9 @@ private extension PointOfSaleBarcodeScannerSetupCompleteView {
             comment: "Title shown when scanner setup is successfully completed"
         )
         static let instruction = NSLocalizedString(
-            "pos.barcodeScannerSetup.complete.instruction",
-            value: "You are ready to start scanning products. \nRead more about barcode and QR code scanner support.",
-            comment: "Message shown when scanner setup is complete, with additional information link"
+            "pos.barcodeScannerSetup.complete.instruction.2",
+            value: "You are ready to start scanning products. Next time you need to connect your scanner, just turn it on and it will reconnect automatically.",
+            comment: "Message shown when scanner setup is complete"
         )
     }
 }

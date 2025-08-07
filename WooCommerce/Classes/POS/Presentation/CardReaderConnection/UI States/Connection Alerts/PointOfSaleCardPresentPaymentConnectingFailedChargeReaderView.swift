@@ -38,8 +38,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingFailedChargeReaderView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedChargeReaderAlertViewModel(
             retryButtonAction: {},

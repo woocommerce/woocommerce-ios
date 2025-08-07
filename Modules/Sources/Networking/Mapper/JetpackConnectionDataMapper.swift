@@ -5,8 +5,6 @@ import Foundation
 ///
 struct JetpackConnectionDataMapper: Mapper {
 
-    /// (Attempts) to extract the updated `currentUser` field from a given JSON Encoded response.
-    ///
     func map(response: Data) throws -> JetpackConnectionData {
         let decoder = JSONDecoder()
         return try decoder.decode(JetpackConnectionData.self, from: response)

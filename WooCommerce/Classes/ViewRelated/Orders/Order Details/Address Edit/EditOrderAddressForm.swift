@@ -96,8 +96,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
 
-    @State private var showingMapPicker = false
-
     var body: some View {
         Group {
             ScrollView {
@@ -329,6 +327,8 @@ struct SingleAddressForm: View {
             if #available(iOS 17, *), ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
                 Button(action: {
                     showMapPicker = true
+                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                                   withProperties: ["locale": Locale.current.identifier])
                 }) {
                     HStack {
                         Image(systemName: "map")

@@ -65,10 +65,6 @@ public class GenericResultsController<T: ResultsControllerMutableType, Output> {
     // swiftlint:disable:next weak_delegate
     private let internalDelegate = FetchedResultsControllerDelegateWrapper()
 
-    /// NotificationCenter ObserverBlock Token
-    ///
-    private var notificationCenterToken: Any?
-
     /// Closure to be executed before the results are changed.
     ///
     public var onWillChangeContent: (() -> Void)?

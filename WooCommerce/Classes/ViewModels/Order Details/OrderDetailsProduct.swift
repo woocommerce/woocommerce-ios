@@ -4,29 +4,24 @@ import Yosemite
 /// Represents a Product Entity with basic details to display in the product section of order details screen.
 ///
 struct OrderDetailsProduct: Equatable {
-    let siteID: Int64
     let productID: Int64
-    let name: String
-
     let productTypeKey: String
     let sku: String?
 
     let price: String
     let virtual: Bool
 
-    let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
+    let stockQuantity: Decimal?
 
     let imageURL: URL?
 
-    let addOns: [Yosemite.ProductAddOn] //TODO: migrate AddOns to MetaData
+    let addOns: [Yosemite.ProductAddOn]
 
     var productType: ProductType {
         return ProductType(rawValue: productTypeKey)
     }
 
-    init(siteID: Int64,
-         productID: Int64,
-         name: String,
+    init(productID: Int64,
          productTypeKey: String,
          sku: String?,
          price: String,
@@ -34,9 +29,7 @@ struct OrderDetailsProduct: Equatable {
          stockQuantity: Decimal?,
          imageURL: URL?,
          addOns: [Yosemite.ProductAddOn]) {
-        self.siteID = siteID
         self.productID = productID
-        self.name = name
         self.productTypeKey = productTypeKey
         self.sku = sku
         self.price = price
@@ -47,9 +40,7 @@ struct OrderDetailsProduct: Equatable {
     }
 
     init(storageProduct: StorageProduct) {
-        self.siteID = storageProduct.siteID
         self.productID = storageProduct.productID
-        self.name = storageProduct.name
         self.productTypeKey = storageProduct.productTypeKey
         self.sku = storageProduct.sku
         self.price = storageProduct.price

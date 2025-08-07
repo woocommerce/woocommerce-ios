@@ -8,15 +8,10 @@ struct ProductListItem: Equatable, GeneratedCopiable {
     let siteID: Int64
     let productID: Int64
     let name: String
-    let permalink: String
-
-    let fullDescription: String?
-    let shortDescription: String?
 
     let productTypeKey: String
     let statusKey: String        // draft, pending, private, published
     let sku: String?
-    let price: String
 
     let manageStock: Bool
     let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
@@ -50,13 +45,9 @@ struct ProductListItem: Equatable, GeneratedCopiable {
     init(siteID: Int64,
          productID: Int64,
          name: String,
-         permalink: String,
-         fullDescription: String?,
-         shortDescription: String?,
          productTypeKey: String,
          statusKey: String,
          sku: String?,
-         price: String,
          manageStock: Bool,
          stockQuantity: Decimal?,
          stockStatusKey: String,
@@ -67,13 +58,9 @@ struct ProductListItem: Equatable, GeneratedCopiable {
         self.siteID = siteID
         self.productID = productID
         self.name = name
-        self.permalink = permalink
-        self.fullDescription = fullDescription
-        self.shortDescription = shortDescription
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.sku = sku
-        self.price = price
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
@@ -87,13 +74,9 @@ struct ProductListItem: Equatable, GeneratedCopiable {
         self.siteID = storageProduct.siteID
         self.productID = storageProduct.productID
         self.name = storageProduct.name
-        self.permalink = storageProduct.permalink
-        self.fullDescription = storageProduct.fullDescription
-        self.shortDescription = storageProduct.briefDescription
         self.productTypeKey = storageProduct.productTypeKey
         self.statusKey = storageProduct.statusKey
         self.sku = storageProduct.sku
-        self.price = storageProduct.price
         self.manageStock = storageProduct.manageStock
         self.stockQuantity = {
             var quantity: Decimal?

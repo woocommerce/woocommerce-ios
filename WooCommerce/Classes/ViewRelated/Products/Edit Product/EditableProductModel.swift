@@ -164,14 +164,6 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
         product.bundledItems
     }
 
-    var bundleStockStatus: ProductStockStatus? {
-        product.bundleStockStatus
-    }
-
-    var bundleStockQuantity: Int64? {
-        product.bundleStockQuantity
-    }
-
     var password: String? {
         product.password
     }

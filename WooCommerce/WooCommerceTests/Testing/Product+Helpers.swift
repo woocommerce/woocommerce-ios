@@ -1,11 +1,10 @@
+import Foundation
 @testable import WooCommerce
 import Yosemite
 
 extension Product {
     func toOrderDetailsProduct() -> OrderDetailsProduct {
-        OrderDetailsProduct(siteID: siteID,
-                            productID: productID,
-                            name: name,
+        OrderDetailsProduct(productID: productID,
                             productTypeKey: productTypeKey,
                             sku: sku,
                             price: price,

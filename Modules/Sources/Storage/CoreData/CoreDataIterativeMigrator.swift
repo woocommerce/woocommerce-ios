@@ -199,9 +199,9 @@ private extension CoreDataIterativeMigrator {
         let shouldDestroy = versionNumber < oldestModelThreshold
 
         if shouldDestroy {
-            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(oldestModelThreshold). Nuke database.")
+            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(oldestModelThreshold).")
         } else {
-            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(oldestModelThreshold). Migrate incrementally.")
+            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(oldestModelThreshold).")
         }
         return shouldDestroy
     }

@@ -18,5 +18,5 @@ echo "--- :hammer_and_wrench: Building"
 bundle exec fastlane build_for_testing
 
 echo "--- :arrow_up: Upload Build Products"
-tar -cf build-products.tar DerivedData/Build/Products/
+tar -cf build-products.tar DerivedData/Build/Products/ DerivedData/Index.noindex/DataStore/
 buildkite-agent artifact upload build-products.tar

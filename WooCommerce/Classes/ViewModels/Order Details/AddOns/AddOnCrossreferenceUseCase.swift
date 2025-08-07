@@ -15,13 +15,13 @@ struct AddOnCrossreferenceUseCase {
 
     /// Product entity with known addOns that matches the order item.
     ///
-    private let product: Product
+    private let product: OrderDetailsProduct
 
     /// Global add-ons for the site.
     ///
     private let addOnGroups: [AddOnGroup]
 
-    init(orderItemAttributes: [OrderItemAttribute], product: Product, addOnGroups: [AddOnGroup]) {
+    init(orderItemAttributes: [OrderItemAttribute], product: OrderDetailsProduct, addOnGroups: [AddOnGroup]) {
         self.orderItemAttributes = orderItemAttributes
         self.product = product
         self.addOnGroups = addOnGroups

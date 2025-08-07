@@ -102,3 +102,6 @@ WooCommerce/WooCommerceScreenshots/Mocks/vendor/
 Modules/.build
 Modules/.swiftpm/configuration/registries.json
 Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# Periphery install
+vendor/Periphery/

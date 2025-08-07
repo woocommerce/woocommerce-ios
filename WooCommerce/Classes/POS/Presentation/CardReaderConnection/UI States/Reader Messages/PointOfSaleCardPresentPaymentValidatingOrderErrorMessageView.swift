@@ -45,8 +45,9 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView(
         viewModel: PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel(
             error: CardReaderServiceError.paymentCapture(

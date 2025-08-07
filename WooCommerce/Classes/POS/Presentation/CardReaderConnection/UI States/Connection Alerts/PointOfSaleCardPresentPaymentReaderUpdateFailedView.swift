@@ -37,8 +37,9 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentReaderUpdateFailedView(
         viewModel: .init(retryAction: {}, cancelUpdateAction: {}),
         animation: .init(namespace: namespace)

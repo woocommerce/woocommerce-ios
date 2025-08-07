@@ -2,7 +2,7 @@ import Foundation
 import Storage
 
 extension Storage.Product {
-    var imagesArray: [Storage.ProductImage] {
+    public var imagesArray: [Storage.ProductImage] {
         return images?.toArray() ?? []
     }
     var tagsArray: [Storage.ProductTag] {

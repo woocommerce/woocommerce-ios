@@ -216,16 +216,21 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    if rowViewModel.selectionEnabled {
+                        viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    if rowViewModel.selectionEnabled {
+                        viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    }
                 }
                 .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
+                    .renderedIf(rowViewModel.selectionEnabled)
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {

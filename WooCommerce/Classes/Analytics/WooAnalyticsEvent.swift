@@ -601,7 +601,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderAddNew, properties: [:])
         }
 
-        static func orderProductsLoaded(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
+        static func orderProductsLoaded(order: Order, products: [OrderDetailsProduct], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
             let productTypes = productTypes(order: order, products: products)
             let hasAddOns = hasAddOns(order: order, products: products, addOnGroups: addOnGroups)
             return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: [Keys.orderID: order.orderID,
@@ -609,7 +609,7 @@ extension WooAnalyticsEvent {
                                                                                   Keys.hasAddOns: hasAddOns])
         }
 
-        private static func hasAddOns(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> Bool {
+        private static func hasAddOns(order: Order, products: [OrderDetailsProduct], addOnGroups: [AddOnGroup]) -> Bool {
             for item in order.items {
                 guard let product = products.first(where: { $0.productID == item.productID }) else {
                     continue
@@ -626,6 +626,13 @@ extension WooAnalyticsEvent {
                 }
             }
             return false
+        }
+
+        private static func productTypes(order: Order, products: [OrderDetailsProduct]) -> String {
+            let productIDs = order.items.map { $0.productID }
+            return productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().sorted().joined(separator: ",")
         }
 
         private static func productTypes(order: Order, products: [Product]) -> String {

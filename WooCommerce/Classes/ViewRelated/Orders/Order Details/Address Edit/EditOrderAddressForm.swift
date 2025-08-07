@@ -96,8 +96,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
     @State private var showingCustomerSearch: Bool = false
 
-    @State private var showingMapPicker = false
-
     var body: some View {
         Group {
             ScrollView {

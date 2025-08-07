@@ -305,9 +305,16 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
 }
 
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
-    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), isSelected: false)
-    private static var selectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample().copy(statusKey: ProductStatus.pending.rawValue),
-                                                                       isSelected: true)
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(
+        product: Product.swiftUIPreviewSample().toListItem(),
+        isSelected: false
+    )
+    private static var selectedViewModel = ProductsTabProductViewModel(
+        product: Product.swiftUIPreviewSample()
+            .toListItem()
+            .copy(statusKey: ProductStatus.pending.rawValue),
+        isSelected: true
+    )
 
     private static func makeStack() -> some View {
         VStack {

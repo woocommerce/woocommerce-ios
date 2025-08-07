@@ -49,7 +49,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateCompletionPreviewView: View {
                 showsSheet = true
             }
         }
-        .sheet(isPresented: $showsSheet) {
+        .posSheet(isPresented: $showsSheet) {
             PointOfSaleCardPresentPaymentReaderUpdateCompletionView(
                 viewModel: .init(),
                 animation: .init(namespace: namespace)

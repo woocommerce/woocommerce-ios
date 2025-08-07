@@ -288,6 +288,8 @@ private extension JetpackSetupViewModel {
     /// Used only for sites with Jetpack plugin versions lower than 14.4.
     ///
     func fetchJetpackConnectionURL() {
+        currentSetupStep = .connection
+        trackSetupAfterLogin()
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {
@@ -342,10 +344,6 @@ private extension JetpackSetupViewModel {
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
     func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        if afterConnection == false {
-            currentSetupStep = .connection
-            trackSetupAfterLogin()
-        }
         guard retryCount <= Constants.maxRetryCount else {
             return didFailJetpackConnection()
         }
@@ -439,6 +437,8 @@ private extension JetpackSetupViewModel {
     }
 
     func provisionSiteConnection(blogID: Int64) {
+        currentSetupStep = .connection
+        trackSetupAfterLogin()
         stores.dispatch(JetpackConnectionAction.provisionConnection(completion: { [weak self] result in
             guard let self else { return }
             switch result {

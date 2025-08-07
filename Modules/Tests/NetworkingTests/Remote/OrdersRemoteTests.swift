@@ -60,7 +60,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
-    func testLoadAllOrdersProperlyReturnsParsedOrders() async throws {
+    func test_loadAllOrders_properly_returns_parsed_orders() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
@@ -75,7 +75,7 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
-    func testLoadAllOrdersProperlyRelaysNetworkingErrors() async throws {
+    func test_loadAllOrders_properly_relays_networking_errors() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 

@@ -71,7 +71,7 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
-        return ProductsTabProductViewModel(product: model, isSelected: isProductSelected(model))
+        return ProductsTabProductViewModel(product: model.toListItem(), isSelected: isProductSelected(model))
     }
 
     /// Synchronizes the Products matching a given Keyword

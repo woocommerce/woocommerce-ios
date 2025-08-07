@@ -5,8 +5,6 @@ import Foundation
 ///
 struct JetpackConnectionDataMapper: Mapper {
 
-    /// (Attempts) to extract the updated `currentUser` field from a given JSON Encoded response.
-    ///
     func map(response: Data) throws -> JetpackConnectionData {
         let decoder = JSONDecoder()
         return try decoder.decode(JetpackConnectionData.self, from: response)
@@ -23,15 +21,19 @@ public struct JetpackConnectionData: Decodable, GeneratedFakeable, GeneratedCopi
     /// Whether the site is already registered with Jetpack.
     /// This field is available only from Jetpack 14.4, so would be nil on older versions.
     /// Ref: pe5sF9-401-p2
+    /// periphery: ignore - used in UI module
     public let isRegistered: Bool?
 
     /// Username of the Jetpack connection owner.
     /// This field is non-nil for sites that already register a connection with Jetpack.
+    /// periphery: ignore - used in UI module
     public let connectionOwner: String?
 
     /// WP blog ID, available only if site has once connected to Jetpack.
+    /// periphery: ignore - used in UI module
     public let blogID: Int64?
 
+    /// periphery: ignore - used by codegen
     public init(currentUser: JetpackUser,
                 isRegistered: Bool?,
                 connectionOwner: String?,

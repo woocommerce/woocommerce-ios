@@ -7,12 +7,11 @@ final class ShippingLabelPackageDetailsResultsControllers {
     private let siteID: Int64
     private let orderItems: [OrderItem]
     private let storageManager: StorageManagerType
-    private var onProductReload: (([Product]) -> Void)?
     private var onProductVariationsReload: (([ProductVariation]) -> Void)?
 
     /// Get the products found in Core Data and that match the predicate.
     ///
-    var products: [Product] {
+    var products: [ShippingLabelProduct] {
         try? productResultsController.performFetch()
         return productResultsController.fetchedObjects
     }
@@ -33,11 +32,16 @@ final class ShippingLabelPackageDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
+    private lazy var productResultsController: GenericResultsController<StorageProduct, ShippingLabelProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return GenericResultsController<StorageProduct, ShippingLabelProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor],
+            transformer: { ShippingLabelProduct(storageProduct: $0) }
+        )
     }()
 
     /// ProductVariation ResultsController.
@@ -60,7 +64,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
     init(siteID: Int64,
          orderItems: [OrderItem],
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         onProductReload: @escaping ([Product]) -> Void,
+         onProductReload: @escaping ([ShippingLabelProduct]) -> Void,
          onProductVariationsReload: @escaping ([ProductVariation]) -> Void) {
         self.siteID = siteID
         self.orderItems = orderItems
@@ -69,7 +73,7 @@ final class ShippingLabelPackageDetailsResultsControllers {
         configureProductVariationResultsController(onReload: onProductVariationsReload)
     }
 
-    private func configureProductResultsController(onReload: @escaping ([Product]) -> ()) {
+    private func configureProductResultsController(onReload: @escaping ([ShippingLabelProduct]) -> ()) {
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self = self else { return }
             onReload(self.productResultsController.fetchedObjects)

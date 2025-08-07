@@ -8,6 +8,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
     // Keep strong references to remotes to keep requests alive
     private var jetpackConnectionRemote: JetpackConnectionRemote?
     private var accountRemote: AccountRemote?
+
+    /// periphery: ignore - kept with strong reference to keep network requests alive.
     private var siteRemote: SiteRemote?
 
     public override init(dispatcher: Dispatcher) {
@@ -123,6 +125,8 @@ private extension JetpackConnectionStore {
                             provisionResponse: JetpackConnectionProvisionResponse,
                             network: Network,
                             completion: @escaping (Result<Void, Error>) -> Void) {
+        /// Intentionally leaving `dotcomClientID` and `dotcomClientSecret` empty
+        /// as these are not needed for the `finalizeJetpackConnection` method we're using here.
         let remote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
         Task { @MainActor in
             do {

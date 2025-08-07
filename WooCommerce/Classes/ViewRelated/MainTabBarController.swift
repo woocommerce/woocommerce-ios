@@ -190,8 +190,6 @@ final class MainTabBarController: UITabBarController {
 
         delegate = self
 
-        fixTabBarTraitCollectionOnIpadForiOS18()
-
         // POS tab is hidden by default.
         updateTabViewControllers(isPOSTabVisible: false)
         observeSiteIDForViewControllers()
@@ -215,6 +213,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidAppear(animated)
 
         viewModel.onViewDidAppear()
+        fixTabBarTraitCollectionOnIpadForiOS18()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

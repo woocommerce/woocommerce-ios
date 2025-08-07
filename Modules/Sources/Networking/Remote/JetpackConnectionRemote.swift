@@ -59,6 +59,7 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Establishes a site-level connection between the site and WordPress.com using Jetpack.
     /// Returns WPCom `blogID` of the connected site.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
     ///
     public func registerSite() async throws -> Int64 {
         let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionRegister)
@@ -74,6 +75,7 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Provisions the connection between the site and WordPress.com using Jetpack.
     /// Returns a response containing scope and secret to be sent for finalizing the connection.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
     ///
     public func provisionConnection() async throws -> JetpackConnectionProvisionResponse {
         let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionProvision)
@@ -82,6 +84,7 @@ public final class JetpackConnectionRemote: Remote {
     }
 }
 
+/// periphery: ignore - used in test module and on the UI layer
 public enum JetpackConnectionError: Error, Equatable {
     case malformedURL
     case accountConnectionURLNotFound

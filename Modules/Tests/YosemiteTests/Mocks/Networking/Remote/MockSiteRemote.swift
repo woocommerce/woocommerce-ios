@@ -22,7 +22,6 @@ final class MockSiteRemote {
     /// The result to return in `updateSiteTitle`
     private var updateSiteTitleResult: Result<Void, Error>?
 
-
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
         createSiteResult = result

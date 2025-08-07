@@ -23,6 +23,7 @@ public struct JetpackUser: Decodable, GeneratedFakeable, GeneratedCopiable {
     public let blogID: Int64?
 
     /// Member-wise initializer
+    /// periphery: ignore - used by codegen
     public init(isConnected: Bool,
                 isPrimary: Bool,
                 username: String,

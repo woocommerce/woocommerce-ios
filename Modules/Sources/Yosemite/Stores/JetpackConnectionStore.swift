@@ -123,6 +123,8 @@ private extension JetpackConnectionStore {
                             provisionResponse: JetpackConnectionProvisionResponse,
                             network: Network,
                             completion: @escaping (Result<Void, Error>) -> Void) {
+        /// Intentionally leaving `dotcomClientID` and `dotcomClientSecret` empty
+        /// as these are not needed for the `finalizeJetpackConnection` method we're using here.
         let remote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
         Task { @MainActor in
             do {

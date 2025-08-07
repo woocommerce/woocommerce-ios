@@ -7,7 +7,6 @@ final class ShippingLabelPackageDetailsResultsControllers {
     private let siteID: Int64
     private let orderItems: [OrderItem]
     private let storageManager: StorageManagerType
-    private var onProductReload: (([ShippingLabelProduct]) -> Void)?
     private var onProductVariationsReload: (([ProductVariation]) -> Void)?
 
     /// Get the products found in Core Data and that match the predicate.

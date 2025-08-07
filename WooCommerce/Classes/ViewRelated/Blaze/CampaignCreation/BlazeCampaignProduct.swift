@@ -4,14 +4,11 @@ import Yosemite
 /// Represents a Product Entity with basic details to display in the Blaze flow.
 ///
 struct BlazeCampaignProduct: Equatable {
-    let siteID: Int64
     let productID: Int64
     let name: String
     let permalink: String
     let fullDescription: String?
     let shortDescription: String?
-
-    let price: String
 
     let firstImage: ProductImage?
 
@@ -20,10 +17,8 @@ struct BlazeCampaignProduct: Equatable {
     }
 
     init(storageProduct: StorageProduct) {
-        self.siteID = storageProduct.siteID
         self.productID = storageProduct.productID
         self.name = storageProduct.name
-        self.price = storageProduct.price
         self.permalink = storageProduct.permalink
         self.fullDescription = storageProduct.fullDescription
         self.shortDescription = storageProduct.briefDescription

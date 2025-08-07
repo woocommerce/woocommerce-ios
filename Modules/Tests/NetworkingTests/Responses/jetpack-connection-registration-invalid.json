@@ -1,0 +1,3 @@
+{
+    "authorizeUrl": "https://jetpack.wordpress.com/jetpack.authorize/1/?response_type=code&client_id=12345&redirect_uri=http://test.com"
+}

@@ -37,6 +37,17 @@ public protocol SiteRemoteProtocol {
     ///   - title: The new title to be set for the site
     ///
     func updateSiteTitle(siteID: Int64, title: String) async throws
+
+    /// Finalizes the Jetpack connection by sending a request to WPCom.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site
+    ///   - siteURL: URL of the site
+    ///   - provisionResponse: Response from the provision connection call
+    /// periphery: ignore - used in test module
+    ///
+    func finalizeJetpackConnection(siteID: Int64,
+                                   siteURL: String,
+                                   provisionResponse: JetpackConnectionProvisionResponse) async throws
 }
 
 /// Site: Remote Endpoints
@@ -160,6 +171,41 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                                         parameters: parameters,
                                         availableAsRESTRequest: true)
         try await enqueue(request)
+    }
+
+    /// Finalizes the Jetpack connection by sending a request to WPCom.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
+    ///
+    public func finalizeJetpackConnection(siteID: Int64,
+                                          siteURL: String,
+                                          provisionResponse: JetpackConnectionProvisionResponse) async throws {
+        let parameters: [String: Any] = [
+            ParameterKey.secret: provisionResponse.secret,
+            ParameterKey.scope: provisionResponse.scope,
+            ParameterKey.externalUserID: provisionResponse.userId,
+            ParameterKey.redirectURI: siteURL
+        ]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: String(format: Path.jetpackConnection, siteID),
+                                    parameters: parameters)
+        do {
+            try await enqueue(request)
+        } catch let error as WordPressApiError {
+            switch error {
+            case let .unknown(code, message):
+                if code == Constants.success {
+                    return
+                } else if code == Constants.alreadyConnected {
+                    throw JetpackConnectionError.alreadyConnected
+                }
+                throw JetpackConnectionError.connectionRequestFailed(message: message)
+            default:
+                throw error
+            }
+        } catch {
+            throw error
+        }
     }
 }
 
@@ -329,8 +375,22 @@ private extension SiteRemote {
         static func siteSettings(siteID: Int64) -> String {
             "sites/\(siteID)/settings"
         }
+
+        static let jetpackConnection = "sites/%d/jetpack-remote-connect-user"
     }
     enum Fields {
         static let title = "title"
+    }
+
+    enum Constants {
+        static let success = "success"
+        static let alreadyConnected = "already_connected"
+    }
+
+    enum ParameterKey {
+        static let secret = "secret"
+        static let externalUserID = "external_user_id"
+        static let redirectURI = "redirect_uri"
+        static let scope = "scope"
     }
 }

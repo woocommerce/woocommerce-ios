@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+23.1
+-----
+
+
 23.0
 -----
 - [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
@@ -12,6 +16,7 @@
 - [*] Order Details > Edit Shipping/Billing Address: Added map-based address lookup support for iOS 17+. [https://github.com/woocommerce/woocommerce-ios/pull/15964]
 - [*] Order Creation: Prevent subscription products to be added to an order [https://github.com/woocommerce/woocommerce-ios/pull/15960]
 - [internal] Replace COTS_DEVICE reader model name with TAP_TO_PAY_DEVICE. [https://github.com/woocommerce/woocommerce-ios/pull/15961]
+[**] POS: Added a guided setup flow for barcode scanning, and improved the scanning experience with better error handling and support for starting a new order on scan. [https://github.com/woocommerce/woocommerce-ios/pull/15979]
 
 22.9
 -----

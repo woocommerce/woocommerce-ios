@@ -196,6 +196,8 @@ final class MainTabBarController: UITabBarController {
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
+
+        fixTabBarTraitCollectionOnIpadForiOS18()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -213,7 +215,6 @@ final class MainTabBarController: UITabBarController {
         super.viewDidAppear(animated)
 
         viewModel.onViewDidAppear()
-        fixTabBarTraitCollectionOnIpadForiOS18()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -293,7 +294,7 @@ final class MainTabBarController: UITabBarController {
     private func fixTabBarTraitCollectionOnIpadForiOS18() {
         if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad {
             traitOverrides.horizontalSizeClass = .compact
-            if let rootHorizontalSizeClass = view.window?.traitCollection.horizontalSizeClass {
+            if let rootHorizontalSizeClass = AppDelegate.shared.window?.traitCollection.horizontalSizeClass {
                 tabBar.traitOverrides.horizontalSizeClass = rootHorizontalSizeClass
                 if let viewControllers {
                     for vc in viewControllers {

@@ -17,97 +17,89 @@ struct TaxEducationalDialogView: View {
             Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
 
             VStack {
-                GeometryReader { geometry in
-                    VStack(spacing: 0) {
-                        VStack {
-                            ScrollView {
-                                VStack(alignment: .center, spacing: Layout.verticalSpacing) {
-                                    Text(Localization.title)
-                                        .headlineStyle()
+                ScrollView {
+                    VStack(alignment: .center, spacing: Layout.verticalSpacing) {
+                        Text(Localization.title)
+                            .headlineStyle()
 
-                                    Text(Localization.bodyFirstParagraph)
+                        Text(Localization.bodyFirstParagraph)
+                            .bodyStyle()
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(Localization.bodySecondParagraph)
+                            .bodyStyle()
+
+                        if viewModel.taxLines.isNotEmpty {
+                            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                                Divider()
+                                    .frame(height: Layout.dividerHeight)
+                                    .foregroundColor(Color(.opaqueSeparator))
+
+                                if let explanatoryText = viewModel.taxBasedOnSettingExplanatoryText {
+                                    Text(explanatoryText)
                                         .bodyStyle()
                                         .fixedSize(horizontal: false, vertical: true)
-
-                                    Text(Localization.bodySecondParagraph)
-                                        .bodyStyle()
-
-                                    VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                                        Divider()
-                                            .frame(height: Layout.dividerHeight)
-                                            .foregroundColor(Color(.opaqueSeparator))
-
-                                        if let explanatoryText = viewModel.taxBasedOnSettingExplanatoryText {
-                                            Text(explanatoryText)
-                                                .bodyStyle()
-                                                .fixedSize(horizontal: false, vertical: true)
-                                        }
-
-                                        ForEach(viewModel.taxLines, id: \.title) { taxLine in
-                                            AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.taxLinesInnerSpacing) {
-                                                Text(taxLine.title)
-                                                    .font(.body)
-                                                    .fontWeight(.semibold)
-                                                    .multilineTextAlignment(.leading)
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                                Text(taxLine.value)
-                                                    .font(.body)
-                                                    .fontWeight(.semibold)
-                                                    .multilineTextAlignment(.trailing)
-                                                    .frame(width: nil, alignment: .trailing)
-                                            }
-                                        }
-
-                                        Divider()
-                                            .frame(height: Layout.dividerHeight)
-                                            .foregroundColor(Color(.opaqueSeparator))
-                                    }
-                                    .renderedIf(viewModel.taxLines.isNotEmpty)
-
-                                    Button {
-                                        viewModel.onGoToWpAdminButtonTapped()
-                                        showingWPAdminWebview = true
-                                    } label: {
-                                        Label {
-                                            Text(Localization.editTaxRatesInAdminButtonTitle)
-                                                .font(.body)
-                                                .fontWeight(.bold)
-                                        } icon: {
-                                            Image(systemName: "arrow.up.forward.square")
-                                                .resizable()
-                                                .frame(width: Layout.externalLinkImageSize * scale,
-                                                       height: Layout.externalLinkImageSize * scale)
-                                        }
-                                    }
-                                    .buttonStyle(PrimaryButtonStyle())
-                                    .safariSheet(
-                                        isPresented: $showingWPAdminWebview,
-                                        url: viewModel.wpAdminTaxSettingsURL,
-                                        onDismiss: {
-                                            onDismissWpAdminWebView()
-                                            showingWPAdminWebview = false
-                                        })
-
-                                    Button {
-                                        dismiss()
-                                    } label: {
-                                        Text(Localization.doneButtonTitle)
-                                    }
-                                    .buttonStyle(SecondaryButtonStyle())
                                 }
-                                .padding(Layout.outterPadding)
+
+                                ForEach(viewModel.taxLines, id: \.title) { taxLine in
+                                    AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.taxLinesInnerSpacing) {
+                                        Text(taxLine.title)
+                                            .font(.body)
+                                            .fontWeight(.semibold)
+                                            .multilineTextAlignment(.leading)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                                        Text(taxLine.value)
+                                            .font(.body)
+                                            .fontWeight(.semibold)
+                                            .multilineTextAlignment(.trailing)
+                                            .frame(width: nil, alignment: .trailing)
+                                    }
+                                }
+
+                                Divider()
+                                    .frame(height: Layout.dividerHeight)
+                                    .foregroundColor(Color(.opaqueSeparator))
                             }
                         }
-                        .background(Color(.systemBackground))
-                        .cornerRadius(Layout.cornerRadius)
-                        .padding(Layout.outterPadding)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .frame(minHeight: geometry.size.height)
-                        .frame(width: geometry.size.width)
+
+                        Button {
+                            viewModel.onGoToWpAdminButtonTapped()
+                            showingWPAdminWebview = true
+                        } label: {
+                            Label {
+                                Text(Localization.editTaxRatesInAdminButtonTitle)
+                                    .font(.body)
+                                    .fontWeight(.bold)
+                            } icon: {
+                                Image(systemName: "arrow.up.forward.square")
+                                    .resizable()
+                                    .frame(width: Layout.externalLinkImageSize * scale,
+                                           height: Layout.externalLinkImageSize * scale)
+                            }
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .safariSheet(
+                            isPresented: $showingWPAdminWebview,
+                            url: viewModel.wpAdminTaxSettingsURL,
+                            onDismiss: {
+                                onDismissWpAdminWebView()
+                                showingWPAdminWebview = false
+                            })
+
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text(Localization.doneButtonTitle)
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
                     }
+                    .padding(Layout.outterPadding)
                 }
             }
+            .background(Color(.systemBackground))
+            .cornerRadius(Layout.cornerRadius)
+            .padding(Layout.outterPadding)
         }
     }
 }

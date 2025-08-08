@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+23.1
+-----
+- [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
+
 23.0
 -----
 - [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]

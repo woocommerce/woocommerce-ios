@@ -3,6 +3,7 @@
 
 23.1
 -----
+- [*] Jetpack setup: Native experience for the connection step [https://github.com/woocommerce/woocommerce-ios/pull/15983]
 
 
 23.0

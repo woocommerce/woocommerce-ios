@@ -1,10 +1,1 @@
-- [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
-- [*] Fix initialization of authenticator to avoid crashes during login [https://github.com/woocommerce/woocommerce-ios/pull/15953]
-- [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
-- [*] Order Details: Attempt to improve performance by using a simplified version of product objects. [https://github.com/woocommerce/woocommerce-ios/pull/15959]
-- [*] Use simple product objects in Shipping Labels and Blaze flows. [https://github.com/woocommerce/woocommerce-ios/pull/15965]
-- [*] Product List: Load list with simplified product objects to improve performance. [https://teamkiwip2.wordpress.com/2025/08/01/hack-week-improving-performance-when-loading-cached-products/]
-- [*] Order Details > Edit Shipping/Billing Address: Added map-based address lookup support for iOS 17+. [https://github.com/woocommerce/woocommerce-ios/pull/15964]
-- [*] Order Creation: Prevent subscription products to be added to an order [https://github.com/woocommerce/woocommerce-ios/pull/15960]
-- [internal] Replace COTS_DEVICE reader model name with TAP_TO_PAY_DEVICE. [https://github.com/woocommerce/woocommerce-ios/pull/15961]
-[**] POS: Added a guided setup flow for barcode scanning, and improved the scanning experience with better error handling and support for starting a new order on scan. [https://github.com/woocommerce/woocommerce-ios/pull/15979]
+Faster performance and smoother experience! This update brings improved product loading, better tax calculations, and enhanced address lookup with map support. We've added guided barcode scanning for POS users and strengthened shipping requirements for EU destinations. Plus, we've fixed stability issues for a more reliable experience.

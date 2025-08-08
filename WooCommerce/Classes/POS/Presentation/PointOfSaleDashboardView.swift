@@ -272,7 +272,8 @@ private extension PointOfSaleDashboardView {
 struct PointOfSaleSettingsView: View {
     enum SettingsSection: String, CaseIterable, Identifiable {
         case store = "Store"
-        case productCatalog = "Product Catalog"
+        case productCatalog = "Product Catalog (TBD)"
+        case payments = "Payments (TBD)"
         case hardware = "Hardware"
         case help = "Help"
 
@@ -440,6 +441,40 @@ struct PointOfSaleSettingsView: View {
             } header: {
                 Text("Store Information")
             }
+            Section {
+                HStack {
+                    Text("Store name")
+                    Spacer()
+                    Text("My WooCommerce Store")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Physical address")
+                    Spacer()
+                    Text("123 Main Street, City, State 12345")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Phone number")
+                    Spacer()
+                    Text("+1 (555) 123-4567")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Email")
+                    Spacer()
+                    Text("store@example.com")
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text("Refund & Returns Policy")
+                    Spacer()
+                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit...")
+                        .foregroundColor(.secondary)
+                }
+            } header: {
+                Text("Receipt information (WC 10+)")
+            }
         }
     }
 
@@ -464,6 +499,8 @@ struct PointOfSaleSettingsView: View {
                             switch section {
                             case .store:
                                 storeDetailsView
+                            case .payments:
+                                EmptyView()
                             case .productCatalog:
                                 productCatalogView
                             case .hardware:

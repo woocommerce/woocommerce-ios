@@ -1325,12 +1325,15 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // When
         viewModel.startSetup()
+        waitUntil {
+            viewModel.setupFailed
+        }
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.lastIndex(where: { $0 == "jetpack_setup_flow" }))
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "connection")
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "99")
-        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "web")
+        XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
     }
 
     func test_it_tracks_correct_event_when_retrying_setup() throws {

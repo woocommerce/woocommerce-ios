@@ -355,24 +355,30 @@ struct PointOfSaleSettingsView: View {
                 Text("Card Readers")
             }
             Section {
-                HStack {
-                    Text("Model")
-                    Spacer()
-                    Text("Eyoyo")
-                        .foregroundColor(.secondary)
+                if #available(iOS 17.0, *) {
+                    PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
+                } else {
+                    // Fallback on earlier versions
+                    EmptyView()
                 }
-                HStack {
-                    Text("Battery")
-                    Spacer()
-                    Text("68%")
-                        .foregroundColor(.secondary)
-                }
-                HStack {
-                    Text("Software Update")
-                    Spacer()
-                    Text("2024-07-01")
-                        .foregroundColor(.secondary)
-                }
+//                HStack {
+//                    Text("Model")
+//                    Spacer()
+//                    Text("Eyoyo")
+//                        .foregroundColor(.secondary)
+//                }
+//                HStack {
+//                    Text("Battery")
+//                    Spacer()
+//                    Text("68%")
+//                        .foregroundColor(.secondary)
+//                }
+//                HStack {
+//                    Text("Software Update")
+//                    Spacer()
+//                    Text("2024-07-01")
+//                        .foregroundColor(.secondary)
+//                }
             } header: {
                 Text("Barcode Scanner")
             }

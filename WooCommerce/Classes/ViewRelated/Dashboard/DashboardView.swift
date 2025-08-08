@@ -116,9 +116,17 @@ struct DashboardView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if let url = viewModel.siteURLToShare {
-                    ShareLink(item: url) {
+                    // TODO: remove temporary testing
+                    Button(action: {
+                        Task {
+                            await viewModel.syncPOSCatalog()
+                        }
+                    }) {
                         Image(systemName: "square.and.arrow.up")
                     }
+//                    ShareLink(item: url) {
+//                        Image(systemName: "square.and.arrow.up")
+//                    }
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {

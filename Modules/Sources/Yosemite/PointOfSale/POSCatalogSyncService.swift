@@ -50,7 +50,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             // Configure decoder for optimal performance with large datasets
             decoder.dateDecodingStrategy = .iso8601
 
-            let catalogItems = try decoder.decode([CatalogItem].self, from: data)
+            let catalogItems = try decoder.decode(CatalogItemResponse.self, from: data).products
             return catalogItems
         } catch {
             throw POSCatalogSyncError.invalidData
@@ -283,6 +283,10 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
 }
 
 // MARK: - Supporting Types
+
+private struct CatalogItemResponse: Codable {
+    let products: [CatalogItem]
+}
 
 /// Represents a catalog item from the JSON response
 ///

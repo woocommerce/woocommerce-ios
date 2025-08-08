@@ -6,6 +6,8 @@ import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
+import class Networking.AlamofireNetwork
+import CocoaLumberjack
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 @MainActor
@@ -262,6 +264,23 @@ final class DashboardViewModel: ObservableObject {
         analytics.track(event: .DynamicDashboard.editorSaveTapped(types: activeCardTypes))
         saveDashboardCards(cards: cards)
         dashboardCards = cards
+    }
+
+    @MainActor
+    func syncPOSCatalog() async {
+        do {
+            let network = AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
+            let dispatcher = Dispatcher()
+            let syncService = POSCatalogSyncService(
+                siteID: siteID,
+                network: network,
+                storageManager: storageManager,
+                dispatcher: dispatcher
+            )
+            try await syncService.syncCatalog()
+        } catch {
+            DDLogError("⛔️ POS Catalog sync failed: \(error)")
+        }
     }
 
     func onPullToRefresh() {

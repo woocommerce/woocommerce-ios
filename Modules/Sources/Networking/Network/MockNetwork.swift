@@ -114,6 +114,20 @@ class MockNetwork: Network {
                                  completion: @escaping (Data?, Error?) -> Void) {
         responseData(for: request, completion: completion)
     }
+
+    func backgroundDownload(for request: URLRequestConvertible) async throws -> Data {
+        requestsForResponseData.append(request)
+
+        if let error = error(for: request) {
+            throw error
+        }
+
+        guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
+            throw NetworkError.notFound()
+        }
+
+        return data
+    }
 }
 
 

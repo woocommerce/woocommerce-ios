@@ -5,6 +5,7 @@ import Foundation
 public protocol POSCatalogSyncServiceProtocol {
     /// Syncs the entire POS catalog from a remote source
     /// Downloads products and product variations, then saves them to local storage
+    /// Uses background download for large files following Apple's best practices
     ///
     func syncCatalog() async throws
 }

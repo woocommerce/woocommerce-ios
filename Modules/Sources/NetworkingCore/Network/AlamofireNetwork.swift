@@ -134,6 +134,14 @@ public class AlamofireNetwork: Network {
                 completion(response.value, response.error)
             }
     }
+
+    public func backgroundDownload(for request: URLRequestConvertible) async throws -> Data {
+        // Since Alamofire doesn't support background sessions, use native URLSession for large downloads
+        let convertedRequest = requestConverter.convert(request)
+        let urlRequest = try convertedRequest.asURLRequest()
+
+        return try await performBackgroundDownload(request: urlRequest)
+    }
 }
 
 private extension AlamofireNetwork {
@@ -141,6 +149,55 @@ private extension AlamofireNetwork {
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
+    }
+
+    /// Performs background download using native URLSession with proper background configuration
+    /// Following Apple's best practices for large file downloads
+    func performBackgroundDownload(request: URLRequest) async throws -> Data {
+        // TODO: look into DI'ing a session ID to preserve the session across app restarts
+        let sessionId = "com.woocommerce.background.download.\(UUID().uuidString)"
+        let config = URLSessionConfiguration.background(withIdentifier: sessionId)
+        config.timeoutIntervalForRequest = 60
+        config.timeoutIntervalForResource = 300
+        config.allowsCellularAccess = true
+        config.isDiscretionary = false
+
+        return try await withCheckedThrowingContinuation { continuation in
+            let session = URLSession(
+                configuration: config,
+                delegate: BackgroundDownloadDelegate(continuation: continuation),
+                delegateQueue: nil
+            )
+
+            let downloadTask = session.downloadTask(with: request)
+            downloadTask.resume()
+        }
+    }
+}
+
+/// Private delegate for handling background downloads
+private class BackgroundDownloadDelegate: NSObject, URLSessionDownloadDelegate {
+    private let continuation: CheckedContinuation<Data, Error>
+
+    init(continuation: CheckedContinuation<Data, Error>) {
+        self.continuation = continuation
+    }
+
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        do {
+            let data = try Data(contentsOf: location)
+            continuation.resume(returning: data)
+        } catch {
+            continuation.resume(throwing: error)
+        }
+        session.finishTasksAndInvalidate()
+    }
+
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let error = error {
+            continuation.resume(throwing: error)
+            session.finishTasksAndInvalidate()
+        }
     }
 }
 

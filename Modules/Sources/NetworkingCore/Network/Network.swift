@@ -59,4 +59,11 @@ public protocol Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void)
+
+    /// Downloads a file using URLSessionDownloadTask with background session support.
+    /// Follows Apple's best practices for large file downloads.
+    ///
+    /// - Parameter request: Request that should be performed.
+    /// - Returns: Downloaded data
+    func backgroundDownload(for request: URLRequestConvertible) async throws -> Data
 }

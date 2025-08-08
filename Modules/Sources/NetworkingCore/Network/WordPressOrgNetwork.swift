@@ -157,6 +157,13 @@ public final class WordPressOrgNetwork: Network {
                 }
             }
     }
+
+    public func backgroundDownload(for request: URLRequestConvertible) async throws -> Data {
+        // For WordPress.org network, fallback to regular data request
+        // Background downloads are less critical for this network type
+        let (data, _) = try await responseDataAndHeaders(for: request)
+        return data
+    }
 }
 
 private extension WordPressOrgNetwork {

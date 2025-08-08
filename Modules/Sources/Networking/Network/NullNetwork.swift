@@ -30,4 +30,8 @@ public final class NullNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (NetworkingCore.MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) { }
+
+    public func backgroundDownload(for request: URLRequestConvertible) async throws -> Data {
+        throw NetworkError.notFound()
+    }
 }

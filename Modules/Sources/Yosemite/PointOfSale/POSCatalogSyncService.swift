@@ -31,12 +31,11 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     // MARK: - POSCatalogSyncServiceProtocol
 
     public func syncCatalog() async throws {
-        // Use URLSession with proper timeout and memory management for large files
+        // Use background download for large catalog files following Apple's best practices
         var request = URLRequest(url: catalogURL)
-        request.timeoutInterval = 300 // 5 minutes for large files
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
-        let (data, _) = try await network.responseDataAndHeaders(for: request)
+        let data = try await network.backgroundDownload(for: request)
 
         // Parse catalog data efficiently for large JSON files
         let catalogItems = try parseCatalogDataEfficiently(data)
@@ -223,9 +222,9 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         // Break up complex expressions
         let createdDate = catalogItem.dateCreated.flatMap { dateFormatter.date(from: $0) } ?? Date()
         let modifiedDate = catalogItem.dateModified.flatMap { dateFormatter.date(from: $0) }
-        let status: ProductStatus = ProductStatus(rawValue: catalogItem.status ?? "publish") ?? .published
+        let status = ProductStatus(rawValue: catalogItem.status ?? "publish") ?? .published
         let stockQuantity = catalogItem.stockQuantity.map { Decimal($0) }
-        let stockStatus: ProductStockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? "instock") ?? .inStock
+        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? "instock") ?? .inStock
         let dimensions = ProductDimensions(length: "", width: "", height: "")
 
         return ProductVariation(

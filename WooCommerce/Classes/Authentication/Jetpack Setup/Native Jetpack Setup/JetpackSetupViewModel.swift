@@ -69,7 +69,7 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     var hasEncounteredPermissionError: Bool {
-        setupError?.code == 403
+        setupError?.errorCode == 403
     }
 
     /// Attributed string for the description text
@@ -217,7 +217,7 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if error.code == 404 {
+                if error.errorCode == 404 {
                     if self.connectionOnly {
                         /// If site has Jetpack connection package connected,
                         /// Jetpack plugin needs to be installed even though we detected a connection before
@@ -308,7 +308,7 @@ private extension JetpackSetupViewModel {
     }
 
     func updateErrorMessage() {
-        guard let setupErrorCode = setupError?.code else {
+        guard let setupErrorCode = setupError?.errorCode else {
             setupErrorDetail = .init(setupErrorMessage: Localization.genericErrorMessage,
                                      setupErrorSuggestion: Localization.communicationErrorSuggestion,
                                      errorCode: nil)
@@ -402,7 +402,7 @@ private extension JetpackSetupViewModel {
                     /// Proceed with web flow.
                     startConnectionWithWebView()
                 case .failure(let error):
-                    if error.code == 404 {
+                    if error.errorCode == 404 {
                         /// For Jetpack-connected sites, if `isRegistered` is not returned,
                         /// check for `connectionOwner` instead.
                         handleSiteRegisterResult(isRegistered: data.connectionOwner != nil, blogID: data.blogID)
@@ -590,7 +590,7 @@ extension JetpackSetupViewModel {
 }
 
 fileprivate extension Error {
-    var code: Int? {
+    var errorCode: Int? {
         if let error = self as? NetworkError, let code = error.responseCode {
             return code
         } else if let error = self as? AFError, let code = error.responseCode {

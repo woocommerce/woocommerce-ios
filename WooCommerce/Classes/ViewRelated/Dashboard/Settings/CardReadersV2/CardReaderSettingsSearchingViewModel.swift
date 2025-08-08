@@ -109,7 +109,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     private func updateLearnMoreUrl(stores: StoresManager) {
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadActivePaymentGatewayExtension() { [weak self] result in
-                result.manageCardReaderLearnMoreURL
+                self?.learnMoreURL = result.manageCardReaderLearnMoreURL
             }
         stores.dispatch(loadLearnMoreUrlAction)
     }

@@ -175,11 +175,13 @@ final class JetpackSetupViewModel: ObservableObject {
 
     /// Tracks events if the current flow is Jetpack setup after login with site credentials
     func trackSetup(tap: WooAnalyticsEvent.JetpackSetup.SetupFlow.TapTarget? = nil,
+                    connectionType: WooAnalyticsEvent.JetpackSetup.ConnectionType = .native,
                     failure: Error? = nil) {
         /// Helper for analytics since `currentSetupStep` is optional.
         let currentStepForAnalytics: JetpackInstallStep = currentSetupStep ?? (connectionOnly ? .connection : .installation)
         analytics.track(event: .JetpackSetup.setupFlow(step: currentStepForAnalytics,
                                                        tap: tap,
+                                                       connectionType: connectionType,
                                                        failure: failure))
     }
 }
@@ -260,7 +262,7 @@ private extension JetpackSetupViewModel {
     ///
     func startConnectionWithWebView() {
         currentSetupStep = .connection
-        trackSetup()
+        trackSetup(connectionType: .web)
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {
@@ -275,7 +277,7 @@ private extension JetpackSetupViewModel {
                 }
                 self.shouldPresentWebView = true
             case .failure(let error):
-                self.trackSetup(failure: error)
+                self.trackSetup(connectionType: .web, failure: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -455,9 +457,9 @@ private extension JetpackSetupViewModel {
     }
 
     func didFailJetpackConnection(with error: Error) {
-        setupFailed = true
         setupError = error
         trackSetup(failure: error)
+        setupFailed = true
     }
 }
 

@@ -9,6 +9,7 @@ extension WooAnalyticsEvent {
             case tap
             case step
             case isSignup = "is_signup"
+            case connectionType = "connection_type"
         }
 
         enum LoginFlow {
@@ -35,6 +36,11 @@ extension WooAnalyticsEvent {
             }
         }
 
+        enum ConnectionType: String {
+            case native
+            case web
+        }
+
         static func connectionCheckCompleted(isAlreadyConnected: Bool, requiresConnectionOnly: Bool) -> WooAnalyticsEvent {
             .init(statName: .jetpackSetupConnectionCheckCompleted, properties: [
                 Key.isAlreadyConnected.rawValue: isAlreadyConnected,
@@ -56,8 +62,14 @@ extension WooAnalyticsEvent {
             return .init(statName: .jetpackSetupLoginFlow, properties: properties, error: failure)
         }
 
-        static func setupFlow(step: JetpackInstallStep, tap: SetupFlow.TapTarget? = nil, failure: Error? = nil) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Key.step.rawValue: step.analyticsValue]
+        static func setupFlow(step: JetpackInstallStep,
+                              tap: SetupFlow.TapTarget? = nil,
+                              connectionType: ConnectionType,
+                              failure: Error? = nil) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.step.rawValue: step.analyticsValue,
+                Key.connectionType.rawValue: connectionType.rawValue
+            ]
             if let tap {
                 properties[Key.tap.rawValue] = tap.rawValue
             }

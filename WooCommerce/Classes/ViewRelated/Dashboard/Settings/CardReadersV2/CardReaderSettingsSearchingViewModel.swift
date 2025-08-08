@@ -43,7 +43,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         self.knownReaderProvider = knownReaderProvider
         self.configuration = configuration
         self.cardReaderConnectionAnalyticsTracker = cardReaderConnectionAnalyticsTracker
-        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
+        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.manageCardReaderLearnMoreURL
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()

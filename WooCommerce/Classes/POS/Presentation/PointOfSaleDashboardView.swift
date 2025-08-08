@@ -275,6 +275,7 @@ struct PointOfSaleSettingsView: View {
         case productCatalog = "Product Catalog (TBD)"
         case payments = "Payments (TBD)"
         case hardware = "Hardware"
+        case configuration = "Configuration (TBD)"
         case help = "Help"
 
         var id: String { rawValue }
@@ -505,6 +506,8 @@ struct PointOfSaleSettingsView: View {
                                 productCatalogView
                             case .hardware:
                                 hardwareView
+                            case .configuration:
+                                EmptyView()
                             case .help:
                                 Form {
                                     // Collapsable content, open modal, deeplinking, etc, ... based on case

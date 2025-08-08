@@ -206,6 +206,16 @@ private extension CartView {
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
+            Button(action: {
+                // TODO: Present modal
+            }, label: {
+                HStack {
+                    Image(systemName: "barcode.viewfinder")
+                    Text("Barcode Scanning")
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
+            })
+            .padding()
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))

@@ -43,7 +43,7 @@ struct POSFloatingControlView: View {
                         icon: { Image(systemName: "gear") }
                     )
                 }
-                // TODO move this to dialog to Help section in settings
+// TODO: move this showProductRestrictionsModal dialog to Help section in settings
 //                Button {
 //                    showProductRestrictionsModal = true
 //                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
@@ -52,16 +52,17 @@ struct POSFloatingControlView: View {
 //                        title: { Text(Localization.productRestrictionsInfo) },
 //                        icon: { Image(systemName: "magnifyingglass") })
 //                }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
-                    Button {
-                        showBarcodeScanningModal = true
-                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-                    } label: {
-                        Label(
-                            title: { Text(Localization.barcodeScanning) },
-                            icon: { Image(systemName: "barcode.viewfinder") })
-                    }
-                }
+// TODO: We'll move the showBarcodeScanningModal to somewhere in the cart view
+//                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
+//                    Button {
+//                        showBarcodeScanningModal = true
+//                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+//                    } label: {
+//                        Label(
+//                            title: { Text(Localization.barcodeScanning) },
+//                            icon: { Image(systemName: "barcode.viewfinder") })
+//                    }
+//                }
             } label: {
                 VStack {
                     Spacer()

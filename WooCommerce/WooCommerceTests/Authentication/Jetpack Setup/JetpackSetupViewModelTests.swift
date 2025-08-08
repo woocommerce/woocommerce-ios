@@ -143,6 +143,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(JetpackConnectionData.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -151,8 +153,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -606,8 +606,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
             }
         }
 
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
-
         // When
         viewModel.startSetup()
 
@@ -624,6 +622,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -632,8 +632,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -651,6 +649,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -659,8 +659,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -929,6 +927,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -937,8 +937,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -1176,6 +1174,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -1184,8 +1184,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -1209,6 +1207,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL(let completion):
@@ -1218,8 +1218,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.startSetup()
@@ -1246,14 +1244,14 @@ final class JetpackSetupViewModelTests: XCTestCase {
         )
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
+            case .retrieveJetpackPluginDetails(let completion):
+                completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(data))
             default:
                 break
             }
         }
-
-        mockSiteInfo(stores: stores, jetpackInstalled: true)
 
         // When
         viewModel.didAuthorizeJetpackConnection()
@@ -1345,18 +1343,5 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_setup_try_again_button_tapped" }))
         XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "jetpack_setup_flow" }))
-    }
-}
-
-private extension JetpackSetupViewModelTests {
-    func mockSiteInfo(stores: MockStoresManager, jetpackInstalled: Bool) {
-        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
-            switch action {
-            case let .fetchSiteInfo(_, completion):
-                completion(.success(Site.fake().copy(isJetpackThePluginInstalled: jetpackInstalled)))
-            default:
-                break
-            }
-        }
     }
 }

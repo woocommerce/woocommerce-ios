@@ -16,6 +16,7 @@ final class JetpackSetupViewModel: ObservableObject {
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
     private let wpcomCredentials: Credentials?
+    private var isPluginActivated = false
 
     @Published private(set) var setupSteps: [JetpackInstallStep]
 
@@ -67,18 +68,8 @@ final class JetpackSetupViewModel: ObservableObject {
         }
     }
 
-    private var setupErrorCode: Int? {
-        if let error = setupError as? NetworkError, let code = error.responseCode {
-            return code
-        } else if let error = setupError as? AFError, let code = error.responseCode {
-            return code
-        } else {
-            return (setupError as? NSError)?.code
-        }
-    }
-
     var hasEncounteredPermissionError: Bool {
-        setupErrorCode == 403
+        setupError?.code == 403
     }
 
     /// Attributed string for the description text
@@ -183,7 +174,7 @@ final class JetpackSetupViewModel: ObservableObject {
     func didTapContinueConnectionButton() {
         trackSetupDuringLogin(.loginJetpackSetupScreenTryAgainButtonTapped)
         trackSetupAfterLogin(tap: .continueSetup)
-        fetchJetpackConnectionURL()
+        checkJetpackConnection(afterConnection: false)
     }
 
     /// Tracks events if the current flow is Jetpack setup during login
@@ -226,10 +217,10 @@ private extension JetpackSetupViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
                 self.setupError = error
-                if self.setupErrorCode == 404 {
+                if error.code == 404 {
                     if self.connectionOnly {
-                        /// If site has WCPay installed and activated but not connected,
-                        /// plugins need to be installed even though we detected a connection before
+                        /// If site has Jetpack connection package connected,
+                        /// Jetpack plugin needs to be installed even though we detected a connection before
                         self.setupSteps = JetpackInstallStep.allCases
                         self.connectionOnly = false
                     }
@@ -271,6 +262,7 @@ private extension JetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
+                isPluginActivated = true
                 self.trackSetupDuringLogin(.loginJetpackSetupActivationSuccessful)
                 self.checkJetpackConnection(afterConnection: false)
             case .failure(let error):
@@ -287,7 +279,7 @@ private extension JetpackSetupViewModel {
     /// Jetpack connection flow using web view.
     /// Used only for sites with Jetpack plugin versions lower than 14.4.
     ///
-    func fetchJetpackConnectionURL() {
+    func startConnectionWithWebView() {
         currentSetupStep = .connection
         trackSetupAfterLogin()
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
@@ -316,7 +308,7 @@ private extension JetpackSetupViewModel {
     }
 
     func updateErrorMessage() {
-        guard let setupErrorCode else {
+        guard let setupErrorCode = setupError?.code else {
             setupErrorDetail = .init(setupErrorMessage: Localization.genericErrorMessage,
                                      setupErrorSuggestion: Localization.communicationErrorSuggestion,
                                      errorCode: nil)
@@ -344,9 +336,6 @@ private extension JetpackSetupViewModel {
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
     func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        guard retryCount <= Constants.maxRetryCount else {
-            return didFailJetpackConnection()
-        }
         currentConnectionStep = .inProgress
         let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
             guard let self else { return }
@@ -359,7 +348,9 @@ private extension JetpackSetupViewModel {
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
-                self.setupError = error
+                if retryCount == Constants.maxRetryCount {
+                    return didFailJetpackConnection(with: error)
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
                     self?.checkJetpackConnection(afterConnection: afterConnection, retryCount: retryCount + 1)
                 }
@@ -378,8 +369,10 @@ private extension JetpackSetupViewModel {
         let missingWpcomUserError = NSError(domain: Constants.errorDomain,
                                             code: Constants.errorCodeNoWPComUser,
                                             userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
-        setupError = missingWpcomUserError
         trackSetupDuringLogin(.loginJetpackSetupCannotFindWPCOMUser, failure: missingWpcomUserError)
+        if retryCount == Constants.maxRetryCount {
+            return didFailJetpackConnection(with: missingWpcomUserError)
+        }
         // Retry fetching user in case Jetpack sync takes some time.
         DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
             self?.checkJetpackConnection(afterConnection: true, retryCount: retryCount + 1)
@@ -395,24 +388,30 @@ private extension JetpackSetupViewModel {
             return handleSiteRegisterResult(isRegistered: isRegistered, blogID: data.blogID)
         }
 
-        /// Check site info if `isRegistered` is unavailable.
-        stores.dispatch(WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, completion: { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let site):
-                if site.isJetpackThePluginInstalled {
-                    /// `isRegistered` is unavailable due to outdated Jetpack. Proceed with web flow.
-                    fetchJetpackConnectionURL()
-                } else {
-                    /// For Jetpack-connected sites, `isRegistered` is not returned. Check for `connectionOwner` instead.
-                    handleSiteRegisterResult(isRegistered: data.connectionOwner != nil, blogID: data.blogID)
+        if isPluginActivated {
+            /// Skips plugin check if plugin has just got activated.
+            /// `isRegistered` is unavailable due to outdated Jetpack. Proceed with web flow.
+            startConnectionWithWebView()
+        } else {
+            /// Fetch plugin details to check
+            stores.dispatch(JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    /// Plugin is available but`isRegistered` is unavailable due to outdated version.
+                    /// Proceed with web flow.
+                    startConnectionWithWebView()
+                case .failure(let error):
+                    if error.code == 404 {
+                        /// For Jetpack-connected sites, if `isRegistered` is not returned,
+                        /// check for `connectionOwner` instead.
+                        handleSiteRegisterResult(isRegistered: data.connectionOwner != nil, blogID: data.blogID)
+                    } else {
+                        didFailJetpackConnection(with: error)
+                    }
                 }
-            case .failure(let error):
-                DDLogWarn("⛔️ Cannot fetch site info")
-                setupError = error
-                didFailJetpackConnection()
-            }
-        }))
+            })
+        }
     }
 
     func handleSiteRegisterResult(isRegistered: Bool, blogID: Int64?) {
@@ -430,8 +429,7 @@ private extension JetpackSetupViewModel {
             case .success(let blogID):
                 provisionSiteConnection(blogID: blogID)
             case .failure(let error):
-                setupError = error
-                didFailJetpackConnection()
+                didFailJetpackConnection(with: error)
             }
         }))
     }
@@ -445,8 +443,7 @@ private extension JetpackSetupViewModel {
             case .success(let response):
                 finalizeSiteConnection(blogID: blogID, provisionResponse: response)
             case .failure(let error):
-                setupError = error
-                didFailJetpackConnection()
+                didFailJetpackConnection(with: error)
             }
         }))
     }
@@ -455,7 +452,7 @@ private extension JetpackSetupViewModel {
         guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
             /// WPCom credentials are necessary to finalize connection through API
             /// If this is unavailable, fall back to the web flow.
-            return fetchJetpackConnectionURL()
+            return startConnectionWithWebView()
         }
         let network = AlamofireNetwork(credentials: wpcomCredentials)
         stores.dispatch(JetpackConnectionAction.finalizeConnection(
@@ -469,8 +466,7 @@ private extension JetpackSetupViewModel {
             case .success:
                 checkJetpackConnection(afterConnection: true)
             case .failure(let error):
-                setupError = error
-                didFailJetpackConnection()
+                didFailJetpackConnection(with: error)
             }
         })
     }
@@ -484,8 +480,9 @@ private extension JetpackSetupViewModel {
         trackSetupAfterLogin()
     }
 
-    func didFailJetpackConnection() {
+    func didFailJetpackConnection(with error: Error) {
         setupFailed = true
+        setupError = error
         if let setupError {
             analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection, withError: setupError)
         }
@@ -589,5 +586,17 @@ extension JetpackSetupViewModel {
         static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
+    }
+}
+
+fileprivate extension Error {
+    var code: Int? {
+        if let error = self as? NetworkError, let code = error.responseCode {
+            return code
+        } else if let error = self as? AFError, let code = error.responseCode {
+            return code
+        } else {
+            return (self as NSError).code
+        }
     }
 }

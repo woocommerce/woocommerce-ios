@@ -151,15 +151,12 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     func navigateToStore() {
-        trackSetupDuringLogin(.loginJetpackSetupGoToStoreTapped)
-        trackSetupAfterLogin(tap: .goToStore)
+        trackSetup(tap: .goToStore)
         storeNavigationHandler(jetpackConnectedEmail)
     }
 
     func retryAllSteps() {
-        trackSetupDuringLogin(.loginJetpackSetupScreenTryAgainButtonTapped,
-                              properties: currentSetupStep?.analyticsDescription)
-        trackSetupAfterLogin(tap: .retry)
+        trackSetup(tap: .retry)
 
         setupFailed = false
         setupError = nil
@@ -172,27 +169,13 @@ final class JetpackSetupViewModel: ObservableObject {
 
     /// LoginJetpackSetupInterruptedView
     func didTapContinueConnectionButton() {
-        trackSetupDuringLogin(.loginJetpackSetupScreenTryAgainButtonTapped)
-        trackSetupAfterLogin(tap: .continueSetup)
+        trackSetup(tap: .continueSetup)
         checkJetpackConnection(afterConnection: false)
     }
 
-    /// Tracks events if the current flow is Jetpack setup during login
-    func trackSetupDuringLogin(_ stat: WooAnalyticsStat,
-                               properties: [AnyHashable: Any]? = nil,
-                               failure: Error? = nil) {
-        guard stores.isAuthenticated == false else {
-            return
-        }
-        analytics.track(stat, properties: properties, error: failure)
-    }
-
     /// Tracks events if the current flow is Jetpack setup after login with site credentials
-    func trackSetupAfterLogin(tap: WooAnalyticsEvent.JetpackSetup.SetupFlow.TapTarget? = nil,
-                              failure: Error? = nil) {
-        guard stores.isAuthenticated else {
-            return
-        }
+    func trackSetup(tap: WooAnalyticsEvent.JetpackSetup.SetupFlow.TapTarget? = nil,
+                    failure: Error? = nil) {
         /// Helper for analytics since `currentSetupStep` is optional.
         let currentStepForAnalytics: JetpackInstallStep = currentSetupStep ?? (connectionOnly ? .connection : .installation)
         analytics.track(event: .JetpackSetup.setupFlow(step: currentStepForAnalytics,
@@ -236,17 +219,15 @@ private extension JetpackSetupViewModel {
 
     func installJetpack() {
         currentSetupStep = .installation
-        trackSetupAfterLogin()
+        trackSetup()
 
         let action = JetpackConnectionAction.installJetpackPlugin { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
-                self.trackSetupDuringLogin(.loginJetpackSetupScreenInstallSuccessful)
                 self.activateJetpack()
             case .failure(let error):
-                self.trackSetupDuringLogin(.loginJetpackSetupScreenInstallFailed, failure: error)
-                self.trackSetupAfterLogin(failure: error)
+                self.trackSetup(failure: error)
                 DDLogError("⛔️ Error installing Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -257,17 +238,15 @@ private extension JetpackSetupViewModel {
 
     func activateJetpack() {
         currentSetupStep = .activation
-        trackSetupAfterLogin()
+        trackSetup()
         let action = JetpackConnectionAction.activateJetpackPlugin { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
                 isPluginActivated = true
-                self.trackSetupDuringLogin(.loginJetpackSetupActivationSuccessful)
                 self.checkJetpackConnection(afterConnection: false)
             case .failure(let error):
-                self.trackSetupDuringLogin(.loginJetpackSetupActivationFailed, failure: error)
-                self.trackSetupAfterLogin(failure: error)
+                self.trackSetup(failure: error)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -281,12 +260,11 @@ private extension JetpackSetupViewModel {
     ///
     func startConnectionWithWebView() {
         currentSetupStep = .connection
-        trackSetupAfterLogin()
+        trackSetup()
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let url):
-                self.trackSetupDuringLogin(.loginJetpackSetupFetchJetpackConnectionURLSuccessful)
                 /// Checks if the fetch URL is for account connection;
                 /// if not, use the web view solution to avoid the need for cookie-nonce.
                 /// Reference: pe5sF9-1le-p2#comment-1942.
@@ -297,8 +275,7 @@ private extension JetpackSetupViewModel {
                 }
                 self.shouldPresentWebView = true
             case .failure(let error):
-                self.trackSetupDuringLogin(.loginJetpackSetupFetchJetpackConnectionURLFailed, failure: error)
-                self.trackSetupAfterLogin(failure: error)
+                self.trackSetup(failure: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true
@@ -369,7 +346,6 @@ private extension JetpackSetupViewModel {
         let missingWpcomUserError = NSError(domain: Constants.errorDomain,
                                             code: Constants.errorCodeNoWPComUser,
                                             userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
-        trackSetupDuringLogin(.loginJetpackSetupCannotFindWPCOMUser, failure: missingWpcomUserError)
         if retryCount == Constants.maxRetryCount {
             return didFailJetpackConnection(with: missingWpcomUserError)
         }
@@ -436,7 +412,7 @@ private extension JetpackSetupViewModel {
 
     func provisionSiteConnection(blogID: Int64) {
         currentSetupStep = .connection
-        trackSetupAfterLogin()
+        trackSetup()
         stores.dispatch(JetpackConnectionAction.provisionConnection(completion: { [weak self] result in
             guard let self else { return }
             switch result {
@@ -475,17 +451,13 @@ private extension JetpackSetupViewModel {
         jetpackConnectedEmail = connectedEmail
         currentConnectionStep = .authorized
         currentSetupStep = .done
-
-        trackSetupDuringLogin(.loginJetpackSetupAllStepsMarkedDone)
-        trackSetupAfterLogin()
+        trackSetup()
     }
 
     func didFailJetpackConnection(with error: Error) {
         setupFailed = true
         setupError = error
-        if let setupError {
-            analytics.track(.loginJetpackSetupErrorCheckingJetpackConnection, withError: setupError)
-        }
+        trackSetup(failure: error)
     }
 }
 

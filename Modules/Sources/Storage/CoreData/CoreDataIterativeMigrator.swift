@@ -196,7 +196,7 @@ private extension CoreDataIterativeMigrator {
             DDLogInfo("Source model not found in available model versions. Will destroy database for fresh start.")
             return true
         }
- 
+
         // Model found in inventory, so it's a supported version. Use iterative migration
         DDLogInfo("Source model \(sourceVersion.name) found in available versions. Will use iterative migration.")
         return false

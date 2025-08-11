@@ -2,19 +2,19 @@ import Foundation
 import SwiftUI
 import enum Yosemite.CardPresentPaymentOnboardingState
 
-protocol CardPresentPaymentsOnboardingViewConfiguration: AnyObject {
+protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
     var showSupport: (() -> Void)? { get set }
     var showURL: ((URL) -> Void)? { get set }
     var state: CardPresentPaymentOnboardingState { get }
 }
 
-final class CardPresentPaymentOnboardingViewFactory: Equatable, Identifiable {
-    var configuration: CardPresentPaymentsOnboardingViewConfiguration
-    let createView: () -> any View
+final class CardPresentPaymentOnboardingViewFactory: ObservableObject, Equatable, Identifiable {
+    @Published var configuration: any CardPresentPaymentsOnboardingViewConfiguration
+    @Published var view: any View
 
-    init(configuration: CardPresentPaymentsOnboardingViewConfiguration, createView: @escaping () -> any View = { EmptyView() }) {
+    init(configuration: any CardPresentPaymentsOnboardingViewConfiguration, view: any View = EmptyView()) {
         self.configuration = configuration
-        self.createView = createView
+        self.view = view
     }
 
     static func == (lhs: CardPresentPaymentOnboardingViewFactory, rhs: CardPresentPaymentOnboardingViewFactory) -> Bool {
@@ -24,7 +24,7 @@ final class CardPresentPaymentOnboardingViewFactory: Equatable, Identifiable {
 
 final class PointOfSaleCardPresentPaymentOnboardingViewModel: ObservableObject {
     @Published var onboardingURL: URL?
-    let onboardingViewFactory: CardPresentPaymentOnboardingViewFactory
+    @Published var onboardingViewFactory: CardPresentPaymentOnboardingViewFactory
 
     private let onDismissTap: (() -> Void)?
 

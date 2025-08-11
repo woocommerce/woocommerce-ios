@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
-            AnyView(viewModel.onboardingViewFactory.createView())
+            AnyView(viewModel.onboardingViewFactory.view)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
                 .toolbar(.hidden)
         }

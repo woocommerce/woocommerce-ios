@@ -60,12 +60,11 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
         if url.contains(Constants.authorizationURL),
-            initialURL?.absoluteString.contains(Constants.authorizationURL) == false,
-            let authorizationURL = URL(string: url) {
+            initialURL?.absoluteString.contains(Constants.authorizationURL) == false {
             await MainActor.run { [weak self] in
                 guard let self else { return }
                 shouldIgnoreDismissalHandling = true
-                authorizationHandler(authorizationURL)
+                authorizationHandler(navigationURL)
             }
             return .cancel
         } else if handleCompletionIfPossible(url) {

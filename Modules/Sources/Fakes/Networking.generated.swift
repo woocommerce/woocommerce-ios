@@ -631,6 +631,18 @@ extension Networking.InboxNote {
         )
     }
 }
+extension Networking.JetpackConnectionData {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.JetpackConnectionData {
+        .init(
+            currentUser: .fake(),
+            isRegistered: .fake(),
+            connectionOwner: .fake(),
+            blogID: .fake()
+        )
+    }
+}
 extension Networking.JetpackUser {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -640,7 +652,8 @@ extension Networking.JetpackUser {
             isPrimary: .fake(),
             username: .fake(),
             wpcomUser: .fake(),
-            gravatar: .fake()
+            gravatar: .fake(),
+            blogID: .fake()
         )
     }
 }

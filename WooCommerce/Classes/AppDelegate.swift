@@ -19,9 +19,7 @@ import class Yosemite.ScreenshotStoresManager
 // In that way, Inject will be available in the entire target.
 @_exported import Inject
 
-#if DEBUG
 import WormholySwift
-#endif
 
 // MARK: - Woo's App Delegate!
 //
@@ -415,10 +413,8 @@ private extension AppDelegate {
     /// Set up Wormholy only in Debug build configuration
     ///
     func setupWormholy() {
-#if DEBUG
         // We want to activate it programmatically, not using the shake.
         Wormholy.shakeEnabled = false
-#endif
     }
 
     /// Set up `KeyboardStateProvider`

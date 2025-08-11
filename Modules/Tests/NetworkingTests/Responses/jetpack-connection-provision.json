@@ -1,0 +1,5 @@
+{
+    "user_id": 123456789,
+    "scope": "administrator",
+    "secret": "secret_token_12345"
+}

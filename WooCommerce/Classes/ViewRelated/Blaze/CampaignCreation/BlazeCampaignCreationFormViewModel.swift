@@ -203,13 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var isUsingAISuggestions: Bool = false
 
     private let storage: StorageManagerType
-    private var product: Product? {
-        guard let product = productsResultsController.fetchedObjects.first else {
-            assertionFailure("Unable to fetch product with ID: \(productID)")
-            return nil
-        }
-        return product
-    }
+    private var product: BlazeCampaignProduct?
 
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
@@ -232,9 +226,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     /// ResultController to get the product for the given product ID
     ///
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+    private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
         let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
-        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        let controller = GenericResultsController<StorageProduct, BlazeCampaignProduct>(
+            storageManager: storage,
+            matching: predicate,
+            sortedBy: [],
+            transformer: { BlazeCampaignProduct(storageProduct: $0) }
+        )
         do {
             try controller.performFetch()
         } catch {
@@ -305,6 +304,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+
+        product = productsResultsController.fetchedObjects.first
 
         initializeCampaignObjective()
         updateBudgetDetails()
@@ -491,7 +492,7 @@ extension BlazeCampaignCreationFormViewModel {
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func loadProductImage() async -> MediaPickerImage? {
-        guard let firstImage = product?.images.first,
+        guard let firstImage = product?.firstImage,
               let image = try? await productImageLoader.requestImage(productImage: firstImage) else {
             return nil
         }

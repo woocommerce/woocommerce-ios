@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 23.0
+Faster performance and smoother experience! This update brings improved product loading, better tax calculations, and enhanced address lookup with map support. We've added guided barcode scanning for POS users and strengthened shipping requirements for EU destinations. Plus, we've fixed stability issues for a more reliable experience.
+
 ## 22.9
 This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We’ve also made the dedicated Point of Sale tab more widely available for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app’s size.
 

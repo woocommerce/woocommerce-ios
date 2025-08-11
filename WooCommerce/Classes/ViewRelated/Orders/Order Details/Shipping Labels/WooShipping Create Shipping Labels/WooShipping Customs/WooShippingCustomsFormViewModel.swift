@@ -120,34 +120,28 @@ private extension WooShippingCustomsFormViewModel {
             }
             .assign(to: &$isMissingITN)
 
-         let hsTariffNumberTotalValueDictionary = $itemsViewModels
-            .map { childViewModels in
-                childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
-            }
-            .flatMap { childPublishers in
-                childPublishers.combineLatest()
-            }
-            .map { values in
-                var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
-                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
-                    hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
-                }
-                return hsTariffNumberTotalValueDictionary
-            }
+        let totalItemValue = $itemsViewModels
+           .map { childViewModels in
+               childViewModels.map { $0.$totalValue.eraseToAnyPublisher() }
+           }
+           .flatMap { childPublishers in
+               childPublishers.combineLatest()
+           }
+           .map { values in
+               return values.reduce(0) { partialResult, value in
+                   return partialResult + value
+               }
+           }
 
         $internationalTransactionNumber.combineLatest(
-            $itemsViewModels,
-            hsTariffNumberTotalValueDictionary,
+            totalItemValue,
             $destinationCountryCode)
         .map { input -> ITNValidationError? in
-            let (itn, items, hsTariffNumberTotalValueDictionary, countryCode) = input
+            let (itn, totalItemValue, countryCode) = input
             guard itn.isEmpty else {
                 return ITNNumberValidator.isValid(itn) ? nil : .invalidFormat
             }
 
-            let totalItemValue = items.reduce(0, { sum, item in
-                sum + item.totalValue
-            })
             if totalItemValue > Constants.minimumValueForRequiredITN {
                 return .missingForTotalShipmentValue
             }
@@ -160,11 +154,6 @@ private extension WooShippingCustomsFormViewModel {
                 return .missingForRequiredDestination
             }
 
-            for (_, value) in hsTariffNumberTotalValueDictionary {
-                if value > Constants.minimumValueForRequiredITN {
-                    return .missingForTariffClass
-                }
-            }
             return nil
         }
         .assign(to: &$itnValidationError)

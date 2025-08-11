@@ -131,4 +131,32 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         // Then
         assertEmpty(steps)
     }
+
+    /// If the `source` and `target` are the same models, `steps()` will return steps from **that**
+    /// model version up to the latest version in the inventory.
+    ///
+    /// This seems like a bug in the `steps()` loop that has existed for a long time. I would have
+    /// expected that 0 steps are returned. I'm just keeping it as is for now. We don't
+    /// reach this condition because of the precondition checks in `CoreDataIterativeMigrator`.
+    func test_steps_returns_source_to_latest_version_MigrationSteps_if_the_source_and_target_are_the_same() throws {
+        // Given
+        let sourceModelName = "Model 37"
+        let modelVersion37 = ModelVersion(name: sourceModelName)
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
+
+        // Find the index of Model 37 in the current inventory
+        // which only contains Models 30-124 as per latest update on https://github.com/woocommerce/woocommerce-ios/pull/15987
+        let sourceModelIndex = try XCTUnwrap(modelsInventory.versions.firstIndex { $0.name == sourceModelName },
+                                             "Model 37 should exist in the inventory")
+        // When
+        let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: sourceModel)
+
+        // Then
+        // Expected behavior (bug): When source == target, it returns steps from that model to the latest version
+        // This means: Model 37 → Model 38 → ... → Model 124
+        // Calculation: total versions - source index - 1 (since we don't include the source model itself)
+        let expectedStepCount = modelsInventory.versions.count - sourceModelIndex - 1
+        XCTAssertEqual(steps.count, expectedStepCount,
+                       "Should return steps from Model 37 to the latest model (Model 124)")
+    }
 }

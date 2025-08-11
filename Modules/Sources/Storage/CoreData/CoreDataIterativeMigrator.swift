@@ -64,7 +64,8 @@ final class CoreDataIterativeMigrator {
         // The persistent store coordinator will automatically create a fresh store with the current model as needed.
         if shouldDestroyPersistentStore(for: sourceModel) {
             do {
-                try destroyPersistentStore(sourceStoreURL: sourceStoreURL, storeType: storeType)
+                try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
+                DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
             } catch {
                 DDLogError("[CoreDataIterativeMigrator] Direct migration failed. Error: \(error). Falling back to iterative migration.")
             }
@@ -206,14 +207,6 @@ private extension CoreDataIterativeMigrator {
         return shouldDestroy
     }
 
-    func destroyPersistentStore(sourceStoreURL: URL, storeType: String) throws {
-        do {
-            try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
-            DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
-        } catch {
-            DDLogError("[CoreDataIterativeMigrator] Failed direct migration. Will fall back to iterative migration. Error \(error)")
-        }
-    }
 }
 
 private extension CoreDataIterativeMigrator {

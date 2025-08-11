@@ -106,7 +106,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
             case let .fetchJetpackConnectionData(completion):
-                completion(.success(JetpackConnectionData.fake()))
+                completion(.failure(JetpackSetupCoordinator.JetpackCheckError.missingPermission))
             default:
                 break
             }

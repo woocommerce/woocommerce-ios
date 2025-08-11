@@ -1,5 +1,5 @@
 import SwiftUI
-import SafariServices
+import WooFoundation
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
@@ -201,7 +201,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var documentationView: some View {
-        DocumentationView()
+        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
     func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewFactory) -> some View {
@@ -245,16 +245,6 @@ extension EnvironmentValues {
     }
 }
 
-private struct DocumentationView: UIViewControllerRepresentable {
-    func makeUIViewController(context: UIViewControllerRepresentableContext<DocumentationView>) -> SFSafariViewController {
-        return SFSafariViewController(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
-    }
-
-    func updateUIViewController(_ uiViewController: SFSafariViewController,
-                                context: UIViewControllerRepresentableContext<DocumentationView>) {
-
-    }
-}
 
 
 @available(iOS 17.0, *)

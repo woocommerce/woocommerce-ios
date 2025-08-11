@@ -24,10 +24,10 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
     func test_steps_returns_MigrationSteps_from_source_to_the_target_model() throws {
         // Given
-        let modelVersion23 = ModelVersion(name: "Model 33")
-        let modelVersion31 = ModelVersion(name: "Model 41")
-        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion23))
-        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion31))
+        let modelVersion33 = ModelVersion(name: "Model 33")
+        let modelVersion41 = ModelVersion(name: "Model 41")
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion33))
+        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion41))
 
         // When
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
@@ -45,21 +45,21 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         XCTAssertEqual(steps.count, 8)
 
         // Assert the values of first and last steps.
-        let modelVersion24 = ModelVersion(name: "Model 34")
+        let modelVersion34 = ModelVersion(name: "Model 34")
 
-        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion23,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion23)),
-                                              targetVersion: modelVersion24,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion24)))
+        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion33,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion33)),
+                                              targetVersion: modelVersion34,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion34)))
         let actualFirstStep = try XCTUnwrap(steps.first)
         XCTAssertEqual(actualFirstStep, expectedFirstStep)
 
-        let modelVersion30 = ModelVersion(name: "Model 40")
+        let modelVersion40 = ModelVersion(name: "Model 40")
 
-        let expectedLastStep = MigrationStep(sourceVersion: modelVersion30,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion30)),
-                                              targetVersion: modelVersion31,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion31)))
+        let expectedLastStep = MigrationStep(sourceVersion: modelVersion40,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion40)),
+                                              targetVersion: modelVersion41,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion41)))
         let actualLastStep = try XCTUnwrap(steps.last)
         XCTAssertEqual(actualLastStep, expectedLastStep)
     }

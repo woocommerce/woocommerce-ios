@@ -3,7 +3,7 @@
 
 23.1
 -----
-
+- [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
 
 23.0
 -----

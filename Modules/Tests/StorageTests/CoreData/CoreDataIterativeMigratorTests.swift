@@ -273,53 +273,6 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         assertEmpty(spyCoordinator.destroyedURLs)
     }
 
-    func test_extractVersionNumber_when_no_version_number_then_handles_base_model() {
-        // Given/When
-        let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: "Model")
-
-        // Then
-        XCTAssertEqual(versionNumber, 0)
-    }
-
-    func test_extractVersionNumber__when_version_number_then_handles_numbered_models() {
-        // Given
-        let testCases = [
-            ("Model 1", 1),
-            ("Model 10", 10),
-            ("Model 42", 42),
-            ("Model 100", 100),
-            ("Model 124", 124)
-        ]
-
-        // When
-        for (modelName, expectedVersion) in testCases {
-            let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: modelName)
-
-            // Then
-            XCTAssertEqual(versionNumber, expectedVersion, "Failed for model name: \(modelName)")
-        }
-    }
-
-    func test_extractVersionNumber_when_invalid_format_then_falls_back_to_version_0() {
-        // Given
-        let fallbackVersionNumber: Int = 0
-        let invalidCases = [
-            "Model abc",
-            "InvalidModel",
-            "Model 10 extra",
-            "",
-            "Model "
-        ]
-
-        for invalidCase in invalidCases {
-            // When
-            let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: invalidCase)
-
-            // Then
-            XCTAssertEqual(versionNumber, fallbackVersionNumber, "Failed for invalid case: \(invalidCase)")
-        }
-    }
-
     func test_findSourceVersion_when_exists_then_returns_correct_version_for_existing_model() throws {
         // Given
         let targetVersion = ManagedObjectModelsInventory.ModelVersion(name: "Model 30")

@@ -191,26 +191,15 @@ private extension CoreDataIterativeMigrator {
 
     func shouldDestroyPersistentStore(for sourceModel: NSManagedObjectModel) -> Bool {
         guard let sourceVersion = CoreDataMigratorUtils.findSourceVersion(for: sourceModel, in: modelsInventory) else {
-            DDLogInfo("Could not determine source model version. Using iterative migration.")
-            return false
+            // If the model is not found in inventory it's from a deleted model version
+            // The database can be destroyed for a fresh start
+            DDLogInfo("Source model not found in available model versions. Will destroy database for fresh start.")
+            return true
         }
-        // If the merchant is on a model version older than this, nuke the DB and migrate them to the latest one without iterative process
-        let oldestModelThreshold = Constants.oldestSupportedDataModel
-        let versionNumber = CoreDataMigratorUtils.extractVersionNumber(from: sourceVersion.name)
-        let shouldDestroy = versionNumber < oldestModelThreshold
-
-        if shouldDestroy {
-            DDLogInfo("Direct migration: Source \(sourceVersion.name) (\(versionNumber)) is older than threshold \(oldestModelThreshold).")
-        } else {
-            DDLogInfo("Iterative migration: Source \(sourceVersion.name) (\(versionNumber)) is newer than threshold \(oldestModelThreshold).")
-        }
-        return shouldDestroy
+ 
+        // Model found in inventory, so it's a supported version. Use iterative migration
+        DDLogInfo("Source model \(sourceVersion.name) found in available versions. Will use iterative migration.")
+        return false
     }
 
-}
-
-private extension CoreDataIterativeMigrator {
-    enum Constants {
-        static let oldestSupportedDataModel: Int = 30
-    }
 }

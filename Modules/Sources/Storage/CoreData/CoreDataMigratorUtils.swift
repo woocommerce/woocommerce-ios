@@ -16,23 +16,4 @@ struct CoreDataMigratorUtils {
         }
         return nil
     }
-
-    /// Extract version number from model version name
-    /// Examples: "Model" -> 0, "Model 10" -> 10, "Model 124" -> 124
-    static func extractVersionNumber(from versionName: String) -> Int {
-        // Handle the base "Model" case (version 0)
-        if versionName == "Model" {
-            return 0
-        }
-
-        // Extract number from "Model N" pattern
-        let components = versionName.components(separatedBy: " ")
-        if components.count == 2, let versionNumber = Int(components[1]) {
-            return versionNumber
-        }
-
-        // Fallback: couldn't parse version, assume it's very old (version 0)
-        DDLogWarn("[CoreDataMigratorUtils] Could not parse version number from '\(versionName)'. Assuming version 0.")
-        return 0
-    }
 }

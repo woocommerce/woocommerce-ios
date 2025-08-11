@@ -40,7 +40,7 @@ struct POSFloatingControlView: View {
                 } label: {
                     Label(
                         title: { Text("Settings") },
-                        icon: { Image(systemName: "gear") }
+                        icon: { Image(systemName: "gearshape") }
                     )
                 }
 // TODO: move this showProductRestrictionsModal dialog to Help section in settings

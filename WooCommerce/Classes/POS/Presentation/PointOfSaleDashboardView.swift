@@ -124,7 +124,8 @@ struct PointOfSaleDashboardView: View {
         }
         .posRootModal()
         .fullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView()
+            //PointOfSaleSettingsView()
+            PointOfSaleSettingsView2()
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -267,6 +268,55 @@ private extension PointOfSaleDashboardView {
 }
 
 #endif
+
+// Horizontal split: 30% (left) / 70% (right)
+struct PointOfSaleSettingsView2: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    private enum Constants {
+        static let leftRatio: CGFloat = 0.30
+        static let rightRatio: CGFloat = 0.70
+        static let leftBackground: Color = Color.posOutline.opacity(0.3)
+        static let rightBackground: Color = Color.posSurface
+    }
+
+    var body: some View {
+        NavigationStack {
+            GeometryReader { geo in
+                HStack(spacing: 0) {
+                    VStack {
+                        Text("30%")
+                        //POSHeaderTitleView(title: "Store")
+                        //POSHeaderTitleView(title: "Hardware")
+                        //POSHeaderTitleView(title: "Help")
+                    }
+                    .frame(maxWidth: geo.size.width * Constants.leftRatio,
+                           maxHeight: .infinity,
+                           alignment: .center)
+                    .background(Constants.leftBackground)
+                    Text("70%")
+                        .frame(maxWidth: geo.size.width * Constants.rightRatio,
+                               maxHeight: .infinity,
+                               alignment: .center)
+                        .background(Constants.rightBackground)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.posSecondaryContainer)
+                        }
+                    }
+                }
+                .toolbarBackground(.visible, for: .navigationBar)
+                .toolbarBackground(Color.clear, for: .navigationBar)
+            }
+        }
+    }
+}
 
 
 struct PointOfSaleSettingsView: View {

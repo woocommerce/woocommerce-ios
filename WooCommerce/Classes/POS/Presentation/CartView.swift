@@ -134,8 +134,8 @@ private extension CartView {
             value: "Cart",
             comment: "Title at the header for the Cart view.")
         static let addItemsToCartHint = NSLocalizedString(
-            "pos.cartView.addItemsToCartHint",
-            value: "Tap on a product to \n add it to the cart",
+            "pos.cartView.addItemsToCartHint.2",
+            value: "Tap on a product to \n add it to the cart, or ",
             comment: "Hint to add products to the Cart when this is empty.")
         static let checkoutButtonTitle = NSLocalizedString(
             "pos.cartView.checkoutButtonTitle",
@@ -210,12 +210,15 @@ private extension CartView {
                 // TODO: Present modal
             }, label: {
                 HStack {
+                    Text("Scan Barcode")
+                        .font(Constants.secondaryFont)
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
                     Image(systemName: "barcode.viewfinder")
-                    Text("Barcode Scanning")
+                        .font(Constants.secondaryFont)
                         .foregroundColor(Color.posOnSurfaceVariantLowest)
                 }
             })
-            .padding()
+            //.padding()
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))

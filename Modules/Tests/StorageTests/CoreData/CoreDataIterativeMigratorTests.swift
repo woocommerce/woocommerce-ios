@@ -139,14 +139,14 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
     /// files using the wrong `NSManagedObjectModel`.
     func test_opening_a_store_with_a_different_model_fails() throws {
         // Given
-        let model1 = try managedObjectModel(for: "Model 30")
-        let model10 = try managedObjectModel(for: "Model 40")
+        let model30 = try managedObjectModel(for: "Model 30")
+        let model40 = try managedObjectModel(for: "Model 40")
 
         let storeURL = try urlForStore(withName: "Woo Test 30.sqlite", deleteIfExists: true)
         let options = [NSInferMappingModelAutomaticallyOption: false, NSMigratePersistentStoresAutomaticallyOption: false]
 
         // When
-        var psc = NSPersistentStoreCoordinator(managedObjectModel: model1)
+        var psc = NSPersistentStoreCoordinator(managedObjectModel: model30)
         var ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         XCTAssertNotNil(ps)
@@ -154,7 +154,7 @@ final class CoreDataIterativeMigratorTests: XCTestCase {
         try psc.remove(ps!)
 
         // Load using a different model
-        psc = NSPersistentStoreCoordinator(managedObjectModel: model10)
+        psc = NSPersistentStoreCoordinator(managedObjectModel: model40)
         ps = try? psc.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeURL, options: options)
 
         // When

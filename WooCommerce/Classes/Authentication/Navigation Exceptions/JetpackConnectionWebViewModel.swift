@@ -26,7 +26,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void,
-         onAuthorization: @escaping (URL) -> Void,
+         onAuthorization: @escaping (URL) -> Void = { _ in },
          onFailure: @escaping (Int?) -> Void = { _ in },
          onDismissal: @escaping () -> Void = {}) {
         self.title = title

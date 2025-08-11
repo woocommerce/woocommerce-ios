@@ -3,7 +3,8 @@
 
 23.1
 -----
-
+- [*] Jetpack setup: Native experience for the connection step [https://github.com/woocommerce/woocommerce-ios/pull/15983]
+- [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
 
 23.0
 -----

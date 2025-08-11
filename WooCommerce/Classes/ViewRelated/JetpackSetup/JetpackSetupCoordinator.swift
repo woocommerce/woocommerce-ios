@@ -222,7 +222,7 @@ private extension JetpackSetupCoordinator {
         }
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
                                                     connectionOnly: requiresConnectionOnly,
-                                                    connectionWebViewCredentials: credentials,
+                                                    wpcomCredentials: credentials,
                                                     onStoreNavigation: { [weak self] _ in
             DDLogInfo("🎉 Jetpack setup completes!")
             self?.rootViewController.topmostPresentedViewController.dismiss(animated: true, completion: {
@@ -320,12 +320,7 @@ private extension JetpackSetupCoordinator {
 
     @MainActor
     func fetchJetpackConnectionData() async throws -> JetpackConnectionData {
-        /// Jetpack setup will fail anyway without admin role, so check that first.
-        let roles = stores.sessionManager.defaultRoles
-        guard roles.contains(.administrator) else {
-            throw JetpackCheckError.missingPermission
-        }
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
                 continuation.resume(with: result)
             }
@@ -489,11 +484,13 @@ private extension JetpackSetupCoordinator {
 }
 
 // MARK: - Subtypes
-private extension JetpackSetupCoordinator {
+extension JetpackSetupCoordinator {
     enum JetpackCheckError: Int, Error {
         case missingPermission = 403
     }
+}
 
+private extension JetpackSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
     }

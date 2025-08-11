@@ -101,7 +101,7 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
 }
 
 public extension IndefiniteCircularProgressViewStyle {
-    public enum Constants {
+    enum Constants {
         public static let lineWidth: CGFloat = 10.0
         public static let backgroundOpacity: CGFloat = 0.2
 
@@ -113,7 +113,7 @@ public extension IndefiniteCircularProgressViewStyle {
         public static let fullRotation: Angle = .radians(Double.pi * 2)
     }
 
-    public enum Localization {
+    enum Localization {
         static let inProgressAccessibilityLabel = NSLocalizedString(
             "In progress",
             comment: "Accessibility label for an indeterminate loading indicator")

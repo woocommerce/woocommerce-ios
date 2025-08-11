@@ -665,8 +665,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldPresentWebView)
-        let mobileRedirectURL = "woocommerce://jetpack-connected"
-        let expectedURL = "https://wordpress.com/jetpack/connect?url=\(testURL)&mobile_redirect=\(mobileRedirectURL)&from=mobile"
+        let expectedURL = "\(testURL)/wp-admin/admin.php?page=jetpack"
         XCTAssertEqual(viewModel.jetpackConnectionURL, URL(string: expectedURL))
     }
 

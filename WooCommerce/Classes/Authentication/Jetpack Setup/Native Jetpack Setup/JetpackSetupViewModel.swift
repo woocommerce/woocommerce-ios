@@ -106,7 +106,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.analytics = analytics
         self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
-        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
+        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL))
         self.delayBeforeRetry = delayBeforeRetry
     }
 
@@ -583,8 +583,7 @@ extension JetpackSetupViewModel {
         static let errorCodeNoWPComUser = 99
         static let errorUserInfoReason = "reason"
         static let errorUserInfoNoWPComUser = "No connected WP.com user found"
-        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
-        static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let jetpackInstallString = "%@/wp-admin/admin.php?page=jetpack"
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

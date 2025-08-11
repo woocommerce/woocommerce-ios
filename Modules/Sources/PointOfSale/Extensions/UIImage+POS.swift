@@ -7,18 +7,18 @@ extension UIImage {
     /// App icon (iPhone size) - used in receipt eligibility banner
     ///
     static var appIconDefault: UIImage {
-        return UIImage(named: "AppIcon60x60")!
+        return UIImage(named: "AppIcon60x60", in: .main, compatibleWith: nil)!
     }
 
     /// Card Reader Update arrow - used in reader update progress
     ///
     static var cardReaderUpdateProgressArrow: UIImage {
-        return UIImage(named: "card-reader-update-progress-arrow")!
+        return UIImage(named: "card-reader-update-progress-arrow", in: .main, compatibleWith: nil)!
     }
 
     /// Card Reader Update checkmark - used in reader update progress completion
     ///
     static var cardReaderUpdateProgressCheckmark: UIImage {
-        return UIImage(named: "card-reader-update-progress-checkmark")!
+        return UIImage(named: "card-reader-update-progress-checkmark", in: .main, compatibleWith: nil)!
     }
 }

@@ -97,12 +97,6 @@ extension JetpackInstallStep {
         }
     }
 
-    /// Description dictionary for Analytics
-    ///
-    var analyticsDescription: [String: String] {
-        ["jetpack_install_step": analyticsValue]
-    }
-
     var analyticsValue: String {
         switch self {
         case .installation:

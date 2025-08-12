@@ -1109,7 +1109,7 @@ private extension StripeCardReaderService {
             DDLogError("💳 Card Reader Config Error: \(error)")
         default:
             let errorCode = ErrorCode(_nsError: error as NSError)
-            DDLogError("💳 Stripe Error Code: \(errorCode.code)")
+            DDLogError("💳 Stripe Error Code: \(errorCode.errorCode)")
         }
         return UnderlyingError(with: error)
     }

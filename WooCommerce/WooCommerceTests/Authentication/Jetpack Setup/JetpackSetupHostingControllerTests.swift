@@ -2,11 +2,13 @@ import Foundation
 import XCTest
 
 @testable import WooCommerce
+@testable import Yosemite
 
 /// Test cases for `JetpackSetupHostingController`.
 ///
 final class JetpackSetupHostingControllerTests: XCTestCase {
     private let testURL = "https://test.com"
+    private let credentials = Credentials.wpcom(username: "test", authToken: "secret", siteAddress: "https://example.com")
 
     func test_it_tracks_login_jetpack_setup_screen_viewed_when_view_loads_for_unauthenticated_users() throws {
         // Given
@@ -15,6 +17,7 @@ final class JetpackSetupHostingControllerTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewController = JetpackSetupHostingController(siteURL: testURL,
                                                            connectionOnly: true,
+                                                           wpcomCredentials: credentials,
                                                            stores: stores,
                                                            analytics: analytics,
                                                            onStoreNavigation: { _ in })
@@ -33,6 +36,7 @@ final class JetpackSetupHostingControllerTests: XCTestCase {
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewController = JetpackSetupHostingController(siteURL: testURL,
                                                            connectionOnly: true,
+                                                           wpcomCredentials: credentials,
                                                            stores: stores,
                                                            analytics: analytics,
                                                            onStoreNavigation: { _ in })

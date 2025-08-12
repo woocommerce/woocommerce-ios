@@ -150,7 +150,7 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
         }
     }
 
-    func test_itnValidationError_when_item_view_models_hsTariffNumberTotalValue_is_nil() {
+    func test_itnValidationError_when_item_view_models_total_value_exceeds_threshold() {
         // Given
         viewModel = WooShippingCustomsFormViewModel(order: Order.fake().copy(currency: "USD"),
                                                     shipment: sampleShipment,
@@ -171,45 +171,6 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.itnValidationError, .missingForTotalShipmentValue)
-    }
-
-    func test_itnValidationError_when_item_view_models_hsTariffNumberTotalValue_is_less_than_2500() {
-        // Given
-        viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
-                                                    shipment: sampleShipment,
-                                                    onFormReady: { _ in })
-
-        // When
-        viewModel.itemsViewModels.first?.hsTariffNumberTotalValue = ("123456", 1000)
-
-        // Then
-        XCTAssertNil(viewModel.itnValidationError)
-    }
-
-    func test_itnValidationError_when_item_view_models_hsTariffNumberTotalValue_is_more_than_2500() {
-        // Given
-        viewModel = WooShippingCustomsFormViewModel(order: Order.fake(),
-                                                    shipment: sampleShipment,
-                                                    onFormReady: { _ in })
-
-        // When
-        viewModel.itemsViewModels[0].requiredInformationIsEntered = true
-        viewModel.itemsViewModels[0].hsTariffNumberTotalValue = ("123456", 1000)
-        viewModel.itemsViewModels[1].hsTariffNumberTotalValue = ("123456", 2000)
-        viewModel.itemsViewModels[1].requiredInformationIsEntered = true
-        viewModel.internationalTransactionNumber = ""
-        viewModel.updateDestinationCountry(code: "CA") // ITN is not required for Canada
-
-        // Then
-        XCTAssertTrue(viewModel.requiredInformationIsEntered)
-        XCTAssertNil(viewModel.itnValidationError)
-
-        // When
-        viewModel.updateDestinationCountry(code: "UK")
-
-        // Then
-        XCTAssertFalse(viewModel.requiredInformationIsEntered)
-        XCTAssertEqual(viewModel.itnValidationError, .missingForTariffClass)
     }
 
     func test_itnValidationError_when_destination_country_requires_ITN() {
@@ -481,12 +442,16 @@ final class WooShippingCustomsFormViewModelTests: XCTestCase {
 
 private extension WooShippingCustomsFormViewModelTests {
     var sampleShipment: Shipment {
+        return sampleShipment()
+    }
+
+    func sampleShipment(_ manualValuePerUnit: Double? = nil) -> Shipment {
         let item1 = ShippingLabelPackageItem(productOrVariationID: 1,
                                              orderItemID: 123,
                                              name: "Shirt",
                                              weight: 0.5,
                                              quantity: 2,
-                                             value: 9.99,
+                                             value: manualValuePerUnit ?? 9.99,
                                              dimensions: ProductDimensions.fake(),
                                              attributes: [],
                                              imageURL: nil)
@@ -495,7 +460,7 @@ private extension WooShippingCustomsFormViewModelTests {
                                              name: "Pants",
                                              weight: 0.5,
                                              quantity: 1,
-                                             value: 11,
+                                             value: manualValuePerUnit ?? 11,
                                              dimensions: ProductDimensions.fake(),
                                              attributes: [],
                                              imageURL: nil)

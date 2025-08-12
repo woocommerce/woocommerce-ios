@@ -43,7 +43,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         self.knownReaderProvider = knownReaderProvider
         self.configuration = configuration
         self.cardReaderConnectionAnalyticsTracker = cardReaderConnectionAnalyticsTracker
-        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.setUpTapToPayLearnMoreURL
+        self.learnMoreURL = CardPresentPaymentsPlugin.wcPay.manageCardReaderLearnMoreURL
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
@@ -109,7 +109,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     private func updateLearnMoreUrl(stores: StoresManager) {
         let loadLearnMoreUrlAction = CardPresentPaymentAction
             .loadActivePaymentGatewayExtension() { [weak self] result in
-                result.manageCardReaderLearnMoreURL
+                self?.learnMoreURL = result.manageCardReaderLearnMoreURL
             }
         stores.dispatch(loadLearnMoreUrlAction)
     }

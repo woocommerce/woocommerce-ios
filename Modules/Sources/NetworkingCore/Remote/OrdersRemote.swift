@@ -25,7 +25,8 @@ public class OrdersRemote: Remote {
     ///     - createdVia: If given, limit response to orders created via the specified source (e.g. "pos-rest-api" for Point of Sale).
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of orders.
+    /// - Throws: Network or parsing errors.
     ///
     public func loadAllOrders(for siteID: Int64,
                               statuses: [String]? = nil,
@@ -36,8 +37,7 @@ public class OrdersRemote: Remote {
                               productID: Int64? = nil,
                               createdVia: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
-                              pageSize: Int = Defaults.pageSize,
-                              completion: @escaping (Result<[Order], Error>) -> Void) {
+                              pageSize: Int = Defaults.pageSize) async throws -> [Order] {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
         let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
@@ -84,7 +84,7 @@ public class OrdersRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves a specific `Order`
@@ -138,13 +138,13 @@ public class OrdersRemote: Remote {
     ///     - keyword: Search string that should be matched by the orders.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Orders to be retrieved per page.
-    ///     - completion: Closure to be executed upon completion.
+    /// - Returns: Array of orders matching the search criteria.
+    /// - Throws: Network or parsing errors.
     ///
     public func searchOrders(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int = Defaults.pageNumber,
-                             pageSize: Int = Defaults.pageSize,
-                             completion: @escaping ([Order]?, Error?) -> Void) {
+                             pageSize: Int = Defaults.pageSize) async throws -> [Order] {
         let parameters = [
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),
@@ -162,7 +162,7 @@ public class OrdersRemote: Remote {
                                      availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Creates an order using the specified fields of a given order

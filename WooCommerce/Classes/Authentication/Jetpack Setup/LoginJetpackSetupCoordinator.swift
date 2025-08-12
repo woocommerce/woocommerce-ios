@@ -44,7 +44,11 @@ final class LoginJetpackSetupCoordinator: Coordinator {
 //
 private extension LoginJetpackSetupCoordinator {
     func showSetupSteps() {
-        let setupUI = JetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] connectedEmail in
+        let setupUI = JetpackSetupHostingController(
+            siteURL: siteURL,
+            connectionOnly: connectionOnly,
+            wpcomCredentials: stores.sessionManager.defaultCredentials,
+            onStoreNavigation: { [weak self] connectedEmail in
             guard let self, let email = connectedEmail else { return }
             if email != self.stores.sessionManager.defaultAccount?.email {
                 // if the user authorized Jetpack with a different account, support them to log in with that account.

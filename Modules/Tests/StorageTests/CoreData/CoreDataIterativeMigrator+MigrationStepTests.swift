@@ -24,42 +24,42 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
 
     func test_steps_returns_MigrationSteps_from_source_to_the_target_model() throws {
         // Given
-        let modelVersion23 = ModelVersion(name: "Model 23")
-        let modelVersion31 = ModelVersion(name: "Model 31")
-        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion23))
-        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion31))
+        let modelVersion33 = ModelVersion(name: "Model 33")
+        let modelVersion41 = ModelVersion(name: "Model 41")
+        let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion33))
+        let targetModel = try XCTUnwrap(modelsInventory.model(for: modelVersion41))
 
         // When
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
 
         // Then
         // There should be 8 steps:
-        //   - 23 to 24
-        //   - 24 to 25
-        //   - 25 to 26
-        //   - 26 to 27
-        //   - 27 to 28
-        //   - 28 to 29
-        //   - 29 to 30
-        //   - 30 to 31
+        //   - 33 to 34
+        //   - 34 to 35
+        //   - 35 to 36
+        //   - 36 to 37
+        //   - 37 to 38
+        //   - 38 to 39
+        //   - 39 to 40
+        //   - 40 to 41
         XCTAssertEqual(steps.count, 8)
 
         // Assert the values of first and last steps.
-        let modelVersion24 = ModelVersion(name: "Model 24")
+        let modelVersion34 = ModelVersion(name: "Model 34")
 
-        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion23,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion23)),
-                                              targetVersion: modelVersion24,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion24)))
+        let expectedFirstStep = MigrationStep(sourceVersion: modelVersion33,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion33)),
+                                              targetVersion: modelVersion34,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion34)))
         let actualFirstStep = try XCTUnwrap(steps.first)
         XCTAssertEqual(actualFirstStep, expectedFirstStep)
 
-        let modelVersion30 = ModelVersion(name: "Model 30")
+        let modelVersion40 = ModelVersion(name: "Model 40")
 
-        let expectedLastStep = MigrationStep(sourceVersion: modelVersion30,
-                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion30)),
-                                              targetVersion: modelVersion31,
-                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion31)))
+        let expectedLastStep = MigrationStep(sourceVersion: modelVersion40,
+                                              sourceModel: try XCTUnwrap(modelsInventory.model(for: modelVersion40)),
+                                              targetVersion: modelVersion41,
+                                              targetModel: try XCTUnwrap(modelsInventory.model(for: modelVersion41)))
         let actualLastStep = try XCTUnwrap(steps.last)
         XCTAssertEqual(actualLastStep, expectedLastStep)
     }
@@ -140,13 +140,23 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
     /// reach this condition because of the precondition checks in `CoreDataIterativeMigrator`.
     func test_steps_returns_source_to_latest_version_MigrationSteps_if_the_source_and_target_are_the_same() throws {
         // Given
-        let modelVersion37 = ModelVersion(name: "Model 37")
+        let sourceModelName = "Model 37"
+        let modelVersion37 = ModelVersion(name: sourceModelName)
         let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
 
+        // Find the index of Model 37 in the current inventory
+        // which only contains Models 30-124 as per latest update on https://github.com/woocommerce/woocommerce-ios/pull/15987
+        let sourceModelIndex = try XCTUnwrap(modelsInventory.versions.firstIndex { $0.name == sourceModelName },
+                                             "Model 37 should exist in the inventory")
         // When
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: sourceModel)
 
         // Then
-        XCTAssertEqual(steps.count, modelsInventory.versions.count - 37)
+        // Expected behavior (bug): When source == target, it returns steps from that model to the latest version
+        // This means: Model 37 → Model 38 → ... → Model 124
+        // Calculation: total versions - source index - 1 (since we don't include the source model itself)
+        let expectedStepCount = modelsInventory.versions.count - sourceModelIndex - 1
+        XCTAssertEqual(steps.count, expectedStepCount,
+                       "Should return steps from Model 37 to the latest model (Model 124)")
     }
 }

@@ -184,7 +184,7 @@ final class CoreDataManagerTests: XCTestCase {
         }
 
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 1)
-        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: OrderFeeLine.entityName,
                                                    in: manager.viewStorage as! NSManagedObjectContext))
 
         // When
@@ -193,8 +193,8 @@ final class CoreDataManagerTests: XCTestCase {
         // recreate the database.
         let invalidModelsInventory = ManagedObjectModelsInventory(
             packageURL: modelsInventory.packageURL,
-            currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 2"))),
-            versions: [.init(name: "Model 2")]
+            currentModel: try XCTUnwrap(modelsInventory.model(for: .init(name: "Model 30"))),
+            versions: [.init(name: "Model 30")]
         )
 
         manager = try makeManager(using: invalidModelsInventory, deletingExistingStoreFiles: false)
@@ -211,8 +211,9 @@ final class CoreDataManagerTests: XCTestCase {
         insertAccount(to: manager.viewStorage)
         XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 2)
 
-        // The Note entity does not exist in Model 2. This proves that the store was reset to Model 2.
-        XCTAssertNil(NSEntityDescription.entity(forEntityName: Note.entityName,
+        // The OrderFeeLine entity does not exist in Model 30, was introduced in Model 42
+        // This proves that the store was reset to Model 30.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: OrderFeeLine.entityName,
                                                 in: manager.viewStorage as! NSManagedObjectContext))
     }
 

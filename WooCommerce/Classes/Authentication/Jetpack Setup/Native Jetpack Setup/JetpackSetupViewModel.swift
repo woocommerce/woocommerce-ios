@@ -17,6 +17,7 @@ final class JetpackSetupViewModel: ObservableObject {
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
     private let wpcomCredentials: Credentials?
     private var isPluginActivated = false
+    private var connectionType = WooAnalyticsEvent.JetpackSetup.ConnectionType.native
 
     @Published private(set) var setupSteps: [JetpackInstallStep]
 
@@ -175,7 +176,6 @@ final class JetpackSetupViewModel: ObservableObject {
 
     /// Tracks events if the current flow is Jetpack setup after login with site credentials
     func trackSetup(tap: WooAnalyticsEvent.JetpackSetup.SetupFlow.TapTarget? = nil,
-                    connectionType: WooAnalyticsEvent.JetpackSetup.ConnectionType = .native,
                     failure: Error? = nil) {
         /// Helper for analytics since `currentSetupStep` is optional.
         let currentStepForAnalytics: JetpackInstallStep = currentSetupStep ?? (connectionOnly ? .connection : .installation)
@@ -262,7 +262,8 @@ private extension JetpackSetupViewModel {
     ///
     func startConnectionWithWebView() {
         currentSetupStep = .connection
-        trackSetup(connectionType: .web)
+        connectionType = .web
+        trackSetup()
         let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {
@@ -277,7 +278,7 @@ private extension JetpackSetupViewModel {
                 }
                 self.shouldPresentWebView = true
             case .failure(let error):
-                self.trackSetup(connectionType: .web, failure: error)
+                self.trackSetup(failure: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true

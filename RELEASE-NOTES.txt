@@ -5,6 +5,7 @@
 -----
 - [*] Jetpack setup: Native experience for the connection step [https://github.com/woocommerce/woocommerce-ios/pull/15983]
 - [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
+- [***] Increased app's minimum deployment target to iOS17 [https://github.com/woocommerce/woocommerce-ios/pull/16003]
 
 23.0
 -----

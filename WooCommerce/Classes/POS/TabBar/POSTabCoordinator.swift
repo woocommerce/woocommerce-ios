@@ -30,12 +30,12 @@ final class POSTabCoordinator {
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
-    private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
-        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
+    private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol = {
+        PointOfSaleLocalStorageItemFetchStrategyFactory(siteID: siteID, storageManager: storageManager)
     }()
 
-    private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
-        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
+    private lazy var posPopularItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol = {
+        PointOfSaleLocalStorageItemFetchStrategyFactory(siteID: siteID, storageManager: storageManager)
     }()
 
     private lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {

@@ -2,6 +2,7 @@ import Foundation
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
+import Storage
 
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
     func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
@@ -66,5 +67,28 @@ public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetc
 
     public func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
+    }
+}
+
+public final class PointOfSaleLocalStorageItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
+    private let siteID: Int64
+    private let storageManager: StorageManagerType
+
+    public init(siteID: Int64, storageManager: StorageManagerType) {
+        self.siteID = siteID
+        self.storageManager = storageManager
+    }
+
+    public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
+        PointOfSaleLocalStoragePurchasableItemFetchStrategy(siteID: siteID, storageManager: storageManager)
+    }
+
+    public func searchStrategy(searchTerm: String,
+                               analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
+        PointOfSaleLocalStorageSearchStrategy(siteID: siteID, storageManager: storageManager, searchTerm: searchTerm)
+    }
+
+    public func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy {
+        PointOfSaleLocalStoragePurchasableItemFetchStrategy(siteID: siteID, storageManager: storageManager)
     }
 }

@@ -18,7 +18,7 @@ struct CouponExpiryDateView: View {
                         .environment(\.timeZone, timezone)
                         .datePickerStyle(GraphicalDatePickerStyle())
                         .padding(.vertical, Constants.datePickerVerticalMargin)
-                        .onChange(of: date) { _ in
+                        .onChange(of: date) {
                             isRemovalEnabled = true
                         }
                     VStack {

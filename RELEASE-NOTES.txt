@@ -4,6 +4,7 @@
 23.1
 -----
 - [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
+- [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16002]
 
 23.0
 -----

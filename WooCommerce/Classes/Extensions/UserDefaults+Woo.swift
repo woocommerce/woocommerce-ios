@@ -68,6 +68,8 @@ extension UserDefaults {
 
         // Hide stores from store picker
         case hiddenStoreIDs
+
+        case lastPOSIncrementalSyncTimestamp
     }
 }
 

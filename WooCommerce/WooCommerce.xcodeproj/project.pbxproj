@@ -934,6 +934,8 @@
 		20C3DB262E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */; };
 		20C3DB272E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB1D2E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupFlow.swift */; };
 		20C3DB292E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */; };
+		20C6D8402E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */; };
+		20C6D8412E4B981C0000B386 /* POSCatalogSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */; };
 		20C6E7512CDE4AEA00CD124C /* ItemListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6E7502CDE4AEA00CD124C /* ItemListState.swift */; };
 		20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */; };
 		20CC1EDB2AFA8381006BD429 /* InPersonPaymentsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */; };
@@ -2762,9 +2764,9 @@
 		DEA357132ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */; };
 		DEA64C532E40B04700791018 /* OrderDetailsProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA64C522E40B04000791018 /* OrderDetailsProduct.swift */; };
 		DEA64C552E41A2D000791018 /* Product+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA64C542E41A2CA00791018 /* Product+Helpers.swift */; };
+		DEA65B372E41A65600791018 /* ProductListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA65B362E41A65100791018 /* ProductListItem.swift */; };
 		DEA66A192E41DECF00791018 /* ShippingLabelProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA66A182E41DEC200791018 /* ShippingLabelProduct.swift */; };
 		DEA66A1B2E41E0C000791018 /* BlazeCampaignProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA66A1A2E41E0B800791018 /* BlazeCampaignProduct.swift */; };
-		DEA65B372E41A65600791018 /* ProductListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA65B362E41A65100791018 /* ProductListItem.swift */; };
 		DEA6BCAF2BC6A9B10017D671 /* StoreStatsChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */; };
 		DEA6BCB12BC6AA040017D671 /* StoreStatsChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */; };
 		DEA88F502AA9D0100037273B /* AddEditProductCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */; };
@@ -4133,6 +4135,8 @@
 		20C3DB202E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupModels.swift; sourceTree = "<group>"; };
 		20C3DB212E1E69CF00CF7D3B /* PointOfSaleBarcodeScannerSetupViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleBarcodeScannerSetupViews.swift; sourceTree = "<group>"; };
 		20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleFlowButtonsView.swift; sourceTree = "<group>"; };
+		20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCatalogSyncBackgroundTaskManager.swift; sourceTree = "<group>"; };
+		20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCatalogSyncController.swift; sourceTree = "<group>"; };
 		20C6E7502CDE4AEA00CD124C /* ItemListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListState.swift; sourceTree = "<group>"; };
 		20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListBaseItem.swift; sourceTree = "<group>"; };
 		20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenu.swift; sourceTree = "<group>"; };
@@ -5965,9 +5969,9 @@
 		DEA357122ADCC4C9006380BA /* BlazeCampaignListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModelTests.swift; sourceTree = "<group>"; };
 		DEA64C522E40B04000791018 /* OrderDetailsProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsProduct.swift; sourceTree = "<group>"; };
 		DEA64C542E41A2CA00791018 /* Product+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Helpers.swift"; sourceTree = "<group>"; };
+		DEA65B362E41A65100791018 /* ProductListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListItem.swift; sourceTree = "<group>"; };
 		DEA66A182E41DEC200791018 /* ShippingLabelProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelProduct.swift; sourceTree = "<group>"; };
 		DEA66A1A2E41E0B800791018 /* BlazeCampaignProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignProduct.swift; sourceTree = "<group>"; };
-		DEA65B362E41A65100791018 /* ProductListItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListItem.swift; sourceTree = "<group>"; };
 		DEA6BCAE2BC6A9B10017D671 /* StoreStatsChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChart.swift; sourceTree = "<group>"; };
 		DEA6BCB02BC6AA040017D671 /* StoreStatsChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsChartViewModel.swift; sourceTree = "<group>"; };
 		DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -8824,6 +8828,8 @@
 				26BCA0412C35EDBF000BE96C /* OrderListSyncBackgroundTask.swift */,
 				26F115AE2C49A9250019CD73 /* DashboardSyncBackgroundTask.swift */,
 				26DDA4A82C4839B8005FBEBF /* DashboardTimestampStore.swift */,
+				20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */,
+				20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */,
 			);
 			path = BackgroundTasks;
 			sourceTree = "<group>";
@@ -15853,6 +15859,8 @@
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
 				EEC099362BF3C68000FBCF6C /* MostActiveCouponsCard.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
+				20C6D8402E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift in Sources */,
+				20C6D8412E4B981C0000B386 /* POSCatalogSyncController.swift in Sources */,
 				02C27BCE282CB52F0065471A /* CardPresentPaymentReceiptEmailCoordinator.swift in Sources */,
 				20D5575D2DFADF5400D9EC8B /* BarcodeScannerContainer.swift in Sources */,
 				026826AA2BF59DF70036F959 /* CartView.swift in Sources */,

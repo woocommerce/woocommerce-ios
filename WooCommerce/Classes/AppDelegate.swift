@@ -59,6 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Handles events to background refresh the app.
     ///
     private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+    
+    /// Manages POS catalog background synchronization.
+    ///
+    internal let posCatalogSyncManager = POSCatalogSyncBackgroundTaskManager()
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -127,6 +131,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Register for background app refresh events.
         appRefreshHandler.registerSystemTaskIdentifier()
+        
+        // Register POS catalog sync background tasks.
+        posCatalogSyncManager.registerBackgroundTasks()
+        
+        // Schedule initial POS catalog syncs.
+        posCatalogSyncManager.scheduleFullCatalogSync()
+        posCatalogSyncManager.scheduleIncrementalSync()
+        
+        // Recover any incomplete POS catalog syncs from previous app sessions.
+        posCatalogSyncManager.recoverIncompletesyncs()
 
         return true
     }

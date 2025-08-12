@@ -1270,6 +1270,18 @@ enum WooAnalyticsStat: String {
     case pushNotificationOrderBackgroundSynced = "push_notification_order_background_synced"
     case pushNotificationOrderBackgroundSyncError = "push_notification_order_background_sync_error"
     case backgroundUpdatesDisabled = "background_updates_disabled"
+    
+    // MARK: POS Catalog Sync events
+    case posFullCatalogSyncScheduled = "pos_full_catalog_sync_scheduled"
+    case posIncrementalSyncScheduled = "pos_incremental_sync_scheduled"
+    case posCatalogSyncSchedulingError = "pos_catalog_sync_scheduling_error"
+    case posFullCatalogSyncCompleted = "pos_full_catalog_sync_completed"
+    case posIncrementalSyncCompleted = "pos_incremental_sync_completed"
+    case posFullCatalogSyncError = "pos_full_catalog_sync_error"
+    case posIncrementalSyncError = "pos_incremental_sync_error"
+    case posCatalogSyncTaskExpired = "pos_catalog_sync_task_expired"
+    case posCatalogSyncRecovered = "pos_catalog_sync_recovered"
+    case posCatalogSyncRecoveryError = "pos_catalog_sync_recovery_error"
 
     // MARK: Point of Sale events
     case pointOfSaleTabSelected = "main_tab_pos_selected"

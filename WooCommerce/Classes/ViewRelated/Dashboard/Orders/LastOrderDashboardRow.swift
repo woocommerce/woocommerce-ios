@@ -39,7 +39,6 @@ struct LastOrderDashboardRow: View {
                                 .padding(.vertical, Layout.Status.vPadding)
                                 .background(viewModel.statusBackgroundColor)
                                 .cornerRadius(Layout.Status.cornerRadius)
-                            
                             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
                                viewModel.isPOSOrder {
                                 Text(viewModel.salesChannelText)

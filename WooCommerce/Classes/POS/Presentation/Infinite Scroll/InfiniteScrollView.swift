@@ -28,7 +28,7 @@ struct InfiniteScrollView<Content: View>: View {
                 .background(
                     GeometryReader { proxy in
                         Color.clear
-                            .onChange(of: proxy.frame(in: .named(Constants.scrollViewNamespace)).maxY) { maxY in
+                            .onChange(of: proxy.frame(in: .named(Constants.scrollViewNamespace)).maxY) { _, maxY in
                                 let contentHeight = proxy.size.height
                                 let scrollPosition = contentHeight - maxY
 

@@ -67,7 +67,7 @@ final class CoreDataIterativeMigrator {
                 try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
                 DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
             } catch {
-                DDLogError("[CoreDataIterativeMigrator] Direct migration failed. Error: \(error). Falling back to iterative migration.")
+                DDLogError("[CoreDataIterativeMigrator] Database destruction failed. Error: \(error). Falling back to iterative migration.")
             }
         }
 

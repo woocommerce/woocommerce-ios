@@ -1,6 +1,8 @@
 import SwiftUI
 import Yosemite
 import WooFoundation
+import NetworkingCore
+import Experiments
 
 /// Used in Last Order Dashboard card
 ///
@@ -29,13 +31,26 @@ struct LastOrderDashboardRow: View {
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: Layout.spacing) {
-                        Text(viewModel.statusDescription)
-                            .foregroundStyle(.black)
-                            .captionStyle()
-                            .padding(.horizontal, Layout.Status.hPadding)
-                            .padding(.vertical, Layout.Status.vPadding)
-                            .background(viewModel.statusBackgroundColor)
-                            .cornerRadius(Layout.Status.cornerRadius)
+                        HStack(spacing: Layout.badgeSpacing) {
+                            Text(viewModel.statusDescription)
+                                .foregroundStyle(.black)
+                                .captionStyle()
+                                .padding(.horizontal, Layout.Status.hPadding)
+                                .padding(.vertical, Layout.Status.vPadding)
+                                .background(viewModel.statusBackgroundColor)
+                                .cornerRadius(Layout.Status.cornerRadius)
+                            
+                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
+                               viewModel.isPOSOrder {
+                                Text(viewModel.salesChannelText)
+                                    .foregroundStyle(Color(uiColor: Layout.salesChannelLabelTextColor))
+                                    .captionStyle()
+                                    .padding(.horizontal, Layout.Status.hPadding)
+                                    .padding(.vertical, Layout.Status.vPadding)
+                                    .background(Color(uiColor: Layout.salesChannelLabelBackgroundColor))
+                                    .cornerRadius(Layout.Status.cornerRadius)
+                            }
+                        }
 
                         Text(viewModel.total)
                             .bodyStyle()
@@ -56,6 +71,9 @@ private extension LastOrderDashboardRow {
     enum Layout {
         static let padding: CGFloat = 16
         static let spacing: CGFloat = 8
+        static let badgeSpacing: CGFloat = 4
+        static let salesChannelLabelBackgroundColor = UIColor.withColorStudio(.wooCommercePurple, shade: .shade10)
+        static let salesChannelLabelTextColor = UIColor.withColorStudio(.wooCommercePurple, shade: .shade80)
 
         enum Status {
             static let hPadding: CGFloat = 8
@@ -68,6 +86,14 @@ private extension LastOrderDashboardRow {
 struct LastOrderDashboardRowViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     let order: Order
+
+    var isPOSOrder: Bool {
+        order.salesChannel == .pointOfSale
+    }
+
+    var salesChannelText: String {
+        order.salesChannel?.description ?? ""
+    }
 
     var number: String {
         "#\(order.number)"

@@ -80,7 +80,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: item) { newItem in
+            .onChange(of: item) { _, newItem in
                 if let newItem = newItem {
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
@@ -106,7 +106,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: isPresented) { newValue in
+            .onChange(of: isPresented) { _, newValue in
                 if newValue {
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
@@ -174,7 +174,7 @@ struct POSInteractiveDismissModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: disabled) { newValue in
+            .onChange(of: disabled) { _, newValue in
                 modalManager.setInteractiveDismissal(!newValue)
             }
             .onAppear {

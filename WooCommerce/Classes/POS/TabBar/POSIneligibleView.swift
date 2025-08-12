@@ -98,7 +98,7 @@ struct POSIneligibleView: View {
             .onAppear {
                 ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
             }
-            .onChange(of: reason) { newReason in
+            .onChange(of: reason) { _, newReason in
                 ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
             }
         }

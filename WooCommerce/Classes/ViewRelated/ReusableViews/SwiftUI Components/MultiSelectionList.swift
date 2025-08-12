@@ -111,7 +111,7 @@ struct MultiSelectionList<T: Hashable & Identifiable>: View {
             }
             .listStyle(.grouped)
         }
-        .onChange(of: query) { value in
+        .onChange(of: query) { _, value in
             onQueryChanged?(value)
         }
     }

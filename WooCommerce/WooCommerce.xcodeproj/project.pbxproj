@@ -936,6 +936,7 @@
 		20C3DB292E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */; };
 		20C6D8402E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */; };
 		20C6D8412E4B981C0000B386 /* POSCatalogSyncController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */; };
+		20C6D8432E4B98F30000B386 /* POSCatalogSyncExample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6D8422E4B98F30000B386 /* POSCatalogSyncExample.swift */; };
 		20C6E7512CDE4AEA00CD124C /* ItemListState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C6E7502CDE4AEA00CD124C /* ItemListState.swift */; };
 		20C909962D3151FA0013BCCF /* ItemListBaseItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */; };
 		20CC1EDB2AFA8381006BD429 /* InPersonPaymentsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */; };
@@ -4137,6 +4138,7 @@
 		20C3DB282E1E6FBA00CF7D3B /* PointOfSaleFlowButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleFlowButtonsView.swift; sourceTree = "<group>"; };
 		20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCatalogSyncBackgroundTaskManager.swift; sourceTree = "<group>"; };
 		20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCatalogSyncController.swift; sourceTree = "<group>"; };
+		20C6D8422E4B98F30000B386 /* POSCatalogSyncExample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSCatalogSyncExample.swift; sourceTree = "<group>"; };
 		20C6E7502CDE4AEA00CD124C /* ItemListState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListState.swift; sourceTree = "<group>"; };
 		20C909952D3151FA0013BCCF /* ItemListBaseItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListBaseItem.swift; sourceTree = "<group>"; };
 		20CC1EDA2AFA8381006BD429 /* InPersonPaymentsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InPersonPaymentsMenu.swift; sourceTree = "<group>"; };
@@ -8830,6 +8832,7 @@
 				26DDA4A82C4839B8005FBEBF /* DashboardTimestampStore.swift */,
 				20C6D83E2E4B981C0000B386 /* POSCatalogSyncBackgroundTaskManager.swift */,
 				20C6D83F2E4B981C0000B386 /* POSCatalogSyncController.swift */,
+				20C6D8422E4B98F30000B386 /* POSCatalogSyncExample.swift */,
 			);
 			path = BackgroundTasks;
 			sourceTree = "<group>";
@@ -16732,6 +16735,7 @@
 				DE7E5E7F2B4BC52C002E28D2 /* MultiSelectionList.swift in Sources */,
 				DA0DBE2F2C4FC61D00DF14C0 /* POSFloatingControlView.swift in Sources */,
 				DE02ABAD2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift in Sources */,
+				20C6D8432E4B98F30000B386 /* POSCatalogSyncExample.swift in Sources */,
 				45BBFBC3274FDA6400213001 /* HubMenuViewController.swift in Sources */,
 				20FA73882CDCC3A900554BE3 /* OrderDetailsSyncStateController.swift in Sources */,
 				451B1747258BD7B600836277 /* AddAttributeOptionsViewModel.swift in Sources */,

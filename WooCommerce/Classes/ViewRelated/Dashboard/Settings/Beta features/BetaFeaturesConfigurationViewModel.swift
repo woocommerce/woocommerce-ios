@@ -22,4 +22,23 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     func isOn(feature: BetaFeature) -> Binding<Bool> {
         appSettings.betaFeatureEnabledBinding(feature)
     }
+    
+    #if DEBUG
+    // MARK: - POS Catalog Sync Testing
+    
+    func triggerPOSFullSync() {
+        DDLogInfo("🔧 [DEV] [FULL-SYNC] Triggering POS full catalog sync from beta features menu...")
+        POSCatalogSyncDevelopmentHelper.triggerManualSync()
+    }
+    
+    func triggerPOSIncrementalSync() {
+        DDLogInfo("🔧 [DEV] [INCREMENTAL-SYNC] Triggering POS incremental sync from beta features menu...")
+        POSCatalogSyncController.shared.triggerIncrementalSync()
+    }
+    
+    func logPOSSyncStatus() {
+        DDLogInfo("🔧 [DEV] [STATUS] Logging POS sync status from beta features menu...")
+        POSCatalogSyncDevelopmentHelper.logCurrentSyncState()
+    }
+    #endif
 }

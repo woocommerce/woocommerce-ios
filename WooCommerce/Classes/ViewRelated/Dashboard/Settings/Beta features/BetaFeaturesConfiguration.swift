@@ -26,6 +26,46 @@ struct BetaFeaturesConfiguration: View {
                     TitleAndToggleRow(title: feature.title, isOn: viewModel.isOn(feature: feature))
                 }
             }
+            
+            #if DEBUG
+            Section(footer: Text(Localization.posSyncTestingDescription)) {
+                Button(action: {
+                    viewModel.triggerPOSFullSync()
+                }) {
+                    HStack {
+                        Text(Localization.triggerFullSync)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "arrow.down.circle")
+                            .foregroundColor(.blue)
+                    }
+                }
+                
+                Button(action: {
+                    viewModel.triggerPOSIncrementalSync()
+                }) {
+                    HStack {
+                        Text(Localization.triggerIncrementalSync)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "arrow.clockwise.circle")
+                            .foregroundColor(.blue)
+                    }
+                }
+                
+                Button(action: {
+                    viewModel.logPOSSyncStatus()
+                }) {
+                    HStack {
+                        Text(Localization.logSyncStatus)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.green)
+                    }
+                }
+            }
+            #endif
         }
         .background(Color(.listForeground(modal: false)))
         .listStyle(.grouped)
@@ -35,6 +75,24 @@ struct BetaFeaturesConfiguration: View {
 
 private enum Localization {
     static let title = NSLocalizedString("Experimental Features", comment: "Experimental features navigation title")
+    
+    #if DEBUG
+    static let posSyncTestingDescription = NSLocalizedString(
+        "POS Catalog Sync Testing - Trigger background sync operations and view detailed logs to understand timing and behavior.",
+        comment: "Description for POS catalog sync testing section in beta features")
+    
+    static let triggerFullSync = NSLocalizedString(
+        "Trigger Full Catalog Sync",
+        comment: "Button to trigger a full POS catalog sync for testing")
+    
+    static let triggerIncrementalSync = NSLocalizedString(
+        "Trigger Incremental Sync", 
+        comment: "Button to trigger an incremental POS catalog sync for testing")
+    
+    static let logSyncStatus = NSLocalizedString(
+        "Log Current Sync Status",
+        comment: "Button to log current POS sync status for debugging")
+    #endif
 }
 
 struct BetaFeaturesConfiguration_Previews: PreviewProvider {

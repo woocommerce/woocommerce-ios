@@ -79,7 +79,9 @@ struct TotalsView: View {
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
         }
-        .onChange(of: shouldShowTotalsFields, perform: hideTotalsFieldsWithDelay)
+        .onChange(of: shouldShowTotalsFields) {
+            hideTotalsFieldsWithDelay(shouldShowTotalsFields)
+        }
         .geometryGroup()
     }
 

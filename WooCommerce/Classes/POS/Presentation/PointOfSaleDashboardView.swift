@@ -385,15 +385,7 @@ struct PointOfSaleSettingsView: View {
                         .foregroundColor(.secondary)
                 }
                 HStack {
-                    Button(action: {
-                        // Handle
-                    }) {
-                        Text("Connect Card Reader")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
+                    CardReaderConnectionStatusView()
                     Button(action: {
                         // Handle
                     }) {

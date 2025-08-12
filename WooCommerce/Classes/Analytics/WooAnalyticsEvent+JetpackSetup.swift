@@ -10,6 +10,7 @@ extension WooAnalyticsEvent {
             case step
             case isSignup = "is_signup"
             case connectionType = "connection_type"
+            case usingApplicationPassword = "is_using_application_password"
         }
 
         enum LoginFlow {
@@ -66,9 +67,19 @@ extension WooAnalyticsEvent {
                               tap: SetupFlow.TapTarget? = nil,
                               connectionType: ConnectionType,
                               failure: Error? = nil) -> WooAnalyticsEvent {
+            let isApplicationPassword: Bool = {
+                let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+                switch credentials {
+                case .some(.applicationPassword):
+                    return true
+                default:
+                    return false
+                }
+            }()
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.step.rawValue: step.analyticsValue,
-                Key.connectionType.rawValue: connectionType.rawValue
+                Key.connectionType.rawValue: connectionType.rawValue,
+                Key.usingApplicationPassword.rawValue: isApplicationPassword
             ]
             if let tap {
                 properties[Key.tap.rawValue] = tap.rawValue

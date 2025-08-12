@@ -282,7 +282,13 @@ private extension JetpackSetupViewModel {
     func startConnectionWithWebView() {
         currentSetupStep = .connection
         trackSetupAfterLogin()
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+        let usingApplicationPassword: Bool = {
+            if case .some(.applicationPassword) = stores.sessionManager.defaultCredentials {
+                return true
+            }
+            return false
+        }()
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL(usingApplicationPassword: usingApplicationPassword) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let url):

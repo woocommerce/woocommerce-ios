@@ -13,7 +13,8 @@ public enum JetpackConnectionAction: Action {
     /// Updates Jetpack the plugin for the current site.
     case activateJetpackPlugin(completion: (Result<Void, Error>) -> Void)
     /// Fetches the URL used for setting up Jetpack connection.
-    case fetchJetpackConnectionURL(completion: (Result<URL, Error>) -> Void)
+    case fetchJetpackConnectionURL(usingApplicationPassword: Bool,
+                                   completion: (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
     case fetchJetpackConnectionData(completion: (Result<JetpackConnectionData, Error>) -> Void)
     /// Establishes site-level connection and returns WordPress.com blog ID.

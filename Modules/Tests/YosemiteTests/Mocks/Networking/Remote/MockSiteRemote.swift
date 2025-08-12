@@ -50,9 +50,14 @@ final class MockSiteRemote {
     func whenUpdatingSiteTitle(thenReturn result: Result<Void, Error>) {
         updateSiteTitleResult = result
     }
+
 }
 
 extension MockSiteRemote: SiteRemoteProtocol {
+    func finalizeJetpackConnection(siteID: Int64, siteURL: String, provisionResponse: JetpackConnectionProvisionResponse) async throws {
+        // no-op
+    }
+
     func createSite(name: String, flow: SiteCreationFlow) async throws -> SiteCreationResponse {
         guard let result = createSiteResult else {
             XCTFail("Could not find result for creating a site.")

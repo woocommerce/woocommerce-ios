@@ -15,7 +15,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
 
                 Text(instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
 
@@ -26,6 +26,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                 .padding(POSPadding.medium)
                 .background(Color.white)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+                .accessibilityLabel(Localization.barcodeImageAccesibilityLabel)
         }
     }
 }
@@ -34,6 +35,14 @@ extension PointOfSaleBarcodeScannerBarcodeView {
     enum Constants {
         static let maxBarcodeSize: CGFloat = 168
     }
+
+    enum Localization {
+        static let barcodeImageAccesibilityLabel = NSLocalizedString(
+            "pos.barcodeScannerSetup.barcodeImage.accesibilityLabel",
+            value: "Image of a code to be scanned by a barcode scanner.",
+            comment: "Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner."
+        )
+    }
 }
 
 struct PointOfSaleBarcodeScannerPairingView: View {
@@ -41,7 +50,6 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
-            // Temporary image until finalised assets are available
             Image(decorative: PointOfSaleAssets.gears.imageName)
                 .resizable()
                 .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
@@ -54,7 +62,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 
                 Text(instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
 
@@ -67,8 +75,11 @@ struct PointOfSaleBarcodeScannerPairingView: View {
                 UIApplication.shared.open(targetURL)
             } label: {
                 Text(Localization.settingsButtonTitle)
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posPrimaryContainer)
+                    .underline()
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            .padding(.top, POSSpacing.large)
         }
     }
 
@@ -78,11 +89,22 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 }
 
 private extension PointOfSaleBarcodeScannerPairingView {
-    //TODO: WOOMOB-792
     enum Localization {
-        static let settingsButtonTitle = "Go to settings"
-        static let title = "Pair your scanner"
-        static let instructionFormat = "Enable Bluetooth and select your %1$@ scanner in iOS Settings."
+        static let settingsButtonTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.settingsButton.title",
+            value: "Go to your device settings",
+            comment: "Button title to open device Settings for scanner pairing"
+        )
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.title",
+            value: "Pair your scanner",
+            comment: "Title for the scanner pairing step"
+        )
+        static let instructionFormat = NSLocalizedString(
+            "pos.barcodeScannerSetup.pairing.instruction.format",
+            value: "Enable Bluetooth and select your %1$@ scanner in the iOS Bluetooth settings. The scanner will beep and show a solid LED when paired.",
+            comment: "Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name."
+        )
     }
 
     enum Constants {
@@ -117,10 +139,26 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
 @available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerTestBarcodeView {
     enum Localization {
-        static let title = "Test your scanner"
-        static let instruction = "Scan the barcode to test your scanner"
-        static let timeoutTitle = "No scan data found yet"
-        static let timeoutInstruction = "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.title",
+            value: "Test your scanner",
+            comment: "Title for the scanner testing step"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.instruction",
+            value: "Scan the barcode to test your scanner.",
+            comment: "Instruction for testing the scanner by scanning a barcode"
+        )
+        static let timeoutTitle = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.timeout.title",
+            value: "No scan data found yet",
+            comment: "Title shown when scanner test times out without detecting a scan"
+        )
+        static let timeoutInstruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.test.timeout.instruction",
+            value: "Scan the barcode to test your scanner. If the issue continues, please check Bluetooth settings and try again.",
+            comment: "Instruction shown when scanner test times out, suggesting troubleshooting steps"
+        )
     }
 }
 
@@ -139,7 +177,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
 
                 Text(Localization.instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
         }
@@ -148,12 +186,12 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
     @ViewBuilder private var successIcon: some View {
         ZStack {
             Circle()
-                .frame(width: 104, height: 104)
+                .frame(width: 88, height: 88)
                 .foregroundColor(.posSuccess)
             Image(PointOfSaleAssets.successCheck.imageName)
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: 48, height: 48)
+                .frame(width: 36, height: 36)
                 .foregroundColor(.posOnSuccess)
         }
     }
@@ -161,10 +199,16 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
 
 private extension PointOfSaleBarcodeScannerSetupCompleteView {
     enum Localization {
-        //TODO: WOOMOB-792
-        static let title = "Scanner set up!"
-        static let instruction = "You are ready to start scanning products. \n" +
-        "Read more about barcode and QR code scanner support."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.complete.title",
+            value: "Scanner set up!",
+            comment: "Title shown when scanner setup is successfully completed"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.complete.instruction.2",
+            value: "You are ready to start scanning products. Next time you need to connect your scanner, just turn it on and it will reconnect automatically.",
+            comment: "Message shown when scanner setup is complete"
+        )
     }
 }
 
@@ -181,7 +225,7 @@ struct PointOfSaleBarcodeScannerErrorView: View {
 
                 Text(Localization.instruction)
                     .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurfaceVariantHighest)
+                    .foregroundColor(.posOnSurface)
                     .multilineTextAlignment(.center)
             }
         }
@@ -189,8 +233,76 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     }
 
     private enum Localization {
-        static let title = "Scanning issue found"
-        static let instruction = "Please check the scanner’s manual and reset it \n" +
-        "to factory settings, then retry the set up flow."
+        static let title = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.title",
+            value: "Scanning issue found",
+            comment: "Title shown when there's an error during scanner setup"
+        )
+        static let instruction = NSLocalizedString(
+            "pos.barcodeScannerSetup.error.instruction",
+            value: "Please check the scanner's manual and reset it to factory settings, then retry the setup flow.",
+            comment: "Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps"
+        )
     }
+}
+
+// MARK: - Previews
+
+@available(iOS 17.0, *)
+#Preview("Barcode View - HID Setup") {
+    PointOfSaleBarcodeScannerBarcodeView(
+        title: "Star BSH-20B setup",
+        instruction: "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.",
+        barcode: .starBsh20SetupBarcode
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Barcode View - Barcode Setup") {
+    PointOfSaleBarcodeScannerBarcodeView(
+        title: "Scanner setup",
+        instruction: "Use your barcode scanner to scan the code below to enable Bluetooth HID mode.",
+        barcode: .netum1228BCHIDBarcode
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Pairing View - Netum 1228BC") {
+    PointOfSaleBarcodeScannerPairingView(scanner: .netum1228BC)
+}
+
+@available(iOS 17.0, *)
+#Preview("Test View - Normal") {
+    PointOfSaleBarcodeScannerTestBarcodeView(
+        scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+            onTestPass: {},
+            onTestFailure: { _ in },
+            onTestTimeout: {},
+            barcodeDefinition: .ean13
+        ),
+        timerCompleted: false
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Test View - Timeout") {
+    PointOfSaleBarcodeScannerTestBarcodeView(
+        scanTester: PointOfSaleBarcodeScannerSetupScanTester(
+            onTestPass: {},
+            onTestFailure: { _ in },
+            onTestTimeout: {},
+            barcodeDefinition: .ean13
+        ),
+        timerCompleted: true
+    )
+}
+
+@available(iOS 17.0, *)
+#Preview("Setup Complete View") {
+    PointOfSaleBarcodeScannerSetupCompleteView()
+}
+
+@available(iOS 17.0, *)
+#Preview("Error View") {
+    PointOfSaleBarcodeScannerErrorView()
 }

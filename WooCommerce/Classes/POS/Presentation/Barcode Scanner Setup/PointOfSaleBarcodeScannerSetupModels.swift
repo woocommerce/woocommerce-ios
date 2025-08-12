@@ -29,11 +29,11 @@ enum PointOfSaleBarcodeScannerType {
     var analyticsName: String {
         switch self {
         case .starBSH20B:
-            return "Star_BSH_20B"
+            return "star_bsh_20b"
         case .tera12002D:
-            return "Tera_1200_2D"
+            return "tera_1200_2d"
         case .netum1228BC:
-            return "Netum_1228BC"
+            return "netum_1228bc"
         case .other:
             return "other"
         }
@@ -41,12 +41,27 @@ enum PointOfSaleBarcodeScannerType {
 }
 
 private extension PointOfSaleBarcodeScannerType {
-    //TODO: WOOMOB-792
     enum Localization {
-        static let starBsh20BName = "Star BSH-20B"
-        static let tera12002DName = "Tera 1200 2D"
-        static let netum1228BCName = "Netum 1228BC"
-        static let otherName = "Other scanner"
+        static let starBsh20BName = NSLocalizedString(
+            "pos.barcodeScannerSetup.scannerType.starBSH20B.name",
+            value: "Star BSH-20B",
+            comment: "Display name for Star BSH-20B barcode scanner model"
+        )
+        static let tera12002DName = NSLocalizedString(
+            "pos.barcodeScannerSetup.scannerType.tera12002D.name",
+            value: "Tera 1200 2D",
+            comment: "Display name for Tera 1200 2D barcode scanner model"
+        )
+        static let netum1228BCName = NSLocalizedString(
+            "pos.barcodeScannerSetup.scannerType.netum1228BC.name",
+            value: "Netum 1228BC",
+            comment: "Display name for Netum 1228BC barcode scanner model"
+        )
+        static let otherName = NSLocalizedString(
+            "pos.barcodeScannerSetup.scannerType.other.name",
+            value: "Other scanner",
+            comment: "Display name for other/unspecified barcode scanner models"
+        )
     }
 }
 

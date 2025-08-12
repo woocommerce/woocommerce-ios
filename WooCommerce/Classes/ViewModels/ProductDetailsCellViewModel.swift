@@ -92,12 +92,13 @@ struct ProductDetailsCellViewModel {
         self.isChildProduct = isChildProduct
     }
 
+    /// periphery: ignore - used in test module
     /// Order Item initializer
     ///
     init(item: OrderItem,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: Product? = nil,
+         product: OrderDetailsProduct? = nil,
          hasAddOns: Bool,
          isChildWithParent: Bool) {
         self.init(currency: currency,
@@ -119,7 +120,7 @@ struct ProductDetailsCellViewModel {
     init(aggregateItem: AggregateOrderItem,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: Product? = nil,
+         product: OrderDetailsProduct? = nil,
          hasAddOns: Bool,
          isChildWithParent: Bool) {
         self.init(currency: currency,
@@ -141,7 +142,7 @@ struct ProductDetailsCellViewModel {
     init(refundedItem: OrderItemRefund,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: Product? = nil) {
+         product: OrderDetailsProduct? = nil) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
                   imageURL: product?.imageURL,

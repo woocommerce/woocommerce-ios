@@ -123,11 +123,11 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .sheet(isPresented: $showSupport) {
+        .posSheet(isPresented: $showSupport) {
             supportForm
                 .interactiveDismissDisabled(true)
         }
-        .sheet(isPresented: $showDocumentation) {
+        .posSheet(isPresented: $showDocumentation) {
             documentationView
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
@@ -190,8 +190,8 @@ private extension PointOfSaleDashboardView {
                         viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.supportDone) {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.supportCancel) {
                         showSupport = false
                     }
                 }
@@ -258,9 +258,9 @@ private extension PointOfSaleDashboardView {
     }
 
     enum Localization {
-        static let supportDone = NSLocalizedString(
-            "pointOfSaleDashboard.support.done",
-            value: "Done",
+        static let supportCancel = NSLocalizedString(
+            "pointOfSaleDashboard.support.cancel",
+            value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
     }

@@ -49,26 +49,56 @@ public final class JetpackConnectionRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Fetches the user connection state with the site's Jetpack.
+    /// Fetches the connection state with the site's Jetpack for the authenticated user.
     ///
-    public func fetchJetpackUser(completion: @escaping (Result<JetpackUser, Error>) -> Void) {
-        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionUser)
-        let mapper = JetpackUserMapper()
+    public func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionData)
+        let mapper = JetpackConnectionDataMapper()
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Establishes a site-level connection between the site and WordPress.com using Jetpack.
+    /// Returns WPCom `blogID` of the connected site.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
+    ///
+    public func registerSite() async throws -> Int64 {
+        let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionRegister)
+        let mapper = JetpackConnectionRegistrationMapper()
+        let authorizationURL = try await enqueue(request, mapper: mapper).authorizeUrl
+        guard let components = URLComponents(string: authorizationURL),
+              let blogID = components.queryItems?.first(where: { $0.name == Constants.clientID })?.value as? String,
+              let numericID = Int64(blogID) else {
+            throw JetpackConnectionError.invalidAuthorizationURL
+        }
+        return numericID
+    }
+
+    /// Provisions the connection between the site and WordPress.com using Jetpack.
+    /// Returns a response containing scope and secret to be sent for finalizing the connection.
+    /// periphery: ignore - used in `JetpackConnectionStore` later
+    ///
+    public func provisionConnection() async throws -> JetpackConnectionProvisionResponse {
+        let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.jetpackConnectionProvision)
+        let mapper = JetpackConnectionProvisionMapper()
+        return try await enqueue(request, mapper: mapper)
     }
 }
 
-public extension JetpackConnectionRemote {
-    enum ConnectionError: Int, Error {
-        case malformedURL
-        case accountConnectionURLNotFound
-    }
+/// periphery: ignore - used in test module and on the UI layer
+public enum JetpackConnectionError: Error, Equatable {
+    case malformedURL
+    case accountConnectionURLNotFound
+    case invalidAuthorizationURL
+    case alreadyConnected
+    case connectionRequestFailed(message: String)
 }
 
 private extension JetpackConnectionRemote {
     enum Path {
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
-        static let jetpackConnectionUser = "/jetpack/v4/connection/data"
+        static let jetpackConnectionData = "/jetpack/v4/connection/data"
+        static let jetpackConnectionRegister = "/jetpack/v4/connection/register"
+        static let jetpackConnectionProvision = "/jetpack/v4/remote_provision"
         static let plugins = "/wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }
@@ -83,5 +113,6 @@ private extension JetpackConnectionRemote {
         static let jetpackPluginName = "jetpack/jetpack"
         static let jetpackPluginSlug = "jetpack"
         static let activeStatus = "active"
+        static let clientID = "client_id"
     }
 }

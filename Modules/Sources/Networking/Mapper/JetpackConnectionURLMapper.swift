@@ -8,7 +8,7 @@ struct JetpackConnectionURLMapper: Mapper {
     ///
     func map(response: Data) throws -> URL {
         guard let escapedString = String(data: response, encoding: .utf8) else {
-            throw JetpackConnectionRemote.ConnectionError.malformedURL
+            throw JetpackConnectionError.malformedURL
         }
         // The API returns an escaped string with double quotes, so we need to clean it up.
         let urlString = escapedString

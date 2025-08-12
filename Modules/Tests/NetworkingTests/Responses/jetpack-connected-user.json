@@ -13,6 +13,7 @@
             "jetpack_connect": "",
             "avatar": "http://2.gravatar.com/avatar/5e1a8fhjd"
         },
+        "blogId": 1244634,
         "gravatar": "<img alt='' src='http://2.gravatar.com/avatar/5e1a8fhjd'/>",
         "permissions": {
             "admin_page": true,
@@ -27,5 +28,7 @@
             "view_stats": true,
             "manage_plugins": true
         }
-    }
+    },
+    "connectionOwner": "testuser",
+    "isRegistered": true
 }

@@ -17,8 +17,9 @@ final class GameControllerBarcodeObserver {
     /// (GCKeyboard.coalesced), so notification about connection/disconnection will only be delivered once
     /// until the last keyboard disconnects.
     private var coalescedKeyboard: GCKeyboard?
-    private var barcodeParser: GameControllerBarcodeParser?
+    private(set) var barcodeParser: GameControllerBarcodeParser?
     private let configuration: HIDBarcodeParserConfiguration
+    private let analyticsTracker: BarcodeAnalyticsTracker
 
     /// Tracks current shift state to be applied to the next character key
     private var isShiftPressed: Bool = false
@@ -27,9 +28,15 @@ final class GameControllerBarcodeObserver {
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
     ///   - onScan: The closure to be called when a scan is completed.
-    init(configuration: HIDBarcodeParserConfiguration = .default, onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
+    ///   - analyticsTracker: The analytics tracker to use. Defaults to a new instance.
+    init(
+        configuration: HIDBarcodeParserConfiguration = .default,
+        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
+        analyticsTracker: BarcodeAnalyticsTracker = BarcodeAnalyticsTracker()
+    ) {
         self.onScan = onScan
         self.configuration = configuration
+        self.analyticsTracker = analyticsTracker
         addObservers()
         setupCoalescedKeyboard()
     }
@@ -119,27 +126,7 @@ final class GameControllerBarcodeObserver {
     }
 
     private func handleScanResult(_ result: HIDBarcodeParserResult) {
-        trackAnalyticsEvent(for: result)
+        analyticsTracker.track(result: result)
         onScan(result.asResult)
-    }
-
-    private func trackAnalyticsEvent(for result: HIDBarcodeParserResult) {
-        switch result {
-        case .success(let barcode, let scanDurationMs):
-            ServiceLocator.analytics.track(
-                event: WooAnalyticsEvent.PointOfSale.barcodeScanningSuccess(
-                    scanDurationMs: scanDurationMs,
-                    barcodeLength: barcode.count
-                )
-            )
-        case .failure(let error, let scanDurationMs):
-            ServiceLocator.analytics.track(
-                event: WooAnalyticsEvent.PointOfSale.barcodeScanningFailed(
-                    scanDurationMs: scanDurationMs,
-                    barcodeLength: error.barcode.count,
-                    failReason: error.analyticsReason
-                )
-            )
-        }
     }
 }

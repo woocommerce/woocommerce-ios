@@ -17,7 +17,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             maxHeight: parentSize.height * Constants.maxParentHeightRatio,
             id: flowManager.currentStepKey
         ) {
-            VStack(spacing: POSSpacing.xxLarge) {
+            VStack(spacing: POSSpacing.xLarge) {
                 ScrollView(showsIndicators: false) {
                     HStack {
                         Spacer()
@@ -35,7 +35,7 @@ struct PointOfSaleBarcodeScannerSetup: View {
             .posModalCloseButton(action: {
                 isPresented = false
             })
-            .padding(POSPadding.xxLarge)
+            .padding(POSPadding.xLarge)
             .background(Color.posSurfaceBright)
         }
         .onAppear {
@@ -116,6 +116,8 @@ private extension PointOfSaleBarcodeScannerSetup {
         )
     }
 }
+
+// MARK: - Previews
 
 @available(iOS 17.0, *)
 #Preview {

@@ -176,27 +176,27 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
-    func test_fetchJetpackUser_correctly_returns_parsed_user() throws {
+    func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
         // Given
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            remote.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionData { result in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let user = try XCTUnwrap(result.get())
+        let user = try XCTUnwrap(result.get().currentUser)
         XCTAssertTrue(user.isConnected)
         XCTAssertNotNil(user.wpcomUser)
     }
 
-    func test_fetchJetpackUser_properly_relays_errors() {
+    func test_fetchJetpackConnectionData_properly_relays_errors() {
         // Given
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
@@ -204,8 +204,8 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
-        let result: Result<JetpackUser, Error> = waitFor { promise in
-            remote.fetchJetpackUser { result in
+        let result: Result<JetpackConnectionData, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionData { result in
                 promise(result)
             }
         }
@@ -214,4 +214,80 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
+
+    func test_registerSite_correctly_returns_blogID() async throws {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection/register"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration")
+
+        // When
+        let blogID = try await remote.registerSite()
+
+        // Then
+        XCTAssertEqual(blogID, 1234567890)
+    }
+
+    func test_registerSite_properly_relays_errors() async {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection/register"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.registerSite()
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
+    func test_registerSite_throws_invalidAuthorizationURL_error_for_malformed_URL() async {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection/register"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration-invalid")
+
+        do {
+            // When
+            _ = try await remote.registerSite()
+        } catch {
+            // Then
+            XCTAssertEqual(error as? JetpackConnectionError, .invalidAuthorizationURL)
+        }
+    }
+
+    func test_provisionConnection_correctly_returns_provision_response() async throws {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/remote_provision"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-provision")
+
+        // When
+        let response = try await remote.provisionConnection()
+
+        // Then
+        XCTAssertEqual(response.userId, 123456789)
+        XCTAssertEqual(response.scope, "administrator")
+        XCTAssertEqual(response.secret, "secret_token_12345")
+    }
+
+    func test_provisionConnection_properly_relays_errors() async {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/remote_provision"
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.provisionConnection()
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
 }

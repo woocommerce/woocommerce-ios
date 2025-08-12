@@ -60,57 +60,42 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that loadAllOrders properly parses the `orders-load-all` sample response.
     ///
-    func testLoadAllOrdersProperlyReturnsParsedOrders() throws {
+    func test_loadAllOrders_properly_returns_parsed_orders() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        var result: Result<[Order], Error>?
-        waitForExpectation { expectation in
-            remote.loadAllOrders(for: sampleSiteID) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
-        }
+        let orders = try await remote.loadAllOrders(for: sampleSiteID)
 
         // Then
-        let orders = try XCTUnwrap(result?.get())
         XCTAssert(orders.count == 4)
     }
 
     /// Verifies that loadAllOrders properly relays Networking Layer errors.
     ///
-    func testLoadAllOrdersProperlyRelaysNetworkingErrors() throws {
+    func test_loadAllOrders_properly_relays_networking_errors() async throws {
         // Given
         let remote = OrdersRemote(network: network)
 
-        // When
-        var result: Result<[Order], Error>?
-        waitForExpectation { expectation in
-            remote.loadAllOrders(for: sampleSiteID) { aResult in
-                result = aResult
-                expectation.fulfill()
-            }
+        // When & Then
+        do {
+            _ = try await remote.loadAllOrders(for: sampleSiteID)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
-
-        // Then
-        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
-    func test_loadAllOrders_includes_modifiedAfter_parameter_when_provided() {
+    func test_loadAllOrders_includes_modifiedAfter_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         let modifiedAfter = Date()
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, modifiedAfter: modifiedAfter) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, modifiedAfter: modifiedAfter)
 
         // Then
         guard let queryParameters = network.queryParameters else {
@@ -123,18 +108,14 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
-    func test_loadAllOrders_includes_customer_parameter_when_provided() {
+    func test_loadAllOrders_includes_customer_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedCustomerID: Int64 = 123
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, customerID: expectedCustomerID) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, customerID: expectedCustomerID)
 
         // Then
         guard let queryParameters = network.queryParameters else {
@@ -146,18 +127,14 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
     }
 
-    func test_loadAllOrders_includes_product_parameter_when_provided() {
+    func test_loadAllOrders_includes_product_parameter_when_provided() async throws {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let expectedProductID: Int64 = 13
 
         // When
-        _ = waitFor { promise in
-            remote.loadAllOrders(for: self.sampleSiteID, productID: expectedProductID) { result in
-                promise(result)
-            }
-        }
+        _ = try await remote.loadAllOrders(for: sampleSiteID, productID: expectedProductID)
 
         // Then
         guard let queryParameters = network.queryParameters else {
@@ -243,35 +220,33 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Verifies that searchOrders properly parses the `orders-load-all` sample response.
     ///
-    func testSearchOrdersProperlyReturnsParsedOrders() {
+    func test_searchOrders_properly_returns_parsed_orders() async throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
 
-        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
-            XCTAssertNil(error)
-            XCTAssertNotNil(orders)
-            XCTAssert(orders!.count == 4)
-            expectation.fulfill()
-        }
+        // When
+        let orders = try await remote.searchOrders(for: sampleSiteID, keyword: String())
 
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssert(orders.count == 4)
     }
 
     /// Verifies that searchOrders properly relays Networking Layer errors.
     ///
-    func testSearchOrdersProperlyRelaysNetworkingErrors() {
+    func test_searchOrders_properly_relays_networking_error() async throws {
+        // Given
         let remote = OrdersRemote(network: network)
-        let expectation = self.expectation(description: "Load All Orders")
 
-        remote.searchOrders(for: sampleSiteID, keyword: String()) { (orders, error) in
-            XCTAssertNil(orders)
-            XCTAssertNotNil(error)
-            expectation.fulfill()
+        do {
+            // When
+            _ = try await remote.searchOrders(for: sampleSiteID, keyword: String())
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
         }
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
 
@@ -307,6 +282,19 @@ final class OrdersRemoteTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    func test_updateOrder_status_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        remote.updateOrder(from: sampleSiteID, orderID: sampleOrderID, statusKey: .pending) { (order, error) in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
     }
 
     func test_update_order_properly_encodes_shipping_lines_for_removal_from_order() throws {
@@ -515,6 +503,20 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertNil(request.parameters["meta_data"])
+    }
+
+    func test_updateOrder_with_fields_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.customerNote]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
     }
 
     // MARK: - Load Order Notes Tests
@@ -804,6 +806,20 @@ final class OrdersRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertNil(request.parameters["created_via"])
+    }
+
+    func test_createOrder_includes_decimal_places_parameter() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let order = Order.fake()
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: []) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["dp"] as? String)
+        assertEqual(received, "8")
     }
 
     // MARK: - Delete order tests

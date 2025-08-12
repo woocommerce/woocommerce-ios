@@ -177,20 +177,13 @@ final class ConnectivityToolViewModel {
     /// Test fetching the site orders by actually fetching orders.
     ///
     func testFetchingOrders() async -> ConnectivityToolCard.State {
-        await withCheckedContinuation { continuation in
-            orderRemote?.loadAllOrders(for: siteID) { [weak self] result in
-                guard let self else { return }
-
-                switch result {
-                case .success:
-                    DDLogInfo("Connectivity Tool: ✅ Site Orders")
-                case .failure(let error):
-                    DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
-                }
-
-                let state = self.stateForSiteResult(result)
-                continuation.resume(returning: state)
-            }
+        do {
+            _ = try await orderRemote?.loadAllOrders(for: siteID)
+            DDLogInfo("Connectivity Tool: ✅ Site Orders")
+            return stateForSiteResult(Result<[Order], Error>.success([]))
+        } catch {
+            DDLogError("Connectivity Tool: ❌ Site Orders\n\(error)")
+            return stateForSiteResult(Result<[Order], Error>.failure(error))
         }
     }
 

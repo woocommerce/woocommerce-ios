@@ -105,10 +105,23 @@ struct WooShippingCustomsItem: View {
                     .subheadlineStyle()
                     .padding(.top, Layout.collapsibleViewVerticalSpacing)
 
-                TextField(Localization.HSTariffNumberPlaceholder, text: $viewModel.hsTariffNumber)
-                    .keyboardType(.numberPad)
-                    .padding(Layout.extraPadding)
-                    .roundedBorder(cornerRadius: Layout.borderCornerRadius, lineColor: Color(.separator), lineWidth: Layout.borderLineWidth)
+                /// HS tariff number
+                TextField(
+                    viewModel.isHSTariffNumberRequired ? "" : Localization.HSTariffNumberPlaceholder,
+                    text: $viewModel.hsTariffNumber
+                )
+                .keyboardType(.numberPad)
+                .padding(Layout.extraPadding)
+                .roundedBorder(
+                    cornerRadius: Layout.borderCornerRadius,
+                    lineColor: (viewModel.isHSTariffNumberRequired && viewModel.hsTariffNumber.isEmpty) ? warningRedColor : Color(.separator),
+                    lineWidth: Layout.borderLineWidth
+                )
+
+                Text(Localization.valueRequiredWarningText)
+                    .foregroundColor(warningRedColor)
+                    .footnoteStyle()
+                    .renderedIf(viewModel.isHSTariffNumberRequired && viewModel.hsTariffNumber.isEmpty)
 
                 Text(Localization.tariffNumberRulesWarningText)
                     .foregroundColor(warningRedColor)

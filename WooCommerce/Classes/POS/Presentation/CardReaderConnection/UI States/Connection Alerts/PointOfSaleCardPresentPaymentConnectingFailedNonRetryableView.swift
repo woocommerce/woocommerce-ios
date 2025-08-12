@@ -29,8 +29,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedNonRetryableAlertViewModel(
             error: NSError(domain: "payments error", code: 1),

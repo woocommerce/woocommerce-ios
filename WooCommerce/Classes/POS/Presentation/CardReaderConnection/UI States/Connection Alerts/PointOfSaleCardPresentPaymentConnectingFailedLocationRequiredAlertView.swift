@@ -38,8 +38,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView(
         viewModel: PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertViewModel(cancelSearchAction: {}),
         animation: .init(namespace: namespace)

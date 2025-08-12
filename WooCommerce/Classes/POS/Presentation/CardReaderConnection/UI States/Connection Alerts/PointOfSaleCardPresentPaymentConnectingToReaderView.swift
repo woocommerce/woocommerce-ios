@@ -33,8 +33,9 @@ struct PointOfSaleCardPresentPaymentConnectingToReaderView: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview {
-    @Namespace var namespace
+    @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentConnectingToReaderView(
         viewModel: PointOfSaleCardPresentPaymentConnectingToReaderAlertViewModel(),
         animation: .init(namespace: namespace)

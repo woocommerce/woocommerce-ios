@@ -32,7 +32,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
-            fatalError()
+            fatalError("No delegate found for WordPressAuthenticator")
         }
 
         return delegate
@@ -140,7 +140,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = navigationController else {
-            fatalError()
+            fatalError("No navigation controller found to show login epilogue")
         }
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController,

@@ -16,7 +16,6 @@ enum PointOfSaleAssets: CaseIterable {
     case coupons
     case gears
     case barcodeFieldScreenshot
-    //TODO: WOOMOB-793 Update the imagesets for these barcodes to vector/dark mode friendly images
     case starBsh20SetupBarcode
     case tera12002DHIDBarcode
     case tera12002DPairBarcode

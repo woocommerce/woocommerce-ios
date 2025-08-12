@@ -6,7 +6,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
-    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -38,6 +37,7 @@ struct PointOfSaleDashboardView: View {
         case loading
         case ineligible(reason: POSIneligibleReason)
         case error(PointOfSaleErrorState)
+        case settings
         case content
         case unsupportedWidth
     }
@@ -46,7 +46,8 @@ struct PointOfSaleDashboardView: View {
         PointOfSaleDashboardViewHelper.determineViewState(
             eligibilityState: posModel.entryPointController.eligibilityState,
             itemsContainerState: itemsViewState.containerState,
-            horizontalSizeClass: horizontalSizeClass
+            horizontalSizeClass: horizontalSizeClass,
+            viewStateCoordinator: viewStateCoordinator
         )
     }
 
@@ -78,6 +79,8 @@ struct PointOfSaleDashboardView: View {
                         }
                     }
                 })
+            case .settings:
+                settingsView
             case .content:
                 contentView
                     .accessibilitySortPriority(2)
@@ -89,8 +92,7 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: .constant(false),
-                                   showDocumentation: .constant(false),
-                                   showSettings: $showSettings)
+                                   showDocumentation: .constant(false))
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -123,10 +125,6 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
-        .fullScreenCover(isPresented: $showSettings) {
-            //PointOfSaleSettingsView()
-            PointOfSaleSettingsView2()
-        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
             Task { @MainActor in
@@ -144,6 +142,10 @@ struct PointOfSaleDashboardView: View {
                 trackElapsedTimeForInitialLoadingState()
             }
         }
+    }
+
+    private var settingsView: some View {
+        PointOfSaleSettingsView()
     }
 
     private var contentView: some View {
@@ -318,8 +320,10 @@ struct PointOfSaleSettingsView2: View {
     }
 }
 
-
+@available(iOS 17.0, *)
 struct PointOfSaleSettingsView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    
     enum SettingsSection: String, CaseIterable, Identifiable {
         case store = "Store"
         case productCatalog = "Product Catalog (TBD)"
@@ -538,8 +542,6 @@ struct PointOfSaleSettingsView: View {
     @State private var selectedSection: SettingsSection? = .store
     @State private var isSomeToggleEnabled = false
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         NavigationSplitView {
             List(SettingsSection.allCases, selection: $selectedSection) { section in
@@ -598,7 +600,7 @@ struct PointOfSaleSettingsView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                             dismiss()
+                             posModel.viewStateCoordinatorForView.hideSettings()
                          } label: {
                              Image(systemName: "xmark")
                          }

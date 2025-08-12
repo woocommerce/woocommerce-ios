@@ -6,8 +6,14 @@ struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
         itemsContainerState: ItemsContainerState,
-        horizontalSizeClass: UserInterfaceSizeClass?
+        horizontalSizeClass: UserInterfaceSizeClass?,
+        viewStateCoordinator: PointOfSaleViewStateCoordinator
     ) -> PointOfSaleDashboardView.ViewState {
+
+        if viewStateCoordinator.showingSettings {
+            return .settings
+        }
+
         guard case .regular = horizontalSizeClass else {
             return .unsupportedWidth
         }
@@ -38,7 +44,7 @@ extension PointOfSaleDashboardView.ViewState {
         switch self {
         case .content, .error, .unsupportedWidth:
             return true
-        case .loading, .ineligible:
+        case .loading, .ineligible, .settings:
             return false
         }
     }

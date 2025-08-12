@@ -21,10 +21,25 @@ protocol PointOfSaleViewStateResettable {
     /// When we reset, the search term is cleared for the new cart.
     var searchTerm: String = ""
 
+    /// Whether the settings view should be displayed full-screen.
+    /// When true, the main POS interface is hidden and settings are shown instead.
+    var showingSettings: Bool = false
+
+    /// Shows the settings view full-screen.
+    func showSettings() {
+        showingSettings = true
+    }
+
+    /// Hides the settings view and returns to the main POS interface.
+    func hideSettings() {
+        showingSettings = false
+    }
+
     /// Resets all view state to its default values.
     /// This should be called when starting a new cart to ensure the UI returns to its initial state.
     func reset() {
         selectedItemListType = .products(search: false)
         searchTerm = ""
+        showingSettings = false
     }
 }

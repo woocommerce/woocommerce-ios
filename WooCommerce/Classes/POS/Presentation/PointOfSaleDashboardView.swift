@@ -110,6 +110,28 @@ struct PointOfSaleDashboardView: View {
                 PointOfSalePartialSettingsView(isPresented: $showSettingsViaPartialScreenModal)
                     .transition(.move(edge: .leading))
             }
+            
+            // Full-screen settings overlay (replaces .fullScreenCover)
+            if showSettingsViaFullScreenModal {
+                ZStack {
+                    // Background overlay
+                    Color.black.opacity(0.3)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            showSettingsViaFullScreenModal = false
+                        }
+                    
+                    // Settings view
+                    PointOfSaleSettingsView()
+                        .ignoresSafeArea()
+                        .transition(.move(edge: .trailing))
+                        .environment(\.settingsDismissAction) {
+                            showSettingsViaFullScreenModal = false
+                        }
+                }
+                .zIndex(1000)
+                .animation(.easeInOut(duration: 0.3), value: showSettingsViaFullScreenModal)
+            }
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
@@ -137,27 +159,6 @@ struct PointOfSaleDashboardView: View {
         }
         .posRootModal()
         .posRootModal2() // Alternative POS Modal via PreferenceKeys system
-        .fullScreenCover(isPresented: $showSettingsViaFullScreenModal) {
-            // This needs to be duplicated, but modals like the card connection as .posModal will show BELOW the full screen cover
-            // These won't be visible unless we dismiss fullScreenCover.
-            PointOfSaleSettingsView()
-// Commenting out this .posModal duplication as not needed for now,
-// still does not work as the card connection flow is attached via .posModal to the PointOfSaleDashboardVew
-// So it appears behind the PointOfSaleSettingsView, which has been presented as .fullScreenCover
-//
-//                .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
-//                    posModel.cancelCardPaymentsOnboarding()
-//                }) { viewModel in
-//                    paymentsOnboardingView(from: viewModel)
-//                }
-//                .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
-//                          onDismiss: {
-//                    posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-//                }) { alertType in
-//                    PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-//                        .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-//                }
-        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
             Task { @MainActor in
@@ -250,10 +251,20 @@ struct FloatingControlAreaSizeKey: EnvironmentKey {
     static let defaultValue = CGSize.zero
 }
 
+// Environment key for settings dismiss action when using overlay approach
+struct SettingsDismissActionKey: EnvironmentKey {
+    static let defaultValue: () -> Void = {}
+}
+
 extension EnvironmentValues {
     var floatingControlAreaSize: CGSize {
         get { self[FloatingControlAreaSizeKey.self] }
         set { self[FloatingControlAreaSizeKey.self] = newValue }
+    }
+    
+    var settingsDismissAction: () -> Void {
+        get { self[SettingsDismissActionKey.self] }
+        set { self[SettingsDismissActionKey.self] = newValue }
     }
 }
 
@@ -411,8 +422,8 @@ struct PointOfSalePartialSettingsView: View {
 
 @available(iOS 17.0, *)
 struct PointOfSaleSettingsView: View {
-    @Environment(\.dismiss) private var dismiss
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.settingsDismissAction) private var settingsDismissAction
     
     enum SettingsSection: String, CaseIterable, Identifiable {
         case store = "Store"
@@ -446,7 +457,7 @@ struct PointOfSaleSettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        dismiss()
+                        settingsDismissAction()
                     }
                 }
             }
@@ -695,10 +706,8 @@ struct PointOfSaleSettingsView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            // #1
-                            posModel.viewStateCoordinatorForView.hideSettings()
-                            // #2
-                            dismiss()
+                            // Use the environment dismiss action for overlay approach
+                            settingsDismissAction()
                          } label: {
                              Image(systemName: "xmark")
                          }

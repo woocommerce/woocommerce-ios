@@ -150,35 +150,35 @@ public struct PointOfSaleLocalStoragePurchasableItemFetchStrategy: PointOfSalePu
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         return try await MainActor.run {
             let storage = storageManager.viewStorage
-            
+
             let predicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@)",
                                       siteID,
                                       ProductType.simple.rawValue,
                                       ProductType.variable.rawValue)
-            
+
             // Get total count for pagination metadata
             let totalCount = storage.countObjects(ofType: StorageProduct.self, matching: predicate)
-            
+
             // Create fetch request with true Core Data pagination
             let fetchRequest: NSFetchRequest<StorageProduct> = StorageProduct.fetchRequest()
             fetchRequest.predicate = predicate
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
             fetchRequest.fetchLimit = pageSize
             fetchRequest.fetchOffset = (pageNumber - 1) * pageSize
-            
+
             // Use StorageType's createFetchedResultsController with our paginated request
             let fetchedResultsController = storage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: nil,
                 cacheName: nil
             )
-            
+
             do {
                 try fetchedResultsController.performFetch()
                 let storageProducts = fetchedResultsController.fetchedObjects ?? []
-                
+
                 let hasMorePages = (pageNumber * pageSize) < totalCount
-                
+
                 let products = storageProducts.compactMap { storageProduct -> POSProduct? in
                     let product = storageProduct.toReadOnly()
                     return POSProduct(
@@ -201,7 +201,7 @@ public struct PointOfSaleLocalStoragePurchasableItemFetchStrategy: PointOfSalePu
                         stockStatusKey: product.stockStatusKey
                     )
                 }
-                
+
                 return PagedItems<POSProduct>(
                     items: products,
                     hasMorePages: hasMorePages,
@@ -216,34 +216,34 @@ public struct PointOfSaleLocalStoragePurchasableItemFetchStrategy: PointOfSalePu
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         return try await MainActor.run {
             let storage = storageManager.viewStorage
-            
+
             let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld AND purchasable == YES",
                                       siteID,
                                       parentProductID)
-            
+
             // Get total count for pagination metadata
             let totalCount = storage.countObjects(ofType: StorageProductVariation.self, matching: predicate)
-            
+
             // Create fetch request with true Core Data pagination
             let fetchRequest: NSFetchRequest<StorageProductVariation> = StorageProductVariation.fetchRequest()
             fetchRequest.predicate = predicate
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "menuOrder", ascending: true)]
             fetchRequest.fetchLimit = pageSize
             fetchRequest.fetchOffset = (pageNumber - 1) * pageSize
-            
+
             // Use StorageType's createFetchedResultsController with our paginated request
             let fetchedResultsController = storage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: nil,
                 cacheName: nil
             )
-            
+
             do {
                 try fetchedResultsController.performFetch()
                 let storageVariations = fetchedResultsController.fetchedObjects ?? []
-                
+
                 let hasMorePages = (pageNumber * pageSize) < totalCount
-                
+
                 let variations = storageVariations.compactMap { storageVariation -> POSProductVariation? in
                     let variation = storageVariation.toReadOnly()
                     return POSProductVariation(
@@ -264,7 +264,7 @@ public struct PointOfSaleLocalStoragePurchasableItemFetchStrategy: PointOfSalePu
                         stockStatusKey: variation.stockStatus.rawValue
                     )
                 }
-                
+
                 return PagedItems<POSProductVariation>(
                     items: variations,
                     hasMorePages: hasMorePages,
@@ -282,7 +282,7 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
     private let storageManager: StorageManagerType
     private let pageSize: Int
     private let searchTerm: String
-    
+
     init(siteID: Int64,
          storageManager: StorageManagerType,
          searchTerm: String,
@@ -292,45 +292,45 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
         self.searchTerm = searchTerm
         self.pageSize = pageSize
     }
-    
+
     public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         return try await MainActor.run {
             let storage = storageManager.viewStorage
-            
+
             // Create search predicate that includes the search term
             let basePredicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@)",
                                           siteID,
                                           ProductType.simple.rawValue,
                                           ProductType.variable.rawValue)
-            
-            let searchPredicate = NSPredicate(format: "name CONTAINS[cd] %@ OR sku CONTAINS[cd] %@", 
+
+            let searchPredicate = NSPredicate(format: "name CONTAINS[cd] %@ OR sku CONTAINS[cd] %@",
                                             searchTerm, searchTerm)
-            
+
             let combinedPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate, searchPredicate])
-            
+
             // Get total count for pagination metadata
             let totalCount = storage.countObjects(ofType: StorageProduct.self, matching: combinedPredicate)
-            
+
             // Create fetch request with true Core Data pagination
             let fetchRequest: NSFetchRequest<StorageProduct> = StorageProduct.fetchRequest()
             fetchRequest.predicate = combinedPredicate
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
             fetchRequest.fetchLimit = pageSize
             fetchRequest.fetchOffset = (pageNumber - 1) * pageSize
-            
+
             // Use StorageType's createFetchedResultsController with our paginated request
             let fetchedResultsController = storage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: nil,
                 cacheName: nil
             )
-            
+
             do {
                 try fetchedResultsController.performFetch()
                 let storageProducts = fetchedResultsController.fetchedObjects ?? []
-                
+
                 let hasMorePages = (pageNumber * pageSize) < totalCount
-                
+
                 let products = storageProducts.compactMap { storageProduct -> POSProduct? in
                     let product = storageProduct.toReadOnly()
                     return POSProduct(
@@ -353,7 +353,7 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
                         stockStatusKey: product.stockStatusKey
                     )
                 }
-                
+
                 return PagedItems<POSProduct>(
                     items: products,
                     hasMorePages: hasMorePages,
@@ -364,42 +364,42 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
             }
         }
     }
-    
+
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         return try await MainActor.run {
             let storage = storageManager.viewStorage
-            
+
             // Create search predicate for variations
             let basePredicate = NSPredicate(format: "siteID == %lld AND productID == %lld AND purchasable == YES",
                                           siteID,
                                           parentProductID)
-            
-            let searchPredicate = NSPredicate(format: "sku CONTAINS[cd] %@", searchTerm)
-            let combinedPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate, searchPredicate])
-            
+
+//            let searchPredicate = NSPredicate(format: "sku CONTAINS[cd] %@", searchTerm)
+            let combinedPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [basePredicate])
+
             // Get total count for pagination metadata
             let totalCount = storage.countObjects(ofType: StorageProductVariation.self, matching: combinedPredicate)
-            
+
             // Create fetch request with true Core Data pagination
             let fetchRequest: NSFetchRequest<StorageProductVariation> = StorageProductVariation.fetchRequest()
             fetchRequest.predicate = combinedPredicate
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "sku", ascending: true)]
             fetchRequest.fetchLimit = pageSize
             fetchRequest.fetchOffset = (pageNumber - 1) * pageSize
-            
+
             // Use StorageType's createFetchedResultsController with our paginated request
             let fetchedResultsController = storage.createFetchedResultsController(
                 fetchRequest: fetchRequest,
                 sectionNameKeyPath: nil,
                 cacheName: nil
             )
-            
+
             do {
                 try fetchedResultsController.performFetch()
                 let storageVariations = fetchedResultsController.fetchedObjects ?? []
-                
+
                 let hasMorePages = (pageNumber * pageSize) < totalCount
-                
+
                 let variations = storageVariations.compactMap { storageVariation -> POSProductVariation? in
                     let variation = storageVariation.toReadOnly()
                     return POSProductVariation(
@@ -420,7 +420,7 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
                         stockStatusKey: variation.stockStatus.rawValue
                     )
                 }
-                
+
                 return PagedItems<POSProductVariation>(
                     items: variations,
                     hasMorePages: hasMorePages,

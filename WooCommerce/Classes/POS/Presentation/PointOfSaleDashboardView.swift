@@ -119,7 +119,7 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: showSettingsViaPartialScreenModal)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+        .posModal2(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { viewModel in
             paymentsOnboardingView(from: viewModel)
@@ -136,22 +136,27 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
+        .posRootModal2() // Alternative POS Modal via PreferenceKeys system
         .fullScreenCover(isPresented: $showSettingsViaFullScreenModal) {
             // This needs to be duplicated, but modals like the card connection as .posModal will show BELOW the full screen cover
             // These won't be visible unless we dismiss fullScreenCover.
             PointOfSaleSettingsView()
-                .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
-                    posModel.cancelCardPaymentsOnboarding()
-                }) { viewModel in
-                    paymentsOnboardingView(from: viewModel)
-                }
-                .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
-                          onDismiss: {
-                    posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-                }) { alertType in
-                    PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                        .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-                }
+// Commenting out this .posModal duplication as not needed for now,
+// still does not work as the card connection flow is attached via .posModal to the PointOfSaleDashboardVew
+// So it appears behind the PointOfSaleSettingsView, which has been presented as .fullScreenCover
+//
+//                .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+//                    posModel.cancelCardPaymentsOnboarding()
+//                }) { viewModel in
+//                    paymentsOnboardingView(from: viewModel)
+//                }
+//                .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+//                          onDismiss: {
+//                    posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+//                }) { alertType in
+//                    PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+//                        .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+//                }
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -422,6 +427,7 @@ struct PointOfSaleSettingsView: View {
 
     @State private var showDocumentation = false
     @State private var showSupport = false
+    @State private var showTestModal2 = false
 
     var documentationDestinationView: some View {
         SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
@@ -475,6 +481,17 @@ struct PointOfSaleSettingsView: View {
                         // Handle
                     }) {
                         Text("Software Update")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                }
+                HStack {
+                    Button(action: {
+                        showTestModal2 = true
+                    }) {
+                        Text("Test Modal2")
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                     }
@@ -686,7 +703,310 @@ struct PointOfSaleSettingsView: View {
                          }
                     }
                 }
+                .posModal2(isPresented: $showTestModal2) {
+                    VStack {
+                        Text("Test Modal 2")
+                            .font(.title)
+                            .padding()
+                        Text("This modal is presented using the new PreferenceKey-based system")
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        Text("It should appear ABOVE the settings view, demonstrating that the new system works across fullScreenCover boundaries.")
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        Button("Close") {
+                            showTestModal2 = false
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding()
+                    }
+                    .frame(maxWidth: 400)
+                    .padding()
+                }
             }
         }
+        .posRootModal2()
+    }
+}
+
+/// Represents a modal presentation request that can be communicated via PreferenceKey
+struct POSModalRequest: Equatable {
+    let id: UUID
+    let content: AnyView
+    let onDismiss: (() -> Void)?
+    let allowsInteractiveDismissal: Bool
+    
+    init<Content: View>(
+        id: UUID = UUID(),
+        @ViewBuilder content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil,
+        allowsInteractiveDismissal: Bool = true
+    ) {
+        self.id = id
+        self.content = AnyView(content())
+        self.onDismiss = onDismiss
+        self.allowsInteractiveDismissal = allowsInteractiveDismissal
+    }
+    
+    static func == (lhs: POSModalRequest, rhs: POSModalRequest) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+// MARK: - PreferenceKey Infrastructure
+
+/// PreferenceKey for communicating modal presentation requests up the view hierarchy
+struct POSModalPreferenceKey: PreferenceKey {
+    static var defaultValue: POSModalRequest? = nil
+    
+    static func reduce(value: inout POSModalRequest?, nextValue: () -> POSModalRequest?) {
+        // Take the first non-nil value (most recent modal request)
+        if let next = nextValue() {
+            value = next
+        }
+    }
+}
+
+// MARK: - Modal Presentation State Manager
+
+/// Observable object to manage the current modal state at the app root level
+@available(iOS 17.0, *)
+@Observable class POSModal2Manager {
+    private(set) var currentModal: POSModalRequest?
+    private(set) var isPresented: Bool = false
+    
+    func present(_ modal: POSModalRequest) {
+        currentModal = modal
+        isPresented = true
+    }
+    
+    func dismiss() {
+        currentModal?.onDismiss?()
+        currentModal = nil
+        isPresented = false
+    }
+    
+    var allowsInteractiveDismissal: Bool {
+        currentModal?.allowsInteractiveDismissal ?? true
+    }
+    
+    func getContent() -> AnyView {
+        currentModal?.content ?? AnyView(EmptyView())
+    }
+}
+
+// MARK: - Root Modal Presenter
+
+/// View modifier that handles modal presentation at the app root level
+@available(iOS 17.0, *)
+struct POSRootModal2ViewModifier: ViewModifier {
+    @State private var modalManager = POSModal2Manager()
+    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
+    @State private var lastModalRequest: POSModalRequest?
+    
+    private let animationDuration = Constants.animationDuration
+    private let scaleTransitionAmount = Constants.scaleTransitionAmount
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+                .blur(radius: modalManager.isPresented ? 8 : 0)
+                .disabled(modalManager.isPresented)
+                .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
+                .onPreferenceChange(POSModalPreferenceKey.self) { modalRequest in
+                    if let modalRequest = modalRequest {
+                        if lastModalRequest?.id != modalRequest.id {
+                            modalManager.present(modalRequest)
+                            lastModalRequest = modalRequest
+                        }
+                    } else if lastModalRequest != nil {
+                        // Modal request is now nil, so dismiss
+                        modalManager.dismiss()
+                        lastModalRequest = nil
+                    }
+                }
+            
+            if modalManager.isPresented {
+                Color.posSurfaceDim.opacity(0.8)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        if modalManager.allowsInteractiveDismissal {
+                            modalManager.dismiss()
+                        }
+                    }
+                    .animation(nil, value: modalManager.isPresented)
+                
+                ZStack {
+                    modalManager.getContent()
+                        .environment(\.posModalParentSize, modalParentSize)
+                        .background(Color.posSurfaceBright)
+                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                        .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
+                        .padding()
+                }
+                .zIndex(1)
+                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+            }
+        }
+        .measureFrame { frame in
+            updateModalParentSize(with: frame.size)
+        }
+        .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+        .environment(modalManager)
+    }
+    
+    private func updateModalParentSize(with size: CGSize) {
+        if size != modalParentSize && size != .zero {
+            modalParentSize = size
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+private extension POSRootModal2ViewModifier {
+    enum Constants {
+        static let animationDuration: CGFloat = 0.25
+        static let scaleTransitionAmount: CGFloat = 0.9
+    }
+}
+
+// MARK: - Modal View Modifiers
+
+/// View modifier for item-based modal presentation using PreferenceKey
+@available(iOS 17.0, *)
+struct POSModal2ViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    @Binding var item: Item?
+    let onDismiss: (() -> Void)?
+    let modalContent: (Item) -> ModalContent
+    @State private var currentModalId: UUID?
+    
+    func body(content: Content) -> some View {
+        content
+            .preference(
+                key: POSModalPreferenceKey.self,
+                value: item != nil ? createModalRequest() : nil
+            )
+    }
+    
+    private func createModalRequest() -> POSModalRequest? {
+        guard let item = item else { return nil }
+        
+        let modalId = UUID()
+        currentModalId = modalId
+        
+        return POSModalRequest(
+            id: modalId,
+            content: {
+                modalContent(item)
+                    .animation(.default, value: self.item)
+            },
+            onDismiss: {
+                // Internal dismissal (tap background) - defer state changes to avoid view update cycle issues
+                Task { @MainActor in
+                    self.onDismiss?()
+                    self.item = nil
+                    self.currentModalId = nil
+                }
+            }
+        )
+    }
+}
+
+/// View modifier for boolean-based modal presentation using PreferenceKey
+@available(iOS 17.0, *)
+struct POSModal2ViewModifierForBool<ModalContent: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    let onDismiss: (() -> Void)?
+    let modalContent: () -> ModalContent
+    @State private var currentModalId: UUID?
+    
+    func body(content: Content) -> some View {
+        content
+            .preference(
+                key: POSModalPreferenceKey.self,
+                value: isPresented ? createModalRequest() : nil
+            )
+    }
+    
+    private func createModalRequest() -> POSModalRequest? {
+        guard isPresented else { return nil }
+        
+        let modalId = UUID()
+        // Potential issue: This assignment triggers a concurrency warning: Modifying state during view update, this will cause undefined behavior.
+        currentModalId = modalId
+
+        return POSModalRequest(
+            id: modalId,
+            content: modalContent,
+            onDismiss: {
+                // Internal dismissal (tap background) - defer state changes to avoid view update cycle issues
+                Task { @MainActor in
+                    self.onDismiss?()
+                    self.isPresented = false
+                    self.currentModalId = nil
+                }
+            }
+        )
+    }
+}
+
+/// View modifier for interactive dismissal control
+@available(iOS 17.0, *)
+struct POSInteractiveDismiss2Modifier: ViewModifier {
+    let disabled: Bool
+    
+    func body(content: Content) -> some View {
+        content
+        // Note: In the new system, interactive dismissal is controlled per-modal
+        // This modifier would need to be enhanced to communicate back to the modal request
+        // For now, we'll implement this as a preference as well
+    }
+}
+
+// MARK: - View Extensions
+
+@available(iOS 17.0, *)
+extension View {
+    /// Root modal presenter for the new PreferenceKey-based system
+    /// Apply this at the application root level to enable posModal2 functionality
+    func posRootModal2() -> some View {
+        self.modifier(POSRootModal2ViewModifier())
+    }
+    
+    /// Shows a modal view using the new PreferenceKey-based system
+    /// This works from any view context, including views presented via fullScreenCover
+    func posModal2<ModalContent: View>(
+        isPresented: Binding<Bool>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> ModalContent
+    ) -> some View {
+        self.modifier(
+            POSModal2ViewModifierForBool(
+                isPresented: isPresented,
+                onDismiss: onDismiss,
+                modalContent: content
+            )
+        )
+    }
+    
+    /// Shows a modal view using the new PreferenceKey-based system with item binding
+    /// This works from any view context, including views presented via fullScreenCover
+    func posModal2<Item: Identifiable & Equatable, ModalContent: View>(
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> ModalContent
+    ) -> some View {
+        self.modifier(
+            POSModal2ViewModifier(
+                item: item,
+                onDismiss: onDismiss,
+                modalContent: content
+            )
+        )
+    }
+    
+    /// Controls interactive dismissal for posModal2 system
+    func posInteractiveDismissDisabled2(_ disabled: Bool = true) -> some View {
+        self.modifier(POSInteractiveDismiss2Modifier(disabled: disabled))
     }
 }

@@ -427,7 +427,7 @@ struct PointOfSaleSettingsView: View {
 
     @State private var showDocumentation = false
     @State private var showSupport = false
-    @State private var showTestModal2 = false
+    @State private var showTestModal = false
 
     var documentationDestinationView: some View {
         SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
@@ -489,9 +489,10 @@ struct PointOfSaleSettingsView: View {
                 }
                 HStack {
                     Button(action: {
-                        showTestModal2 = true
+                        print("🟦 Test Modal3 button tapped")
+                        showTestModal = true
                     }) {
-                        Text("Test Modal2")
+                        Text("Test Modal3 (Global)")
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                     }
@@ -703,29 +704,24 @@ struct PointOfSaleSettingsView: View {
                          }
                     }
                 }
-                .posModal2(isPresented: $showTestModal2) {
+                .posModal3(isPresented: $showTestModal) {
                     VStack {
-                        Text("Test Modal 2")
-                            .font(.title)
-                            .padding()
-                        Text("This modal is presented using the new PreferenceKey-based system")
-                            .multilineTextAlignment(.center)
-                            .padding()
-                        Text("It should appear ABOVE the settings view, demonstrating that the new system works across fullScreenCover boundaries.")
-                            .multilineTextAlignment(.center)
+                        Text("Minimal Test Modal")
+                            .font(.title2)
                             .padding()
                         Button("Close") {
-                            showTestModal2 = false
+                            print("🟠 Close button tapped")
+                            showTestModal = false
                         }
                         .buttonStyle(.borderedProminent)
                         .padding()
                     }
-                    .frame(maxWidth: 400)
-                    .padding()
+                    .frame(width: 200, height: 150)
+                    .background(Color.white)
+                    .cornerRadius(12)
                 }
             }
         }
-        .posRootModal2()
     }
 }
 
@@ -1008,5 +1004,258 @@ extension View {
     /// Controls interactive dismissal for posModal2 system
     func posInteractiveDismissDisabled2(_ disabled: Bool = true) -> some View {
         self.modifier(POSInteractiveDismiss2Modifier(disabled: disabled))
+    }
+}
+
+// MARK: - Global Modal Manager System (posModal3)
+
+/// Global singleton modal manager that works across all view contexts
+@available(iOS 17.0, *)
+@Observable class POSGlobalModalManager {
+    static let shared = POSGlobalModalManager()
+
+    private(set) var currentModal: POSModalRequest?
+    private(set) var isPresented: Bool = false
+
+    private init() {}
+
+    func present(_ modal: POSModalRequest) {
+        print("🟢 POSGlobalModalManager.present() called with modal id: \(modal.id)")
+        currentModal = modal
+        isPresented = true
+        print("🟢 POSGlobalModalManager.present() completed - isPresented: \(isPresented)")
+    }
+    
+    func dismiss() {
+        print("🔴 POSGlobalModalManager.dismiss() called")
+        currentModal?.onDismiss?()
+        currentModal = nil
+        isPresented = false
+        print("🔴 POSGlobalModalManager.dismiss() completed - isPresented: \(isPresented)")
+    }
+    
+    var allowsInteractiveDismissal: Bool {
+        currentModal?.allowsInteractiveDismissal ?? true
+    }
+    
+    func getContent() -> AnyView {
+        currentModal?.content ?? AnyView(EmptyView())
+    }
+}
+
+// MARK: - Global Modal View Modifiers
+
+/// View modifier for boolean-based modal presentation using global manager
+@available(iOS 17.0, *)
+struct POSModal3ViewModifierForBool<ModalContent: View>: ViewModifier {
+    @Binding var isPresented: Bool
+    let onDismiss: (() -> Void)?
+    let modalContent: () -> ModalContent
+    @State private var currentModalId: UUID?
+    
+    private let globalManager = POSGlobalModalManager.shared
+    
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: isPresented) { oldValue, newValue in
+                print("🔵 POSModal3ViewModifierForBool onChange: \(oldValue) -> \(newValue)")
+                
+                if newValue && currentModalId == nil {
+                    print("🔵 Presenting modal...")
+                    // Present modal
+                    let modalId = UUID()
+                    currentModalId = modalId
+                    
+                    let modalRequest = POSModalRequest(
+                        id: modalId,
+                        content: modalContent,
+                        onDismiss: {
+                            print("🔵 Modal onDismiss callback triggered")
+                            self.onDismiss?()
+                            self.isPresented = false
+                            self.currentModalId = nil
+                        },
+                        allowsInteractiveDismissal: true
+                    )
+                    
+                    globalManager.present(modalRequest)
+                } else if !newValue && currentModalId != nil {
+                    print("🔵 Dismissing modal...")
+                    // Dismiss modal
+                    globalManager.dismiss()
+                    currentModalId = nil
+                }
+            }
+    }
+}
+
+/// View modifier for item-based modal presentation using global manager
+@available(iOS 17.0, *)
+struct POSModal3ViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
+    @Binding var item: Item?
+    let onDismiss: (() -> Void)?
+    let modalContent: (Item) -> ModalContent
+    @State private var currentModalId: UUID?
+    
+    private let globalManager = POSGlobalModalManager.shared
+    
+    func body(content: Content) -> some View {
+        content
+            .onChange(of: item) { oldValue, newValue in
+                Task { @MainActor in
+                    if let newValue = newValue, currentModalId == nil {
+                        // Present modal
+                        let modalId = UUID()
+                        currentModalId = modalId
+                        
+                        let modalRequest = POSModalRequest(
+                            id: modalId,
+                            content: {
+                                modalContent(newValue)
+                                    .animation(.default, value: self.item)
+                            },
+                            onDismiss: {
+                                Task { @MainActor in
+                                    self.onDismiss?()
+                                    self.item = nil
+                                    self.currentModalId = nil
+                                }
+                            }
+                        )
+                        
+                        globalManager.present(modalRequest)
+                    } else if newValue == nil && currentModalId != nil {
+                        // Dismiss modal
+                        globalManager.dismiss()
+                        currentModalId = nil
+                    }
+                }
+            }
+    }
+}
+
+// MARK: - Global Root Modal Handler
+
+/// Root modal handler that observes the global manager and presents modals above all content
+@available(iOS 17.0, *)
+struct POSRootModal3ViewModifier: ViewModifier {
+    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
+    @State private var isModalPresented: Bool = false
+    @State private var modalContent: AnyView = AnyView(EmptyView())
+    @State private var allowsInteractiveDismissal: Bool = true
+    @State private var cachedModalId: UUID?
+    
+    private let globalManager = POSGlobalModalManager.shared
+    private let animationDuration: CGFloat = 0.25
+    private let scaleTransitionAmount: CGFloat = 0.9
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+                .blur(radius: isModalPresented ? 8 : 0)
+                .disabled(isModalPresented)
+                .accessibilityElement(children: isModalPresented ? .ignore : .contain)
+                .onReceive(Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()) { _ in
+                    // Poll the global manager state to avoid direct @Observable binding issues
+                    // Reduced frequency from 0.01s to 0.1s to prevent excessive updates
+                    let managerPresented = globalManager.isPresented
+                    let currentModalId = globalManager.currentModal?.id
+                    
+                    if managerPresented != isModalPresented {
+                        print("🟡 Root modal state change: \(isModalPresented) -> \(managerPresented)")
+                        isModalPresented = managerPresented
+                        allowsInteractiveDismissal = globalManager.allowsInteractiveDismissal
+                        
+                        // Only update content if modal ID changed to prevent unnecessary re-renders
+                        if currentModalId != cachedModalId {
+                            print("🟡 Modal content updated for ID: \(currentModalId?.uuidString ?? "nil")")
+                            modalContent = globalManager.getContent()
+                            cachedModalId = currentModalId
+                        }
+                    } else if currentModalId != cachedModalId {
+                        // Modal ID changed but presentation state didn't - update content
+                        print("🟡 Modal content changed for same presentation state")
+                        modalContent = globalManager.getContent()
+                        cachedModalId = currentModalId
+                        allowsInteractiveDismissal = globalManager.allowsInteractiveDismissal
+                    }
+                }
+            
+            if isModalPresented {
+                Color.posSurfaceDim.opacity(0.8)
+                    .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        if allowsInteractiveDismissal {
+                            print("🟡 Background tap - dismissing modal")
+                            globalManager.dismiss()
+                        }
+                    }
+                    .animation(nil, value: isModalPresented)
+                
+                ZStack {
+                    modalContent
+                        .environment(\.posModalParentSize, modalParentSize)
+                        .background(Color.posSurfaceBright)
+                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                        .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
+                        .padding()
+                }
+                .zIndex(1)
+                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+            }
+        }
+        .measureFrame { frame in
+            updateModalParentSize(with: frame.size)
+        }
+        .animation(.easeInOut(duration: animationDuration), value: isModalPresented)
+    }
+    
+    private func updateModalParentSize(with size: CGSize) {
+        if size != modalParentSize && size != .zero {
+            modalParentSize = size
+        }
+    }
+}
+
+// MARK: - Global Modal View Extensions
+
+@available(iOS 17.0, *)
+extension View {
+    /// Root modal presenter for the global modal system
+    /// Apply this at the highest level (PointOfSaleEntryPointView) to enable posModal3 functionality
+    func posRootModal3() -> some View {
+        self.modifier(POSRootModal3ViewModifier())
+    }
+    
+    /// Shows a modal view using the global modal system
+    /// This works from any view context, including fullScreenCover, sheets, NavigationView, etc.
+    func posModal3<ModalContent: View>(
+        isPresented: Binding<Bool>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> ModalContent
+    ) -> some View {
+        self.modifier(
+            POSModal3ViewModifierForBool(
+                isPresented: isPresented,
+                onDismiss: onDismiss,
+                modalContent: content
+            )
+        )
+    }
+    
+    /// Shows a modal view using the global modal system with item binding
+    /// This works from any view context, including fullScreenCover, sheets, NavigationView, etc.
+    func posModal3<Item: Identifiable & Equatable, ModalContent: View>(
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> ModalContent
+    ) -> some View {
+        self.modifier(
+            POSModal3ViewModifier(
+                item: item,
+                onDismiss: onDismiss,
+                modalContent: content
+            )
+        )
     }
 }

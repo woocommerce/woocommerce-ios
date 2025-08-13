@@ -75,6 +75,7 @@ struct PointOfSaleEntryPointView: View {
                 barcodeScanService: barcodeScanService)
         }
         .environmentObject(posModalManager)
+        .posRootModal3()
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

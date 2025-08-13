@@ -15,7 +15,7 @@ final class JetpackSetupViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
-    private let wpcomCredentials: Credentials?
+    private let wpcomCredentials: Credentials
     private var isPluginActivated = false
 
     @Published private(set) var setupSteps: [JetpackInstallStep]
@@ -94,7 +94,7 @@ final class JetpackSetupViewModel: ObservableObject {
 
     init(siteURL: String,
          connectionOnly: Bool,
-         wpcomCredentials: Credentials?,
+         wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          delayBeforeRetry: Double = Constants.delayBeforeRetry,
@@ -455,11 +455,6 @@ private extension JetpackSetupViewModel {
     }
 
     func finalizeSiteConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) {
-        guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
-            /// WPCom credentials are necessary to finalize connection through API
-            /// If this is unavailable, fall back to the web flow.
-            return startConnectionWithWebView()
-        }
         let network = AlamofireNetwork(credentials: wpcomCredentials)
         stores.dispatch(JetpackConnectionAction.finalizeConnection(
             siteID: blogID,

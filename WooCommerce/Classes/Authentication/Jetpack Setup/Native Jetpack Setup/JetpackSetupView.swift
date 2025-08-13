@@ -7,13 +7,13 @@ import protocol WooFoundation.Analytics
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
     private let authentication: Authentication
-    private let wpcomCredentials: Credentials?
+    private let wpcomCredentials: Credentials
 
     private var connectionWebView: UINavigationController?
 
     init(siteURL: String,
          connectionOnly: Bool,
-         wpcomCredentials: Credentials?,
+         wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,

@@ -44,10 +44,14 @@ final class LoginJetpackSetupCoordinator: Coordinator {
 //
 private extension LoginJetpackSetupCoordinator {
     func showSetupSteps() {
+        guard let credentials = stores.sessionManager.defaultCredentials,
+              case .wpcom = credentials else {
+            fatalError("Unexpected error: No WPCom credentials found for setting up Jetpack")
+        }
         let setupUI = JetpackSetupHostingController(
             siteURL: siteURL,
             connectionOnly: connectionOnly,
-            wpcomCredentials: stores.sessionManager.defaultCredentials,
+            wpcomCredentials: credentials,
             onStoreNavigation: { [weak self] connectedEmail in
             guard let self, let email = connectedEmail else { return }
             if email != self.stores.sessionManager.defaultAccount?.email {

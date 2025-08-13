@@ -9,16 +9,20 @@ struct POSFloatingControlView: View {
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
     @Binding private var showSettingsViaFullScreenModal: Bool
+    @Binding private var showSettingsViaPartialScreenModal: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>, showSettingsViaFullScreenModal: Binding<Bool>) {
+         showDocumentation: Binding<Bool>,
+         showSettingsViaFullScreenModal: Binding<Bool>,
+         showSettingsViaPartialScreenModal: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
         self._showSettingsViaFullScreenModal = showSettingsViaFullScreenModal
+        self._showSettingsViaPartialScreenModal = showSettingsViaPartialScreenModal
     }
 
     var body: some View {
@@ -38,7 +42,9 @@ struct POSFloatingControlView: View {
                     // #1
                     // posModel.viewStateCoordinatorForView.showSettings()
                     // #2
-                    showSettingsViaFullScreenModal = true
+                    // showSettingsViaFullScreenModal = true
+                    // #3
+                    showSettingsViaPartialScreenModal = true
                 } label: {
                     Label(
                         title: { Text("Settings") },

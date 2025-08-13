@@ -7,6 +7,7 @@ struct PointOfSaleDashboardView: View {
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSettingsViaFullScreenModal: Bool = false
+    @State private var showSettingsViaPartialScreenModal: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -94,7 +95,8 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: .constant(false),
                                    showDocumentation: .constant(false),
-                                   showSettingsViaFullScreenModal: $showSettingsViaFullScreenModal)
+                                   showSettingsViaFullScreenModal: $showSettingsViaFullScreenModal,
+                                   showSettingsViaPartialScreenModal: $showSettingsViaPartialScreenModal)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -102,12 +104,19 @@ struct PointOfSaleDashboardView: View {
             .renderedIf(viewState.showsFloatingControl)
 
             POSConnectivityView()
+            
+            // Partial settings overlay
+            if showSettingsViaPartialScreenModal {
+                PointOfSalePartialSettingsView(isPresented: $showSettingsViaPartialScreenModal)
+                    .transition(.move(edge: .leading))
+            }
         }
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading)
+        .animation(.easeInOut, value: showSettingsViaPartialScreenModal)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
@@ -338,6 +347,62 @@ struct PointOfSaleSettingsView2: View {
         }
     }
 }
+
+
+@available(iOS 17.0, *)
+struct PointOfSalePartialSettingsView: View {
+    @Binding var isPresented: Bool
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    
+    private enum Constants {
+        static let leftRatio: CGFloat = 0.30
+        static let rightRatio: CGFloat = 0.70
+        static let leftBackground: Color = Color.posOutline //.opacity(0.8)
+    }
+    
+    var body: some View {
+        GeometryReader { geo in
+            HStack(spacing: 0) {
+                // Left side - 30% with settings content
+                VStack {
+                    HStack {
+                        Text("Settings")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Button {
+                            isPresented = false
+                        } label: {
+                            Image(systemName: "xmark")
+                                .foregroundColor(.posSecondaryContainer)
+                        }
+                    }
+                    .padding()
+                    
+                    List {
+                        Text("Store")
+                        Text("Hardware") 
+                        Text("Help")
+                    }
+                    .listStyle(.plain)
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: geo.size.width * Constants.leftRatio,
+                       maxHeight: .infinity,
+                       alignment: .topLeading)
+                .background(Constants.leftBackground)
+                
+                // Right side - 70% transparent
+                Color.clear
+                    .frame(maxWidth: geo.size.width * Constants.rightRatio,
+                           maxHeight: .infinity)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        }
+    }
+}
+
 
 @available(iOS 17.0, *)
 struct PointOfSaleSettingsView: View {

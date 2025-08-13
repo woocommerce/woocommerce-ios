@@ -1,6 +1,7 @@
 import Foundation
 import Networking
-import protocol Storage.StorageManagerType
+import Storage
+import CoreData
 
 /// Manager for Point of Sale catalog synchronization
 /// Downloads catalog data from remote source and persists to local storage
@@ -38,48 +39,26 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         let data = try await network.backgroundDownload(for: request)
 
         // Parse catalog data efficiently for large JSON files
-        let catalogItems = try parseCatalogDataEfficiently(data)
-        try await persistCatalogItemsInBatches(catalogItems)
+        let catalogResponse = try parseCatalogDataEfficiently(data)
+        try await upsertCatalogItems(productItems: catalogResponse.products, variationItems: catalogResponse.variations)
     }
 
     // MARK: - Private Methods
 
-    private func parseCatalogDataEfficiently(_ data: Data) throws -> [CatalogItem] {
+    private func parseCatalogDataEfficiently(_ data: Data) throws -> CatalogItemResponse {
         do {
             let decoder = JSONDecoder()
             // Configure decoder for optimal performance with large datasets
             decoder.dateDecodingStrategy = .iso8601
-
-            let catalogItems = try decoder.decode(CatalogItemResponse.self, from: data).products
-            return catalogItems
+            return try decoder.decode(CatalogItemResponse.self, from: data)
         } catch {
             throw POSCatalogSyncError.invalidData
         }
     }
 
-    private func persistCatalogItemsInBatches(_ catalogItems: [CatalogItem]) async throws {
-        // Process items in batches, but save both products and variations together atomically
-        try await processBatches(items: catalogItems, batchProcessor: { batch in
-            try await self.upsertCatalogItems(from: batch)
-        })
-    }
-
-    private func processBatches<T>(items: [T], batchProcessor: (Array<T>) async throws -> Void) async throws {
-        for i in stride(from: 0, to: items.count, by: batchSize) {
-            let end = min(i + batchSize, items.count)
-            let batch = Array(items[i..<end])
-            try await batchProcessor(batch)
-
-            // Add small delay between batches to prevent overwhelming the system
-            try await Task.sleep(nanoseconds: 10_000_000) // 10ms
-        }
-    }
-
-    private func upsertCatalogItems(from catalogItems: [CatalogItem]) async throws {
-        // Separate products and variations
-        let productItems = catalogItems.filter { $0.type != "variation" }
-        let variationItems = catalogItems.filter { $0.type == "variation" }
-
+    @MainActor
+    private func upsertCatalogItems(productItems: [CatalogItem], variationItems: [CatalogItem]) async throws {
+        let startTime = CFAbsoluteTimeGetCurrent()
         // Convert to Networking objects
         let networkingProducts = productItems.compactMap { catalogItem -> Networking.Product? in
             return self.mapCatalogItemToNetworkingProduct(catalogItem)
@@ -89,42 +68,27 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             return self.mapCatalogItemToNetworkingProductVariation(catalogItem)
         }
 
-        // Save products first using ProductStore's method
+        // Use optimized batch replacement for products and variations
         if !networkingProducts.isEmpty {
-            await productStore.upsertStoredProductsInBackground(
-                readOnlyProducts: networkingProducts,
-                siteID: siteID
-            )
+            await replaceAllProducts(networkingProducts)
         }
 
-        // Save variations using ProductVariationStorageManager, grouped by product
         if !networkingVariations.isEmpty {
-            await upsertProductVariations(networkingVariations)
+            await replaceAllProductVariations(networkingVariations)
         }
+
+        let endTime = CFAbsoluteTimeGetCurrent()
+        let timeElapsed = endTime - startTime
+        print("✅ Done: \(storageManager.viewStorage.countObjects(ofType: StorageProduct.self)) products, \(storageManager.viewStorage.countObjects(ofType: StorageProductVariation.self)) variations - Time: \(String(format: "%.2f", timeElapsed))s")
     }
 
-    private func upsertProductVariations(_ variations: [Networking.ProductVariation]) async {
-        // Group variations by product ID for efficient storage
-        let variationsByProduct = Dictionary(grouping: variations) { $0.productID }
+    // For exported json where variations are not separate
+    private func upsertCatalogItems(from catalogItems: [CatalogItem]) async throws {
+        // Separate products and variations
+        let productItems = catalogItems.filter { $0.type != "variation" }
+        let variationItems = catalogItems.filter { $0.type == "variation" }
 
-        await withCheckedContinuation { continuation in
-            let group = DispatchGroup()
-
-            for (productID, productVariations) in variationsByProduct {
-                group.enter()
-                productVariationStorageManager.upsertStoredProductVariationsInBackground(
-                    readOnlyProductVariations: productVariations,
-                    siteID: siteID,
-                    productID: productID
-                ) {
-                    group.leave()
-                }
-            }
-
-            group.notify(queue: .main) {
-                continuation.resume()
-            }
-        }
+        try await upsertCatalogItems(productItems: productItems, variationItems: variationItems)
     }
 
     private func mapCatalogItemToNetworkingProduct(_ catalogItem: CatalogItem) -> Product? {
@@ -218,13 +182,12 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         guard catalogItem.type == "variation" else { return nil }
 
         let dateFormatter = ISO8601DateFormatter()
-        
         // Break up complex expressions
         let createdDate = catalogItem.dateCreated.flatMap { dateFormatter.date(from: $0) } ?? Date()
         let modifiedDate = catalogItem.dateModified.flatMap { dateFormatter.date(from: $0) }
-        let status = ProductStatus(rawValue: catalogItem.status ?? "publish") ?? .published
+        let status = ProductStatus(rawValue: catalogItem.status ?? ProductStatus.published.rawValue)
         let stockQuantity = catalogItem.stockQuantity.map { Decimal($0) }
-        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? "instock") ?? .inStock
+        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? ProductStockStatus.inStock.rawValue)
         let dimensions = ProductDimensions(length: "", width: "", height: "")
 
         return ProductVariation(
@@ -260,7 +223,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             backordersKey: "no",
             backordersAllowed: false,
             backordered: false,
-            weight: catalogItem.weight ?? "",
+            weight: catalogItem.weight,
             dimensions: dimensions,
             shippingClass: "",
             shippingClassID: 0,
@@ -280,12 +243,298 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
 
         return POSCatalogSyncError.unknown
     }
+
+    private func replaceAllProducts(_ products: [Networking.Product]) async {
+        await storageManager.performAndSaveAsync({ [weak self] storage in
+            guard let self = self else { return }
+
+            let context = storage as! NSManagedObjectContext
+
+            do {
+                // 1. Delete all existing products for this siteID (cascades to variations)
+                let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.Product.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "siteID == %lld", self.siteID)
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                deleteRequest.resultType = .resultTypeObjectIDs
+
+                let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                let deletedObjectIDs = deleteResult?.result as? [NSManagedObjectID] ?? []
+
+                // Merge delete changes
+                let deleteChanges = [NSDeletedObjectsKey: deletedObjectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deleteChanges, into: [context])
+
+                // 2. Batch insert all products
+                let productDictionaries = products.compactMap { product -> [String: Any]? in
+                    return self.convertProductToDataDictionary(product)
+                }
+
+                let batchInsert = NSBatchInsertRequest(entity: Storage.Product.entity(), objects: productDictionaries)
+                batchInsert.resultType = .objectIDs
+
+                let insertResult = try context.execute(batchInsert) as? NSBatchInsertResult
+                let insertedObjectIDs = insertResult?.result as? [NSManagedObjectID] ?? []
+
+                // Merge insert changes
+                let insertChanges = [NSInsertedObjectsKey: insertedObjectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: insertChanges, into: [context])
+
+                // Handle related entities for inserted products
+                for (index, objectID) in insertedObjectIDs.enumerated() {
+                    if index < products.count,
+                       let product = try? context.existingObject(with: objectID) as? Storage.Product {
+                        self.handleProductRelatedEntities(products[index], product, storage)
+                    }
+                }
+
+            } catch {
+                print("⛔️ error replacing products: \(error)")
+                // Fallback to traditional approach
+                self.fallbackReplaceProducts(products, in: storage)
+            }
+        }, on: .main)
+    }
+
+    private func replaceAllProductVariations(_ variations: [Networking.ProductVariation]) async {
+        await storageManager.performAndSaveAsync({ [weak self] storage in
+            guard let self = self else { return }
+
+            let context = storage as! NSManagedObjectContext
+
+            do {
+                // 1. Delete all existing variations for this siteID
+                let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.ProductVariation.fetchRequest()
+                fetchRequest.predicate = NSPredicate(format: "siteID == %lld", self.siteID)
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                deleteRequest.resultType = .resultTypeObjectIDs
+
+                let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+                let deletedObjectIDs = deleteResult?.result as? [NSManagedObjectID] ?? []
+
+                // Merge delete changes
+                let deleteChanges = [NSDeletedObjectsKey: deletedObjectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deleteChanges, into: [context])
+
+                // 2. Group variations by product ID to ensure proper linking
+                let variationsByProduct = Dictionary(grouping: variations) { $0.productID }
+
+                for (productID, productVariations) in variationsByProduct {
+                    // Ensure the parent product exists
+                    guard let product = storage.loadProduct(siteID: self.siteID, productID: productID) else {
+                        // Product doesn't exist, skip variations for this product
+                        continue
+                    }
+
+                    // Batch insert all variations for this product
+                    let variationDictionaries = productVariations.compactMap { variation -> [String: Any]? in
+                        var dict = self.convertProductVariationToDataDictionary(variation)
+                        // Add the product relationship
+                        dict["product"] = product.objectID
+                        return dict
+                    }
+
+                    guard !variationDictionaries.isEmpty else { continue }
+
+                    let batchInsert = NSBatchInsertRequest(entity: Storage.ProductVariation.entity(), objects: variationDictionaries)
+                    batchInsert.resultType = .objectIDs
+
+                    let insertResult = try context.execute(batchInsert) as? NSBatchInsertResult
+                    let insertedObjectIDs = insertResult?.result as? [NSManagedObjectID] ?? []
+
+                    // Merge insert changes
+                    let insertChanges = [NSInsertedObjectsKey: insertedObjectIDs]
+                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: insertChanges, into: [context])
+
+                    // Handle related entities for inserted variations
+                    for (index, objectID) in insertedObjectIDs.enumerated() {
+                        if index < productVariations.count,
+                           let variation = try? context.existingObject(with: objectID) as? Storage.ProductVariation {
+                            self.handleProductVariationRelatedEntities(productVariations[index], variation, storage)
+                        }
+                    }
+                }
+
+            } catch {
+                print("⛔️ error replacing variations: \(error)")
+                // Fallback to traditional approach
+                self.fallbackReplaceProductVariations(variations, in: storage)
+            }
+
+        }, on: .main)
+    }
+
+    private func fallbackReplaceProducts(_ products: [Networking.Product], in storage: StorageType) {
+        // Delete all existing products for this siteID
+        storage.deleteProducts(siteID: siteID)
+
+        // Insert all new products
+        for product in products {
+            let storageProduct = storage.insertNewObject(ofType: Storage.Product.self)
+            storageProduct.update(with: product)
+            handleProductRelatedEntities(product, storageProduct, storage)
+        }
+    }
+
+    private func fallbackReplaceProductVariations(_ variations: [Networking.ProductVariation], in storage: StorageType) {
+        // Group variations by product ID and insert
+        let variationsByProduct = Dictionary(grouping: variations) { $0.productID }
+
+        for (productID, productVariations) in variationsByProduct {
+            // Delete all existing variations for this siteID
+            storage.deleteProductVariations(siteID: siteID, productID: productID)
+
+            guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
+                print("⛔️ No product found for ID \(productID), skipping variations")
+                continue
+            }
+
+            for variation in productVariations {
+                let storageVariation = storage.insertNewObject(ofType: Storage.ProductVariation.self)
+                storageVariation.update(with: variation)
+                storageVariation.product = product
+                handleProductVariationRelatedEntities(variation, storageVariation, storage)
+            }
+        }
+    }
+
+    private func handleProductRelatedEntities(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
+//        productStore.handleProductShippingClass(storageProduct: storageProduct, storage)
+//        productStore.handleProductDimensions(readOnlyProduct, storageProduct, storage)
+        productStore.handleProductAttributes(readOnlyProduct, storageProduct, storage)
+        productStore.handleProductDefaultAttributes(readOnlyProduct, storageProduct, storage)
+        productStore.handleProductImages(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductCategories(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductTags(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductAddOns(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductBundledItems(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductSubscription(readOnlyProduct, storageProduct, storage)
+//        productStore.handleProductCustomFields(readOnlyProduct, storageProduct, storage)
+    }
+
+    private func handleProductVariationRelatedEntities(_ networkingVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
+        // TODO
+    }
+
+    private func convertProductToDataDictionary(_ product: Networking.Product) -> [String: Any] {
+        [
+            "siteID": product.siteID,
+            "productID": product.productID,
+            "name": product.name,
+            "slug": product.slug,
+            "permalink": product.permalink,
+            "date": product.date,
+            "dateCreated": product.dateCreated,
+            "dateModified": product.dateModified as Any,
+            "dateOnSaleStart": product.dateOnSaleStart as Any,
+            "dateOnSaleEnd": product.dateOnSaleEnd as Any,
+            "productTypeKey": product.productTypeKey,
+            "statusKey": product.statusKey,
+            "featured": product.featured,
+            "catalogVisibilityKey": product.catalogVisibilityKey,
+            "fullDescription": product.fullDescription ?? "",
+            "briefDescription": product.shortDescription ?? "",
+            "sku": product.sku,
+            "globalUniqueID": product.globalUniqueID ?? "",
+            "price": product.price,
+            "regularPrice": product.regularPrice,
+            "salePrice": product.salePrice,
+            "onSale": product.onSale,
+            "purchasable": product.purchasable,
+            "totalSales": product.totalSales,
+            "virtual": product.virtual,
+            "downloadable": product.downloadable,
+            "downloadLimit": product.downloadLimit,
+            "downloadExpiry": product.downloadExpiry,
+            "buttonText": product.buttonText,
+            "externalURL": product.externalURL ?? "",
+            "taxStatusKey": product.taxStatusKey,
+            "taxClass": product.taxClass,
+            "manageStock": product.manageStock,
+            "stockQuantity": product.stockQuantity as Any,
+            "stockStatusKey": product.stockStatusKey,
+            "backordersKey": product.backordersKey,
+            "backordersAllowed": product.backordersAllowed,
+            "backordered": product.backordered,
+            "soldIndividually": product.soldIndividually,
+            "weight": product.weight,
+            "shippingRequired": product.shippingRequired,
+            "shippingTaxable": product.shippingTaxable,
+            "shippingClass": product.shippingClass,
+            "shippingClassID": product.shippingClassID,
+            "reviewsAllowed": product.reviewsAllowed,
+            "averageRating": product.averageRating,
+            "ratingCount": product.ratingCount,
+            "relatedIDs": product.relatedIDs,
+            "upsellIDs": product.upsellIDs,
+            "crossSellIDs": product.crossSellIDs,
+            "parentID": product.parentID,
+            "purchaseNote": product.purchaseNote,
+            "menuOrder": product.menuOrder,
+            "isSampleItem": product.isSampleItem,
+            "bundleStockStatus": product.bundleStockStatus as Any,
+            "bundleStockQuantity": product.bundleStockQuantity as Any,
+            "bundleMinSize": product.bundleMinSize as Any,
+            "bundleMaxSize": product.bundleMaxSize as Any,
+            "password": product.password as Any,
+            "minAllowedQuantity": product.minAllowedQuantity as Any,
+            "maxAllowedQuantity": product.maxAllowedQuantity as Any,
+            "groupOfQuantity": product.groupOfQuantity as Any,
+            "combineVariationQuantities": product.combineVariationQuantities as Any,
+            "groupedProducts": []
+        ]
+    }
+
+    private func convertProductVariationToDataDictionary(_ variation: Networking.ProductVariation) -> [String: Any] {
+        [
+            "siteID": variation.siteID,
+            "productID": variation.productID,
+            "productVariationID": variation.productVariationID,
+            "permalink": variation.permalink,
+            "dateCreated": variation.dateCreated,
+            "dateModified": variation.dateModified as Any,
+            "dateOnSaleStart": variation.dateOnSaleStart as Any,
+            "dateOnSaleEnd": variation.dateOnSaleEnd as Any,
+            "statusKey": variation.status.rawValue,
+            "fullDescription": variation.description,
+            "sku": variation.sku,
+            "globalUniqueID": variation.globalUniqueID ?? "",
+            "price": variation.price,
+            "regularPrice": variation.regularPrice,
+            "salePrice": variation.salePrice,
+            "onSale": variation.onSale,
+            "purchasable": variation.purchasable,
+            "virtual": variation.virtual,
+            "downloadable": variation.downloadable,
+            "downloadLimit": variation.downloadLimit,
+            "downloadExpiry": variation.downloadExpiry,
+            "taxStatusKey": variation.taxStatusKey,
+            "taxClass": variation.taxClass,
+            "manageStock": variation.manageStock,
+            "stockQuantity": variation.stockQuantity as Any,
+            "stockStatusKey": variation.stockStatus.rawValue,
+            "backordersKey": variation.backordersKey,
+            "backordersAllowed": variation.backordersAllowed,
+            "backordered": variation.backordered,
+            "weight": variation.weight,
+            "shippingClass": variation.shippingClass,
+            "shippingClassID": variation.shippingClassID,
+            "menuOrder": variation.menuOrder,
+            "minAllowedQuantity": variation.minAllowedQuantity as Any,
+            "maxAllowedQuantity": variation.maxAllowedQuantity as Any,
+            "groupOfQuantity": variation.groupOfQuantity as Any,
+            "overrideProductQuantities": variation.overrideProductQuantities as Any
+        ]
+    }
 }
 
 // MARK: - Supporting Types
 
 private struct CatalogItemResponse: Codable {
     let products: [CatalogItem]
+    // Only in the poslarge JSON, not in exported JSON
+    let variations: [CatalogItem]
 }
 
 /// Represents a catalog item from the JSON response
@@ -342,6 +591,7 @@ private struct CatalogItem: Codable {
         case dateCreated = "date_created"
         case dateModified = "date_modified"
         case menuOrder = "menu_order"
-        case parentID = "parent_id"
+        // export version is "parent_id", but poslarge version is "post_parent"
+        case parentID = "post_parent"
     }
 }

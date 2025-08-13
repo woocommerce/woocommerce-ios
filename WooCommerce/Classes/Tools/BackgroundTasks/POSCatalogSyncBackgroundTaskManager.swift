@@ -108,7 +108,21 @@ final class POSCatalogSyncBackgroundTaskManager {
         request.requiresExternalPower = false  // Can run on battery but system will prefer charging
         request.earliestBeginDate = Date(timeIntervalSinceNow: 20 * 60) // No earlier than 20 minutes
         
-        DDLogInfo("📱 Full sync request created: ID=\(request.identifier), earliest=\(request.earliestBeginDate?.description ?? "now")")
+        DDLogInfo("📱 Full sync request created:")
+        DDLogInfo("📱   ID: \(request.identifier)")
+        DDLogInfo("📱   Earliest: \(request.earliestBeginDate?.description ?? "immediately")")
+        DDLogInfo("📱   Requires network: \(request.requiresNetworkConnectivity)")
+        DDLogInfo("📱   Requires power: \(request.requiresExternalPower)")
+        DDLogInfo("📱   Current time: \(Date().description)")
+        
+        // Let's also try with less restrictive requirements for testing
+        if Self.isRunningDebugBuild() {
+            DDLogInfo("📱 🧪 Using relaxed requirements for debug testing")
+            request.requiresExternalPower = false
+            request.requiresNetworkConnectivity = false  // Try without network requirement
+            request.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 60) // Shorter delay for testing
+            DDLogInfo("📱 🧪 Debug config: network=false, power=false, delay=2min")
+        }
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -597,6 +611,14 @@ enum POSCatalogSyncError: LocalizedError {
 private extension POSCatalogSyncBackgroundTaskManager {
     static func isRunningTests() -> Bool {
         return NSClassFromString("XCTestCase") != nil
+    }
+    
+    static func isRunningDebugBuild() -> Bool {
+        #if DEBUG
+        return true
+        #else
+        return false
+        #endif
     }
     
     /// Formats background time remaining for logging, avoiding huge numbers in foreground

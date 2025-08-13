@@ -153,7 +153,18 @@ struct POSCatalogSyncDevelopmentHelper {
             DDLogInfo("🔧 [DEV] Battery state: Unknown")
         }
         
-        // Check network status (simplified)
+        // Check app usage for BGProcessingTask scheduling
+        DDLogInfo("🔧 [DEV] App state: \(UIApplication.shared.applicationState == .active ? "Active" : "Background")")
+        
+        // Check for conditions that affect BGProcessingTask specifically
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            DDLogInfo("🔧 [DEV] 🚨 BGProcessingTask will likely be rejected due to Low Power Mode")
+        }
+        
+        if device.batteryState == .unplugged && device.batteryLevel < 0.5 {
+            DDLogInfo("🔧 [DEV] ⚠️ BGProcessingTask may be rejected: unplugged + low battery")
+        }
+        
         DDLogInfo("🔧 [DEV] === End System Conditions ===")
     }
 

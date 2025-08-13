@@ -106,7 +106,7 @@ final class POSCatalogSyncBackgroundTaskManager {
         let request = BGProcessingTaskRequest(identifier: Self.fullCatalogSyncIdentifier)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false  // Can run on battery but system will prefer charging
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 20 * 60) // No earlier than 20 minutes
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 30 * 60) // No earlier than 30 minutes
 
         DDLogInfo("📱 Full sync request created:")
         DDLogInfo("📱   ID: \(request.identifier)")
@@ -114,15 +114,6 @@ final class POSCatalogSyncBackgroundTaskManager {
         DDLogInfo("📱   Requires network: \(request.requiresNetworkConnectivity)")
         DDLogInfo("📱   Requires power: \(request.requiresExternalPower)")
         DDLogInfo("📱   Current time: \(Date().description)")
-
-        // Let's also try with less restrictive requirements for testing
-        if Self.isRunningDebugBuild() {
-            DDLogInfo("📱 🧪 Using relaxed requirements for debug testing")
-            request.requiresExternalPower = false
-            request.requiresNetworkConnectivity = false  // Try without network requirement
-            request.earliestBeginDate = Date(timeIntervalSinceNow: 2 * 60) // Shorter delay for testing
-            DDLogInfo("📱 🧪 Debug config: network=false, power=false, delay=2min")
-        }
 
         do {
             try BGTaskScheduler.shared.submit(request)

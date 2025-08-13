@@ -92,17 +92,37 @@ final class POSCatalogSyncBackgroundTaskManager {
     /// Schedules a full catalog sync (BGProcessingTask)
     /// Should be called weekly or daily, when device is idle with WiFi
     func scheduleFullCatalogSync() {
-        guard !Self.isRunningTests() else { return }
+        guard !Self.isRunningTests() else { 
+            DDLogInfo("📱 Skipping full sync scheduling - running tests")
+            return 
+        }
+
+        DDLogInfo("📱 Attempting to schedule full catalog sync...")
+        
+        // Cancel any existing request first
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: Self.fullCatalogSyncIdentifier)
+        DDLogInfo("📱 Cancelled existing full sync task if any")
 
         let request = BGProcessingTaskRequest(identifier: Self.fullCatalogSyncIdentifier)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false  // Can run on battery but system will prefer charging
         request.earliestBeginDate = Date(timeIntervalSinceNow: 20 * 60) // No earlier than 20 minutes
+        
+        DDLogInfo("📱 Full sync request created: ID=\(request.identifier), earliest=\(request.earliestBeginDate?.description ?? "now")")
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            DDLogInfo("📱 Scheduled full POS catalog sync for: \(request.earliestBeginDate?.description ?? "unknown")")
+            DDLogInfo("📱 ✅ Successfully submitted full POS catalog sync")
             DDLogInfo("📱 Full sync task config: network=\(request.requiresNetworkConnectivity), power=\(request.requiresExternalPower)")
+            
+            // Verify it was actually queued by checking immediately
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
+                    let ourTask = taskRequests.first { $0.identifier == Self.fullCatalogSyncIdentifier }
+                    DDLogInfo("📱 Full sync task verification: \(ourTask != nil ? "✅ Found in pending queue" : "❌ NOT found in pending queue")")
+                }
+            }
+            
             ServiceLocator.analytics.track(event: .POSCatalogSync.fullSyncScheduled())
         } catch {
             DDLogError("⛔️ Failed to schedule full POS catalog sync: \(error)")
@@ -117,14 +137,34 @@ final class POSCatalogSyncBackgroundTaskManager {
     /// Schedules an incremental sync (BGAppRefreshTask)
     /// Should be called more frequently for quick updates
     func scheduleIncrementalSync() {
-        guard !Self.isRunningTests() else { return }
+        guard !Self.isRunningTests() else { 
+            DDLogInfo("📱 Skipping incremental sync scheduling - running tests")
+            return 
+        }
+
+        DDLogInfo("📱 Attempting to schedule incremental sync...")
+        
+        // Cancel any existing request first
+        BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: Self.incrementalSyncIdentifier)
+        DDLogInfo("📱 Cancelled existing incremental sync task if any")
 
         let request = BGAppRefreshTaskRequest(identifier: Self.incrementalSyncIdentifier)
         request.earliestBeginDate = Date(timeIntervalSinceNow: 5 * 60) // No earlier than 5 minutes
+        
+        DDLogInfo("📱 Incremental sync request created: ID=\(request.identifier), earliest=\(request.earliestBeginDate?.description ?? "now")")
 
         do {
             try BGTaskScheduler.shared.submit(request)
-            DDLogInfo("📱 Scheduled incremental POS catalog sync for: \(request.earliestBeginDate?.description ?? "unknown")")
+            DDLogInfo("📱 ✅ Successfully submitted incremental POS catalog sync")
+            
+            // Verify it was actually queued by checking immediately
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
+                    let ourTask = taskRequests.first { $0.identifier == Self.incrementalSyncIdentifier }
+                    DDLogInfo("📱 Incremental sync task verification: \(ourTask != nil ? "✅ Found in pending queue" : "❌ NOT found in pending queue")")
+                }
+            }
+            
             ServiceLocator.analytics.track(event: .POSCatalogSync.incrementalSyncScheduled())
         } catch {
             DDLogError("⛔️ Failed to schedule incremental POS catalog sync: \(error)")

@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import BackgroundTasks
 
 // MARK: - Usage Examples
 
@@ -94,6 +95,9 @@ struct POSCatalogSyncDevelopmentHelper {
         // This could access the sync state if we exposed it
         DDLogInfo("🔧 [DEV] Current POS sync state check requested")
 
+        // Log system conditions that might affect background tasks
+        logSystemConditions()
+
         // Log last sync times from UserDefaults
         let lastIncremental = UserDefaults.standard.object(forKey: "lastPOSIncrementalSyncTimestamp") as? Date
         DDLogInfo("🔧 [DEV] Last incremental sync: \(lastIncremental?.description ?? "never")")
@@ -121,6 +125,36 @@ struct POSCatalogSyncDevelopmentHelper {
 
         // Log pending background tasks
         logPendingBackgroundTasks()
+    }
+    
+    /// Logs system conditions that might affect background task scheduling
+    private static func logSystemConditions() {
+        DDLogInfo("🔧 [DEV] === System Conditions Check ===")
+        
+        // Check Low Power Mode
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            DDLogInfo("🔧 [DEV] ⚠️ Low Power Mode: ENABLED (severely limits background tasks)")
+        } else {
+            DDLogInfo("🔧 [DEV] ✅ Low Power Mode: Disabled")
+        }
+        
+        // Check device state
+        let device = UIDevice.current
+        DDLogInfo("🔧 [DEV] Battery level: \(device.batteryLevel * 100)%")
+        
+        switch device.batteryState {
+        case .charging, .full:
+            DDLogInfo("🔧 [DEV] ✅ Battery: Charging/Full (good for BGProcessingTask)")
+        case .unplugged:
+            DDLogInfo("🔧 [DEV] ⚠️ Battery: Unplugged (BGProcessingTask may be limited)")
+        case .unknown:
+            DDLogInfo("🔧 [DEV] Battery state: Unknown")
+        @unknown default:
+            DDLogInfo("🔧 [DEV] Battery state: Unknown")
+        }
+        
+        // Check network status (simplified)
+        DDLogInfo("🔧 [DEV] === End System Conditions ===")
     }
 
     /// Logs all pending background tasks for debugging

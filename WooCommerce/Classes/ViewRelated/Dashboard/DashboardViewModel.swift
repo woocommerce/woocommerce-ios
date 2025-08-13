@@ -51,6 +51,18 @@ final class DashboardViewModel: ObservableObject {
         dashboardCards.filter { $0.availability != .hide }
     }
 
+    private lazy var syncService: POSCatalogSyncService = {
+        let network = AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
+        let dispatcher = Dispatcher()
+        let syncService = POSCatalogSyncService(
+            siteID: siteID,
+            network: network,
+            storageManager: storageManager,
+            dispatcher: dispatcher
+        )
+        return syncService
+    }()
+
     @Published private(set) var showOnDashboardCards: [DashboardCard] = []
     @Published private(set) var showOnDashboardFirstColumn: [DashboardCard] = []
     @Published private(set) var showOnDashboardSecondColumn: [DashboardCard] = []
@@ -269,14 +281,6 @@ final class DashboardViewModel: ObservableObject {
     @MainActor
     func syncPOSCatalog() async {
         do {
-            let network = AlamofireNetwork(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)
-            let dispatcher = Dispatcher()
-            let syncService = POSCatalogSyncService(
-                siteID: siteID,
-                network: network,
-                storageManager: storageManager,
-                dispatcher: dispatcher
-            )
             try await syncService.syncCatalog()
         } catch {
             DDLogError("⛔️ POS Catalog sync failed: \(error)")

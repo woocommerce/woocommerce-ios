@@ -118,6 +118,38 @@ struct POSCatalogSyncDevelopmentHelper {
         } else {
             DDLogInfo("🔧 [DEV] App is running in foreground")
         }
+
+        // Log pending background tasks
+        logPendingBackgroundTasks()
+    }
+
+    /// Logs all pending background tasks for debugging
+    private static func logPendingBackgroundTasks() {
+        DDLogInfo("🔧 [DEV] Checking pending background tasks...")
+
+        BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
+            DispatchQueue.main.async {
+                DDLogInfo("🔧 [DEV] Total pending tasks: \(taskRequests.count)")
+
+                for request in taskRequests {
+                    let earliestDate = request.earliestBeginDate?.description ?? "immediately"
+                    DDLogInfo("🔧 [DEV] Pending task: \(request.identifier), earliest: \(earliestDate)")
+
+                    if let processingRequest = request as? BGProcessingTaskRequest {
+                        DDLogInfo("🔧 [DEV]   Type: BGProcessingTask, network: \(processingRequest.requiresNetworkConnectivity), power: \(processingRequest.requiresExternalPower)")
+                    } else if request is BGAppRefreshTaskRequest {
+                        DDLogInfo("🔧 [DEV]   Type: BGAppRefreshTask")
+                    }
+                }
+
+                // Check specifically for our tasks
+                let ourFullSyncTask = taskRequests.first { $0.identifier == POSCatalogSyncBackgroundTaskManager.fullCatalogSyncIdentifier }
+                let ourIncrementalTask = taskRequests.first { $0.identifier == POSCatalogSyncBackgroundTaskManager.incrementalSyncIdentifier }
+
+                DDLogInfo("🔧 [DEV] Our full sync task pending: \(ourFullSyncTask != nil ? "✅" : "❌")")
+                DDLogInfo("🔧 [DEV] Our incremental sync task pending: \(ourIncrementalTask != nil ? "✅" : "❌")")
+            }
+        }
     }
 
     /// Manually triggers sync operations for testing

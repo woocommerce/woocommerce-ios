@@ -63,7 +63,7 @@ final class POSCatalogSyncBackgroundTaskManager {
         DDLogInfo("📱 Registering POS catalog background tasks...")
 
         // Register full catalog sync (BGProcessingTask)
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.fullCatalogSyncIdentifier, using: nil) { task in
+        let fullSyncRegistered = BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.fullCatalogSyncIdentifier, using: nil) { task in
             guard let processingTask = task as? BGProcessingTask else {
                 DDLogError("⛔️ Failed to cast to BGProcessingTask for full catalog sync")
                 task.setTaskCompleted(success: false)
@@ -71,9 +71,10 @@ final class POSCatalogSyncBackgroundTaskManager {
             }
             self.handleFullCatalogSync(task: processingTask)
         }
+        DDLogInfo("📱 Full catalog sync registration: \(fullSyncRegistered ? "✅ Success" : "❌ Failed")")
 
-        // Register incremental sync (BGAppRefreshTask)
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.incrementalSyncIdentifier, using: nil) { task in
+        // Register incremental sync (BGAppRefreshTask)  
+        let incrementalSyncRegistered = BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.incrementalSyncIdentifier, using: nil) { task in
             guard let refreshTask = task as? BGAppRefreshTask else {
                 DDLogError("⛔️ Failed to cast to BGAppRefreshTask for incremental sync")
                 task.setTaskCompleted(success: false)
@@ -81,6 +82,7 @@ final class POSCatalogSyncBackgroundTaskManager {
             }
             self.handleIncrementalSync(task: refreshTask)
         }
+        DDLogInfo("📱 Incremental sync registration: \(incrementalSyncRegistered ? "✅ Success" : "❌ Failed")")
 
         DDLogInfo("📱 Successfully registered POS catalog background tasks")
     }
@@ -95,14 +97,19 @@ final class POSCatalogSyncBackgroundTaskManager {
         let request = BGProcessingTaskRequest(identifier: Self.fullCatalogSyncIdentifier)
         request.requiresNetworkConnectivity = true
         request.requiresExternalPower = false  // Can run on battery but system will prefer charging
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 24 * 60 * 60) // No earlier than 1 day
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 20 * 60) // No earlier than 20 minutes
 
         do {
             try BGTaskScheduler.shared.submit(request)
             DDLogInfo("📱 Scheduled full POS catalog sync for: \(request.earliestBeginDate?.description ?? "unknown")")
+            DDLogInfo("📱 Full sync task config: network=\(request.requiresNetworkConnectivity), power=\(request.requiresExternalPower)")
             ServiceLocator.analytics.track(event: .POSCatalogSync.fullSyncScheduled())
         } catch {
             DDLogError("⛔️ Failed to schedule full POS catalog sync: \(error)")
+            DDLogError("⛔️ Error type: \(type(of: error)), localizedDescription: \(error.localizedDescription)")
+            if let bgError = error as? BGTaskScheduler.Error {
+                DDLogError("⛔️ BGTaskScheduler error code: \(bgError.code)")
+            }
             ServiceLocator.analytics.track(event: .POSCatalogSync.schedulingError(error, taskType: "full"))
         }
     }
@@ -113,7 +120,7 @@ final class POSCatalogSyncBackgroundTaskManager {
         guard !Self.isRunningTests() else { return }
 
         let request = BGAppRefreshTaskRequest(identifier: Self.incrementalSyncIdentifier)
-        request.earliestBeginDate = Date(timeIntervalSinceNow: 4 * 60 * 60) // No earlier than 4 hours
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 5 * 60) // No earlier than 5 minutes
 
         do {
             try BGTaskScheduler.shared.submit(request)
@@ -121,6 +128,10 @@ final class POSCatalogSyncBackgroundTaskManager {
             ServiceLocator.analytics.track(event: .POSCatalogSync.incrementalSyncScheduled())
         } catch {
             DDLogError("⛔️ Failed to schedule incremental POS catalog sync: \(error)")
+            DDLogError("⛔️ Error type: \(type(of: error)), localizedDescription: \(error.localizedDescription)")
+            if let bgError = error as? BGTaskScheduler.Error {
+                DDLogError("⛔️ BGTaskScheduler error code: \(bgError.code)")
+            }
             ServiceLocator.analytics.track(event: .POSCatalogSync.schedulingError(error, taskType: "incremental"))
         }
     }
@@ -207,8 +218,8 @@ private extension POSCatalogSyncBackgroundTaskManager {
     func handleFullCatalogSync(task: BGProcessingTask) {
         DDLogInfo("📱 Starting full POS catalog sync in background...")
 
-        // Schedule next full sync
-        scheduleFullCatalogSync()
+        // Schedule next full sync - do this after task completion to avoid conflicts
+        defer { scheduleFullCatalogSync() }
 
         let syncTask = Task {
             do {
@@ -240,8 +251,8 @@ private extension POSCatalogSyncBackgroundTaskManager {
     func handleIncrementalSync(task: BGAppRefreshTask) {
         DDLogInfo("📱 Starting incremental POS catalog sync in background...")
 
-        // Schedule next incremental sync
-        scheduleIncrementalSync()
+        // Schedule next incremental sync - do this after task completion to avoid conflicts
+        defer { scheduleIncrementalSync() }
 
         let syncTask = Task {
             do {

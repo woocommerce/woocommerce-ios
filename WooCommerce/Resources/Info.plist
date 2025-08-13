@@ -8,6 +8,8 @@
 		<string>com.automattic.woocommerce.pos.fullCatalogSync</string>
 		<string>com.automattic.woocommerce.pos.incrementalSync</string>
 	</array>
+	<key>BuildConfigurationName</key>
+	<string>$(CONFIGURATION)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -81,10 +83,10 @@
 	<true/>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location access is required in order to accept payments.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Woo uses your microphone to let you capture audio when recording videos for your store’s media library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>NSUserActivityTypes</key>
 	<array/>
 	<key>UIAppFonts</key>
@@ -131,6 +133,7 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 		<string>bluetooth-central</string>
+		<string>processing</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -153,7 +156,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>BuildConfigurationName</key>
-	<string>$(CONFIGURATION)</string>
 </dict>
 </plist>

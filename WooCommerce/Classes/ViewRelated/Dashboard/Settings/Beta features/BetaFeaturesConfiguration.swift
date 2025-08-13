@@ -76,6 +76,42 @@ struct BetaFeaturesConfiguration: View {
                             .foregroundColor(.orange)
                     }
                 }
+                
+                Button(action: {
+                    viewModel.forceScheduleIncrementalSync()
+                }) {
+                    HStack {
+                        Text(Localization.forceScheduleIncrementalSync)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "calendar.badge.clock")
+                            .foregroundColor(.orange)
+                    }
+                }
+                
+                Button(action: {
+                    viewModel.forceScheduleMainAppRefresh()
+                }) {
+                    HStack {
+                        Text(Localization.forceScheduleMainAppRefresh)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "calendar.circle")
+                            .foregroundColor(.orange)
+                    }
+                }
+                
+                Button(action: {
+                    viewModel.forceScheduleAllTasks()
+                }) {
+                    HStack {
+                        Text(Localization.forceScheduleAllTasks)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "calendar.badge.exclamationmark")
+                            .foregroundColor(.red)
+                    }
+                }
             }
             #endif
         }
@@ -108,6 +144,18 @@ private enum Localization {
     static let forceScheduleFullSync = NSLocalizedString(
         "Force Schedule Full Sync",
         comment: "Button to force schedule full catalog sync task for debugging")
+    
+    static let forceScheduleIncrementalSync = NSLocalizedString(
+        "Force Schedule Incremental Sync",
+        comment: "Button to force schedule incremental catalog sync task for debugging")
+    
+    static let forceScheduleMainAppRefresh = NSLocalizedString(
+        "Force Schedule Main App Refresh",
+        comment: "Button to force schedule main app refresh task for debugging")
+    
+    static let forceScheduleAllTasks = NSLocalizedString(
+        "Force Schedule ALL Tasks",
+        comment: "Button to force schedule all background tasks at once for debugging")
     #endif
 }
 

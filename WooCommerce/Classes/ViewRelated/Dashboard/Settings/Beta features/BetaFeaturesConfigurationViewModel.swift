@@ -45,5 +45,22 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
         DDLogInfo("🔧 [DEV] [FORCE-SCHEDULE] Forcing full sync task to be scheduled...")
         AppDelegate.shared.posCatalogSyncManager.scheduleFullCatalogSync()
     }
+    
+    func forceScheduleIncrementalSync() {
+        DDLogInfo("🔧 [DEV] [FORCE-SCHEDULE] Forcing incremental sync task to be scheduled...")
+        AppDelegate.shared.posCatalogSyncManager.scheduleIncrementalSync()
+    }
+    
+    func forceScheduleMainAppRefresh() {
+        DDLogInfo("🔧 [DEV] [FORCE-SCHEDULE] Forcing main app refresh task to be scheduled...")
+        AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()
+    }
+    
+    func forceScheduleAllTasks() {
+        DDLogInfo("🔧 [DEV] [FORCE-SCHEDULE] Forcing all background tasks to be scheduled...")
+        AppDelegate.shared.appRefreshHandler.scheduleAppRefresh()
+        AppDelegate.shared.posCatalogSyncManager.scheduleFullCatalogSync()
+        AppDelegate.shared.posCatalogSyncManager.scheduleIncrementalSync()
+    }
     #endif
 }

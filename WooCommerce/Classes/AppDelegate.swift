@@ -58,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     /// Handles events to background refresh the app.
     ///
-    private let appRefreshHandler = BackgroundTaskRefreshDispatcher()
+    internal let appRefreshHandler = BackgroundTaskRefreshDispatcher()
     
     /// Manages POS catalog background synchronization.
     ///

@@ -39,12 +39,14 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     // TODO tracking
-                    // #1
+                    // #1 ViewState approach
                     // posModel.viewStateCoordinatorForView.showSettings()
-                    // #2
-                    // showSettingsViaFullScreenModal = true
-                    // #3
-                    showSettingsViaPartialScreenModal = true
+                    
+                    // #2 Full Modal
+                     showSettingsViaFullScreenModal = true
+                    
+                    // #3 Partial Modal
+                    // showSettingsViaPartialScreenModal = true
                 } label: {
                     Label(
                         title: { Text("Settings") },

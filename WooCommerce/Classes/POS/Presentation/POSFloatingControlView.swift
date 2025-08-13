@@ -8,15 +8,18 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @Binding private var showTestFullscreenOverlay: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>) {
+         showDocumentation: Binding<Bool>,
+         showTestFullscreenOverlay: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
+        self._showTestFullscreenOverlay = showTestFullscreenOverlay
     }
 
     var body: some View {
@@ -72,6 +75,15 @@ struct POSFloatingControlView: View {
                             },
                             icon: { Image(systemName: "barcode.viewfinder") })
                     }
+                }
+                // Demo button for testing fullscreen overlay modal coordination
+                Button {
+                    showTestFullscreenOverlay = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.testFullscreenOverlay) },
+                        icon: { Image(systemName: "rectangle.expand.vertical") }
+                    )
                 }
             } label: {
                 VStack {
@@ -185,6 +197,12 @@ private extension POSFloatingControlView {
             value: "Initial barcode scanner setup",
             comment: "The title of the menu button to start a barcode scanner setup flow."
         )
+        
+        static let testFullscreenOverlay = NSLocalizedString(
+            "pointOfSale.floatingButtons.testFullscreenOverlay.button.title",
+            value: "Test Fullscreen Overlay",
+            comment: "Demo button to test fullscreen overlay with modal coordination."
+        )
     }
 }
 
@@ -192,7 +210,7 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showTestFullscreenOverlay: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -204,14 +222,14 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showTestFullscreenOverlay: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false), showTestFullscreenOverlay: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

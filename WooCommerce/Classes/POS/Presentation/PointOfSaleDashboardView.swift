@@ -8,6 +8,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var showTestFullscreenOverlay: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -90,7 +91,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation)
+                                   showDocumentation: $showDocumentation,
+                                   showTestFullscreenOverlay: $showTestFullscreenOverlay)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -129,6 +131,9 @@ struct PointOfSaleDashboardView: View {
         }
         .posSheet(isPresented: $showDocumentation) {
             documentationView
+        }
+        .posFullscreenOverlay(isPresented: $showTestFullscreenOverlay) {
+            testFullscreenOverlayContent
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -203,6 +208,10 @@ private extension PointOfSaleDashboardView {
     var documentationView: some View {
         SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
     }
+    
+    var testFullscreenOverlayContent: some View {
+        TestFullscreenOverlayView()
+    }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
         onboardingViewModel.showSupport = { [weak posModel] in
@@ -263,6 +272,157 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
+    }
+}
+
+// MARK: - Test Fullscreen Overlay View
+
+@available(iOS 17.0, *)
+struct TestFullscreenOverlayView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.parentModalManager) private var parentModalManager
+    @EnvironmentObject private var modalManager: POSModalManager
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 30) {
+                Text("Test Fullscreen Overlay")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                
+                Text("Test modal coordination across fullscreen boundaries")
+                    .multilineTextAlignment(.center)
+                    .padding()
+                
+                VStack(spacing: 15) {
+                    Button("Test Modal (Simple Demo)") {
+                        // Use the modal system directly
+                        modalManager.present(onDismiss: {
+                            print("Modal dismissed via fullscreen modal system")
+                        }) {
+                            testModalContent
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    
+                    Button("Test Barcode Scanner Setup") {
+                        // Present PointOfSaleBarcodeScannerSetup using fullscreen modal system
+                        modalManager.present(onDismiss: {
+                            print("Barcode scanner setup dismissed")
+                        }) {
+                            barcodeScannerSetupContent
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    
+                    Text("↑ These modals should appear ABOVE this fullscreen view")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+                .background(Color.secondary.opacity(0.1))
+                .cornerRadius(12)
+                
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Fullscreen Test")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .posRootModal()  // Add modal presentation layer for fullscreen content
+    }
+    
+    private var testModalContent: some View {
+        VStack {
+            Text("Success! 🎉")
+                .font(.title)
+                .fontWeight(.bold)
+                .padding()
+            
+            Text("This modal is displayed using the parent's modal system")
+                .multilineTextAlignment(.center)
+                .padding()
+            
+            Text("It appears ABOVE the fullscreen overlay!")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding()
+            
+            Button("Close") {
+                modalManager.dismiss()
+            }
+            .buttonStyle(.borderedProminent)
+            .padding()
+        }
+        .frame(maxWidth: 400)
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+    }
+    
+    @State private var barcodeScannerIsPresented = false
+    
+    private var barcodeScannerSetupContent: some View {
+        Group {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
+                // Create a wrapper that handles the binding properly
+                BarcodeScannerSetupWrapper(onDismiss: {
+                    modalManager.dismiss()
+                })
+            } else {
+                VStack {
+                    Text("Barcode Scanner Setup")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .padding()
+                    
+                    Text("This would be the PointOfSaleBarcodeScannerSetup view")
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    
+                    Text("Presented ABOVE the fullscreen overlay via parent modal system!")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                    
+                    Button("Close") {
+                        modalManager.dismiss()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .padding()
+                }
+                .frame(maxWidth: 500)
+                .padding()
+                .background(Color(.systemBackground))
+                .cornerRadius(12)
+            }
+        }
+    }
+}
+
+@available(iOS 17.0, *)
+struct BarcodeScannerSetupWrapper: View {
+    let onDismiss: () -> Void
+    @State private var isPresented = true
+    
+    var body: some View {
+        PointOfSaleBarcodeScannerSetup(isPresented: $isPresented)
+            .onChange(of: isPresented) { _, newValue in
+                if !newValue {
+                    onDismiss()
+                }
+            }
     }
 }
 

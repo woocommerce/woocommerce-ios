@@ -40,5 +40,10 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
         DDLogInfo("🔧 [DEV] [STATUS] Logging POS sync status from beta features menu...")
         POSCatalogSyncDevelopmentHelper.logCurrentSyncState()
     }
+    
+    func forceScheduleFullSync() {
+        DDLogInfo("🔧 [DEV] [FORCE-SCHEDULE] Forcing full sync task to be scheduled...")
+        AppDelegate.shared.posCatalogSyncManager.scheduleFullCatalogSync()
+    }
     #endif
 }

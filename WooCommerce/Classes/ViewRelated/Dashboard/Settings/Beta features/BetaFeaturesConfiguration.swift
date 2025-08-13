@@ -64,6 +64,18 @@ struct BetaFeaturesConfiguration: View {
                             .foregroundColor(.green)
                     }
                 }
+                
+                Button(action: {
+                    viewModel.forceScheduleFullSync()
+                }) {
+                    HStack {
+                        Text(Localization.forceScheduleFullSync)
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Image(systemName: "calendar.badge.plus")
+                            .foregroundColor(.orange)
+                    }
+                }
             }
             #endif
         }
@@ -92,6 +104,10 @@ private enum Localization {
     static let logSyncStatus = NSLocalizedString(
         "Log Current Sync Status",
         comment: "Button to log current POS sync status for debugging")
+    
+    static let forceScheduleFullSync = NSLocalizedString(
+        "Force Schedule Full Sync",
+        comment: "Button to force schedule full catalog sync task for debugging")
     #endif
 }
 

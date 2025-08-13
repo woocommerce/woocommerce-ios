@@ -107,32 +107,6 @@ enum WooAnalyticsStat: String {
     case loginSiteCredentialsAppPasswordLoginExitConfirmation = "login_site_credentials_app_password_login_exit_confirmation"
     case loginSiteCredentialsAppPasswordLoginDismissed = "login_site_credentials_app_password_login_dismissed"
 
-
-    // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
-    //
-    case loginJetpackSetupScreenViewed = "login_jetpack_setup_screen_viewed"
-    case loginJetpackSetupScreenDismissed = "login_jetpack_setup_screen_dismissed"
-
-    case loginJetpackSetupScreenInstallSuccessful = "login_jetpack_setup_install_successful"
-    case loginJetpackSetupScreenInstallFailed = "login_jetpack_setup_install_failed"
-
-    case loginJetpackSetupActivationSuccessful = "login_jetpack_setup_activation_successful"
-    case loginJetpackSetupActivationFailed = "login_jetpack_setup_activation_failed"
-
-    case loginJetpackSetupFetchJetpackConnectionURLSuccessful = "login_jetpack_setup_fetch_jetpack_connection_url_successful"
-    case loginJetpackSetupFetchJetpackConnectionURLFailed = "login_jetpack_setup_fetch_jetpack_connection_url_failed"
-
-    case loginJetpackSetupCannotFindWPCOMUser = "login_jetpack_setup_cannot_find_WPCOM_user"
-    case loginJetpackSetupAllStepsMarkedDone = "login_jetpack_setup_all_steps_marked_done"
-    case loginJetpackSetupErrorCheckingJetpackConnection = "login_jetpack_setup_error_checking_jetpack_connection"
-
-    case loginJetpackSetupGoToStoreTapped = "login_jetpack_setup_go_to_store_button_tapped"
-
-    case loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount = "login_jetpack_setup_authorized_using_different_wpcom_account"
-
-    case loginJetpackSetupScreenTryAgainButtonTapped = "login_jetpack_setup_try_again_button_tapped"
-    case loginJetpackSetupScreenGetSupportTapped = "login_jetpack_setup_get_support_button_tapped"
-
     // MARK: No matched site alert
     //
     case loginJetpackNoMatchedSiteErrorViewed = "login_jetpack_no_matched_site_error_viewed"

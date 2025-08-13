@@ -242,7 +242,7 @@ public final class CoreDataManager: StorageManagerType {
     }
 
     /// Migrates the current persistent store to the latest data model if needed.
-    /// - Returns: an array of debug messages for logging. Please feel free to remove when #2371 is resolved.
+    /// - Returns: an array of debug messages for logging.
     private static func migrateDataModelIfNecessary(using coordinator: NSPersistentStoreCoordinator,
                                                     storeURL: URL,
                                                     modelsInventory: ManagedObjectModelsInventory) -> [String] {

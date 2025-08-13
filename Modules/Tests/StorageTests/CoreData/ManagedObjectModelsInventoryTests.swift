@@ -29,35 +29,6 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
     func test_it_can_load_the_expected_model_versions() throws {
         // Given
         let expectedVersionNames = [
-            "Model",
-            "Model 2",
-            "Model 3",
-            "Model 4",
-            "Model 5",
-            "Model 6",
-            "Model 7",
-            "Model 8",
-            "Model 9",
-            "Model 10",
-            "Model 11",
-            "Model 12",
-            "Model 13",
-            "Model 14",
-            "Model 15",
-            "Model 16",
-            "Model 17",
-            "Model 18",
-            "Model 19",
-            "Model 20",
-            "Model 21",
-            "Model 22",
-            "Model 23",
-            "Model 24",
-            "Model 25",
-            "Model 26",
-            "Model 27",
-            "Model 28",
-            "Model 29",
             "Model 30",
             "Model 31",
             "Model 32",
@@ -145,7 +116,14 @@ final class ManagedObjectModelsInventoryTests: XCTestCase {
             "Model 114",
             "Model 115",
             "Model 116",
-            "Model 117"
+            "Model 117",
+            "Model 118",
+            "Model 119",
+            "Model 120",
+            "Model 121",
+            "Model 122",
+            "Model 123",
+            "Model 124"
         ]
 
         // When

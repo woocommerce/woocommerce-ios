@@ -37,9 +37,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
         rootView.supportHandler = { [weak self] in
             guard let self else { return }
-
-            self.viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenGetSupportTapped, properties: self.viewModel.currentSetupStep?.analyticsDescription)
-            self.viewModel.trackSetupAfterLogin(tap: .support)
+            self.viewModel.trackSetup(tap: .support)
             self.presentSupport()
         }
 
@@ -53,8 +51,6 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -67,8 +63,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     @objc
     private func dismissView() {
-        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenDismissed, properties: viewModel.currentSetupStep?.analyticsDescription)
-        viewModel.trackSetupAfterLogin(tap: .dismiss)
+        viewModel.trackSetup(tap: .dismiss)
         dismiss(animated: true)
     }
 

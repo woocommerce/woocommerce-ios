@@ -65,8 +65,8 @@ final class POSCatalogSyncController {
  
  // In a POS view controller when user first logs in:
  if POSCatalogSyncController.shared.isFullSyncInProgress == false {
-     let syncTask = POSCatalogSyncController.shared.startForegroundFullSync()
-     // Show progress UI and monitor syncTask as needed
+ let syncTask = POSCatalogSyncController.shared.startForegroundFullSync()
+ // Show progress UI and monitor syncTask as needed
  }
  
  // In settings when user changes sync preferences:

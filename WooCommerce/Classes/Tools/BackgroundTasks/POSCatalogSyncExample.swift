@@ -126,22 +126,22 @@ struct POSCatalogSyncDevelopmentHelper {
         // Log pending background tasks
         logPendingBackgroundTasks()
     }
-    
+
     /// Logs system conditions that might affect background task scheduling
     private static func logSystemConditions() {
         DDLogInfo("🔧 [DEV] === System Conditions Check ===")
-        
+
         // Check Low Power Mode
         if ProcessInfo.processInfo.isLowPowerModeEnabled {
             DDLogInfo("🔧 [DEV] ⚠️ Low Power Mode: ENABLED (severely limits background tasks)")
         } else {
             DDLogInfo("🔧 [DEV] ✅ Low Power Mode: Disabled")
         }
-        
+
         // Check device state
         let device = UIDevice.current
         DDLogInfo("🔧 [DEV] Battery level: \(device.batteryLevel * 100)%")
-        
+
         switch device.batteryState {
         case .charging, .full:
             DDLogInfo("🔧 [DEV] ✅ Battery: Charging/Full (good for BGProcessingTask)")
@@ -152,19 +152,19 @@ struct POSCatalogSyncDevelopmentHelper {
         @unknown default:
             DDLogInfo("🔧 [DEV] Battery state: Unknown")
         }
-        
+
         // Check app usage for BGProcessingTask scheduling
         DDLogInfo("🔧 [DEV] App state: \(UIApplication.shared.applicationState == .active ? "Active" : "Background")")
-        
+
         // Check for conditions that affect BGProcessingTask specifically
         if ProcessInfo.processInfo.isLowPowerModeEnabled {
             DDLogInfo("🔧 [DEV] 🚨 BGProcessingTask will likely be rejected due to Low Power Mode")
         }
-        
+
         if device.batteryState == .unplugged && device.batteryLevel < 0.5 {
             DDLogInfo("🔧 [DEV] ⚠️ BGProcessingTask may be rejected: unplugged + low battery")
         }
-        
+
         DDLogInfo("🔧 [DEV] === End System Conditions ===")
     }
 

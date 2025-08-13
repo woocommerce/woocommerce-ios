@@ -6,6 +6,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var showExitPOSModal: Bool = false
+    @State private var showSettingsViaFullScreenModal: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -92,7 +93,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: .constant(false),
-                                   showDocumentation: .constant(false))
+                                   showDocumentation: .constant(false),
+                                   showSettingsViaFullScreenModal: $showSettingsViaFullScreenModal)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -125,6 +127,23 @@ struct PointOfSaleDashboardView: View {
             .frame(maxWidth: Constants.exitPOSSheetMaxWidth)
         }
         .posRootModal()
+        .fullScreenCover(isPresented: $showSettingsViaFullScreenModal) {
+            // This needs to be duplicated, but modals like the card connection as .posModal will show BELOW the full screen cover
+            // These won't be visible unless we dismiss fullScreenCover.
+            PointOfSaleSettingsView()
+                .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+                    posModel.cancelCardPaymentsOnboarding()
+                }) { viewModel in
+                    paymentsOnboardingView(from: viewModel)
+                }
+                .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
+                          onDismiss: {
+                    posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+                }) { alertType in
+                    PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                        .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+                }
+        }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
             Task { @MainActor in
@@ -322,6 +341,7 @@ struct PointOfSaleSettingsView2: View {
 
 @available(iOS 17.0, *)
 struct PointOfSaleSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     
     enum SettingsSection: String, CaseIterable, Identifiable {
@@ -355,7 +375,7 @@ struct PointOfSaleSettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        showSupport = false
+                        dismiss()
                     }
                 }
             }
@@ -592,7 +612,10 @@ struct PointOfSaleSettingsView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                             posModel.viewStateCoordinatorForView.hideSettings()
+                            // #1
+                            posModel.viewStateCoordinatorForView.hideSettings()
+                            // #2
+                            dismiss()
                          } label: {
                              Image(systemName: "xmark")
                          }

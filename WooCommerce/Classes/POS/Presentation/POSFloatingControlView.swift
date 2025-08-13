@@ -8,15 +8,17 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @Binding private var showSettingsViaFullScreenModal: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>) {
+         showDocumentation: Binding<Bool>, showSettingsViaFullScreenModal: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
+        self._showSettingsViaFullScreenModal = showSettingsViaFullScreenModal
     }
 
     var body: some View {
@@ -33,7 +35,10 @@ struct POSFloatingControlView: View {
                 }
                 Button {
                     // TODO tracking
-                    posModel.viewStateCoordinatorForView.showSettings()
+                    // #1
+                    // posModel.viewStateCoordinatorForView.showSettings()
+                    // #2
+                    showSettingsViaFullScreenModal = true
                 } label: {
                     Label(
                         title: { Text("Settings") },
@@ -169,32 +174,32 @@ private extension POSFloatingControlView {
     }
 }
 
-#if DEBUG
-
-@available(iOS 17.0, *)
-#Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
-        .environment(\.posBackgroundAppearance, .primary)
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
-}
-
-@available(iOS 17.0, *)
-#Preview("Reader Connected") {
-    let paymentService = CardPresentPaymentPreviewService()
-    paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
-    let posModel = POSPreviewHelpers.makePreviewAggregateModel(
-        cardPresentPaymentService: paymentService
-    )
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
-        .environment(\.posBackgroundAppearance, .primary)
-        .environment(posModel)
-}
-
-@available(iOS 17.0, *)
-#Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
-        .environment(\.posBackgroundAppearance, .secondary)
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
-}
-
-#endif
+//#if DEBUG
+//
+//@available(iOS 17.0, *)
+//#Preview("Reader Disconnected") {
+//    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+//        .environment(\.posBackgroundAppearance, .primary)
+//        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+//}
+//
+//@available(iOS 17.0, *)
+//#Preview("Reader Connected") {
+//    let paymentService = CardPresentPaymentPreviewService()
+//    paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
+//    let posModel = POSPreviewHelpers.makePreviewAggregateModel(
+//        cardPresentPaymentService: paymentService
+//    )
+//    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+//        .environment(\.posBackgroundAppearance, .primary)
+//        .environment(posModel)
+//}
+//
+//@available(iOS 17.0, *)
+//#Preview("Secondary/disabled Background") {
+//    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+//        .environment(\.posBackgroundAppearance, .secondary)
+//        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+//}
+//
+//#endif

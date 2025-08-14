@@ -1277,6 +1277,12 @@ extension OrderDetailsDataSource {
             if cachedShipments.isNotEmpty {
                 return cachedShipments
             }
+
+            if products.allSatisfy({ $0.virtual == true }) {
+                /// skips creating shipments if all products are virtual
+                return []
+            }
+
             /// returns a placeholder shipment with all the order items
             return [WooShippingShipment(
                 siteID: order.siteID,

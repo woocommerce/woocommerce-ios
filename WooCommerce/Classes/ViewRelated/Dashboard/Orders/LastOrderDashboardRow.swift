@@ -34,7 +34,7 @@ struct LastOrderDashboardRow: View {
                         HStack(spacing: Layout.badgeSpacing) {
                             Text(viewModel.statusDescription)
                                 .foregroundStyle(.black)
-                                .captionStyle()
+                                .footnoteStyle()
                                 .padding(.horizontal, Layout.Status.hPadding)
                                 .padding(.vertical, Layout.Status.vPadding)
                                 .background(viewModel.statusBackgroundColor)
@@ -43,7 +43,7 @@ struct LastOrderDashboardRow: View {
                                viewModel.isPOSOrder {
                                 Text(viewModel.salesChannelText)
                                     .foregroundStyle(Color(uiColor: Layout.salesChannelLabelTextColor))
-                                    .captionStyle()
+                                    .footnoteStyle()
                                     .padding(.horizontal, Layout.Status.hPadding)
                                     .padding(.vertical, Layout.Status.vPadding)
                                     .background(Color(uiColor: Layout.salesChannelLabelBackgroundColor))
@@ -76,8 +76,8 @@ private extension LastOrderDashboardRow {
 
         enum Status {
             static let hPadding: CGFloat = 8
-            static let vPadding: CGFloat = 2
-            static let cornerRadius: CGFloat = 2
+            static let vPadding: CGFloat = 4
+            static let cornerRadius: CGFloat = 4
         }
     }
 }

@@ -172,31 +172,47 @@ private struct BackgroundTaskSystemInfo {
     }
 
     private static func getNetworkInfo() -> NetworkInfo {
+        // Use a semaphore to wait for the path update
+        let semaphore = DispatchSemaphore(value: 0)
         let monitor = NWPathMonitor()
-        let path = monitor.currentPath
-
-        // Check connection status first
-        guard path.status == .satisfied else {
-            return NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
+        var networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
+        
+        monitor.pathUpdateHandler = { path in
+            // Check connection status first
+            guard path.status == .satisfied else {
+                networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
+                semaphore.signal()
+                return
+            }
+            
+            let isExpensive = path.isExpensive
+            let isLowDataMode = path.isConstrained
+            
+            // Determine connection type
+            let networkType: String
+            if path.usesInterfaceType(.wifi) {
+                networkType = "wifi"
+            } else if path.usesInterfaceType(.cellular) {
+                networkType = "cellular"
+            } else if path.usesInterfaceType(.wiredEthernet) {
+                networkType = "ethernet"
+            } else if path.usesInterfaceType(.loopback) {
+                networkType = "loopback"
+            } else {
+                networkType = "other"
+            }
+            
+            networkInfo = NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
+            semaphore.signal()
         }
-
-        let isExpensive = path.isExpensive
-        let isLowDataMode = path.isConstrained
-
-        // Determine connection type
-        let networkType: String
-        if path.usesInterfaceType(.wifi) {
-            networkType = "wifi"
-        } else if path.usesInterfaceType(.cellular) {
-            networkType = "cellular"
-        } else if path.usesInterfaceType(.wiredEthernet) {
-            networkType = "ethernet"
-        } else if path.usesInterfaceType(.loopback) {
-            networkType = "loopback"
-        } else {
-            networkType = "other"
-        }
-
-        return NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
+        
+        let queue = DispatchQueue(label: "network.monitor.queue")
+        monitor.start(queue: queue)
+        
+        // Wait up to 1 second for network info
+        _ = semaphore.wait(timeout: .now() + 1.0)
+        monitor.cancel()
+        
+        return networkInfo
     }
 }

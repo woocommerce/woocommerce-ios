@@ -1,6 +1,7 @@
 import UIKit
 import Foundation
 import BackgroundTasks
+import Network
 
 final class BackgroundTaskRefreshDispatcher {
 
@@ -54,6 +55,10 @@ final class BackgroundTaskRefreshDispatcher {
             return
         }
 
+        // Capture system state at start
+        let systemInfo = BackgroundTaskSystemInfo()
+        let lastRunTime = UserDefaults.standard[.lastBackgroundRefreshTime] as? Date
+
         // Schedule a new refresh task.
         scheduleAppRefresh()
 
@@ -78,7 +83,24 @@ final class BackgroundTaskRefreshDispatcher {
                 }
 
                 let timeTaken = round(Date.now.timeIntervalSince(startTime))
-                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(timeTaken: timeTaken))
+                let timeSinceLastRun = lastRunTime?.timeIntervalSinceNow.magnitude
+
+                // Track detailed analytics
+                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncedDetailed(
+                    timeTaken: timeTaken,
+                    backgroundTimeGranted: systemInfo.backgroundTimeGranted,
+                    networkType: systemInfo.networkType,
+                    isExpensiveConnection: systemInfo.isExpensiveConnection,
+                    isLowDataMode: systemInfo.isLowDataMode,
+                    isPowered: systemInfo.isPowered,
+                    batteryLevel: systemInfo.batteryLevel,
+                    isLowPowerMode: systemInfo.isLowPowerMode,
+                    timeSinceLastRun: timeSinceLastRun
+                ))
+
+                // Update last run timestamp
+                UserDefaults.standard[.lastBackgroundRefreshTime] = Date()
+
                 backgroundTask.setTaskCompleted(success: true)
 
             } catch {
@@ -93,7 +115,7 @@ final class BackgroundTaskRefreshDispatcher {
             ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncError(BackgroundError.expired))
             refreshTasks.cancel()
         }
-     }
+    }
 }
 
 private extension BackgroundTaskRefreshDispatcher {
@@ -107,5 +129,74 @@ private extension BackgroundTaskRefreshDispatcher {
 extension BackgroundTaskRefreshDispatcher {
     private enum BackgroundError: Error {
         case expired
+    }
+}
+
+// MARK: - System Information Helper
+
+private struct NetworkInfo {
+    let type: String
+    let isExpensive: Bool
+    let isLowDataMode: Bool
+}
+
+private struct BackgroundTaskSystemInfo {
+    let backgroundTimeGranted: TimeInterval?
+    let networkInfo: NetworkInfo
+    let isPowered: Bool
+    let batteryLevel: Float
+    let isLowPowerMode: Bool
+
+    // Computed properties for clean external access
+    var networkType: String { networkInfo.type }
+    var isExpensiveConnection: Bool { networkInfo.isExpensive }
+    var isLowDataMode: Bool { networkInfo.isLowDataMode }
+
+    init() {
+        // Background time granted (nil if foreground/unlimited)
+        let bgTime = UIApplication.shared.backgroundTimeRemaining
+        self.backgroundTimeGranted = bgTime < Double.greatestFiniteMagnitude ? bgTime : nil
+
+        // Network info
+        self.networkInfo = Self.getNetworkInfo()
+
+        // Power and battery info
+        let device = UIDevice.current
+        device.isBatteryMonitoringEnabled = true
+
+        self.isPowered = device.batteryState == .charging || device.batteryState == .full
+        self.batteryLevel = device.batteryLevel
+        self.isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
+
+        device.isBatteryMonitoringEnabled = false
+    }
+
+    private static func getNetworkInfo() -> NetworkInfo {
+        let monitor = NWPathMonitor()
+        let path = monitor.currentPath
+
+        // Check connection status first
+        guard path.status == .satisfied else {
+            return NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
+        }
+
+        let isExpensive = path.isExpensive
+        let isLowDataMode = path.isConstrained
+
+        // Determine connection type
+        let networkType: String
+        if path.usesInterfaceType(.wifi) {
+            networkType = "wifi"
+        } else if path.usesInterfaceType(.cellular) {
+            networkType = "cellular"
+        } else if path.usesInterfaceType(.wiredEthernet) {
+            networkType = "ethernet"
+        } else if path.usesInterfaceType(.loopback) {
+            networkType = "loopback"
+        } else {
+            networkType = "other"
+        }
+
+        return NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
     }
 }

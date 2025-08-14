@@ -8,6 +8,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -90,7 +91,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation)
+                                   showDocumentation: $showDocumentation,
+                                   showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -129,6 +131,9 @@ struct PointOfSaleDashboardView: View {
         }
         .posSheet(isPresented: $showDocumentation) {
             documentationView
+        }
+        .posFullScreenCover(isPresented: $showSettings) {
+            PointOfSaleSettingsView()
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -290,3 +295,19 @@ private extension PointOfSaleDashboardView {
 }
 
 #endif
+
+struct PointOfSaleSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        NavigationView {
+            Text("Settings")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Done") {
+                            dismiss()
+                        }
+                    }
+                }
+        }
+    }
+}

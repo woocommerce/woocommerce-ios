@@ -70,7 +70,7 @@ private extension LastOrderDashboardRow {
     enum Layout {
         static let padding: CGFloat = 16
         static let spacing: CGFloat = 8
-        static let badgeSpacing: CGFloat = 4
+        static let badgeSpacing: CGFloat = 6
         static let salesChannelLabelBackgroundColor = UIColor.withColorStudio(.wooCommercePurple, shade: .shade10)
         static let salesChannelLabelTextColor = UIColor.withColorStudio(.wooCommercePurple, shade: .shade80)
 

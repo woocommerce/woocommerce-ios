@@ -14,6 +14,7 @@ extension View {
     ///   - onDismiss: Optional closure called when the cover is dismissed
     ///   - content: Content to show in full screen
     /// - Returns: a modified view that shows full screen content with automatic modal hierarchy
+    // periphery:ignore
     func posFullScreenCover<Content: View>(
         isPresented: Binding<Bool>,
         onDismiss: (() -> Void)? = nil,
@@ -33,6 +34,7 @@ extension View {
     ///   - onDismiss: Optional closure called when the cover is dismissed
     ///   - content: Content to show in full screen
     /// - Returns: a modified view that shows full screen content with automatic modal hierarchy
+    // periphery:ignore
     func posFullScreenCover<Item: Identifiable & Equatable, Content: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,
@@ -53,7 +55,7 @@ final class POSFullScreenCoverManager: ObservableObject {
 }
 
 // MARK: - Modifiers
-
+// periphery:ignore
 struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
@@ -80,7 +82,7 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
             }
     }
 }
-
+// periphery:ignore
 struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverContent: View>: ViewModifier {
     @Binding var item: Item?
     let onDismiss: (() -> Void)?

@@ -264,13 +264,8 @@ private extension JetpackSetupViewModel {
         currentSetupStep = .connection
         connectionType = .web
         trackSetup()
-        let usingApplicationPassword: Bool = {
-            if case .some(.applicationPassword) = stores.sessionManager.defaultCredentials {
-                return true
-            }
-            return false
-        }()
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL(usingApplicationPassword: usingApplicationPassword) { [weak self] result in
+        let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let url):

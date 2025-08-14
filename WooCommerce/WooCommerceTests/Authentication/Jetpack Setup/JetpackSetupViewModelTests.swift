@@ -147,7 +147,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(JetpackConnectionData.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -284,7 +284,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
                 triggeredConnectionURL = true
             case .fetchJetpackConnectionData(let completion):
@@ -626,7 +626,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -653,7 +653,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -930,7 +930,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -1174,8 +1174,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
-            case .fetchJetpackConnectionURL(let _, let completion):
-                completion(.success((testConnectionURL)))
             default:
                 break
             }
@@ -1244,7 +1242,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let _, let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 let fetchError = NSError(domain: "Test", code: 1)
                 completion(.failure(fetchError))
             default:

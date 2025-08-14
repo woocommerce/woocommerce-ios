@@ -13,7 +13,7 @@ public enum JetpackConnectionAction: Action {
     /// Updates Jetpack the plugin for the current site.
     case activateJetpackPlugin(completion: (Result<Void, Error>) -> Void)
     /// Fetches the URL used for setting up Jetpack connection.
-    case fetchJetpackConnectionURL(usingApplicationPassword: Bool,
+    case fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
                                    completion: (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
     case fetchJetpackConnectionData(completion: (Result<JetpackConnectionData, Error>) -> Void)

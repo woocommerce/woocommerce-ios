@@ -41,8 +41,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             installJetpackPlugin(completion: completion)
         case .activateJetpackPlugin(let completion):
             activateJetpackPlugin(completion: completion)
-        case let .fetchJetpackConnectionURL(usingApplicationPassword, completion):
-            fetchJetpackConnectionURL(usingApplicationPassword: usingApplicationPassword,
+        case let .fetchJetpackConnectionURL(authenticatedWithWPCom, completion):
+            fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom,
                                       completion: completion)
         case .fetchJetpackConnectionData(let completion):
             fetchJetpackConnectionData(completion: completion)
@@ -89,9 +89,9 @@ private extension JetpackConnectionStore {
         })
     }
 
-    func fetchJetpackConnectionURL(usingApplicationPassword: Bool,
+    func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
                                    completion: @escaping (Result<URL, Error>) -> Void) {
-        guard !usingApplicationPassword else {
+        guard authenticatedWithWPCom else {
             jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
             return
         }

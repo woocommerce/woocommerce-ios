@@ -55,16 +55,14 @@ final class BackgroundTaskRefreshDispatcher {
             return
         }
 
-        // Capture system state at start
-        let systemInfo = BackgroundTaskSystemInfo()
-        let lastRunTime = UserDefaults.standard[.lastBackgroundRefreshTime] as? Date
-
         // Schedule a new refresh task.
         scheduleAppRefresh()
 
         // Launch all refresh tasks in parallel.
         let refreshTasks = Task {
             do {
+                let systemInfo = await BackgroundTaskSystemInfo()
+                let lastRunTime = UserDefaults.standard[.lastBackgroundRefreshTime] as? Date
 
                 let startTime = Date.now
 
@@ -152,13 +150,14 @@ private struct BackgroundTaskSystemInfo {
     var isExpensiveConnection: Bool { networkInfo.isExpensive }
     var isLowDataMode: Bool { networkInfo.isLowDataMode }
 
-    init() {
+    @MainActor
+    init() async {
         // Background time granted (nil if foreground/unlimited)
         let bgTime = UIApplication.shared.backgroundTimeRemaining
         self.backgroundTimeGranted = bgTime < Double.greatestFiniteMagnitude ? bgTime : nil
 
         // Network info
-        self.networkInfo = Self.getNetworkInfo()
+        self.networkInfo = await Self.getNetworkInfo()
 
         // Power and battery info
         let device = UIDevice.current
@@ -171,48 +170,43 @@ private struct BackgroundTaskSystemInfo {
         device.isBatteryMonitoringEnabled = false
     }
 
-    private static func getNetworkInfo() -> NetworkInfo {
-        // Use a semaphore to wait for the path update
-        let semaphore = DispatchSemaphore(value: 0)
-        let monitor = NWPathMonitor()
-        var networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
-        
-        monitor.pathUpdateHandler = { path in
-            // Check connection status first
-            guard path.status == .satisfied else {
-                networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
-                semaphore.signal()
-                return
+    private static func getNetworkInfo() async -> NetworkInfo {
+        return await withCheckedContinuation { continuation in
+            let monitor = NWPathMonitor()
+
+            monitor.pathUpdateHandler = { path in
+                // Check connection status first
+                guard path.status == .satisfied else {
+                    let networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
+                    continuation.resume(returning: networkInfo)
+                    monitor.cancel()
+                    return
+                }
+
+                let isExpensive = path.isExpensive
+                let isLowDataMode = path.isConstrained
+
+                // Determine connection type
+                let networkType: String
+                if path.usesInterfaceType(.wifi) {
+                    networkType = "wifi"
+                } else if path.usesInterfaceType(.cellular) {
+                    networkType = "cellular"
+                } else if path.usesInterfaceType(.wiredEthernet) {
+                    networkType = "ethernet"
+                } else if path.usesInterfaceType(.loopback) {
+                    networkType = "loopback"
+                } else {
+                    networkType = "other"
+                }
+
+                let networkInfo = NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
+                continuation.resume(returning: networkInfo)
+                monitor.cancel()
             }
-            
-            let isExpensive = path.isExpensive
-            let isLowDataMode = path.isConstrained
-            
-            // Determine connection type
-            let networkType: String
-            if path.usesInterfaceType(.wifi) {
-                networkType = "wifi"
-            } else if path.usesInterfaceType(.cellular) {
-                networkType = "cellular"
-            } else if path.usesInterfaceType(.wiredEthernet) {
-                networkType = "ethernet"
-            } else if path.usesInterfaceType(.loopback) {
-                networkType = "loopback"
-            } else {
-                networkType = "other"
-            }
-            
-            networkInfo = NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
-            semaphore.signal()
+
+            let queue = DispatchQueue(label: "network.monitor.queue")
+            monitor.start(queue: queue)
         }
-        
-        let queue = DispatchQueue(label: "network.monitor.queue")
-        monitor.start(queue: queue)
-        
-        // Wait up to 1 second for network info
-        _ = semaphore.wait(timeout: .now() + 1.0)
-        monitor.cancel()
-        
-        return networkInfo
     }
 }

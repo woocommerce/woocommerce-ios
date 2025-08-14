@@ -76,6 +76,7 @@
 		0196FF942DA8067A0063CEF1 /* CouponCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0196FF932DA806720063CEF1 /* CouponCardView.swift */; };
 		019A86842D89C13800ABBB71 /* TapToPayCardReaderPaymentAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019A86832D89C13800ABBB71 /* TapToPayCardReaderPaymentAlertsProvider.swift */; };
 		01A3093C2DAE768600B672F6 /* MockPointOfSaleCouponService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */; };
+		01AA4FA12E4CB22900FA9B4C /* POSFullScreenCover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AA4FA02E4CB22700FA9B4C /* POSFullScreenCover.swift */; };
 		01AAD8142D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */; };
 		01AB2D122DDC7AD300AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */; };
 		01AB2D142DDC7CD200AA67FD /* POSItemActionHandlerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */; };
@@ -3267,6 +3268,7 @@
 		0196FF932DA806720063CEF1 /* CouponCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponCardView.swift; sourceTree = "<group>"; };
 		019A86832D89C13800ABBB71 /* TapToPayCardReaderPaymentAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayCardReaderPaymentAlertsProvider.swift; sourceTree = "<group>"; };
 		01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPointOfSaleCouponService.swift; sourceTree = "<group>"; };
+		01AA4FA02E4CB22700FA9B4C /* POSFullScreenCover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFullScreenCover.swift; sourceTree = "<group>"; };
 		01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncCouponsErrorMessageView.swift; sourceTree = "<group>"; };
 		01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListAnalyticsTrackerTests.swift; sourceTree = "<group>"; };
 		01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandlerFactoryTests.swift; sourceTree = "<group>"; };
@@ -6447,8 +6449,9 @@
 		01620C4C2C5394A400D3EA2F /* Reusable Views */ = {
 			isa = PBXGroup;
 			children = (
-				016DE5322E40B03200F53DF7 /* POSSheet.swift */,
 				0210A2452D55EC140054C78D /* Buttons */,
+				016DE5322E40B03200F53DF7 /* POSSheet.swift */,
+				01AA4FA02E4CB22700FA9B4C /* POSFullScreenCover.swift */,
 				01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */,
 				204D1D612C5A50840064A6BE /* POSModalViewModifier.swift */,
 				20D2CCA42C7E328300051705 /* POSModalCloseButton.swift */,
@@ -16201,6 +16204,7 @@
 				0212276124498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
 				02CEBB8224C98861002EDF35 /* ProductFormDataModel.swift in Sources */,
+				01AA4FA12E4CB22900FA9B4C /* POSFullScreenCover.swift in Sources */,
 				3120491B26DD80E000A4EC4F /* ActivitySpinnerAndLabelTableViewCell.swift in Sources */,
 				DEC51AFD276AEAE3009F3DF4 /* SystemStatusReportView.swift in Sources */,
 				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,

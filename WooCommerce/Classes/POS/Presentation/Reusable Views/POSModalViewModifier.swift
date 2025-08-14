@@ -74,6 +74,7 @@ extension View {
 
 struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
     let modalContent: (Item) -> ModalContent
@@ -81,6 +82,9 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     func body(content: Content) -> some View {
         content
             .onChange(of: item) { newItem in
+                // Don't show a modal if a full screen overlay is presented on top
+                guard !coverManager.isPresented else { return }
+
                 if let newItem = newItem {
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
@@ -100,6 +104,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
 struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     let modalContent: () -> ModalContent
@@ -107,6 +112,9 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onChange(of: isPresented) { newValue in
+                // Don't show a modal if a full screen overlay is presented on top
+                guard !coverManager.isPresented else { return }
+
                 if newValue {
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background

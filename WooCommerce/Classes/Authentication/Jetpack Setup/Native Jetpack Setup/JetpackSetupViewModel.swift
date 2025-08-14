@@ -317,7 +317,9 @@ private extension JetpackSetupViewModel {
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
     func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        currentConnectionStep = .inProgress
+        if afterConnection {
+            currentConnectionStep = .inProgress
+        }
         let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
             guard let self else { return }
             switch result {

@@ -83,7 +83,6 @@ final class BackgroundTaskRefreshDispatcher {
                 let timeTaken = round(Date.now.timeIntervalSince(startTime))
                 let timeSinceLastRun = lastRunTime?.timeIntervalSinceNow.magnitude
 
-                // Track detailed analytics
                 ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncedDetailed(
                     timeTaken: timeTaken,
                     backgroundTimeGranted: systemInfo.backgroundTimeGranted,
@@ -96,8 +95,8 @@ final class BackgroundTaskRefreshDispatcher {
                     timeSinceLastRun: timeSinceLastRun
                 ))
 
-                // Update last run timestamp
-                UserDefaults.standard[.lastBackgroundRefreshTime] = Date()
+                // Save date, for use in analytics next time we refresh
+                UserDefaults.standard[.lastBackgroundRefreshTime] = Date.now
 
                 backgroundTask.setTaskCompleted(success: true)
 
@@ -153,8 +152,8 @@ private struct BackgroundTaskSystemInfo {
     @MainActor
     init() async {
         // Background time granted (nil if foreground/unlimited)
-        let bgTime = UIApplication.shared.backgroundTimeRemaining
-        self.backgroundTimeGranted = bgTime < Double.greatestFiniteMagnitude ? bgTime : nil
+        let backgroundTime = UIApplication.shared.backgroundTimeRemaining
+        self.backgroundTimeGranted = backgroundTime < Double.greatestFiniteMagnitude ? backgroundTime : nil
 
         // Network info
         self.networkInfo = await Self.getNetworkInfo()
@@ -175,38 +174,41 @@ private struct BackgroundTaskSystemInfo {
             let monitor = NWPathMonitor()
 
             monitor.pathUpdateHandler = { path in
-                // Check connection status first
-                guard path.status == .satisfied else {
-                    let networkInfo = NetworkInfo(type: "no_connection", isExpensive: false, isLowDataMode: false)
-                    continuation.resume(returning: networkInfo)
-                    monitor.cancel()
-                    return
-                }
-
-                let isExpensive = path.isExpensive
-                let isLowDataMode = path.isConstrained
-
-                // Determine connection type
-                let networkType: String
-                if path.usesInterfaceType(.wifi) {
-                    networkType = "wifi"
-                } else if path.usesInterfaceType(.cellular) {
-                    networkType = "cellular"
-                } else if path.usesInterfaceType(.wiredEthernet) {
-                    networkType = "ethernet"
-                } else if path.usesInterfaceType(.loopback) {
-                    networkType = "loopback"
-                } else {
-                    networkType = "other"
-                }
-
-                let networkInfo = NetworkInfo(type: networkType, isExpensive: isExpensive, isLowDataMode: isLowDataMode)
-                continuation.resume(returning: networkInfo)
+                continuation.resume(returning: NetworkInfo(path: path))
                 monitor.cancel()
             }
 
             let queue = DispatchQueue(label: "network.monitor.queue")
             monitor.start(queue: queue)
+        }
+    }
+}
+
+private extension NetworkInfo {
+    init(path: NWPath) {
+        guard path.status == .satisfied else {
+            self.type = "no_connection"
+            self.isExpensive = false
+            self.isLowDataMode = false
+            return
+        }
+
+        self.type = Self.networkType(from: path)
+        self.isExpensive = path.isExpensive
+        self.isLowDataMode = path.isConstrained
+    }
+
+    private static func networkType(from path: NWPath) -> String {
+        if path.usesInterfaceType(.wifi) {
+            return "wifi"
+        } else if path.usesInterfaceType(.cellular) {
+            return "cellular"
+        } else if path.usesInterfaceType(.wiredEthernet) {
+            return "ethernet"
+        } else if path.usesInterfaceType(.loopback) {
+            return "loopback"
+        } else {
+            return "other"
         }
     }
 }

@@ -1272,7 +1272,26 @@ extension OrderDetailsDataSource {
         siteShippingMethods = resultsControllers.siteShippingMethods
         productVariations = resultsControllers.productVariations
         shippingLabels = resultsControllers.shippingLabels
-        shipments = resultsControllers.shipments
+        shipments = {
+            let cachedShipments = resultsControllers.shipments
+            if cachedShipments.isNotEmpty {
+                return cachedShipments
+            }
+            /// returns a placeholder shipment with all the order items
+            return [WooShippingShipment(
+                siteID: order.siteID,
+                orderID: order.orderID,
+                index: "0",
+                items: order.items.map { item in
+                    var subItems: [String] = []
+                    for index in 0..<item.quantity.intValue {
+                        subItems.append("\(item.itemID)-sub-\(index)")
+                    }
+                    return WooShippingShipmentItem(id: item.itemID, subItems: subItems)
+                },
+                shippingLabel: nil
+            )]
+        }()
         shippingLabelOrderItemsAggregator = AggregatedShippingLabelOrderItems(
             shippingLabels: shippingLabels,
             orderItems: items,

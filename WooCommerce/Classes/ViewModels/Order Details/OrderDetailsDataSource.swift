@@ -1235,8 +1235,8 @@ extension OrderDetailsDataSource {
                 return cachedShipments
             }
 
-            if products.allSatisfy({ $0.virtual == true }) {
-                /// skips creating shipments if all products are virtual
+            if !isEligibleForShippingLabelCreation {
+                /// skips creating shipments if order is not eligible for creating labels
                 return []
             }
 

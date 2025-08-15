@@ -949,16 +949,15 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(shipmentsSection?.rows.count, 2)
     }
 
-    func test_shipping_labels_section_is_available_when_no_shipments_are_available_and_items_are_physical() throws {
+    func test_shipping_labels_section_is_available_when_no_shipments_are_available_and_eligible_for_label_creation() throws {
         // Given
-        let orderItem = OrderItem.fake().copy(itemID: 12, productID: 124)
-        let order = Order.fake().copy(siteID: 44, orderID: 123, items: [orderItem])
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: order.siteID, productID: orderItem.productID, virtual: false))
+        let order = makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
                                                 receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
                                                 featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
         // When
@@ -969,16 +968,15 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertEqual(shipmentsSection?.rows.count, 1)
     }
 
-    func test_shipping_labels_section_is_unavailable_when_no_shipments_are_available_and_items_are_virtual() throws {
+    func test_shipping_labels_section_is_unavailable_when_no_shipments_are_available_and_ineligible_for_label_creation() throws {
         // Given
-        let orderItem = OrderItem.fake().copy(itemID: 12, productID: 124)
-        let order = Order.fake().copy(siteID: 44, orderID: 123, items: [orderItem])
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: order.siteID, productID: orderItem.productID, virtual: true))
+        let order = makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
                                                 receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
                                                 featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.isEligibleForShippingLabelCreation = false
         dataSource.configureResultsControllers { }
 
         // When

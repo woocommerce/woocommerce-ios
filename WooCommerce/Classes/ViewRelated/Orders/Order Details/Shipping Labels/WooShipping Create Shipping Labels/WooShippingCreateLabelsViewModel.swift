@@ -419,13 +419,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
                                                         originStateCode: selectedOriginAddress?.state,
-                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
+                                                        onAddressEdited: { [weak self] result, editedEmail in
             guard let self else {
                 return
             }
-            destinationAddress = editedAddress.address.toWooShippingAddress()
+            destinationAddress = result.address.toWooShippingAddress()
             destinationEmail = editedEmail
-            destinationAddressStatus = editedAddress.isVerified ? .verified : .unverified
+            destinationAddressStatus = result.isVerified ? .verified : .unverified
             addressToEdit = nil // Dismisses address edit screen
         })
     }

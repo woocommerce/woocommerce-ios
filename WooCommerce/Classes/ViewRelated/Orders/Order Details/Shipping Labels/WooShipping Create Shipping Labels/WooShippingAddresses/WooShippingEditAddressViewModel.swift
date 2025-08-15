@@ -192,7 +192,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Closure called when a destination address is done being edited and the changes are confirmed.
     /// Returns the updated address and email address.
-    private(set) var onDestinationAddressEdited: ((_ addressUpdate: WooShippingDestinationAddressUpdate,
+    private(set) var onDestinationAddressEdited: ((_ result: WooShippingDestinationAddressUpdate,
                                                    _ email: String?) -> Void)?
 
     init(type: AddressType,

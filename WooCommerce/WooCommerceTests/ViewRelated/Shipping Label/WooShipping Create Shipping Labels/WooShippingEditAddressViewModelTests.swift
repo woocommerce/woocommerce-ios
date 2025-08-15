@@ -1590,6 +1590,52 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmWithoutVerification)
         XCTAssertEqual(viewModel.status, .missingInformation)
     }
+
+    @MainActor
+    func test_updateConfirmedAddress_without_verification_triggers_updateDestinationAddress_with_isVerified_false() async {
+        // Given
+        let sampleOrderID: Int64 = 123
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingEditAddressViewModel(type: .destination(orderID: sampleOrderID),
+                                                        id: "",
+                                                        name: "JANE DOE",
+                                                        company: "HEADQUARTERS",
+                                                        country: "US",
+                                                        address: "15 ALGONKIN ST",
+                                                        city: "TICONDEROGA",
+                                                        state: "NY",
+                                                        postalCode: "12883-1487",
+                                                        email: "test@example.com",
+                                                        phone: "123-456-7890",
+                                                        isDefaultAddress: false,
+                                                        showCompanyField: true,
+                                                        isVerified: false,
+                                                        stores: stores)
+
+        let testAddress = WooShippingAddress(company: "TEST COMPANY",
+                                             name: "TEST NAME",
+                                             phone: "555-123-4567",
+                                             country: "US",
+                                             state: "CA",
+                                             address1: "123 TEST ST",
+                                             address2: "",
+                                             city: "TEST CITY",
+                                             postcode: "90210")
+
+        // When
+        let receivedIsVerified: Bool = await waitForAsync { promise in
+            stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+                if case let .updateDestinationAddress(_, _, _, isVerified, completion) = action {
+                    promise(isVerified)
+                    completion(.success(WooShippingDestinationAddressUpdate(address: .fake(), isVerified: isVerified)))
+                }
+            }
+            viewModel.updateConfirmedAddress(testAddress, withoutVerification: true)
+        }
+
+        // Then
+        XCTAssertFalse(receivedIsVerified, "updateDestinationAddress should be called with isVerified: false when withoutVerification is true")
+    }
 }
 
 private extension WooShippingEditAddressViewModel {

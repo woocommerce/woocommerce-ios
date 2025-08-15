@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PointOfSaleSettingsStackView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var selection: Sidebar? = .hardware
 
     enum Sidebar: String, CaseIterable, Identifiable {
@@ -63,44 +62,53 @@ struct PointOfSaleSettingsStackView: View {
     }
 
     var body: some View {
-        NavigationSplitView(columnVisibility: $columnVisibility) {
-            List(selection: $selection) {
-                Section {
-                    ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
+        NavigationStack {
+            HStack(spacing: 0) {
+                // Sidebar (left)
+                List(selection: $selection) {
+                    Section {
+                        ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
+                            HStack(alignment: .firstTextBaseline) {
+                                Image(systemName: item.icon)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.title)
+                                    Text(item.subtitle).font(.footnote).foregroundStyle(.secondary)
+                                }
+                            }
+                            .tag(item)
+                        }
+                    }
+                    .listSectionSeparator(.visible)
+                    Section {
                         HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: item.icon)
+                            Image(systemName: Sidebar.help.icon)
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(item.title)
-                                Text(item.subtitle).font(.footnote).foregroundStyle(.secondary)
+                                Text(Sidebar.help.title)
+                                Text(Sidebar.help.subtitle).font(.footnote).foregroundStyle(.secondary)
                             }
                         }
-                        .tag(item)
+                        .tag(Sidebar.help)
                     }
                 }
-                .listSectionSeparator(.visible)
-                Section {
-                    HStack(alignment: .firstTextBaseline) {
-                        Image(systemName: Sidebar.help.icon)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(Sidebar.help.title)
-                            Text(Sidebar.help.subtitle).font(.footnote).foregroundStyle(.secondary)
-                        }
+                .frame(width: 250)
+                .listStyle(.sidebar)
+
+                // Detail (right)
+                Group {
+                    switch selection {
+                    case .hardware:
+                        HardwareDetail()
+                    case .store:
+                        StoreDetail()
+                    case .help:
+                        SupportDetail()
+                    case .none:
+                        Text("Select an option")
                     }
-                    .tag(Sidebar.help)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .navigationTitle("Settings")
-        } detail: {
-            switch selection {
-            case .hardware:
-                HardwareDetail()
-            case .store:
-                StoreDetail()
-            case .help:
-                SupportDetail()
-            case .none:
-                Text("Select an option")
-            }
         }
     }
 }
@@ -292,6 +300,10 @@ private struct SupportDetail: View {
     }
 }
 
-#Preview {
+#Preview("Split View") {
     PointOfSaleSettingsSplitView()
+}
+
+#Preview("Stack View") {
+    PointOfSaleSettingsStackView()
 }

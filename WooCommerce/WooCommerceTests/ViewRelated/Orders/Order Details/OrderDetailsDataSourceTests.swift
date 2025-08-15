@@ -56,7 +56,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             Title.products,
             Title.customAmounts,
             Title.refundedProducts,
-            Title.shippingLabels,
             Title.shippingLines,
             Title.payment,
             Title.information,

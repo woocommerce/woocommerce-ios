@@ -423,9 +423,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             guard let self else {
                 return
             }
-            destinationAddress = editedAddress
+            destinationAddress = editedAddress.address.toWooShippingAddress()
             destinationEmail = editedEmail
-            destinationAddressStatus = .verified
+            destinationAddressStatus = editedAddress.isVerified ? .verified : .unverified
             addressToEdit = nil // Dismisses address edit screen
         })
     }

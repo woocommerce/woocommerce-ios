@@ -1042,7 +1042,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                 switch action {
                 case let .validateAddress(_, _, completion):
                     completion(.success(.init(normalizedAddress: suggestedAddress, originalAddress: .fake(), isTrivialNormalization: true)))
-                case let .updateDestinationAddress(_, _, address, completion):
+                case let .updateDestinationAddress(_, _, address, _, completion):
                     promise(address)
                     completion(.success(WooShippingDestinationAddressUpdate(address: address, isVerified: true)))
                 default:
@@ -1077,12 +1077,12 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                                          lastName: "DOE",
                                                                          phone: "123-456-7890")
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let result: (WooShippingAddress, String?) = await waitForAsync { promise in
+        let result: (WooShippingDestinationAddressUpdate, String?) = await waitForAsync { promise in
             stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
                 switch action {
                 case let .validateAddress(_, _, completion):
                     completion(.success(.init(normalizedAddress: normalizedAddress, originalAddress: .fake(), isTrivialNormalization: true)))
-                case let .updateDestinationAddress(_, _, address, completion):
+                case let .updateDestinationAddress(_, _, address, _, completion):
                     completion(.success(WooShippingDestinationAddressUpdate(address: address, isVerified: true)))
                 default:
                     XCTFail("Unexpected action received: \(action)")
@@ -1096,8 +1096,8 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                             isVerified: false,
                                                             originCountryCode: nil,
                                                             originStateCode: nil,
-                                                            stores: stores) { address, email in
-                promise((address, email))
+                                                            stores: stores) { addressUpdate, email in
+                promise((addressUpdate, email))
             }
             viewModel.name.value = "JANE DOE"
 
@@ -1106,8 +1106,9 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(result.0, normalizedAddress.toWooShippingAddress())
+        XCTAssertEqual(result.0.address.toWooShippingAddress(), normalizedAddress.toWooShippingAddress())
         XCTAssertEqual(result.1, "TEXT@EXAMPLE.COM")
+        XCTAssertEqual(result.0.isVerified, true)
     }
 
     // MARK: - Error Alert Tests
@@ -1221,7 +1222,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
             switch action {
             case let .validateAddress(_, _, completion):
                 completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
-            case let .updateDestinationAddress(_, _, _, completion):
+            case let .updateDestinationAddress(_, _, _, _, completion):
                 completion(.failure(NSError(domain: "UpdateError", code: 500, userInfo: [NSLocalizedDescriptionKey: "Failed to update destination address"])))
             default:
                 XCTFail("Unexpected action received: \(action)")
@@ -1367,7 +1368,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
             case let .validateAddress(_, _, completion):
                 validationCallCount += 1
                 completion(.success(.init(normalizedAddress: .fake(), originalAddress: .fake(), isTrivialNormalization: true)))
-            case let .updateDestinationAddress(_, _, _, completion):
+            case let .updateDestinationAddress(_, _, _, _, completion):
                 updateCallCount += 1
                 if updateCallCount == 1 {
                     // First update fails

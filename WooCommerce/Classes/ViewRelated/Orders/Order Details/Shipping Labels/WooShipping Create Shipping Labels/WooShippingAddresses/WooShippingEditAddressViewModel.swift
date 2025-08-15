@@ -192,7 +192,8 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
     /// Closure called when a destination address is done being edited and the changes are confirmed.
     /// Returns the updated address and email address.
-    private(set) var onDestinationAddressEdited: ((WooShippingAddress, String?) -> Void)?
+    private(set) var onDestinationAddressEdited: ((_ addressUpdate: WooShippingDestinationAddressUpdate,
+                                                   _ email: String?) -> Void)?
 
     init(type: AddressType,
          id: String,
@@ -215,7 +216,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
          debounceDelayInSeconds: Double = 1,
          analytics: Analytics = ServiceLocator.analytics,
          onOriginAddressEdited: ((WooShippingOriginAddress) -> Void)? = nil,
-         onDestinationAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
+         onDestinationAddressEdited: ((WooShippingDestinationAddressUpdate, String?) -> Void)? = nil) {
         self.addressType = type
         self.id = id
         self.name = WooShippingAddressField(type: .name, value: name, required: company.isEmpty, validate: { _ in return nil })
@@ -327,7 +328,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
                      originStateCode: String?,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     onAddressEdited: ((WooShippingAddress, String?) -> Void)? = nil) {
+                     onAddressEdited: ((WooShippingDestinationAddressUpdate, String?) -> Void)? = nil) {
         self.init(type: .destination(orderID: orderID),
                   id: UUID().uuidString,
                   name: address?.name ?? "",
@@ -496,9 +497,12 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
 
         Task { @MainActor in
             do {
-                let updatedDestinationAddress = try await updateDestinationAddress(for: orderID,
-                                                                                   with: destinationAddress)
-                onDestinationAddressEdited?(updatedDestinationAddress.toWooShippingAddress(), email.value)
+                let result = try await updateDestinationAddress(
+                    for: orderID,
+                    with: destinationAddress,
+                    isVerified: !withoutVerification
+                )
+                onDestinationAddressEdited?(result, email.value)
                 analytics.track(event: .WooShipping.editingAddressStep(
                     type: .destination,
                     state: withoutVerification ? .confirmedWithoutVerification : .confirmed
@@ -727,16 +731,18 @@ private extension WooShippingEditAddressViewModel {
     /// Updates a destination address remotely.
     @MainActor
     func updateDestinationAddress(for orderID: Int64,
-                                  with address: WooShippingDestinationAddress) async throws -> WooShippingDestinationAddress {
+                                  with address: WooShippingDestinationAddress,
+                                  isVerified: Bool) async throws -> WooShippingDestinationAddressUpdate {
         return try await withCheckedThrowingContinuation { continuation in
             isLoading = true
             let action = WooShippingAction.updateDestinationAddress(siteID: siteID,
                                                                     orderID: orderID,
-                                                                    address: address) { [weak self] result in
+                                                                    address: address,
+                                                                    isVerified: isVerified) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case let .success(result):
-                    continuation.resume(returning: result.address)
+                    continuation.resume(returning: result)
                 case .failure(let error):
                     continuation.resume(throwing: error)
                 }

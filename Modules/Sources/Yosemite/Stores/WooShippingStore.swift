@@ -82,8 +82,8 @@ public final class WooShippingStore: Store {
             updateOriginAddress(siteID: siteID, address: address, isVerified: isVerified, completion: completion)
         case let .verifyDestinationAddress(siteID, orderID, completion):
             verifyDestinationAddress(siteID: siteID, orderID: orderID, completion: completion)
-        case let .updateDestinationAddress(siteID, orderID, address, completion):
-            updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, completion: completion)
+        case let .updateDestinationAddress(siteID, orderID, address, isVerified, completion):
+            updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, isVerified: isVerified, completion: completion)
         case let .loadConfig(siteID, orderID, completion):
             loadConfig(siteID: siteID, orderID: orderID, completion: completion)
         case let .syncShipments(siteID, orderID, completion):
@@ -410,8 +410,9 @@ private extension WooShippingStore {
     func updateDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
+                                  isVerified: Bool,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
-        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address) { [weak self] result in
+        remote.updateDestinationAddress(siteID: siteID, orderID: orderID, address: address, isVerified: isVerified) { [weak self] result in
             completion(result)
 
             guard let self, case .success = result else { return }

@@ -583,7 +583,7 @@
         <attribute name="parentID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
-        <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="categories" inverseEntity="Product"/>
     </entity>
     <entity name="ProductCompositeComponent" representedClassName="ProductCompositeComponent" syncable="YES">
         <attribute name="componentDescription" attributeType="String" defaultValueString=""/>
@@ -671,7 +671,7 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="products" optional="YES" toMany="YES" deletionRule="Deny" ordered="YES" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
     </entity>
     <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES">
         <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES"/>

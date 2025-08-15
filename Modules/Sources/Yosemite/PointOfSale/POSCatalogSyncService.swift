@@ -68,14 +68,8 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             return self.mapCatalogItemToNetworkingProductVariation(catalogItem)
         }
 
-        // Use optimized batch replacement for products and variations
-        if !networkingProducts.isEmpty {
-            await replaceAllProducts(networkingProducts)
-        }
-
-        if !networkingVariations.isEmpty {
-            await replaceAllProductVariations(networkingVariations)
-        }
+        // Use combined batch replacement for products and variations to ensure proper linking
+        await replaceAllProductsAndVariations(products: networkingProducts, variations: networkingVariations)
 
         let endTime = CFAbsoluteTimeGetCurrent()
         let timeElapsed = endTime - startTime
@@ -244,122 +238,106 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         return POSCatalogSyncError.unknown
     }
 
-    private func replaceAllProducts(_ products: [Networking.Product]) async {
+    private func replaceAllProductsAndVariations(products: [Networking.Product], variations: [Networking.ProductVariation]) async {
         await storageManager.performAndSaveAsync({ [weak self] storage in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let context = storage as! NSManagedObjectContext
 
             do {
-                // 1. Delete all existing products for this siteID (cascades to variations)
-                let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.Product.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "siteID == %lld", self.siteID)
-                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                deleteRequest.resultType = .resultTypeObjectIDs
+                // 1. Delete existing products and variations
+                // Products first (will cascade delete variations)
+                let productFetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.Product.fetchRequest()
+                productFetchRequest.predicate = NSPredicate(format: "siteID == %lld", siteID)
+                let deleteProductRequest = NSBatchDeleteRequest(fetchRequest: productFetchRequest)
+                deleteProductRequest.resultType = .resultTypeObjectIDs
 
-                let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
-                let deletedObjectIDs = deleteResult?.result as? [NSManagedObjectID] ?? []
+                let deleteProductResult = try context.execute(deleteProductRequest) as? NSBatchDeleteResult
+                let deletedProductIDs = deleteProductResult?.result as? [NSManagedObjectID] ?? []
+                DDLogInfo("🟣 Batch delete returned \(deletedProductIDs.count) deleted product IDs")
 
-                // Merge delete changes
-                let deleteChanges = [NSDeletedObjectsKey: deletedObjectIDs]
-                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deleteChanges, into: [context])
+                // Delete any remaining variations (in case they weren't cascade deleted)
+                let variationFetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.ProductVariation.fetchRequest()
+                variationFetchRequest.predicate = NSPredicate(format: "siteID == %lld", siteID)
+                let deleteVariationRequest = NSBatchDeleteRequest(fetchRequest: variationFetchRequest)
+                deleteVariationRequest.resultType = .resultTypeObjectIDs
 
-                // 2. Batch insert all products
-                let productDictionaries = products.compactMap { product -> [String: Any]? in
-                    return self.convertProductToDataDictionary(product)
+                let deleteVariationResult = try context.execute(deleteVariationRequest) as? NSBatchDeleteResult
+                let deletedVariationIDs = deleteVariationResult?.result as? [NSManagedObjectID] ?? []
+                DDLogInfo("🟣 Deleted \(deletedVariationIDs.count) variations")
+
+                // 3. Batch insert all products first
+                guard !products.isEmpty else {
+                    return
+                }
+
+                let productDictionaries = products.map { product in
+                    self.convertProductToDataDictionary(product)
                 }
 
                 let batchInsert = NSBatchInsertRequest(entity: Storage.Product.entity(), objects: productDictionaries)
                 batchInsert.resultType = .objectIDs
 
                 let insertResult = try context.execute(batchInsert) as? NSBatchInsertResult
-                let insertedObjectIDs = insertResult?.result as? [NSManagedObjectID] ?? []
+                let insertedProductIDs = insertResult?.result as? [NSManagedObjectID] ?? []
+                DDLogInfo("🟣 Inserted \(insertedProductIDs.count) products")
 
-                // Merge insert changes
-                let insertChanges = [NSInsertedObjectsKey: insertedObjectIDs]
-                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: insertChanges, into: [context])
+                // 4. Create product ID mapping for variations
+                var productIDToObjectID: [Int64: NSManagedObjectID] = [:]
+                for (index, objectID) in insertedProductIDs.enumerated() {
+                    if index < products.count {
+                        let productID = products[index].productID
+                        productIDToObjectID[productID] = objectID
+                    }
+                }
 
-                // Handle related entities for inserted products
-                for (index, objectID) in insertedObjectIDs.enumerated() {
+                // 5. Handle product related entities
+                for (index, objectID) in insertedProductIDs.enumerated() {
                     if index < products.count,
                        let product = try? context.existingObject(with: objectID) as? Storage.Product {
                         self.handleProductRelatedEntities(products[index], product, storage)
                     }
                 }
 
-            } catch {
-                print("⛔️ error replacing products: \(error)")
-                // Fallback to traditional approach
-                self.fallbackReplaceProducts(products, in: storage)
-            }
-        }, on: .main)
-    }
-
-    private func replaceAllProductVariations(_ variations: [Networking.ProductVariation]) async {
-        await storageManager.performAndSaveAsync({ [weak self] storage in
-            guard let self = self else { return }
-
-            let context = storage as! NSManagedObjectContext
-
-            do {
-                // 1. Delete all existing variations for this siteID
-                let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Storage.ProductVariation.fetchRequest()
-                fetchRequest.predicate = NSPredicate(format: "siteID == %lld", self.siteID)
-                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                deleteRequest.resultType = .resultTypeObjectIDs
-
-                let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
-                let deletedObjectIDs = deleteResult?.result as? [NSManagedObjectID] ?? []
-
-                // Merge delete changes
-                let deleteChanges = [NSDeletedObjectsKey: deletedObjectIDs]
-                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: deleteChanges, into: [context])
-
-                // 2. Group variations by product ID to ensure proper linking
-                let variationsByProduct = Dictionary(grouping: variations) { $0.productID }
-
-                for (productID, productVariations) in variationsByProduct {
-                    // Ensure the parent product exists
-                    guard let product = storage.loadProduct(siteID: self.siteID, productID: productID) else {
-                        // Product doesn't exist, skip variations for this product
-                        continue
-                    }
-
-                    // Batch insert all variations for this product
-                    let variationDictionaries = productVariations.compactMap { variation -> [String: Any]? in
-                        var dict = self.convertProductVariationToDataDictionary(variation)
-                        // Add the product relationship
-                        dict["product"] = product.objectID
-                        return dict
-                    }
-
-                    guard !variationDictionaries.isEmpty else { continue }
-
-                    let batchInsert = NSBatchInsertRequest(entity: Storage.ProductVariation.entity(), objects: variationDictionaries)
-                    batchInsert.resultType = .objectIDs
-
-                    let insertResult = try context.execute(batchInsert) as? NSBatchInsertResult
-                    let insertedObjectIDs = insertResult?.result as? [NSManagedObjectID] ?? []
-
-                    // Merge insert changes
-                    let insertChanges = [NSInsertedObjectsKey: insertedObjectIDs]
-                    NSManagedObjectContext.mergeChanges(fromRemoteContextSave: insertChanges, into: [context])
-
-                    // Handle related entities for inserted variations
-                    for (index, objectID) in insertedObjectIDs.enumerated() {
-                        if index < productVariations.count,
-                           let variation = try? context.existingObject(with: objectID) as? Storage.ProductVariation {
-                            self.handleProductVariationRelatedEntities(productVariations[index], variation, storage)
-                        }
-                    }
+                // 6. Now batch insert variations with proper product relationships
+                guard !variations.isEmpty else {
+                    DDLogInfo("🟣 No variations to insert")
+                    return
                 }
 
+                let variationDictionaries = variations.map { variation in
+                    // NSBatchInsertRequest cannot handle relationships - they must be set after insertion
+                    self.convertProductVariationToDataDictionary(variation)
+                }
+
+                let variationBatchInsert = NSBatchInsertRequest(entity: Storage.ProductVariation.entity(), objects: variationDictionaries)
+                variationBatchInsert.resultType = .objectIDs
+
+                let variationInsertResult = try context.execute(variationBatchInsert) as? NSBatchInsertResult
+                let insertedVariationIDs = variationInsertResult?.result as? [NSManagedObjectID] ?? []
+                DDLogInfo("🟣 Inserted \(insertedVariationIDs.count) variations")
+
+                // 7. Set product relationships for variations (must be done after batch insert)
+                for (index, objectID) in insertedVariationIDs.enumerated() {
+                    if index < variations.count,
+                       let variation = try? context.existingObject(with: objectID) as? Storage.ProductVariation {
+                        let variationData = variations[index]
+
+                        // Set the product relationship
+                        if let productObjectID = productIDToObjectID[variationData.productID],
+                           let product = try? context.existingObject(with: productObjectID) as? Storage.Product {
+                            variation.product = product
+                        }
+
+                        self.handleProductVariationRelatedEntities(variationData, variation, storage)
+                    }
+                }
             } catch {
-                print("⛔️ error replacing variations: \(error)")
+                print("⛔️ error replacing products and variations: \(error)")
                 // Fallback to traditional approach
+                self.fallbackReplaceProducts(products, in: storage)
                 self.fallbackReplaceProductVariations(variations, in: storage)
             }
-
         }, on: .main)
     }
 

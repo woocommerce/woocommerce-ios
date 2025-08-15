@@ -153,6 +153,12 @@ struct PointOfSaleSettingsStackView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .overlay(alignment: .topTrailing) {
+            Button("Done") { dismiss() }
+                .padding(.top, 8)
+                .padding(.trailing, 12)
+                .accessibilityLabel("Close Settings")
+        }
     }
 }
 

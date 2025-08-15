@@ -61,7 +61,7 @@ final class BackgroundTaskRefreshDispatcher {
         // Launch all refresh tasks in parallel.
         let refreshTasks = Task {
             do {
-                let systemInfo = await BackgroundTaskSystemInfo()
+                async let systemInfo = BackgroundTaskSystemInfo()
 
                 let startTime = Date.now
 
@@ -86,7 +86,7 @@ final class BackgroundTaskRefreshDispatcher {
                     timeSinceLastRun = round(lastRunTime.timeIntervalSinceNow.magnitude)
                 }
 
-                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(
+                await ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(
                     timeTaken: timeTaken,
                     backgroundTimeGranted: systemInfo.backgroundTimeGranted,
                     networkType: systemInfo.networkType,

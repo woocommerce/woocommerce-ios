@@ -62,7 +62,6 @@ final class BackgroundTaskRefreshDispatcher {
         let refreshTasks = Task {
             do {
                 let systemInfo = await BackgroundTaskSystemInfo()
-                let lastRunTime = UserDefaults.standard[.lastBackgroundRefreshTime] as? Date
 
                 let startTime = Date.now
 
@@ -81,9 +80,13 @@ final class BackgroundTaskRefreshDispatcher {
                 }
 
                 let timeTaken = round(Date.now.timeIntervalSince(startTime))
-                let timeSinceLastRun = lastRunTime?.timeIntervalSinceNow.magnitude
 
-                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncedDetailed(
+                var timeSinceLastRun: TimeInterval? = nil
+                if let lastRunTime = UserDefaults.standard[.lastBackgroundRefreshCompletionTime] as? Date {
+                    timeSinceLastRun = round(lastRunTime.timeIntervalSinceNow.magnitude)
+                }
+
+                ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSynced(
                     timeTaken: timeTaken,
                     backgroundTimeGranted: systemInfo.backgroundTimeGranted,
                     networkType: systemInfo.networkType,
@@ -96,7 +99,7 @@ final class BackgroundTaskRefreshDispatcher {
                 ))
 
                 // Save date, for use in analytics next time we refresh
-                UserDefaults.standard[.lastBackgroundRefreshTime] = Date.now
+                UserDefaults.standard[.lastBackgroundRefreshCompletionTime] = Date.now
 
                 backgroundTask.setTaskCompleted(success: true)
 
@@ -139,7 +142,7 @@ private struct NetworkInfo {
 
 private struct BackgroundTaskSystemInfo {
     let backgroundTimeGranted: TimeInterval?
-    let networkInfo: NetworkInfo
+    private let networkInfo: NetworkInfo
     let isPowered: Bool
     let batteryLevel: Float
     let isLowPowerMode: Bool

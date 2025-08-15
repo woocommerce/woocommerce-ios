@@ -14,14 +14,9 @@ extension WooAnalyticsEvent {
             static let batteryLevel = "battery_level"
             static let isLowPowerMode = "is_low_power_mode"
             static let timeSinceLastRun = "time_since_last_run"
-            static let completionStatus = "completion_status"
         }
 
-        static func dataSynced(timeTaken: TimeInterval) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .backgroundDataSynced, properties: [Keys.timeTaken: timeTaken])
-        }
-
-        static func dataSyncedDetailed(
+        static func dataSynced(
             timeTaken: TimeInterval,
             backgroundTimeGranted: TimeInterval?,
             networkType: String,

@@ -6,6 +6,7 @@
 - [internal] Remove oldest (<30) core data models [https://github.com/woocommerce/woocommerce-ios/pull/15987]
 - [*] Jetpack setup: Native experience for the connection step [https://github.com/woocommerce/woocommerce-ios/pull/15983]
 - [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
+- [*] Add "POS" label in Most recent orders in My store dashboard [https://github.com/woocommerce/woocommerce-ios/pull/16006]
 - [*] Order details: Always show shipping labels section if order is eligible for label creation. [https://github.com/woocommerce/woocommerce-ios/pull/16010]
 
 23.0

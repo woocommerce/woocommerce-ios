@@ -211,6 +211,10 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleBarcodeScanningi2
 
+    /// Enables the entry point for Point of Sale Settings
+    ///
+    case pointOfSaleSettingsi1
+
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch

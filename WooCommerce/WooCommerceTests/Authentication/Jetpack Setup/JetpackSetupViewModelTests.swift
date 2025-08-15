@@ -147,7 +147,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(JetpackConnectionData.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -284,7 +284,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
                 triggeredConnectionURL = true
             case .fetchJetpackConnectionData(let completion):
@@ -626,7 +626,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -653,7 +653,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.success(testConnectionURL))
             default:
                 break
@@ -665,8 +665,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.shouldPresentWebView)
-        let mobileRedirectURL = "woocommerce://jetpack-connected"
-        let expectedURL = "https://wordpress.com/jetpack/connect?url=\(testURL)&mobile_redirect=\(mobileRedirectURL)&from=mobile"
+        let expectedURL = "\(testURL)/wp-admin/admin.php?page=jetpack"
         XCTAssertEqual(viewModel.jetpackConnectionURL, URL(string: expectedURL))
     }
 
@@ -931,7 +930,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: -1001)))
             default:
                 break
@@ -1243,7 +1242,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case .fetchJetpackConnectionData(let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .fetchJetpackConnectionURL(let completion):
+            case .fetchJetpackConnectionURL(_, let completion):
                 let fetchError = NSError(domain: "Test", code: 1)
                 completion(.failure(fetchError))
             default:

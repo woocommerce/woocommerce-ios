@@ -167,7 +167,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<URL, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionURL { result in
+            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -192,7 +192,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<URL, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionURL { result in
+            let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: false) { result in
                 promise(result)
             }
             store.onAction(action)

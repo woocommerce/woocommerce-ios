@@ -1578,6 +1578,7 @@
 		683988A72C7D82E70084B85A /* POSHeaderLayoutConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683988A62C7D82E60084B85A /* POSHeaderLayoutConstants.swift */; };
 		683AA9D62A303CB70099F7BA /* UpgradesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */; };
 		683AC4AC2CEF019A00FF0A5E /* POSSendReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683AC4AB2CEF019700FF0A5E /* POSSendReceiptView.swift */; };
+		683D41182E4D9B570024CFE4 /* PointOfSaleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683D41172E4D9B570024CFE4 /* PointOfSaleSettingsView.swift */; };
 		683DF5FF2C6AF46500A5CDC6 /* POSHeaderTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */; };
 		684AB83A2870677F003DFDD1 /* CardReaderManualsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */; };
 		684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */; };
@@ -4751,6 +4752,7 @@
 		683988A62C7D82E60084B85A /* POSHeaderLayoutConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHeaderLayoutConstants.swift; sourceTree = "<group>"; };
 		683AA9D52A303CB70099F7BA /* UpgradesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModelTests.swift; sourceTree = "<group>"; };
 		683AC4AB2CEF019700FF0A5E /* POSSendReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSendReceiptView.swift; sourceTree = "<group>"; };
+		683D41172E4D9B570024CFE4 /* PointOfSaleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleSettingsView.swift; sourceTree = "<group>"; };
 		683DF5FE2C6AF46500A5CDC6 /* POSHeaderTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSHeaderTitleView.swift; sourceTree = "<group>"; };
 		684AB8392870677F003DFDD1 /* CardReaderManualsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsView.swift; sourceTree = "<group>"; };
 		684AB83B2873DF04003DFDD1 /* CardReaderManualsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModel.swift; sourceTree = "<group>"; };
@@ -7174,6 +7176,7 @@
 				68A345632D029E09002EE324 /* PaymentButtons.swift */,
 				026826A52BF59DF60036F959 /* PointOfSaleDashboardView.swift */,
 				68E141DA2D13107200A70D5B /* PointOfSaleCollectCashView.swift */,
+				683D41172E4D9B570024CFE4 /* PointOfSaleSettingsView.swift */,
 				DA013F502C65125100D9A391 /* PointOfSaleExitPosAlertView.swift */,
 				DA0DBE2E2C4FC61D00DF14C0 /* POSFloatingControlView.swift */,
 				20D3D42A2C64D7CC004CE6E3 /* SimpleProductsOnlyInformation.swift */,
@@ -15319,6 +15322,7 @@
 				01BE94042DDCC7670063541C /* PointOfSaleEmptyErrorStateViewLayout.swift in Sources */,
 				029106C02BE3349500C2248B /* OrderCustomerSectionViewModel.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
+				683D41182E4D9B570024CFE4 /* PointOfSaleSettingsView.swift in Sources */,
 				205E79422C1CA6E3001BA266 /* PointOfSaleCardPresentPaymentEventPresentationStyle.swift in Sources */,
 				EE4C45842C381BAA001A3D94 /* PackagePhotoView.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct PointOfSaleSettingsStackView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: Sidebar? = .hardware
@@ -162,7 +163,7 @@ struct PointOfSaleSettingsStackView: View {
     }
 }
 
-
+@available(iOS 17.0, *)
 struct PointOfSaleSettingsSplitView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
@@ -270,9 +271,12 @@ struct PointOfSaleSettingsSplitView: View {
     }
 }
 
+@available(iOS 17.0, *)
 private struct HardwareDetail: View {
     @Environment(\.dismiss) private var dismiss
     @State private var path: [PointOfSaleSettingsSplitView.HardwareDest] = []
+
+    @State private var showBarcodeScannerSetupModal: Bool = false
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -337,7 +341,9 @@ private struct HardwareDetail: View {
 
     @ViewBuilder
     private func rowButton(systemImage: String, title: String, subtitle: String) -> some View {
-        Button(action: {}) {
+        Button(action: {
+            showBarcodeScannerSetupModal = true
+        }) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
                 Image(systemName: systemImage)
                 VStack(alignment: .leading, spacing: 4) {
@@ -351,6 +357,9 @@ private struct HardwareDetail: View {
             .padding(8)
         }
         .buttonStyle(.plain)
+        .posModal(isPresented: $showBarcodeScannerSetupModal) {
+            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScannerSetupModal)
+        }
     }
 }
 
@@ -398,10 +407,12 @@ private struct SupportDetail: View {
     }
 }
 
+@available(iOS 17.0, *)
 #Preview("Split View") {
     PointOfSaleSettingsSplitView()
 }
 
+@available(iOS 17.0, *)
 #Preview("Stack View") {
     PointOfSaleSettingsStackView()
 }

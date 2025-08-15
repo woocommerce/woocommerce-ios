@@ -456,11 +456,6 @@ private extension OrderDetailsDataSource {
             configureShippingLabelDetail(cell: cell)
         case let cell as WCShipInstallTableViewCell where row == .installWCShip:
             configureInstallWCShip(cell: cell)
-        case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: true),
-             let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelCreationInfo(showsSeparator: false):
-            if case .shippingLabelCreationInfo(let showsSeparator) = row {
-                configureShippingLabelCreationInfo(cell: cell, showsSeparator: showsSeparator)
-            }
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LargeHeightLeftImageTableViewCell where row == .addOrderNote:
@@ -489,8 +484,6 @@ private extension OrderDetailsDataSource {
             configureCustomAmount(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
             configureCollectPaymentButton(cell: cell, at: indexPath)
-        case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
-            configureCreateShippingLabelButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: true),
              let cell as ButtonTableViewCell where row == .markCompleteButton(style: .primary, showsBottomSpacing: false),
              let cell as ButtonTableViewCell where row == .markCompleteButton(style: .secondary, showsBottomSpacing: true),
@@ -719,33 +712,6 @@ private extension OrderDetailsDataSource {
             self?.onCellAction?(.collectPayment, indexPath)
         }
         cell.hideSeparator()
-    }
-
-    private func configureCreateShippingLabelButton(cell: ButtonTableViewCell, at indexPath: IndexPath) {
-        cell.configure(style: .primary,
-                       title: Titles.createShippingLabel,
-                       bottomSpacing: 0) {
-            self.onCellAction?(.createShippingLabel(shipmentIndex: nil), nil)
-        }
-        cell.hideSeparator()
-    }
-
-    private func configureShippingLabelCreationInfo(cell: ImageAndTitleAndTextTableViewCell, showsSeparator: Bool) {
-        cell.update(with: .imageAndTitleOnly(fontStyle: .footnote),
-                    data: .init(title: Title.shippingLabelCreationInfoAction,
-                                image: .infoOutlineFootnoteImage,
-                                imageTintColor: .systemColor(.secondaryLabel),
-                                numberOfLinesForTitle: 0,
-                                isActionable: false,
-                                showsSeparator: showsSeparator))
-
-        cell.selectionStyle = .default
-
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = Title.shippingLabelCreationInfoAction
-        cell.accessibilityHint =
-            NSLocalizedString("Tap to show information about creating a shipping label",
-                              comment: "VoiceOver accessibility hint for the row that shows information about creating a shipping label")
     }
 
     private func configureShippingLabelDetail(cell: WooBasicTableViewCell) {
@@ -1335,18 +1301,9 @@ extension OrderDetailsDataSource {
 
             var rows: [Row] = Array(repeating: .aggregateOrderItem, count: aggregateOrderItemCount)
 
-            switch (shouldShowShippingLabelCreation, isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
-            case (true, false, false, false):
-                // Order completed and eligible for shipping label creation:
-                rows.append(.shippingLabelCreateButton)
-                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (true, true, false, false):
-                // Order processing shippable:
-                rows.append(.shippingLabelCreateButton)
-                rows.append(.markCompleteButton(style: .secondary, showsBottomSpacing: false))
-                rows.append(.shippingLabelCreationInfo(showsSeparator: false))
-            case (false, true, false, false):
-                // Order processing digital:
+            switch (isProcessingStatus, isRefundedStatus, isEligibleForPayment) {
+            case (true, false, false):
+                // Order processing:
                 rows.append(.markCompleteButton(style: .primary, showsBottomSpacing: true))
             default:
                 break
@@ -1880,9 +1837,6 @@ extension OrderDetailsDataSource {
         static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
-        static let shippingLabelCreationInfoAction =
-            NSLocalizedString("Learn more about creating labels with your mobile device",
-                              comment: "Title of button in order details > info link for creating a shipping label on the mobile device.")
         static let shippingLabelPackageFormat =
             NSLocalizedString("Package %d",
                               comment: "Order shipping label package section title format. The number indicates the index of the shipping label package.")
@@ -2047,8 +2001,6 @@ extension OrderDetailsDataSource {
         case trackingAdd
         case collectCardPaymentButton
         case installWCShip
-        case shippingLabelCreateButton
-        case shippingLabelCreationInfo(showsSeparator: Bool)
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProducts
@@ -2110,10 +2062,6 @@ extension OrderDetailsDataSource {
                 return ButtonTableViewCell.reuseIdentifier
             case .installWCShip:
                 return WCShipInstallTableViewCell.reuseIdentifier
-            case .shippingLabelCreateButton:
-                return ButtonTableViewCell.reuseIdentifier
-            case .shippingLabelCreationInfo:
-                return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:

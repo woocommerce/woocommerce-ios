@@ -285,14 +285,24 @@ private struct HardwareDetail: View {
             .background(Color(.systemBackground))
             .navigationTitle("Hardware")
             .navigationDestination(for: PointOfSaleSettingsSplitView.HardwareDest.self) { dest in
-                VStack(spacing: 16) {
-                    Image(systemName: dest.icon).font(.largeTitle)
-                    Text("\(dest.title) Settings")
-                    Text("This is just a placeholder view.")
-                        .foregroundStyle(.secondary)
+                switch dest {
+                case .scanners:
+                    menu(
+                        primaryTitle: "Scanner Setup",
+                        primarySubtitle: "Configure and test your barcode scanner",
+                        secondaryTitle: "Documentation",
+                        secondarySubtitle: "Learn more about barcode scanning in POS"
+                    )
+                    .navigationTitle(dest.title)
+                case .cardReaders:
+                    menu(
+                        primaryTitle: "Reader Setup",
+                        primarySubtitle: "Pair and test your card reader",
+                        secondaryTitle: "Documentation",
+                        secondarySubtitle: "Learn more about card readers in POS"
+                    )
+                    .navigationTitle(dest.title)
                 }
-                .padding()
-                .navigationTitle(dest.title)
             }
         }
         .toolbar {
@@ -300,6 +310,41 @@ private struct HardwareDetail: View {
                 Button("Done") { dismiss() }
             }
         }
+    }
+
+    @ViewBuilder
+    private func menu(
+        primaryTitle: String,
+        primarySubtitle: String,
+        secondaryTitle: String,
+        secondarySubtitle: String
+    ) -> some View {
+        List {
+            Section {
+                rowButton(systemImage: "gearshape", title: primaryTitle, subtitle: primarySubtitle)
+                rowButton(systemImage: "doc.text", title: secondaryTitle, subtitle: secondarySubtitle)
+            }
+        }
+        .scrollContentBackground(.hidden)
+        .background(Color(.systemBackground))
+    }
+
+    @ViewBuilder
+    private func rowButton(systemImage: String, title: String, subtitle: String) -> some View {
+        Button(action: {}) {
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                Image(systemName: systemImage)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                    Text(subtitle)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(8)
+        }
+        .buttonStyle(.plain)
     }
 }
 

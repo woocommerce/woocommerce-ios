@@ -66,6 +66,7 @@ struct PointOfSaleSettingsStackView: View {
             // Sidebar (left)
             VStack(spacing: 0) {
                 // Top list: Hardware & Store
+                Text("Settings")
                 List {
                     Section {
                         ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
@@ -88,7 +89,9 @@ struct PointOfSaleSettingsStackView: View {
                     }
                     .listSectionSeparator(.visible)
                 }
-                .listStyle(.sidebar)
+                .listStyle(.sidebar) // Potential culprit?
+                .scrollContentBackground(.hidden)
+                .background(Color(.systemBackground))
                 .frame(width: 250)
 
                 Spacer(minLength: 0)
@@ -224,6 +227,8 @@ struct PointOfSaleSettingsSplitView: View {
                     .tag(Sidebar.help)
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color(.systemBackground))
             .navigationTitle("Settings")
         } detail: {
             switch selection {
@@ -257,6 +262,8 @@ private struct HardwareDetail: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color(.systemBackground))
             .navigationTitle("Hardware")
             .navigationDestination(for: PointOfSaleSettingsSplitView.HardwareDest.self) { dest in
                 VStack(spacing: 16) {

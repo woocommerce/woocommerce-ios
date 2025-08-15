@@ -8,15 +8,18 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>) {
+         showDocumentation: Binding<Bool>,
+         showSettings: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
+        self._showSettings = showSettings
     }
 
     var body: some View {
@@ -71,6 +74,16 @@ struct POSFloatingControlView: View {
                                 }
                             },
                             icon: { Image(systemName: "barcode.viewfinder") })
+                    }
+                }
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label(
+                            title: { Text(Localization.settings) },
+                            icon: { Image(systemName: "gearshape") }
+                        )
                     }
                 }
             } label: {
@@ -185,6 +198,12 @@ private extension POSFloatingControlView {
             value: "Initial barcode scanner setup",
             comment: "The title of the menu button to start a barcode scanner setup flow."
         )
+
+        static let settings = NSLocalizedString(
+            "pointOfSale.floatingButtons.settings.button.title",
+            value: "Settings",
+            comment: "The title of the menu button to access Point of Sale settings."
+        )
     }
 }
 
@@ -192,7 +211,10 @@ private extension POSFloatingControlView {
 
 @available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false),
+                           showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -204,14 +226,20 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    return POSFloatingControlView(showExitPOSModal: .constant(false),
+                                  showSupport: .constant(false),
+                                  showDocumentation: .constant(false),
+                                  showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 @available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false),
+                           showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

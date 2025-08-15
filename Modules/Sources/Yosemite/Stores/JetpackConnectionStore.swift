@@ -41,8 +41,9 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             installJetpackPlugin(completion: completion)
         case .activateJetpackPlugin(let completion):
             activateJetpackPlugin(completion: completion)
-        case .fetchJetpackConnectionURL(let completion):
-            fetchJetpackConnectionURL(completion: completion)
+        case let .fetchJetpackConnectionURL(authenticatedWithWPCom, completion):
+            fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom,
+                                      completion: completion)
         case .fetchJetpackConnectionData(let completion):
             fetchJetpackConnectionData(completion: completion)
         case .registerSite(let completion):
@@ -88,8 +89,26 @@ private extension JetpackConnectionStore {
         })
     }
 
-    func fetchJetpackConnectionURL(completion: @escaping (Result<URL, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
+    func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
+                                   completion: @escaping (Result<URL, Error>) -> Void) {
+        guard authenticatedWithWPCom else {
+            jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
+            return
+        }
+        jetpackConnectionRemote?.fetchJetpackConnectionURL { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let url):
+                // If we get the account connection URL, return it immediately.
+                if url.absoluteString.hasPrefix(Constants.jetpackAccountConnectionURL) {
+                    return completion(.success(url))
+                }
+                // Otherwise, request the url with redirection disabled and retrieve the URL in LOCATION header
+                self.jetpackConnectionRemote?.registerJetpackSiteConnection(with: url, completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
     func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
@@ -150,5 +169,11 @@ private extension JetpackConnectionStore {
             }
         }
         self.accountRemote = remote
+    }
+}
+
+private extension JetpackConnectionStore {
+    enum Constants {
+        static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

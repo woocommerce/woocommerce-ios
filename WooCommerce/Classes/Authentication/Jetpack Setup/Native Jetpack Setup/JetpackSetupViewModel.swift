@@ -15,7 +15,7 @@ final class JetpackSetupViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
-    private let wpcomCredentials: Credentials?
+    private let wpcomCredentials: Credentials
     private var isPluginActivated = false
     private var connectionType = WooAnalyticsEvent.JetpackSetup.ConnectionType.native
 
@@ -95,7 +95,7 @@ final class JetpackSetupViewModel: ObservableObject {
 
     init(siteURL: String,
          connectionOnly: Bool,
-         wpcomCredentials: Credentials?,
+         wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          delayBeforeRetry: Double = Constants.delayBeforeRetry,
@@ -107,7 +107,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.analytics = analytics
         self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
-        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL, Constants.mobileRedirectURL))
+        self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL))
         self.delayBeforeRetry = delayBeforeRetry
     }
 
@@ -264,7 +264,8 @@ private extension JetpackSetupViewModel {
         currentSetupStep = .connection
         connectionType = .web
         trackSetup()
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
+        let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
+        let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let url):
@@ -316,7 +317,9 @@ private extension JetpackSetupViewModel {
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
     func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        currentConnectionStep = .inProgress
+        if afterConnection {
+            currentConnectionStep = .inProgress
+        }
         let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
             guard let self else { return }
             switch result {
@@ -428,11 +431,6 @@ private extension JetpackSetupViewModel {
     }
 
     func finalizeSiteConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) {
-        guard let wpcomCredentials, case .wpcom = wpcomCredentials else {
-            /// WPCom credentials are necessary to finalize connection through API
-            /// If this is unavailable, fall back to the web flow.
-            return startConnectionWithWebView()
-        }
         let network = AlamofireNetwork(credentials: wpcomCredentials)
         stores.dispatch(JetpackConnectionAction.finalizeConnection(
             siteID: blogID,
@@ -558,8 +556,7 @@ extension JetpackSetupViewModel {
         static let errorCodeNoWPComUser = 99
         static let errorUserInfoReason = "reason"
         static let errorUserInfoNoWPComUser = "No connected WP.com user found"
-        static let jetpackInstallString = "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"
-        static let mobileRedirectURL = "woocommerce://jetpack-connected"
+        static let jetpackInstallString = "%@/wp-admin/admin.php?page=jetpack"
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }
 }

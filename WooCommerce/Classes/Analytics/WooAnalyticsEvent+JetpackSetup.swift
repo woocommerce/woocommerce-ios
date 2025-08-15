@@ -67,19 +67,10 @@ extension WooAnalyticsEvent {
                               tap: SetupFlow.TapTarget? = nil,
                               connectionType: ConnectionType,
                               failure: Error? = nil) -> WooAnalyticsEvent {
-            let isApplicationPassword: Bool = {
-                let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-                switch credentials {
-                case .some(.applicationPassword):
-                    return true
-                default:
-                    return false
-                }
-            }()
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.step.rawValue: step.analyticsValue,
                 Key.connectionType.rawValue: connectionType.rawValue,
-                Key.usingApplicationPassword.rawValue: isApplicationPassword
+                Key.usingApplicationPassword.rawValue: ServiceLocator.stores.isAuthenticatedWithoutWPCom
             ]
             if let tap {
                 properties[Key.tap.rawValue] = tap.rawValue

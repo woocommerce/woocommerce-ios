@@ -7,11 +7,13 @@ import protocol WooFoundation.Analytics
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
     private let authentication: Authentication
-    private let wpcomCredentials: Credentials?
+    private let wpcomCredentials: Credentials
+
+    private var connectionWebView: UINavigationController?
 
     init(siteURL: String,
          connectionOnly: Bool,
-         wpcomCredentials: Credentials?,
+         wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
@@ -27,7 +29,10 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
-            self?.presentJetpackConnectionWebView()
+            guard let url = self?.viewModel.jetpackConnectionURL else {
+                return
+            }
+            self?.presentJetpackConnectionWebView(with: url)
         }
 
         rootView.supportHandler = { [weak self] in
@@ -64,21 +69,20 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     @objc
     private func dismissWebView() {
-        dismiss(animated: true)
+        connectionWebView?.dismiss(animated: true)
+        connectionWebView = nil
     }
 
-    private func presentJetpackConnectionWebView() {
-        guard let connectionURL = viewModel.jetpackConnectionURL else {
-            return
-        }
-
-        let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
+    private func presentJetpackConnectionWebView(with url: URL) {
+        let webViewModel = JetpackConnectionWebViewModel(initialURL: url,
                                                          siteURL: viewModel.siteURL,
                                                          completion: { [weak self] in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
+        }, onAuthorization: { [weak self] url in
+            self?.presentJetpackConnectionWebView(with: url)
         }, onFailure: { [weak self] errorCode in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
@@ -88,13 +92,20 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true
         })
+
         let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: wpcomCredentials)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
                                                                    action: #selector(self.dismissWebView))
-        let navigationController = UINavigationController(rootViewController: webView)
-        self.present(navigationController, animated: true)
+        if let connectionWebView {
+            /// Replace the web view to avoid unnecessary navigations
+            connectionWebView.viewControllers = [webView]
+        } else {
+            let navigationController = UINavigationController(rootViewController: webView)
+            self.present(navigationController, animated: true)
+            self.connectionWebView = navigationController
+        }
     }
 
     private func presentSupport() {

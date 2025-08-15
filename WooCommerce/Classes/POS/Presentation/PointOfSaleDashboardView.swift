@@ -133,7 +133,10 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView()
+            // Using NavigationStackView
+            PointOfSaleSettingsStackView()
+            // Using NavigationSplitView
+            //PointOfSaleSettingsSplitView()
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }

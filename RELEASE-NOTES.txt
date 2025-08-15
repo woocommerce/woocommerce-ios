@@ -8,6 +8,7 @@
 - [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
 - [*] Order details: Always show shipping labels section if order is eligible for label creation. [https://github.com/woocommerce/woocommerce-ios/pull/16010]
 - [*] Order details: Remove print buttons from shipment details [https://github.com/woocommerce/woocommerce-ios/pull/16012]
+- [*] Shipping labels: Mark manually saved addresses as unverified [https://github.com/woocommerce/woocommerce-ios/pull/16013]
 
 23.0
 -----

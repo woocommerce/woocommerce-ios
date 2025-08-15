@@ -277,6 +277,15 @@ private struct HardwareDetail: View {
     @State private var path: [PointOfSaleSettingsSplitView.HardwareDest] = []
 
     @State private var showBarcodeScannerSetupModal: Bool = false
+    @State private var showCardReaderWebView: Bool = false
+
+    struct MenuItem: Identifiable {
+        let id = UUID()
+        let icon: String
+        let title: String
+        let subtitle: String
+        let action: () -> Void
+    }
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -297,20 +306,36 @@ private struct HardwareDetail: View {
             .navigationDestination(for: PointOfSaleSettingsSplitView.HardwareDest.self) { dest in
                 switch dest {
                 case .scanners:
-                    menu(
-                        primaryTitle: "Scanner Setup",
-                        primarySubtitle: "Configure and test your barcode scanner",
-                        secondaryTitle: "Documentation",
-                        secondarySubtitle: "Learn more about barcode scanning in POS"
-                    )
+                    menu(items: [
+                        MenuItem(
+                            icon: "gearshape",
+                            title: "Scanner Setup",
+                            subtitle: "Configure and test your barcode scanner",
+                            action: { showBarcodeScannerSetupModal = true }
+                        ),
+                        MenuItem(
+                            icon: "doc.text",
+                            title: "Documentation",
+                            subtitle: "Learn more about barcode scanning in POS",
+                            action: { showBarcodeScannerSetupModal = true }
+                        )
+                    ])
                     .navigationTitle(dest.title)
                 case .cardReaders:
-                    menu(
-                        primaryTitle: "Reader Setup",
-                        primarySubtitle: "Pair and test your card reader",
-                        secondaryTitle: "Documentation",
-                        secondarySubtitle: "Learn more about card readers in POS"
-                    )
+                    menu(items: [
+                        MenuItem(
+                            icon: "gearshape",
+                            title: "Reader Setup",
+                            subtitle: "Pair and test your card reader",
+                            action: { showCardReaderWebView = true }
+                        ),
+                        MenuItem(
+                            icon: "doc.text",
+                            title: "Documentation",
+                            subtitle: "Learn more about card readers in POS",
+                            action: { showCardReaderWebView = true }
+                        )
+                    ])
                     .navigationTitle(dest.title)
                 }
             }
@@ -323,16 +348,12 @@ private struct HardwareDetail: View {
     }
 
     @ViewBuilder
-    private func menu(
-        primaryTitle: String,
-        primarySubtitle: String,
-        secondaryTitle: String,
-        secondarySubtitle: String
-    ) -> some View {
+    private func menu(items: [MenuItem]) -> some View {
         List {
             Section {
-                rowButton(systemImage: "gearshape", title: primaryTitle, subtitle: primarySubtitle)
-                rowButton(systemImage: "doc.text", title: secondaryTitle, subtitle: secondarySubtitle)
+                ForEach(items) { item in
+                    rowButton(item: item)
+                }
             }
         }
         .scrollContentBackground(.hidden)
@@ -340,15 +361,13 @@ private struct HardwareDetail: View {
     }
 
     @ViewBuilder
-    private func rowButton(systemImage: String, title: String, subtitle: String) -> some View {
-        Button(action: {
-            showBarcodeScannerSetupModal = true
-        }) {
+    private func rowButton(item: MenuItem) -> some View {
+        Button(action: item.action) {
             HStack(alignment: .firstTextBaseline, spacing: 12) {
-                Image(systemName: systemImage)
+                Image(systemName: item.icon)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                    Text(subtitle)
+                    Text(item.title)
+                    Text(item.subtitle)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

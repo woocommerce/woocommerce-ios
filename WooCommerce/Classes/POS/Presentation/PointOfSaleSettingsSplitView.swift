@@ -62,53 +62,74 @@ struct PointOfSaleSettingsStackView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            HStack(spacing: 0) {
-                // Sidebar (left)
-                List(selection: $selection) {
+        HStack(spacing: 0) {
+            // Sidebar (left)
+            VStack(spacing: 0) {
+                // Top list: Hardware & Store
+                List {
                     Section {
                         ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
-                            HStack(alignment: .firstTextBaseline) {
-                                Image(systemName: item.icon)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(item.title)
-                                    Text(item.subtitle).font(.footnote).foregroundStyle(.secondary)
+                            Button {
+                                selection = item
+                            } label: {
+                                HStack(alignment: .firstTextBaseline) {
+                                    Image(systemName: item.icon)
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(item.title)
+                                        Text(item.subtitle)
+                                            .font(.footnote)
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .tag(item)
+                            .buttonStyle(.plain)
                         }
                     }
                     .listSectionSeparator(.visible)
-                    Section {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: Sidebar.help.icon)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(Sidebar.help.title)
-                                Text(Sidebar.help.subtitle).font(.footnote).foregroundStyle(.secondary)
-                            }
-                        }
-                        .tag(Sidebar.help)
-                    }
                 }
-                .frame(width: 250)
                 .listStyle(.sidebar)
+                .frame(width: 250)
 
-                // Detail (right)
-                Group {
-                    switch selection {
-                    case .hardware:
-                        HardwareDetail()
-                    case .store:
-                        StoreDetail()
-                    case .help:
-                        SupportDetail()
-                    case .none:
-                        Text("Select an option")
+                Spacer(minLength: 0)
+
+                // Bottom pinned Help row
+                Button {
+                    selection = .help
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: Sidebar.help.icon)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(Sidebar.help.title)
+                            Text(Sidebar.help.subtitle)
+                                .font(.footnote)
+                                .foregroundStyle(.secondary)
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .buttonStyle(.plain)
+                .frame(width: 250)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 8)
             }
-            .navigationTitle("Settings")
+
+            // Detail (right)
+            Group {
+                switch selection {
+                case .hardware:
+                    HardwareDetail()
+                case .store:
+                    StoreDetail()
+                case .help:
+                    SupportDetail()
+                case .none:
+                    Text("Select an option")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

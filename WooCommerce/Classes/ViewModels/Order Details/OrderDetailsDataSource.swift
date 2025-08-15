@@ -61,15 +61,6 @@ final class OrderDetailsDataSource: NSObject {
         return true
     }
 
-    /// Whether the button to create shipping labels should be visible.
-    ///
-    var shouldShowShippingLabelCreation: Bool {
-        if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-            return isEligibleForShippingLabelCreation && !isEligibleForPayment && shipments.isEmpty
-        }
-        return isEligibleForShippingLabelCreation && shippingLabels.nonRefunded.isEmpty && !isEligibleForPayment
-    }
-
     /// Whether the option to re-create shipping labels should be visible.
     ///
     var shouldAllowRecreatingShippingLabels: Bool {
@@ -1804,7 +1795,6 @@ extension OrderDetailsDataSource {
                                                 comment: "The title for the refunded amount cell")
         static let netAmount = NSLocalizedString("Net Payment", comment: "The title for the net amount paid cell")
         static let collectPayment = NSLocalizedString("Collect Payment", comment: "Text on the button that starts collecting a card present payment.")
-        static let createShippingLabel = NSLocalizedString("Create Shipping Label", comment: "Text on the button that starts shipping label creation")
         static let reprintShippingLabel = NSLocalizedString("Print Shipping Label", comment: "Text on the button that prints a shipping label")
         static let seeReceipt = NSLocalizedString(
             "OrderDetailsDataSource.configureSeeReceipt.button.title",

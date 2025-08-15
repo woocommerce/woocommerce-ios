@@ -62,77 +62,96 @@ struct PointOfSaleSettingsStackView: View {
     }
 
     var body: some View {
-        HStack(spacing: 0) {
-            // Sidebar (left)
-            VStack(spacing: 0) {
-                // Top list: Hardware & Store
-                Text("Settings")
-                List {
-                    Section {
-                        ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
-                            Button {
-                                selection = item
-                            } label: {
-                                HStack(alignment: .firstTextBaseline) {
-                                    Image(systemName: item.icon)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(item.title)
-                                        Text(item.subtitle)
-                                            .font(.footnote)
-                                            .foregroundStyle(.secondary)
+        GeometryReader { geo in
+            let sidebarWidth = max(280, min(geo.size.width * 0.34, 420))
+            HStack(spacing: 0) {
+                // Sidebar (left)
+                VStack(spacing: 0) {
+                    // Optional title
+                    Text("Settings")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 8)
+
+                    // Top list: Hardware & Store
+                    List {
+                        Section {
+                            ForEach([Sidebar.hardware, Sidebar.store], id: \.self) { item in
+                                Button {
+                                    selection = item
+                                } label: {
+                                    HStack(alignment: .firstTextBaseline) {
+                                        Image(systemName: item.icon)
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(item.title)
+                                            Text(item.subtitle)
+                                                .font(.footnote)
+                                                .foregroundStyle(.secondary)
+                                        }
                                     }
+                                    .padding(6)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                            .fill(Color.secondary.opacity(selection == item ? 0.12 : 0))
+                                    )
+                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .buttonStyle(.plain)
+                                .listRowBackground(Color.clear)
                             }
-                            .buttonStyle(.plain)
                         }
+                        .listSectionSeparator(.hidden)
                     }
-                    .listSectionSeparator(.visible)
-                }
-                .listStyle(.sidebar) // Potential culprit?
-                .scrollContentBackground(.hidden)
-                .background(Color(.systemBackground))
-                .frame(width: 250)
+                    .listStyle(.sidebar)
+                    .scrollContentBackground(.hidden)
+                    .background(Color(.systemBackground))
 
-                Spacer(minLength: 0)
+                    Spacer(minLength: 0)
 
-                // Bottom pinned Help row
-                Button {
-                    selection = .help
-                } label: {
-                    HStack(alignment: .firstTextBaseline) {
-                        Image(systemName: Sidebar.help.icon)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(Sidebar.help.title)
-                            Text(Sidebar.help.subtitle)
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
+                    // Bottom pinned Help row
+                    Button {
+                        selection = .help
+                    } label: {
+                        HStack(alignment: .firstTextBaseline) {
+                            Image(systemName: Sidebar.help.icon)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(Sidebar.help.title)
+                                Text(Sidebar.help.subtitle)
+                                    .font(.footnote)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .padding(6)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Color.secondary.opacity(selection == .help ? 0.12 : 0))
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-                .frame(width: 250)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 8)
-            }
+                .frame(width: sidebarWidth)
 
-            // Detail (right)
-            Group {
-                switch selection {
-                case .hardware:
-                    HardwareDetail()
-                case .store:
-                    StoreDetail()
-                case .help:
-                    SupportDetail()
-                case .none:
-                    Text("Select an option")
+                // Detail (right)
+                Group {
+                    switch selection {
+                    case .hardware:
+                        HardwareDetail()
+                    case .store:
+                        StoreDetail()
+                    case .help:
+                        SupportDetail()
+                    case .none:
+                        Text("Select an option")
+                    }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

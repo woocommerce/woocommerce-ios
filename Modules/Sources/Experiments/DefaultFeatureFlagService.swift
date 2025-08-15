@@ -104,7 +104,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleBarcodeScanningi2:
             return true
         case .pointOfSaleSettingsi1:
-            return false
+            return true
         case .orderAddressMapSearch:
             return true
         default:

@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 @available(iOS 17.0, *)
 struct PointOfSaleSettingsStackView: View {
@@ -160,6 +161,11 @@ struct PointOfSaleSettingsStackView: View {
                 .padding(.trailing, 12)
                 .accessibilityLabel("Close Settings")
         }
+// Problem: Attempting to present the documentation as full screen cover here, auto-dismisses settings automatically, or
+// makes the view enter in an infinite loop where is presented/dismissed without being able to close it
+//        .posFullScreenCover(isPresented: $showBarcodeScannerDocumentation) {
+//            SafariView(url: URL(string: "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/")!)
+//        }
     }
 }
 
@@ -277,7 +283,7 @@ private struct HardwareDetail: View {
     @State private var path: [PointOfSaleSettingsSplitView.HardwareDest] = []
 
     @State private var showBarcodeScannerSetupModal: Bool = false
-    @State private var showCardReaderWebView: Bool = false
+    @State private var showBarcodeScannerDocumentation: Bool = false
 
     struct MenuItem: Identifiable {
         let id = UUID()
@@ -317,7 +323,7 @@ private struct HardwareDetail: View {
                             icon: "doc.text",
                             title: "Documentation",
                             subtitle: "Learn more about barcode scanning in POS",
-                            action: { showBarcodeScannerSetupModal = true }
+                            action: { showBarcodeScannerDocumentation = true }
                         )
                     ])
                     .navigationTitle(dest.title)
@@ -327,13 +333,13 @@ private struct HardwareDetail: View {
                             icon: "gearshape",
                             title: "Reader Setup",
                             subtitle: "Pair and test your card reader",
-                            action: { showCardReaderWebView = true }
+                            action: { }
                         ),
                         MenuItem(
                             icon: "doc.text",
                             title: "Documentation",
                             subtitle: "Learn more about card readers in POS",
-                            action: { showCardReaderWebView = true }
+                            action: { }
                         )
                     ])
                     .navigationTitle(dest.title)
@@ -379,6 +385,32 @@ private struct HardwareDetail: View {
         .posModal(isPresented: $showBarcodeScannerSetupModal) {
             PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScannerSetupModal)
         }
+        .posModal(isPresented: $showBarcodeScannerDocumentation) {
+            NavigationStack {
+                NativeWebView(url: URL(string: "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/")!)
+                    .toolbar { // Needs a NavigationStack to appear, otherwise we cans till dismiss it when tapping outside the web view area.
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button("Ok") {
+                                showBarcodeScannerDocumentation = false
+                            }
+                        }
+                    }
+            }
+            //.frame(maxWidth: 600, maxHeight: 800)
+        }
+    }
+}
+
+struct NativeWebView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        return WKWebView()
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        let request = URLRequest(url: url)
+        webView.load(request)
     }
 }
 

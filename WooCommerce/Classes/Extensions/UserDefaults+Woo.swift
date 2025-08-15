@@ -50,7 +50,7 @@ extension UserDefaults {
 
         // Background Task Refresh
         case latestBackgroundOrderSyncDate
-        case lastBackgroundRefreshTime
+        case lastBackgroundRefreshCompletionTime
 
         // Blaze Local notification
         case blazeNoCampaignReminderOpened

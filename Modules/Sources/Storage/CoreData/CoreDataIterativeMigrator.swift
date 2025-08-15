@@ -59,6 +59,18 @@ final class CoreDataIterativeMigrator {
         // Find the current model used by the store.
         let sourceModel = try model(for: sourceMetadata)
 
+        // Check if we should nuke the DB entirely based on the oldest supported data model.
+        // We will attempt to either move the merchant to the latest model version, or perform an iterative migration
+        // The persistent store coordinator will automatically create a fresh store with the current model as needed.
+        if shouldDestroyPersistentStore(for: sourceModel) {
+            do {
+                try persistentStoreCoordinator.destroyPersistentStore(at: sourceStoreURL, ofType: storeType, options: nil)
+                DDLogInfo("[CoreDataIterativeMigrator] Database at \(sourceStoreURL) destroyed successfully.")
+            } catch {
+                DDLogError("[CoreDataIterativeMigrator] Database destruction failed. Error: \(error). Falling back to iterative migration.")
+            }
+        }
+
         // Get the steps to perform the migration.
         let steps = try MigrationStep.steps(using: modelsInventory, source: sourceModel, target: targetModel)
         guard !steps.isEmpty else {
@@ -176,4 +188,18 @@ private extension CoreDataIterativeMigrator {
             .appendingPathComponent("migration_\(UUID().uuidString)")
             .appendingPathExtension("sqlite")
     }
+
+    func shouldDestroyPersistentStore(for sourceModel: NSManagedObjectModel) -> Bool {
+        guard let sourceVersion = CoreDataMigratorUtils.findSourceVersion(for: sourceModel, in: modelsInventory) else {
+            // If the model is not found in inventory it's from a deleted model version
+            // The database can be destroyed for a fresh start
+            DDLogInfo("Source model not found in available model versions. Will destroy database for fresh start.")
+            return true
+        }
+
+        // Model found in inventory, so it's a supported version. Use iterative migration
+        DDLogInfo("Source model \(sourceVersion.name) found in available versions. Will use iterative migration.")
+        return false
+    }
+
 }

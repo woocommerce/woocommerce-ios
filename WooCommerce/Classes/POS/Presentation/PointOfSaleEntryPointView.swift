@@ -7,6 +7,7 @@ struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
+    @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -77,6 +78,7 @@ struct PointOfSaleEntryPointView: View {
         }
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
+        .environmentObject(posCoverManager)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

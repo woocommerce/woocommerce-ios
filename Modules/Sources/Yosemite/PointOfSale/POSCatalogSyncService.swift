@@ -31,21 +31,46 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
 
     // MARK: - POSCatalogSyncServiceProtocol
 
+    // `@MainActor` is mainly for printing `storageManager.viewStorage.countObjects` for now
+    @MainActor
     public func syncCatalog() async throws {
-        // Use background download for large catalog files following Apple's best practices
-        var request = URLRequest(url: catalogURL)
-        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        let totalStartTime = CFAbsoluteTimeGetCurrent()
 
-        let data = try await network.backgroundDownload(for: request)
+        // 1. Download catalog
+        let downloadStartTime = CFAbsoluteTimeGetCurrent()
+        let data = try await downloadCatalog()
+        let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
+        print("🟣 Download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
-        // Parse catalog data efficiently for large JSON files
-        let catalogResponse = try parseCatalogDataEfficiently(data)
+        // 2. Parse catalog data
+        let parseStartTime = CFAbsoluteTimeGetCurrent()
+        let catalogResponse = try parseCatalogData(data)
+        let parseTime = CFAbsoluteTimeGetCurrent() - parseStartTime
+        print("🟣 Parsing completed - Time: \(String(format: "%.2f", parseTime))s")
+
+        // 3. Upsert catalog items
+        let upsertStartTime = CFAbsoluteTimeGetCurrent()
         try await upsertCatalogItems(productItems: catalogResponse.products, variationItems: catalogResponse.variations)
+        let upsertTime = CFAbsoluteTimeGetCurrent() - upsertStartTime
+        print("🟣 Upsert completed - Time: \(String(format: "%.2f", upsertTime))s")
+
+        // Total time
+        let totalTime = CFAbsoluteTimeGetCurrent() - totalStartTime
+        print("✅ Sync completed - Total: \(String(format: "%.2f", totalTime))s (Download: \(String(format: "%.2f", downloadTime))s, Parse: \(String(format: "%.2f", parseTime))s, Upsert: \(String(format: "%.2f", upsertTime))s)")
+        print("📊 Final counts: \(storageManager.viewStorage.countObjects(ofType: StorageProduct.self)) products, \(storageManager.viewStorage.countObjects(ofType: StorageProductVariation.self)) variations")
     }
 
     // MARK: - Private Methods
 
-    private func parseCatalogDataEfficiently(_ data: Data) throws -> CatalogItemResponse {
+    private func downloadCatalog() async throws -> Data {
+        // Use background download for large catalog files following Apple's best practices
+        var request = URLRequest(url: catalogURL)
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+
+        return try await network.backgroundDownload(for: request)
+    }
+
+    private func parseCatalogData(_ data: Data) throws -> CatalogItemResponse {
         do {
             let decoder = JSONDecoder()
             // Configure decoder for optimal performance with large datasets
@@ -56,24 +81,28 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         }
     }
 
-    @MainActor
     private func upsertCatalogItems(productItems: [CatalogItem], variationItems: [CatalogItem]) async throws {
-        let startTime = CFAbsoluteTimeGetCurrent()
-        // Convert to Networking objects
-        let networkingProducts = productItems.compactMap { catalogItem -> Networking.Product? in
-            return self.mapCatalogItemToNetworkingProduct(catalogItem)
-        }
-
-        let networkingVariations = variationItems.compactMap { catalogItem -> Networking.ProductVariation? in
-            return self.mapCatalogItemToNetworkingProductVariation(catalogItem)
-        }
+        // Convert to Networking objects on background thread for better performance
+        let (networkingProducts, networkingVariations) = await mapCatalogItemsToNetworkingObjects(
+            productItems: productItems,
+            variationItems: variationItems
+        )
 
         // Use combined batch replacement for products and variations to ensure proper linking
         await replaceAllProductsAndVariations(products: networkingProducts, variations: networkingVariations)
+    }
 
-        let endTime = CFAbsoluteTimeGetCurrent()
-        let timeElapsed = endTime - startTime
-        print("✅ Done: \(storageManager.viewStorage.countObjects(ofType: StorageProduct.self)) products, \(storageManager.viewStorage.countObjects(ofType: StorageProductVariation.self)) variations - Time: \(String(format: "%.2f", timeElapsed))s")
+    private func mapCatalogItemsToNetworkingObjects(
+        productItems: [CatalogItem],
+        variationItems: [CatalogItem]
+    ) async -> ([Product], [ProductVariation]) {
+        async let products = productItems.compactMap { catalogItem -> Product? in
+            mapCatalogItemToNetworkingProduct(catalogItem)
+        }
+        async let variations = variationItems.compactMap { catalogItem -> ProductVariation? in
+            mapCatalogItemToNetworkingProductVariation(catalogItem)
+        }
+        return await (products, variations)
     }
 
     // For exported json where variations are not separate

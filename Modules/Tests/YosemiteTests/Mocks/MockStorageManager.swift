@@ -10,6 +10,16 @@ public class MockStorageManager: StorageManagerType {
     /// DataModel Name
     ///
     private let name = "WooCommerce"
+    
+    /// Whether to use file-based SQLite store (needed for batch operations) or in-memory store
+    ///
+    private let useFileBasedStore: Bool
+    
+    /// Initialize with option to use file-based store
+    ///
+    public init(useFileBasedStore: Bool = false) {
+        self.useFileBasedStore = useFileBasedStore
+    }
 
     /// Returns the Storage associated with the View Thread.
     ///
@@ -64,8 +74,18 @@ public class MockStorageManager: StorageManagerType {
         viewContext.performAndWait {
             do {
                 viewContext.reset()
+                
+                // Remove and cleanup temporary files if using file-based store
                 for store in storeCoordinator.persistentStores {
                     try storeCoordinator.remove(store)
+                    
+                    if useFileBasedStore, let storeURL = store.url {
+                        // Clean up temporary SQLite files
+                        try? FileManager.default.removeItem(at: storeURL)
+                        // Also remove associated files (-wal, -shm)
+                        try? FileManager.default.removeItem(at: storeURL.appendingPathExtension("wal"))
+                        try? FileManager.default.removeItem(at: storeURL.appendingPathExtension("shm"))
+                    }
                 }
             } catch {
                 fatalError("☠️ [CoreDataManager] Cannot Destroy persistentStore! \(error)")
@@ -140,7 +160,17 @@ extension MockStorageManager {
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription()
         description.type = NSSQLiteStoreType
-        description.url = URL(fileURLWithPath: "/dev/null")
+        
+        if useFileBasedStore {
+            // Use a temporary SQLite file to support batch operations
+            let tempDir = FileManager.default.temporaryDirectory
+            let testDBURL = tempDir.appendingPathComponent("MockCoreData-\(UUID().uuidString).sqlite")
+            description.url = testDBURL
+        } else {
+            // Use /dev/null for fast in-memory-like behavior (default for most tests)
+            description.url = URL(fileURLWithPath: "/dev/null")
+        }
+        
         return description
     }
 }

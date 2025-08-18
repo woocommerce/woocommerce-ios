@@ -52,7 +52,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             decoder.dateDecodingStrategy = .iso8601
             return try decoder.decode(CatalogItemResponse.self, from: data)
         } catch {
-            throw POSCatalogSyncError.invalidData
+            throw error
         }
     }
 

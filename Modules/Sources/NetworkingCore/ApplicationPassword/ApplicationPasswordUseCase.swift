@@ -2,6 +2,10 @@ import Foundation
 import enum Alamofire.AFError
 import KeychainAccess
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
 public enum ApplicationPasswordUseCaseError: Error {
     case duplicateName
     case applicationPasswordsDisabled
@@ -29,25 +33,6 @@ public protocol ApplicationPasswordUseCase {
     func deletePassword() async throws
 }
 
-/// A wrapper for the `UIDevice` `model` and `identifierForVendor` properties.
-///
-/// This is necessary because `UIDevice` is part of UIKit which we cannot use when targeting watchOS.
-/// So, to keep this package compatible with watchOS, we need to abstract UIKit away and delegate it to the consumers to provide us
-/// with the device information.
-///
-/// This approach is feasible because only the `applicationPasswordName` method in
-/// `DefaultApplicationPasswordUseCase` needs access to the information and watchOS does not need to create application
-/// passwords. We can therefore pass a `nil` value to it to satisfy the compilation without issues for the user experience.
-public struct DeviceModelIdentifierInfo {
-    let model: String
-    let identifierForVendor: String
-
-    public init(model: String, identifierForVendor: String) {
-        self.model = model
-        self.identifierForVendor = identifierForVendor
-    }
-}
-
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
     /// Site Address
     ///
@@ -65,31 +50,27 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let storage: ApplicationPasswordStorage
 
-    private let deviceModelIdentifierInfo: DeviceModelIdentifierInfo?
-
     /// Used to name the password in wpadmin.
     ///
     private var applicationPasswordName: String {
-        get {
-            guard let deviceModelIdentifierInfo else {
-                return "" // This is not needed on watchOS as the watch does not create application passwords.
-            }
-
-            let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
-            return "\(bundleIdentifier).ios-app-client.\(deviceModelIdentifierInfo.model).\(deviceModelIdentifierInfo.identifierForVendor)"
-        }
+#if !os(watchOS)
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
+        let model = UIDevice.current.model
+        let identifierForVendor = UIDevice.current.identifierForVendor?.uuidString ?? ""
+        return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
+#else
+        fatalError("Unexpected error: Application password should not be generated through watch app")
+#endif
     }
 
     public init(username: String,
                 password: String,
                 siteAddress: String,
-                deviceModelIdentifierInfo: DeviceModelIdentifierInfo? = nil,
                 network: Network? = nil,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
         self.siteAddress = siteAddress
         self.username = username
         self.storage = ApplicationPasswordStorage(keychain: keychain)
-        self.deviceModelIdentifierInfo = deviceModelIdentifierInfo
 
         if let network {
             self.network = network
@@ -154,7 +135,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             if let uuidFromLocalPassword {
                 return uuidFromLocalPassword
             } else {
-                return try await self.fetchUUIDForApplicationPassword(await applicationPasswordName)
+                return try await self.fetchUUIDForApplicationPassword(applicationPasswordName)
             }
         }()
         try await deleteApplicationPassword(uuidToBeDeleted)
@@ -167,7 +148,7 @@ private extension DefaultApplicationPasswordUseCase {
     /// - Returns: Generated `ApplicationPassword`
     ///
     func createApplicationPassword() async throws -> ApplicationPassword {
-        let passwordName = await applicationPasswordName
+        let passwordName = applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
         let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)

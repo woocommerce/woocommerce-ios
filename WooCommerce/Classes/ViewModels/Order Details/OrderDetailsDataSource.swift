@@ -1235,8 +1235,10 @@ extension OrderDetailsDataSource {
                 return cachedShipments
             }
 
-            if !isEligibleForShippingLabelCreation {
-                /// skips creating shipments if order is not eligible for creating labels
+            if !isEligibleForShippingLabelCreation || shippingLabels.isNotEmpty {
+                /// Skips creating shipments if order is not eligible for creating labels
+                /// If there are labels but not shipments, the labels were created with legacy plugin,
+                /// so skip creating shipments to display them the old way instead.
                 return []
             }
 

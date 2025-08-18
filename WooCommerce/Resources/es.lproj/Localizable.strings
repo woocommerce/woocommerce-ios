@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-29 13:54:04+0000 */
+/* Translation-Revision-Date: 2025-08-14 14:54:09+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ la tarjeta termina en %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ disponibles";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -3211,8 +3210,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "En curso";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "Hay existencias";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -8272,6 +8270,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Conectar una tienda existente";
 
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "Cerrar";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "Usar esta dirección";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "Prueba a buscar sin números de piso, apartamento o planta. Puedes añadir esos datos a la línea de dirección 2 más adelante.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "No se han encontrado resultados";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "Buscar una dirección";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Casual";
 
@@ -9906,6 +9919,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Medios en el dispositivo";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "Buscar en el mapa";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "Dirección de facturación";
 
@@ -10894,8 +10910,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Código de barras demasiado corto";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "Escaneo parcial del código de barras";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "El escáner no ha enviado ningún carácter de fin de línea";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Solicitud de red fallida";
@@ -11263,6 +11279,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.barcodeScanning.button.title" = "Escaneado de códigos de barras";
 
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Configuración inicial del escáner de códigos de barras";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Espera";
 
@@ -11342,7 +11361,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Cancelar";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "Hecho";
+"pointOfSaleDashboard.support.cancel" = "Cancelar";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Escaneado de códigos de barras";
@@ -11416,14 +11435,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "Volver";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Imagen de un código que se va a escanear con un escáner de código de barras.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Ya tienes todo listo para empezar a escanear productos. La próxima vez que necesites conectar el escáner, solo tienes que encenderlo y se volverá a conectar automáticamente.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "¡Escáner configurado!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Hecho";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "Volver";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Consulta el manual del escáner y restablece los ajustes de fábrica. A continuación, vuelve a intentar el proceso de configuración.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "Reintentar";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Se ha encontrado un problema en el escaneo";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Utiliza el escáner de códigos de barras para escanear el código siguiente y activar el modo Bluetooth HID.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11434,11 +11471,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Otros";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Utiliza tu escáner de códigos de barras para escanear el código de abajo y que entre en modo emparejamiento.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Habilita el Bluetooth y elige el escáner %1$@ en los ajustes de Bluetooth de iOS. El escáner emitirá un pitido y mostrará una luz LED fija cuando se empareje.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Ir a los ajustes de tu dispositivo";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Emparejar el escáner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Cómo configurar códigos de barras en los productos";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Configuración del escáner";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Configuración del escáner";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Otro escáner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Configura un escáner de códigos de barras";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Elige un modelo de la lista:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Escanea el código de barras para probar tu escáner.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Escanea el código de barras para probar tu escáner. Si el problema persiste, comprueba los ajustes de Bluetooth e inténtalo de nuevo.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Aún no se han encontrado datos de escaneo";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Prueba tu escáner";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Toca un producto para \n añadirlo al carrito";
@@ -11998,6 +12089,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld producto elegido";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "Los productos de suscripción no son compatibles con la creación de pedidos";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Cancelar";
 
@@ -12352,6 +12446,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "No se han podido recuperar las estadísticas de hoy.";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ disponibles";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "Hay existencias";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "Hecho";

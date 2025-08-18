@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-30 14:54:04+0000 */
+/* Translation-Revision-Date: 2025-08-14 14:54:09+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%1$@ eindigt op %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ op voorraad";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -3205,8 +3204,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Bezig";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "Op voorraad";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -8266,6 +8264,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "Een bestaande winkel koppelen";
 
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "Sluiten";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "Dit adres gebruiken";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "Probeer te zoeken zonder appartement-, suite- of etagenummers. Je kan deze gegevens later toevoegen aan adresregel 2.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "Geen resultaten gevonden";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "Een adres zoeken";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "Casual";
 
@@ -9900,6 +9913,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "Media op apparaat";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "Zoeken op de kaart";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "Factuuradres";
 
@@ -10888,8 +10904,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "Streepjescode te kort";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "Gedeeltelijke scan van streepjescode";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "De scanner heeft geen regeleinde-teken verzonden";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "Netwerkverzoek mislukt";
@@ -11257,6 +11273,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.barcodeScanning.button.title" = "Streepjescode scannen";
 
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Eerste instelling streepjescodescanner";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
 
@@ -11336,7 +11355,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "Annuleren";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "Klaar";
+"pointOfSaleDashboard.support.cancel" = "Annuleren";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Streepjescode scannen";
@@ -11410,14 +11429,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "Terug";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "Afbeelding van een code die gescand moet worden door een streepjescodescanner.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "Je bent klaar om producten te scannen. De volgende keer dat je je scanner moet aansluiten, hoef je hem alleen in te schakelen. Hij maakt dan automatisch opnieuw verbinding.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "Scanner ingesteld!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "Klaar";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "Terug";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "Raadpleeg de handleiding van de scanner en zet deze terug naar de fabrieksinstellingen. Probeer de scanner vervolgens opnieuw in te stellen.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "Opnieuw proberen";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "Scanprobleem gevonden";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "Gebruik je streepjescodescanner om de onderstaande code te scannen om de Bluetooth HID-modus in te schakelen.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11428,11 +11465,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "Overige";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "Gebruik je streepjescodescanner om de onderstaande code te scannen en in de koppelmodus te komen.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "Schakel Bluetooth in en selecteer je %1$@ scanner in de Bluetooth-instellingen van iOS. De scanner piept en toont een constant brandende led wanneer de scanner is gekoppeld.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "Apparaatinstellingen openen";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "Koppel je scanner";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "Streepjescodes instellen op producten";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "Streepjescodes instellen op producten";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "Scanner-instelling";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "Scanner-instelling";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "Andere scanner";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "Een streepjescodescanner instellen";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "Selecteer een model uit de lijst:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "Star BSH-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "Scan de barcode om je scanner te testen.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "Scan de barcode om je scanner te testen. Als het probleem zich blijft voordoen, controleer dan de Bluetooth-instellingen en probeer het opnieuw.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "Nog geen scangegevens gevonden";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "Test je scanner";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen";
@@ -11992,6 +12083,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "%ld product geselecteerd";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "Abonnementproducten worden niet ondersteund bij het aanmaken van bestellingen";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "Annuleren";
 
@@ -12346,6 +12440,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan de statistieken van vandaag niet ophalen";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ op voorraad";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "Op voorraad";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "Gereed";

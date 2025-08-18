@@ -123,7 +123,7 @@ final class OrderDetailsViewModel {
     /// The eligibility check for Woo Shipping can be updated late due to being async
     /// So the additional check for shipments determines if the new form should be displayed.
     var shouldNavigateToNewShippingLabelFlow: Bool {
-        dataSource.isEligibleForWooShipping || dataSource.shipments.isNotEmpty
+        dataSource.isEligibleForWooShipping
     }
 
     private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {

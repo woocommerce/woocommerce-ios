@@ -1077,12 +1077,6 @@ private extension OrderDetailsDataSource {
             onViewLabel: { [weak self] label in
                 self?.onCellAction?(.openShippingLabelForm(shippingLabel: label), indexPath)
             },
-            onPrintLabel: { [weak self] label in
-                self?.onCellAction?(.reprintShippingLabel(shippingLabel: label), indexPath)
-            },
-            onPrintCustomsForm: { [weak self] url in
-                self?.onCellAction?(.printCustomsForm(url: url), indexPath)
-            },
             onRefund: { [weak self] label in
                 self?.onCellAction?(.refundShippingLabel(shippingLabel: label), indexPath)
             }
@@ -2104,7 +2098,6 @@ extension OrderDetailsDataSource {
         case createShippingLabel(shipmentIndex: Int?)
         case openShippingLabelForm(shippingLabel: ShippingLabel)
         case refundShippingLabel(shippingLabel: ShippingLabel)
-        case printCustomsForm(url: String)
         case viewShipmentItems(shipment: WooShippingShipment)
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
         case viewAddOns(addOns: [OrderItemProductAddOn])

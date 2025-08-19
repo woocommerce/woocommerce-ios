@@ -1,21 +1,97 @@
-{
-  "products": [
-    {
-      "id": 123,
-      "name": "Test Product",
-      "type": "simple",
-      "status": "publish",
-      "sku": "TEST-001",
-      "price": "19.99"
-    }
-  ],
-  "variations": [
-    {
-      "id": 124,
-      "type": "variation",
-      "post_parent": 123,
-      "sku": "TEST-001-VAR",
-      "price": "19.99"
-    }
-  ]
-}
+[
+  {
+    "id": 123,
+    "type": ["simple"],
+    "sku": "TEST-001",
+    "global_unique_id": "",
+    "name": "Test Product",
+    "published": 1,
+    "featured": false,
+    "catalog_visibility": "visible",
+    "short_description": "",
+    "description": "",
+    "date_on_sale_from": null,
+    "date_on_sale_to": null,
+    "tax_status": "taxable",
+    "tax_class": "",
+    "stock_status": "instock",
+    "stock": "",
+    "low_stock_amount": "",
+    "backorders": "no",
+    "sold_individually": false,
+    "weight": "",
+    "length": "",
+    "width": "",
+    "height": "",
+    "reviews_allowed": true,
+    "purchase_note": "",
+    "sale_price": "",
+    "regular_price": 19.99,
+    "category_ids": [],
+    "tag_ids": [],
+    "shipping_class_id": [],
+    "images": [],
+    "download_limit": -1,
+    "download_expiry": -1,
+    "parent_id": 0,
+    "grouped_products": "",
+    "upsell_ids": [],
+    "cross_sell_ids": [],
+    "product_url": "",
+    "button_text": "",
+    "menu_order": 0,
+    "attributes": null,
+    "brand_ids": ""
+  },
+  {
+    "id": 124,
+    "type": ["variation"],
+    "sku": "TEST-001-VAR",
+    "global_unique_id": "",
+    "name": "Test Product",
+    "published": 1,
+    "featured": false,
+    "catalog_visibility": "visible",
+    "short_description": "",
+    "description": "",
+    "date_on_sale_from": null,
+    "date_on_sale_to": null,
+    "tax_status": "taxable",
+    "tax_class": "",
+    "stock_status": "instock",
+    "stock": "",
+    "low_stock_amount": "",
+    "backorders": "no",
+    "sold_individually": false,
+    "weight": "125",
+    "length": "44",
+    "width": "2",
+    "height": "3",
+    "reviews_allowed": false,
+    "purchase_note": "",
+    "sale_price": "",
+    "regular_price": 19.99,
+    "category_ids": [],
+    "tag_ids": [],
+    "shipping_class_id": [],
+    "images": [],
+    "download_limit": -1,
+    "download_expiry": -1,
+    "parent_id": 123,
+    "grouped_products": "",
+    "upsell_ids": [],
+    "cross_sell_ids": [],
+    "product_url": "",
+    "button_text": "",
+    "menu_order": 1,
+    "attributes": [
+      {
+        "name": "Size", 
+        "value": ["Large"],
+        "taxonomy": true,
+        "visible": true
+      }
+    ],
+    "brand_ids": ""
+  }
+]

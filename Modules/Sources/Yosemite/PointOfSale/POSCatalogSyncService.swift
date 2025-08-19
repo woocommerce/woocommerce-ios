@@ -50,7 +50,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
 
         // 3. Upsert catalog items
         let upsertStartTime = CFAbsoluteTimeGetCurrent()
-        try await upsertCatalogItems(productItems: catalogResponse.products, variationItems: catalogResponse.variations)
+        try await upsertCatalogItems(from: catalogResponse)
         let upsertTime = CFAbsoluteTimeGetCurrent() - upsertStartTime
         print("🟣 Upsert completed - Time: \(String(format: "%.2f", upsertTime))s")
 
@@ -108,73 +108,93 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     // For exported json where variations are not separate
     private func upsertCatalogItems(from catalogItems: [CatalogItem]) async throws {
         // Separate products and variations
-        let productItems = catalogItems.filter { $0.type != "variation" }
-        let variationItems = catalogItems.filter { $0.type == "variation" }
+        let productItems = catalogItems.filter { !$0.type.contains("variation") }
+        let variationItems = catalogItems.filter { $0.type.contains("variation") }
 
         try await upsertCatalogItems(productItems: productItems, variationItems: variationItems)
     }
 
     private func mapCatalogItemToNetworkingProduct(_ catalogItem: CatalogItem) -> Product? {
-        guard catalogItem.type != "variation" else { return nil }
+        guard !catalogItem.type.contains("variation") else { return nil }
 
         let dateFormatter = ISO8601DateFormatter()
+
+        // Parse dates from the API format
+        let dateOnSaleStart = catalogItem.dateOnSaleFrom.flatMap { dateFormatter.date(from: $0) }
+        let dateOnSaleEnd = catalogItem.dateOnSaleTo.flatMap { dateFormatter.date(from: $0) }
+
+        // Parse stock quantity from string
+        let stockQuantity = catalogItem.stock.flatMap { Decimal(string: $0) }
+
+        // Determine product status from published field
+        let statusKey = (catalogItem.published == 1) ? "publish" : "private"
+
+        // Parse product type from array
+        let productTypeKey = catalogItem.type.first ?? "simple"
+
+        // Create dimensions from individual fields
+        let dimensions = ProductDimensions(
+            length: catalogItem.length ?? "",
+            width: catalogItem.width ?? "",
+            height: catalogItem.height ?? ""
+        )
 
         return Product(
             siteID: siteID,
             productID: catalogItem.id,
             name: catalogItem.name ?? "",
-            slug: catalogItem.slug ?? "",
-            permalink: catalogItem.permalink ?? "",
+            slug: "",
+            permalink: "",
             date: Date(),
-            dateCreated: catalogItem.dateCreated.flatMap { dateFormatter.date(from: $0) } ?? Date(),
-            dateModified: catalogItem.dateModified.flatMap { dateFormatter.date(from: $0) },
-            dateOnSaleStart: nil,
-            dateOnSaleEnd: nil,
-            productTypeKey: catalogItem.type,
-            statusKey: catalogItem.status ?? "publish",
+            dateCreated: Date(),
+            dateModified: nil,
+            dateOnSaleStart: dateOnSaleStart,
+            dateOnSaleEnd: dateOnSaleEnd,
+            productTypeKey: productTypeKey,
+            statusKey: statusKey,
             featured: catalogItem.featured ?? false,
-            catalogVisibilityKey: "visible",
+            catalogVisibilityKey: catalogItem.catalogVisibility ?? "visible",
             fullDescription: catalogItem.description ?? "",
             shortDescription: catalogItem.shortDescription ?? "",
             sku: catalogItem.sku ?? "",
-            globalUniqueID: "",
-            price: catalogItem.price ?? "",
-            regularPrice: catalogItem.regularPrice ?? "",
+            globalUniqueID: catalogItem.globalUniqueID ?? "",
+            price: "",
+            regularPrice: catalogItem.regularPrice?.description ?? "",
             salePrice: catalogItem.salePrice ?? "",
-            onSale: catalogItem.onSale ?? false,
-            purchasable: catalogItem.purchasable ?? true,
+            onSale: !(catalogItem.salePrice?.isEmpty ?? true),
+            purchasable: true,
             totalSales: 0,
-            virtual: catalogItem.virtual ?? false,
-            downloadable: catalogItem.downloadable ?? false,
+            virtual: false,
+            downloadable: false,
             downloads: [],
-            downloadLimit: -1,
-            downloadExpiry: -1,
-            buttonText: "",
-            externalURL: "",
-            taxStatusKey: "taxable",
-            taxClass: "",
-            manageStock: catalogItem.manageStock ?? false,
-            stockQuantity: catalogItem.stockQuantity.map { Decimal($0) },
+            downloadLimit: Int64(catalogItem.downloadLimit ?? -1),
+            downloadExpiry: Int64(catalogItem.downloadExpiry ?? -1),
+            buttonText: catalogItem.buttonText ?? "",
+            externalURL: catalogItem.productURL ?? "",
+            taxStatusKey: catalogItem.taxStatus ?? "taxable",
+            taxClass: catalogItem.taxClass ?? "",
+            manageStock: !(catalogItem.stock?.isEmpty ?? true),
+            stockQuantity: stockQuantity,
             stockStatusKey: catalogItem.stockStatus ?? "instock",
-            backordersKey: "no",
-            backordersAllowed: false,
+            backordersKey: catalogItem.backorders ?? "no",
+            backordersAllowed: catalogItem.backorders == "yes",
             backordered: false,
-            soldIndividually: false,
+            soldIndividually: catalogItem.soldIndividually ?? false,
             weight: catalogItem.weight ?? "",
-            dimensions: ProductDimensions(length: "", width: "", height: ""),
+            dimensions: dimensions,
             shippingRequired: true,
             shippingTaxable: true,
             shippingClass: "",
             shippingClassID: 0,
             productShippingClass: nil,
-            reviewsAllowed: true,
+            reviewsAllowed: catalogItem.reviewsAllowed ?? true,
             averageRating: "",
             ratingCount: 0,
             relatedIDs: [],
-            upsellIDs: [],
-            crossSellIDs: [],
-            parentID: 0,
-            purchaseNote: "",
+            upsellIDs: catalogItem.upsellIDs ?? [],
+            crossSellIDs: catalogItem.crossSellIDs ?? [],
+            parentID: catalogItem.parentID ?? 0,
+            purchaseNote: catalogItem.purchaseNote ?? "",
             categories: [],
             tags: [],
             images: [],
@@ -202,49 +222,81 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     }
 
     private func mapCatalogItemToNetworkingProductVariation(_ catalogItem: CatalogItem) -> ProductVariation? {
-        guard catalogItem.type == "variation" else { return nil }
+        guard catalogItem.type.contains("variation") else { return nil }
 
         let dateFormatter = ISO8601DateFormatter()
-        // Break up complex expressions
-        let createdDate = catalogItem.dateCreated.flatMap { dateFormatter.date(from: $0) } ?? Date()
-        let modifiedDate = catalogItem.dateModified.flatMap { dateFormatter.date(from: $0) }
-        let status = ProductStatus(rawValue: catalogItem.status ?? ProductStatus.published.rawValue)
-        let stockQuantity = catalogItem.stockQuantity.map { Decimal($0) }
-        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? ProductStockStatus.inStock.rawValue)
-        let dimensions = ProductDimensions(length: "", width: "", height: "")
+
+        // Parse dates from the API format
+        let dateOnSaleStart = catalogItem.dateOnSaleFrom.flatMap { dateFormatter.date(from: $0) }
+        let dateOnSaleEnd = catalogItem.dateOnSaleTo.flatMap { dateFormatter.date(from: $0) }
+
+        // Determine status from published field
+        let status = ProductStatus(rawValue: (catalogItem.published == 1) ? "publish" : "private") ?? .published
+
+        // Parse stock quantity from string
+        let stockQuantity = catalogItem.stock.flatMap { Decimal(string: $0) }
+        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? ProductStockStatus.inStock.rawValue) ?? .inStock
+
+        // Create dimensions from individual fields
+        let dimensions = ProductDimensions(
+            length: catalogItem.length ?? "",
+            width: catalogItem.width ?? "",
+            height: catalogItem.height ?? ""
+        )
+
+        // Convert attributes from the new format
+        let attributes = catalogItem.attributes?.map { attr in
+            ProductVariationAttribute(
+                id: 0,
+                name: attr.name,
+                option: attr.value.joined(separator: ", ")
+            )
+        } ?? []
+
+        // Parse first image URL if available
+        let image = catalogItem.images?.first.flatMap { imageURL in
+            ProductImage(
+                imageID: 0,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: imageURL,
+                name: "",
+                alt: ""
+            )
+        }
 
         return ProductVariation(
             siteID: siteID,
             productID: catalogItem.parentID ?? 0,
             productVariationID: catalogItem.id,
-            attributes: [],
-            image: nil,
-            permalink: catalogItem.permalink ?? "",
-            dateCreated: createdDate,
-            dateModified: modifiedDate,
-            dateOnSaleStart: nil,
-            dateOnSaleEnd: nil,
+            attributes: attributes,
+            image: image,
+            permalink: "",
+            dateCreated: Date(),
+            dateModified: nil,
+            dateOnSaleStart: dateOnSaleStart,
+            dateOnSaleEnd: dateOnSaleEnd,
             status: status,
             description: catalogItem.description ?? "",
             sku: catalogItem.sku ?? "",
-            globalUniqueID: "",
-            price: catalogItem.price ?? "",
-            regularPrice: catalogItem.regularPrice ?? "",
+            globalUniqueID: catalogItem.globalUniqueID ?? "",
+            price: "",
+            regularPrice: catalogItem.regularPrice?.description ?? "",
             salePrice: catalogItem.salePrice ?? "",
-            onSale: catalogItem.onSale ?? false,
-            purchasable: catalogItem.purchasable ?? true,
-            virtual: catalogItem.virtual ?? false,
-            downloadable: catalogItem.downloadable ?? false,
+            onSale: !(catalogItem.salePrice?.isEmpty ?? true),
+            purchasable: true,
+            virtual: false,
+            downloadable: false,
             downloads: [],
-            downloadLimit: -1,
-            downloadExpiry: -1,
-            taxStatusKey: "taxable",
-            taxClass: "",
-            manageStock: catalogItem.manageStock ?? false,
+            downloadLimit: Int64(catalogItem.downloadLimit ?? -1),
+            downloadExpiry: Int64(catalogItem.downloadExpiry ?? -1),
+            taxStatusKey: catalogItem.taxStatus ?? "taxable",
+            taxClass: catalogItem.taxClass ?? "",
+            manageStock: !(catalogItem.stock?.isEmpty ?? true),
             stockQuantity: stockQuantity,
             stockStatus: stockStatus,
-            backordersKey: "no",
-            backordersAllowed: false,
+            backordersKey: catalogItem.backorders ?? "no",
+            backordersAllowed: catalogItem.backorders == "yes",
             backordered: false,
             weight: catalogItem.weight,
             dimensions: dimensions,
@@ -538,67 +590,104 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
 
 // MARK: - Supporting Types
 
-private struct CatalogItemResponse: Codable {
-    let products: [CatalogItem]
-    // Only in the poslarge JSON, not in exported JSON
-    let variations: [CatalogItem]
-}
+private typealias CatalogItemResponse = [CatalogItem]
 
 /// Represents a catalog item from the JSON response
 ///
 private struct CatalogItem: Codable {
     let id: Int64
-    let name: String?
-    let slug: String?
-    let permalink: String?
-    let type: String
-    let status: String?
-    let featured: Bool?
+    let type: [String]
     let sku: String?
-    let price: String?
-    let regularPrice: String?
-    let salePrice: String?
-    let onSale: Bool?
-    let purchasable: Bool?
-    let virtual: Bool?
-    let downloadable: Bool?
-    let manageStock: Bool?
-    let stockQuantity: Int?
-    let stockStatus: String?
-    let weight: String?
-    let description: String?
+    let globalUniqueID: String?
+    let name: String?
+    let published: Int?
+    let featured: Bool?
+    let catalogVisibility: String?
     let shortDescription: String?
-    let dateCreated: String?
-    let dateModified: String?
-    let menuOrder: Int?
+    let description: String?
+    let dateOnSaleFrom: String?
+    let dateOnSaleTo: String?
+    let taxStatus: String?
+    let taxClass: String?
+    let stockStatus: String?
+    let stock: String?
+    let lowStockAmount: String?
+    let backorders: String?
+    let soldIndividually: Bool?
+    let weight: String?
+    let length: String?
+    let width: String?
+    let height: String?
+    let reviewsAllowed: Bool?
+    let purchaseNote: String?
+    let salePrice: String?
+    let regularPrice: Decimal?
+    let categoryIDs: [String]?
+    let tagIDs: [String]?
+    let shippingClassID: [String]?
+    let images: [String]?
+    let downloadLimit: Int?
+    let downloadExpiry: Int?
     let parentID: Int64?
+    let groupedProducts: String?
+    let upsellIDs: [Int64]?
+    let crossSellIDs: [Int64]?
+    let productURL: String?
+    let buttonText: String?
+    let menuOrder: Int?
+    let attributes: [CatalogItemAttribute]?
+    let brandIDs: String?
 
     private enum CodingKeys: String, CodingKey {
         case id
-        case name
-        case slug
-        case permalink
         case type
-        case status
-        case featured
         case sku
-        case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
-        case purchasable
-        case virtual
-        case downloadable
-        case manageStock = "manage_stock"
-        case stockQuantity = "stock_quantity"
-        case stockStatus = "stock_status"
-        case weight
-        case description
+        case globalUniqueID = "global_unique_id"
+        case name
+        case published
+        case featured
+        case catalogVisibility = "catalog_visibility"
         case shortDescription = "short_description"
-        case dateCreated = "date_created"
-        case dateModified = "date_modified"
+        case description
+        case dateOnSaleFrom = "date_on_sale_from"
+        case dateOnSaleTo = "date_on_sale_to"
+        case taxStatus = "tax_status"
+        case taxClass = "tax_class"
+        case stockStatus = "stock_status"
+        case stock
+        case lowStockAmount = "low_stock_amount"
+        case backorders
+        case soldIndividually = "sold_individually"
+        case weight
+        case length
+        case width
+        case height
+        case reviewsAllowed = "reviews_allowed"
+        case purchaseNote = "purchase_note"
+        case salePrice = "sale_price"
+        case regularPrice = "regular_price"
+        case categoryIDs = "category_ids"
+        case tagIDs = "tag_ids"
+        case shippingClassID = "shipping_class_id"
+        case images
+        case downloadLimit = "download_limit"
+        case downloadExpiry = "download_expiry"
+        case parentID = "parent_id"
+        case groupedProducts = "grouped_products"
+        case upsellIDs = "upsell_ids"
+        case crossSellIDs = "cross_sell_ids"
+        case productURL = "product_url"
+        case buttonText = "button_text"
         case menuOrder = "menu_order"
-        // export version is "parent_id", but poslarge version is "post_parent"
-        case parentID = "post_parent"
+        case attributes
+        case brandIDs = "brand_ids"
     }
+}
+
+/// Represents product attributes from the catalog API response
+private struct CatalogItemAttribute: Codable {
+    let name: String
+    let value: [String]
+    let taxonomy: Bool
+    let visible: Bool?
 }

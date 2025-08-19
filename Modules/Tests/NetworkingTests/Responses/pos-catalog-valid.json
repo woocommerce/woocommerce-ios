@@ -1,36 +1,46 @@
-{
-  "products": [
-    {
-      "id": 123,
-      "name": "Test Product",
-      "type": "simple",
-      "status": "publish",
-      "sku": "TEST-001",
-      "price": "19.99",
-      "regular_price": "19.99",
-      "stock_status": "instock",
-      "date_created": "2023-01-01T10:00:00",
-      "date_modified": "2023-01-02T10:00:00"
-    }
-  ],
-  "variations": [
-    {
-      "id": 76,
-      "post_parent": 123,
-      "description": "",
-      "short_description": "Color: Red",
-      "sku": "woo-vneck-tee-red",
-      "price": "20",
-      "regular_price": "20",
-      "sale_price": null,
-      "type": "variation",
-      "on_sale": false,
-      "attributes": [
-        {
-          "name": "pa_color",
-          "option": "red"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "id": 123,
+    "type": ["simple"],
+    "sku": "TEST-001",
+    "global_unique_id": "",
+    "name": "Test Product",
+    "published": 1,
+    "featured": false,
+    "catalog_visibility": "visible",
+    "short_description": "",
+    "description": "",
+    "date_on_sale_from": null,
+    "date_on_sale_to": null,
+    "tax_status": "taxable",
+    "tax_class": "",
+    "stock_status": "instock",
+    "stock": "",
+    "low_stock_amount": "",
+    "backorders": "no",
+    "sold_individually": false,
+    "weight": "",
+    "length": "",
+    "width": "",
+    "height": "",
+    "reviews_allowed": true,
+    "purchase_note": "",
+    "sale_price": "",
+    "regular_price": 19.99,
+    "category_ids": [],
+    "tag_ids": [],
+    "shipping_class_id": [],
+    "images": [],
+    "download_limit": -1,
+    "download_expiry": -1,
+    "parent_id": 0,
+    "grouped_products": "",
+    "upsell_ids": [],
+    "cross_sell_ids": [],
+    "product_url": "",
+    "button_text": "",
+    "menu_order": 0,
+    "attributes": null,
+    "brand_ids": ""
+  }
+]

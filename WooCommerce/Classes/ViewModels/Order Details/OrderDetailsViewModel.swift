@@ -123,7 +123,7 @@ final class OrderDetailsViewModel {
     /// The eligibility check for Woo Shipping can be updated late due to being async
     /// So the additional check for shipments determines if the new form should be displayed.
     var shouldNavigateToNewShippingLabelFlow: Bool {
-        dataSource.isEligibleForWooShipping || dataSource.shipments.isNotEmpty
+        dataSource.isEligibleForWooShipping
     }
 
     private(set) lazy var editNoteViewModel: EditCustomerNoteViewModel = {
@@ -514,10 +514,6 @@ extension OrderDetailsViewModel {
                                                                    forceReadOnly: false)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
-        case .shippingLabelCreationInfo:
-            let infoViewController = ShippingLabelCreationInfoViewController()
-            let navigationController = WooNavigationController(rootViewController: infoViewController)
-            viewController.present(navigationController, animated: true, completion: nil)
         case .shippingLabelDetail:
             guard let shippingLabel = dataSource.shippingLabel(at: indexPath) else {
                 return

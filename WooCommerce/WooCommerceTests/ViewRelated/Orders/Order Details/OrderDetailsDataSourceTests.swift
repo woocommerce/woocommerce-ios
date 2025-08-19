@@ -217,7 +217,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNil(issueRefundRow)
     }
 
-    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing_and_not_eligible_for_shipping_label_creation() throws {
+    func test_markOrderComplete_button_is_visible_and_primary_style_if_order_is_processing() throws {
         // Given
         let order = makeOrder().copy(status: .processing)
         let dataSource = OrderDetailsDataSource(order: order,
@@ -232,24 +232,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let productsSection = try section(withTitle: Title.products, from: dataSource)
         XCTAssertNotNil(row(row: .markCompleteButton(style: .primary, showsBottomSpacing: true), in: productsSection))
-    }
-
-    func test_markOrderComplete_button_is_visible_and_secondary_style_if_order_is_processing_and_eligible_for_shipping_label_creation() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing)
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForShippingLabelCreation = true
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let productsSection = try section(withTitle: Title.products, from: dataSource)
-        XCTAssertNotNil(row(row: .markCompleteButton(style: .secondary, showsBottomSpacing: false), in: productsSection))
-        XCTAssertNotNil(row(row: .shippingLabelCreationInfo(showsSeparator: false), in: productsSection))
     }
 
     func test_markOrderComplete_button_is_hidden_if_order_is_not_processing() throws {
@@ -299,107 +281,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         XCTAssertNotNil(row(row: .collectCardPaymentButton, in: paymentSection))
-    }
-
-    func test_create_shipping_label_button_is_visible_for_eligible_order_with_no_labels() throws {
-        // Given
-        let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForShippingLabelCreation = true
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let productSection = try section(withTitle: Title.products, from: dataSource)
-        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
-        XCTAssertNotNil(createShippingLabelRow)
-    }
-
-    func test_create_shipping_label_button_is_visible_for_eligible_order_with_only_refunded_labels() throws {
-        // Given
-        let order = makeOrder()
-        let refundedShippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID, refund: ShippingLabelRefund.fake())
-        insert(shippingLabel: refundedShippingLabel, order: order)
-
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForShippingLabelCreation = true
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let productSection = try section(withTitle: Title.products, from: dataSource)
-        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
-        XCTAssertNotNil(createShippingLabelRow)
-    }
-
-    func test_create_shipping_label_button_is_not_visible_for_eligible_order_with_labels() throws {
-        // Given
-        var order = makeOrder()
-        let shippingLabel = ShippingLabel.fake().copy(siteID: order.siteID, orderID: order.orderID)
-        order = order.copy(shippingLabels: [shippingLabel])
-        insert(shippingLabel: shippingLabel, order: order)
-
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
-        dataSource.isEligibleForShippingLabelCreation = true
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let productSection = try section(withTitle: Title.products, from: dataSource)
-        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
-        XCTAssertNil(createShippingLabelRow)
-    }
-
-    func test_create_shipping_label_button_is_not_visible_for_ineligible_order() throws {
-        // Given
-        let order = makeOrder()
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForShippingLabelCreation = false
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let productSection = try section(withTitle: Title.products, from: dataSource)
-        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
-        XCTAssertNil(createShippingLabelRow)
-    }
-
-    func test_create_shipping_label_button_is_not_visible_when_order_is_eligible_for_payment() throws {
-        // Given
-        let order = makeOrder().copy(status: .processing, datePaid: .some(nil), total: "100")
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
-        dataSource.isEligibleForShippingLabelCreation = true
-
-        // When
-        dataSource.configureResultsControllers { }
-        dataSource.reloadSections()
-
-        // Then
-        let productSection = try section(withTitle: Title.products, from: dataSource)
-        let createShippingLabelRow = row(row: .shippingLabelCreateButton, in: productSection)
-        XCTAssertNil(createShippingLabelRow)
     }
 
     func test_more_button_is_visible_in_product_section_for_eligible_order_without_refunded_labels() throws {
@@ -1066,6 +947,44 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         let shipmentsSection = dataSource.sections.first { $0.category == .wooShipping }
         XCTAssertEqual(shipmentsSection?.rows.count, 2)
+    }
+
+    func test_shipping_labels_section_is_available_when_no_shipments_are_available_and_eligible_for_label_creation() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.isEligibleForShippingLabelCreation = true
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let shipmentsSection = dataSource.sections.first { $0.category == .wooShipping }
+        XCTAssertEqual(shipmentsSection?.rows.count, 1)
+    }
+
+    func test_shipping_labels_section_is_unavailable_when_no_shipments_are_available_and_ineligible_for_label_creation() throws {
+        // Given
+        let order = makeOrder()
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration,
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
+                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+        dataSource.isEligibleForShippingLabelCreation = false
+        dataSource.configureResultsControllers { }
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let shipmentsSection = dataSource.sections.first { $0.category == .wooShipping }
+        XCTAssertNil(shipmentsSection)
     }
 
     func test_isEligibleForBackendReceipt_when_initialized_then_defaults_to_false() {

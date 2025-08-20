@@ -43,7 +43,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         switch authenticationType {
         case .wporg(let username, _, _):
             return username
-        case .wpcom(let username, _, _):
+        case .wpcom(let username, _):
             return username
         }
     }
@@ -69,13 +69,24 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 #endif
     }
 
-    public init(type: AuthenticationType,
-                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
+    init(type: AuthenticationType,
+         network: Network,
+         keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.authenticationType = type
         self.storage = ApplicationPasswordStorage(keychain: keychain)
+        self.network = network
+    }
 
-        switch type {
-        case .wporg(let username, let password, let siteAddress):
+    public convenience init(username: String,
+                            password: String,
+                            siteAddress: String,
+                            network: Network? = nil,
+                            keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
+        let authenticationType = AuthenticationType.wporg(username: username, password: password, siteAddress: siteAddress)
+        let wporgNetwork: Network = try {
+            if let network {
+                return network
+            }
             guard let loginURL = URL(string: siteAddress + Constants.loginPath),
                   let adminURL = URL(string: siteAddress + Constants.adminPath) else {
                 DDLogWarn("⚠️ Cannot construct login URL and admin URL for site \(siteAddress)")
@@ -86,10 +97,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                password: password,
                                                                loginURL: loginURL,
                                                                adminURL: adminURL)
-            self.network = WordPressOrgNetwork(configuration: config)
-        case .wpcom(_, _, let network):
-            self.network = network
-        }
+            return WordPressOrgNetwork(configuration: config)
+        }()
+        self.init(type: authenticationType, network: wporgNetwork, keychain: keychain)
     }
 
     /// Returns the locally saved ApplicationPassword if available
@@ -151,7 +161,7 @@ private extension DefaultApplicationPasswordUseCase {
     /// or through Jetpack proxy.
     func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
         switch authenticationType {
-        case .wpcom(_, let siteID, _):
+        case .wpcom(_, let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
                            siteID: siteID,
@@ -260,7 +270,7 @@ private extension DefaultApplicationPasswordUseCase {
 public extension DefaultApplicationPasswordUseCase {
     enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
-        case wpcom(username: String, siteID: Int64, network: Network)
+        case wpcom(username: String, siteID: Int64)
     }
 }
 

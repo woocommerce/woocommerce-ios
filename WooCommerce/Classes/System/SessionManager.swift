@@ -231,9 +231,9 @@ final class SessionManager: SessionManagerProtocol {
         let useCase: ApplicationPasswordUseCase? = {
             switch credentials ?? loadCredentials() {
             case let .wporg(username, password, siteAddress):
-                return try? DefaultApplicationPasswordUseCase(type: .wporg(username: username,
-                                                                           password: password,
-                                                                           siteAddress: siteAddress),
+                return try? DefaultApplicationPasswordUseCase(username: username,
+                                                              password: password,
+                                                              siteAddress: siteAddress,
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)

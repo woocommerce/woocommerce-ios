@@ -59,7 +59,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         request.fakeRetryCount = 0
         let shouldRetry = waitFor { promise in
-            let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
@@ -77,7 +77,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         request.fakeRetryCount = 1
         let shouldRetry = waitFor { promise in
-            let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
@@ -97,7 +97,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = true
         let shouldRetry = waitFor { promise in
-            let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
@@ -115,7 +115,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = false
         let shouldRetry = waitFor { promise in
-            let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
             }
@@ -133,7 +133,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
         let shouldRetry = waitFor { promise in
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(shouldRetry)
@@ -186,7 +186,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
         waitFor { promise in
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(())
@@ -205,7 +205,7 @@ final class RequestProcessorTests: XCTestCase {
         // When
         mockRequestAuthenticator.mockedShouldRetryValue = false
         waitFor { promise in
-            let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+            let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(())
             }
@@ -223,7 +223,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
 
         // When
-        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
         waitFor { promise in
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(())
@@ -243,7 +243,7 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = ApplicationPasswordUseCaseError.applicationPasswordsDisabled
 
         // When
-        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
         waitFor { promise in
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(())
@@ -264,7 +264,7 @@ final class RequestProcessorTests: XCTestCase {
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = applicationPasswordGenerationError
 
         // When
-        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
         waitFor { promise in
             self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
                 promise(())
@@ -321,7 +321,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     private(set) var notificationName: NSNotification.Name?
     private(set) var notificationObject: Any?
 
@@ -331,7 +331,7 @@ private class MockNotificationCenter: NotificationCenter {
     }
 }
 
-private class MockRequest: Alamofire.DataRequest {
+private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
     var fakeRetryCount: Int = 0
 
     override var retryCount: Int {

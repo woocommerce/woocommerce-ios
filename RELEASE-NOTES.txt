@@ -10,6 +10,7 @@
 - [*] Add "POS" label in Most recent orders in My store dashboard [https://github.com/woocommerce/woocommerce-ios/pull/16006]
 - [*] Order details: Always show shipping labels section if order is eligible for label creation. [https://github.com/woocommerce/woocommerce-ios/pull/16010]
 - [*] Order details: Remove print buttons from shipment details [https://github.com/woocommerce/woocommerce-ios/pull/16012]
+- [*] Shipping labels: Mark manually saved addresses as unverified [https://github.com/woocommerce/woocommerce-ios/pull/16013]
 - [*] Shipping Labels: Updated incorrect HS Tariff info page. [https://github.com/woocommerce/woocommerce-ios/pull/16016]
 
 23.0

@@ -1075,7 +1075,8 @@ final class WooShippingStoreTests: XCTestCase {
         let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
             let action = WooShippingAction.updateDestinationAddress(siteID: self.sampleSiteID,
                                                                     orderID: self.sampleOrderID,
-                                                                    address: WooShippingDestinationAddress.fake()) { result in
+                                                                    address: WooShippingDestinationAddress.fake(),
+                                                                    isVerified: true) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1098,7 +1099,8 @@ final class WooShippingStoreTests: XCTestCase {
         let result: Result<WooShippingDestinationAddressUpdate, Error> = waitFor { promise in
             let action = WooShippingAction.updateDestinationAddress(siteID: self.sampleSiteID,
                                                                     orderID: self.sampleOrderID,
-                                                                    address: WooShippingDestinationAddress.fake()) { result in
+                                                                    address: WooShippingDestinationAddress.fake(),
+                                                                    isVerified: true) { result in
                 promise(result)
             }
             store.onAction(action)

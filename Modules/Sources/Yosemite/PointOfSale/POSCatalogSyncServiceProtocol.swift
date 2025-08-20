@@ -16,5 +16,6 @@ public enum POSCatalogSyncError: Error, Equatable {
     case networkFailure
     case invalidData
     case storageFailure
+    case timeout
     case unknown
 }

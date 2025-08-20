@@ -15,8 +15,8 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     private let storageManager: StorageManagerType
     private let productStore: ProductStore
     private let productVariationStorageManager: ProductVariationStorageManager
+    private let catalogRemote: POSCatalogRemote
     private let siteID: Int64
-    private let catalogURL = URL(string: "REPLACE_WITH_ACTUAL_URL")!
     private let batchSize = 100 // Process items in batches to handle large datasets
 
     // MARK: - Initialization
@@ -27,6 +27,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         self.storageManager = storageManager
         self.productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         self.productVariationStorageManager = ProductVariationStorageManager(storageManager: storageManager)
+        self.catalogRemote = POSCatalogRemote(network: network)
     }
 
     // MARK: - POSCatalogSyncServiceProtocol
@@ -63,11 +64,45 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     // MARK: - Private Methods
 
     private func downloadCatalog() async throws -> Data {
-        // Use background download for large catalog files following Apple's best practices
-        var request = URLRequest(url: catalogURL)
+        print("🟣 Starting catalog generation...")
+
+        // 1. Generate catalog and get job ID
+        let jobResponse = try await catalogRemote.generateCatalog(for: siteID)
+        print("🟣 Catalog generation started - Job ID: \(jobResponse.jobID)")
+
+        // 2. Poll for completion
+        let downloadURL = try await pollForCatalogCompletion(jobID: jobResponse.jobID)
+        print("🟣 Catalog ready for download: \(downloadURL)")
+
+        // 3. Download using the provided URL
+        var request = URLRequest(url: URL(string: downloadURL)!)
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
         return try await network.backgroundDownload(for: request)
+    }
+
+    private func pollForCatalogCompletion(jobID: String) async throws -> String {
+        let maxAttempts = 300 // 5 minutes max (300 seconds)
+        var attempts = 0
+
+        while attempts < maxAttempts {
+            let statusResponse = try await catalogRemote.checkCatalogStatus(for: siteID, jobID: jobID)
+
+            switch statusResponse.status {
+            case .complete:
+                guard let downloadURL = statusResponse.downloadURL else {
+                    throw POSCatalogSyncError.invalidData
+                }
+                return downloadURL
+
+            case .pending, .processing:
+                print("🟣 Catalog generation \(statusResponse.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+                attempts += 1
+            }
+        }
+
+        throw POSCatalogSyncError.timeout
     }
 
     private func parseCatalogData(_ data: Data) throws -> CatalogItemResponse {
@@ -132,13 +167,6 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         // Parse product type from array
         let productTypeKey = catalogItem.type.first ?? "simple"
 
-        // Create dimensions from individual fields
-        let dimensions = ProductDimensions(
-            length: catalogItem.length ?? "",
-            width: catalogItem.width ?? "",
-            height: catalogItem.height ?? ""
-        )
-
         return Product(
             siteID: siteID,
             productID: catalogItem.id,
@@ -158,8 +186,9 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             shortDescription: catalogItem.shortDescription ?? "",
             sku: catalogItem.sku ?? "",
             globalUniqueID: catalogItem.globalUniqueID ?? "",
-            price: "",
-            regularPrice: catalogItem.regularPrice?.description ?? "",
+            // TODO: price field from API
+            price: catalogItem.regularPrice ?? "",
+            regularPrice: catalogItem.regularPrice ?? "",
             salePrice: catalogItem.salePrice ?? "",
             onSale: !(catalogItem.salePrice?.isEmpty ?? true),
             purchasable: true,
@@ -180,8 +209,10 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             backordersAllowed: catalogItem.backorders == "yes",
             backordered: false,
             soldIndividually: catalogItem.soldIndividually ?? false,
-            weight: catalogItem.weight ?? "",
-            dimensions: dimensions,
+            weight: "",
+            dimensions: .init(length: "",
+                              width: "",
+                              height: ""),
             shippingRequired: true,
             shippingTaxable: true,
             shippingClass: "",
@@ -191,8 +222,8 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             averageRating: "",
             ratingCount: 0,
             relatedIDs: [],
-            upsellIDs: catalogItem.upsellIDs ?? [],
-            crossSellIDs: catalogItem.crossSellIDs ?? [],
+            upsellIDs: [],
+            crossSellIDs: [],
             parentID: catalogItem.parentID ?? 0,
             purchaseNote: catalogItem.purchaseNote ?? "",
             categories: [],
@@ -237,13 +268,6 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         let stockQuantity = catalogItem.stock.flatMap { Decimal(string: $0) }
         let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? ProductStockStatus.inStock.rawValue) ?? .inStock
 
-        // Create dimensions from individual fields
-        let dimensions = ProductDimensions(
-            length: catalogItem.length ?? "",
-            width: catalogItem.width ?? "",
-            height: catalogItem.height ?? ""
-        )
-
         // Convert attributes from the new format
         let attributes = catalogItem.attributes?.map { attr in
             ProductVariationAttribute(
@@ -280,8 +304,9 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             description: catalogItem.description ?? "",
             sku: catalogItem.sku ?? "",
             globalUniqueID: catalogItem.globalUniqueID ?? "",
-            price: "",
-            regularPrice: catalogItem.regularPrice?.description ?? "",
+            // TODO: price field from API
+            price: catalogItem.regularPrice ?? "",
+            regularPrice: catalogItem.regularPrice ?? "",
             salePrice: catalogItem.salePrice ?? "",
             onSale: !(catalogItem.salePrice?.isEmpty ?? true),
             purchasable: true,
@@ -298,8 +323,10 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             backordersKey: catalogItem.backorders ?? "no",
             backordersAllowed: catalogItem.backorders == "yes",
             backordered: false,
-            weight: catalogItem.weight,
-            dimensions: dimensions,
+            weight: "",
+            dimensions: .init(length: "",
+                              width: "",
+                              height: ""),
             shippingClass: "",
             shippingClassID: 0,
             menuOrder: Int64(catalogItem.menuOrder ?? 0),
@@ -614,14 +641,10 @@ private struct CatalogItem: Codable {
     let lowStockAmount: String?
     let backorders: String?
     let soldIndividually: Bool?
-    let weight: String?
-    let length: String?
-    let width: String?
-    let height: String?
     let reviewsAllowed: Bool?
     let purchaseNote: String?
     let salePrice: String?
-    let regularPrice: Decimal?
+    let regularPrice: String?
     let categoryIDs: [String]?
     let tagIDs: [String]?
     let shippingClassID: [String]?
@@ -629,14 +652,10 @@ private struct CatalogItem: Codable {
     let downloadLimit: Int?
     let downloadExpiry: Int?
     let parentID: Int64?
-    let groupedProducts: String?
-    let upsellIDs: [Int64]?
-    let crossSellIDs: [Int64]?
     let productURL: String?
     let buttonText: String?
     let menuOrder: Int?
     let attributes: [CatalogItemAttribute]?
-    let brandIDs: String?
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -658,10 +677,6 @@ private struct CatalogItem: Codable {
         case lowStockAmount = "low_stock_amount"
         case backorders
         case soldIndividually = "sold_individually"
-        case weight
-        case length
-        case width
-        case height
         case reviewsAllowed = "reviews_allowed"
         case purchaseNote = "purchase_note"
         case salePrice = "sale_price"
@@ -673,14 +688,10 @@ private struct CatalogItem: Codable {
         case downloadLimit = "download_limit"
         case downloadExpiry = "download_expiry"
         case parentID = "parent_id"
-        case groupedProducts = "grouped_products"
-        case upsellIDs = "upsell_ids"
-        case crossSellIDs = "cross_sell_ids"
         case productURL = "product_url"
         case buttonText = "button_text"
         case menuOrder = "menu_order"
         case attributes
-        case brandIDs = "brand_ids"
     }
 }
 

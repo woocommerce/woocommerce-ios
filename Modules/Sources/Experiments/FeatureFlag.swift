@@ -219,7 +219,7 @@ public enum FeatureFlag: Int {
     ///
     case orderAddressMapSearch
 
-    /// Enables switching to Jetpack requests to use application password
+    /// Enables switching Jetpack requests to use application password
     ///
     case switchAuthenticationForJetpackRequests
 }

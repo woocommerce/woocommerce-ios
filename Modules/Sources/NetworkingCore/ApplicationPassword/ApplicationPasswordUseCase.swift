@@ -43,8 +43,8 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
         switch authenticationType {
         case .wporg(let username, _, _):
             return username
-        case .wpcom(let username, _):
-            return username
+        case .wpcom(let emailAddress, _):
+            return emailAddress
         }
     }
 
@@ -270,7 +270,7 @@ private extension DefaultApplicationPasswordUseCase {
 public extension DefaultApplicationPasswordUseCase {
     enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
-        case wpcom(username: String, siteID: Int64)
+        case wpcom(emailAddress: String, siteID: Int64)
     }
 }
 

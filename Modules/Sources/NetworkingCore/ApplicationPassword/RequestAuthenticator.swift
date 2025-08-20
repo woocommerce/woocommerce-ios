@@ -66,7 +66,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                     return nil
                 }
                 return DefaultApplicationPasswordUseCase(
-                    type: .wpcom(username: selectedSite.emailAddress, siteID: selectedSite.siteID),
+                    type: .wpcom(emailAddress: selectedSite.emailAddress, siteID: selectedSite.siteID),
                     network: network
                 )
             default:

@@ -749,11 +749,11 @@ private extension AuthenticationManager {
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        guard let useCase = try? DefaultApplicationPasswordUseCase(
+        guard let useCase = try? DefaultApplicationPasswordUseCase(type: .wporg(
             username: siteCredentials.username,
             password: siteCredentials.password,
             siteAddress: siteCredentials.siteURL
-        ) else {
+        )) else {
             return assertionFailure("⛔️ Error creating application password use case")
         }
         checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)

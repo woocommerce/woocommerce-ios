@@ -46,9 +46,9 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
             } else if case let .wporg(username, password, siteAddress) = credentials {
-                return try? DefaultApplicationPasswordUseCase(username: username,
-                                                              password: password,
-                                                              siteAddress: siteAddress)
+                return try? DefaultApplicationPasswordUseCase(type: .wporg(username: username,
+                                                                           password: password,
+                                                                           siteAddress: siteAddress))
             } else if let credentials,
                       case .applicationPassword(_, _, let siteAddress) = credentials {
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)

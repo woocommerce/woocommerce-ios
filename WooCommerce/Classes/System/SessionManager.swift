@@ -234,7 +234,6 @@ final class SessionManager: SessionManagerProtocol {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress,
-                                                              deviceModelIdentifierInfo: UIDevice.current.deviceModelIdentifierInfo,
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)

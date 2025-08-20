@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-07-28 13:54:05+0000 */
+/* Translation-Revision-Date: 2025-08-11 15:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -45,8 +45,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "بطاقة %1$@ تنتهي بـ %2$@";
 
-/* Label about product's inventory stock status shown during order creation
-   Label about product's inventory stock status shown on Products tab */
+/* Label about product's inventory stock status shown during order creation */
 "%1$@ in stock" = "%1$@ متوفر في المخزون";
 
 /* Title for the error screen when a card present payments plugin is in test mode on a live site. %1$@ is a placeholder for the plugin name. */
@@ -3211,8 +3210,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "قيد التقدم";
 
-/* Display label for the bundle item's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+/* Display label for the bundle item's inventory stock status */
 "In stock" = "متوفِّر";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -8272,6 +8270,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title on the store picker for store connection */
 "addStoreFooterView.connectExistingStoreButton" = "الربط بمتجر موجود";
 
+/* Text for the close button in the Edit Address Form. */
+"addressMapPicker.button.close" = "إغلاق";
+
+/* Button to confirm selected address from map. */
+"addressMapPicker.button.useThisAddress" = "استخدام هذا العنوان";
+
+/* Hint shown when address search returns no results, suggesting to omit unit details and add them to address line 2. */
+"addressMapPicker.noResults.hint" = "حاول البحث دون أرقام الشقق أو الأجنحة أو الطوابق. يمكنك إضافة هذه التفاصيل إلى سطر العنوان 2 لاحقًا.";
+
+/* Title shown when address search returns no results. */
+"addressMapPicker.noResults.title" = "لم يتم العثور على نتائج";
+
+/* Placeholder text for address search bar. */
+"addressMapPicker.search.placeholder" = "البحث عن عنوان";
+
 /* Title of Casual AI Tone */
 "aiToneVoice.casual" = "عادي";
 
@@ -9897,6 +9910,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding media from device. */
 "downloadableFileSource.deviceMedia" = "الوسائط على الجهاز";
 
+/* Button to open map address picker. */
+"editOrderAddressForm.pickOnMap" = "بحث على الخريطة";
+
 /* Title for the Edit Billing Address Form */
 "editOrderAddressFormViewModel.billingTitle" = "عنوان الفوترة";
 
@@ -10885,8 +10901,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when scan is too short. */
 "pointOfSale.barcodeScan.error.barcodeTooShort" = "الرمز الشريطي قصير جدًا";
 
-/* Error message shown when scan is incomplete. */
-"pointOfSale.barcodeScan.error.incompleteScan" = "فحص الرمز الشريطي الجزئي";
+/* Error message shown when scanner times out without sending end-of-line character. */
+"pointOfSale.barcodeScan.error.incompleteScan.2" = "لم يرسل الماسح الضوئي حرف نهاية السطر";
 
 /* Error message shown when there is an unknown networking error while scanning a barcode. */
 "pointOfSale.barcodeScan.error.network" = "فشل طلب الشبكة";
@@ -11254,6 +11270,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.barcodeScanning.button.title" = "مسح الرمز الشريطي";
 
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "إعداد الماسح الضوئي للرمز الشريطي";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "يرجى الانتظار";
 
@@ -11333,7 +11352,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleDashboard.payments.onboarding.cancel" = "إلغاء";
 
 /* Button to dismiss the support form from the POS dashboard. */
-"pointOfSaleDashboard.support.done" = "تم";
+"pointOfSaleDashboard.support.cancel" = "إلغاء";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
@@ -11404,14 +11423,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the back button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.back.button.title" = "رجوع";
 
+/* Accessibility label of a barcode or QR code image that needs to be scanned by a barcode scanner. */
+"pos.barcodeScannerSetup.barcodeImage.accesibilityLabel" = "صورة كود مطلوب مسحه ضوئيًا بواسطة ماسح الرمز الشريطي.";
+
+/* Message shown when scanner setup is complete */
+"pos.barcodeScannerSetup.complete.instruction.2" = "أنت مستعد لبدء المسح الضوئي للمنتجات. في المرة القادمة التي تحتاج فيها إلى توصيل الماسح الضوئي، ما عليك سوى تشغيله وسيتم إعادة توصيله تلقائيًا.";
+
+/* Title shown when scanner setup is successfully completed */
+"pos.barcodeScannerSetup.complete.title" = "انتهى إعداد الماسح الضوئي!";
+
 /* Title for the done button in barcode scanner setup navigation */
 "pos.barcodeScannerSetup.done.button.title" = "تم";
 
 /* Title for the back button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.back.button.title" = "الرجوع";
 
+/* Instruction shown when scanner setup encounters an error, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.error.instruction" = "يُرجى التحقق من دليل الماسح الضوئي وإعادة ضبطه إلى إعدادات المصنع، ثم إعادة محاولة ضبط إعدادات التدفق.";
+
 /* Title for the retry button in barcode scanner setup error step */
 "pos.barcodeScannerSetup.error.retry.button.title" = "إعادة المحاولة";
+
+/* Title shown when there's an error during scanner setup */
+"pos.barcodeScannerSetup.error.title" = "تم العثور على مشكلة في المسح الضوئي";
+
+/* Instruction for scanning the Bluetooth HID barcode during scanner setup */
+"pos.barcodeScannerSetup.hidSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الرمز أدناه لتمكين وضع بلوتوث HID.";
 
 /* Title for Netum 1228BC scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.netum1228BC.title" = "Netum 1228BC";
@@ -11422,11 +11459,65 @@ which should be translated separately and considered part of this sentence. */
 /* Title for other scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.other.title" = "أخرى";
 
+/* Instruction for scanning the Pair barcode to prepare scanner for pairing */
+"pos.barcodeScannerSetup.pairSetup.instruction" = "أستخدم ماسحك الضوئي للرمز الشريطي لمسح الكود أدناه لدخول وضع الاقتران.";
+
+/* Instruction for pairing scanner via device settings with feedback indicators. %1$@ is the scanner model name. */
+"pos.barcodeScannerSetup.pairing.instruction.format" = "مكّن تقنية بلوتوث وحدد ماسحك الضوئي %1$@ في إعدادات تقنية بلوتوث في نظام التشغيل iOS. سيصدر الماسح الضوئي صوت صفير ويعرض مؤشر LED إضاءة ثابتة عند الاقتران.";
+
+/* Button title to open device Settings for scanner pairing */
+"pos.barcodeScannerSetup.pairing.settingsButton.title" = "انتقل إلى إعدادات جهازك";
+
+/* Title for the scanner pairing step */
+"pos.barcodeScannerSetup.pairing.title" = "إقران ماسحك الضوئي";
+
+/* Title format for a product barcode setup step */
+"pos.barcodeScannerSetup.productBarcodeInfo.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
+
+/* Button title for accessing product barcode setup information */
+"pos.barcodeScannerSetup.productBarcodeInformation.button.title" = "كيفية إعداد الرمز الشريطي للمنتجات";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scanner.setup.title.format" = "إعداد الماسح الضوئي";
+
+/* Title format for barcode scanner setup step */
+"pos.barcodeScannerSetup.scannerInfo.title" = "إعداد الماسح الضوئي";
+
+/* Display name for Netum 1228BC barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.netum1228BC.name" = "Netum 1228BC";
+
+/* Display name for other/unspecified barcode scanner models */
+"pos.barcodeScannerSetup.scannerType.other.name" = "ماسح ضوئي آخر";
+
+/* Display name for Star BSH-20B barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.starBSH20B.name" = "Star BSH-20B";
+
+/* Display name for Tera 1200 2D barcode scanner model */
+"pos.barcodeScannerSetup.scannerType.tera12002D.name" = "Tera 1200 2D";
+
+/* Heading for the barcode scanner setup selection screen */
+"pos.barcodeScannerSetup.selection.heading" = "قم بإعداد ماسح الرمز الشريطي";
+
+/* Instruction message for selecting a barcode scanner model from the list */
+"pos.barcodeScannerSetup.selection.introMessage" = "حدد نموذجًا من القائمة:";
+
 /* Title for Star BSH-20B scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.starBSH20B.title" = "ستار بي إس إتش-20B";
 
 /* Title for Tera 1200 2D scanner option in barcode scanner setup */
 "pos.barcodeScannerSetup.tera12002D.title" = "Tera 1200 2D";
+
+/* Instruction for testing the scanner by scanning a barcode */
+"pos.barcodeScannerSetup.test.instruction" = "امسح الرمز الشريطي ضوئيًا لاختبار ماسحك الضوئي.";
+
+/* Instruction shown when scanner test times out, suggesting troubleshooting steps */
+"pos.barcodeScannerSetup.test.timeout.instruction" = "امسح الرمز الشريطي ضوئيا لاختبار ماسحك الضوئي. إذا استمرت المشكلة، فيُرجى التحقق من إعدادات البلوتوث وإعادة المحاولة.";
+
+/* Title shown when scanner test times out without detecting a scan */
+"pos.barcodeScannerSetup.test.timeout.title" = "لم نعثر على بيانات الفحص حتى الآن";
+
+/* Title for the scanner testing step */
+"pos.barcodeScannerSetup.test.title" = "اختبر ماسحك الضوئي";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
@@ -11983,6 +12074,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the header of the Select Product screen when one product is selected. */
 "productSelectorViewModel.selectProductsTitle.singularProductSelectedFormattedText" = "تم تحديد %ld من المنتجات";
 
+/* Message explaining unsupported subscription products for order creation */
+"productSelectorViewModel.subscriptionProductUnsupportedReason" = "منتجات الاشتراك غير مدعومة لإنشاء الطلب";
+
 /* Cancel button in the product downloadables alert */
 "productSettings.downloadableProductAlertCancel" = "إلغاء";
 
@@ -12334,6 +12428,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "يتعذر إحضار إحصاءات اليوم";
+
+/* Label about product's inventory stock status shown on Products tab Placeholder is the stock quantity. Reads as: '20 in stock'. */
+"string.createStockText.count" = "%1$@ متوفر في المخزون";
+
+/* Label about product's inventory stock status shown on Products tab */
+"string.createStockText.inStock" = "متوفر في المخزون";
 
 /* Title of the button to save subscription's expire after info. */
 "subscriptionExpiryView.done" = "تم";

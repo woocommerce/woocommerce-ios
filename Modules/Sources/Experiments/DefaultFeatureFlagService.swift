@@ -103,6 +103,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleBarcodeScanningi2:
             return true
+        case .pointOfSaleSettingsi1:
+            return false
         case .orderAddressMapSearch:
             return true
         default:

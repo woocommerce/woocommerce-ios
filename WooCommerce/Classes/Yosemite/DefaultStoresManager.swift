@@ -73,6 +73,8 @@ class DefaultStoresManager: StoresManager {
         }
     }
 
+    private let featureFlagService: FeatureFlagService
+
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
     var isAuthenticated: Bool {
@@ -123,11 +125,14 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
+         featureFlagService: FeatureFlagService,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
-        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        let supportsAuthenticationSwitching = featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
+        self.state = AuthenticatedState(sessionManager: sessionManager, supportsAuthenticationSwitching: supportsAuthenticationSwitching) ?? DeauthenticatedState()
+        self.featureFlagService = featureFlagService
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
@@ -161,7 +166,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials)
+        let supportsAuthenticationSwitching = featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
+        state = AuthenticatedState(credentials: credentials, supportsAuthenticationSwitching: supportsAuthenticationSwitching)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()

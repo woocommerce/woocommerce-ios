@@ -19,7 +19,7 @@ final class ServiceLocator {
 
     /// StoresManager
     ///
-    private static var _stores: StoresManager = DefaultStoresManager(sessionManager: SessionManager.standard)
+    private static var _stores: StoresManager = DefaultStoresManager(sessionManager: SessionManager.standard, featureFlagService: featureFlagService)
 
     /// WordPressAuthenticator Wrapper
     ///

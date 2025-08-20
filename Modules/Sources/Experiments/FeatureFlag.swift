@@ -218,4 +218,8 @@ public enum FeatureFlag: Int {
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
+
+    /// Enables switching to Jetpack requests to use application password
+    ///
+    case switchAuthenticationForJetpackRequests
 }

@@ -107,6 +107,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .orderAddressMapSearch:
             return true
+        case .switchAuthenticationForJetpackRequests:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

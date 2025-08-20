@@ -25,9 +25,10 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: Credentials, supportsAuthenticationSwitching: Bool) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       supportsAuthenticationSwitching: supportsAuthenticationSwitching)
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -133,12 +134,12 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManagerProtocol) {
+    convenience init?(sessionManager: SessionManagerProtocol, supportsAuthenticationSwitching: Bool) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
 
-        self.init(credentials: credentials)
+        self.init(credentials: credentials, supportsAuthenticationSwitching: supportsAuthenticationSwitching)
     }
 
     /// Executed before the current state is deactivated.

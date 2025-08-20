@@ -43,6 +43,7 @@ extension RequestProcessor: RequestRetrier {
 
         requestsToRetry.append(completion)
         if !isAuthenticating {
+            isAuthenticating = true
             generateApplicationPassword()
         }
     }
@@ -53,8 +54,6 @@ extension RequestProcessor: RequestRetrier {
 private extension RequestProcessor {
     func generateApplicationPassword() {
         Task(priority: .medium) {
-            isAuthenticating = true
-
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
                 isAuthenticating = false
@@ -75,17 +74,19 @@ private extension RequestProcessor {
     }
 
     func shouldRetry(_ error: Error) -> Bool {
-        // Need to generate application password
-        if .applicationPasswordNotAvailable == error as? RequestAuthenticatorError {
+        switch error {
+        case AFError.requestAdaptationFailed(let internalError):
+            // Need to generate application password
+            if .applicationPasswordNotAvailable == internalError as? RequestAuthenticatorError {
+                return true
+            }
+            return false
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401)):
+            // Failed authorization
             return true
+        default:
+            return false
         }
-
-        // Failed authorization
-        if case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError {
-            return true
-        }
-
-        return false
     }
 
     func completeRequests(_ shouldRetry: Bool) {

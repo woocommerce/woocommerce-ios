@@ -2,6 +2,24 @@ import Combine
 import Foundation
 import Alamofire
 
+/// Extension to observe default store ID and address
+/// The values are set in the UI layer (`SessionManager`).
+/// Ensure the keys are in synced with what's defined in `UserDefaults+Woo`.
+///
+extension UserDefaults {
+    @objc dynamic var defaultStoreID: Int64 {
+        value(forKey: "defaultStoreID") as? Int64 ?? 0
+    }
+
+    @objc dynamic var defaultSiteAddress: String? {
+        string(forKey: "defaultSiteAddress")
+    }
+
+    @objc dynamic var defaultEmailAddress: String? {
+        string(forKey: "defaultEmailAddress")
+    }
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -17,24 +35,47 @@ public class AlamofireNetwork: Network {
         return sessionManager
     }()
 
+    private let userDefaults: UserDefaults
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
-    private let requestConverter: RequestConverter
+    private var requestConverter: RequestConverter
 
     /// Authenticator to update requests authorization header if possible.
     ///
-    private let requestAuthenticator: RequestProcessor
+    private var requestAuthenticator: RequestProcessor
+
+    private var subscription: AnyCancellable?
 
     public var session: URLSession { Session.default.session }
 
     /// Public Initializer
     ///
     ///
-    public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
-        self.requestConverter = RequestConverter(credentials: credentials)
+    public required init(credentials: Credentials?,
+                         supportsAuthenticationSwitching: Bool = false,
+                         userDefaults: UserDefaults = .standard,
+                         sessionManager: Alamofire.Session? = nil) {
+        self.requestConverter = {
+            let siteAddress: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress):
+                    return siteAddress
+                case let .applicationPassword(_, _, siteAddress):
+                    return siteAddress
+                default:
+                    return nil
+                }
+            }()
+            return RequestConverter(siteAddress: siteAddress)
+        }()
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        self.userDefaults = userDefaults
         if let sessionManager {
             self.alamofireSession = sessionManager
+        }
+        if supportsAuthenticationSwitching, let credentials, case .wpcom = credentials {
+            observeSelectedSite(credentials: credentials)
         }
     }
 
@@ -141,6 +182,30 @@ private extension AlamofireNetwork {
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
+    }
+
+    /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
+    ///
+    func observeSelectedSite(credentials: Credentials) {
+        subscription = Publishers.CombineLatest3(
+            userDefaults.publisher(for: \.defaultStoreID),
+            userDefaults.publisher(for: \.defaultSiteAddress),
+            userDefaults.publisher(for: \.defaultEmailAddress)
+        )
+        .sink { [weak self] siteID, siteAddress, emailAddress in
+            guard let self, let siteAddress, siteID != 0, let emailAddress else { return }
+            let site = DefaultRequestAuthenticator.JetpackSite(
+                siteID: siteID,
+                siteAddress: siteAddress,
+                emailAddress: emailAddress
+            )
+            requestConverter = RequestConverter(siteAddress: siteAddress)
+            requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(
+                credentials: credentials,
+                selectedSite: site,
+                network: self
+            ))
+        }
     }
 }
 

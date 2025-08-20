@@ -18,6 +18,10 @@ extension UserDefaults {
     @objc dynamic var defaultEmailAddress: String? {
         string(forKey: "defaultEmailAddress")
     }
+
+    @objc dynamic var defaultStoreHasApplicationPasswordEnabled: Bool {
+        bool(forKey: "defaultStoreHasApplicationPasswordEnabled")
+    }
 }
 
 extension Alamofire.MultipartFormData: MultipartFormData {
@@ -43,7 +47,7 @@ public class AlamofireNetwork: Network {
 
     /// Authenticator to update requests authorization header if possible.
     ///
-    private var requestAuthenticator: RequestProcessor
+    private let requestAuthenticator: RequestProcessor
 
     private var subscription: AnyCancellable?
 
@@ -187,20 +191,28 @@ private extension AlamofireNetwork {
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
     func observeSelectedSite(credentials: Credentials) {
-        subscription = Publishers.CombineLatest3(
+        subscription = Publishers.CombineLatest4(
             userDefaults.publisher(for: \.defaultStoreID),
             userDefaults.publisher(for: \.defaultSiteAddress),
-            userDefaults.publisher(for: \.defaultEmailAddress)
+            userDefaults.publisher(for: \.defaultEmailAddress),
+            userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
         )
-        .sink { [weak self] siteID, siteAddress, emailAddress in
-            guard let self, let siteAddress, siteID != 0, let emailAddress else { return }
+        .sink { [weak self] siteID, siteAddress, emailAddress, applicationPasswordEnabled in
+            guard let self, let siteAddress, siteID != 0, let emailAddress else {
+                return
+            }
+            guard applicationPasswordEnabled else {
+                requestConverter = RequestConverter(siteAddress: nil)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                return
+            }
             let site = DefaultRequestAuthenticator.JetpackSite(
                 siteID: siteID,
                 siteAddress: siteAddress,
                 emailAddress: emailAddress
             )
             requestConverter = RequestConverter(siteAddress: siteAddress)
-            requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
                 credentials: credentials,
                 selectedSite: site,
                 network: self

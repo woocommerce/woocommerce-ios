@@ -1786,7 +1786,8 @@ extension Networking.SiteAPI {
     public static func fake() -> Networking.SiteAPI {
         .init(
             siteID: .fake(),
-            namespaces: .fake()
+            namespaces: .fake(),
+            applicationPasswordAvailable: .fake()
         )
     }
 }

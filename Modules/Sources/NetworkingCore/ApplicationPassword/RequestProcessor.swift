@@ -8,7 +8,7 @@ final class RequestProcessor: RequestInterceptor {
 
     private var isAuthenticating = false
 
-    private let requestAuthenticator: RequestAuthenticator
+    private var requestAuthenticator: RequestAuthenticator
 
     private let notificationCenter: NotificationCenter
 
@@ -16,6 +16,10 @@ final class RequestProcessor: RequestInterceptor {
          notificationCenter: NotificationCenter = .default) {
         self.requestAuthenticator = requestAuthenticator
         self.notificationCenter = notificationCenter
+    }
+
+    func updateAuthenticator(_ authenticator: RequestAuthenticator) {
+        requestAuthenticator = authenticator
     }
 }
 

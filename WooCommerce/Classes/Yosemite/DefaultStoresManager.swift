@@ -73,8 +73,6 @@ class DefaultStoresManager: StoresManager {
         }
     }
 
-    private let featureFlagService: FeatureFlagService
-
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///
     var isAuthenticated: Bool {
@@ -125,14 +123,12 @@ class DefaultStoresManager: StoresManager {
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
-         featureFlagService: FeatureFlagService,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
-        let supportsAuthenticationSwitching = featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
-        self.state = AuthenticatedState(sessionManager: sessionManager, supportsAuthenticationSwitching: supportsAuthenticationSwitching) ?? DeauthenticatedState()
-        self.featureFlagService = featureFlagService
+        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
+        self.state = AuthenticatedState(sessionManager: sessionManager, supportsAuthenticationSwitching: enabled) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
@@ -166,8 +162,8 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        let supportsAuthenticationSwitching = featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
-        state = AuthenticatedState(credentials: credentials, supportsAuthenticationSwitching: supportsAuthenticationSwitching)
+        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.switchAuthenticationForJetpackRequests)
+        state = AuthenticatedState(credentials: credentials, supportsAuthenticationSwitching: enabled)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()

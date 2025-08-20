@@ -97,6 +97,7 @@ final class SessionManager: SessionManagerProtocol {
     var defaultAccount: Yosemite.Account? {
         didSet {
             defaults[.defaultAccountID] = defaultAccount?.userID
+            defaults[.defaultEmailAddress] = defaultAccount?.email
             NotificationCenter.default.post(name: .defaultAccountWasUpdated, object: defaultAccount)
             watchDependenciesSynchronizer.account = defaultAccount
         }

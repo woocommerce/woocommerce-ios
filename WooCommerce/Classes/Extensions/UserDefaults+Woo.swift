@@ -8,6 +8,7 @@ extension UserDefaults {
     enum Key: String {
         case defaultCredentialsType
         case defaultAccountID
+        case defaultEmailAddress
         case defaultUsername
         case defaultSiteAddress
         case defaultStoreID

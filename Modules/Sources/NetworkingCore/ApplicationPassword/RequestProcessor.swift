@@ -79,6 +79,9 @@ private extension RequestProcessor {
 
     func shouldRetry(_ error: Error) -> Bool {
         switch error {
+        case RequestAuthenticatorError.applicationPasswordNotAvailable:
+            // Need to generate application password
+            return true
         case AFError.requestAdaptationFailed(let internalError):
             // Need to generate application password
             if .applicationPasswordNotAvailable == internalError as? RequestAuthenticatorError {

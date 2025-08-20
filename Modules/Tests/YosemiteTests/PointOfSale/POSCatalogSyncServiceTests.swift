@@ -22,7 +22,7 @@ struct POSCatalogSyncServiceTests {
             dispatcher: mockDispatcher
         )
     }
-    
+
     /// Helper to create file-based storage manager for tests that need batch operations
     @MainActor
     private func createFileBasedSUT() -> POSCatalogSyncService {
@@ -181,14 +181,14 @@ struct POSCatalogSyncServiceTests {
         for product in storedProducts {
             print("🔍 Final product: ID=\(product.productID), siteID=\(product.siteID), name=\(product.name)")
         }
-        
+
         // First check if batch delete worked at all
         let oldProductsStillExist = storedProducts.contains { $0.productID == 999 || $0.productID == 998 }
         if oldProductsStillExist {
             print("⚠️ Old products still exist after sync - batch delete may have failed")
             print("⚠️ This suggests the NSBatchDeleteRequest is not working properly with the current Core Data setup")
         }
-        
+
         // Check if new product was inserted
         let newProductExists = storedProducts.contains { $0.productID == 123 }
         if !newProductExists {

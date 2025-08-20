@@ -10,11 +10,11 @@ public class MockStorageManager: StorageManagerType {
     /// DataModel Name
     ///
     private let name = "WooCommerce"
-    
+
     /// Whether to use file-based SQLite store (needed for batch operations) or in-memory store
     ///
     private let useFileBasedStore: Bool
-    
+
     /// Initialize with option to use file-based store
     ///
     public init(useFileBasedStore: Bool = false) {
@@ -74,11 +74,11 @@ public class MockStorageManager: StorageManagerType {
         viewContext.performAndWait {
             do {
                 viewContext.reset()
-                
+
                 // Remove and cleanup temporary files if using file-based store
                 for store in storeCoordinator.persistentStores {
                     try storeCoordinator.remove(store)
-                    
+
                     if useFileBasedStore, let storeURL = store.url {
                         // Clean up temporary SQLite files
                         try? FileManager.default.removeItem(at: storeURL)
@@ -160,7 +160,7 @@ extension MockStorageManager {
     var storeDescription: NSPersistentStoreDescription {
         let description = NSPersistentStoreDescription()
         description.type = NSSQLiteStoreType
-        
+
         if useFileBasedStore {
             // Use a temporary SQLite file to support batch operations
             let tempDir = FileManager.default.temporaryDirectory
@@ -170,7 +170,7 @@ extension MockStorageManager {
             // Use /dev/null for fast in-memory-like behavior (default for most tests)
             description.url = URL(fileURLWithPath: "/dev/null")
         }
-        
+
         return description
     }
 }

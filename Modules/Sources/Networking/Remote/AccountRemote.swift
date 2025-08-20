@@ -108,7 +108,12 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
     /// - Returns: A publisher that emits a boolean which indicates if WooCommerce plugin is active.
     public func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {
         let parameters = ["_fields": ""]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.wooCommerceSiteSettingsPath, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Constants.wooCommerceSiteSettingsPath,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = WooCommerceAvailabilityMapper()
         return enqueue(request, mapper: mapper)
     }

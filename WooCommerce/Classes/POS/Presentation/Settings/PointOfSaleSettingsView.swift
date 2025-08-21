@@ -78,73 +78,6 @@ struct PointOfSaleSettingsView: View {
     }
 }
 
-struct PointOfSaleSettingsStoreDetailView: View {
-    var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Store Settings")
-                    .font(.title2)
-                Text("Store-related configuration")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-        }
-    }
-}
-
-struct PointOfSaleSettingsHardwareDetailView: View {
-    @State private var navigationPath: [PointOfSaleSettingsView.HardwareDestination] = []
-
-    var body: some View {
-        NavigationStack(path: $navigationPath) {
-            List(PointOfSaleSettingsView.HardwareDestination.allCases) { destination in
-                NavigationLink(value: destination) {
-                    HStack(alignment: .firstTextBaseline) {
-                        Image(systemName: destination.icon)
-                            .font(.posBodyLargeRegular())
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(destination.title)
-                                .font(.posBodyLargeRegular())
-                            Text(destination.subtitle)
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                }
-            }
-            .navigationDestination(for: PointOfSaleSettingsView.HardwareDestination.self) { destination in
-                VStack(spacing: 16) {
-                    Image(systemName: destination.icon).font(.largeTitle)
-                        .font(.posBodyLargeRegular())
-                    Text("\(destination.title) settings")
-                        .font(.posBodyMediumRegular())
-                    Text("Some placeholder")
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                }
-                .padding()
-                .navigationTitle(destination.title)
-            }
-        }
-    }
-}
-
-struct PointOfSaleSettingsHelpDetailView: View {
-    var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Help Settings")
-                    .font(.title2)
-                Text("Help-related configuration")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            .padding()
-        }
-    }
-}
-
 extension PointOfSaleSettingsView {
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
@@ -154,22 +87,28 @@ extension PointOfSaleSettingsView {
 
         var title: String {
             switch self {
-            case .scanners: return "Barcode scanners"
-            case .cardReaders: return "Card Readers"
+            case .cardReaders:
+                return Localization.hardwareNavigationCardReaderTitle
+            case .scanners:
+                return Localization.hardwareNavigationBarcodeTitle
             }
         }
 
         var subtitle: String {
             switch self {
-            case .scanners: return "Configure barcode scanner settings"
-            case .cardReaders: return "Manage card reader connections"
+            case .cardReaders:
+                return Localization.hardwareNavigationBarcodeSubtitle
+            case .scanners:
+                return Localization.hardwareNavigationBarcodeSubtitle
             }
         }
 
         var icon: String {
             switch self {
-            case .scanners: return "qrcode.viewfinder"
-            case .cardReaders: return "creditcard"
+            case .cardReaders:
+                return "creditcard"
+            case .scanners:
+                return "qrcode.viewfinder"
             }
         }
     }
@@ -249,6 +188,30 @@ private extension PointOfSaleSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
             value: "Get help and support",
             comment: "Description of the Help section in Point of Sale settings."
+        )
+
+        static let hardwareNavigationBarcodeTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.hardwareNavigationBarcodeTitle",
+            value: "Barcode scanners",
+            comment: "Navigation title of Barcode scanner settings."
+        )
+
+        static let hardwareNavigationCardReaderTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.hardwareNavigationCardReaderTitle",
+            value: "Card readers",
+            comment: "Navigation title of Card reader settings."
+        )
+
+        static let hardwareNavigationCardReaderSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.hardwareNavigationCardReaderSubtitle",
+            value: "Manage card reader connections",
+            comment: "Description of Card reader settings for connections."
+        )
+
+        static let hardwareNavigationBarcodeSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.hardwareNavigationBarcodeSubtitle",
+            value: "Configure barcode scanner settings",
+            comment: "Description of Barcode scanner settings configuration."
         )
     }
 }

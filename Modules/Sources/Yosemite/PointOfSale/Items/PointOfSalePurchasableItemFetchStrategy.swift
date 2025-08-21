@@ -151,7 +151,7 @@ public struct PointOfSaleLocalStoragePurchasableItemFetchStrategy: PointOfSalePu
         return try await MainActor.run {
             let storage = storageManager.viewStorage
 
-            let predicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@)",
+            let predicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@) AND downloadable == NO",
                                       siteID,
                                       ProductType.simple.rawValue,
                                       ProductType.variable.rawValue)
@@ -298,7 +298,7 @@ public struct PointOfSaleLocalStorageSearchStrategy: PointOfSalePurchasableItemF
             let storage = storageManager.viewStorage
 
             // Create search predicate that includes the search term
-            let basePredicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@)",
+            let basePredicate = NSPredicate(format: "siteID == %lld AND purchasable == YES AND (productTypeKey == %@ OR productTypeKey == %@) AND downloadable == NO",
                                           siteID,
                                           ProductType.simple.rawValue,
                                           ProductType.variable.rawValue)

@@ -6,28 +6,27 @@ struct PointOfSaleSettingsView: View {
 
     var body: some View {
         NavigationStack {
-            HStack(spacing: 0) {
-                // Left (nav)
-                List(selection: $selection) {
-                    // Store, Hardware
-                    Section {
-                        ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                            HStack {
-                                Image(systemName: item.icon)
-                                    .font(.posBodyLargeRegular())
-                                VStack(alignment: .leading) {
-                                    Text(item.title)
+            HStack(spacing: POSSpacing.none) {
+                VStack {
+                    List(selection: $selection) {
+                        Section {
+                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
+                                HStack {
+                                    Image(systemName: item.icon)
                                         .font(.posBodyLargeRegular())
-                                    Text(item.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(.secondary)
+                                    VStack(alignment: .leading) {
+                                        Text(item.title)
+                                            .font(.posBodyLargeRegular())
+                                        Text(item.subtitle)
+                                            .font(.posBodyMediumRegular())
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                .tag(item)
                             }
-                            .tag(item)
                         }
                     }
-                    // Help
-                    Section {
+                    .safeAreaInset(edge: .bottom) {
                         HStack {
                             Image(systemName: SidebarNavigation.help.icon)
                                 .font(.posBodyLargeRegular())
@@ -38,11 +37,13 @@ struct PointOfSaleSettingsView: View {
                                     .font(.posBodyMediumRegular())
                                     .foregroundStyle(.secondary)
                             }
+                            Spacer()
                         }
-                        .tag(SidebarNavigation.help)
+                        .padding(.vertical, POSPadding.small)
+                        .padding(.horizontal, POSPadding.medium)
+                        .onTapGesture { selection = .help }
                     }
                 }
-                // Right (detail)
                 Group {
                     switch selection {
                     case .store:
@@ -71,7 +72,7 @@ struct PointOfSaleSettingsView: View {
 struct PointOfSaleSettingsStoreDetailView: View {
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading) {
                 Text("Store Settings")
                     .font(.title2)
                 Text("Store-related configuration")
@@ -85,7 +86,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
 struct PointOfSaleSettingsHardwareDetailView: View {
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading) {
                 Text("Hardware Settings")
                     .font(.title2)
                 Text("Hardware-related configuration")
@@ -99,7 +100,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 struct PointOfSaleSettingsHelpDetailView: View {
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading) {
                 Text("Help Settings")
                     .font(.title2)
                 Text("Help-related configuration")

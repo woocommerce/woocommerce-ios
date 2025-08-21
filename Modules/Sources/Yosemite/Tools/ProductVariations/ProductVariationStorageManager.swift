@@ -69,21 +69,8 @@ final class ProductVariationStorageManager {
             handleProductSubscription(readOnlyProductVariation, storageProductVariation, storage)
         }
     }
-}
 
-private extension ProductVariationStorageManager {
-    /// Updates or inserts the provided StorageProductVariation's dimensions using the provided read-only ProductVariation's dimensions
-    ///
-    func handleProductDimensions(_ readOnlyVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
-        if let existingStorageDimensions = storageVariation.dimensions {
-            existingStorageDimensions.update(with: readOnlyVariation.dimensions)
-        } else {
-            let newStorageDimensions = storage.insertNewObject(ofType: Storage.ProductDimensions.self)
-            newStorageDimensions.update(with: readOnlyVariation.dimensions)
-            storageVariation.dimensions = newStorageDimensions
-        }
-    }
-
+    // TODO: share this more cleanly
     /// Replaces the provided StorageProductVariation's attributes with the provided read-only
     /// ProductVariation's attributes.
     /// Because all local Product attributes have ID: Int64 = 0, they are not unique in Storage and we always replace the whole
@@ -105,6 +92,20 @@ private extension ProductVariationStorageManager {
             storageAttributes.append(newStorageAttribute)
         }
         storageVariation.attributes = NSOrderedSet(array: storageAttributes)
+    }
+}
+
+private extension ProductVariationStorageManager {
+    /// Updates or inserts the provided StorageProductVariation's dimensions using the provided read-only ProductVariation's dimensions
+    ///
+    func handleProductDimensions(_ readOnlyVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
+        if let existingStorageDimensions = storageVariation.dimensions {
+            existingStorageDimensions.update(with: readOnlyVariation.dimensions)
+        } else {
+            let newStorageDimensions = storage.insertNewObject(ofType: Storage.ProductDimensions.self)
+            newStorageDimensions.update(with: readOnlyVariation.dimensions)
+            storageVariation.dimensions = newStorageDimensions
+        }
     }
 
     /// Updates, inserts, or prunes the provided StorageProductVariation's image using the provided read-only ProductVariation's image

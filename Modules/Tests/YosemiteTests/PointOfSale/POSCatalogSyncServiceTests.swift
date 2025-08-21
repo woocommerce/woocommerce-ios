@@ -74,7 +74,9 @@ struct POSCatalogSyncServiceTests {
 
     @Test func syncCatalog_with_empty_json_array_succeeds_and_stores_nothing() async throws {
         // Given
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-empty")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-empty")
 
         // When
         try await sut.syncCatalog()
@@ -88,7 +90,9 @@ struct POSCatalogSyncServiceTests {
 
     @Test func syncCatalog_with_network_error_throws_correct_error() async throws {
         // Given
-        mockNetwork.simulateError(requestUrlSuffix: "pos-catalog.json", error: NetworkError.notFound())
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateError(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", error: NetworkError.notFound())
 
         // When & Then
         await #expect(throws: NetworkError.notFound(response: nil)) {
@@ -102,7 +106,9 @@ struct POSCatalogSyncServiceTests {
 
     @Test func syncCatalog_with_invalid_json_throws_invalidData_error() async throws {
         // Given
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-invalid")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-invalid")
 
         // When & Then
         var thrownError: Error?
@@ -172,7 +178,9 @@ struct POSCatalogSyncServiceTests {
         #expect(storedProducts.contains { $0.productID == 998 })
 
         // When - Sync new catalog (should replace all existing products)
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-valid")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-valid")
         try await fileBasedSUT.syncCatalog()
 
         // Then - Verify old products are deleted and new product is inserted - with debug info
@@ -229,7 +237,9 @@ struct POSCatalogSyncServiceTests {
         #expect(otherSiteProducts.count == 1)
 
         // When - Sync catalog for current site
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-valid")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-valid")
         try await sut.syncCatalog()
 
         // Then - Verify only current site products are replaced
@@ -270,7 +280,9 @@ struct POSCatalogSyncServiceTests {
         #expect(storedVariations.count == 2)
 
         // When - Sync new catalog (should delete product and its variations)
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-valid")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-valid")
         try await sut.syncCatalog()
 
         // Then - Verify product and variations are deleted
@@ -288,7 +300,9 @@ struct POSCatalogSyncServiceTests {
         #expect(initialProducts.isEmpty)
 
         // When - Sync catalog with mixed products and variations
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-mixed")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-mixed")
         try await sut.syncCatalog()
 
         // Then - Verify both products and variations are inserted
@@ -296,7 +310,11 @@ struct POSCatalogSyncServiceTests {
         #expect(storedProducts.count == 1)
         let storedProduct = try #require(storedProducts.first)
         #expect(storedProduct.productID == 123)
-        #expect(storedProduct.name == "Test Product")
+        #expect(storedProduct.name == "Incredible Silk Chair")
+        #expect(storedProduct.sku == "incredible-silk-chair-13060312")
+        #expect(storedProduct.globalUniqueID == "0019273")
+        #expect(storedProduct.stockQuantity == "-83")
+        #expect(storedProduct.attributes?.count == 3)
 
         let storedVariations = mockStorageManager.viewStorage.loadProductVariations(siteID: siteID, productID: 123) ?? []
         #expect(storedVariations.count == 1)
@@ -304,7 +322,10 @@ struct POSCatalogSyncServiceTests {
         #expect(storedVariation.productVariationID == 124)
         #expect(storedVariation.productID == 123)
         #expect(storedVariation.product == storedProduct) // Ensure relationship is set
-        #expect(storedVariation.sku == "TEST-001-VAR")
+        #expect(storedVariation.sku == "TEST-32-VAR")
+        #expect(storedVariation.price == "330.34")
+        #expect(storedVariation.stockQuantity == 69)
+        #expect(storedVariation.attributes.count == 3)
     }
 
     @Test func syncCatalog_handles_multiple_sync_cycles_correctly() async throws {
@@ -313,7 +334,9 @@ struct POSCatalogSyncServiceTests {
         #expect(storedProducts.isEmpty)
 
         // When - First sync
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-valid")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-valid")
         try await sut.syncCatalog()
 
         // Then - Verify first sync results
@@ -322,7 +345,9 @@ struct POSCatalogSyncServiceTests {
         #expect(storedProducts.first?.productID == 123)
 
         // When - Second sync with different data
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-mixed")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-mixed")
         try await sut.syncCatalog()
 
         // Then - Verify second sync replaced first sync data
@@ -334,7 +359,9 @@ struct POSCatalogSyncServiceTests {
         #expect(storedVariations.count == 1) // Variation should now exist
 
         // When - Third sync with empty catalog
-        mockNetwork.simulateResponse(requestUrlSuffix: "pos-catalog.json", filename: "pos-catalog-empty")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-response")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/status/export_1755754737_9171", filename: "pos-catalog-status-complete")
+        mockNetwork.simulateResponse(requestUrlSuffix: "catalog/download?filename=pos-catalog&format=json", filename: "pos-catalog-empty")
         try await sut.syncCatalog()
 
         // Then - Verify all data is cleared

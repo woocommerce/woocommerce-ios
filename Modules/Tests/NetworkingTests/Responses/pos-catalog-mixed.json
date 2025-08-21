@@ -1,97 +1,103 @@
 [
   {
     "id": 123,
-    "type": ["simple"],
-    "sku": "TEST-001",
-    "global_unique_id": "",
-    "name": "Test Product",
-    "published": 1,
-    "featured": false,
-    "catalog_visibility": "visible",
+    "type": "variable",
+    "sku": "incredible-silk-chair-13060312",
+    "global_unique_id": "0019273",
+    "name": "Incredible Silk Chair",
     "short_description": "",
     "description": "",
-    "date_on_sale_from": null,
-    "date_on_sale_to": null,
-    "tax_status": "taxable",
-    "tax_class": "",
-    "stock_status": "instock",
-    "stock": "",
-    "low_stock_amount": "",
-    "backorders": "no",
-    "sold_individually": false,
-    "weight": "",
-    "length": "",
-    "width": "",
-    "height": "",
-    "reviews_allowed": true,
-    "purchase_note": "",
+    "status": "publish",
+    "on_sale": false,
+    "stock_status": "onbackorder",
+    "backorders_allowed": true,
+    "manage_stock": true,
+    "stock_quantity": -83,
+    "price": "134.58",
     "sale_price": "",
-    "regular_price": 19.99,
-    "category_ids": [],
-    "tag_ids": [],
-    "shipping_class_id": [],
-    "images": [],
-    "download_limit": -1,
-    "download_expiry": -1,
+    "regular_price": "",
+    "images": [
+      "https://site.com/wp-content/uploads/2025/08/img-harum.png"
+    ],
     "parent_id": 0,
-    "grouped_products": "",
-    "upsell_ids": [],
-    "cross_sell_ids": [],
-    "product_url": "",
-    "button_text": "",
-    "menu_order": 0,
-    "attributes": null,
-    "brand_ids": ""
+    "attributes": [
+      {
+        "id": 1,
+        "name": "Size",
+        "position": 0,
+        "visible": true,
+        "variation": true,
+        "options": [
+          "Earum"
+        ]
+      },
+      {
+        "id": 0,
+        "name": "Ab",
+        "position": 1,
+        "visible": true,
+        "variation": true,
+        "options": [
+          "deserunt",
+          "ea",
+          "ut"
+        ]
+      },
+      {
+        "id": 2,
+        "name": "Numeric Size",
+        "position": 2,
+        "visible": true,
+        "variation": true,
+        "options": [
+          "19",
+          "8",
+          "9",
+          "At",
+          "Reiciendis"
+        ]
+      }
+    ],
+    "downloadable": false
   },
   {
     "id": 124,
-    "type": ["variation"],
-    "sku": "TEST-001-VAR",
+    "type": "variation",
+    "sku": "TEST-32-VAR",
     "global_unique_id": "",
-    "name": "Test Product",
-    "published": 1,
-    "featured": false,
-    "catalog_visibility": "visible",
+    "name": "Incredible Silk Chair",
     "short_description": "",
     "description": "",
-    "date_on_sale_from": null,
-    "date_on_sale_to": null,
-    "tax_status": "taxable",
-    "tax_class": "",
+    "status": "publish",
+    "on_sale": false,
     "stock_status": "instock",
-    "stock": "",
-    "low_stock_amount": "",
-    "backorders": "no",
-    "sold_individually": false,
-    "weight": "125",
-    "length": "44",
-    "width": "2",
-    "height": "3",
-    "reviews_allowed": false,
-    "purchase_note": "",
+    "backorders_allowed": false,
+    "manage_stock": true,
+    "stock_quantity": 69,
+    "price": "330.34",
     "sale_price": "",
-    "regular_price": 19.99,
-    "category_ids": [],
-    "tag_ids": [],
-    "shipping_class_id": [],
-    "images": [],
-    "download_limit": -1,
-    "download_expiry": -1,
+    "regular_price": "330.34",
+    "images": [
+      "https://site.com/wp-content/uploads/2025/08/img-quae.png"
+    ],
     "parent_id": 123,
-    "grouped_products": "",
-    "upsell_ids": [],
-    "cross_sell_ids": [],
-    "product_url": "",
-    "button_text": "",
-    "menu_order": 1,
     "attributes": [
       {
-        "name": "Size", 
-        "value": ["Large"],
-        "taxonomy": true,
-        "visible": true
+        "id": 1,
+        "name": "Size",
+        "option": "Earum"
+      },
+      {
+        "id": 0,
+        "name": "ab",
+        "option": "deserunt"
+      },
+      {
+        "id": 2,
+        "name": "Numeric Size",
+        "option": "19"
       }
     ],
-    "brand_ids": ""
+    "downloadable": false
   }
 ]

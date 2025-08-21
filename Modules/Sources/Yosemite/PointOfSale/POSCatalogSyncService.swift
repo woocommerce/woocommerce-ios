@@ -67,7 +67,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         print("🟣 Starting catalog generation...")
 
         // 1. Generate catalog and get job ID
-        let jobResponse = try await catalogRemote.generateCatalog(for: siteID)
+        let jobResponse = try await catalogRemote.generateCatalog(for: siteID, fields: ["id","name","sku","global_unique_id","type","price","regular_price","sale_price","on_sale","downloadable","images","attributes","parent_id","status","description","short_description","manage_stock","stock_quantity","stock_status","backorders_allowed","backordered"])
         print("🟣 Catalog generation started - Job ID: \(jobResponse.jobID)")
 
         // 2. Poll for completion
@@ -150,65 +150,80 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     }
 
     private func mapCatalogItemToNetworkingProduct(_ catalogItem: CatalogItem) -> Product? {
-        guard !catalogItem.type.contains("variation") else { return nil }
+        guard catalogItem.type != "variation" else { return nil }
 
-        let dateFormatter = ISO8601DateFormatter()
+        // Convert stock quantity from Int to Decimal
+        let stockQuantity = catalogItem.stockQuantity.map { Decimal($0) }
 
-        // Parse dates from the API format
-        let dateOnSaleStart = catalogItem.dateOnSaleFrom.flatMap { dateFormatter.date(from: $0) }
-        let dateOnSaleEnd = catalogItem.dateOnSaleTo.flatMap { dateFormatter.date(from: $0) }
+        // Use status field directly
+        let statusKey = catalogItem.status
 
-        // Parse stock quantity from string
-        let stockQuantity = catalogItem.stock.flatMap { Decimal(string: $0) }
+        // Use type field directly
+        let productTypeKey = catalogItem.type
 
-        // Determine product status from published field
-        let statusKey = (catalogItem.published == 1) ? "publish" : "private"
+        let attributes = catalogItem.attributes?.map { attr in
+            ProductAttribute(siteID: siteID,
+                             attributeID: Int64(attr.id ?? 0),
+                             name: attr.name,
+                             position: attr.position ?? 0,
+                             visible: attr.visible ?? false,
+                             variation: attr.variation ?? false,
+                             options: attr.options ?? [])
+        } ?? []
 
-        // Parse product type from array
-        let productTypeKey = catalogItem.type.first ?? "simple"
+        // Parse first image URL if available
+        let images = catalogItem.images?.map { imageURL in
+            ProductImage(
+                imageID: 0,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: imageURL,
+                name: "",
+                alt: ""
+            )
+        }
 
         return Product(
             siteID: siteID,
             productID: catalogItem.id,
-            name: catalogItem.name ?? "",
+            name: catalogItem.name,
             slug: "",
             permalink: "",
             date: Date(),
             dateCreated: Date(),
             dateModified: nil,
-            dateOnSaleStart: dateOnSaleStart,
-            dateOnSaleEnd: dateOnSaleEnd,
+            dateOnSaleStart: nil,
+            dateOnSaleEnd: nil,
             productTypeKey: productTypeKey,
             statusKey: statusKey,
-            featured: catalogItem.featured ?? false,
-            catalogVisibilityKey: catalogItem.catalogVisibility ?? "visible",
-            fullDescription: catalogItem.description ?? "",
+            featured: false,
+            catalogVisibilityKey: "visible",
+            fullDescription: catalogItem.description,
             shortDescription: catalogItem.shortDescription ?? "",
-            sku: catalogItem.sku ?? "",
+            sku: catalogItem.sku,
             globalUniqueID: catalogItem.globalUniqueID ?? "",
-            // TODO: price field from API
-            price: catalogItem.regularPrice ?? "",
+            price: catalogItem.price,
             regularPrice: catalogItem.regularPrice ?? "",
             salePrice: catalogItem.salePrice ?? "",
-            onSale: !(catalogItem.salePrice?.isEmpty ?? true),
+            onSale: catalogItem.onSale,
             purchasable: true,
             totalSales: 0,
             virtual: false,
-            downloadable: false,
+            downloadable: catalogItem.downloadable ?? false,
             downloads: [],
-            downloadLimit: Int64(catalogItem.downloadLimit ?? -1),
-            downloadExpiry: Int64(catalogItem.downloadExpiry ?? -1),
-            buttonText: catalogItem.buttonText ?? "",
-            externalURL: catalogItem.productURL ?? "",
-            taxStatusKey: catalogItem.taxStatus ?? "taxable",
-            taxClass: catalogItem.taxClass ?? "",
-            manageStock: !(catalogItem.stock?.isEmpty ?? true),
+            downloadLimit: -1,
+            downloadExpiry: -1,
+            buttonText: "",
+            externalURL: "",
+            taxStatusKey: "taxable",
+            taxClass: "",
+            manageStock: catalogItem.manageStock,
             stockQuantity: stockQuantity,
-            stockStatusKey: catalogItem.stockStatus ?? "instock",
-            backordersKey: catalogItem.backorders ?? "no",
-            backordersAllowed: catalogItem.backorders == "yes",
+            stockStatusKey: catalogItem.stockStatus,
+            backordersKey: catalogItem.backordersAllowed ? "yes" : "no",
+            backordersAllowed: catalogItem.backordersAllowed,
             backordered: false,
-            soldIndividually: catalogItem.soldIndividually ?? false,
+            soldIndividually: false,
             weight: "",
             dimensions: .init(length: "",
                               width: "",
@@ -218,22 +233,22 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             shippingClass: "",
             shippingClassID: 0,
             productShippingClass: nil,
-            reviewsAllowed: catalogItem.reviewsAllowed ?? true,
+            reviewsAllowed: true,
             averageRating: "",
             ratingCount: 0,
             relatedIDs: [],
             upsellIDs: [],
             crossSellIDs: [],
             parentID: catalogItem.parentID ?? 0,
-            purchaseNote: catalogItem.purchaseNote ?? "",
+            purchaseNote: "",
             categories: [],
             tags: [],
-            images: [],
-            attributes: [],
+            images: images ?? [],
+            attributes: attributes,
             defaultAttributes: [],
             variations: [],
             groupedProducts: [],
-            menuOrder: catalogItem.menuOrder ?? 0,
+            menuOrder: 0,
             addOns: [],
             isSampleItem: false,
             bundleStockStatus: nil,
@@ -253,27 +268,20 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     }
 
     private func mapCatalogItemToNetworkingProductVariation(_ catalogItem: CatalogItem) -> ProductVariation? {
-        guard catalogItem.type.contains("variation") else { return nil }
+        guard catalogItem.type == "variation" else { return nil }
 
-        let dateFormatter = ISO8601DateFormatter()
+        // Use status field directly
+        let status = ProductStatus(rawValue: catalogItem.status)
 
-        // Parse dates from the API format
-        let dateOnSaleStart = catalogItem.dateOnSaleFrom.flatMap { dateFormatter.date(from: $0) }
-        let dateOnSaleEnd = catalogItem.dateOnSaleTo.flatMap { dateFormatter.date(from: $0) }
+        // Convert stock quantity from Int to Decimal
+        let stockQuantity = catalogItem.stockQuantity.map { Decimal($0) }
+        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus)
 
-        // Determine status from published field
-        let status = ProductStatus(rawValue: (catalogItem.published == 1) ? "publish" : "private") ?? .published
-
-        // Parse stock quantity from string
-        let stockQuantity = catalogItem.stock.flatMap { Decimal(string: $0) }
-        let stockStatus = ProductStockStatus(rawValue: catalogItem.stockStatus ?? ProductStockStatus.inStock.rawValue) ?? .inStock
-
-        // Convert attributes from the new format
         let attributes = catalogItem.attributes?.map { attr in
             ProductVariationAttribute(
-                id: 0,
+                id: Int64(attr.id ?? 0),
                 name: attr.name,
-                option: attr.value.joined(separator: ", ")
+                option: attr.option ?? ""
             )
         } ?? []
 
@@ -298,30 +306,29 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             permalink: "",
             dateCreated: Date(),
             dateModified: nil,
-            dateOnSaleStart: dateOnSaleStart,
-            dateOnSaleEnd: dateOnSaleEnd,
+            dateOnSaleStart: nil,
+            dateOnSaleEnd: nil,
             status: status,
-            description: catalogItem.description ?? "",
-            sku: catalogItem.sku ?? "",
+            description: catalogItem.description,
+            sku: catalogItem.sku,
             globalUniqueID: catalogItem.globalUniqueID ?? "",
-            // TODO: price field from API
-            price: catalogItem.regularPrice ?? "",
+            price: catalogItem.price,
             regularPrice: catalogItem.regularPrice ?? "",
             salePrice: catalogItem.salePrice ?? "",
-            onSale: !(catalogItem.salePrice?.isEmpty ?? true),
+            onSale: catalogItem.onSale,
             purchasable: true,
             virtual: false,
-            downloadable: false,
+            downloadable: catalogItem.downloadable ?? false,
             downloads: [],
-            downloadLimit: Int64(catalogItem.downloadLimit ?? -1),
-            downloadExpiry: Int64(catalogItem.downloadExpiry ?? -1),
-            taxStatusKey: catalogItem.taxStatus ?? "taxable",
-            taxClass: catalogItem.taxClass ?? "",
-            manageStock: !(catalogItem.stock?.isEmpty ?? true),
+            downloadLimit: -1,
+            downloadExpiry: -1,
+            taxStatusKey: "taxable",
+            taxClass: "",
+            manageStock: catalogItem.manageStock,
             stockQuantity: stockQuantity,
             stockStatus: stockStatus,
-            backordersKey: catalogItem.backorders ?? "no",
-            backordersAllowed: catalogItem.backorders == "yes",
+            backordersKey: catalogItem.backordersAllowed ? "yes" : "no",
+            backordersAllowed: catalogItem.backordersAllowed,
             backordered: false,
             weight: "",
             dimensions: .init(length: "",
@@ -329,7 +336,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
                               height: ""),
             shippingClass: "",
             shippingClassID: 0,
-            menuOrder: Int64(catalogItem.menuOrder ?? 0),
+            menuOrder: 0,
             subscription: nil,
             minAllowedQuantity: nil,
             maxAllowedQuantity: nil,
@@ -484,23 +491,12 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     }
 
     private func handleProductRelatedEntities(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-//        productStore.handleProductShippingClass(storageProduct: storageProduct, storage)
-//        productStore.handleProductDimensions(readOnlyProduct, storageProduct, storage)
         productStore.handleProductAttributes(readOnlyProduct, storageProduct, storage)
-        productStore.handleProductDefaultAttributes(readOnlyProduct, storageProduct, storage)
         productStore.handleProductImages(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductCategories(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductTags(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductDownloadableFiles(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductAddOns(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductBundledItems(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductCompositeComponents(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductSubscription(readOnlyProduct, storageProduct, storage)
-//        productStore.handleProductCustomFields(readOnlyProduct, storageProduct, storage)
     }
 
     private func handleProductVariationRelatedEntities(_ networkingVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
-        // TODO
+        productVariationStorageManager.handleProductVariationAttributes(networkingVariation, storageVariation, storage)
     }
 
     private func convertProductToDataDictionary(_ product: Networking.Product) -> [String: Any] {
@@ -538,7 +534,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
             "taxStatusKey": product.taxStatusKey,
             "taxClass": product.taxClass,
             "manageStock": product.manageStock,
-            "stockQuantity": product.stockQuantity as Any,
+            "stockQuantity": product.stockQuantity.map { "\($0)" },
             "stockStatusKey": product.stockStatusKey,
             "backordersKey": product.backordersKey,
             "backordersAllowed": product.backordersAllowed,
@@ -623,39 +619,25 @@ private typealias CatalogItemResponse = [CatalogItem]
 ///
 private struct CatalogItem: Codable {
     let id: Int64
-    let type: [String]
-    let sku: String?
+    let type: String
+    let sku: String
     let globalUniqueID: String?
-    let name: String?
-    let published: Int?
-    let featured: Bool?
-    let catalogVisibility: String?
+    let name: String
     let shortDescription: String?
-    let description: String?
-    let dateOnSaleFrom: String?
-    let dateOnSaleTo: String?
-    let taxStatus: String?
-    let taxClass: String?
-    let stockStatus: String?
-    let stock: String?
-    let lowStockAmount: String?
-    let backorders: String?
-    let soldIndividually: Bool?
-    let reviewsAllowed: Bool?
-    let purchaseNote: String?
+    let description: String
+    let status: String
+    let onSale: Bool
+    let stockStatus: String
+    let backordersAllowed: Bool
+    let manageStock: Bool
+    let stockQuantity: Int?
+    let price: String
     let salePrice: String?
     let regularPrice: String?
-    let categoryIDs: [String]?
-    let tagIDs: [String]?
-    let shippingClassID: [String]?
     let images: [String]?
-    let downloadLimit: Int?
-    let downloadExpiry: Int?
     let parentID: Int64?
-    let productURL: String?
-    let buttonText: String?
-    let menuOrder: Int?
     let attributes: [CatalogItemAttribute]?
+    let downloadable: Bool?
 
     private enum CodingKeys: String, CodingKey {
         case id
@@ -663,42 +645,41 @@ private struct CatalogItem: Codable {
         case sku
         case globalUniqueID = "global_unique_id"
         case name
-        case published
-        case featured
-        case catalogVisibility = "catalog_visibility"
         case shortDescription = "short_description"
         case description
-        case dateOnSaleFrom = "date_on_sale_from"
-        case dateOnSaleTo = "date_on_sale_to"
-        case taxStatus = "tax_status"
-        case taxClass = "tax_class"
+        case status
+        case onSale = "on_sale"
         case stockStatus = "stock_status"
-        case stock
-        case lowStockAmount = "low_stock_amount"
-        case backorders
-        case soldIndividually = "sold_individually"
-        case reviewsAllowed = "reviews_allowed"
-        case purchaseNote = "purchase_note"
+        case backordersAllowed = "backorders_allowed"
+        case manageStock = "manage_stock"
+        case stockQuantity = "stock_quantity"
+        case price
         case salePrice = "sale_price"
         case regularPrice = "regular_price"
-        case categoryIDs = "category_ids"
-        case tagIDs = "tag_ids"
-        case shippingClassID = "shipping_class_id"
         case images
-        case downloadLimit = "download_limit"
-        case downloadExpiry = "download_expiry"
         case parentID = "parent_id"
-        case productURL = "product_url"
-        case buttonText = "button_text"
-        case menuOrder = "menu_order"
         case attributes
+        case downloadable
     }
 }
 
 /// Represents product attributes from the catalog API response
 private struct CatalogItemAttribute: Codable {
+    let id: Int?
     let name: String
-    let value: [String]
-    let taxonomy: Bool
+    let position: Int?
     let visible: Bool?
+    let variation: Bool?
+    let options: [String]?
+    let option: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case position
+        case visible
+        case variation
+        case options
+        case option
+    }
 }

@@ -2,39 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var selection: Sidebar? = .store
-
-    enum Sidebar: String, CaseIterable, Identifiable {
-        case store
-        case hardware
-        case help
-
-        var id: Self { self }
-
-        var title: String {
-            switch self {
-            case .store: return "Store"
-            case .hardware: return "Hardware"
-            case .help: return "Help"
-            }
-        }
-
-        var subtitle: String {
-            switch self {
-            case .store: return "Store configuration and settings"
-            case .hardware: return "Manage hardware connections"
-            case .help: return "Get help and support"
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .store: return "bag"
-            case .hardware: return "wrench.and.screwdriver"
-            case .help: return "questionmark.circle"
-            }
-        }
-    }
+    @State private var selection: SidebarNavigation? = .store
 
     var body: some View {
         NavigationStack {
@@ -43,7 +11,7 @@ struct PointOfSaleSettingsView: View {
                 List(selection: $selection) {
                     // Store, Hardware
                     Section {
-                        ForEach([Sidebar.store, Sidebar.hardware], id: \.self) { item in
+                        ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
                             HStack {
                                 Image(systemName: item.icon)
                                 VStack {
@@ -57,13 +25,13 @@ struct PointOfSaleSettingsView: View {
                     // Help
                     Section {
                         HStack {
-                            Image(systemName: Sidebar.help.icon)
+                            Image(systemName: SidebarNavigation.help.icon)
                             VStack {
-                                Text(Sidebar.help.title)
-                                Text(Sidebar.help.subtitle)
+                                Text(SidebarNavigation.help.title)
+                                Text(SidebarNavigation.help.subtitle)
                             }
                         }
-                        .tag(Sidebar.help)
+                        .tag(SidebarNavigation.help)
                     }
                 }
                 // Right (detail)
@@ -76,11 +44,11 @@ struct PointOfSaleSettingsView: View {
                     case .help:
                         SettingsDetailView()
                     default:
-                        //
                         EmptyView()
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationTitle(Localization.navigationTitle)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") { dismiss() }
@@ -101,8 +69,85 @@ struct SettingsDetailView: View {
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .navigationTitle("nav title")
         }
+    }
+}
+
+private extension PointOfSaleSettingsView {
+    enum SidebarNavigation: String, CaseIterable, Identifiable {
+        case store
+        case hardware
+        case help
+
+        var id: Self { self }
+
+        var title: String {
+            switch self {
+            case .store: return Localization.sidebarNavigationStoreTitle
+            case .hardware: return Localization.sidebarNavigationHardwareTitle
+            case .help: return Localization.sidebarNavigationHelpTitle
+            }
+        }
+
+        var subtitle: String {
+            switch self {
+            case .store: return Localization.sidebarNavigationStoreSubtitle
+            case .hardware: return Localization.sidebarNavigationHardwareSubtitle
+            case .help: return Localization.sidebarNavigationHelpSubtitle
+            }
+        }
+
+        var icon: String {
+            switch self {
+            case .store: return "bag"
+            case .hardware: return "wrench.and.screwdriver"
+            case .help: return "questionmark.circle"
+            }
+        }
+    }
+
+    enum Localization {
+        static let navigationTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.navigationTitle",
+            value: "Settings",
+            comment: "Title of the Point of Sale settings view."
+        )
+
+        static let sidebarNavigationStoreTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStoreTitle",
+            value: "Store",
+            comment: "Title of the Store section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationHardwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationHardwareTitle",
+            value: "Hardware",
+            comment: "Title of the Hardware section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationHelpTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationHelpTitle",
+            value: "Help",
+            comment: "Title of the Help section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationStoreSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle",
+            value: "Store configuration and settings",
+            comment: "Description of the settings to be found within the Store section."
+        )
+
+        static let sidebarNavigationHardwareSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle",
+            value: "Manage hardware connections",
+            comment: "Description of the settings to be found within the Hardware section."
+        )
+
+        static let sidebarNavigationHelpSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
+            value: "Get help and support",
+            comment: "Description of the Help section in Point of Sale settings."
+        )
     }
 }
 

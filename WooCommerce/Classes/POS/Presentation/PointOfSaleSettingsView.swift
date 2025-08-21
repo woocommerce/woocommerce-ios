@@ -5,75 +5,73 @@ struct PointOfSaleSettingsView: View {
     @State private var selection: SidebarNavigation? = .store
 
     var body: some View {
-        NavigationStack {
-            HStack(spacing: POSSpacing.none) {
-                VStack {
-                    List(selection: $selection) {
-                        Section {
-                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                                HStack {
-                                    Image(systemName: item.icon)
+        HStack(spacing: POSSpacing.none) {
+            VStack {
+                List(selection: $selection) {
+                    Section {
+                        ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
+                            HStack {
+                                Image(systemName: item.icon)
+                                    .font(.posBodyLargeRegular())
+                                VStack(alignment: .leading) {
+                                    Text(item.title)
                                         .font(.posBodyLargeRegular())
-                                    VStack(alignment: .leading) {
-                                        Text(item.title)
-                                            .font(.posBodyLargeRegular())
-                                        Text(item.subtitle)
-                                            .font(.posBodyMediumRegular())
-                                            .foregroundStyle(.secondary)
-                                    }
+                                    Text(item.subtitle)
+                                        .font(.posBodyMediumRegular())
+                                        .foregroundStyle(.secondary)
                                 }
-                                .tag(item)
                             }
+                            .tag(item)
                         }
                     }
-                    .safeAreaInset(edge: .bottom) {
-                        Button {
-                            selection = .help
-                        } label: {
-                            HStack {
-                                Image(systemName: SidebarNavigation.help.icon)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    Button {
+                        selection = .help
+                    } label: {
+                        HStack {
+                            Image(systemName: SidebarNavigation.help.icon)
+                                .font(.posBodyLargeRegular())
+                                .foregroundStyle(selection == .help ? .white : .primary)
+                            VStack(alignment: .leading) {
+                                Text(SidebarNavigation.help.title)
                                     .font(.posBodyLargeRegular())
                                     .foregroundStyle(selection == .help ? .white : .primary)
-                                VStack(alignment: .leading) {
-                                    Text(SidebarNavigation.help.title)
-                                        .font(.posBodyLargeRegular())
-                                        .foregroundStyle(selection == .help ? .white : .primary)
-                                    Text(SidebarNavigation.help.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
-                                }
-                                Spacer()
+                                Text(SidebarNavigation.help.subtitle)
+                                    .font(.posBodyMediumRegular())
+                                    .foregroundStyle(selection == .help ? .secondary : .secondary)
                             }
-                            .padding(.vertical, POSPadding.small)
-                            .padding(.horizontal, POSPadding.medium)
-                            .contentShape(Rectangle())
+                            Spacer()
                         }
-                        .buttonStyle(.plain)
-                        .background(
-                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                                .fill(selection == .help ? Color.accentColor : Color.clear)
-                        )
+                        .padding(.vertical, POSPadding.small)
+                        .padding(.horizontal, POSPadding.medium)
+                        .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .background(
+                        RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
+                            .fill(selection == .help ? Color.accentColor : Color.clear)
+                    )
                 }
-                Group {
-                    switch selection {
-                    case .store:
-                        PointOfSaleSettingsStoreDetailView()
-                    case .hardware:
-                        PointOfSaleSettingsHardwareDetailView()
-                    case .help:
-                        PointOfSaleSettingsHelpDetailView()
-                    default:
-                        EmptyView()
-                    }
+            }
+            Group {
+                switch selection {
+                case .store:
+                    PointOfSaleSettingsStoreDetailView()
+                case .hardware:
+                    PointOfSaleSettingsHardwareDetailView()
+                case .help:
+                    PointOfSaleSettingsHelpDetailView()
+                default:
+                    EmptyView()
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .navigationTitle(Localization.navigationTitle)
-                .font(.posHeadingRegular)
-                .toolbar {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button("Done") { dismiss() }
-                    }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationTitle(Localization.navigationTitle)
+            .font(.posHeadingRegular)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
                 }
             }
         }
@@ -96,16 +94,38 @@ struct PointOfSaleSettingsStoreDetailView: View {
 }
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    @State private var navigationPath: [PointOfSaleSettingsView.HardwareDestination] = []
+
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                Text("Hardware Settings")
-                    .font(.title2)
-                Text("Hardware-related configuration")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+        NavigationStack(path: $navigationPath) {
+            List(PointOfSaleSettingsView.HardwareDestination.allCases) { destination in
+                NavigationLink(value: destination) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: destination.icon)
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
-            .padding()
+            .navigationDestination(for: PointOfSaleSettingsView.HardwareDestination.self) { destination in
+                VStack(spacing: 16) {
+                    Image(systemName: destination.icon).font(.largeTitle)
+                        .font(.posBodyLargeRegular())
+                    Text("\(destination.title) settings")
+                        .font(.posBodyMediumRegular())
+                    Text("Some placeholder")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+                .navigationTitle(destination.title)
+            }
         }
     }
 }
@@ -121,6 +141,36 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     .foregroundStyle(.secondary)
             }
             .padding()
+        }
+    }
+}
+
+extension PointOfSaleSettingsView {
+    enum HardwareDestination: Identifiable, CaseIterable {
+        case cardReaders
+        case scanners
+
+        var id: Self { self }
+
+        var title: String {
+            switch self {
+            case .scanners: return "Barcode scanners"
+            case .cardReaders: return "Card Readers"
+            }
+        }
+
+        var subtitle: String {
+            switch self {
+            case .scanners: return "Configure barcode scanner settings"
+            case .cardReaders: return "Manage card reader connections"
+            }
+        }
+
+        var icon: String {
+            switch self {
+            case .scanners: return "qrcode.viewfinder"
+            case .cardReaders: return "creditcard"
+            }
         }
     }
 }

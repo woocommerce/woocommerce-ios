@@ -1,5 +1,6 @@
 import Foundation
 import enum Alamofire.AFError
+import struct Alamofire.HTTPMethod
 import KeychainAccess
 
 #if canImport(UIKit)
@@ -34,13 +35,20 @@ public protocol ApplicationPasswordUseCase {
 }
 
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    /// Site Address
+    /// Authentication type
     ///
-    private let siteAddress: String
+    private let authenticationType: AuthenticationType
 
     /// WPOrg username
     ///
-    private let username: String
+    private var username: String {
+        switch authenticationType {
+        case .wporg(let username, _, _):
+            return username
+        case .wpcom(let emailAddress, _):
+            return emailAddress
+        }
+    }
 
     /// To generate and delete application password
     ///
@@ -63,13 +71,22 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 #endif
     }
 
+    /// Internal initializer
+    init(type: AuthenticationType,
+         network: Network,
+         keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+        self.authenticationType = type
+        self.storage = ApplicationPasswordStorage(keychain: keychain)
+        self.network = network
+    }
+
+    /// Public initializer for wporg authentication
     public init(username: String,
                 password: String,
                 siteAddress: String,
                 network: Network? = nil,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
-        self.siteAddress = siteAddress
-        self.username = username
+        self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = ApplicationPasswordStorage(keychain: keychain)
 
         if let network {
@@ -143,6 +160,24 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 }
 
 private extension DefaultApplicationPasswordUseCase {
+    /// Helper method to construct network requests either directly with the remote site
+    /// or through Jetpack proxy.
+    func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
+        switch authenticationType {
+        case .wpcom(_, let siteID):
+            JetpackRequest(wooApiVersion: .none,
+                           method: method,
+                           siteID: siteID,
+                           path: path,
+                           parameters: parameters)
+        case .wporg(_, _, let siteAddress):
+            RESTRequest(siteURL: siteAddress,
+                        method: method,
+                        path: path,
+                        parameters: parameters)
+        }
+    }
+
     /// Creates application password using WordPress.com authentication token
     ///
     /// - Returns: Generated `ApplicationPassword`
@@ -151,7 +186,9 @@ private extension DefaultApplicationPasswordUseCase {
         let passwordName = applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
-        let request = RESTRequest(siteURL: siteAddress, method: .post, path: Path.applicationPasswords, parameters: parameters)
+        let request = constructRequest(method: .post,
+                                       path: Path.applicationPasswords,
+                                       parameters: parameters)
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { [weak self] result in
                 guard let self else { return }
@@ -190,7 +227,7 @@ private extension DefaultApplicationPasswordUseCase {
     /// Get the UUID of the application password
     ///
     func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
-        let request = RESTRequest(siteURL: siteAddress, method: .get, path: Path.applicationPasswords)
+        let request = constructRequest(method: .get, path: Path.applicationPasswords)
 
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
@@ -217,7 +254,7 @@ private extension DefaultApplicationPasswordUseCase {
     /// Deletes application password using UUID
     ///
     func deleteApplicationPassword(_ uuid: String) async throws {
-        let request = RESTRequest(siteURL: siteAddress, method: .delete, path: Path.applicationPasswords + "/" + uuid)
+        let request = constructRequest(method: .delete, path: Path.applicationPasswords + "/" + uuid)
 
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
@@ -229,6 +266,13 @@ private extension DefaultApplicationPasswordUseCase {
                 }
             }
         }
+    }
+}
+
+extension DefaultApplicationPasswordUseCase {
+    enum AuthenticationType {
+        case wporg(username: String, password: String, siteAddress: String)
+        case wpcom(emailAddress: String, siteID: Int64)
     }
 }
 

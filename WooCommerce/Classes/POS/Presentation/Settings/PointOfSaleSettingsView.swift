@@ -94,7 +94,7 @@ extension PointOfSaleSettingsView {
         var subtitle: String {
             switch self {
             case .cardReaders:
-                return Localization.hardwareNavigationBarcodeSubtitle
+                return Localization.hardwareNavigationCardReaderSubtitle
             case .scanners:
                 return Localization.hardwareNavigationBarcodeSubtitle
             }

@@ -183,14 +183,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleReceipts
 
-    /// Enables barcode scanning with an external scanner in POS
-    ///
-    case pointOfSaleBarcodeScanningi1
-
-    /// Enables a simulated barcode scanner for testing in POS. Do not ship this one!
-    ///
-    case showPointOfSaleBarcodeSimulator
-
     /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
     ///
     case pointOfSaleAsATabi1
@@ -206,10 +198,6 @@ public enum FeatureFlag: Int {
     /// Enables displaying Point Of Sale as a filter in order list
     ///
     case pointOfSaleOrdersi2
-
-    /// Enables the Point of Sale Barcode Scanner set up flows, as part of i2
-    ///
-    case pointOfSaleBarcodeScanningi2
 
     /// Enables the entry point for Point of Sale Settings
     ///

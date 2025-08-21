@@ -60,21 +60,15 @@ struct POSFloatingControlView: View {
                         title: { Text(Localization.productRestrictionsInfo) },
                         icon: { Image(systemName: "magnifyingglass") })
                 }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
-                    Button {
-                        showBarcodeScanningModal = true
-                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-                    } label: {
-                        Label(
-                            title: {
-                                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
-                                    Text(Localization.barcodeScanningSetup)
-                                } else {
-                                    Text(Localization.barcodeScanning)
-                                }
-                            },
-                            icon: { Image(systemName: "barcode.viewfinder") })
-                    }
+                Button {
+                    showBarcodeScanningModal = true
+                    ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+                } label: {
+                    Label(
+                        title: {
+                            Text(Localization.barcodeScanningSetup)
+                        },
+                        icon: { Image(systemName: "barcode.viewfinder") })
                 }
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
                     Button {
@@ -123,11 +117,7 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
-            } else {
-                PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)
-            }
+            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
         }
         .frame(height: Constants.size)
         .background(Color.clear)
@@ -202,12 +192,6 @@ private extension POSFloatingControlView {
             value: "Where are my products?",
             comment: "The title of the menu button to view product restrictions info, shown in a popover menu. " +
             "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
-        )
-
-        static let barcodeScanning = NSLocalizedString(
-            "pointOfSale.floatingButtons.barcodeScanning.button.title",
-            value: "Barcode scanning",
-            comment: "The title of the menu button to view barcode scanner documentation, shown in a popover menu."
         )
 
         static let barcodeScanningSetup = NSLocalizedString(

@@ -62,7 +62,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
     let defaultSiteAPI = SiteAPI(siteID: 1, namespaces: [
         WooAPIVersion.mark3.rawValue,
         WooAPIVersion.mark4.rawValue,
-    ])
+    ], applicationPasswordAvailable: false)
 
     var sites: [Site] {
         return [defaultSite]

@@ -27,21 +27,32 @@ struct PointOfSaleSettingsView: View {
                         }
                     }
                     .safeAreaInset(edge: .bottom) {
-                        HStack {
-                            Image(systemName: SidebarNavigation.help.icon)
-                                .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading) {
-                                Text(SidebarNavigation.help.title)
+                        Button {
+                            selection = .help
+                        } label: {
+                            HStack {
+                                Image(systemName: SidebarNavigation.help.icon)
                                     .font(.posBodyLargeRegular())
-                                Text(SidebarNavigation.help.subtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(selection == .help ? .white : .primary)
+                                VStack(alignment: .leading) {
+                                    Text(SidebarNavigation.help.title)
+                                        .font(.posBodyLargeRegular())
+                                        .foregroundStyle(selection == .help ? .white : .primary)
+                                    Text(SidebarNavigation.help.subtitle)
+                                        .font(.posBodyMediumRegular())
+                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
+                                }
+                                Spacer()
                             }
-                            Spacer()
+                            .padding(.vertical, POSPadding.small)
+                            .padding(.horizontal, POSPadding.medium)
+                            .contentShape(Rectangle())
                         }
-                        .padding(.vertical, POSPadding.small)
-                        .padding(.horizontal, POSPadding.medium)
-                        .onTapGesture { selection = .help }
+                        .buttonStyle(.plain)
+                        .background(
+                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
+                                .fill(selection == .help ? Color.accentColor : Color.clear)
+                        )
                     }
                 }
                 Group {
@@ -76,6 +87,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                 Text("Store Settings")
                     .font(.title2)
                 Text("Store-related configuration")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()
@@ -90,6 +102,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Text("Hardware Settings")
                     .font(.title2)
                 Text("Hardware-related configuration")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()
@@ -104,6 +117,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Text("Help Settings")
                     .font(.title2)
                 Text("Help-related configuration")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .padding()

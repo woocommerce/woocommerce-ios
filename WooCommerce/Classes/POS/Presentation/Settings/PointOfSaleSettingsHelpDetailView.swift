@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
@@ -11,6 +13,11 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     .foregroundStyle(.secondary)
             }
             .padding()
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                }
+            }
         }
     }
 }

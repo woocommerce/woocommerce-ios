@@ -9,10 +9,23 @@ final class ApplicationPasswordMapperTests: XCTestCase {
 
     private let wpOrgUsername = "username"
 
+    /// Verifies that generate password using WPOrg credentials response is parsed properly
+    ///
+    func test_response_is_properly_parsed_while_generating_password_using_WPOrg_credentials() {
+        guard let password = mapGenerateUsingWPOrgResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(password.password.secretValue, "passwordvalue")
+        XCTAssertEqual(password.uuid, "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
+        XCTAssertEqual(password.wpOrgUsername, "username")
+    }
+
     /// Verifies that generate password using WPCOM token response is parsed properly
     ///
     func test_response_is_properly_parsed_while_generating_password_using_WPCOM_token() {
-        guard let password = mapGenerateUsingWPOrgResponse() else {
+        guard let password = mapGenerateUsingWPComResponse() else {
             XCTFail()
             return
         }
@@ -31,6 +44,16 @@ private extension ApplicationPasswordMapperTests {
     ///
     func mapGenerateUsingWPOrgResponse() -> ApplicationPassword? {
         guard let response = Loader.contentsOf("generate-application-password-using-wporg-creds-success") else {
+            return nil
+        }
+
+        return try? ApplicationPasswordMapper(wpOrgUsername: wpOrgUsername).map(response: response)
+    }
+
+    /// Returns the ApplicationPasswordMapper output upon receiving success response
+    ///
+    func mapGenerateUsingWPComResponse() -> ApplicationPassword? {
+        guard let response = Loader.contentsOf("generate-application-password-using-wpcom-success") else {
             return nil
         }
 

@@ -14,9 +14,13 @@ struct PointOfSaleSettingsView: View {
                         ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
                             HStack {
                                 Image(systemName: item.icon)
-                                VStack {
+                                    .font(.posBodyLargeRegular())
+                                VStack(alignment: .leading) {
                                     Text(item.title)
+                                        .font(.posBodyLargeRegular())
                                     Text(item.subtitle)
+                                        .font(.posBodyMediumRegular())
+                                        .foregroundStyle(.secondary)
                                 }
                             }
                             .tag(item)
@@ -26,9 +30,13 @@ struct PointOfSaleSettingsView: View {
                     Section {
                         HStack {
                             Image(systemName: SidebarNavigation.help.icon)
-                            VStack {
+                                .font(.posBodyLargeRegular())
+                            VStack(alignment: .leading) {
                                 Text(SidebarNavigation.help.title)
+                                    .font(.posBodyLargeRegular())
                                 Text(SidebarNavigation.help.subtitle)
+                                    .font(.posBodyMediumRegular())
+                                    .foregroundStyle(.secondary)
                             }
                         }
                         .tag(SidebarNavigation.help)
@@ -49,6 +57,7 @@ struct PointOfSaleSettingsView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle(Localization.navigationTitle)
+                .font(.posHeadingRegular)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") { dismiss() }

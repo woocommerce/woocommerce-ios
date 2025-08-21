@@ -86,6 +86,17 @@ struct POSFloatingControlView: View {
                         )
                     }
                 }
+
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+                    Button {
+                        // TODO: WOOMOB-1133
+                    } label: {
+                        Label(
+                            title: { Text(Localization.orders) },
+                            icon: { Image(systemName: "text.document") }
+                        )
+                    }
+                }
             } label: {
                 VStack {
                     Spacer()
@@ -161,6 +172,12 @@ private extension POSFloatingControlView {
     }
 
     enum Localization {
+        static let orders = NSLocalizedString(
+            "pointOfSale.floatingButtons.orders.button.title",
+            value: "Orders",
+            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
+        )
+
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",

@@ -58,7 +58,9 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
         // Total time
         let totalTime = CFAbsoluteTimeGetCurrent() - totalStartTime
         print("✅ Sync completed - Total: \(String(format: "%.2f", totalTime))s (Download: \(String(format: "%.2f", downloadTime))s, Parse: \(String(format: "%.2f", parseTime))s, Upsert: \(String(format: "%.2f", upsertTime))s)")
-        print("📊 Final counts: \(storageManager.viewStorage.countObjects(ofType: StorageProduct.self)) products, \(storageManager.viewStorage.countObjects(ofType: StorageProductVariation.self)) variations")
+        print(
+            "📊 Final counts: \(storageManager.viewStorage.countObjects(ofType: StorageProduct.self, matching: NSPredicate(format: "siteID == \(siteID)"))) products, \(storageManager.viewStorage.countObjects(ofType: StorageProductVariation.self, matching: NSPredicate(format: "siteID == \(siteID)"))) variations"
+        )
     }
 
     // MARK: - Private Methods

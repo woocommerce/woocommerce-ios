@@ -38,11 +38,11 @@ struct PointOfSaleSettingsView: View {
                 Group {
                     switch selection {
                     case .store:
-                        SettingsDetailView()
+                        PointOfSaleSettingsStoreDetailView()
                     case .hardware:
-                        SettingsDetailView()
+                        PointOfSaleSettingsHardwareDetailView()
                     case .help:
-                        SettingsDetailView()
+                        PointOfSaleSettingsHelpDetailView()
                     default:
                         EmptyView()
                     }
@@ -59,13 +59,41 @@ struct PointOfSaleSettingsView: View {
     }
 }
 
-struct SettingsDetailView: View {
+struct PointOfSaleSettingsStoreDetailView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Some title")
+                Text("Store Settings")
                     .font(.title2)
-                Text("Content goes here.")
+                Text("Store-related configuration")
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+        }
+    }
+}
+
+struct PointOfSaleSettingsHardwareDetailView: View {
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Hardware Settings")
+                    .font(.title2)
+                Text("Hardware-related configuration")
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+        }
+    }
+}
+
+struct PointOfSaleSettingsHelpDetailView: View {
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Help Settings")
+                    .font(.title2)
+                Text("Help-related configuration")
                     .foregroundStyle(.secondary)
             }
             .padding()

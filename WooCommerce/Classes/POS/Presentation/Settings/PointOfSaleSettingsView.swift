@@ -5,7 +5,12 @@ struct PointOfSaleSettingsView: View {
 
     var body: some View {
         HStack(spacing: POSSpacing.none) {
-            VStack {
+            VStack(alignment: .leading, spacing: POSSpacing.none) {
+                Text(Localization.navigationTitle)
+                    .font(.posHeadingRegular)
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.top, POSPadding.medium)
+
                 List(selection: $selection) {
                     Section {
                         ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in

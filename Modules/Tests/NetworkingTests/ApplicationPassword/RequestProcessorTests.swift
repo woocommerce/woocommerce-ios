@@ -144,6 +144,23 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertTrue(shouldRetry.retryRequired)
     }
 
+    func test_request_is_scheduled_for_retry_when_requestAdaptationFailed_error_occurs() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+
+        // When
+        let error = AFError.requestAdaptationFailed(error: RequestAuthenticatorError.applicationPasswordNotAvailable)
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(shouldRetry.retryRequired)
+    }
+
     func test_request_is_scheduled_for_retry_when_401_error_occurs() throws {
         // Given
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
@@ -321,7 +338,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     private(set) var notificationName: NSNotification.Name?
     private(set) var notificationObject: Any?
 
@@ -331,7 +348,7 @@ private class MockNotificationCenter: NotificationCenter {
     }
 }
 
-private class MockRequest: Alamofire.DataRequest {
+private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
     var fakeRetryCount: Int = 0
 
     override var retryCount: Int {

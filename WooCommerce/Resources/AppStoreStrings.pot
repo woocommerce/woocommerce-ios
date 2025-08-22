@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v23.0-whats-new"
+msgctxt "v23.1-whats-new"
 msgid ""
-"Faster performance and smoother experience! This update brings improved product loading, better tax calculations, and enhanced address lookup with map support. We've added guided barcode scanning for POS users and strengthened shipping requirements for EU destinations. Plus, we've fixed stability issues for a more reliable experience.\n"
+"Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -2,6 +2,28 @@ import Combine
 import Foundation
 import Alamofire
 
+/// Extension to observe default store ID and address
+/// The values are set in the UI layer (`SessionManager`).
+/// Ensure the keys are in synced with what's defined in `UserDefaults+Woo`.
+///
+private extension UserDefaults {
+    @objc dynamic var defaultStoreID: Int64 {
+        value(forKey: "defaultStoreID") as? Int64 ?? 0
+    }
+
+    @objc dynamic var defaultSiteAddress: String? {
+        string(forKey: "defaultSiteAddress")
+    }
+
+    @objc dynamic var defaultEmail: String? {
+        string(forKey: "defaultEmail")
+    }
+
+    @objc dynamic var defaultStoreHasApplicationPasswordEnabled: Bool {
+        bool(forKey: "defaultStoreHasApplicationPasswordEnabled")
+    }
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -19,7 +41,7 @@ public class AlamofireNetwork: Network {
 
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
-    private let requestConverter: RequestConverter
+    private var requestConverter: RequestConverter
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -27,16 +49,37 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
+    private var subscription: AnyCancellable?
+
     /// Public Initializer
     ///
     ///
     public required init(credentials: Credentials?,
                          appPasswordExperiment: AnyPublisher<Bool, Never>? = nil,
+                         userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil) {
-        self.requestConverter = RequestConverter(credentials: credentials)
+        self.requestConverter = {
+            let siteAddress: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress):
+                    return siteAddress
+                case let .applicationPassword(_, _, siteAddress):
+                    return siteAddress
+                default:
+                    return nil
+                }
+            }()
+            return RequestConverter(siteAddress: siteAddress)
+        }()
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
             self.alamofireSession = sessionManager
+        }
+
+        if let appPasswordExperiment, let credentials, case .wpcom = credentials {
+            observeSelectedSite(credentials: credentials,
+                                appPasswordExperiment: appPasswordExperiment,
+                                userDefaults: userDefaults)
         }
     }
 
@@ -143,6 +186,44 @@ private extension AlamofireNetwork {
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
+    }
+
+    /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
+    ///
+    func observeSelectedSite(credentials: Credentials,
+                             appPasswordExperiment: AnyPublisher<Bool, Never>,
+                             userDefaults: UserDefaults) {
+        subscription = appPasswordExperiment
+            .combineLatest(
+                Publishers.CombineLatest4(
+                    userDefaults.publisher(for: \.defaultStoreID),
+                    userDefaults.publisher(for: \.defaultSiteAddress),
+                    userDefaults.publisher(for: \.defaultEmail),
+                    userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
+                )
+            )
+            .sink { [weak self] result in
+                let (experiment, (siteID, siteAddress, emailAddress, applicationPasswordEnabled)) = result
+                guard let self, let siteAddress, siteID != 0, let emailAddress else {
+                    return
+                }
+                guard applicationPasswordEnabled && experiment else {
+                    requestConverter = RequestConverter(siteAddress: nil)
+                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    return
+                }
+                let site = DefaultRequestAuthenticator.JetpackSite(
+                    siteID: siteID,
+                    siteAddress: siteAddress,
+                    emailAddress: emailAddress
+                )
+                requestConverter = RequestConverter(siteAddress: siteAddress)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                    credentials: credentials,
+                    selectedSite: site,
+                    network: self
+                ))
+            }
     }
 }
 

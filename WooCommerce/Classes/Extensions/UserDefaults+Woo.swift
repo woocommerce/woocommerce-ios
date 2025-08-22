@@ -9,6 +9,7 @@ extension UserDefaults {
         case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
+        case defaultEmail
         case defaultSiteAddress
         case defaultStoreID
         case defaultStoreName

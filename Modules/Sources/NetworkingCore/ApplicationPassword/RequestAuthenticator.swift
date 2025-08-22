@@ -37,26 +37,53 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     private let applicationPasswordUseCase: ApplicationPasswordUseCase?
 
+    private let siteAddress: String?
+
+    typealias JetpackSite = (siteID: Int64, siteAddress: String, emailAddress: String)
+
     /// Sets up the authenticator with optional credentials and application password use case.
     /// `applicationPasswordUseCase` can be injected for unit tests.
     ///
-    init(credentials: Credentials?, applicationPasswordUseCase: ApplicationPasswordUseCase? = nil) {
+    init(credentials: Credentials?,
+         selectedSite: JetpackSite? = nil,
+         applicationPasswordUseCase: ApplicationPasswordUseCase? = nil,
+         network: Network? = nil) {
         self.credentials = credentials
-        let useCase: ApplicationPasswordUseCase? = {
+
+        self.applicationPasswordUseCase  = {
             if let applicationPasswordUseCase {
                 return applicationPasswordUseCase
-            } else if case let .wporg(username, password, siteAddress) = credentials {
+            }
+            switch credentials {
+            case let .some(.wporg(username, password, siteAddress)):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress)
-            } else if let credentials,
-                      case .applicationPassword(_, _, let siteAddress) = credentials {
+            case .some(.applicationPassword(_, _, let siteAddress)):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
-            } else {
+            case .some(.wpcom):
+                guard let network, let selectedSite else {
+                    return nil
+                }
+                return DefaultApplicationPasswordUseCase(
+                    type: .wpcom(emailAddress: selectedSite.emailAddress, siteID: selectedSite.siteID),
+                    network: network
+                )
+            default:
                 return nil
             }
         }()
-        self.applicationPasswordUseCase = useCase
+
+        self.siteAddress = {
+            switch credentials {
+            case let .some(.wporg(_, _, siteAddress)):
+                return siteAddress
+            case let .some(.applicationPassword(_, _, siteAddress)):
+                return siteAddress
+            default:
+                return selectedSite?.siteAddress
+            }
+        }()
     }
 
     /// Authenticates the provided urlRequest using the `credentials`
@@ -93,16 +120,6 @@ private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     ///
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
-        let siteAddress: String? = {
-            switch credentials {
-            case let .wporg(_, _, siteAddress):
-                return siteAddress
-            case let .applicationPassword(_, _, siteAddress):
-                return siteAddress
-            default:
-                return nil
-            }
-        }()
         guard let siteAddress,
               let url = urlRequest.url,
               url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {

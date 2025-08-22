@@ -206,4 +206,8 @@ public enum FeatureFlag: Int {
     /// Enables the entry point for Point of Sale Orders
     ///
     case pointOfSaleHistoricalOrdersi1
+
+    /// Enables switching Jetpack requests to use application password
+    ///
+    case applicationPasswordExperiment
 }

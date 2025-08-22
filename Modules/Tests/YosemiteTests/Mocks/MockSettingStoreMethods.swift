@@ -72,4 +72,8 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
             throw error
         }
     }
+
+    func retrievePointOfSaleSettings(siteID: Int64, onCompletion: @escaping (Result<[Yosemite.SiteSetting]?, any Error>) -> Void) {
+        // no-op
+    }
 }

@@ -9,6 +9,7 @@ internal protocol SettingStoreMethodsProtocol {
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
+    func retrievePointOfSaleSettings(siteID: Int64, onCompletion: @escaping (Result<[SiteSetting]?, Error>) -> Void)
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
@@ -65,6 +66,18 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
         siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
+    }
+
+    /// Retrieves Point of Sale settings
+    ///
+    func retrievePointOfSaleSettings(siteID: Int64, onCompletion: @escaping (Result<[SiteSetting]?, Error>) -> Void) {
+        siteSettingsRemote.loadPointOfSaleSettings(for: siteID) { settings, error in
+            if let error = error {
+                onCompletion(.failure(error))
+                return
+            }
+            onCompletion(.success(settings))
+        }
     }
 
     /// Retrieves the setting for whether coupons are enabled for the specified store

@@ -38,6 +38,8 @@ public class SettingStore: Store {
             methods.synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .retrieveSiteAPI(let siteID, let onCompletion):
             methods.retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case let .retrievePointOfSaleSettings(siteID, onCompletion):
+            methods.retrievePointOfSaleSettings(siteID: siteID, onCompletion: onCompletion)
         case let .retrieveCouponSetting(siteID, onCompletion):
             methods.retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableCouponSetting(siteID, onCompletion):

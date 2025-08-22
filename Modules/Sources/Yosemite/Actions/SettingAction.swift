@@ -21,6 +21,10 @@ public enum SettingAction: Action {
     ///
     case retrieveSiteAPI(siteID: Int64, onCompletion: (Result<SiteAPI, Error>) -> Void)
 
+    /// Retrieves the site settings specific of Point of Sale
+    ///
+    case retrievePointOfSaleSettings(siteID: Int64, onCompletion: (Result<[SiteSetting]?, Error>) -> Void)
+
     /// Retrieves the setting for whether coupons are enabled for the specified store
     ///
     case retrieveCouponSetting(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)

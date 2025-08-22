@@ -88,11 +88,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleBarcodeScanningi1:
-            return true
-        case .showPointOfSaleBarcodeSimulator:
-            // Enables a simulated barcode scanner in dev builds for testing. Do not ship this one!
-            return false
         case .pointOfSaleAsATabi1:
             return true
         case .pointOfSaleAsATabi2:
@@ -101,12 +96,12 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleOrdersi2:
             return true
-        case .pointOfSaleBarcodeScanningi2:
-            return true
         case .pointOfSaleSettingsi1:
             return false
         case .orderAddressMapSearch:
             return true
+        case .pointOfSaleHistoricalOrdersi1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

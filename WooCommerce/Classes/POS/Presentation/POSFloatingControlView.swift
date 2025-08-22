@@ -120,7 +120,7 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showBarcodeScanningModal) {
             PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
         }
-        .fullScreenCover(isPresented: $showOrders) {
+        .posFullScreenCover(isPresented: $showOrders) {
             PointOfSaleOrdersView(isPresented: $showOrders)
         }
         .frame(height: Constants.size)

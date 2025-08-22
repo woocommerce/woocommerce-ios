@@ -6,7 +6,7 @@ struct POSPageHeaderBackButton: View {
     init(configuration: POSPageHeaderBackButtonConfiguration) {
         self.configuration = configuration
     }
-    
+
     private var buttonIcon: String {
         configuration.buttonIcon ?? Constants.defaultBackButtonIcon
     }

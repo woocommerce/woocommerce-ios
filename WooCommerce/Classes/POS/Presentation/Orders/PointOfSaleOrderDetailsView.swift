@@ -41,8 +41,6 @@ struct PointOfSaleOrderDetailsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
         .background(Color.posSurface)
-        .navigationTitle(orderTitle)
-        .navigationBarTitleDisplayMode(.inline)
         .navigationBarHidden(true)
     }
 }

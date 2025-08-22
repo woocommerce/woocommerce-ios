@@ -11,7 +11,7 @@ struct POSPageHeaderBackButtonConfiguration {
     let state: State
     let action: () -> Void
     let buttonIcon: String?
-    
+
     init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil) {
         self.state = state
         self.action = action

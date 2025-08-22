@@ -6,8 +6,8 @@ struct PointOfSaleOrdersListView: View {
     let onClose: () -> Void
 
     private let orders = [
-        OrderItem(id: "order1", title: "Order 1"),
-        OrderItem(id: "order2", title: "Order 2")
+        Order(id: "order1", title: "Order 1"),
+        Order(id: "order2", title: "Order 2")
     ]
 
     var body: some View {
@@ -23,14 +23,13 @@ struct PointOfSaleOrdersListView: View {
                         .padding(.vertical, 8)
                 }
             }
-            .listStyle(.plain)
         }
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
     }
 }
 
-private struct OrderItem {
+private struct Order {
     let id: String
     let title: String
 }

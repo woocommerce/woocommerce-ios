@@ -23,6 +23,7 @@ struct PointOfSaleOrdersListView: View {
                         .padding(.vertical, 8)
                 }
             }
+            .listStyle(.plain)
         }
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)

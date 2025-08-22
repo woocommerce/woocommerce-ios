@@ -9,6 +9,7 @@ internal protocol SettingStoreMethodsProtocol {
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
+    // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64, onCompletion: @escaping (Result<[SiteSetting]?, Error>) -> Void)
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
@@ -70,6 +71,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
 
     /// Retrieves Point of Sale settings
     ///
+    // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64, onCompletion: @escaping (Result<[SiteSetting]?, Error>) -> Void) {
         siteSettingsRemote.loadPointOfSaleSettings(for: siteID) { settings, error in
             if let error = error {

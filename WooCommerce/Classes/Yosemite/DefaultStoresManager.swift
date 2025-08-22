@@ -121,7 +121,6 @@ class DefaultStoresManager: StoresManager {
     }
 
     private let appPasswordExperimentEnabled: CurrentValueSubject<Bool, Never>
-    private let appPasswordExperimentEnabledPublisher: AnyPublisher<Bool, Never>
 
     /// Designated Initializer
     ///
@@ -131,17 +130,14 @@ class DefaultStoresManager: StoresManager {
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
         let appPasswordExperimentEnabled = CurrentValueSubject<Bool, Never>(false)
-        let appPasswordExperimentEnabledPublisher = appPasswordExperimentEnabled.eraseToAnyPublisher()
-
         self.state = AuthenticatedState(
             sessionManager: sessionManager,
-            appPasswordExperiment: appPasswordExperimentEnabledPublisher,
+            appPasswordExperiment: appPasswordExperimentEnabled.eraseToAnyPublisher(),
         ) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.appPasswordExperimentEnabled = appPasswordExperimentEnabled
-        self.appPasswordExperimentEnabledPublisher = appPasswordExperimentEnabledPublisher
 
         isLoggedIn = isAuthenticated
         if isLoggedIn {
@@ -177,7 +173,7 @@ class DefaultStoresManager: StoresManager {
     func authenticate(credentials: Credentials) -> StoresManager {
         state = AuthenticatedState(
             credentials: credentials,
-            appPasswordExperiment: appPasswordExperimentEnabledPublisher
+            appPasswordExperiment: appPasswordExperimentEnabled.eraseToAnyPublisher()
         )
         sessionManager.defaultCredentials = credentials
 

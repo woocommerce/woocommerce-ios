@@ -172,7 +172,6 @@ private extension POSButtonSize {
 #if DEBUG
 
 struct POSButtonStyle_Previews: View {
-    @State private var showsLoadingState: Bool = false
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
@@ -188,9 +187,9 @@ struct POSButtonStyle_Previews: View {
                 previewSection(title: "Outlined Buttons - Extra Small",
                                variant: .outlined, size: .extraSmall)
 
-                loadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
+                LoadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
 
-                loadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
+                LoadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -231,13 +230,24 @@ struct POSButtonStyle_Previews: View {
             }
         }
     }
+}
 
-    private func loadingPreviewSection(title: String, size: POSButtonSize) -> some View {
+private struct LoadingPreviewSection: View {
+    let title: String
+    let size: POSButtonSize
+    @State private var showsLoadingState: Bool = false
+
+    var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(title)
                 .font(.headline)
 
             Button("Show loading state") {
+                showsLoadingState.toggle()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: size, isLoading: showsLoadingState))
+
+            Button("Show loading state in\nmultiple\nlines") {
                 showsLoadingState.toggle()
             }
             .buttonStyle(POSFilledButtonStyle(size: size, isLoading: showsLoadingState))

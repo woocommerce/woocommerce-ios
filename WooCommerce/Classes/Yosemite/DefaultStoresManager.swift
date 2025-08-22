@@ -120,6 +120,9 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
+    private let appPasswordExperimentEnabled: CurrentValueSubject<Bool, Never>
+    private let appPasswordExperimentEnabledPublisher: AnyPublisher<Bool, Never>
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
@@ -127,12 +130,23 @@ class DefaultStoresManager: StoresManager {
          defaults: UserDefaults = .standard,
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
-        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        let appPasswordExperimentEnabled = CurrentValueSubject<Bool, Never>(false)
+        let appPasswordExperimentEnabledPublisher = appPasswordExperimentEnabled.eraseToAnyPublisher()
+
+        self.state = AuthenticatedState(
+            sessionManager: sessionManager,
+            appPasswordExperiment: appPasswordExperimentEnabledPublisher,
+        ) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.appPasswordExperimentEnabled = appPasswordExperimentEnabled
+        self.appPasswordExperimentEnabledPublisher = appPasswordExperimentEnabledPublisher
 
         isLoggedIn = isAuthenticated
+        if isLoggedIn {
+            checkApplicationPasswordExperimentFeatureFlag()
+        }
     }
 
     /// This should only be invoked after all the ServiceLocator dependencies in this function are initialized to avoid circular reference.
@@ -161,7 +175,10 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials)
+        state = AuthenticatedState(
+            credentials: credentials,
+            appPasswordExperiment: appPasswordExperimentEnabledPublisher
+        )
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
@@ -332,6 +349,13 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
+
+    /// Uses local feature flag for development phase.
+    /// TODO: Switch to remote feature flag before release.
+    func checkApplicationPasswordExperimentFeatureFlag() {
+        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
+        appPasswordExperimentEnabled.send(enabled)
+    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///

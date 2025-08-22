@@ -10,13 +10,10 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_are_not_empty_after_updating_default_site() throws {
         // Arrange
-        // Sets mock `FeatureFlagService` before `MainTabBarController` is initialized so that the feature flags are set correctly.
-        let featureFlagService = MockFeatureFlagService()
-
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
-            return MainTabBarController(coder: coder, featureFlagService: featureFlagService, stores: storesManager)
+            return MainTabBarController(coder: coder, featureFlagService: MockFeatureFlagService(), stores: storesManager)
         }) else {
             return
         }
@@ -43,8 +40,6 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_include_pos_tab_when_pos_tab_is_visible() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
         mockPOSEligibilityChecker.visibility = true
 
@@ -52,7 +47,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
+                                        featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
@@ -85,8 +80,6 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_exclude_pos_tab_when_pos_tab_is_not_visible() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
         mockPOSEligibilityChecker.visibility = false
 
@@ -94,7 +87,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
+                                        featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
@@ -125,8 +118,6 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
     func test_tab_view_controllers_do_not_change_when_pos_visibility_changes() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
         mockPOSEligibilityChecker.visibility = false
 
@@ -134,7 +125,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
+                                        featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {

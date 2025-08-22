@@ -1,16 +1,21 @@
 import SwiftUI
 
 struct PointOfSaleSettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var selection: SidebarNavigation? = .store
 
     var body: some View {
+        POSPageHeaderView(
+            title: Localization.navigationTitle,
+            trailingContent: {
+                Button(action: { dismiss() }) {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+            })
         HStack(spacing: POSSpacing.none) {
             VStack(alignment: .leading, spacing: POSSpacing.none) {
-                Text(Localization.navigationTitle)
-                    .font(.posHeadingRegular)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.top, POSPadding.medium)
-
                 List(selection: $selection) {
                     Section {
                         ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in

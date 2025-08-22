@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHardwareDetailView: View {
-    @Environment(\.dismiss) private var dismiss
     @State private var navigationPath: [PointOfSaleSettingsView.HardwareDestination] = []
 
     var body: some View {
@@ -19,11 +18,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
                 }
             }
             .navigationDestination(for: PointOfSaleSettingsView.HardwareDestination.self) { destination in

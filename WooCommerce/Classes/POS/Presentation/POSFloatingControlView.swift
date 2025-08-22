@@ -11,6 +11,7 @@ struct POSFloatingControlView: View {
     @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showOrders: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -83,7 +84,7 @@ struct POSFloatingControlView: View {
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                     Button {
-                        // TODO: WOOMOB-1133
+                        showOrders = true
                     } label: {
                         Label(
                             title: { Text(Localization.orders) },
@@ -118,6 +119,9 @@ struct POSFloatingControlView: View {
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
             PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+        }
+        .fullScreenCover(isPresented: $showOrders) {
+            PointOfSaleOrdersView(isPresented: $showOrders)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

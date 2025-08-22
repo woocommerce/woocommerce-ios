@@ -83,11 +83,14 @@ public struct CatalogStatusResponse: Decodable {
     public let downloadURL: String?
     /// Filename of the generated catalog
     public let filename: String
+    /// Progress percentage of the catalog generation (0.0 to 100.0)
+    public let progress: Double
 
     private enum CodingKeys: String, CodingKey {
         case status
         case downloadURL = "download_url"
         case filename
+        case progress
     }
 }
 

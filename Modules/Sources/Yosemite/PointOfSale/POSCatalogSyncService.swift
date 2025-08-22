@@ -84,7 +84,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
     }
 
     private func pollForCatalogCompletion(jobID: String) async throws -> String {
-        let maxAttempts = 300 // 5 minutes max (300 seconds)
+        let maxAttempts = 1000 // each attempt is made 1 second after the last one completes
         var attempts = 0
 
         while attempts < maxAttempts {
@@ -98,7 +98,7 @@ public final class POSCatalogSyncService: POSCatalogSyncServiceProtocol {
                 return downloadURL
 
             case .pending, .processing:
-                print("🟣 Catalog generation \(statusResponse.status)... (attempt \(attempts + 1)/\(maxAttempts))")
+                print("🟣 Catalog generation \(statusResponse.status) at \(statusResponse.progress)%... (attempt \(attempts + 1)/\(maxAttempts))")
                 try await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
                 attempts += 1
             }

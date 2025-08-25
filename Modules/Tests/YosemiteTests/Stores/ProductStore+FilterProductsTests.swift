@@ -201,9 +201,9 @@ final class ProductStore_FilterProductsTests: XCTestCase {
     func test_synchronizeProducts_with_non_core_product_type_network_error_then_it_returns_success_without_next_page() throws {
         // Given
         let remote = MockProductsRemote()
+        let errorData = "{\"code\":\"rest_invalid_param\",\"message\":\"Invalid parameter(s): type\"}".data(using: .utf8)!
         remote.whenLoadingAllProducts(siteID: sampleSiteID,
-                                      thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
-                                                                               message: "Invalid parameter(s): type")))
+                                      thenReturn: .failure(NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -236,9 +236,9 @@ final class ProductStore_FilterProductsTests: XCTestCase {
     func test_synchronizeProducts_with_core_product_type_network_error_then_it_returns_failure() throws {
         // Given
         let remote = MockProductsRemote()
+        let errorData = "{\"code\":\"rest_invalid_param\",\"message\":\"Invalid parameter(s): type\"}".data(using: .utf8)!
         remote.whenLoadingAllProducts(siteID: sampleSiteID,
-                                      thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
-                                                                               message: "Invalid parameter(s): type")))
+                                      thenReturn: .failure(NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -264,8 +264,9 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             // Then
             XCTAssertTrue(result.isFailure)
             let error = try XCTUnwrap(result.failure)
-            XCTAssertEqual(error as? DotcomError, .unknown(code: "rest_invalid_param",
-                                                           message: "Invalid parameter(s): type"))
+            let networkError = error as? NetworkError
+            XCTAssertEqual(networkError?.apiErrorCode, "rest_invalid_param")
+            XCTAssertEqual(networkError?.apiErrorMessage, "Invalid parameter(s): type")
         }
     }
 

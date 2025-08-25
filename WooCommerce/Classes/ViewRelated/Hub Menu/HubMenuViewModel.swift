@@ -57,10 +57,6 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
-    /// POS Section Element
-    ///
-    @Published private(set) var posElement: HubMenuItem?
-
     /// Settings Elements
     ///
     @Published private(set) var settingsElements: [HubMenuItem] = []
@@ -89,38 +85,6 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
-
-    private(set) lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
-        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
-    }()
-
-    private(set) lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
-        PointOfSaleFixedItemFetchStrategyFactory(fixedStrategy: posItemFetchStrategyFactory.popularStrategy())
-    }()
-
-    private(set) lazy var posCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory = {
-        PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
-                                              currencySettings: ServiceLocator.currencySettings,
-                                              credentials: credentials,
-                                              storage: ServiceLocator.storageManager)
-    }()
-
-    private(set) lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
-        let storage = ServiceLocator.storageManager
-        let currencySettings = ServiceLocator.currencySettings
-
-        return PointOfSaleCouponService(siteID: siteID,
-                                        currencySettings: currencySettings,
-                                        credentials: credentials,
-                                        storage: storage)
-    }()
-
-    private(set) lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
-        PointOfSaleBarcodeScanService(
-            siteID: siteID,
-            credentials: credentials,
-            currencySettings: ServiceLocator.currencySettings)
-    }()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
@@ -236,11 +200,6 @@ final class HubMenuViewModel: ObservableObject {
         isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
-    func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
-        updateInAppNotifications(isPointOfSaleActive)
-        updateTrackEventPrefix(isPointOfSaleActive)
-    }
-
     func trackMenuItemTapEvent(menu: HubMenuItem) {
         analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
     }
@@ -264,26 +223,6 @@ final class HubMenuViewModel: ObservableObject {
 
     deinit {
         NotificationCenter.default.removeObserver(self, name: .setUpTapToPayViewDidAppear, object: nil)
-    }
-}
-
-// MARK: - Helper method for WooCommerce POS
-//
-private extension HubMenuViewModel {
-    // Disables foreground in-app notifications when Point of Sale is active
-    //
-    func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
-        if isPointOfSaleActive {
-            ServiceLocator.pushNotesManager.disableInAppNotifications()
-        } else {
-            ServiceLocator.pushNotesManager.enableInAppNotifications()
-        }
-    }
-
-    // Decorates track events with a different prefix when Point of Sale is active
-    //
-    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
-        TracksProvider.setPOSMode(isPointOfSaleActive)
     }
 }
 

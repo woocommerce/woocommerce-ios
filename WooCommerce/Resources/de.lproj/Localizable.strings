@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-13 14:54:03+0000 */
+/* Translation-Revision-Date: 2025-08-19 16:02:36+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -8373,13 +8373,13 @@ If your translation of that term also happens to contains a hyphen, please be su
 "analyticsHub.googleCampaignsCTA.message" = "Steigere deine Umsätze und generiere mehr Traffic mit Google Ads.";
 
 /* Label for button to enable Jetpack Stats */
-"analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack Stats aktivieren";
+"analyticsHub.jetpackStatsCTA.buttonLabel" = "Jetpack-Statistiken aktivieren";
 
 /* Error shown when Jetpack Stats can't be enabled in the Analytics Hub. */
-"analyticsHub.jetpackStatsCTA.errorNotice" = "Jetpack Stats konnte in deinem Shop nicht aktiviert werden";
+"analyticsHub.jetpackStatsCTA.errorNotice" = "Jetpack-Statistiken konnte in deinem Shop nicht aktiviert werden";
 
 /* Text displayed in the Analytics Hub when the Jetpack Stats module is disabled */
-"analyticsHub.jetpackStatsCTA.message" = "Aktiviere Jetpack Stats, um die Sitzungsanalysen deines Shops anzuzeigen.";
+"analyticsHub.jetpackStatsCTA.message" = "Aktiviere Jetpack-Statistiken, um die Sitzungsanalysen deines Shops anzuzeigen.";
 
 /* Title for the orders analytics report linked in the Analytics Hub */
 "analyticsHub.orderCard.reportTitle" = "Bestellbericht";

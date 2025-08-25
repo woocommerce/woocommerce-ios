@@ -71,9 +71,6 @@ final class MainTabBarControllerTests: XCTestCase {
         let pushNotificationsManager = MockPushNotificationsManager()
         ServiceLocator.setPushNotesManager(pushNotificationsManager)
 
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
-
         // Hides POS tab.
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
         mockPOSEligibilityChecker.visibility = false
@@ -85,7 +82,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         stores: storesManager,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
@@ -455,9 +451,6 @@ final class MainTabBarControllerTests: XCTestCase {
     @available(iOS 17.0, *)
     func test_pos_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
-
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
         mockPOSEligibilityChecker.initialVisibility = true
 
@@ -472,7 +465,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         stores: stores,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })
         }) else {
@@ -526,9 +518,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_pos_tab_visibility_is_cached_after_eligibility_check() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
-
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
         mockPOSEligibilityChecker.initialVisibility = false
 
@@ -538,7 +527,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         stores: stores,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker },
                                         posEligibilityService: mockPOSEligibilityService)
@@ -563,9 +551,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleAsATabi1] = true
-
         let mockPOSEligibilityChecker = MockPOSEligibilityChecker()
         mockPOSEligibilityChecker.visibility = true
 
@@ -573,7 +558,6 @@ final class MainTabBarControllerTests: XCTestCase {
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
-                                        featureFlagService: featureFlagService,
                                         analytics: self.analytics,
                                         stores: storesManager,
                                         posEligibilityCheckerFactory: { _ in mockPOSEligibilityChecker })

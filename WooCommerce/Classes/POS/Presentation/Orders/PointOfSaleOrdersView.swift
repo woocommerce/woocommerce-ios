@@ -24,7 +24,7 @@ struct PointOfSaleOrdersView: View {
 }
 
 // MARK: - Split View
-/// An alternative split view implementation that gives more control of the splti view design, including the sidebar and content arrangement and separator colors
+/// An alternative split view implementation that gives more control of the split view design, including the sidebar and content arrangement and separator colors
 /// Just as NavigationSplitView, it adapts to a list -> details navigation on smaller screens
 /// It may be used as a common component in the future
 ///

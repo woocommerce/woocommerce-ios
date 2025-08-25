@@ -326,6 +326,10 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         return urlRequest
     }
 
+    func deleteApplicationPassword() async throws {
+        fatalError("Not implemented")
+    }
+
     func generateApplicationPassword() async throws {
         generateApplicationPasswordCalled = true
         if let mockErrorWhileGeneratingPassword {

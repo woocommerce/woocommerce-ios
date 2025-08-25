@@ -21,6 +21,16 @@ final class RequestProcessor: RequestInterceptor {
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
         requestAuthenticator = authenticator
     }
+
+    func deleteApplicationPassword() {
+        Task {
+            do {
+                try await requestAuthenticator.deleteApplicationPassword()
+            } catch {
+                DDLogError("⛔️ Error deleting app password: \(error)")
+            }
+        }
+    }
 }
 
 // MARK: Request Authentication

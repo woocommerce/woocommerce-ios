@@ -75,6 +75,12 @@ public class AlamofireNetwork: Network {
         }
     }
 
+    /// Delete application password
+    ///
+    public func deleteApplicationPassword() {
+        requestAuthenticator.deleteApplicationPassword()
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:

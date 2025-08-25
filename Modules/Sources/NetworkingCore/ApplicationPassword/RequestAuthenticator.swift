@@ -21,6 +21,10 @@ protocol RequestAuthenticator {
     ///
     func generateApplicationPassword() async throws
 
+    /// Deletes application password
+    ///
+    func deleteApplicationPassword() async throws
+
     /// Checks whether the given URLRequest is eligible for retyring
     ///
     func shouldRetry(_ urlRequest: URLRequest) -> Bool
@@ -111,6 +115,11 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
         isRestAPIRequest(urlRequest)
+    }
+
+    func deleteApplicationPassword() async throws {
+        guard let applicationPasswordUseCase else { return }
+        try await applicationPasswordUseCase.deletePassword()
     }
 }
 

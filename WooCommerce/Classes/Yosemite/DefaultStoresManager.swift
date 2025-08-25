@@ -249,7 +249,13 @@ class DefaultStoresManager: StoresManager {
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
 
-        if isAuthenticated {
+        if let state = state as? AuthenticatedState {
+            if case .wpcom = sessionManager.defaultCredentials {
+                /// Uses the existing network to delete app password if authenticated with wpcom
+                state.deleteApplicationPassword()
+            } else {
+                sessionManager.deleteApplicationPassword()
+            }
             let resetAction = CardPresentPaymentAction.reset
             dispatch(resetAction)
         }

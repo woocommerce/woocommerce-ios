@@ -24,6 +24,8 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
+    private let network: AlamofireNetwork
+
     /// Designated Initializer
     ///
     init(credentials: Credentials, selectedSite: AnyPublisher<Networking.Site?, Never>) {
@@ -35,7 +37,7 @@ class AuthenticatedState: StoresManagerState {
                 return JetpackSite(siteID: site.siteID, siteAddress: site.url)
             }
             .eraseToAnyPublisher()
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: site)
+        self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -149,6 +151,10 @@ class AuthenticatedState: StoresManagerState {
             .prepend(sessionManager.defaultSite)
             .eraseToAnyPublisher()
         self.init(credentials: credentials, selectedSite: selectedSite)
+    }
+
+    func deleteApplicationPassword() {
+        network.deleteApplicationPassword()
     }
 
     /// Executed before the current state is deactivated.

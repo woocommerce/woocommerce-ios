@@ -450,6 +450,16 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             }
         }
     }
+
+    public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        let orders = try await loadAllOrders(for: siteID,
+                                           createdVia: "pos-rest-api",
+                                           pageNumber: pageNumber,
+                                           pageSize: pageSize)
+
+        let hasMorePages = orders.count == pageSize
+        return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
+    }
 }
 
 

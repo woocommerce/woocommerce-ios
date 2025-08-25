@@ -70,7 +70,7 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
         XCTAssertTrue(mockOrdersRemote.loadPOSOrdersCalled)
         XCTAssertEqual(mockOrdersRemote.spyPageNumber, 1)
         XCTAssertEqual(mockOrdersRemote.spyPageSize, 25)
-        XCTAssertEqual(pagedOrders.items.first?.orderID, 1001)
+        XCTAssertEqual(pagedOrders.items.first?.id, 1001)
     }
 
     func test_PointOfSaleOrderServiceProtocol_returns_correct_pagination_when_more_pages_available() async throws {

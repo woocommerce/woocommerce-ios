@@ -1,5 +1,7 @@
 import Foundation
-import struct NetworkingCore.Order
+import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
 
 struct OrdersViewState: Equatable {
     var containerState: ItemsContainerState
@@ -7,18 +9,18 @@ struct OrdersViewState: Equatable {
 }
 
 enum OrderListState: Equatable {
-    case loading([Order])
-    case loaded([Order], hasMoreItems: Bool)
+    case loading([POSOrder])
+    case loaded([POSOrder], hasMoreItems: Bool)
     case empty
     case error(PointOfSaleErrorState)
-    case inlineError([Order], error: PointOfSaleErrorState, context: InlineErrorContext)
+    case inlineError([POSOrder], error: PointOfSaleErrorState, context: InlineErrorContext)
 
     enum InlineErrorContext {
         case refresh
         case pagination
     }
 
-    var orders: [Order] {
+    var orders: [POSOrder] {
         switch self {
         case .loading(let orders):
             return orders

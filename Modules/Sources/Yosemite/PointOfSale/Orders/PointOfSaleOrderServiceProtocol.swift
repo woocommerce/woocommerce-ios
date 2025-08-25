@@ -1,6 +1,5 @@
 import Foundation
 import struct NetworkingCore.PagedItems
-import struct NetworkingCore.Order
 
 public enum PointOfSaleOrderServiceError: Error, Equatable {
     case requestFailed
@@ -9,5 +8,5 @@ public enum PointOfSaleOrderServiceError: Error, Equatable {
 }
 
 public protocol PointOfSaleOrderServiceProtocol {
-    func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<Order>
+    func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder>
 }

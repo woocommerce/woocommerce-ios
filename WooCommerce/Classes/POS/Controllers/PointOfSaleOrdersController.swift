@@ -2,7 +2,9 @@ import Foundation
 import Observation
 import enum Yosemite.PointOfSaleOrderServiceError
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import struct NetworkingCore.Order
+import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 
 protocol PointOfSaleOrdersControllerProtocol {
@@ -16,7 +18,7 @@ protocol PointOfSaleOrdersControllerProtocol {
     var ordersViewState: OrdersViewState
     private let paginationTracker: AsyncPaginationTracker
     private var orderProvider: PointOfSaleOrderServiceProtocol
-    private var cachedOrders: [Order] = []
+    private var cachedOrders: [POSOrder] = []
 
     init(orderProvider: PointOfSaleOrderServiceProtocol,
          initialState: OrdersViewState = OrdersViewState(containerState: .loading,
@@ -72,7 +74,8 @@ protocol PointOfSaleOrdersControllerProtocol {
                 ordersViewState = OrdersViewState(containerState: .content, ordersState: .error(.errorOnLoadingOrders(error: error)))
             } else {
                 ordersViewState = OrdersViewState(containerState: .content,
-                                                ordersState: .inlineError(orders, error: .errorOnLoadingOrders(error: error), context: OrderListState.InlineErrorContext.refresh))
+                                                ordersState: .inlineError(orders, error: .errorOnLoadingOrders(error: error),
+                                                                          context: OrderListState.InlineErrorContext.refresh))
             }
         }
     }
@@ -93,7 +96,7 @@ protocol PointOfSaleOrdersControllerProtocol {
             let newOrders = pagedOrders.items
             var allOrders = appendToExistingOrders ? ordersViewState.ordersState.orders : []
             let uniqueNewOrders = newOrders.filter { newOrder in
-                !allOrders.contains(where: { $0.orderID == newOrder.orderID })
+                !allOrders.contains(where: { $0.id == newOrder.id })
             }
             allOrders.append(contentsOf: uniqueNewOrders)
 

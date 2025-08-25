@@ -13,7 +13,7 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         self.ordersRemote = ordersRemote
     }
 
-    public func providePointOfSaleOrders(pageNumber: Int = 1) async throws -> PagedItems<Order> {
+    public func providePointOfSaleOrders(pageNumber: Int = 1) async throws -> PagedItems<POSOrder> {
         do {
             let pagedOrders = try await ordersRemote.loadPOSOrders(
                 siteID: siteID,
@@ -25,7 +25,12 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
-            return pagedOrders
+            // Convert Order objects to POSOrder objects
+            let posOrders = pagedOrders.items.map { POSOrder(from: $0) }
+
+            return .init(items: posOrders,
+                        hasMorePages: pagedOrders.hasMorePages,
+                        totalItems: pagedOrders.totalItems)
         } catch AFError.explicitlyCancelled {
             throw PointOfSaleOrderServiceError.requestCancelled
         } catch {

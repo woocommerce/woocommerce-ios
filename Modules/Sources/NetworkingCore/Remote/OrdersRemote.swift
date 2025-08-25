@@ -452,11 +452,25 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        let orders = try await loadAllOrders(for: siteID,
-                                           createdVia: "pos-rest-api",
-                                           pageNumber: pageNumber,
-                                           pageSize: pageSize)
+        let parameters: [String: Any] = [
+            ParameterKeys.page: String(pageNumber),
+            ParameterKeys.perPage: String(pageSize),
+            ParameterKeys.statusKey: Defaults.statusAny,
+            ParameterKeys.usesGMTDates: true,
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
+            ParameterKeys.createdVia: "pos-rest-api"
+        ]
 
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   parameters: parameters,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderListMapper(siteID: siteID)
+
+        let orders: [Order] = try await enqueue(request, mapper: mapper)
         let hasMorePages = orders.count == pageSize
         return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
     }
@@ -506,6 +520,11 @@ public extension OrdersRemote {
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
+        ]
+        static let posOrderFieldValues: String = posOrderFields.joined(separator: ",")
+        private static let posOrderFields = [
+            "id", "number", "date_created_gmt", "status", "total", "billing", "payment_method_title",
+            "line_items", "refunds", "meta_data", "currency", "currency_symbol"
         ]
         static let dateModifiedField = "date_modified_gmt"
     }

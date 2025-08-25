@@ -175,7 +175,7 @@ public extension NetworkError {
     /// This is used in Remote.mapNetworkError to maintain real HTTP status codes while adding parsed API error details
     static func from(dotcomError: DotcomError, originalNetworkError: NetworkError) -> NetworkError {
         let enhancedErrorData = dotcomError.createEnhancedErrorResponseData(originalResponse: originalNetworkError.response)
-        
+
         switch originalNetworkError {
         case .notFound:
             return .notFound(response: enhancedErrorData)
@@ -197,16 +197,16 @@ private extension DotcomError {
     /// Creates enhanced JSON error response data that preserves original response while adding structured error details
     func createEnhancedErrorResponseData(originalResponse: Data?) -> Data? {
         let (code, message) = getCodeAndMessage()
-        
+
         let errorResponse: [String: Any] = [
             "code": code,
             "message": message
         ]
-        
+
         // Return the enhanced structured error data (the original response is already parsed)
         return try? JSONSerialization.data(withJSONObject: errorResponse)
     }
-    
+
     /// Extracts the appropriate error code and message for each DotcomError case
     private func getCodeAndMessage() -> (code: String, message: String) {
         switch self {

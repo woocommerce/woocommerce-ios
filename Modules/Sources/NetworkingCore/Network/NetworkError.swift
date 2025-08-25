@@ -25,14 +25,14 @@ public enum NetworkError: Error, Equatable {
     /// The HTTP response code of the network error, for cases that are deducted from the status code.
     public var responseCode: Int? {
         switch self {
-            case .notFound:
-                return StatusCode.notFound
-            case .timeout:
-                return StatusCode.timeout
-            case let .unacceptableStatusCode(statusCode, _):
-                return statusCode
-            default:
-                return nil
+        case .notFound:
+            return StatusCode.notFound
+        case .timeout:
+            return StatusCode.timeout
+        case let .unacceptableStatusCode(statusCode, _):
+            return statusCode
+        default:
+            return nil
         }
     }
 
@@ -49,19 +49,19 @@ public enum NetworkError: Error, Equatable {
             return nil
         }
     }
-    
+
     /// Parsed API error details from response data
     public var apiErrorDetails: APIErrorDetails? {
         guard let data = response else { return nil }
         return try? JSONDecoder().decode(APIErrorDetails.self, from: data)
     }
-    
+
     /// API error code from response, if available
     public var apiErrorCode: String? {
         return apiErrorDetails?.code
     }
-    
-    /// API error message from response, if available  
+
+    /// API error message from response, if available
     public var apiErrorMessage: String? {
         return apiErrorDetails?.message
     }
@@ -152,7 +152,7 @@ public extension NetworkError {
             return false
         }
     }
-    
+
     /// Returns true if this error represents an authorization issue
     var isUnauthorized: Bool {
         switch self {
@@ -163,10 +163,10 @@ public extension NetworkError {
         default:
             // Check for specific unauthorized error codes in API response
             return apiErrorCode?.contains("unauthorized") == true ||
-                   apiErrorCode?.contains("invalid_token") == true
+            apiErrorCode?.contains("invalid_token") == true
         }
     }
-    
+
     /// Returns true if this error represents a timeout
     var isTimeout: Bool {
         switch self {
@@ -178,7 +178,7 @@ public extension NetworkError {
             return false
         }
     }
-    
+
     /// Returns true if this error represents invalid input/parameters
     var isInvalidInput: Bool {
         switch self {
@@ -188,7 +188,7 @@ public extension NetworkError {
             return apiErrorCode?.contains("invalid_param") == true
         }
     }
-    
+
     /// Returns a user-friendly error message, preferring API error message over generic description
     var userFriendlyMessage: String {
         return apiErrorMessage ?? localizedDescription
@@ -201,7 +201,7 @@ public extension NetworkError {
 public struct APIErrorDetails: Codable {
     public let code: String
     public let message: String?
-    
+
     public init(code: String, message: String?) {
         self.code = code
         self.message = message

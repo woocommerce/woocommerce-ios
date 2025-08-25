@@ -53,17 +53,17 @@ struct PointOfSaleSettingsStoreDetailView: View {
             }
         }
         .task {
-            await posSettingsService.loadSettings()
+            await posSettingsService.retrievePOSReceiptSettings()
         }
     }
 
     @ViewBuilder
-    private func settingValueView(for value: String) -> some View {
+    private func settingValueView(for value: String?) -> some View {
         if posSettingsService.isLoading {
             ProgressView()
                 .controlSize(.small)
         } else {
-            Text(value)
+            Text(value ?? "Not set")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

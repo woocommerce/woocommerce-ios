@@ -2,11 +2,11 @@ import Yosemite
 import Observation
 
 @Observable final class PointOfSaleSettingsService {
-    private(set) var receiptStoreName: String = "Not set"
-    private(set) var receiptStoreAddress: String = "Not set"
-    private(set) var receiptStorePhone: String = "Not set"
-    private(set) var receiptStoreEmail: String = "Not set"
-    private(set) var receiptRefundReturnsPolicy: String = "Not set"
+    private(set) var receiptStoreName: String?
+    private(set) var receiptStoreAddress: String?
+    private(set) var receiptStorePhone: String?
+    private(set) var receiptStoreEmail: String?
+    private(set) var receiptRefundReturnsPolicy: String?
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
@@ -30,24 +30,30 @@ import Observation
     init() { }
 
     @MainActor
-    func loadSettings() async {
+    func retrievePOSReceiptSettings() async {
         isLoading = true
 
         shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: "10.0")
 
+        guard shouldShowReceiptInformation else {
+            isLoading = false
+            return
+        }
+
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: siteID) { [weak self] result in
+                guard let self else { return }
                 switch result {
                 case .success(let siteSettings):
-                    self?.receiptStoreName = siteSettings.first { $0.settingID == "woocommerce_pos_store_name" }?.value ?? "Not set"
-                    self?.receiptStoreAddress = siteSettings.first { $0.settingID == "woocommerce_pos_store_address" }?.value ?? "Not set"
-                    self?.receiptStorePhone = siteSettings.first { $0.settingID == "woocommerce_pos_store_phone" }?.value ?? "Not set"
-                    self?.receiptStoreEmail = siteSettings.first { $0.settingID == "woocommerce_pos_store_email" }?.value ?? "Not set"
-                    self?.receiptRefundReturnsPolicy = siteSettings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }?.value ?? "Not set"
+                    receiptStoreName = siteSettings.first { $0.settingID == "woocommerce_pos_store_name" }?.value
+                    receiptStoreAddress = siteSettings.first { $0.settingID == "woocommerce_pos_store_address" }?.value
+                    receiptStorePhone = siteSettings.first { $0.settingID == "woocommerce_pos_store_phone" }?.value
+                    receiptStoreEmail = siteSettings.first { $0.settingID == "woocommerce_pos_store_email" }?.value
+                    receiptRefundReturnsPolicy = siteSettings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }?.value
                 case .failure(let error):
                     DDLogError("Failed to load POS settings: \(error)")
                 }
-                self?.isLoading = false
+                isLoading = false
                 continuation.resume()
             }
             ServiceLocator.stores.dispatch(action)

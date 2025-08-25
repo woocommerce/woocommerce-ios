@@ -3,35 +3,71 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 
-struct OrdersViewState: Equatable {
-    var containerState: ItemsContainerState
-    var ordersState: OrderListState
-}
-
 enum OrderListState: Equatable {
     case loading([POSOrder])
     case loaded([POSOrder], hasMoreItems: Bool)
-    case empty
-    case error(PointOfSaleErrorState)
     case inlineError([POSOrder], error: PointOfSaleErrorState, context: InlineErrorContext)
+    case error(PointOfSaleErrorState)
+    case empty
 
     enum InlineErrorContext {
         case refresh
         case pagination
     }
 
+    var isLoading: Bool {
+        switch self {
+        case .loading:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isLoaded: Bool {
+        switch self {
+        case .loaded:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isInlineError: Bool {
+        switch self {
+        case .inlineError:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isError: Bool {
+        switch self {
+        case .error:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isEmpty: Bool {
+        switch self {
+        case .empty:
+            return true
+        default:
+            return false
+        }
+    }
+
     var orders: [POSOrder] {
         switch self {
-        case .loading(let orders):
+        case .loading(let orders),
+             .loaded(let orders, _),
+             .inlineError(let orders, _, _):
             return orders
-        case .loaded(let orders, _):
-            return orders
-        case .empty:
+        case .error, .empty:
             return []
-        case .error:
-            return []
-        case .inlineError(let orders, _, _):
-            return orders
         }
     }
 }

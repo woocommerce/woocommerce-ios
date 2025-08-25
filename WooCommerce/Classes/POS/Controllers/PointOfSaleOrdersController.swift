@@ -2,30 +2,33 @@ import Foundation
 import Observation
 import enum Yosemite.PointOfSaleOrderServiceError
 import protocol Yosemite.PointOfSaleOrderServiceProtocol
+import protocol Yosemite.PointOfSaleOrderFetchStrategyFactoryProtocol
+import protocol Yosemite.PointOfSaleOrderFetchStrategy
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 
 protocol PointOfSaleOrdersControllerProtocol {
-    var ordersViewState: OrdersViewState { get }
+    var ordersViewState: OrderListState { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
 }
 
 @Observable final class PointOfSaleOrdersController: PointOfSaleOrdersControllerProtocol {
-    var ordersViewState: OrdersViewState
+    var ordersViewState: OrderListState
     private let paginationTracker: AsyncPaginationTracker
-    private var orderProvider: PointOfSaleOrderServiceProtocol
+    private let orderFetchStrategyFactory: PointOfSaleOrderFetchStrategyFactoryProtocol
+    private var fetchStrategy: PointOfSaleOrderFetchStrategy
     private var cachedOrders: [POSOrder] = []
 
-    init(orderProvider: PointOfSaleOrderServiceProtocol,
-         initialState: OrdersViewState = OrdersViewState(containerState: .loading,
-                                                        ordersState: .loading([]))) {
-        self.orderProvider = orderProvider
+    init(orderFetchStrategyFactory: PointOfSaleOrderFetchStrategyFactoryProtocol,
+         initialState: OrderListState = .loading([])) {
+        self.orderFetchStrategyFactory = orderFetchStrategyFactory
         self.ordersViewState = initialState
         self.paginationTracker = .init()
+        self.fetchStrategy = orderFetchStrategyFactory.defaultStrategy()
     }
 
     @MainActor
@@ -45,19 +48,17 @@ protocol PointOfSaleOrdersControllerProtocol {
         guard paginationTracker.hasNextPage else {
             return
         }
-        let currentOrders = ordersViewState.ordersState.orders
-        ordersViewState.containerState = .content
-        ordersViewState.ordersState = .loading(currentOrders)
+        let currentOrders = ordersViewState.orders
+        ordersViewState = .loading(currentOrders)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
                 return try await fetchOrders(pageNumber: pageNumber)
             }
         } catch {
-            ordersViewState.containerState = .content
-            ordersViewState.ordersState = .inlineError(currentOrders,
-                                                      error: .errorOnLoadingOrdersNextPage(error: error),
-                                                      context: OrderListState.InlineErrorContext.pagination)
+            ordersViewState = .inlineError(currentOrders,
+                                          error: .errorOnLoadingOrdersNextPage(error: error),
+                                          context: OrderListState.InlineErrorContext.pagination)
         }
     }
 
@@ -69,45 +70,47 @@ protocol PointOfSaleOrdersControllerProtocol {
                 return try await fetchOrders(pageNumber: pageNumber, appendToExistingOrders: false)
             }
         } catch {
-            let orders = ordersViewState.ordersState.orders
+            let orders = ordersViewState.orders
             if orders.isEmpty {
-                ordersViewState = OrdersViewState(containerState: .content, ordersState: .error(.errorOnLoadingOrders(error: error)))
+                ordersViewState = .error(.errorOnLoadingOrders(error: error))
             } else {
-                ordersViewState = OrdersViewState(containerState: .content,
-                                                ordersState: .inlineError(orders, error: .errorOnLoadingOrders(error: error),
-                                                                          context: OrderListState.InlineErrorContext.refresh))
+                ordersViewState = .inlineError(orders,
+                                              error: .errorOnLoadingOrders(error: error),
+                                              context: OrderListState.InlineErrorContext.refresh)
             }
         }
     }
 
     private func setLoadingState() {
-        let orders = ordersViewState.ordersState.orders
-        let isInitialState = ordersViewState.containerState == .loading
+        let orders = ordersViewState.orders
+        let isInitialState = ordersViewState.isLoading && orders.isEmpty
         if !isInitialState {
-            ordersViewState.ordersState = .loading(orders)
+            ordersViewState = .loading(orders)
         }
     }
 
     @MainActor
     private func fetchOrders(pageNumber: Int, appendToExistingOrders: Bool = true) async throws -> Bool {
         do {
-            let pagedOrders = try await orderProvider.providePointOfSaleOrders(pageNumber: pageNumber)
+            let pagedOrders = try await fetchStrategy.fetchOrders(pageNumber: pageNumber)
 
             let newOrders = pagedOrders.items
-            var allOrders = appendToExistingOrders ? ordersViewState.ordersState.orders : []
+            var allOrders = appendToExistingOrders ? ordersViewState.orders : []
             let uniqueNewOrders = newOrders.filter { newOrder in
                 !allOrders.contains(where: { $0.id == newOrder.id })
             }
-            allOrders.append(contentsOf: uniqueNewOrders)
+
+            if appendToExistingOrders && !uniqueNewOrders.isEmpty {
+                allOrders.append(contentsOf: uniqueNewOrders)
+            } else if !appendToExistingOrders {
+                allOrders = uniqueNewOrders
+            }
 
             if allOrders.isEmpty {
-                ordersViewState.containerState = .content
-                ordersViewState.ordersState = .empty
+                ordersViewState = .empty
             } else {
-                ordersViewState.containerState = .content
-                ordersViewState.ordersState = .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
+                ordersViewState = .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
 
-                // Cache the orders if this is the first page
                 if pageNumber == 1 && !appendToExistingOrders {
                     cachedOrders = allOrders
                 }
@@ -120,11 +123,10 @@ protocol PointOfSaleOrdersControllerProtocol {
 
     @MainActor
     private func setCachedData() {
-        guard !ordersViewState.ordersState.orders.isEmpty, !cachedOrders.isEmpty else {
+        guard !ordersViewState.orders.isEmpty || !cachedOrders.isEmpty else {
             return
         }
 
-        ordersViewState.containerState = .content
-        ordersViewState.ordersState = .loading(cachedOrders)
+        ordersViewState = .loading(cachedOrders)
     }
 }

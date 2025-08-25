@@ -37,7 +37,7 @@ public enum NetworkError: Error, Equatable {
     }
 
     /// Response data accompanied the error if available
-    public var response: Data? {
+    var response: Data? {
         switch self {
         case .notFound(let response):
             return response
@@ -51,7 +51,7 @@ public enum NetworkError: Error, Equatable {
     }
 
     /// Parsed API error details from response data
-    public var apiErrorDetails: APIErrorDetails? {
+    var apiErrorDetails: APIErrorDetails? {
         guard let data = response else { return nil }
         return try? JSONDecoder().decode(APIErrorDetails.self, from: data)
     }

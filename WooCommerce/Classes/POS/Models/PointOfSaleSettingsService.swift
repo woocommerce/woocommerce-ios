@@ -10,6 +10,10 @@ import Observation
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
+    private var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+    }
+
     var storeName: String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return "Not set"
@@ -20,14 +24,6 @@ import Observation
     var storeAddress: String {
         SiteAddress().address
     }
-
-    private var siteID: Int64 {
-        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-    }
-
-    static let empty = PointOfSaleSettingsService()
-
-    init() { }
 
     @MainActor
     func retrievePOSReceiptSettings() async {
@@ -45,11 +41,7 @@ import Observation
                 guard let self else { return }
                 switch result {
                 case .success(let siteSettings):
-                    receiptStoreName = siteSettings.first { $0.settingID == "woocommerce_pos_store_name" }?.value
-                    receiptStoreAddress = siteSettings.first { $0.settingID == "woocommerce_pos_store_address" }?.value
-                    receiptStorePhone = siteSettings.first { $0.settingID == "woocommerce_pos_store_phone" }?.value
-                    receiptStoreEmail = siteSettings.first { $0.settingID == "woocommerce_pos_store_email" }?.value
-                    receiptRefundReturnsPolicy = siteSettings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }?.value
+                    updateReceiptSettings(from: siteSettings)
                 case .failure(let error):
                     DDLogError("Failed to load POS settings: \(error)")
                 }
@@ -61,7 +53,7 @@ import Observation
     }
 
     @MainActor
-    func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
+    private func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
         let storageManager = ServiceLocator.storageManager
         let pluginsService = PluginsService(storageManager: storageManager)
         guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
@@ -74,4 +66,16 @@ import Observation
         return isSupported
     }
 
+    private func updateReceiptSettings(from siteSettings: [SiteSetting]) {
+        receiptStoreName = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name")
+        receiptStoreAddress = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address")
+        receiptStorePhone = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone")
+        receiptStoreEmail = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email")
+        receiptRefundReturnsPolicy = settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
+    }
+
+    private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
+        let value = siteSettings.first { $0.settingID == settingID }?.value
+        return value?.isEmpty == true ? nil : value
+    }
 }

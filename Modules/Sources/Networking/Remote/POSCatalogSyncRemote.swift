@@ -1,15 +1,8 @@
 import Foundation
 
-/// Protocol for `POSCatalogSyncRemote` mainly used for mocking.
-///
-public protocol POSCatalogSyncRemoteProtocol {
-    func loadProducts(modifiedAfter: Date, siteID: Int64, productTypes: [ProductType], pageNumber: Int) async throws -> PagedItems<POSProduct>
-    func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
-}
-
 /// POS Catalog Sync: Remote Endpoints
 ///
-public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
+public class POSCatalogSyncRemote: Remote {
     /// Loads POS products modified after the specified date.
     ///
     /// - Parameters:

@@ -1,11 +1,13 @@
 import Yosemite
+import Observation
 
-final class PointOfSaleSettingsService {
-    let receiptStoreName: String
-    let receiptStoreAddress: String
-    let receiptStorePhone: String
-    let receiptStoreEmail: String
-    let receiptRefundReturnsPolicy: String
+@Observable final class PointOfSaleSettingsService {
+    private(set) var receiptStoreName: String = "Not set"
+    private(set) var receiptStoreAddress: String = "Not set"
+    private(set) var receiptStorePhone: String = "Not set"
+    private(set) var receiptStoreEmail: String = "Not set"
+    private(set) var receiptRefundReturnsPolicy: String = "Not set"
+    private(set) var isLoading: Bool = false
 
     var storeName: String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
@@ -18,23 +20,39 @@ final class PointOfSaleSettingsService {
         SiteAddress().address
     }
 
-    var storeEmail: String {
-        "Not set" // TBD
+    private var siteID: Int64 {
+        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
     }
 
-    static let empty = PointOfSaleSettingsService(from: [])
+    static let empty = PointOfSaleSettingsService()
 
-    init(from siteSettings: [SiteSetting]) {
-        self.receiptStoreName = siteSettings.first { $0.settingID == "woocommerce_pos_store_name" }?.value ?? "Not set"
-        self.receiptStoreAddress = siteSettings.first { $0.settingID == "woocommerce_pos_store_address" }?.value ?? "Not set"
-        self.receiptStorePhone = siteSettings.first { $0.settingID == "woocommerce_pos_store_phone" }?.value ?? "Not set"
-        self.receiptStoreEmail = siteSettings.first { $0.settingID == "woocommerce_pos_store_email" }?.value ?? "Not set"
-        self.receiptRefundReturnsPolicy = siteSettings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }?.value ?? "Not set"
+    init() { }
+
+    @MainActor
+    func loadSettings() async {
+        isLoading = true
+
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: siteID) { [weak self] result in
+                switch result {
+                case .success(let siteSettings):
+                    self?.receiptStoreName = siteSettings.first { $0.settingID == "woocommerce_pos_store_name" }?.value ?? "Not set"
+                    self?.receiptStoreAddress = siteSettings.first { $0.settingID == "woocommerce_pos_store_address" }?.value ?? "Not set"
+                    self?.receiptStorePhone = siteSettings.first { $0.settingID == "woocommerce_pos_store_phone" }?.value ?? "Not set"
+                    self?.receiptStoreEmail = siteSettings.first { $0.settingID == "woocommerce_pos_store_email" }?.value ?? "Not set"
+                    self?.receiptRefundReturnsPolicy = siteSettings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }?.value ?? "Not set"
+                case .failure(let error):
+                    DDLogError("Failed to load POS settings: \(error)")
+                }
+                self?.isLoading = false
+                continuation.resume()
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 
     @MainActor
     func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
-        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
         let storageManager = ServiceLocator.storageManager
         let pluginsService = PluginsService(storageManager: storageManager)
         guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
@@ -46,4 +64,5 @@ final class PointOfSaleSettingsService {
                                                             minimumRequired: minimumVersion)
         return isSupported
     }
+
 }

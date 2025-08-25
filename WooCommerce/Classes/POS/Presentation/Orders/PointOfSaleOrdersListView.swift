@@ -1,13 +1,16 @@
 import SwiftUI
+import struct Yosemite.POSOrder
 
 struct PointOfSaleOrdersListView: View {
     @Binding var selectedOrderID: String?
     let onClose: () -> Void
 
-    private let orders = [
-        Order(id: "order1", title: "Order 1"),
-        Order(id: "order2", title: "Order 2")
-    ]
+    @Environment(PointOfSaleOrdersModel.self) private var ordersModel
+    @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
+
+    private var ordersViewState: OrderListState {
+        ordersModel.ordersController.ordersViewState
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -16,28 +19,119 @@ struct PointOfSaleOrdersListView: View {
                 backButtonConfiguration: .init(state: .enabled, action: onClose, buttonIcon: "xmark")
             )
 
-            List(orders, id: \.id, selection: $selectedOrderID) { order in
-                NavigationLink(value: order.id) {
-                    Text(order.title)
-                        .padding(.vertical, 8)
+            InfiniteScrollView(
+                triggerDeterminer: infiniteScrollTriggerDeterminer,
+                loadMore: {
+                    guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
+                    await ordersModel.ordersController.loadNextOrders()
+                },
+                content: {
+                    LazyVStack(spacing: 8) {
+                        headerRows
+
+                        switch ordersViewState {
+                        case .empty:
+                            Text("No orders")
+                        case .error(let errorState):
+                            ItemListErrorCardView(errorState: errorState) {
+                                Task { @MainActor in
+                                    await ordersModel.ordersController.loadOrders()
+                                }
+                            }
+                        default:
+                            let orders = ordersViewState.orders
+                            ForEach(orders, id: \.id) { order in
+                                Button(action: {
+                                    selectedOrderID = String(order.id)
+                                }) {
+                                    OrderRowView(order: order, isSelected: selectedOrderID == String(order.id))
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
+                        }
+
+                        footerRows
+                    }
+                    .padding(.horizontal)
                 }
-            }
-            .listStyle(.plain)
+            )
         }
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
+        .refreshable {
+            await ordersModel.ordersController.refreshOrders()
+        }
+        .task {
+            await ordersModel.ordersController.loadOrders()
+        }
+    }
+
+    @ViewBuilder
+    private var headerRows: some View {
+        switch ordersViewState {
+        case .inlineError(_, let errorState, .refresh):
+            ItemListErrorCardView(errorState: errorState) {
+                Task { @MainActor in
+                    await ordersModel.ordersController.loadOrders()
+                }
+            }
+        default:
+            EmptyView()
+        }
+    }
+
+    @ViewBuilder
+    private var footerRows: some View {
+        switch ordersViewState {
+        case .loading(let orders):
+            if orders.isEmpty {
+                ForEach(0..<8, id: \.self) { _ in
+                    GhostItemCardView()
+                }
+            } else {
+                GhostItemCardView()
+            }
+        case .inlineError(_, let errorState, .pagination):
+            ItemListErrorCardView(errorState: errorState) {
+                Task { @MainActor in
+                    await ordersModel.ordersController.loadNextOrders()
+                }
+            }
+        default:
+            EmptyView()
+        }
     }
 }
 
-private struct Order {
-    let id: String
-    let title: String
+private struct OrderRowView: View {
+    let order: POSOrder
+    let isSelected: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Order #\(order.number)")
+                Spacer()
+                Text("\(order.currencySymbol)\(order.total)")
+            }
+
+            Text(order.dateCreated, style: .date)
+        }
+        .padding()
+        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.posSurface)
+        .cornerRadius(8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
+        )
+    }
 }
 
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrdersListView(selectedOrderID: .constant("order1"), onClose: {})
+        PointOfSaleOrdersListView(selectedOrderID: .constant("1"), onClose: {})
+            .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {
         Text("Detail View")
     }

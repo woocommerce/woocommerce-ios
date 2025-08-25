@@ -125,5 +125,5 @@ private extension PointOfSaleSettingsStoreDetailView {
 }
 
 #Preview {
-    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsService(siteID: 123, storeName: "POS Store"))
+    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsService())
 }

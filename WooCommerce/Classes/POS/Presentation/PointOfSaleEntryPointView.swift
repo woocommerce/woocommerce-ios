@@ -15,6 +15,7 @@ struct PointOfSaleEntryPointView: View {
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    private let ordersController: PointOfSaleOrdersControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
@@ -26,6 +27,7 @@ struct PointOfSaleEntryPointView: View {
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
+         ordersController: PointOfSaleOrdersControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -45,6 +47,7 @@ struct PointOfSaleEntryPointView: View {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
+        self.ordersController = ordersController
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
     }
@@ -78,6 +81,7 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
+        .environment(PointOfSaleOrdersModel(ordersController: ordersController))
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -96,6 +100,7 @@ struct PointOfSaleEntryPointView: View {
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
                               couponsSearchController: PointOfSalePreviewCouponsController(),
+                              ordersController: POSPreviewHelpers.makePreviewOrdersModel().ordersController,
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

@@ -112,6 +112,11 @@ private extension POSTabCoordinator {
                                                                     fetchStrategyFactory: posCouponFetchStrategyFactory),
                     couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                           fetchStrategyFactory: posCouponFetchStrategyFactory),
+                    ordersController: PointOfSaleOrdersController(
+                        orderFetchStrategyFactory: PointOfSaleOrderFetchStrategyFactory(siteID: siteID,
+                                                                                        credentials: credentials)
+                    ),
+
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
                         self?.updateDefaultConfigurationForPointOfSale(isEnabled)
                     },

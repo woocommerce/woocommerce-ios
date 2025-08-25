@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -111,7 +110,6 @@ struct PointOfSalePaymentSuccessView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSalePaymentSuccessView {
     enum Constants {
         static let imageName: String = "checkmark"
@@ -126,7 +124,6 @@ private extension PointOfSalePaymentSuccessView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",

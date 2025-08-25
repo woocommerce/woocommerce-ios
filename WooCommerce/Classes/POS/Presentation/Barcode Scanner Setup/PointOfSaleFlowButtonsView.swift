@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleFlowButtonsView: View {
     let configuration: PointOfSaleFlowButtonConfiguration
 

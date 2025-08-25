@@ -91,7 +91,6 @@ struct BarcodeScannerInformation: View {
     }
 }
 
-@available(iOS 17.0, *)
 struct ProductBarcodeSetupInformation: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
@@ -281,7 +280,6 @@ private enum Localization {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerInformationModal(isPresented: .constant(true))
 }

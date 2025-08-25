@@ -27,7 +27,6 @@ private enum Localization {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListFullscreenView(
         content: {

@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleOrdersListView: View {
     @Binding var selectedOrderID: String?
     let onClose: () -> Void
@@ -36,7 +35,6 @@ private struct Order {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview("List") {
     NavigationSplitView {
         PointOfSaleOrdersListView(selectedOrderID: .constant("order1"), onClose: {})

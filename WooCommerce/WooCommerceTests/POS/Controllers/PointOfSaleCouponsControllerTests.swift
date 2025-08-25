@@ -14,7 +14,6 @@ struct PointOfSaleCouponsControllerTests {
                                                                      storage: MockStorageManager())
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_empty_coupons_then_results_in_empty_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -31,7 +30,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_some_coupons_then_results_in_coupons_loaded_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -48,7 +46,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func refreshItems_when_empty_coupons_then_results_in_empty_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -65,7 +62,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func refreshItems_when_some_coupons_then_results_in_coupons_loaded_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -83,7 +79,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_empty_coupons_then_results_in_empty_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -100,7 +95,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_some_coupons_then_results_in_coupons_loaded_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -117,7 +111,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_retrieving_settings_fails_then_results_in_error_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -135,7 +128,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func enableCoupons_sets_error_state_when_fails() async throws {
         // Given
         struct MockError: Error {}
@@ -153,7 +145,6 @@ struct PointOfSaleCouponsControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func enableCoupons_loads_items_when_successful() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -169,7 +160,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadItems_when_fails_then_sets_inlineError_state_and_preserves_items() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -188,7 +178,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_loadNextItems_fails_then_sets_inlineError_state_and_preserves_items() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -211,7 +200,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_loadNextItems_then_loads_second_page() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -229,7 +217,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func loadNextItems_when_loadNextItems_with_more_items_then_sets_hasMoreItems() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -248,7 +235,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func searchItems_when_empty_coupons_then_results_in_empty_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -265,7 +251,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func searchItems_when_some_coupons_then_results_in_coupons_loaded_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -282,7 +267,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func searchItems_when_fails_then_sets_error_state() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()
@@ -300,7 +284,6 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
-    @available(iOS 17.0, *)
     @Test func searchItems_when_requestCancelled_then_state_unchanged() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()

@@ -2,7 +2,6 @@ import SwiftUI
 import WooFoundation
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow
-@available(iOS 17.0, *)
 @Observable
 class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: PointOfSaleBarcodeScannerType
@@ -314,7 +313,6 @@ class PointOfSaleBarcodeScannerSetupFlow {
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration(
@@ -335,7 +333,6 @@ struct PointOfSaleBarcodeScannerBackOnlyButtonCustomization: PointOfSaleBarcodeS
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration(
@@ -364,7 +361,6 @@ struct PointOfSaleBarcodeScannerErrorButtonCustomization: PointOfSaleBarcodeScan
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration(
@@ -385,7 +381,6 @@ struct PointOfSaleBarcodeScannerOptionalScannerInformationButtonCustomization: P
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomization: PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration {
         return PointOfSaleFlowButtonConfiguration(
@@ -403,7 +398,6 @@ struct PointOfSaleBarcodeScannerProductBarcodeSetupInformationButtonCustomizatio
 
 // MARK: - Analytics
 
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetupFlow {
     private func trackTestScanSuccess() {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.barcodeScannerSetupTestScanSuccess(scanner: scannerType))
@@ -435,7 +429,6 @@ private extension PointOfSaleBarcodeScannerSetupFlow {
 }
 
 // MARK: - Private Localization Extension
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetupFlow {
     enum Localization {
         static let nextButtonTitle = NSLocalizedString(

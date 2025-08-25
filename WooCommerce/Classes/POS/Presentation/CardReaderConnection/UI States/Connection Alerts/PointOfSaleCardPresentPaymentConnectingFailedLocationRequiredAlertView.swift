@@ -38,7 +38,6 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @Namespace var namespace
     PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView(

@@ -112,7 +112,6 @@ private extension PointOfSaleBarcodeScannerPairingView {
     }
 }
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerTestBarcodeView: View {
     let scanTester: PointOfSaleBarcodeScannerSetupScanTester
     let timerCompleted: Bool
@@ -136,7 +135,6 @@ struct PointOfSaleBarcodeScannerTestBarcodeView: View {
 
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerTestBarcodeView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -248,7 +246,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
 
 // MARK: - Previews
 
-@available(iOS 17.0, *)
 #Preview("Barcode View - HID Setup") {
     PointOfSaleBarcodeScannerBarcodeView(
         title: "Star BSH-20B setup",
@@ -257,7 +254,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Barcode View - Barcode Setup") {
     PointOfSaleBarcodeScannerBarcodeView(
         title: "Scanner setup",
@@ -266,12 +262,10 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Pairing View - Netum 1228BC") {
     PointOfSaleBarcodeScannerPairingView(scanner: .netum1228BC)
 }
 
-@available(iOS 17.0, *)
 #Preview("Test View - Normal") {
     PointOfSaleBarcodeScannerTestBarcodeView(
         scanTester: PointOfSaleBarcodeScannerSetupScanTester(
@@ -284,7 +278,6 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Test View - Timeout") {
     PointOfSaleBarcodeScannerTestBarcodeView(
         scanTester: PointOfSaleBarcodeScannerSetupScanTester(
@@ -297,12 +290,10 @@ struct PointOfSaleBarcodeScannerErrorView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Setup Complete View") {
     PointOfSaleBarcodeScannerSetupCompleteView()
 }
 
-@available(iOS 17.0, *)
 #Preview("Error View") {
     PointOfSaleBarcodeScannerErrorView()
 }

@@ -39,7 +39,6 @@ protocol PointOfSaleOrderControllerProtocol {
     func collectCashPayment(changeDueAmount: String?) async throws
 }
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
@@ -168,7 +167,6 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     func totals(for order: Order) -> PointOfSaleOrderTotals {
         let totalsCalculator = OrderTotalsCalculator(for: order,
@@ -210,7 +208,6 @@ private extension PointOfSaleOrderController {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     @MainActor
     func isPluginSupported(_ plugin: Plugin, minimumVersion: String, siteID: Int64) -> Bool {
@@ -231,7 +228,6 @@ private extension PointOfSaleOrderController {
 
 // MARK: - Error Handling
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     func orderStateError(from error: Error) -> PointOfSaleOrderState.OrderStateError {
         if let couponsError = CouponsError(underlyingError: error) {
@@ -244,7 +240,6 @@ private extension PointOfSaleOrderController {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     enum POSReceiptEligibilityConstants {
         static let wcPluginMinimumVersion = "10.0.0"
@@ -300,7 +295,6 @@ extension PointOfSaleInternalOrderState: Equatable {
     }
 }
 
-@available(iOS 17.0, *)
 extension PointOfSaleOrderController {
     enum PointOfSaleOrderControllerError: Error {
         case noSiteID
@@ -309,7 +303,6 @@ extension PointOfSaleOrderController {
 }
 
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderController {
     func trackOrderCreationFailed(error: Error) {
         var errorType: WooAnalyticsEvent.Orders.OrderCreationErrorType?

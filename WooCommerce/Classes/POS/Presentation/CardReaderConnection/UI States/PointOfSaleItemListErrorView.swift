@@ -1,7 +1,6 @@
 import SwiftUI
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
-@available(iOS 17.0, *)
 struct PointOfSaleItemListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     private let viewModel: PointOfSaleItemListErrorViewModel
@@ -87,12 +86,10 @@ struct PointOfSaleItemListErrorViewModel {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListErrorView(error: .errorCouponsDisabled, onAction: {})
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: {})
 }

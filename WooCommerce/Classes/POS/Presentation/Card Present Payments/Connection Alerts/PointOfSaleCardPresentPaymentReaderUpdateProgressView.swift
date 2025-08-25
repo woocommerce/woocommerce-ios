@@ -32,7 +32,6 @@ private enum Constants {
     static let borderInset: CGFloat = POSSpacing.xSmall
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @State var progress: CGFloat = 0.5
 

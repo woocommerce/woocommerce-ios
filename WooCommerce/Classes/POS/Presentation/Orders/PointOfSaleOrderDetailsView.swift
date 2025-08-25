@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleOrderDetailsView: View {
     let orderID: String
     let onBack: () -> Void
@@ -46,14 +45,12 @@ struct PointOfSaleOrderDetailsView: View {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview("Details - Order 1") {
     NavigationStack {
         PointOfSaleOrderDetailsView(orderID: "order1", onBack: {})
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Details - Order 2") {
     NavigationStack {
         PointOfSaleOrderDetailsView(orderID: "order2", onBack: {})

@@ -18,7 +18,6 @@ struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
     let mockReceiptService = MockReceiptService()
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -31,7 +30,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_cart_matching_order_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -51,7 +49,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_already_syncing_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -72,7 +69,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_no_previous_order_calls_orderService() async throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .AUD,
@@ -91,7 +87,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.spySyncOrderCurrency == .AUD)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_changes_from_previous_order_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -112,7 +107,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_no_previous_order_sets_orderState_syncing_then_loaded() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -150,7 +144,6 @@ struct PointOfSaleOrderControllerTests {
         ])
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -187,7 +180,6 @@ struct PointOfSaleOrderControllerTests {
         ])
     }
 
-    @available(iOS 17.0, *)
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -205,7 +197,6 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -225,7 +216,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.orderToReturn?.billingAddress?.email == recipientEmail)
     }
 
-    @available(iOS 17.0, *)
     @Test func collectCashPayment_when_no_order_then_fails_with_noOrder_error() async throws {
         do {
             // Given/When
@@ -239,7 +229,6 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @MainActor
-    @available(iOS 17.0, *)
     @Test func collectCashPayment_when_successful_calls_celebrate() async throws {
         // Given
         let mockPaymentCelebration = MockPaymentCaptureCelebration()
@@ -261,7 +250,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockPaymentCelebration.celebrationWasCalled == true)
     }
 
-    @available(iOS 17.0, *)
     @Test func collectCashPayment_passes_changeDueAmount_to_order_service() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -281,7 +269,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.spyCashPaymentChangeDueAmount == "$6.0")
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_successful_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -302,7 +289,6 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_updating_existing_order_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -325,7 +311,6 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_cart_matching_order_then_returns_orderNotChanged_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -350,7 +335,6 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_orderService_fails_then_returns_syncOrderState_failure() async throws {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptService: mockReceiptService)
@@ -368,7 +352,6 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_cart_matching_order_and_coupons_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -392,7 +375,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == false)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -416,7 +398,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == true)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_with_matching_items_but_removed_coupon_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -440,7 +421,6 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.syncOrderWasCalled == true)
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_orderService_fails_with_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -480,7 +460,6 @@ struct PointOfSaleOrderControllerTests {
         ])
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -527,7 +506,6 @@ struct PointOfSaleOrderControllerTests {
         ])
     }
 
-    @available(iOS 17.0, *)
     @Test func syncOrder_when_fails_sets_order_to_nil() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -583,7 +561,6 @@ struct PointOfSaleOrderControllerTests {
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         }
 
-        @available(iOS 17.0, *)
         @Test func syncOrder_when_create_order_then_tracks_order_creation_success_event() async throws {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
@@ -601,7 +578,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
@@ -617,7 +593,6 @@ struct PointOfSaleOrderControllerTests {
         }
 
         @MainActor
-        @available(iOS 17.0, *)
         @Test func collectCashPayment_when_failure_tracks_correct_event() async throws {
             // Given
             let mockAnalyticsProvider = MockAnalyticsProvider()
@@ -646,7 +621,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
         }
 
-        @available(iOS 17.0, *)
         @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
             // Given
             let mockPluginsService = MockPluginsService()
@@ -673,7 +647,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == true)
         }
 
-        @available(iOS 17.0, *)
         @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
@@ -690,7 +663,6 @@ struct PointOfSaleOrderControllerTests {
             }
         }
 
-        @available(iOS 17.0, *)
         @Test func sendReceipt_tracks_failure_with_eligible_for_pos_receipt() async throws {
             // Given
             let mockPluginsService = MockPluginsService()
@@ -728,7 +700,6 @@ struct PointOfSaleOrderControllerTests {
     struct ReceiptTests {
         private let mockOrderService = MockPOSOrderService()
 
-        @available(iOS 17.0, *)
         @Test("Eligible core plugin versions with feature flag enabled", arguments: Constants.eligibleWCPluginVersions)
         func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
             // Given
@@ -759,7 +730,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == true)
         }
 
-        @available(iOS 17.0, *)
         @Test(
             "All core plugin versions with feature flag disabled",
             arguments: Constants.eligibleWCPluginVersions + Constants.ineligibleWCPluginVersions
@@ -794,7 +764,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
         }
 
-        @available(iOS 17.0, *)
         @Test("Ineligible core plugin versions with feature flag enabled", arguments: Constants.ineligibleWCPluginVersions)
         func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
@@ -825,7 +794,6 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
         }
 
-        @available(iOS 17.0, *)
         @Test("Unavailable core plugin with feature flag enabled",
               arguments: [
                 SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", active: false),

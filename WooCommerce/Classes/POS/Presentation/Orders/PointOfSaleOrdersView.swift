@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 
-@available(iOS 17.0, *)
 struct PointOfSaleOrdersView: View {
     @Binding var isPresented: Bool
     @State private var selectedOrderID: String?
@@ -29,7 +28,6 @@ struct PointOfSaleOrdersView: View {
 /// Just as NavigationSplitView, it adapts to a list -> details navigation on smaller screens
 /// It may be used as a common component in the future
 ///
-@available(iOS 17.0, *)
 private struct CustomNavigationSplitView<Sidebar: View, Detail: View, SelectionValue: Hashable>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
@@ -92,7 +90,6 @@ private enum Constants {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview("Orders View") {
     PointOfSaleOrdersView(isPresented: .constant(true))
 }

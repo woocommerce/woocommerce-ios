@@ -1,6 +1,5 @@
 import Foundation
 
-@available(iOS 17.0, *)
 @Observable
 class PointOfSaleBarcodeScannerSetupScanTester {
     private let onTestPass: () -> Void

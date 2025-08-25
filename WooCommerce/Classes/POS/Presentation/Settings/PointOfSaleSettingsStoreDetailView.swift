@@ -28,29 +28,19 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     Text("Receipt Information")
                         .font(.title2)
                     Text("Store name")
-                    Text(posSettingsService.isLoading ? "Loading..." : posSettingsService.receiptStoreName)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    settingValueView(for: posSettingsService.receiptStoreName)
 
                     Text("Physical address")
-                    Text(posSettingsService.isLoading ? "Loading..." : posSettingsService.receiptStoreAddress)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    settingValueView(for: posSettingsService.receiptStoreAddress)
 
                     Text("Phone number")
-                    Text(posSettingsService.isLoading ? "Loading..." : posSettingsService.receiptStorePhone)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    settingValueView(for: posSettingsService.receiptStorePhone)
 
                     Text("Email")
-                    Text(posSettingsService.isLoading ? "Loading..." : posSettingsService.receiptStoreEmail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    settingValueView(for: posSettingsService.receiptStoreEmail)
 
                     Text("Refund & Returns Policy")
-                    Text(posSettingsService.isLoading ? "Loading..." : posSettingsService.receiptRefundReturnsPolicy)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    settingValueView(for: posSettingsService.receiptRefundReturnsPolicy)
 
                 }
                 .renderedIf(posSettingsService.shouldShowReceiptInformation)
@@ -64,6 +54,18 @@ struct PointOfSaleSettingsStoreDetailView: View {
         }
         .task {
             await posSettingsService.loadSettings()
+        }
+    }
+
+    @ViewBuilder
+    private func settingValueView(for value: String) -> some View {
+        if posSettingsService.isLoading {
+            ProgressView()
+                .controlSize(.small)
+        } else {
+            Text(value)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 }

@@ -831,7 +831,7 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "settings-point-of-sale")
 
         // When
-        let result: Result<[Networking.SiteSetting]?, Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -840,7 +840,7 @@ final class SettingStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        let settings = try XCTUnwrap(result.get())
+        let settings = try result.get()
         XCTAssertEqual(settings.count, 5)
 
         let storeNameSetting = settings.first { $0.settingID == "woocommerce_pos_store_name" }
@@ -875,7 +875,7 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "generic_error")
 
         // When
-        let result: Result<[Networking.SiteSetting]?, Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
@@ -891,7 +891,7 @@ final class SettingStoreTests: XCTestCase {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<[Networking.SiteSetting]?, Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
                 promise(result)
             }

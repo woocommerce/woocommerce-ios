@@ -39,7 +39,14 @@ public class SettingStore: Store {
         case .retrieveSiteAPI(let siteID, let onCompletion):
             methods.retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
         case let .retrievePointOfSaleSettings(siteID, onCompletion):
-            methods.retrievePointOfSaleSettings(siteID: siteID, onCompletion: onCompletion)
+            Task { @MainActor in
+                do {
+                    let settings = try await methods.retrievePointOfSaleSettings(siteID: siteID)
+                    onCompletion(.success(settings))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case let .retrieveCouponSetting(siteID, onCompletion):
             methods.retrieveCouponSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableCouponSetting(siteID, onCompletion):

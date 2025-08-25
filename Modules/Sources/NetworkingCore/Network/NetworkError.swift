@@ -37,7 +37,7 @@ public enum NetworkError: Error, Equatable {
     }
 
     /// Response data accompanied the error if available
-    var response: Data? {
+    public var response: Data? {
         switch self {
         case .notFound(let response):
             return response
@@ -48,6 +48,22 @@ public enum NetworkError: Error, Equatable {
         case .invalidURL, .invalidCookieNonce:
             return nil
         }
+    }
+    
+    /// Parsed API error details from response data
+    public var apiErrorDetails: APIErrorDetails? {
+        guard let data = response else { return nil }
+        return try? JSONDecoder().decode(APIErrorDetails.self, from: data)
+    }
+    
+    /// API error code from response, if available
+    public var apiErrorCode: String? {
+        return apiErrorDetails?.code
+    }
+    
+    /// API error message from response, if available  
+    public var apiErrorMessage: String? {
+        return apiErrorDetails?.message
     }
 }
 
@@ -119,5 +135,75 @@ extension NetworkError: CustomStringConvertible {
                 value: "Sorry, your session has expired. Please log in again.",
                 comment: "Error message when session cookie has expired.")
         }
+    }
+}
+
+// MARK: - Convenience Properties for Common Error Conditions
+
+public extension NetworkError {
+    /// Returns true if this error represents a "not found" condition
+    var isNotFound: Bool {
+        switch self {
+        case .notFound:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 404
+        default:
+            return false
+        }
+    }
+    
+    /// Returns true if this error represents an authorization issue
+    var isUnauthorized: Bool {
+        switch self {
+        case .invalidCookieNonce:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 401 || statusCode == 403
+        default:
+            // Check for specific unauthorized error codes in API response
+            return apiErrorCode?.contains("unauthorized") == true ||
+                   apiErrorCode?.contains("invalid_token") == true
+        }
+    }
+    
+    /// Returns true if this error represents a timeout
+    var isTimeout: Bool {
+        switch self {
+        case .timeout:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 408
+        default:
+            return false
+        }
+    }
+    
+    /// Returns true if this error represents invalid input/parameters
+    var isInvalidInput: Bool {
+        switch self {
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 400
+        default:
+            return apiErrorCode?.contains("invalid_param") == true
+        }
+    }
+    
+    /// Returns a user-friendly error message, preferring API error message over generic description
+    var userFriendlyMessage: String {
+        return apiErrorMessage ?? localizedDescription
+    }
+}
+
+// MARK: - Supporting Types
+
+/// Represents error details from API response JSON
+public struct APIErrorDetails: Codable {
+    public let code: String
+    public let message: String?
+    
+    public init(code: String, message: String?) {
+        self.code = code
+        self.message = message
     }
 }

@@ -183,10 +183,6 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleReceipts
 
-    /// Enables displaying POS as a tab in the tab bar with the same eligibility as the previous entry point
-    ///
-    case pointOfSaleAsATabi1
-
     /// Enables displaying POS as a tab in the tab bar for stores in eligible countries
     ///
     case pointOfSaleAsATabi2

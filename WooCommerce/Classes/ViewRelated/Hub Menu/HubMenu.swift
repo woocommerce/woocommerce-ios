@@ -79,13 +79,6 @@ private extension HubMenu {
                 .disabled(!viewModel.switchStoreEnabled)
             }
 
-            // Point of Sale
-            if let menu = viewModel.posElement {
-                Section {
-                    menuItemView(menu: menu, chevron: .enteringMode)
-                }
-            }
-
             // Settings Section
             Section(Localization.settings) {
                 ForEach(viewModel.settingsElements, id: \.id) { menu in

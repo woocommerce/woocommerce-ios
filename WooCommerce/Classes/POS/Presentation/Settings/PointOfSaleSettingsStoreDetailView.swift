@@ -46,9 +46,6 @@ struct PointOfSaleSettingsStoreDetailView: View {
             }
             .padding()
         }
-        .task {
-            await posSettingsService.retrievePOSReceiptSettings()
-        }
     }
 
     @ViewBuilder

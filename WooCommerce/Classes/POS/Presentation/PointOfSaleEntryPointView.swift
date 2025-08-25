@@ -2,7 +2,6 @@ import SwiftUI
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 
-@available(iOS 17.0, *)
 struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
@@ -92,7 +91,6 @@ struct PointOfSaleEntryPointView: View {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),

@@ -1,7 +1,6 @@
 import SwiftUI
 import Combine
 
-@available(iOS 17.0, *)
 @Observable
 final class KeyboardObserver {
     private(set) var isKeyboardVisible: Bool = false
@@ -48,7 +47,6 @@ final class KeyboardObserver {
     }
 }
 
-@available(iOS 17.0, *)
 private extension KeyboardObserver {
     enum Constants {
         static let hardwareKeyboardHelperBarHeightThreshold: CGFloat = 90
@@ -56,14 +54,12 @@ private extension KeyboardObserver {
 }
 
 
-@available(iOS 17.0, *)
 private struct KeyboardObserverKey: EnvironmentKey {
     static var defaultValue: KeyboardObserver {
         KeyboardObserver()
     }
 }
 
-@available(iOS 17.0, *)
 extension EnvironmentValues {
     var keyboardObserver: KeyboardObserver {
         get { self[KeyboardObserverKey.self] }
@@ -71,7 +67,6 @@ extension EnvironmentValues {
     }
 }
 
-@available(iOS 17.0, *)
 struct KeyboardObserverProvider: ViewModifier {
     @State private var observer = KeyboardObserver()
 
@@ -80,7 +75,6 @@ struct KeyboardObserverProvider: ViewModifier {
     }
 }
 
-@available(iOS 17.0, *)
 extension View {
     func injectKeyboardObserver() -> some View {
         modifier(KeyboardObserverProvider())

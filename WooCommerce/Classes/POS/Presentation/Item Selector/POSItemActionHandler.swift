@@ -4,14 +4,12 @@ import enum Yosemite.POSItemType
 import protocol WooFoundation.Analytics
 
 /// Protocol for handling actions on POS items
-@available(iOS 17.0, *)
 protocol POSItemActionHandler {
     /// Handles a tap on an item
     /// - Parameter item: The item that was tapped
     func handleTap(_ item: POSItem)
 }
 
-@available(iOS 17.0, *)
 extension POSItemActionHandler {
     /// Default implementation for analytics tracking
     /// - Parameter item: The item that was tapped
@@ -67,7 +65,6 @@ extension POSItemActionHandler {
 }
 
 /// Standard handler for handling item taps without any special context
-@available(iOS 17.0, *)
 final class StandardPOSItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
@@ -101,7 +98,6 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
 }
 
 /// Handler for handling taps on search result items, saving the search term
-@available(iOS 17.0, *)
 final class SearchResultItemActionHandler: POSItemActionHandler {
     private let posModel: PointOfSaleAggregateModelProtocol
     private let searchTerm: String
@@ -141,7 +137,6 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     }
 }
 
-@available(iOS 17.0, *)
 struct POSItemActionHandlerFactory {
     static func itemActionHandler(
         itemListType: ItemListType,

@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
@@ -32,7 +31,6 @@ struct PointOfSaleDashboardViewHelper {
     }
 }
 
-@available(iOS 17.0, *)
 extension PointOfSaleDashboardView.ViewState {
     var showsFloatingControl: Bool {
         switch self {

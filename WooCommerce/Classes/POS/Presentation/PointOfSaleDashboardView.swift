@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -187,7 +186,6 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
@@ -224,7 +222,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     func trackTimeForInitialLoadingState() {
         waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
@@ -249,7 +246,6 @@ extension EnvironmentValues {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
@@ -273,7 +269,6 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Container loading state") {
     return NavigationStack {
         PointOfSaleDashboardView()
@@ -282,7 +277,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Content loading state") {
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))

@@ -333,7 +333,7 @@ final class MainTabBarControllerTests: XCTestCase {
         notice.actionHandler?()
 
         let productsNavigationController = try XCTUnwrap(tabBarController
-                    .tabContainerController(tab: .products, isPOSTabVisible: false))
+            .tabContainerController(tab: .products, isPOSTabVisible: false))
         waitUntil {
             productsNavigationController.presentedViewController != nil
         }
@@ -448,7 +448,6 @@ final class MainTabBarControllerTests: XCTestCase {
         TestingAppDelegate.mockTabBarController = nil
     }
 
-    @available(iOS 17.0, *)
     func test_pos_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()

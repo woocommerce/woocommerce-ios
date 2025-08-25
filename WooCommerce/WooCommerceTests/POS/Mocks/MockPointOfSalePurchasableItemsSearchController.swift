@@ -3,7 +3,6 @@ import Combine
 @testable import WooCommerce
 import enum Yosemite.POSItem
 
-@available(iOS 17.0, *)
 final class MockPointOfSalePurchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState = .init(containerState: .content,
                                                itemsStack: .init(root: .empty, itemStates: [:]))

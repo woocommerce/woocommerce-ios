@@ -2,7 +2,6 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
-@available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -212,7 +211,6 @@ struct ItemListView: View {
 
 /// Header view
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
@@ -278,7 +276,6 @@ private extension ItemListView {
 
 /// View Helpers
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
@@ -332,7 +329,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
         // Clear search term when switching tabs
@@ -348,7 +344,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func itemsController(_ itemType: ItemListType) -> PointOfSaleItemsControllerProtocol {
         switch itemType {
@@ -379,7 +374,6 @@ private extension ItemListView {
 
 /// Constants
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
         static let animationDuration: CGFloat = 0.2
@@ -406,7 +400,6 @@ private extension ItemListView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
@@ -420,7 +413,6 @@ private extension ItemListView {
         .environmentObject(POSSheetManager())
 }
 
-@available(iOS 17.0, *)
 #Preview("Loading") {
     ItemListView(selectedItemListType: .constant(.products(search: false)),
                  searchTerm: .constant(""))

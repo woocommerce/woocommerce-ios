@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
     private let onItemRemoveTapped: (() -> Void)?
@@ -124,7 +123,6 @@ struct ItemRowView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemRowView {
     enum Constants {
         static let productCardSize: CGFloat = 96
@@ -151,7 +149,6 @@ private extension ItemRowView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     ScrollView {
         ItemRowView(

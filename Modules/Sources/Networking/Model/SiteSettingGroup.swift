@@ -7,6 +7,7 @@ public enum SiteSettingGroup: Decodable, Hashable, GeneratedFakeable {
     case general
     case product
     case advanced
+    case pointOfSale
     case custom(String) // catch-all
 }
 
@@ -25,6 +26,8 @@ extension SiteSettingGroup: RawRepresentable {
             self = .product
         case Keys.advanged:
             self = .advanced
+        case Keys.pointOfSale:
+            self = .pointOfSale
         default:
             self = .custom(rawValue)
         }
@@ -37,6 +40,7 @@ extension SiteSettingGroup: RawRepresentable {
         case .general: return Keys.general
         case .product: return Keys.product
         case .advanced: return Keys.advanged
+        case .pointOfSale: return Keys.pointOfSale
         case .custom(let payload):  return payload
         }
     }
@@ -49,4 +53,5 @@ private enum Keys {
     static let general = "general"
     static let product = "product"
     static let advanged = "advanced"
+    static let pointOfSale = "point-of-sale"
 }

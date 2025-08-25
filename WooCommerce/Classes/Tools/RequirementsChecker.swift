@@ -26,10 +26,13 @@ final class RequirementsChecker {
 
     private let stores: StoresManager
     private let baseViewController: UIViewController?
+    private let userDefaults: UserDefaults
 
     init(stores: StoresManager = ServiceLocator.stores,
+         userDefaults: UserDefaults = .standard,
          baseViewController: UIViewController? = nil) {
         self.stores = stores
+        self.userDefaults = userDefaults
         self.baseViewController = baseViewController
     }
 
@@ -131,6 +134,9 @@ private extension RequirementsChecker {
             case .success(let siteAPI):
                 let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
                 self.stores.dispatch(saveTelemetryAvailabilityAction)
+
+                let applicationPasswordAvailable = siteAPI.applicationPasswordAvailable
+                userDefaults.set(applicationPasswordAvailable, forKey: .defaultStoreHasApplicationPasswordEnabled)
 
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))

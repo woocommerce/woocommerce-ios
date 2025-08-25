@@ -13,6 +13,10 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
     ///
     public let namespaces: [String]
 
+    /// Whether application password authentication is available
+    ///
+    public let applicationPasswordAvailable: Bool
+
     /// Highest Woo API version installed on the site
     ///
     public var highestWooVersion: WooAPIVersion {
@@ -42,15 +46,18 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
 
         let siteAPIContainer = try decoder.container(keyedBy: SiteAPIKeys.self)
         let namespaces = siteAPIContainer.failsafeDecodeIfPresent([String].self, forKey: .namespaces) ?? []
+        let authentication = try? siteAPIContainer.decode(Authentication.self, forKey: .authentication)
+        let applicationPasswordAvailable = authentication?.applicationPasswords?.endpoints?.authorization != nil
 
-        self.init(siteID: siteID, namespaces: namespaces)
+        self.init(siteID: siteID, namespaces: namespaces, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int64, namespaces: [String]) {
+    public init(siteID: Int64, namespaces: [String], applicationPasswordAvailable: Bool) {
         self.siteID = siteID
         self.namespaces = namespaces
+        self.applicationPasswordAvailable = applicationPasswordAvailable
     }
 }
 
@@ -60,7 +67,23 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
 private extension SiteAPI {
 
     enum SiteAPIKeys: String, CodingKey {
-        case namespaces = "namespaces"
+        case namespaces
+        case authentication
+    }
+
+    struct Authentication: Decodable {
+        let applicationPasswords: ApplicationPasswords?
+        enum CodingKeys: String, CodingKey {
+            case applicationPasswords = "application-passwords"
+        }
+    }
+
+    struct ApplicationPasswords: Decodable {
+        let endpoints: Endpoints?
+    }
+
+    struct Endpoints: Decodable {
+        let authorization: String?
     }
 }
 

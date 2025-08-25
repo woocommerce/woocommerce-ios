@@ -12,7 +12,22 @@ struct ApplicationPasswordMapper: Mapper {
         decoder.userInfo = [
             .wpOrgUsername: wpOrgUsername
         ]
-        let password = try decoder.decode(ApplicationPassword.self, from: response)
-        return password
+        if hasDataEnvelope(in: response) {
+            return try decoder.decode(ApplicationPasswordEnvelope.self, from: response).applicationPassword
+        } else {
+            return try decoder.decode(ApplicationPassword.self, from: response)
+        }
+    }
+}
+
+/// ApplicationPassword Disposable Entity:
+/// When generating application password with Jetpack proxy, the result is returned within the `data` key.
+/// This entity allows us to do parse data with JSONDecoder.
+///
+private struct ApplicationPasswordEnvelope: Decodable {
+    let applicationPassword: ApplicationPassword
+
+    private enum CodingKeys: String, CodingKey {
+        case applicationPassword = "data"
     }
 }

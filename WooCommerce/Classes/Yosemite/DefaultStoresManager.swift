@@ -120,8 +120,6 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
-    private let appPasswordExperimentEnabled: CurrentValueSubject<Bool, Never>
-
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,
@@ -129,15 +127,10 @@ class DefaultStoresManager: StoresManager {
          defaults: UserDefaults = .standard,
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared) {
         _sessionManager = sessionManager
-        let appPasswordExperimentEnabled = CurrentValueSubject<Bool, Never>(false)
-        self.state = AuthenticatedState(
-            sessionManager: sessionManager,
-            appPasswordExperiment: appPasswordExperimentEnabled.eraseToAnyPublisher(),
-        ) ?? DeauthenticatedState()
+        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
         self.notificationCenter = notificationCenter
         self.defaults = defaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
-        self.appPasswordExperimentEnabled = appPasswordExperimentEnabled
 
         isLoggedIn = isAuthenticated
         if isLoggedIn {
@@ -171,10 +164,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(
-            credentials: credentials,
-            appPasswordExperiment: appPasswordExperimentEnabled.eraseToAnyPublisher()
-        )
+        state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
@@ -350,7 +340,7 @@ private extension DefaultStoresManager {
     /// TODO: Switch to remote feature flag before release.
     func checkApplicationPasswordExperimentFeatureFlag() {
         let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
-        appPasswordExperimentEnabled.send(enabled)
+        UserDefaults.standard.set(enabled, forKey: .applicationPasswordExperimentEnabled)
     }
 
     /// Loads the Default Account into the current Session, if possible.

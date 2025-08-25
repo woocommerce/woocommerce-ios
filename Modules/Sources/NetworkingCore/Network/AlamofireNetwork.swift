@@ -15,8 +15,8 @@ private extension UserDefaults {
         string(forKey: "defaultSiteAddress")
     }
 
-    @objc dynamic var defaultEmail: String? {
-        string(forKey: "defaultEmail")
+    @objc dynamic var applicationPasswordExperimentEnabled: Bool {
+        bool(forKey: "applicationPasswordExperimentEnabled")
     }
 
     @objc dynamic var defaultStoreHasApplicationPasswordEnabled: Bool {
@@ -55,7 +55,6 @@ public class AlamofireNetwork: Network {
     ///
     ///
     public required init(credentials: Credentials?,
-                         appPasswordExperiment: AnyPublisher<Bool, Never>? = nil,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil) {
         self.requestConverter = {
@@ -76,10 +75,8 @@ public class AlamofireNetwork: Network {
             self.alamofireSession = sessionManager
         }
 
-        if let appPasswordExperiment, let credentials, case .wpcom = credentials {
-            observeSelectedSite(credentials: credentials,
-                                appPasswordExperiment: appPasswordExperiment,
-                                userDefaults: userDefaults)
+        if let credentials, case .wpcom = credentials {
+            observeSelectedSite(credentials: credentials, userDefaults: userDefaults)
         }
     }
 
@@ -190,40 +187,31 @@ private extension AlamofireNetwork {
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
-    func observeSelectedSite(credentials: Credentials,
-                             appPasswordExperiment: AnyPublisher<Bool, Never>,
-                             userDefaults: UserDefaults) {
-        subscription = appPasswordExperiment
-            .combineLatest(
-                Publishers.CombineLatest4(
-                    userDefaults.publisher(for: \.defaultStoreID),
-                    userDefaults.publisher(for: \.defaultSiteAddress),
-                    userDefaults.publisher(for: \.defaultEmail),
-                    userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
-                )
-            )
-            .sink { [weak self] result in
-                let (experiment, (siteID, siteAddress, emailAddress, applicationPasswordEnabled)) = result
-                guard let self, let siteAddress, siteID != 0, let emailAddress else {
-                    return
-                }
-                guard applicationPasswordEnabled && experiment else {
-                    requestConverter = RequestConverter(siteAddress: nil)
-                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
-                    return
-                }
-                let site = DefaultRequestAuthenticator.JetpackSite(
-                    siteID: siteID,
-                    siteAddress: siteAddress,
-                    emailAddress: emailAddress
-                )
-                requestConverter = RequestConverter(siteAddress: siteAddress)
-                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
-                    credentials: credentials,
-                    selectedSite: site,
-                    network: self
-                ))
+    func observeSelectedSite(credentials: Credentials, userDefaults: UserDefaults) {
+        subscription = Publishers.CombineLatest4(
+            userDefaults.publisher(for: \.defaultStoreID),
+            userDefaults.publisher(for: \.defaultSiteAddress),
+            userDefaults.publisher(for: \.applicationPasswordExperimentEnabled),
+            userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
+        )
+        .sink { [weak self] result in
+            let (siteID, siteAddress, experiment, applicationPasswordEnabled) = result
+            guard let self, let siteAddress, siteID != 0 else {
+                return
             }
+            guard applicationPasswordEnabled && experiment else {
+                requestConverter = RequestConverter(siteAddress: nil)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                return
+            }
+            let site = DefaultRequestAuthenticator.JetpackSite(siteID: siteID, siteAddress: siteAddress)
+            requestConverter = RequestConverter(siteAddress: siteAddress)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                credentials: credentials,
+                selectedSite: site,
+                network: self
+            ))
+        }
     }
 }
 

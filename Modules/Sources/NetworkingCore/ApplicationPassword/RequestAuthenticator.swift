@@ -39,7 +39,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
 
     private let siteAddress: String?
 
-    typealias JetpackSite = (siteID: Int64, siteAddress: String, emailAddress: String)
+    typealias JetpackSite = (siteID: Int64, siteAddress: String)
 
     /// Sets up the authenticator with optional credentials and application password use case.
     /// `applicationPasswordUseCase` can be injected for unit tests.
@@ -66,7 +66,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                     return nil
                 }
                 return DefaultApplicationPasswordUseCase(
-                    type: .wpcom(emailAddress: selectedSite.emailAddress, siteID: selectedSite.siteID),
+                    type: .wpcom(siteID: selectedSite.siteID),
                     network: network
                 )
             default:

@@ -133,9 +133,6 @@ class DefaultStoresManager: StoresManager {
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
         isLoggedIn = isAuthenticated
-        if isLoggedIn {
-            checkApplicationPasswordExperimentFeatureFlag()
-        }
     }
 
     /// This should only be invoked after all the ServiceLocator dependencies in this function are initialized to avoid circular reference.
@@ -164,7 +161,10 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials)
+        let selectedSite = site
+            .prepend(sessionManager.defaultSite)
+            .eraseToAnyPublisher()
+        state = AuthenticatedState(credentials: credentials, selectedSite: selectedSite)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
@@ -197,6 +197,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+        checkApplicationPasswordExperimentFeatureFlag()
         let group = DispatchGroup()
 
         group.enter()

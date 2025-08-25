@@ -39,8 +39,6 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
 
     private let siteAddress: String?
 
-    typealias JetpackSite = (siteID: Int64, siteAddress: String)
-
     /// Sets up the authenticator with optional credentials and application password use case.
     /// `applicationPasswordUseCase` can be injected for unit tests.
     ///

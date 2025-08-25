@@ -2,19 +2,13 @@ import Combine
 import Foundation
 import Alamofire
 
+public typealias JetpackSite = (siteID: Int64, siteAddress: String)
+
 /// Extension to observe default store ID and address
 /// The values are set in the UI layer (`SessionManager`).
 /// Ensure the keys are in synced with what's defined in `UserDefaults+Woo`.
 ///
 private extension UserDefaults {
-    @objc dynamic var defaultStoreID: Int64 {
-        value(forKey: "defaultStoreID") as? Int64 ?? 0
-    }
-
-    @objc dynamic var defaultSiteAddress: String? {
-        string(forKey: "defaultSiteAddress")
-    }
-
     @objc dynamic var applicationPasswordExperimentEnabled: Bool {
         bool(forKey: "applicationPasswordExperimentEnabled")
     }
@@ -55,6 +49,7 @@ public class AlamofireNetwork: Network {
     ///
     ///
     public required init(credentials: Credentials?,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil) {
         self.requestConverter = {
@@ -75,8 +70,8 @@ public class AlamofireNetwork: Network {
             self.alamofireSession = sessionManager
         }
 
-        if let credentials, case .wpcom = credentials {
-            observeSelectedSite(credentials: credentials, userDefaults: userDefaults)
+        if let selectedSite, let credentials, case .wpcom = credentials {
+            observeSelectedSite(selectedSite, credentials: credentials, userDefaults: userDefaults)
         }
     }
 
@@ -187,25 +182,23 @@ private extension AlamofireNetwork {
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
-    func observeSelectedSite(credentials: Credentials, userDefaults: UserDefaults) {
-        subscription = Publishers.CombineLatest4(
-            userDefaults.publisher(for: \.defaultStoreID),
-            userDefaults.publisher(for: \.defaultSiteAddress),
+    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             credentials: Credentials,
+                             userDefaults: UserDefaults) {
+        subscription = selectedSite.removeDuplicates(by: {
+            $0?.siteID == $1?.siteID && $0?.siteAddress == $1?.siteAddress
+        }).combineLatest(
             userDefaults.publisher(for: \.applicationPasswordExperimentEnabled),
             userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
         )
-        .sink { [weak self] result in
-            let (siteID, siteAddress, experiment, applicationPasswordEnabled) = result
-            guard let self, let siteAddress, siteID != 0 else {
-                return
-            }
-            guard applicationPasswordEnabled && experiment else {
+        .sink { [weak self] (site, experimentEnabled, applicationPasswordEnabled) in
+            guard let self else { return }
+            guard let site, experimentEnabled, applicationPasswordEnabled else {
                 requestConverter = RequestConverter(siteAddress: nil)
                 requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                 return
             }
-            let site = DefaultRequestAuthenticator.JetpackSite(siteID: siteID, siteAddress: siteAddress)
-            requestConverter = RequestConverter(siteAddress: siteAddress)
+            requestConverter = RequestConverter(siteAddress: site.siteAddress)
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
                 credentials: credentials,
                 selectedSite: site,

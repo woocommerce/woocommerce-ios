@@ -26,9 +26,16 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: Credentials, selectedSite: AnyPublisher<Networking.Site?, Never>) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+
+        let site = selectedSite
+            .map { site -> JetpackSite? in
+                guard let site else { return nil }
+                return JetpackSite(siteID: site.siteID, siteAddress: site.url)
+            }
+            .eraseToAnyPublisher()
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: site)
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -138,8 +145,10 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-
-        self.init(credentials: credentials)
+        let selectedSite = sessionManager.defaultSitePublisher
+            .prepend(sessionManager.defaultSite)
+            .eraseToAnyPublisher()
+        self.init(credentials: credentials, selectedSite: selectedSite)
     }
 
     /// Executed before the current state is deactivated.

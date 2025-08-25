@@ -638,7 +638,7 @@ public enum SiteStatsStoreError: Error {
             // Maps to the old .noStatsPermission case
             self = .noPermission
         case "invalid_blog":
-            // Maps to the old .statsModuleDisabled case  
+            // Maps to the old .statsModuleDisabled case
             self = .statsModuleDisabled
         case "unknown_token":
             // Maps to the old .jetpackNotConnected case

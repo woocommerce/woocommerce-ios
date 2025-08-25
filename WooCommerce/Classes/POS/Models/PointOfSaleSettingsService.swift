@@ -6,6 +6,9 @@ import class Yosemite.PluginsService
 import Observation
 
 @Observable final class PointOfSaleSettingsService {
+    private let siteID: Int64
+    private(set) var storeName: String
+
     private(set) var receiptStoreName: String?
     private(set) var receiptStoreAddress: String?
     private(set) var receiptStorePhone: String?
@@ -14,15 +17,9 @@ import Observation
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
-    private var siteID: Int64 {
-        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-    }
-
-    var storeName: String {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return Localization.storeNotSet
-        }
-        return site.name
+    init(siteID: Int64, storeName: String) {
+        self.siteID = siteID
+        self.storeName = storeName
     }
 
     var storeAddress: String {
@@ -81,15 +78,5 @@ import Observation
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
         let value = siteSettings.first { $0.settingID == settingID }?.value
         return value?.isEmpty == true ? nil : value
-    }
-}
-
-private extension PointOfSaleSettingsService {
-    enum Localization {
-        static let storeNotSet = NSLocalizedString(
-            "pointOfSaleSettingsService.storeNotSet",
-            value: "Not set",
-            comment: "Text displayed on Point of Sale settings when store has not been provided."
-        )
     }
 }

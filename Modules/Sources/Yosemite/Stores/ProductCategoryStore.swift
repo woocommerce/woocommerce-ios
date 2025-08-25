@@ -149,8 +149,8 @@ private extension ProductCategoryStore {
                     onCompletion(.success(productCategory))
                 }
             case .failure(let error):
-                if let error = error as? DotcomError,
-                   case .resourceDoesNotExist = error {
+                if let networkError = error as? NetworkError,
+                   networkError.isNotFound {
                     onCompletion(.failure(ProductCategoryActionError.categoryDoesNotExistRemotely))
                 } else {
                     onCompletion(.failure(error))

@@ -628,16 +628,20 @@ public enum SiteStatsStoreError: Error {
     case unknown
 
     init(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
+        guard let networkError = error as? NetworkError,
+              let code = networkError.apiErrorCode else {
             self = .unknown
             return
         }
-        switch dotcomError {
-        case .noStatsPermission:
+        switch code {
+        case "unauthorized":
+            // Maps to the old .noStatsPermission case
             self = .noPermission
-        case .statsModuleDisabled:
+        case "invalid_blog":
+            // Maps to the old .statsModuleDisabled case  
             self = .statsModuleDisabled
-        case .jetpackNotConnected:
+        case "unknown_token":
+            // Maps to the old .jetpackNotConnected case
             self = .jetpackNotConnected
         default:
             self = .unknown

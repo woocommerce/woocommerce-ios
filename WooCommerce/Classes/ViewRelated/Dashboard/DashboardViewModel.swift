@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import Combine
-import enum Networking.DotcomError
 import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService

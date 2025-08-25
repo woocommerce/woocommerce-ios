@@ -1,6 +1,6 @@
 import Foundation
 import Yosemite
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// Creates a top banner to be used when there is an error loading data on a screen.
 /// The banner has two action buttons: "Troubleshoot" and "Contact Support."
@@ -90,7 +90,7 @@ extension ErrorTopBannerFactory {
 
             if error is DecodingError {
                 self = .decodingError
-            } else if error as? DotcomError == .jetpackNotConnected {
+            } else if let networkError = error as? NetworkError, networkError.apiErrorCode == "unknown_token" {
                 self = .jetpackConnectionError
             } else {
                 self = .generalError

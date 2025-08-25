@@ -1,5 +1,5 @@
 import Foundation
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel: Equatable {
     let title: String

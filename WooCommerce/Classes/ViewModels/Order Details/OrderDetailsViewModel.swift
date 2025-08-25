@@ -7,7 +7,7 @@ import Combine
 import Experiments
 import WooFoundation
 import SwiftUI
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 import protocol Storage.StorageManagerType
 
 final class OrderDetailsViewModel {

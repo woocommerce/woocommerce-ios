@@ -215,7 +215,7 @@ final class ConnectivityToolViewModel {
                                         "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a decoding error in the recovery tool")
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
-        case (DotcomError.jetpackNotConnected, _):
+        case (let networkError as NetworkError, _) where networkError.apiErrorCode == "unknown_token":
             message = NSLocalizedString("There is problem with your jetpack connection.\n\n" +
                                         "Read more about it or contact our support team and we will happily assist you.",
                                         comment: "Message when we there is a jetpack error in the recovery tool")

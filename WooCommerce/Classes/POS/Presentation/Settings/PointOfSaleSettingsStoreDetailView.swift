@@ -3,8 +3,7 @@ import Yosemite
 
 struct PointOfSaleSettingsStoreDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var shouldShowReceiptInformation = true
-    @State private var posSettingsService = PointOfSaleSettingsService()
+    let posSettingsService: PointOfSaleSettingsService
 
     var body: some View {
         NavigationStack {
@@ -54,7 +53,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                         .foregroundStyle(.secondary)
 
                 }
-                .renderedIf(shouldShowReceiptInformation)
+                .renderedIf(posSettingsService.shouldShowReceiptInformation)
             }
             .padding()
             .toolbar {
@@ -64,14 +63,11 @@ struct PointOfSaleSettingsStoreDetailView: View {
             }
         }
         .task {
-            shouldShowReceiptInformation = await posSettingsService.isPluginSupported(.wooCommerce, minimumVersion: "10.0")
-        }
-        .task {
             await posSettingsService.loadSettings()
         }
     }
 }
 
 #Preview {
-    PointOfSaleSettingsStoreDetailView()
+    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsService())
 }

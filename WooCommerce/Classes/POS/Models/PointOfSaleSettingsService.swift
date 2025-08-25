@@ -8,6 +8,7 @@ import Observation
     private(set) var receiptStoreEmail: String = "Not set"
     private(set) var receiptRefundReturnsPolicy: String = "Not set"
     private(set) var isLoading: Bool = false
+    private(set) var shouldShowReceiptInformation: Bool = false
 
     var storeName: String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
@@ -31,6 +32,8 @@ import Observation
     @MainActor
     func loadSettings() async {
         isLoading = true
+
+        shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: "10.0")
 
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: siteID) { [weak self] result in

@@ -66,7 +66,7 @@ struct PointOfSaleSettingsView: View {
             Group {
                 switch selection {
                 case .store:
-                    PointOfSaleSettingsStoreDetailView()
+                    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsService())
                 case .hardware:
                     PointOfSaleSettingsHardwareDetailView()
                 case .help:

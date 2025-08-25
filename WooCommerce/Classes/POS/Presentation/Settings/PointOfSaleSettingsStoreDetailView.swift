@@ -1,5 +1,4 @@
 import SwiftUI
-import Yosemite
 
 struct PointOfSaleSettingsStoreDetailView: View {
     let posSettingsService: PointOfSaleSettingsService

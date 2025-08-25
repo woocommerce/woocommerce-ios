@@ -1,4 +1,8 @@
-import Yosemite
+import Foundation
+import struct Yosemite.SiteSetting
+import enum Yosemite.SettingAction
+import enum Yosemite.Plugin
+import class Yosemite.PluginsService
 import Observation
 
 @Observable final class PointOfSaleSettingsService {
@@ -16,7 +20,7 @@ import Observation
 
     var storeName: String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return "Not set"
+            return Localization.storeNotSet
         }
         return site.name
     }
@@ -77,5 +81,15 @@ import Observation
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
         let value = siteSettings.first { $0.settingID == settingID }?.value
         return value?.isEmpty == true ? nil : value
+    }
+}
+
+private extension PointOfSaleSettingsService {
+    enum Localization {
+        static let storeNotSet = NSLocalizedString(
+            "pointOfSaleSettingsService.storeNotSet",
+            value: "Not set",
+            comment: "Text displayed on Point of Sale settings when store has not been provided."
+        )
     }
 }

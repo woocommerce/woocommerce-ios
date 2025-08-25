@@ -61,9 +61,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     /// Internal initializer
-    init(type: AuthenticationType,
-         network: Network,
-         keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+    public init(type: AuthenticationType,
+                network: Network,
+                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.authenticationType = type
         self.storage = ApplicationPasswordStorage(keychain: keychain)
         self.network = network
@@ -293,7 +293,7 @@ private extension DefaultApplicationPasswordUseCase {
     }
 }
 
-extension DefaultApplicationPasswordUseCase {
+public extension DefaultApplicationPasswordUseCase {
     enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
         case wpcom(siteID: Int64)
@@ -305,7 +305,7 @@ extension DefaultApplicationPasswordUseCase {
 private extension DefaultApplicationPasswordUseCase {
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
-        static let userDetails = "/wp/v2/users/me"
+        static let userDetails = "wp/v2/users/me"
     }
 
     enum ParameterKey {
@@ -325,23 +325,4 @@ private extension DefaultApplicationPasswordUseCase {
         static let adminPath = "/wp-admin/"
         static let editValue = "edit"
     }
-}
-
-private struct WordPressUserMapper: Mapper {
-    func map(response: Data) throws -> WordPressUser {
-        let decoder = JSONDecoder()
-        return try decoder.decode(WordPressUserEnvelope.self, from: response).user
-    }
-}
-
-private struct WordPressUserEnvelope: Decodable {
-    let user: WordPressUser
-
-    private enum CodingKeys: String, CodingKey {
-        case user = "data"
-    }
-}
-
-private struct WordPressUser: Decodable {
-    let username: String
 }

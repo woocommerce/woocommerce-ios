@@ -61,9 +61,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     /// Internal initializer
-    public init(type: AuthenticationType,
-                network: Network,
-                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+    init(type: AuthenticationType,
+         network: Network,
+         keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
         self.authenticationType = type
         self.storage = ApplicationPasswordStorage(keychain: keychain)
         self.network = network
@@ -293,7 +293,7 @@ private extension DefaultApplicationPasswordUseCase {
     }
 }
 
-public extension DefaultApplicationPasswordUseCase {
+extension DefaultApplicationPasswordUseCase {
     enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
         case wpcom(siteID: Int64)

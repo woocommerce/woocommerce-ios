@@ -49,7 +49,7 @@ final class MockPointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
 extension MockPointOfSaleOrderService {
     static func makeInitialOrders() -> [Order] {
         let baseDate = Date(timeIntervalSince1970: 1672531200) // Fixed date: Jan 1, 2023
-        
+
         let order1 = Order.fake().copy(
             orderID: 1001,
             number: "1001",
@@ -73,7 +73,7 @@ extension MockPointOfSaleOrderService {
 
     static func makeSecondPageOrders() -> [Order] {
         let baseDate = Date(timeIntervalSince1970: 1672531200) // Fixed date: Jan 1, 2023
-        
+
         let order3 = Order.fake().copy(
             orderID: 1003,
             number: "1003",

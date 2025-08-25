@@ -214,4 +214,85 @@ final class PointOfSaleOrdersControllerTests {
         #expect(orders == initialOrders)
         #expect(context == .refresh)
     }
+
+    @Test func loadOrders_when_cached_data_available_then_shows_cached_data_with_loading_state() async throws {
+        let orderProvider = MockPointOfSaleOrderService()
+        let sut = PointOfSaleOrdersController(orderProvider: orderProvider)
+
+        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
+        orderProvider.orderPages = [initialOrders]
+
+        // First load - should cache the data
+        await sut.loadOrders()
+
+        guard case .loaded(let firstLoadOrders, _) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loaded state after first load, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(firstLoadOrders == initialOrders)
+
+        // Second load - should show cached data immediately with loading state
+        await sut.loadOrders()
+
+        // Should show cached data in loading state, then switch to loaded
+        guard case .loaded(let cachedOrders, _) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loaded state with cached data, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(cachedOrders == initialOrders)
+    }
+
+    @Test func loadOrders_when_no_cached_data_then_starts_with_empty_loading_state() async throws {
+        let orderProvider = MockPointOfSaleOrderService()
+        let sut = PointOfSaleOrdersController(orderProvider: orderProvider)
+
+        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
+        orderProvider.orderPages = [initialOrders]
+
+        // Initial state should be loading with empty orders
+        try #require(sut.ordersViewState.containerState == .loading)
+        guard case .loading(let orders) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loading state with empty orders, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(orders.isEmpty)
+
+        await sut.loadOrders()
+
+        // Should end up in loaded state
+        guard case .loaded(let loadedOrders, _) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loaded state, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(loadedOrders == initialOrders)
+    }
+
+    @Test func loadOrders_cached_data_is_replaced_with_fresh_data() async throws {
+        let orderProvider = MockPointOfSaleOrderService()
+        let sut = PointOfSaleOrdersController(orderProvider: orderProvider)
+
+        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
+        let freshOrders = MockPointOfSaleOrderService.makeSecondPageOrders()
+
+        // First load
+        orderProvider.orderPages = [initialOrders]
+        await sut.loadOrders()
+
+        guard case .loaded(let firstLoadOrders, _) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loaded state after first load, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(firstLoadOrders == initialOrders)
+
+        // Second load with different data
+        orderProvider.orderPages = [freshOrders]
+        await sut.loadOrders()
+
+        // Should end up showing fresh data, not cached data
+        guard case .loaded(let finalOrders, _) = sut.ordersViewState.ordersState else {
+            Issue.record("Expected loaded state with fresh data, but got \(sut.ordersViewState.ordersState)")
+            return
+        }
+        #expect(finalOrders == freshOrders)
+    }
 }

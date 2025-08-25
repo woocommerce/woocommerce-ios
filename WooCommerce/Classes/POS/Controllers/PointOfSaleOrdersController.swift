@@ -16,6 +16,7 @@ protocol PointOfSaleOrdersControllerProtocol {
     var ordersViewState: OrdersViewState
     private let paginationTracker: AsyncPaginationTracker
     private var orderProvider: PointOfSaleOrderServiceProtocol
+    private var cachedOrders: [Order] = []
 
     init(orderProvider: PointOfSaleOrderServiceProtocol,
          initialState: OrdersViewState = OrdersViewState(containerState: .loading,
@@ -27,6 +28,7 @@ protocol PointOfSaleOrdersControllerProtocol {
 
     @MainActor
     func loadOrders() async {
+        setCachedData()
         setLoadingState()
         await loadFirstPage()
     }
@@ -101,10 +103,25 @@ protocol PointOfSaleOrdersControllerProtocol {
             } else {
                 ordersViewState.containerState = .content
                 ordersViewState.ordersState = .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
+
+                // Cache the orders if this is the first page
+                if pageNumber == 1 && !appendToExistingOrders {
+                    cachedOrders = allOrders
+                }
             }
             return pagedOrders.hasMorePages
         } catch PointOfSaleOrderServiceError.requestCancelled {
             return true
         }
+    }
+
+    @MainActor
+    private func setCachedData() {
+        guard !ordersViewState.ordersState.orders.isEmpty, !cachedOrders.isEmpty else {
+            return
+        }
+
+        ordersViewState.containerState = .content
+        ordersViewState.ordersState = .loading(cachedOrders)
     }
 }

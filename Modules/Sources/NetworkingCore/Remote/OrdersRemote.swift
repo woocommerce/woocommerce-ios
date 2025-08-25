@@ -457,7 +457,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
-            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
+            ParameterKeys.fields: ParameterValues.fieldValues,
             ParameterKeys.createdVia: "pos-rest-api"
         ]
 
@@ -520,11 +520,6 @@ public extension OrdersRemote {
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
-        ]
-        static let posOrderFieldValues: String = posOrderFields.joined(separator: ",")
-        private static let posOrderFields = [
-            "id", "number", "date_created_gmt", "status", "total", "billing", "payment_method_title",
-            "line_items", "refunds", "meta_data", "currency", "currency_symbol"
         ]
         static let dateModifiedField = "date_modified_gmt"
     }

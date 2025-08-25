@@ -180,8 +180,8 @@ final class RemoteTests: XCTestCase {
         do {
             let _: String = try await remote.enqueue(request)
         } catch {
-            let error = try XCTUnwrap(error as? DotcomError)
-            XCTAssertEqual(error, .requestFailed)
+            let networkError = try XCTUnwrap(error as? NetworkError)
+            XCTAssertEqual(networkError.apiErrorCode, "http_request_failed")
         }
 
         await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
@@ -202,7 +202,7 @@ final class RemoteTests: XCTestCase {
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
             XCTAssertNil(payload)
-            XCTAssert(error is DotcomError)
+            XCTAssert(error is NetworkError)
             expectationForRequest.fulfill()
         }
 
@@ -234,7 +234,7 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
-        XCTAssertTrue(try XCTUnwrap(result?.failure) is DotcomError)
+        XCTAssertTrue(try XCTUnwrap(result?.failure) is NetworkError)
     }
 
     /// Verifies that `enqueuePublisher` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a Request Timeout error.
@@ -258,7 +258,8 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? DotcomError, DotcomError.requestFailed)
+        let networkError = result.failure as? NetworkError
+        XCTAssertEqual(networkError?.apiErrorCode, "http_request_failed")
     }
 
     /// Verifies that dotcom v1.1 request parses DotcomError
@@ -954,7 +955,7 @@ final class RemoteTests: XCTestCase {
 
     /// Verifies that `enqueue:mapper:` maps an error from `responseData` when error has proper response data
     ///
-    func test_enqueue_request_throws_DotcomError_from_NetworkError_with_proper_response_data() throws {
+    func test_enqueue_request_throws_NetworkError_from_NetworkError_with_proper_response_data() throws {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()
@@ -980,7 +981,7 @@ final class RemoteTests: XCTestCase {
             // Then
             XCTAssertNil(result.0)
             XCTAssertNotNil(result.1)
-            XCTAssertTrue(result.1 is DotcomError)
+            XCTAssertTrue(result.1 is NetworkError)
         }
     }
 

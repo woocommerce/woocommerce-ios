@@ -12,52 +12,34 @@ public enum PaymentsError: Error, LocalizedError {
             return
         }
 
-        /// See if we recognize this DotcomError code
+        /// See if we recognize this NetworkError code
         ///
         self = errorDetails.asPaymentsError() ?? .otherError(error: error.toAnyError)
     }
 
     private static func unwrapError(error: Error) -> PaymentsErrorConvertible? {
         switch error {
-        case let DotcomError.unknown(code, message):
-            return PaymentsDotcomErrorDetails(code: code, message: message)
-        case let NetworkError.unacceptableStatusCode(_, response):
-            guard let response,
-                  let errorDetails = try? JSONDecoder().decode(PaymentsNetworkErrorDetails.self, from: response) else {
+        case let networkError as NetworkError:
+            guard let code = networkError.apiErrorCode,
+                  let errorCode = PaymentsErrorCode(rawValue: code) else {
                 return nil
             }
-            return errorDetails
+            return PaymentsNetworkErrorDetails(code: errorCode, message: networkError.apiErrorMessage)
         default:
             return nil
         }
     }
 
-    private struct PaymentsNetworkErrorDetails: Decodable, PaymentsErrorConvertible {
+    private struct PaymentsNetworkErrorDetails: PaymentsErrorConvertible {
         let code: PaymentsErrorCode
         let message: String?
 
-        enum CodingKeys: CodingKey {
-            case code
-            case message
-        }
-    }
-
-    private struct PaymentsDotcomErrorDetails: PaymentsErrorConvertible {
-        // The response JSON differs from NetworkError above:
-        // `"error": "wcpay_get_charge", "message": "Error fetching charge:"`
-        // It's also decoded further up the chain.
-        let code: PaymentsErrorCode
-        let message: String?
-
-        init?(code: String, message: String?) {
-            guard let errorCode = PaymentsErrorCode(rawValue: code) else {
-                return nil
-            }
-
-            self.code = errorCode
+        init(code: PaymentsErrorCode, message: String?) {
+            self.code = code
             self.message = message
         }
     }
+
 
     public var errorDescription: String? {
         switch self {

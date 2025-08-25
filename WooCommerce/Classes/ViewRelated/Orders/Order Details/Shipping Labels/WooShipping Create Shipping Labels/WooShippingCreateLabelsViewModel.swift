@@ -3,7 +3,7 @@ import Yosemite
 import WooFoundation
 import Combine
 import struct Networking.WooShippingAccountSettings
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 import protocol Storage.StorageManagerType
 
 enum WooShippingCreateLabelSelection {
@@ -373,7 +373,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             }
             let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
             try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
-        } catch let DotcomError.unknown(code, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
+        } catch let error as NetworkError where error.apiErrorCode == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch {
             labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,

@@ -164,10 +164,11 @@ struct POSProductOrVariationResolverTests {
         )
         let scannedCode = "test-barcode-loading"
         let someError = NSError(domain: "Test", code: 1, userInfo: nil)
-        let dotcomNotFoundError = DotcomError.unknown(code: "woocommerce_rest_product_invalid_id", message: "Not found")
+        let errorData = "{\"code\":\"woocommerce_rest_product_invalid_id\",\"message\":\"Not found\"}".data(using: .utf8)!
+        let networkNotFoundError = NetworkError.unacceptableStatusCode(statusCode: 404, response: errorData)
 
-        // NotFound case (simulate DotcomError for not found)
-        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(dotcomNotFoundError))
+        // NotFound case (simulate NetworkError for not found)
+        mockProductsRemote.whenLoadingProductForPointOfSale(siteID: variation.siteID, productID: variation.parentID, thenReturn: .failure(networkNotFoundError))
         await #expect(throws: PointOfSaleBarcodeScanError.noParentProductForVariation(scannedCode: scannedCode)) {
             _ = try await sut.itemForProductOrVariation(variation, scannedCode: scannedCode)
         }

@@ -8,17 +8,11 @@ public struct CouponsError: Error, LocalizedError {
 
     public init?(underlyingError error: Error) {
         switch error {
-        case DotcomError.unknown(Constants.invalidCouponCode, let message):
-            self.message = message ?? Localizations.defaultCouponsError
-            self.underlyingError = error
-        case let NetworkError.unacceptableStatusCode(_, response):
-            guard let response,
-                  let errorDetails = try? JSONDecoder().decode(ErrorDetails.self, from: response),
-                  errorDetails.code == Constants.invalidCouponCode
-            else {
+        case let networkError as NetworkError:
+            guard networkError.apiErrorCode == Constants.invalidCouponCode else {
                 return nil
             }
-            self.message = errorDetails.message ?? Localizations.defaultCouponsError
+            self.message = networkError.apiErrorMessage ?? Localizations.defaultCouponsError
             self.underlyingError = error
         default:
             return nil
@@ -31,15 +25,6 @@ public struct CouponsError: Error, LocalizedError {
     }
 
 
-    private struct ErrorDetails: Decodable {
-        let code: String
-        let message: String?
-
-        enum CodingKeys: CodingKey {
-            case code
-            case message
-        }
-    }
 
     enum Localizations {
         static let defaultCouponsError = NSLocalizedString(

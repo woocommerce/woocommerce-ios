@@ -61,7 +61,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     /// Internal initializer
-    /// periphery: ignore - used in future PR for WOOMOB-1123
     init(type: AuthenticationType,
          network: Network,
          keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
@@ -306,7 +305,7 @@ extension DefaultApplicationPasswordUseCase {
 private extension DefaultApplicationPasswordUseCase {
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
-        static let userDetails = "wp/v2/users/me"
+        static let userDetails = "/wp/v2/users/me"
     }
 
     enum ParameterKey {
@@ -326,4 +325,23 @@ private extension DefaultApplicationPasswordUseCase {
         static let adminPath = "/wp-admin/"
         static let editValue = "edit"
     }
+}
+
+private struct WordPressUserMapper: Mapper {
+    func map(response: Data) throws -> WordPressUser {
+        let decoder = JSONDecoder()
+        return try decoder.decode(WordPressUserEnvelope.self, from: response).user
+    }
+}
+
+private struct WordPressUserEnvelope: Decodable {
+    let user: WordPressUser
+
+    private enum CodingKeys: String, CodingKey {
+        case user = "data"
+    }
+}
+
+private struct WordPressUser: Decodable {
+    let username: String
 }

@@ -295,6 +295,7 @@ private extension Remote {
     }
 
     /// Maps an error from `network.responseData` so that the request's corresponding error can be returned.
+    /// Returns a NetworkError with preserved status codes and enhanced API error details.
     ///
     func mapNetworkError(error: Error, for request: Request) -> Error {
         guard let networkError = error as? NetworkError else {
@@ -317,7 +318,11 @@ private extension Remote {
             let validator = request.responseDataValidator()
             try validator.validate(data: response)
             return networkError
+        } catch let dotcomError as DotcomError {
+            // Convert DotcomError back to NetworkError while preserving original status code
+            return NetworkError.from(dotcomError: dotcomError, originalNetworkError: networkError)
         } catch {
+            // For non-DotcomError validation failures, return the original error
             return error
         }
     }

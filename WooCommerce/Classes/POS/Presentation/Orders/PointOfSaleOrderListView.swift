@@ -114,21 +114,32 @@ private struct OrderRowView: View {
     let order: POSOrder
     let isSelected: Bool
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    private var minHeight: CGFloat {
+        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text("#\(order.number)")
                     .font(.posBodySmallBold)
                     .foregroundStyle(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .fixedSize(horizontal: false, vertical: true)
+
 
                 if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
                     Text(customerEmail)
                         .font(.posBodySmallRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .multilineTextAlignment(.leading)
@@ -153,11 +164,16 @@ private struct OrderRowView: View {
             }
             .multilineTextAlignment(.trailing)
         }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.vertical, POSPadding.medium)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium * (1 / scale))
+        .padding(.vertical, POSPadding.medium * (1 / scale))
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
         .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+
+    private enum Constants {
+        static let orderCardMinHeight: CGFloat = 90
+        static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     }
 }
 

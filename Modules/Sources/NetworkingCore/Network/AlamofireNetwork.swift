@@ -73,12 +73,6 @@ public class AlamofireNetwork: Network {
         }
     }
 
-    /// Delete application password
-    ///
-    public func deleteApplicationPassword() {
-        requestAuthenticator.deleteApplicationPassword()
-    }
-
     public func updateAppPasswordSwitching(enabled: Bool) {
         if enabled, let selectedSite, let credentials, case .wpcom = credentials {
             observeSelectedSite(selectedSite)

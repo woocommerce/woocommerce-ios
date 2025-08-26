@@ -248,10 +248,9 @@ class DefaultStoresManager: StoresManager {
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
 
-        if let state = state as? AuthenticatedState {
+        if isAuthenticated {
             if case .wpcom = sessionManager.defaultCredentials {
-                /// Uses the existing network to delete app password if authenticated with wpcom
-                state.deleteApplicationPassword()
+                // TODO: fetch site list and delete password for each site
             } else {
                 sessionManager.deleteApplicationPassword()
             }

@@ -151,10 +151,6 @@ class AuthenticatedState: StoresManagerState {
         self.init(credentials: credentials, selectedSite: selectedSite)
     }
 
-    func deleteApplicationPassword() {
-        network.deleteApplicationPassword()
-    }
-
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {

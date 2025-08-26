@@ -5,6 +5,7 @@ import class Yosemite.PluginsService
 import Observation
 
 import class Yosemite.PointOfSaleSettingsService
+import Storage
 
 protocol PointOfSaleSettingsControllerProtocol {
     var receiptStoreName: String? { get }
@@ -16,7 +17,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     var shouldShowReceiptInformation: Bool { get }
     var storeName: String { get }
     var storeAddress: String { get }
-   
+
     func retrievePOSReceiptSettings() async
 }
 
@@ -51,10 +52,6 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
         self.settingsService = settingsService
     }
 
-    private var siteID: Int64 {
-        settingsService.siteID
-    }
-
     var storeName: String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return Localization.storeNotSet
@@ -70,7 +67,7 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
     func retrievePOSReceiptSettings() async {
         isLoading = true
 
-        shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: "10.0")
+        shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: Constants.minimumWooCommerceVersion)
 
         guard shouldShowReceiptInformation else {
             isLoading = false
@@ -87,11 +84,11 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
     }
 
     @MainActor
-    private func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
-        let storageManager = ServiceLocator.storageManager
+    private func isPluginSupported(_ plugin: Plugin,
+                                   storageManager: StorageManagerType = ServiceLocator.storageManager,
+                                   minimumVersion: String) async -> Bool {
         let pluginsService = PluginsService(storageManager: storageManager)
-        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
-              systemPlugin.active else {
+        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: settingsService.siteID, plugin: plugin, isActive: true), systemPlugin.active else {
             return false
         }
 
@@ -115,6 +112,10 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
 }
 
 private extension PointOfSaleSettingsController {
+    enum Constants {
+        static let minimumWooCommerceVersion: String = "10.0"
+    }
+
     enum Localization {
         static let storeNotSet = NSLocalizedString(
             "pointOfSaleSettingsService.storeNotSet",

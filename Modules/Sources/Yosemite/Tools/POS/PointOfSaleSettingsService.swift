@@ -4,7 +4,6 @@ import Networking
 import Storage
 
 public final class PointOfSaleSettingsService {
-    // TODO: make private once we've moved the actions here.
     public private(set) var siteID: Int64
     private let settingStoreMethods: SettingStoreMethodsProtocol
     private let storage: StorageManagerType

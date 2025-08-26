@@ -134,16 +134,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.barcodeScanService = barcodeScanService
         self.soundPlayer = soundPlayer
 
-        //
-//        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-//        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-//        let storage = ServiceLocator.storageManager
-//        let service = PointOfSaleSettingsService(siteID: siteID,
-//                                                 credentials: credentials,
-//                                                 storage: storage)
-//
-//        self.settingsController = PointOfSaleSettingsController(settingsService: service)
-
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()

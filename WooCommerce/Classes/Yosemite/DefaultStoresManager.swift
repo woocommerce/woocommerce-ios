@@ -295,7 +295,18 @@ class DefaultStoresManager: StoresManager {
         guard site.siteID == sessionManager.defaultStoreID else {
             return
         }
-        sessionManager.defaultSite = site
+
+        /// Triggers root endpoint to check if application password is available
+        dispatch(SettingAction.retrieveSiteAPI(siteID: site.siteID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let siteAPI):
+                let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
+                sessionManager.defaultSite = updatedSite
+            case .failure:
+                sessionManager.defaultSite = site
+            }
+        })
     }
 
     /// Updates the user roles for the default Store site.
@@ -708,14 +719,24 @@ private extension DefaultStoresManager {
     ///
     func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let action = AccountAction
-            .loadAndSynchronizeSite(siteID: siteID,
-                                    forcedUpdate: false) { [weak self] result in
-            guard let self = self else { return }
+            .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false) { [weak self] result in
+            guard let self else { return }
             guard case .success(let site) = result else {
                 return
             }
-            self.sessionManager.defaultSite = site
-            self.updateAndReloadWidgetInformation(with: siteID)
+            /// Triggers root endpoint to check if application password is available
+            dispatch(SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let siteAPI):
+                    let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
+                    sessionManager.defaultSite = updatedSite
+                    updateAndReloadWidgetInformation(with: siteID)
+                case .failure:
+                    sessionManager.defaultSite = site
+                    updateAndReloadWidgetInformation(with: siteID)
+                }
+            })
         }
         dispatch(action)
     }

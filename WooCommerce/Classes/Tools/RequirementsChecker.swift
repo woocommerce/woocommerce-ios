@@ -135,9 +135,6 @@ private extension RequirementsChecker {
                 let saveTelemetryAvailabilityAction = AppSettingsAction.setTelemetryAvailability(siteID: siteID, isAvailable: siteAPI.telemetryIsAvailable)
                 self.stores.dispatch(saveTelemetryAvailabilityAction)
 
-                let applicationPasswordAvailable = siteAPI.applicationPasswordAvailable
-                userDefaults.set(applicationPasswordAvailable, forKey: .defaultStoreHasApplicationPasswordEnabled)
-
                 if siteAPI.highestWooVersion == .mark3 {
                     onCompletion?(.success(.validWCVersion))
                 } else {

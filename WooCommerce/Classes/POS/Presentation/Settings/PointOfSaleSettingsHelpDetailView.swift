@@ -9,7 +9,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
         NavigationStack {
             VStack(alignment: .leading) {
                 Text("Help Settings")
-                    .font(.title2)
+                    .font(.posBodyMediumRegular())
                 List {
                     Button {
                         showProductRestrictions = true
@@ -78,8 +78,38 @@ struct PointOfSaleSettingsHelpDetailView: View {
         .posSheet(isPresented: $showSupport) {
             // TODO: Remove copy on PointOfSaleDashboardView.supportForm
             // WOOMOB-1168
-            Text("Support form")
+            supportForm
                 .interactiveDismissDisabled(true)
         }
+    }
+}
+
+private extension PointOfSaleSettingsHelpDetailView {
+    enum Constants {
+        static let supportTag = "origin:point-of-sale"
+    }
+
+    enum Localization {
+        static let supportCancel = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.support.cancel",
+            value: "Cancel",
+            comment: "Button to dismiss the support form from the POS settings."
+        )
+    }
+
+    var supportForm: some View {
+        NavigationView {
+            SupportForm(isPresented: $showSupport,
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.supportCancel) {
+                        showSupport = false
+                    }
+                }
+            }
+        }
+        .navigationViewStyle(.stack)
     }
 }

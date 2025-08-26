@@ -93,7 +93,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     public let hasSSOEnabled: Bool
 
     /// Whether application password authentication is available
-    ///
+    /// periphery: ignore - to be used as part of WOOMOB-1123
     public let applicationPasswordAvailable: Bool
 
     /// Decodable Conformance.

@@ -74,7 +74,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    let settingsController: PointOfSaleSettingsController
+    let settingsController: PointOfSaleSettingsControllerProtocol
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -110,6 +110,7 @@ protocol PointOfSaleAggregateModelProtocol {
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
+         settingsController: PointOfSaleSettingsControllerProtocol,
          analytics: Analytics = ServiceLocator.analytics,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
@@ -124,6 +125,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
+        self.settingsController = settingsController
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
@@ -133,14 +135,14 @@ protocol PointOfSaleAggregateModelProtocol {
         self.soundPlayer = soundPlayer
 
         //
-        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-        let storage = ServiceLocator.storageManager
-        let service = PointOfSaleSettingsService(siteID: siteID,
-                                                 credentials: credentials,
-                                                 storage: storage)
-
-        self.settingsController = PointOfSaleSettingsController(settingsService: service)
+//        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+//        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+//        let storage = ServiceLocator.storageManager
+//        let service = PointOfSaleSettingsService(siteID: siteID,
+//                                                 credentials: credentials,
+//                                                 storage: storage)
+//
+//        self.settingsController = PointOfSaleSettingsController(settingsService: service)
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

@@ -92,6 +92,9 @@ private extension POSTabCoordinator {
             let cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
                                                                             stores: storesManager,
                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
+            let settingsService = PointOfSaleSettingsService(siteID: siteID,
+                                                             credentials: credentials,
+                                                             storage: storageManager)
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
                let orderService = POSOrderService(siteID: siteID,
@@ -118,6 +121,7 @@ private extension POSTabCoordinator {
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
                                                                 receiptService: receiptService),
+                    settingsController: PointOfSaleSettingsController(settingsService: settingsService),
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

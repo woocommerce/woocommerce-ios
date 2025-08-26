@@ -3,8 +3,8 @@ import SwiftUI
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: SidebarNavigation? = .store
-    
-    let settingsController: PointOfSaleSettingsController
+
+    let settingsController: PointOfSaleSettingsControllerProtocol
 
     var body: some View {
         POSPageHeaderView(

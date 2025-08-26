@@ -6,7 +6,37 @@ import Observation
 
 import class Yosemite.PointOfSaleSettingsService
 
-@Observable final class PointOfSaleSettingsController {
+protocol PointOfSaleSettingsControllerProtocol {
+    var receiptStoreName: String? { get }
+    var receiptStoreAddress: String? { get }
+    var receiptStorePhone: String? { get }
+    var receiptStoreEmail: String? { get }
+    var receiptRefundReturnsPolicy: String? { get }
+    var isLoading: Bool { get }
+    var shouldShowReceiptInformation: Bool { get }
+    var storeName: String { get }
+    var storeAddress: String { get }
+   
+    func retrievePOSReceiptSettings() async
+}
+
+class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
+    var receiptStoreName: String? = "Sample Store"
+    var receiptStoreAddress: String? = "123 Main Street\nAnytown, ST 12345"
+    var receiptStorePhone: String? = "+1 (555) 123-4567"
+    var receiptStoreEmail: String? = "store@example.com"
+    var receiptRefundReturnsPolicy: String? = "30-day return policy"
+    var isLoading: Bool = false
+    var shouldShowReceiptInformation: Bool = true
+    var storeName: String = "Sample Store"
+    var storeAddress: String = "123 Main Street, Anytown, ST 12345"
+
+    func retrievePOSReceiptSettings() async {
+        // no-op
+    }
+}
+
+@Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
     private(set) var receiptStoreName: String?
     private(set) var receiptStoreAddress: String?
     private(set) var receiptStorePhone: String?

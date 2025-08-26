@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
-    let settingsController: PointOfSaleSettingsController
+    let settingsController: PointOfSaleSettingsControllerProtocol
 
     var body: some View {
         NavigationStack {

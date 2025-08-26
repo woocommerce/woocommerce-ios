@@ -69,13 +69,13 @@ struct PointOfSaleSettingsHelpDetailView: View {
             // WOOMOB-1168
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictions)
         }
-        .posSheet(isPresented: $showDocumentation) {
+        .posFullScreenCover(isPresented: $showDocumentation) {
             // TODO: Remove copy on PointOfSaleDashboardView.documentationView
             // WOOMOB-1168
             SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
 
         }
-        .posSheet(isPresented: $showSupport) {
+        .posFullScreenCover(isPresented: $showSupport) {
             // TODO: Remove copy on PointOfSaleDashboardView.supportForm
             // WOOMOB-1168
             supportForm

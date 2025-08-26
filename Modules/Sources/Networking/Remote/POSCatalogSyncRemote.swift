@@ -10,17 +10,15 @@ public class POSCatalogSyncRemote: Remote {
     /// - Parameters:
     ///   - modifiedAfter: Only products modified after this date will be returned.
     ///   - siteID: Site ID to load products from.
-    ///   - productTypes: Product types to filter by.
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS products.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func loadProducts(modifiedAfter: Date, siteID: Int64, productTypes: [ProductType] = [.simple, .variable], pageNumber: Int)
+    public func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int)
     async throws -> PagedItems<POSProduct> {
         let path = "products"
         let parameters = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
-            ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
@@ -68,7 +66,6 @@ private extension POSCatalogSyncRemote {
 
     enum ParameterKey {
         static let modifiedAfter = "modified_after"
-        static let productTypes = "include_types"
         static let page = "page"
         static let perPage = "per_page"
         static let fields = "_fields"

@@ -11,11 +11,10 @@ struct POSCatalogSyncRemoteTests {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
         let modifiedAfter = Date(timeIntervalSince1970: 1692968400) // 2023-08-25 12:00:00 UTC
-        let productTypes: [ProductType] = [.simple, .variable]
         let pageNumber = 2
 
         // When
-        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, productTypes: productTypes, pageNumber: pageNumber)
+        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: pageNumber)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
@@ -23,7 +22,6 @@ struct POSCatalogSyncRemoteTests {
         let expectedDateString = dateFormatter.string(from: modifiedAfter)
 
         #expect(queryParametersDictionary["modified_after"] as? String == expectedDateString)
-        #expect(queryParametersDictionary["include_types"] as? String == "simple,variable")
         #expect(queryParametersDictionary["page"] as? String == String(pageNumber))
         #expect(queryParametersDictionary["per_page"] as? String == "100")
         #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
@@ -33,12 +31,11 @@ struct POSCatalogSyncRemoteTests {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
         let modifiedAfter = Date()
-        let productTypes: [ProductType] = [.simple]
         let expectedProductsCount = 2
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-pos")
-        let pagedProducts = try await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, productTypes: productTypes, pageNumber: 1)
+        let pagedProducts = try await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: 1)
 
         // Then
         #expect(pagedProducts.items.count == expectedProductsCount)
@@ -55,7 +52,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, productTypes: [.simple], pageNumber: 1)
+            try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
         }
     }
 
@@ -70,7 +67,6 @@ struct POSCatalogSyncRemoteTests {
         let pagedProducts = try await remote.loadProducts(
             modifiedAfter: modifiedAfter,
             siteID: sampleSiteID,
-            productTypes: [.simple],
             pageNumber: pageNumber
         )
 
@@ -89,7 +85,6 @@ struct POSCatalogSyncRemoteTests {
         let pagedProducts = try await remote.loadProducts(
             modifiedAfter: modifiedAfter,
             siteID: sampleSiteID,
-            productTypes: [.simple],
             pageNumber: pageNumber
         )
 
@@ -109,7 +104,6 @@ struct POSCatalogSyncRemoteTests {
         let pagedProducts = try await remote.loadProducts(
             modifiedAfter: modifiedAfter,
             siteID: sampleSiteID,
-            productTypes: [.simple],
             pageNumber: 1
         )
 
@@ -128,7 +122,6 @@ struct POSCatalogSyncRemoteTests {
         let pagedProducts = try await remote.loadProducts(
             modifiedAfter: modifiedAfter,
             siteID: sampleSiteID,
-            productTypes: [.simple],
             pageNumber: 1
         )
 
@@ -281,7 +274,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
-        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, productTypes: [.simple], pageNumber: largePageNumber)
+        _ = try? await remote.loadProducts(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: largePageNumber)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])

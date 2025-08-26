@@ -121,7 +121,7 @@ private struct OrderRowView: View {
                 Text("\(order.currencySymbol)\(order.total)")
             }
 
-            Text(order.dateCreated, style: .date)
+            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
         }
         .padding()
         .background(isSelected ? Color.accentColor.opacity(0.1) : Color.posSurface)
@@ -136,7 +136,8 @@ private struct OrderRowView: View {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrdersListView(selectedOrderID: .constant("1"), onClose: {})
+            .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {
         Text("Detail View")

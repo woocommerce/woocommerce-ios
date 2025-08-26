@@ -40,6 +40,10 @@ public class AlamofireNetwork: Network {
         return sessionManager
     }()
 
+    private let credentials: Credentials?
+
+    private let selectedSite: AnyPublisher<JetpackSite?, Never>?
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
     private var requestConverter: RequestConverter
@@ -57,8 +61,9 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
-                         userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil) {
+        self.credentials = credentials
+        self.selectedSite = selectedSite
         self.requestConverter = {
             let siteAddress: String? = {
                 switch credentials {
@@ -76,16 +81,21 @@ public class AlamofireNetwork: Network {
         if let sessionManager {
             self.alamofireSession = sessionManager
         }
-
-        if let selectedSite, let credentials, case .wpcom = credentials {
-            observeSelectedSite(selectedSite, credentials: credentials, userDefaults: userDefaults)
-        }
     }
 
     /// Delete application password
     ///
     public func deleteApplicationPassword() {
         requestAuthenticator.deleteApplicationPassword()
+    }
+
+    public func updateAppPasswordSwitching(enabled: Bool) {
+        if enabled, let selectedSite, let credentials, case .wpcom = credentials {
+            observeSelectedSite(selectedSite)
+        } else {
+            requestConverter = RequestConverter(siteAddress: nil)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -195,26 +205,23 @@ private extension AlamofireNetwork {
 
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
-    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>,
-                             credentials: Credentials,
-                             userDefaults: UserDefaults) {
-        subscription = selectedSite.removeDuplicates().combineLatest(
-            userDefaults.publisher(for: \.applicationPasswordExperimentEnabled),
-        )
-        .sink { [weak self] (site, experimentEnabled) in
-            guard let self else { return }
-            guard let site, experimentEnabled, site.applicationPasswordAvailable else {
-                requestConverter = RequestConverter(siteAddress: nil)
-                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
-                return
+    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
+        subscription = selectedSite
+            .removeDuplicates()
+            .sink { [weak self] site in
+                guard let self else { return }
+                guard let site, site.applicationPasswordAvailable else {
+                    requestConverter = RequestConverter(siteAddress: nil)
+                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    return
+                }
+                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                    credentials: credentials,
+                    selectedSite: site,
+                    network: self
+                ))
             }
-            requestConverter = RequestConverter(siteAddress: site.siteAddress)
-            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
-                credentials: credentials,
-                selectedSite: site,
-                network: self
-            ))
-        }
     }
 }
 

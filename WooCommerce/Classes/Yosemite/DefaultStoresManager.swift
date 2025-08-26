@@ -197,7 +197,6 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
-        checkApplicationPasswordExperimentFeatureFlag()
         let group = DispatchGroup()
 
         group.enter()
@@ -342,13 +341,6 @@ class DefaultStoresManager: StoresManager {
 // MARK: - Private Methods
 //
 private extension DefaultStoresManager {
-
-    /// Uses local feature flag for development phase.
-    /// TODO: Switch to remote feature flag before release.
-    func checkApplicationPasswordExperimentFeatureFlag() {
-        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
-        UserDefaults.standard.set(enabled, forKey: .applicationPasswordExperimentEnabled)
-    }
 
     /// Loads the Default Account into the current Session, if possible.
     ///

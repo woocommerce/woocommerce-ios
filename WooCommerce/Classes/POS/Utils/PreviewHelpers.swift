@@ -263,7 +263,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         dateCreated: Date().addingTimeInterval(-3600),
                         status: .processing,
                         total: "45.50",
-                        customerEmail: "customer2@example.com",
+                        customerEmail: "a.long.customer.name@withalongdomain.com",
                         paymentMethodTitle: "Cash",
                         lineItems: [],
                         refunds: [],

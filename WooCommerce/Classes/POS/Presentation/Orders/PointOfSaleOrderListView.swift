@@ -114,22 +114,47 @@ private struct OrderRowView: View {
     let isSelected: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Order #\(order.number)")
-                Spacer()
-                Text("\(order.currencySymbol)\(order.total)")
-            }
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Text("#\(order.number)")
+                    .font(.posBodySmallBold)
+                    .foregroundStyle(Color.posOnSurface)
 
-            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+                Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+
+                if let customerEmail = order.customerEmail {
+                    Text(customerEmail)
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
+            }
+            .multilineTextAlignment(.leading)
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
+                Text("\(order.currencySymbol)\(order.total)")
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+
+                HStack(spacing: POSSpacing.xSmall) {
+                    Image(systemName: "creditcard.fill")
+                        .foregroundStyle(Color.posSuccess)
+                        .font(.caption)
+                    Text("Completed")
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(Color.posSuccess)
+                }
+            }
+            .multilineTextAlignment(.trailing)
         }
-        .padding()
-        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.posSurface)
-        .cornerRadius(8)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(isSelected ? Color.accentColor : Color.clear, lineWidth: 2)
-        )
+        .padding(.horizontal, POSPadding.medium)
+        .padding(.vertical, POSPadding.medium)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
     }
 }
 

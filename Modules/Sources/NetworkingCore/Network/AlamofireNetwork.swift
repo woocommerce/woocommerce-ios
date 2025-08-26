@@ -15,16 +15,6 @@ public struct JetpackSite: Equatable {
     }
 }
 
-/// Extension to observe default store ID and address
-/// The values are set in the UI layer (`SessionManager`).
-/// Ensure the keys are in synced with what's defined in `UserDefaults+Woo`.
-///
-private extension UserDefaults {
-    @objc dynamic var applicationPasswordExperimentEnabled: Bool {
-        bool(forKey: "applicationPasswordExperimentEnabled")
-    }
-}
-
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)

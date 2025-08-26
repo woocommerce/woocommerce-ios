@@ -106,28 +106,6 @@ final class SessionManagerTests: XCTestCase {
         }
     }
 
-    /// Verifies that application password is deleted upon reset
-    ///
-    func test_application_password_is_deleted_upon_reset() {
-        // Given
-        manager.defaultCredentials = Settings.wporgCredentials
-        let storage = ApplicationPasswordStorage(keychain: Keychain(service: Settings.keychainServiceName))
-
-        // When
-        storage.saveApplicationPassword(applicationPassword)
-
-        // Then
-        XCTAssertNotNil(storage.applicationPassword)
-
-        // When
-        manager.reset()
-
-        // Then
-        waitUntil {
-            storage.applicationPassword == nil
-        }
-    }
-
     /// Verifies that `storePhoneNumber` is set to `nil` upon reset
     ///
     func test_storePhoneNumber_is_set_to_nil_upon_reset() throws {

@@ -30,7 +30,10 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
     var isLoading: Bool = false
     var shouldShowReceiptInformation: Bool = true
     var storeName: String = "Sample Store"
-    var storeAddress: String = "123 Main Street, Anytown, ST 12345"
+
+    var storeAddress: String {
+        "123 Main Street\nAnytown, ST 12345"
+    }
 
     func retrievePOSReceiptSettings() async {
         // no-op
@@ -46,21 +49,28 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
+    private let defaultSiteName: String?
     private let settingsService: PointOfSaleSettingsService
+    private let siteSettings: [SiteSetting]
 
-    init(settingsService: PointOfSaleSettingsService) {
+    init(settingsService: PointOfSaleSettingsService,
+         defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.settingsService = settingsService
+        self.defaultSiteName = defaultSiteName
+        self.siteSettings = siteSettings
     }
 
     var storeName: String {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+        if let defaultSiteName {
+            return defaultSiteName
+        } else {
             return Localization.storeNotSet
         }
-        return site.name
     }
 
     var storeAddress: String {
-        SiteAddress().address
+        SiteAddress(siteSettings: siteSettings).address
     }
 
     @MainActor

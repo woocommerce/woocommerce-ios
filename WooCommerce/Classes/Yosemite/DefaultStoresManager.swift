@@ -296,6 +296,8 @@ class DefaultStoresManager: StoresManager {
             return
         }
 
+        sessionManager.defaultSite = site
+
         /// Triggers root endpoint to check if application password is available
         dispatch(SettingAction.retrieveSiteAPI(siteID: site.siteID) { [weak self] result in
             guard let self else { return }
@@ -304,7 +306,7 @@ class DefaultStoresManager: StoresManager {
                 let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                 sessionManager.defaultSite = updatedSite
             case .failure:
-                sessionManager.defaultSite = site
+                break // ignores failure
             }
         })
     }

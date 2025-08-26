@@ -92,6 +92,26 @@ public class POSCatalogSyncRemote: Remote {
         let mapper = SingleItemMapper<POSCatalogStatusResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Downloads the generated catalog at the specified download URL.
+    /// - Parameters:
+    ///   - siteID: Site ID to download catalog for.
+    ///   - downloadURL: Download URL of the catalog file.
+    /// - Returns: List of products and variations in the POS catalog.
+    public func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalog {
+        // TODO: WOOMOB-1173 - move download task to the background using `URLSessionConfiguration.background`
+        guard let url = URL(string: downloadURL) else {
+            throw NetworkError.invalidURL
+        }
+        let request = URLRequest(url: url)
+        let mapper = ListMapper<POSProduct>(siteID: siteID)
+        let items = try await enqueue(request, mapper: mapper)
+        let variationProductTypeKey = "variation"
+        let products = items.filter { $0.productTypeKey != variationProductTypeKey }
+        let variations = items.filter { $0.productTypeKey == variationProductTypeKey }
+            .map { $0.toVariation }
+        return POSCatalog(products: products, variations: variations)
+    }
 }
 
 // MARK: - Constants
@@ -145,4 +165,39 @@ public enum POSCatalogStatus: String, Decodable {
     case pending
     case processing
     case complete
+}
+
+/// POS catalog from download.
+// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
+public struct POSCatalog {
+    public let products: [POSProduct]
+    public let variations: [POSProductVariation]
+}
+
+private extension POSProduct {
+    var toVariation: POSProductVariation {
+        let variationAttributes = attributes.compactMap { attribute in
+            try? attribute.toProductVariationAttribute()
+        }
+
+        let firstImage = images.first
+
+        return .init(
+            siteID: siteID,
+            productID: parentID,
+            productVariationID: productID,
+            attributes: variationAttributes,
+            image: firstImage,
+            sku: sku,
+            globalUniqueID: globalUniqueID,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            downloadable: downloadable,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey
+        )
+    }
 }

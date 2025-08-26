@@ -14,7 +14,7 @@ public class POSCatalogSyncRemote: Remote {
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS products.
     ///
-    // periphery:ignore - TODO - remove when this endpoint is integrated with catalog sync
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func loadProducts(modifiedAfter: Date, siteID: Int64, productTypes: [ProductType] = [.simple, .variable], pageNumber: Int)
     async throws -> PagedItems<POSProduct> {
         let path = "products"
@@ -41,7 +41,7 @@ public class POSCatalogSyncRemote: Remote {
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS product variations.
     ///
-    // periphery:ignore - TODO - remove when this endpoint is integrated with catalog sync
+    // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
     public func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let path = "variations"
         let parameters = [

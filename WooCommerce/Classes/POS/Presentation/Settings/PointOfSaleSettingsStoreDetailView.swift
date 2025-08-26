@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
-    let posSettingsService: PointOfSaleSettingsService
+    let settingsController: PointOfSaleSettingsController
 
     var body: some View {
         NavigationStack {
@@ -11,12 +11,12 @@ struct PointOfSaleSettingsStoreDetailView: View {
                         .font(.posBodyLargeRegular())
 
                     Text(Localization.storeName)
-                    Text(posSettingsService.storeName)
+                    Text(settingsController.storeName)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(.secondary)
 
                     Text(Localization.address)
-                    Text(posSettingsService.storeAddress)
+                    Text(settingsController.storeAddress)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(.secondary)
                 }
@@ -26,22 +26,22 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     Text(Localization.receiptInformation)
                         .font(.posBodyLargeRegular())
                     Text(Localization.receiptStoreName)
-                    settingValueView(for: posSettingsService.receiptStoreName)
+                    settingValueView(for: settingsController.receiptStoreName)
 
                     Text(Localization.physicalAddress)
-                    settingValueView(for: posSettingsService.receiptStoreAddress)
+                    settingValueView(for: settingsController.receiptStoreAddress)
 
                     Text(Localization.phoneNumber)
-                    settingValueView(for: posSettingsService.receiptStorePhone)
+                    settingValueView(for: settingsController.receiptStorePhone)
 
                     Text(Localization.email)
-                    settingValueView(for: posSettingsService.receiptStoreEmail)
+                    settingValueView(for: settingsController.receiptStoreEmail)
 
                     Text(Localization.refundReturnsPolicy)
-                    settingValueView(for: posSettingsService.receiptRefundReturnsPolicy)
+                    settingValueView(for: settingsController.receiptRefundReturnsPolicy)
 
                 }
-                .renderedIf(posSettingsService.shouldShowReceiptInformation)
+                .renderedIf(settingsController.shouldShowReceiptInformation)
             }
             .padding()
         }
@@ -49,7 +49,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
-        if posSettingsService.isLoading {
+        if settingsController.isLoading {
             ProgressView()
                 .font(.posBodyLargeRegular())
         } else {
@@ -124,6 +124,6 @@ private extension PointOfSaleSettingsStoreDetailView {
     }
 }
 
-#Preview {
-    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsService())
-}
+//#Preview {
+//    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsController())
+//}

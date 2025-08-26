@@ -3,7 +3,8 @@ import SwiftUI
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: SidebarNavigation? = .store
-    @State private var settingsService = PointOfSaleSettingsService()
+    
+    let settingsController: PointOfSaleSettingsController
 
     var body: some View {
         POSPageHeaderView(
@@ -67,7 +68,7 @@ struct PointOfSaleSettingsView: View {
             Group {
                 switch selection {
                 case .store:
-                    PointOfSaleSettingsStoreDetailView(posSettingsService: settingsService)
+                    PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
                 case .hardware:
                     PointOfSaleSettingsHardwareDetailView()
                 case .help:
@@ -79,7 +80,7 @@ struct PointOfSaleSettingsView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .task {
-            await settingsService.retrievePOSReceiptSettings()
+            await settingsController.retrievePOSReceiptSettings()
         }
     }
 }
@@ -222,6 +223,6 @@ private extension PointOfSaleSettingsView {
     }
 }
 
-#Preview {
-    PointOfSaleSettingsView()
-}
+//#Preview {
+//    PointOfSaleSettingsView()
+//}

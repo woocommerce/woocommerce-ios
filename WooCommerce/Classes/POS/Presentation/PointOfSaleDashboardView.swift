@@ -1,4 +1,5 @@
 import SwiftUI
+import class Yosemite.PointOfSaleSettingsService
 
 @available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
@@ -133,7 +134,15 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            PointOfSaleSettingsView()
+            let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+            let storage = ServiceLocator.storageManager
+            let service = PointOfSaleSettingsService(siteID: siteID,
+                                                     credentials: credentials,
+                                                     storage: storage)
+            let controller = PointOfSaleSettingsController(settingsService: service)
+
+            PointOfSaleSettingsView(settingsController: controller)
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }

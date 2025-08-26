@@ -1,11 +1,12 @@
 import Foundation
 import struct Yosemite.SiteSetting
-import enum Yosemite.SettingAction
 import enum Yosemite.Plugin
 import class Yosemite.PluginsService
 import Observation
 
-@Observable final class PointOfSaleSettingsService {
+import class Yosemite.PointOfSaleSettingsService
+
+@Observable final class PointOfSaleSettingsController {
     private(set) var receiptStoreName: String?
     private(set) var receiptStoreAddress: String?
     private(set) var receiptStorePhone: String?
@@ -14,8 +15,14 @@ import Observation
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
+    private let settingsService: PointOfSaleSettingsService
+
+    init(settingsService: PointOfSaleSettingsService) {
+        self.settingsService = settingsService
+    }
+
     private var siteID: Int64 {
-        ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        settingsService.siteID
     }
 
     var storeName: String {
@@ -40,20 +47,13 @@ import Observation
             return
         }
 
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            let action = SettingAction.retrievePointOfSaleSettings(siteID: siteID) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let siteSettings):
-                    updateReceiptSettings(from: siteSettings)
-                case .failure(let error):
-                    DDLogError("Failed to load POS settings: \(error)")
-                }
-                isLoading = false
-                continuation.resume()
-            }
-            ServiceLocator.stores.dispatch(action)
+        do {
+            let siteSettings = try await settingsService.retrievePointOfSaleSettings()
+            updateReceiptSettings(from: siteSettings)
+        } catch {
+            DDLogError("Failed to load POS settings: \(error)")
         }
+        isLoading = false
     }
 
     @MainActor
@@ -84,7 +84,7 @@ import Observation
     }
 }
 
-private extension PointOfSaleSettingsService {
+private extension PointOfSaleSettingsController {
     enum Localization {
         static let storeNotSet = NSLocalizedString(
             "pointOfSaleSettingsService.storeNotSet",

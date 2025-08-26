@@ -14,6 +14,8 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 
+import class Yosemite.PointOfSaleSettingsService
+
 @available(iOS 17.0, *)
 protocol PointOfSaleAggregateModelProtocol {
     var orderStage: PointOfSaleOrderStage { get }
@@ -72,6 +74,7 @@ protocol PointOfSaleAggregateModelProtocol {
     let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     let couponsController: PointOfSaleCouponsControllerProtocol
     let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
+    let settingsController: PointOfSaleSettingsController
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
@@ -128,6 +131,16 @@ protocol PointOfSaleAggregateModelProtocol {
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
         self.soundPlayer = soundPlayer
+
+        //
+        let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
+        let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
+        let storage = ServiceLocator.storageManager
+        let service = PointOfSaleSettingsService(siteID: siteID,
+                                                 credentials: credentials,
+                                                 storage: storage)
+
+        self.settingsController = PointOfSaleSettingsController(settingsService: service)
 
         publishCardReaderConnectionStatus()
         publishPaymentMessages()

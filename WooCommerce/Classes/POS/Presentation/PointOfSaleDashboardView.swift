@@ -134,15 +134,7 @@ struct PointOfSaleDashboardView: View {
             documentationView
         }
         .posFullScreenCover(isPresented: $showSettings) {
-            let siteID = ServiceLocator.stores.sessionManager.defaultSite?.siteID ?? 0
-            let credentials = ServiceLocator.stores.sessionManager.defaultCredentials
-            let storage = ServiceLocator.storageManager
-            let service = PointOfSaleSettingsService(siteID: siteID,
-                                                     credentials: credentials,
-                                                     storage: storage)
-            let controller = PointOfSaleSettingsController(settingsService: service)
-
-            PointOfSaleSettingsView(settingsController: controller)
+            PointOfSaleSettingsView(settingsController: posModel.settingsController)
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }

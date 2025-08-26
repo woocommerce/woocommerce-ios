@@ -223,6 +223,6 @@ private extension PointOfSaleSettingsView {
     }
 }
 
-//#Preview {
-//    PointOfSaleSettingsView()
-//}
+#Preview {
+    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
+}

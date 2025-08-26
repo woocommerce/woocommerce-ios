@@ -113,6 +113,7 @@ private extension POSCatalogSyncRemote {
 // MARK: - Response Models
 
 /// Response from catalog generation request.
+// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
 public struct CatalogGenerationResponse: Decodable {
     /// Unique identifier for tracking the catalog generation job.
     public let jobID: String
@@ -123,6 +124,7 @@ public struct CatalogGenerationResponse: Decodable {
 }
 
 /// Response from catalog status check.
+// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
 public struct CatalogStatusResponse: Decodable {
     /// Current status of the catalog generation job.
     public let status: CatalogStatus

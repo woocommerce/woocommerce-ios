@@ -4,6 +4,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var navigationPath: [NavigationDestination] = []
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
+    @State private var showCardReaderDocumentationModal: Bool = false
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -53,16 +54,51 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     private var cardReadersView: some View {
-        VStack(spacing: POSSpacing.medium) {
-            Image(systemName: "creditcard").font(.largeTitle)
-            Text("Card readers settings")
-                .font(.posBodyLargeRegular())
-            Text("Manage your card reader connections")
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(.secondary)
+        VStack(spacing: POSSpacing.large) {
+            VStack(spacing: POSSpacing.medium) {
+                VStack(spacing: POSPadding.small) {
+                    Text(Localization.cardReadersDescription)
+                        .font(.posBodyLargeRegular())
+                        .multilineTextAlignment(.center)
+                    Text(Localization.cardReadersSubtitle1)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Text(Localization.cardReadersSubtitle2)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    Text(Localization.cardReadersSubtitle3)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding()
+
+            List {
+                Button {
+                    showCardReaderDocumentationModal = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "doc.text")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.cardReaderDocumentationTitle)
+                                .font(.posBodyLargeRegular())
+                            Text(Localization.cardReaderDocumentationSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+            }
         }
-        .padding()
         .navigationTitle(Localization.cardReadersTitle)
+        .posSheet(isPresented: $showCardReaderDocumentationModal) {
+            SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
+        }
     }
 
     private var scannersView: some View {
@@ -80,10 +116,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
                 }
             }
             .buttonStyle(.plain)
@@ -170,6 +202,42 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle",
             value: "Learn more about barcode scanning in POS",
             comment: "Subtitle describing barcode scanner documentation in Point of Sale settings."
+        )
+
+        static let cardReadersDescription = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReadersDescription",
+            value: "Accept secure and fast payments in person",
+            comment: "Main description for card readers functionality in Point of Sale settings."
+        )
+
+        static let cardReadersSubtitle1 = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.1",
+            value: "Make sure the card reader is charged",
+            comment: "Subtitle describing card reader connection in Point of Sale settings."
+        )
+
+        static let cardReadersSubtitle2 = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.2",
+            value: "Turn the card reader on, and place it next to the mobile device",
+            comment: "Subtitle describing card reader connection in Point of Sale settings."
+        )
+
+        static let cardReadersSubtitle3 = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.3",
+            value: "Turn the mobile device bluetooth on",
+            comment: "Subtitle describing card reader connection in Point of Sale settings."
+        )
+
+        static let cardReaderDocumentationTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle",
+            value: "Documentation",
+            comment: "Title for card reader documentation option in Point of Sale settings."
+        )
+
+        static let cardReaderDocumentationSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle",
+            value: "Learn more about accepting mobile payments",
+            comment: "Subtitle describing card reader documentation in Point of Sale settings."
         )
     }
 }

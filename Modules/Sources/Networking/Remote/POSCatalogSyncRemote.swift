@@ -66,14 +66,14 @@ public class POSCatalogSyncRemote: Remote {
     /// - Returns: Catalog job response with job ID.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func generateCatalog(for siteID: Int64, forceGenerate: Bool = false) async throws -> CatalogGenerationResponse {
+    public func generateCatalog(for siteID: Int64, forceGenerate: Bool = false) async throws -> POSCatalogGenerationResponse {
         let path = "catalog"
         let parameters: [String: Any] = [
             ParameterKey.fullSyncFields: POSProduct.requestFields
         ]
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
-        let mapper = SingleItemMapper<CatalogGenerationResponse>(siteID: siteID)
+        let mapper = SingleItemMapper<POSCatalogGenerationResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 
@@ -85,11 +85,11 @@ public class POSCatalogSyncRemote: Remote {
     /// - Returns: Catalog status response.
     ///
     // periphery:ignore - TODO - remove this periphery ignore comment when this endpoint is integrated with catalog sync
-    public func checkCatalogStatus(for siteID: Int64, jobID: String) async throws -> CatalogStatusResponse {
+    public func checkCatalogStatus(for siteID: Int64, jobID: String) async throws -> POSCatalogStatusResponse {
         let path = "catalog/status/\(jobID)"
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
-        let mapper = SingleItemMapper<CatalogStatusResponse>(siteID: siteID)
+        let mapper = SingleItemMapper<POSCatalogStatusResponse>(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }
@@ -114,7 +114,7 @@ private extension POSCatalogSyncRemote {
 
 /// Response from catalog generation request.
 // periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct CatalogGenerationResponse: Decodable {
+public struct POSCatalogGenerationResponse: Decodable {
     /// Unique identifier for tracking the catalog generation job.
     public let jobID: String
 
@@ -125,9 +125,9 @@ public struct CatalogGenerationResponse: Decodable {
 
 /// Response from catalog status check.
 // periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct CatalogStatusResponse: Decodable {
+public struct POSCatalogStatusResponse: Decodable {
     /// Current status of the catalog generation job.
-    public let status: CatalogStatus
+    public let status: POSCatalogStatus
     /// Download URL for the completed catalog (available when status is complete).
     public let downloadURL: String?
     /// Progress percentage of the catalog generation (0.0 to 100.0).
@@ -141,7 +141,7 @@ public struct CatalogStatusResponse: Decodable {
 }
 
 /// Catalog generation status.
-public enum CatalogStatus: String, Decodable {
+public enum POSCatalogStatus: String, Decodable {
     case pending
     case processing
     case complete

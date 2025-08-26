@@ -92,27 +92,18 @@ protocol PointOfSaleOrdersControllerProtocol {
         do {
             let pagedOrders = try await fetchStrategy.fetchOrders(pageNumber: pageNumber)
 
-            let newOrders = pagedOrders.items
-            var allOrders = appendToExistingOrders ? ordersViewState.orders : []
-            let uniqueNewOrders = newOrders.filter { newOrder in
-                !allOrders.contains(where: { $0.id == newOrder.id })
+            let existingOrders = appendToExistingOrders ? ordersViewState.orders : []
+            let uniqueNewOrders = pagedOrders.items.filter { newOrder in
+                !existingOrders.contains(where: { $0.id == newOrder.id })
+            }
+            let allOrders = appendToExistingOrders ? existingOrders + uniqueNewOrders : uniqueNewOrders
+
+            ordersViewState = allOrders.isEmpty ? .empty : .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
+
+            if pageNumber == 1 && !appendToExistingOrders {
+                cachedOrders = allOrders
             }
 
-            if appendToExistingOrders && !uniqueNewOrders.isEmpty {
-                allOrders.append(contentsOf: uniqueNewOrders)
-            } else if !appendToExistingOrders {
-                allOrders = uniqueNewOrders
-            }
-
-            if allOrders.isEmpty {
-                ordersViewState = .empty
-            } else {
-                ordersViewState = .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
-
-                if pageNumber == 1 && !appendToExistingOrders {
-                    cachedOrders = allOrders
-                }
-            }
             return pagedOrders.hasMorePages
         } catch PointOfSaleOrderServiceError.requestCancelled {
             return true

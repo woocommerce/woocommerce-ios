@@ -3,6 +3,8 @@ import Foundation
 /// POS Catalog Sync: Remote Endpoints
 ///
 public class POSCatalogSyncRemote: Remote {
+    private let dateFormatter = ISO8601DateFormatter()
+
     /// Loads POS products modified after the specified date.
     ///
     /// - Parameters:
@@ -16,7 +18,6 @@ public class POSCatalogSyncRemote: Remote {
     public func loadProducts(modifiedAfter: Date, siteID: Int64, productTypes: [ProductType] = [.simple, .variable], pageNumber: Int)
     async throws -> PagedItems<POSProduct> {
         let path = "products"
-        let dateFormatter = ISO8601DateFormatter()
         let parameters = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
             ParameterKey.productTypes: productTypes.map { $0.rawValue }.joined(separator: ","),
@@ -43,7 +44,6 @@ public class POSCatalogSyncRemote: Remote {
     // periphery:ignore - TODO - remove when this endpoint is integrated with catalog sync
     public func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let path = "variations"
-        let dateFormatter = ISO8601DateFormatter()
         let parameters = [
             ParameterKey.modifiedAfter: dateFormatter.string(from: modifiedAfter),
             ParameterKey.page: String(pageNumber),

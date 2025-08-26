@@ -12,8 +12,7 @@ struct PointOfSaleSettingsServiceTests {
         self.settingStoreMethods = MockSettingStoreMethods()
         self.storage = MockStorageManager()
         self.sut = PointOfSaleSettingsService(siteID: sampleSiteID,
-                                              settingStoreMethods: settingStoreMethods,
-                                              storage: storage)
+                                              settingStoreMethods: settingStoreMethods)
     }
 
     @Test func retrievePointOfSaleSettings_when_successful_then_returns_expected_settings() async throws {
@@ -83,8 +82,7 @@ struct PointOfSaleSettingsServiceTests {
         // Given
         let differentSiteID: Int64 = 456
         let customSUT = PointOfSaleSettingsService(siteID: differentSiteID,
-                                                   settingStoreMethods: settingStoreMethods,
-                                                   storage: storage)
+                                                   settingStoreMethods: settingStoreMethods)
         settingStoreMethods.retrievePointOfSaleSettingsResult = .success([])
 
         // When

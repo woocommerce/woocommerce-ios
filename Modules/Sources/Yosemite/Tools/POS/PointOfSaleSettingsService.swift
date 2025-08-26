@@ -10,24 +10,19 @@ public protocol PointOfSaleSettingsServiceProtocol {
 public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     public private(set) var siteID: Int64
     private let settingStoreMethods: SettingStoreMethodsProtocol
-    private let storage: StorageManagerType
 
     init(siteID: Int64,
-         settingStoreMethods: SettingStoreMethodsProtocol,
-         storage: StorageManagerType) {
+         settingStoreMethods: SettingStoreMethodsProtocol) {
         self.siteID = siteID
         self.settingStoreMethods = settingStoreMethods
-        self.storage = storage
     }
 
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             storage: StorageManagerType) {
         let network = AlamofireNetwork(credentials: credentials)
-        self.init(siteID: siteID,
-                  settingStoreMethods: SettingStoreMethods(storageManager: storage,
-                                                           network: network),
-                  storage: storage)
+        self.init(siteID: siteID, settingStoreMethods: SettingStoreMethods(storageManager: storage,
+                                                                           network: network))
     }
 
     public func retrievePointOfSaleSettings() async throws -> [SiteSetting] {

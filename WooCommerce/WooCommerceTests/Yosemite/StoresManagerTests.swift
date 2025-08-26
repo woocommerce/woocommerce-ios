@@ -421,6 +421,32 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
     }
 
+    func test_deauthenticate_triggers_deleteApplicationPassword_in_sessionManager_when_authenticated_with_site_credentials() {
+        // Given
+        let mockSessionManager = MockSessionManager()
+        mockSessionManager.defaultCredentials = .wporg(username: "miffy", password: "secret", siteAddress: "https://example.com")
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager)
+
+        // When
+        sut.deauthenticate()
+
+        // Then
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+    }
+
+    func test_deauthenticate_triggers_deleteApplicationPassword_in_sessionManager_when_authenticated_with_app_password() {
+        // Given
+        let mockSessionManager = MockSessionManager()
+        mockSessionManager.defaultCredentials = .applicationPassword(username: "miffy", password: "secret", siteAddress: "https://example.com")
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager)
+
+        // When
+        sut.deauthenticate()
+
+        // Then
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+    }
+
     /// Verifies that user is logged out when application password regeneration fails
     ///
     func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification() {

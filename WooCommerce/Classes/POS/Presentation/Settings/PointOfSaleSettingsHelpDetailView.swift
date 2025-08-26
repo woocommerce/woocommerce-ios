@@ -8,8 +8,6 @@ struct PointOfSaleSettingsHelpDetailView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                Text("Help Settings")
-                    .font(.posBodyMediumRegular())
                 List {
                     Button {
                         showProductRestrictions = true
@@ -18,9 +16,9 @@ struct PointOfSaleSettingsHelpDetailView: View {
                             Image(systemName: "magnifyingglass")
                                 .font(.posBodyLargeRegular())
                             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text("Where are my products?")
+                                Text(Localization.productRestrictionsInfo)
                                     .font(.posBodyLargeRegular())
-                                Text("Where are my products subtitle")
+                                Text(Localization.productRestrictionsInfoSubtitle)
                                     .font(.posBodyMediumRegular())
                                     .foregroundStyle(.secondary)
                             }
@@ -34,9 +32,9 @@ struct PointOfSaleSettingsHelpDetailView: View {
                             Image(systemName: "doc.text")
                                 .font(.posBodyLargeRegular())
                             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text("Documentation")
+                                Text(Localization.documentationTitle)
                                     .font(.posBodyLargeRegular())
-                                Text("Documentation subtitle")
+                                Text(Localization.documentationSubtitle)
                                     .font(.posBodyMediumRegular())
                                     .foregroundStyle(.secondary)
                             }
@@ -51,9 +49,9 @@ struct PointOfSaleSettingsHelpDetailView: View {
                             Image(systemName: "questionmark")
                                 .font(.posBodyLargeRegular())
                             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text("Get Support")
+                                Text(Localization.getSupportTitle)
                                     .font(.posBodyLargeRegular())
-                                Text("Support subtitle")
+                                Text(Localization.getSupportSubtitle)
                                     .font(.posBodyMediumRegular())
                                     .foregroundStyle(.secondary)
                             }
@@ -90,8 +88,46 @@ private extension PointOfSaleSettingsHelpDetailView {
     }
 
     enum Localization {
+        static let productRestrictionsInfo = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title",
+            value: "Where are my products?",
+            comment: "The title of the menu button to view product restrictions info, shown in settings. " +
+            "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
+        )
+
+        static let productRestrictionsInfoSubtitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle",
+            value: "Learn about which products are supported in POS",
+            comment: "The subtitle of the menu button to view product restrictions info, shown in settings. " +
+            "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
+        )
+
+        static let documentationTitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle",
+            value: "Documentation",
+            comment: "The title of the menu button to view documentation, shown in settings."
+        )
+
+        static let documentationSubtitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle",
+            value: "View guides and tutorials",
+            comment: "The subtitle of the menu button to view documentation, shown in settings."
+        )
+
+        static let getSupportTitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle",
+            value: "Get Support",
+            comment: "The title of the menu button to contact support, shown in settings."
+        )
+
+        static let getSupportSubtitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle",
+            value: "Contact our support team",
+            comment: "The subtitle of the menu button to contact support, shown in settings."
+        )
+
         static let supportCancel = NSLocalizedString(
-            "PointOfSaleSettingsHelpDetailView.support.cancel",
+            "PointOfSaleSettingsHelpDetailView.help.support.cancel",
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS settings."
         )

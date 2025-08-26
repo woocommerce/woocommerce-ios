@@ -659,9 +659,9 @@ private extension DefaultStoresManager {
 
         if siteID == WooConstants.placeholderStoreID,
            let url = sessionManager.defaultCredentials?.siteAddress {
-            restoreSessionSite(with: url)
+            restoreWordPressSite(with: url)
         } else {
-            restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
+            restoreJetpackSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
         synchronizeSettings(with: siteID) {
@@ -685,7 +685,7 @@ private extension DefaultStoresManager {
 
     /// Load the site with the specified URL into the session if possible.
     ///
-    func restoreSessionSite(with url: String) {
+    func restoreWordPressSite(with url: String) {
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: url) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -717,7 +717,7 @@ private extension DefaultStoresManager {
     /// Loads the specified siteID into the Session, if possible.
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
-    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
+    func restoreJetpackSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let action = AccountAction
             .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false) { [weak self] result in
             guard let self else { return }

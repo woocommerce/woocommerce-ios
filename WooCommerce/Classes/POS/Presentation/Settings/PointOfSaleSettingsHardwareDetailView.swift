@@ -2,6 +2,8 @@ import SwiftUI
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var showBarcodeScanningSetupModal: Bool = false
+    @State private var showBarcodeScanningDocumentationModal: Bool = false
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -26,10 +28,27 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     cardReadersView
                 case .hardware(.scanners):
                     scannersView
-                case .scanner(let scannerDestination):
-                    scannerDetailView(for: scannerDestination)
+                case .scanner:
+                    // This case in the navigation stack is not reached,
+                    // as we present the destination modally instead of further navigation through the stack.
+                    EmptyView()
                 }
             }
+            .posModal(isPresented: $showBarcodeScanningSetupModal) {
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
+            }
+            .posSheet(isPresented: $showBarcodeScanningDocumentationModal) {
+                SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+            }
+        }
+    }
+
+    private func handleScannerDestination(_ destination: ScannerDestination) {
+        switch destination {
+        case .setup:
+            showBarcodeScanningSetupModal = true
+        case .documentation:
+            showBarcodeScanningDocumentationModal = true
         }
     }
 
@@ -48,7 +67,9 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 
     private var scannersView: some View {
         List(ScannerDestination.allCases) { destination in
-            NavigationLink(value: NavigationDestination.scanner(destination)) {
+            Button {
+                handleScannerDestination(destination)
+            } label: {
                 HStack(alignment: .firstTextBaseline) {
                     Image(systemName: destination.icon)
                         .font(.posBodyLargeRegular())
@@ -59,24 +80,17 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
                 }
             }
+            .buttonStyle(.plain)
         }
         .navigationTitle(Localization.scannersTitle)
     }
 
-    private func scannerDetailView(for destination: ScannerDestination) -> some View {
-        VStack(spacing: POSSpacing.medium) {
-            Image(systemName: destination.icon).font(.largeTitle)
-            Text(destination.title)
-                .font(.posBodyLargeRegular())
-            Text("WIP")
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .navigationTitle(destination.title)
-    }
 }
 
 extension PointOfSaleSettingsHardwareDetailView {

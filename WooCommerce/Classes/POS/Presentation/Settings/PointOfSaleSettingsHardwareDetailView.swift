@@ -40,7 +40,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
                 PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
             }
-            .posSheet(isPresented: $showBarcodeScanningDocumentationModal) {
+            .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
                 SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
             }
         }
@@ -107,10 +107,11 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
         }
         .navigationTitle(Localization.cardReadersTitle)
-        .posSheet(isPresented: $showCardReaderDocumentationModal) {
+        .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
         .task { @MainActor in
+            // TODO: WOOMOB-1172
             let action = AppSettingsAction.loadCardReader { reader in
                 switch reader {
                 case let .success(foundReader):

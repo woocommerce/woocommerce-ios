@@ -4,6 +4,7 @@ import enum Yosemite.Plugin
 import class Yosemite.PluginsService
 import Observation
 
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import class Yosemite.PointOfSaleSettingsService
 import Storage
 
@@ -50,10 +51,10 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
     private(set) var shouldShowReceiptInformation: Bool = false
 
     private let defaultSiteName: String?
-    private let settingsService: PointOfSaleSettingsService
+    private let settingsService: PointOfSaleSettingsServiceProtocol
     private let siteSettings: [SiteSetting]
 
-    init(settingsService: PointOfSaleSettingsService,
+    init(settingsService: PointOfSaleSettingsServiceProtocol,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.settingsService = settingsService

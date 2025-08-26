@@ -1,9 +1,13 @@
-
 import Foundation
 import Networking
 import Storage
 
-public final class PointOfSaleSettingsService {
+public protocol PointOfSaleSettingsServiceProtocol {
+    var siteID: Int64 { get }
+    func retrievePointOfSaleSettings() async throws -> [SiteSetting]
+}
+
+public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     public private(set) var siteID: Int64
     private let settingStoreMethods: SettingStoreMethodsProtocol
     private let storage: StorageManagerType

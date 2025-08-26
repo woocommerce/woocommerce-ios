@@ -8,7 +8,7 @@ public protocol PointOfSaleOrderFetchStrategy {
 public struct PointOfSaleDefaultOrderFetchStrategy: PointOfSaleOrderFetchStrategy {
     private let orderService: PointOfSaleOrderServiceProtocol
 
-    init(orderService: PointOfSaleOrderServiceProtocol) {
+    public init(orderService: PointOfSaleOrderServiceProtocol) {
         self.orderService = orderService
     }
 

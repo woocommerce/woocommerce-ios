@@ -97,18 +97,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
 
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
-
-        // Extracts the total number of pages from the response headers.
-        // Response header names are case insensitive.
-        let totalPages = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalPagesCount.lowercased() })
-            .flatMap { Int($0.value) }
-        let hasMorePages = totalPages.map { pageNumber < $0 } ?? true
-
-        // Extract total count from X-WP-Total header
-        let totalItems = responseHeaders?.first(where: { $0.key.lowercased() == Remote.PaginationHeaderKey.totalCount.lowercased() })
-            .flatMap { Int($0.value) }
-
-        return PagedItems(items: variations, hasMorePages: hasMorePages, totalItems: totalItems)
+        return createPagedItems(items: variations, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
     private func productVariationsRequest(for siteID: Int64,

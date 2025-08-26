@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -321,6 +322,10 @@ public extension Site {
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && (visibility == .privateSite)
+    }
+
+    func toJetpackSite() -> JetpackSite {
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

@@ -2,7 +2,18 @@ import Combine
 import Foundation
 import Alamofire
 
-public typealias JetpackSite = (siteID: Int64, siteAddress: String)
+/// Helper type to observe selected site info
+public struct JetpackSite: Equatable {
+    let siteID: Int64
+    let siteAddress: String
+    let applicationPasswordAvailable: Bool
+
+    public init(siteID: Int64, siteAddress: String, applicationPasswordAvailable: Bool) {
+        self.siteID = siteID
+        self.siteAddress = siteAddress
+        self.applicationPasswordAvailable = applicationPasswordAvailable
+    }
+}
 
 /// Extension to observe default store ID and address
 /// The values are set in the UI layer (`SessionManager`).
@@ -11,10 +22,6 @@ public typealias JetpackSite = (siteID: Int64, siteAddress: String)
 private extension UserDefaults {
     @objc dynamic var applicationPasswordExperimentEnabled: Bool {
         bool(forKey: "applicationPasswordExperimentEnabled")
-    }
-
-    @objc dynamic var defaultStoreHasApplicationPasswordEnabled: Bool {
-        bool(forKey: "defaultStoreHasApplicationPasswordEnabled")
     }
 }
 
@@ -191,15 +198,12 @@ private extension AlamofireNetwork {
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>,
                              credentials: Credentials,
                              userDefaults: UserDefaults) {
-        subscription = selectedSite.removeDuplicates(by: {
-            $0?.siteID == $1?.siteID && $0?.siteAddress == $1?.siteAddress
-        }).combineLatest(
+        subscription = selectedSite.removeDuplicates().combineLatest(
             userDefaults.publisher(for: \.applicationPasswordExperimentEnabled),
-            userDefaults.publisher(for: \.defaultStoreHasApplicationPasswordEnabled)
         )
-        .sink { [weak self] (site, experimentEnabled, applicationPasswordEnabled) in
+        .sink { [weak self] (site, experimentEnabled) in
             guard let self else { return }
-            guard let site, experimentEnabled, applicationPasswordEnabled else {
+            guard let site, experimentEnabled, site.applicationPasswordAvailable else {
                 requestConverter = RequestConverter(siteAddress: nil)
                 requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                 return

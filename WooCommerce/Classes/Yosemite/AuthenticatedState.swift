@@ -32,10 +32,7 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
 
         let site = selectedSite
-            .map { site -> JetpackSite? in
-                guard let site else { return nil }
-                return JetpackSite(siteID: site.siteID, siteAddress: site.url)
-            }
+            .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
         self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
 

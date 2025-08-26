@@ -38,6 +38,7 @@ struct PointOfSaleOrderListView: View {
 
                         switch ordersViewState {
                         case .empty:
+                            // TODO: WOOMOB-1139
                             Text("No orders")
                         case .error(let errorState):
                             ItemListErrorCardView(errorState: errorState) {
@@ -55,6 +56,7 @@ struct PointOfSaleOrderListView: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
+                            .animation(.default, value: orders.first?.id)
                         }
 
                         footerRows
@@ -63,7 +65,7 @@ struct PointOfSaleOrderListView: View {
                 }
             )
         }
-        .animation(.default, value: ordersModel.ordersController.ordersViewState.isEmpty)
+        .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
         .refreshable {
@@ -257,7 +259,7 @@ private enum Constants {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrdersListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {

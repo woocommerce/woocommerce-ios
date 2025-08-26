@@ -14,73 +14,79 @@ struct PointOfSaleSettingsView: View {
                 }
                 .foregroundColor(.posOnSurface)
             })
-        HStack(spacing: POSSpacing.none) {
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
-                List(selection: $selection) {
-                    Section {
-                        ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                            HStack {
-                                Image(systemName: item.icon)
-                                    .font(.posBodyLargeRegular())
-                                VStack(alignment: .leading) {
-                                    Text(item.title)
+        GeometryReader { geometry in
+            HStack(spacing: POSSpacing.none) {
+                VStack(alignment: .leading, spacing: POSSpacing.none) {
+                    List(selection: $selection) {
+                        Section {
+                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
+                                HStack {
+                                    Image(systemName: item.icon)
                                         .font(.posBodyLargeRegular())
-                                    Text(item.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(.secondary)
+                                    VStack(alignment: .leading) {
+                                        Text(item.title)
+                                            .font(.posBodyLargeRegular())
+                                        Text(item.subtitle)
+                                            .font(.posBodyMediumRegular())
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                .tag(item)
                             }
-                            .tag(item)
                         }
                     }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    Button {
-                        selection = .help
-                    } label: {
-                        HStack {
-                            Image(systemName: SidebarNavigation.help.icon)
-                                .font(.posBodyLargeRegular())
-                                .foregroundStyle(selection == .help ? .white : .primary)
-                            VStack(alignment: .leading) {
-                                Text(SidebarNavigation.help.title)
+                    .safeAreaInset(edge: .bottom) {
+                        Button {
+                            selection = .help
+                        } label: {
+                            HStack {
+                                Image(systemName: SidebarNavigation.help.icon)
                                     .font(.posBodyLargeRegular())
                                     .foregroundStyle(selection == .help ? .white : .primary)
-                                Text(SidebarNavigation.help.subtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(selection == .help ? .secondary : .secondary)
+                                VStack(alignment: .leading) {
+                                    Text(SidebarNavigation.help.title)
+                                        .font(.posBodyLargeRegular())
+                                        .foregroundStyle(selection == .help ? .white : .primary)
+                                    Text(SidebarNavigation.help.subtitle)
+                                        .font(.posBodyMediumRegular())
+                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
+                                }
+                                Spacer()
                             }
-                            Spacer()
+                            .padding(.vertical, POSPadding.small)
+                            .padding(.horizontal, POSPadding.medium)
+                            .contentShape(Rectangle())
                         }
-                        .padding(.vertical, POSPadding.small)
-                        .padding(.horizontal, POSPadding.medium)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                        .background(
+                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
+                                .fill(selection == .help ? Color.accentColor : Color.clear)
+                        )
                     }
-                    .buttonStyle(.plain)
-                    .background(
-                        RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                            .fill(selection == .help ? Color.accentColor : Color.clear)
-                    )
                 }
-            }
-            Group {
-                switch selection {
-                case .store:
-                    PointOfSaleSettingsStoreDetailView()
-                case .hardware:
-                    PointOfSaleSettingsHardwareDetailView()
-                case .help:
-                    PointOfSaleSettingsHelpDetailView()
-                default:
-                    EmptyView()
+                .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
+                Group {
+                    switch selection {
+                    case .store:
+                        PointOfSaleSettingsStoreDetailView()
+                    case .hardware:
+                        PointOfSaleSettingsHardwareDetailView()
+                    case .help:
+                        PointOfSaleSettingsHelpDetailView()
+                    default:
+                        EmptyView()
+                    }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }
 
 extension PointOfSaleSettingsView {
+    enum Constants {
+        static let sidebarWidthFraction: CGFloat = 0.35
+    }
     enum HardwareDestination: Identifiable, CaseIterable {
         case cardReaders
         case scanners

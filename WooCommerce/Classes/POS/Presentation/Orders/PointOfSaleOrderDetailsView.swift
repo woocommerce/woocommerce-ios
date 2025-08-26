@@ -103,6 +103,14 @@ struct PointOfSaleOrderDetailsView: View {
                 Spacer()
                 Text(order.paymentMethodTitle)
             }
+
+            HStack {
+                Text("Currency")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text(order.currency)
+            }
         }
         .padding()
         .background(Color.posSurface)
@@ -173,6 +181,24 @@ struct PointOfSaleOrderDetailsView: View {
                         Spacer()
                         Text("-\(order.currencySymbol)\(String(format: "%.2f", refundedTotal))")
                             .foregroundColor(.red)
+                    }
+
+                    ForEach(order.refunds, id: \.refundID) { refund in
+                        VStack(alignment: .leading, spacing: 2) {
+                            HStack {
+                                Text("Refund #\(refund.refundID)")
+                                    .font(.caption)
+                                Spacer()
+                                Text("-\(order.currencySymbol)\(refund.total)")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                            }
+                            if let reason = refund.reason, !reason.isEmpty {
+                                Text("Reason: \(reason)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
 
                     let netPayment = (Double(order.total) ?? 0.0) - refundedTotal

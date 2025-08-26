@@ -24,41 +24,6 @@ enum OrderListState: Equatable {
         }
     }
 
-    var isLoaded: Bool {
-        switch self {
-        case .loaded:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isInlineError: Bool {
-        switch self {
-        case .inlineError:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isError: Bool {
-        switch self {
-        case .error:
-            return true
-        default:
-            return false
-        }
-    }
-
-    var isEmpty: Bool {
-        switch self {
-        case .empty:
-            return true
-        default:
-            return false
-        }
-    }
 
     var orders: [POSOrder] {
         switch self {

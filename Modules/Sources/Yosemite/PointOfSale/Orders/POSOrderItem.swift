@@ -6,18 +6,15 @@ public struct POSOrderItem: Equatable, Hashable {
     public let name: String
     public let quantity: Decimal
     public let total: String
-    public let sku: String?
 
     public init(itemID: Int64,
                 name: String,
                 quantity: Decimal,
-                total: String,
-                sku: String? = nil) {
+                total: String) {
         self.itemID = itemID
         self.name = name
         self.quantity = quantity
         self.total = total
-        self.sku = sku
     }
 }
 
@@ -28,8 +25,7 @@ public extension POSOrderItem {
             itemID: orderItem.itemID,
             name: orderItem.name,
             quantity: orderItem.quantity,
-            total: orderItem.total,
-            sku: orderItem.sku
+            total: orderItem.total
         )
     }
 }

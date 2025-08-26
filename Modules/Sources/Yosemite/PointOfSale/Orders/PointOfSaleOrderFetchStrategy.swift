@@ -5,14 +5,14 @@ public protocol PointOfSaleOrderFetchStrategy {
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder>
 }
 
-public struct PointOfSaleDefaultOrderFetchStrategy: PointOfSaleOrderFetchStrategy {
+struct PointOfSaleDefaultOrderFetchStrategy: PointOfSaleOrderFetchStrategy {
     private let orderService: PointOfSaleOrderServiceProtocol
 
-    public init(orderService: PointOfSaleOrderServiceProtocol) {
+    init(orderService: PointOfSaleOrderServiceProtocol) {
         self.orderService = orderService
     }
 
-    public func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
+    func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.providePointOfSaleOrders(pageNumber: pageNumber)
     }
 }

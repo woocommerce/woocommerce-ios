@@ -21,15 +21,3 @@ public final class PointOfSaleOrderFetchStrategyFactory: PointOfSaleOrderFetchSt
         PointOfSaleDefaultOrderFetchStrategy(orderService: PointOfSaleOrderService(siteID: siteID, ordersRemote: ordersRemote))
     }
 }
-
-public final class PointOfSaleFixedOrderFetchStrategyFactory: PointOfSaleOrderFetchStrategyFactoryProtocol {
-    private let fixedStrategy: PointOfSaleOrderFetchStrategy
-
-    public init(fixedStrategy: PointOfSaleOrderFetchStrategy) {
-        self.fixedStrategy = fixedStrategy
-    }
-
-    public func defaultStrategy() -> PointOfSaleOrderFetchStrategy {
-        fixedStrategy
-    }
-}

@@ -1,0 +1,8 @@
+{
+    "job_id": "export_1756177061_7885",
+    "status": "pending",
+    "format": "json",
+    "filename": "wc-product-export-2025-08-26-02-57-41.json",
+    "created_at": "2025-08-26 02:57:41",
+    "status_url": "https://example.com/wp-json/wc/v3/catalog/status/export_1756177061_7885"
+}

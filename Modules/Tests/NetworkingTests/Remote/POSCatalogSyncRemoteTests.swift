@@ -280,4 +280,97 @@ struct POSCatalogSyncRemoteTests {
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
         #expect(queryParametersDictionary["page"] as? String == String(largePageNumber))
     }
+
+    // MARK: - Catalog Generation Tests
+
+    @Test func generateCatalog_sets_correct_parameters() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+
+        // When
+        _ = try? await remote.generateCatalog(for: sampleSiteID)
+
+        // Then
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["fields"] as? [String] == POSProduct.requestFields)
+    }
+
+    @Test func generateCatalog_returns_parsed_response() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let expectedJobID = "export_1756177061_7885"
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
+        let response = try await remote.generateCatalog(for: sampleSiteID)
+
+        // Then
+        #expect(response.jobID == expectedJobID)
+    }
+
+    @Test func generateCatalog_relays_networking_error() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+
+        // When/Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.generateCatalog(for: sampleSiteID)
+        }
+    }
+
+    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_complete() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let jobID = "job_12345"
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-complete")
+        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
+
+        // Then
+        #expect(response.status == .complete)
+        #expect(response.progress == 100.0)
+        #expect(response.downloadURL != nil)
+    }
+
+    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_pending() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let jobID = "job_12345"
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-pending")
+        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
+
+        // Then
+        #expect(response.status == .pending)
+        #expect(response.progress == 0.0)
+        #expect(response.downloadURL == nil)
+    }
+
+    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_processing() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let jobID = "job_12345"
+
+        // When
+        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-processing")
+        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
+
+        // Then
+        #expect(response.status == .processing)
+        #expect(response.progress == 5.0)
+        #expect(response.downloadURL == nil)
+    }
+
+    @Test func checkCatalogStatus_relays_networking_error() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let jobID = "job_12345"
+
+        // When/Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
+        }
+    }
 }

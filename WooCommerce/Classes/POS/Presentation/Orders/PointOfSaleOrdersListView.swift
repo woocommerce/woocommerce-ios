@@ -16,6 +16,12 @@ struct PointOfSaleOrdersListView: View {
         VStack(spacing: 0) {
             POSPageHeaderView(
                 title: "Orders",
+                isLoading: {
+                    if case .loading(let orders) = ordersViewState {
+                        return !orders.isEmpty
+                    }
+                    return false
+                }(),
                 backButtonConfiguration: .init(state: .enabled, action: onClose, buttonIcon: "xmark")
             )
 

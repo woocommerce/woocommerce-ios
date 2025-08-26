@@ -1,7 +1,9 @@
 import SwiftUI
+import enum Yosemite.AppSettingsAction
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var lastKnownLoadedCardReader: String?
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
@@ -76,6 +78,15 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
             .padding()
 
+            if let lastKnownLoadedCardReader {
+                HStack {
+                    Text("Model: \(lastKnownLoadedCardReader)")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+
             List {
                 Button {
                     showCardReaderDocumentationModal = true
@@ -98,6 +109,17 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         .navigationTitle(Localization.cardReadersTitle)
         .posSheet(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
+        }
+        .task { @MainActor in
+            let action = AppSettingsAction.loadCardReader { reader in
+                switch reader {
+                case let .success(foundReader):
+                    lastKnownLoadedCardReader = foundReader
+                case let .failure(error):
+                    debugPrint(error)
+                }
+            }
+            ServiceLocator.stores.dispatch(action)
         }
     }
 

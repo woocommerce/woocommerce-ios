@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSOrder
+import enum Yosemite.OrderPaymentMethod
 
 struct PointOfSaleOrderListView: View {
     @Binding var selectedOrderID: String?
@@ -124,7 +125,7 @@ private struct OrderRowView: View {
                     .font(.posBodySmallRegular())
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
-                if let customerEmail = order.customerEmail {
+                if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
                     Text(customerEmail)
                         .font(.posBodySmallRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
@@ -140,12 +141,14 @@ private struct OrderRowView: View {
                     .foregroundStyle(Color.posOnSurface)
 
                 HStack(spacing: POSSpacing.xSmall) {
-                    Image(systemName: "creditcard.fill")
-                        .foregroundStyle(Color.posSuccess)
-                        .font(.caption)
-                    Text("Completed")
+                    if let paymentMethodIcon = paymentMethodIcon {
+                        Image(systemName: paymentMethodIcon)
+                            .foregroundStyle(statusColor)
+                            .font(.caption)
+                    }
+                    Text(order.status.localizedName)
                         .font(.posBodySmallRegular())
-                        .foregroundStyle(Color.posSuccess)
+                        .foregroundStyle(statusColor)
                 }
             }
             .multilineTextAlignment(.trailing)
@@ -155,6 +158,31 @@ private struct OrderRowView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+}
+
+private extension OrderRowView {
+    var paymentMethodIcon: String? {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        switch paymentMethod {
+        case .cod:
+            return "banknote"
+        case .stripe, .woocommercePayments:
+            return "creditcard"
+        default:
+            return nil
+        }
+    }
+
+    var statusColor: Color {
+        switch order.status {
+        case .completed:
+            return .posSuccess
+        case .failed:
+            return .posError
+        default:
+            return .posOnSurfaceVariantLowest
+        }
     }
 }
 

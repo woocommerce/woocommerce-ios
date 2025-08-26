@@ -13,6 +13,7 @@ public struct POSOrder: Equatable, Hashable {
     public let status: OrderStatusEnum
     public let total: String
     public let customerEmail: String?
+    public let paymentMethodID: String
     public let paymentMethodTitle: String
     public let lineItems: [POSOrderItem]
     public let refunds: [POSOrderRefund]
@@ -25,6 +26,7 @@ public struct POSOrder: Equatable, Hashable {
                 status: OrderStatusEnum,
                 total: String,
                 customerEmail: String? = nil,
+                paymentMethodID: String,
                 paymentMethodTitle: String,
                 lineItems: [POSOrderItem] = [],
                 refunds: [POSOrderRefund] = [],
@@ -36,6 +38,7 @@ public struct POSOrder: Equatable, Hashable {
         self.status = status
         self.total = total
         self.customerEmail = customerEmail
+        self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
         self.lineItems = lineItems
         self.refunds = refunds
@@ -63,6 +66,7 @@ public extension POSOrder {
             status: order.status,
             total: order.total,
             customerEmail: customerEmail,
+            paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,

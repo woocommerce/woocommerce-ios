@@ -99,6 +99,13 @@ protocol PointOfSaleAggregateModelProtocol {
         _viewStateCoordinator
     }
 
+    var connectedCardReader: CardPresentPaymentCardReader? {
+        guard case .connected(let reader) = cardReaderConnectionStatus else {
+            return nil
+        }
+        return reader
+    }
+
     init(entryPointController: POSEntryPointController,
          itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -133,6 +140,7 @@ protocol PointOfSaleAggregateModelProtocol {
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
+        observeCardReaderForSettings()
     }
 }
 
@@ -321,6 +329,22 @@ extension PointOfSaleAggregateModel {
         Task { @MainActor [weak self] in
             await self?.cardPresentPaymentService.disconnectReader()
         }
+    }
+
+    private func observeCardReaderForSettings() {
+        cardPresentPaymentService.readerConnectionStatusPublisher
+            .sink(receiveValue: { [weak self] connectionStatus in
+                guard let self else { return }
+                let cardReader: CardPresentPaymentCardReader?
+                switch connectionStatus {
+                case .connected(let reader):
+                    cardReader = reader
+                default:
+                    cardReader = nil
+                }
+                settingsController.updateCardReader(cardReader)
+            })
+            .store(in: &cancellables)
     }
 
     /// Starts a payment immediately if a reader is connected.

@@ -1,5 +1,4 @@
 import SwiftUI
-import enum Yosemite.AppSettingsAction
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     let settingsController: PointOfSaleSettingsControllerProtocol
@@ -75,12 +74,20 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
             .padding()
 
-            if let lastKnownLoadedCardReader {
-                HStack {
-                    Text("Model: \(lastKnownLoadedCardReader)")
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+            if let cardReader = settingsController.connectedCardReader {
+                VStack(spacing: POSPadding.xSmall) {
+                    HStack {
+                        Text("Model: \(cardReader.name)")
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                        HStack {
+                            Text("Battery: \(cardReader.batteryLevel)")
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
                 }
             }
 
@@ -106,18 +113,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         .navigationTitle(Localization.cardReadersTitle)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
-        }
-        .task { @MainActor in
-            // TODO: WOOMOB-1172
-            let action = AppSettingsAction.loadCardReader { reader in
-                switch reader {
-                case let .success(foundReader):
-                    lastKnownLoadedCardReader = foundReader
-                case let .failure(error):
-                    debugPrint(error)
-                }
-            }
-            ServiceLocator.stores.dispatch(action)
         }
     }
 
@@ -320,5 +315,5 @@ private extension PointOfSaleSettingsHardwareDetailView {
 }
 
 #Preview {
-    PointOfSaleSettingsHardwareDetailView()
+    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
 }

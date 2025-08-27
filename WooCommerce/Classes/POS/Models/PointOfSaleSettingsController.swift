@@ -19,7 +19,10 @@ protocol PointOfSaleSettingsControllerProtocol {
     var storeName: String { get }
     var storeAddress: String { get }
 
+    var connectedCardReader: CardPresentPaymentCardReader? { get }
+
     func retrievePOSReceiptSettings() async
+    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?)
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -34,6 +37,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     private let defaultSiteName: String?
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let siteSettings: [SiteSetting]
+    private(set) var connectedCardReader: CardPresentPaymentCardReader?
 
     init(settingsService: PointOfSaleSettingsServiceProtocol,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
@@ -41,6 +45,10 @@ protocol PointOfSaleSettingsControllerProtocol {
         self.settingsService = settingsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+    }
+
+    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?) {
+        connectedCardReader = cardReader
     }
 
     var storeName: String {
@@ -53,6 +61,20 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     var storeAddress: String {
         SiteAddress(siteSettings: siteSettings).address
+    }
+
+    var cardReaderName: String? {
+        connectedCardReader?.name
+    }
+
+    var cardReaderBatteryLevel: Float? {
+        connectedCardReader?.batteryLevel
+    }
+
+    var formattedBatteryLevel: String? {
+        guard let batteryLevel = cardReaderBatteryLevel else { return nil }
+        let percentage = Int(batteryLevel * 100)
+        return "\(percentage)%"
     }
 
     @MainActor
@@ -128,12 +150,29 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     var shouldShowReceiptInformation: Bool = true
     var storeName: String = "Sample Store"
 
+    var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
+        name: "WisePad 3",
+        batteryLevel: 0.75
+    )
+
+    var cardReaderName: String? { connectedCardReader?.name }
+    var cardReaderBatteryLevel: Float? { connectedCardReader?.batteryLevel }
+    var formattedBatteryLevel: String? {
+        guard let batteryLevel = cardReaderBatteryLevel else { return nil }
+        let percentage = Int(batteryLevel * 100)
+        return "\(percentage)%"
+    }
+
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"
     }
 
     func retrievePOSReceiptSettings() async {
         // no-op
+    }
+
+    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?) {
+        // no-op for preview
     }
 }
 #endif

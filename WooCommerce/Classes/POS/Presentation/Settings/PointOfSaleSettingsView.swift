@@ -64,7 +64,7 @@ extension PointOfSaleSettingsView {
         case .store:
             PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
         case .hardware:
-            PointOfSaleSettingsHardwareDetailView()
+            PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:
             PointOfSaleSettingsHelpDetailView()
         default:

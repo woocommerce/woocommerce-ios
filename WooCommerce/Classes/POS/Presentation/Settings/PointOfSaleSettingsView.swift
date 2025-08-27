@@ -93,39 +93,6 @@ extension PointOfSaleSettingsView {
     enum Constants {
         static let sidebarWidthFraction: CGFloat = 0.35
     }
-    enum HardwareDestination: Identifiable, CaseIterable {
-        case cardReaders
-        case scanners
-
-        var id: Self { self }
-
-        var title: String {
-            switch self {
-            case .cardReaders:
-                return Localization.hardwareNavigationCardReaderTitle
-            case .scanners:
-                return Localization.hardwareNavigationBarcodeTitle
-            }
-        }
-
-        var subtitle: String {
-            switch self {
-            case .cardReaders:
-                return Localization.hardwareNavigationCardReaderSubtitle
-            case .scanners:
-                return Localization.hardwareNavigationBarcodeSubtitle
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .cardReaders:
-                return "creditcard"
-            case .scanners:
-                return "qrcode.viewfinder"
-            }
-        }
-    }
 }
 
 private extension PointOfSaleSettingsView {
@@ -202,30 +169,6 @@ private extension PointOfSaleSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
             value: "Get help and support",
             comment: "Description of the Help section in Point of Sale settings."
-        )
-
-        static let hardwareNavigationBarcodeTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationBarcodeTitle",
-            value: "Barcode scanners",
-            comment: "Navigation title of Barcode scanner settings."
-        )
-
-        static let hardwareNavigationCardReaderTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationCardReaderTitle",
-            value: "Card readers",
-            comment: "Navigation title of Card reader settings."
-        )
-
-        static let hardwareNavigationCardReaderSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationCardReaderSubtitle",
-            value: "Manage card reader connections",
-            comment: "Description of Card reader settings for connections."
-        )
-
-        static let hardwareNavigationBarcodeSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationBarcodeSubtitle",
-            value: "Configure barcode scanner settings",
-            comment: "Description of Barcode scanner settings configuration."
         )
     }
 }

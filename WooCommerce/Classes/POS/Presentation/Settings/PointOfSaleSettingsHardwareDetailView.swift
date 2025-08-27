@@ -10,7 +10,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
-            List(PointOfSaleSettingsView.HardwareDestination.allCases) { destination in
+            List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
                     HStack(alignment: .firstTextBaseline) {
                         Image(systemName: destination.icon)
@@ -145,8 +145,42 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 }
 
 extension PointOfSaleSettingsHardwareDetailView {
+    enum HardwareDestination: Identifiable, CaseIterable {
+        case cardReaders
+        case scanners
+
+        var id: Self { self }
+
+        var title: String {
+            switch self {
+            case .cardReaders:
+                return Localization.hardwareNavigationCardReaderTitle
+            case .scanners:
+                return Localization.hardwareNavigationBarcodeTitle
+            }
+        }
+
+        var subtitle: String {
+            switch self {
+            case .cardReaders:
+                return Localization.hardwareNavigationCardReaderSubtitle
+            case .scanners:
+                return Localization.hardwareNavigationBarcodeSubtitle
+            }
+        }
+
+        var icon: String {
+            switch self {
+            case .cardReaders:
+                return "creditcard"
+            case .scanners:
+                return "qrcode.viewfinder"
+            }
+        }
+    }
+
     enum NavigationDestination: Hashable {
-        case hardware(PointOfSaleSettingsView.HardwareDestination)
+        case hardware(HardwareDestination)
     }
 
     enum ScannerDestination: Identifiable, CaseIterable {
@@ -256,6 +290,30 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle",
             value: "Learn more about accepting mobile payments",
             comment: "Subtitle describing card reader documentation in Point of Sale settings."
+        )
+
+        static let hardwareNavigationBarcodeTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle",
+            value: "Barcode scanners",
+            comment: "Navigation title of Barcode scanner settings."
+        )
+
+        static let hardwareNavigationCardReaderTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle",
+            value: "Card readers",
+            comment: "Navigation title of Card reader settings."
+        )
+
+        static let hardwareNavigationCardReaderSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle",
+            value: "Manage card reader connections",
+            comment: "Description of Card reader settings for connections."
+        )
+
+        static let hardwareNavigationBarcodeSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle",
+            value: "Configure barcode scanner settings",
+            comment: "Description of Barcode scanner settings configuration."
         )
     }
 }

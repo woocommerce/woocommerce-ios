@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
+import WooFoundation
 
 struct PointOfSaleOrderListView: View {
     @Binding var selectedOrderID: String?
@@ -16,7 +17,7 @@ struct PointOfSaleOrderListView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: "Orders",
+                title: Localization.ordersTitle,
                 isLoading: {
                     if case .loading(let orders) = ordersViewState {
                         return !orders.isEmpty
@@ -121,15 +122,21 @@ private struct OrderRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    
+    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
 
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
     }
 
+    private var formattedTotal: String {
+        currencyFormatter.formatAmount(order.total, with: order.currency) ?? ""
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text("#\(order.number)")
+                Text("#\(order.number)") // TODO: WOOMOB-1142
                     .font(.posBodySmallBold)
                     .foregroundStyle(Color.posOnSurface)
                     .fixedSize(horizontal: false, vertical: true)
@@ -152,7 +159,7 @@ private struct OrderRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Text("\(order.currencySymbol)\(order.total)")
+                Text(formattedTotal)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 
@@ -254,6 +261,13 @@ private struct GhostOrderRowView: View {
 private enum Constants {
     static let orderCardMinHeight: CGFloat = 90
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
+}
+
+private enum Localization {
+    static let ordersTitle = NSLocalizedString(
+        "pos.orderListView.ordersTitle",
+        value: "Orders",
+        comment: "Title at the header for the Orders view.")
 }
 
 #if DEBUG

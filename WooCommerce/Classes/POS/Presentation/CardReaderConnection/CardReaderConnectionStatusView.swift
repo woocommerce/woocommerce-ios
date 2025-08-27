@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct CardReaderConnectionStatusView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -64,7 +63,6 @@ struct CardReaderConnectionStatusView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     @ViewBuilder
     func progressIndicatingCardReaderStatus(title: String) -> some View {
@@ -82,7 +80,6 @@ private extension CardReaderConnectionStatusView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     var connectedFontColor: Color {
         switch backgroundAppearance {
@@ -112,7 +109,6 @@ private extension CardReaderConnectionStatusView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Constants {
         static let buttonImageAndTextSpacing: CGFloat = POSSpacing.medium
@@ -128,7 +124,6 @@ private extension CardReaderConnectionStatusView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CardReaderConnectionStatusView {
     enum Localization {
         static let readerConnected = NSLocalizedString(
@@ -167,7 +162,6 @@ private extension CardReaderConnectionStatusView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview {
     VStack {
         CardReaderConnectionStatusView()

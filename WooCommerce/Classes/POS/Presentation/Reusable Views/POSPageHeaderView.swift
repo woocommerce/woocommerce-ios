@@ -10,6 +10,13 @@ struct POSPageHeaderBackButtonConfiguration {
 
     let state: State
     let action: () -> Void
+    let buttonIcon: String?
+
+    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil) {
+        self.state = state
+        self.action = action
+        self.buttonIcon = buttonIcon
+    }
 }
 
 struct POSPageHeaderItem: Identifiable {
@@ -29,7 +36,6 @@ struct POSPageHeaderItem: Identifiable {
 
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
-@available(iOS 17.0, *)
 struct POSPageHeaderView<TrailingContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
@@ -133,7 +139,6 @@ private enum Constants {
 
 
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 

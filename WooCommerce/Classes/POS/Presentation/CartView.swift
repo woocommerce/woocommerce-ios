@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
@@ -107,7 +106,6 @@ private struct ScrollViewHeightPreferenceKey: PreferenceKey {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
         .posSurfaceBright
@@ -126,7 +124,6 @@ private extension CartView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     enum Localization {
         static let cartTitle = NSLocalizedString(
@@ -160,7 +157,6 @@ private enum Constants {
 
 /// View sub-components
 ///
-@available(iOS 17.0, *)
 private extension CartView {
     var checkoutButton: some View {
         Button {
@@ -213,7 +209,6 @@ private extension CartView {
 
 }
 
-@available(iOS 17.0, *)
 private struct CartClearMenuButton: View {
     let removeAllItemsFromCart: () -> Void
 
@@ -244,7 +239,6 @@ private struct CartClearMenuButton: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CartScrollViewContent: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -351,7 +345,6 @@ private struct CartScrollViewContent: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CouponsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var shouldShowItemImages: Bool
@@ -386,7 +379,6 @@ private struct CouponsCartSection: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var shouldShowItemImages: Bool
@@ -443,7 +435,6 @@ private struct PurchasableItemsCartSection: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
         let purchasableItems = posModel.cart.purchasableItems.count
@@ -458,13 +449,11 @@ private extension CartView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     CartView()
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
-@available(iOS 17.0, *)
 #Preview("Cart with one item") {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     posModel.addToCart(.simpleProduct(.init(id: UUID(),

@@ -38,7 +38,6 @@ private extension PointOfSaleCardPresentPaymentActivityIndicatingMessageView {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentActivityIndicatingMessageView(

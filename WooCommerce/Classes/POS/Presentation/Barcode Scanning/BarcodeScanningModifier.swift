@@ -2,7 +2,6 @@ import SwiftUI
 
 /// A view modifier that adds barcode scanning capability to a view.
 /// The barcode scanner is added in a ZStack below the content view.
-@available(iOS 17.0, *)
 struct BarcodeScanningModifier: ViewModifier {
     /// Whether barcode scanning is enabled
     @Binding var enabled: Bool
@@ -20,7 +19,6 @@ struct BarcodeScanningModifier: ViewModifier {
     }
 }
 
-@available(iOS 17.0, *)
 extension View {
     /// Adds barcode scanning capability to a view.
     /// - Parameters:

@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -11,6 +10,7 @@ struct POSFloatingControlView: View {
     @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showOrders: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -83,7 +83,7 @@ struct POSFloatingControlView: View {
 
                 if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                     Button {
-                        // TODO: WOOMOB-1133
+                        showOrders = true
                     } label: {
                         Label(
                             title: { Text(Localization.orders) },
@@ -119,6 +119,9 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showBarcodeScanningModal) {
             PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
         }
+        .posFullScreenCover(isPresented: $showOrders) {
+            PointOfSaleOrdersView(isPresented: $showOrders)
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -126,7 +129,6 @@ struct POSFloatingControlView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
@@ -147,14 +149,12 @@ private extension POSFloatingControlView {
     }
 }
 
-@available(iOS 17.0, *)
 extension POSFloatingControlView {
     static var secondaryFontColor: Color {
         .posOnDisabledContainer
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSFloatingControlView {
     enum Constants {
         static let size: CGFloat = 80
@@ -210,7 +210,6 @@ private extension POSFloatingControlView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),
@@ -220,7 +219,6 @@ private extension POSFloatingControlView {
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
-@available(iOS 17.0, *)
 #Preview("Reader Connected") {
     let paymentService = CardPresentPaymentPreviewService()
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
@@ -235,7 +233,6 @@ private extension POSFloatingControlView {
         .environment(posModel)
 }
 
-@available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
     POSFloatingControlView(showExitPOSModal: .constant(false),
                            showSupport: .constant(false),

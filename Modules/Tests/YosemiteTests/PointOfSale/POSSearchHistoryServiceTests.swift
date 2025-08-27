@@ -43,7 +43,6 @@ struct POSSearchHistoryServiceTests {
         #expect(history[2] == "first")
     }
 
-    @available(iOS 17.0, *)
     @Test func saveSuccessfulSearch_removes_duplicates() throws {
         // Given
         let itemType: POSItemType = .product

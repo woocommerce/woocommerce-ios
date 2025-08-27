@@ -62,7 +62,6 @@ struct PointOfSaleCardPresentPaymentCaptureErrorMessageView: View {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @Namespace var namespace
     return PointOfSaleCardPresentPaymentCaptureErrorMessageView(

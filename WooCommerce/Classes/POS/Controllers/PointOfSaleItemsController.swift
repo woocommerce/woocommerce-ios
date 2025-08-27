@@ -11,7 +11,6 @@ import class Yosemite.Store
 import enum Yosemite.POSItemType
 
 
-@available(iOS 17.0, *)
 protocol PointOfSaleItemsControllerProtocol {
     ///
     var itemsViewState: ItemsViewState { get }
@@ -23,7 +22,6 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 }
 
-@available(iOS 17.0, *)
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
@@ -31,7 +29,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 }
 
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState
     private let paginationTracker: AsyncPaginationTracker
@@ -198,7 +195,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func setLoadingState(base: ItemListBaseItem) {
         switch base {
@@ -241,7 +237,6 @@ private extension PointOfSaleItemsController {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     /// Fetches items given a page number and appends new unique items to the `allItems` array.
     /// - Parameter pageNumber: Page number to fetch items from.
@@ -309,7 +304,6 @@ private extension PointOfSaleItemsController {
 }
 
 // MARK: - ItemsViewState Updates
-@available(iOS 17.0, *)
 private extension PointOfSaleItemsController {
     func updateState(for parent: POSItem, to state: ItemListState) {
         let viewState = itemsViewState

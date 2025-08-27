@@ -3,7 +3,6 @@ import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 
 /// Protocol defining search capabilities for POS items
-@available(iOS 17.0, *)
 protocol POSSearchable {
     /// The type of item lists being searched
     var itemListType: ItemListType { get }
@@ -19,7 +18,6 @@ protocol POSSearchable {
 }
 
 /// A reusable search field view for POS items
-@available(iOS 17.0, *)
 struct POSSearchField: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
 
@@ -105,7 +103,6 @@ struct POSSearchField: View {
 }
 
 /// A reusable search content view for POS items
-@available(iOS 17.0, *)
 struct POSSearchContentView<Content: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 

@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding private var isPresented: Bool
@@ -39,7 +38,6 @@ struct PointOfSaleExitPosAlertView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleExitPosAlertView {
     enum Constants {
         static let verticalSpacing: CGFloat = POSSpacing.xLarge
@@ -66,7 +64,6 @@ private extension PointOfSaleExitPosAlertView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleExitPosAlertView(isPresented: .constant(true))
 }

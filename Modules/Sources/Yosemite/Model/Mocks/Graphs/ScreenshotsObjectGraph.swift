@@ -55,7 +55,8 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         canBlaze: false,
         isAdmin: false,
         wasEcommerceTrial: false,
-        hasSSOEnabled: false
+        hasSSOEnabled: false,
+        applicationPasswordAvailable: false
     )
 
     /// May not be needed anymore if we're not mocking the API

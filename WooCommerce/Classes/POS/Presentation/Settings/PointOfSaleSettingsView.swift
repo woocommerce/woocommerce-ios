@@ -16,108 +16,87 @@ struct PointOfSaleSettingsView: View {
                 }
                 .foregroundColor(.posOnSurface)
             })
-        HStack(spacing: POSSpacing.none) {
-            VStack(alignment: .leading, spacing: POSSpacing.none) {
-                List(selection: $selection) {
-                    Section {
-                        ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                            HStack {
-                                Image(systemName: item.icon)
-                                    .font(.posBodyLargeRegular())
-                                VStack(alignment: .leading) {
-                                    Text(item.title)
+        GeometryReader { geometry in
+            HStack(spacing: POSSpacing.none) {
+                VStack(alignment: .leading, spacing: POSSpacing.none) {
+                    List(selection: $selection) {
+                        Section {
+                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
+                                HStack {
+                                    Image(systemName: item.icon)
                                         .font(.posBodyLargeRegular())
-                                    Text(item.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(.secondary)
+                                    VStack(alignment: .leading) {
+                                        Text(item.title)
+                                            .font(.posBodyLargeRegular())
+                                        Text(item.subtitle)
+                                            .font(.posBodyMediumRegular())
+                                            .foregroundStyle(.secondary)
+                                    }
                                 }
+                                .tag(item)
                             }
-                            .tag(item)
                         }
                     }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    Button {
-                        selection = .help
-                    } label: {
-                        HStack {
-                            Image(systemName: SidebarNavigation.help.icon)
-                                .font(.posBodyLargeRegular())
-                                .foregroundStyle(selection == .help ? .white : .primary)
-                            VStack(alignment: .leading) {
-                                Text(SidebarNavigation.help.title)
+                    .safeAreaInset(edge: .bottom) {
+                        Button {
+                            selection = .help
+                        } label: {
+                            HStack {
+                                Image(systemName: SidebarNavigation.help.icon)
                                     .font(.posBodyLargeRegular())
                                     .foregroundStyle(selection == .help ? .white : .primary)
-                                Text(SidebarNavigation.help.subtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(selection == .help ? .secondary : .secondary)
+                                VStack(alignment: .leading) {
+                                    Text(SidebarNavigation.help.title)
+                                        .font(.posBodyLargeRegular())
+                                        .foregroundStyle(selection == .help ? .white : .primary)
+                                    Text(SidebarNavigation.help.subtitle)
+                                        .font(.posBodyMediumRegular())
+                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
+                                }
+                                Spacer()
                             }
-                            Spacer()
+                            .padding(.vertical, POSPadding.small)
+                            .padding(.horizontal, POSPadding.medium)
+                            .contentShape(Rectangle())
                         }
-                        .padding(.vertical, POSPadding.small)
-                        .padding(.horizontal, POSPadding.medium)
-                        .contentShape(Rectangle())
+                        .buttonStyle(.plain)
+                        .background(
+                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
+                                .fill(selection == .help ? Color.accentColor : Color.clear)
+                        )
                     }
-                    .buttonStyle(.plain)
-                    .background(
-                        RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                            .fill(selection == .help ? Color.accentColor : Color.clear)
-                    )
                 }
+                .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
+
+                detailView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            Group {
-                switch selection {
-                case .store:
-                    PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
-                case .hardware:
-                    PointOfSaleSettingsHardwareDetailView()
-                case .help:
-                    PointOfSaleSettingsHelpDetailView()
-                default:
-                    EmptyView()
-                }
+            .task {
+                await settingsController.retrievePOSReceiptSettings()
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .task {
-            await settingsController.retrievePOSReceiptSettings()
         }
     }
 }
 
 extension PointOfSaleSettingsView {
-    enum HardwareDestination: Identifiable, CaseIterable {
-        case cardReaders
-        case scanners
-
-        var id: Self { self }
-
-        var title: String {
-            switch self {
-            case .cardReaders:
-                return Localization.hardwareNavigationCardReaderTitle
-            case .scanners:
-                return Localization.hardwareNavigationBarcodeTitle
-            }
+    @ViewBuilder
+    private var detailView: some View {
+        switch selection {
+        case .store:
+            PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
+        case .hardware:
+            PointOfSaleSettingsHardwareDetailView()
+        case .help:
+            PointOfSaleSettingsHelpDetailView()
+        default:
+            EmptyView()
         }
+    }
+}
 
-        var subtitle: String {
-            switch self {
-            case .cardReaders:
-                return Localization.hardwareNavigationCardReaderSubtitle
-            case .scanners:
-                return Localization.hardwareNavigationBarcodeSubtitle
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .cardReaders:
-                return "creditcard"
-            case .scanners:
-                return "qrcode.viewfinder"
-            }
-        }
+extension PointOfSaleSettingsView {
+    enum Constants {
+        static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 
@@ -195,30 +174,6 @@ private extension PointOfSaleSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
             value: "Get help and support",
             comment: "Description of the Help section in Point of Sale settings."
-        )
-
-        static let hardwareNavigationBarcodeTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationBarcodeTitle",
-            value: "Barcode scanners",
-            comment: "Navigation title of Barcode scanner settings."
-        )
-
-        static let hardwareNavigationCardReaderTitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationCardReaderTitle",
-            value: "Card readers",
-            comment: "Navigation title of Card reader settings."
-        )
-
-        static let hardwareNavigationCardReaderSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationCardReaderSubtitle",
-            value: "Manage card reader connections",
-            comment: "Description of Card reader settings for connections."
-        )
-
-        static let hardwareNavigationBarcodeSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsView.hardwareNavigationBarcodeSubtitle",
-            value: "Configure barcode scanner settings",
-            comment: "Description of Barcode scanner settings configuration."
         )
     }
 }

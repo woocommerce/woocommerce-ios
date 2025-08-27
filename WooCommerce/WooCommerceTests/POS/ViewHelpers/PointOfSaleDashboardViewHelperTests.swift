@@ -7,7 +7,6 @@ import enum WooFoundationCore.CurrencyCode
 struct PointOfSaleDashboardViewHelperTests {
     // MARK: - Horizontal Size Class Tests
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_when_horizontalSizeClass_is_compact_returns_unsupportedWidth() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
@@ -25,7 +24,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .unsupportedWidth)
     }
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_when_horizontalSizeClass_is_nil_returns_unsupportedWidth() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
@@ -45,7 +43,6 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Eligibility State Tests
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_when_eligibilityState_is_nil_returns_loading() async throws {
         // Given
         let eligibilityState: POSEligibilityState? = nil
@@ -63,7 +60,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .loading)
     }
 
-    @available(iOS 17.0, *)
     @Test(arguments: [
         POSIneligibleReason.unsupportedIOSVersion,
         POSIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
@@ -92,7 +88,6 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Eligible State Tests
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_when_eligible_and_loading_returns_loading() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
@@ -110,7 +105,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .loading)
     }
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_when_eligible_and_content_returns_content() async throws {
         // Given
         let eligibilityState: POSEligibilityState = .eligible
@@ -130,7 +124,6 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Error State Tests
 
-    @available(iOS 17.0, *)
     @Test(arguments: [
         PointOfSaleErrorState.errorOnLoadingProducts(),
         PointOfSaleErrorState.errorOnLoadingVariations(),
@@ -161,7 +154,6 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Priority Tests
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_horizontalSizeClass_takes_priority_over_eligibility_state() async throws {
         // Given - compact size class should return unsupportedWidth regardless of eligibility
         let eligibilityState: POSEligibilityState = .ineligible(reason: .unsupportedIOSVersion)
@@ -179,7 +171,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .unsupportedWidth)
     }
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_nil_eligibilityState_takes_priority_over_containerState() async throws {
         // Given - nil eligibility should return loading regardless of container state
         let eligibilityState: POSEligibilityState? = nil
@@ -197,7 +188,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(result == .loading)
     }
 
-    @available(iOS 17.0, *)
     @Test func determineViewState_ineligible_state_takes_priority_over_containerState() async throws {
         // Given - ineligible state should return ineligible regardless of container state
         let eligibilityState: POSEligibilityState = .ineligible(reason: .unsupportedIOSVersion)
@@ -217,7 +207,6 @@ struct PointOfSaleDashboardViewHelperTests {
 
     // MARK: - Floating Control Tests
 
-    @available(iOS 17.0, *)
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.content, true),
         (PointOfSaleDashboardView.ViewState.error(PointOfSaleErrorState.errorOnLoadingProducts()), true),
@@ -228,7 +217,6 @@ struct PointOfSaleDashboardViewHelperTests {
         #expect(viewState.showsFloatingControl == expected)
     }
 
-    @available(iOS 17.0, *)
     @Test(arguments: [
         (PointOfSaleDashboardView.ViewState.loading, false),
         (PointOfSaleDashboardView.ViewState.ineligible(reason: .unsupportedIOSVersion), false)

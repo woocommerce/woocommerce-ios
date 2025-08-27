@@ -82,7 +82,6 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
     }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
@@ -95,7 +94,6 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
     func clearSearchItems(baseItem: ItemListBaseItem) { }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
     @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading,
                                                                    itemsStack: ItemsStackState(root: .loading([]),
@@ -130,7 +128,6 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
     }
 }
 
-@available(iOS 17.0, *)
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
     func handleTap(_ item: Yosemite.POSItem) { }
 }
@@ -204,7 +201,6 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     func stopObserving() {}
 }
 
-@available(iOS 17.0, *)
 struct POSPreviewHelpers {
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),

@@ -6,14 +6,12 @@ import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 
-@available(iOS 17.0, *)
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
     func enableCoupons() async
 }
 
-@available(iOS 17.0, *)
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState: ItemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
@@ -94,7 +92,6 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
     /// Loads the first page by attempting to load the first page from local storage
     /// then syncs from the remote regardless the result
@@ -140,7 +137,6 @@ private extension PointOfSaleCouponsController {
 
 // MARK: - View state helpers
 //
-@available(iOS 17.0, *)
 private extension PointOfSaleCouponsController {
     func setSearchingState() {
         itemsViewState.itemsStack.root = .loading([])

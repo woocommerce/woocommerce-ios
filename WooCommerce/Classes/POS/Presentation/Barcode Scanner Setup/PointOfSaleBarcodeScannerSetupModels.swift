@@ -108,7 +108,6 @@ enum PointOfSaleBarcodeScannerStepID: String, CaseIterable {
 }
 
 // MARK: - Button Customization Protocol
-@available(iOS 17.0, *)
 protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
@@ -121,7 +120,6 @@ enum PointOfSaleBarcodeScannerTransitionType: Hashable {
 }
 
 // MARK: - Setup Step
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View

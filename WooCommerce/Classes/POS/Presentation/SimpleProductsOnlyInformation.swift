@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct SimpleProductsOnlyInformation: View {
     @Binding var isPresented: Bool
     let deepLinkNavigator: DeepLinkNavigator?
@@ -48,7 +47,6 @@ struct SimpleProductsOnlyInformation: View {
 }
 
 // Constants and Localization enums
-@available(iOS 17.0, *)
 private extension SimpleProductsOnlyInformation {
     enum Localization {
         static let modalTitle = NSLocalizedString(
@@ -85,7 +83,6 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview {
     SimpleProductsOnlyInformation(isPresented: .constant(true),
                                   deepLinkNavigator: nil)

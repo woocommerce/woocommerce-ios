@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     let message: String
     let retryHandler: () -> Void
@@ -71,7 +70,6 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Constants {
         static let headerSpacing: CGFloat = POSSpacing.large
@@ -81,7 +79,6 @@ private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleOrderSyncCouponsErrorMessageView {
     enum Localization {
         static let title = NSLocalizedString(

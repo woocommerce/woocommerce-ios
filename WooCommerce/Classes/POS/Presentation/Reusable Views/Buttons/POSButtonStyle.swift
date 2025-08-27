@@ -89,14 +89,6 @@ private struct POSButton: View {
     private var progressView: some View {
         ProgressView()
             .progressViewStyle(POSButtonProgressViewStyle(size: size.progressViewDimensions.size, lineWidth: size.progressViewDimensions.lineWidth))
-            .padding(
-                .init(
-                    top: size.additionalPadding.vertical,
-                    leading: size.additionalPadding.horizontal,
-                    bottom: size.additionalPadding.vertical,
-                    trailing: size.additionalPadding.horizontal
-                )
-            )
     }
 
     private var backgroundColor: Color {
@@ -173,17 +165,6 @@ private extension POSButtonSize {
             (size: 20, lineWidth: 6)
         }
     }
-
-    /// The internal use of `IndefiniteCircularProgressViewStyle` progress style results in half of the line width drawn outside of the progress view.
-    /// This additional padding is thus adjusted by the partial line width to achieve the expected padding in design.
-    var additionalPadding: (vertical: CGFloat, horizontal: CGFloat) {
-        switch self {
-        case .normal:
-            (vertical: progressViewDimensions.lineWidth * 0.5, horizontal: progressViewDimensions.lineWidth * 0.5)
-        case .extraSmall:
-            (vertical: 2 + progressViewDimensions.lineWidth * 0.5, horizontal: 16 + progressViewDimensions.lineWidth * 0.5)
-        }
-    }
 }
 
 // MARK: - Preview
@@ -206,9 +187,9 @@ struct POSButtonStyle_Previews: View {
                 previewSection(title: "Outlined Buttons - Extra Small",
                                variant: .outlined, size: .extraSmall)
 
-                loadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
+                LoadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
 
-                loadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
+                LoadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -249,11 +230,27 @@ struct POSButtonStyle_Previews: View {
             }
         }
     }
+}
 
-    private func loadingPreviewSection(title: String, size: POSButtonSize) -> some View {
+private struct LoadingPreviewSection: View {
+    let title: String
+    let size: POSButtonSize
+    @State private var showsLoadingState: Bool = false
+
+    var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(title)
                 .font(.headline)
+
+            Button("Show loading state") {
+                showsLoadingState.toggle()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: size, isLoading: showsLoadingState))
+
+            Button("Show loading state in\nmultiple\nlines") {
+                showsLoadingState.toggle()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: size, isLoading: showsLoadingState))
 
             Button("Enabled Loading Button") {}
                 .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))

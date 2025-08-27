@@ -39,17 +39,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let authenticationType: AuthenticationType
 
-    /// WPOrg username
-    ///
-    private var username: String {
-        switch authenticationType {
-        case .wporg(let username, _, _):
-            return username
-        case .wpcom(let wporgUsername, _):
-            return wporgUsername
-        }
-    }
-
     /// To generate and delete application password
     ///
     private let network: Network
@@ -165,7 +154,7 @@ private extension DefaultApplicationPasswordUseCase {
     /// or through Jetpack proxy.
     func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
         switch authenticationType {
-        case .wpcom(_, let siteID):
+        case .wpcom(let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
                            siteID: siteID,
@@ -190,13 +179,21 @@ private extension DefaultApplicationPasswordUseCase {
         let request = constructRequest(method: .post,
                                        path: Path.applicationPasswords,
                                        parameters: parameters)
+        let wpOrgUsername = try await {
+            switch authenticationType {
+            case .wporg(let username, _, _):
+                return username
+            case .wpcom(let siteID):
+                return try await fetchWPOrgUsername(siteID: siteID)
+            }
+        }()
+
         return try await withCheckedThrowingContinuation { continuation in
-            network.responseData(for: request) { [weak self] result in
-                guard let self else { return }
+            network.responseData(for: request) { result in
                 switch result {
                 case .success(let data):
                     do {
-                        let mapper = ApplicationPasswordMapper(wpOrgUsername: self.username)
+                        let mapper = ApplicationPasswordMapper(wpOrgUsername: wpOrgUsername)
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
@@ -237,7 +234,7 @@ private extension DefaultApplicationPasswordUseCase {
                     do {
                         let mapper = ApplicationPasswordNameAndUUIDMapper()
                         let list = try mapper.map(response: data)
-                        if let item = list.first(where: { $0.name == passwordName }) {
+                        if let item = list.last(where: { $0.name == passwordName }) {
                             continuation.resume(returning: item.uuid)
                         } else {
                             continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
@@ -268,12 +265,39 @@ private extension DefaultApplicationPasswordUseCase {
             }
         }
     }
+
+    func fetchWPOrgUsername(siteID: Int64) async throws -> String {
+        let parameters = [
+            ParameterKey.context: Constants.editValue
+        ]
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.userDetails,
+                                     parameters: parameters)
+        return try await withCheckedThrowingContinuation { continuation in
+            network.responseData(for: request) { result in
+                switch result {
+                case .success(let data):
+                    let mapper = UserMapper(siteID: siteID)
+                    do {
+                        let user = try mapper.map(response: data)
+                        continuation.resume(returning: user.username)
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 }
 
 extension DefaultApplicationPasswordUseCase {
     enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
-        case wpcom(wporgUsername: String, siteID: Int64)
+        case wpcom(siteID: Int64)
     }
 }
 
@@ -282,10 +306,12 @@ extension DefaultApplicationPasswordUseCase {
 private extension DefaultApplicationPasswordUseCase {
     enum Path {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
+        static let userDetails = "wp/v2/users/me"
     }
 
     enum ParameterKey {
         static let name = "name"
+        static let context = "context"
     }
 
     enum ErrorCode {
@@ -298,5 +324,6 @@ private extension DefaultApplicationPasswordUseCase {
     enum Constants {
         static let loginPath = "/wp-login.php"
         static let adminPath = "/wp-admin/"
+        static let editValue = "edit"
     }
 }

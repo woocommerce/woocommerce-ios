@@ -14,6 +14,7 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
     ///
     private enum URLSuffix {
         static let generateApplicationPassword = "users/me/application-passwords"
+        static let userDetails = "wp/v2/users/me"
     }
 
     override func setUp() {
@@ -95,23 +96,23 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         // Given
         network.simulateResponse(requestUrlSuffix: URLSuffix.generateApplicationPassword,
                                  filename: "generate-application-password-using-wporg-creds-success")
-        let wporgUsername = "username"
-        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(wporgUsername: wporgUsername, siteID: 123), network: network)
+        network.simulateResponse(requestUrlSuffix: URLSuffix.userDetails, filename: "user-complete")
+        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(siteID: 123), network: network)
 
         // When
         let password = try await sut.generateNewPassword()
 
         // Then
         XCTAssertEqual(password.password.secretValue, "passwordvalue")
-        XCTAssertEqual(password.wpOrgUsername, wporgUsername)
+        XCTAssertEqual(password.wpOrgUsername, "test-username")
     }
 
     func test_applicationPasswordsDisabled_error_is_thrown_if_generating_password_fails_with_501_error_when_authenticated_with_wpcom() async throws {
         // Given
         let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 501))
         network.simulateError(requestUrlSuffix: URLSuffix.generateApplicationPassword, error: error)
-        let wporgUsername = "username"
-        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(wporgUsername: wporgUsername, siteID: 123), network: network)
+        network.simulateResponse(requestUrlSuffix: URLSuffix.userDetails, filename: "user-complete")
+        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(siteID: 123), network: network)
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -129,8 +130,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         // Given
         let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
         network.simulateError(requestUrlSuffix: URLSuffix.generateApplicationPassword, error: error)
-        let wporgUsername = "username"
-        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(wporgUsername: wporgUsername, siteID: 123), network: network)
+        network.simulateResponse(requestUrlSuffix: URLSuffix.userDetails, filename: "user-complete")
+        let sut = DefaultApplicationPasswordUseCase(type: .wpcom(siteID: 123), network: network)
 
         // When
         var failure: ApplicationPasswordUseCaseError?

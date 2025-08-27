@@ -18,6 +18,7 @@ struct PointOfSaleEntryPointView: View {
     private let ordersController: PointOfSaleOrderListControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
+    private let settingsController: PointOfSaleSettingsControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -31,6 +32,7 @@ struct PointOfSaleEntryPointView: View {
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
+         settingsController: PointOfSaleSettingsControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
@@ -44,6 +46,7 @@ struct PointOfSaleEntryPointView: View {
         self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
+        self.settingsController = settingsController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
@@ -73,6 +76,7 @@ struct PointOfSaleEntryPointView: View {
                 couponsSearchController: couponsSearchController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
+                settingsController: settingsController,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
@@ -104,6 +108,7 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
+                              settingsController: PointOfSaleSettingsPreviewController(),
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),

@@ -575,3 +575,19 @@ extension NetworkingCore.StatsGranularityV4 {
         .hourly
     }
 }
+extension NetworkingCore.User {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.User {
+        .init(
+            localID: .fake(),
+            siteID: .fake(),
+            email: .fake(),
+            username: .fake(),
+            firstName: .fake(),
+            lastName: .fake(),
+            nickname: .fake(),
+            roles: .fake()
+        )
+    }
+}

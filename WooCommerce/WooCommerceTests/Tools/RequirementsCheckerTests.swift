@@ -202,38 +202,4 @@ final class RequirementsCheckerTests: XCTestCase {
             self.viewController.presentedViewController is UIAlertController
         }
     }
-
-    func test_checkSiteEligibility_updates_application_password_availability_in_userDefaults() throws {
-        // Given
-        let site = Site.fake().copy(siteID: 123)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
-        let checker = RequirementsChecker(stores: stores, userDefaults: userDefaults)
-
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case .retrieveSiteAPI(_, let onCompletion):
-                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v3"], applicationPasswordAvailable: true)))
-            default:
-                break
-            }
-        }
-
-        XCTAssertFalse(userDefaults.bool(forKey: UserDefaults.Key.defaultStoreHasApplicationPasswordEnabled.rawValue))
-
-        // When
-        waitForExpectation { expectation in
-            checker.checkSiteEligibility(for: site) { result in
-                switch result {
-                case .success(let value):
-                    expectation.fulfill()
-                case .failure:
-                    break
-                }
-            }
-        }
-
-        // Then
-        XCTAssertTrue(userDefaults.bool(forKey: UserDefaults.Key.defaultStoreHasApplicationPasswordEnabled.rawValue))
-    }
 }

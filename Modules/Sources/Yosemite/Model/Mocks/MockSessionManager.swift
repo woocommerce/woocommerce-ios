@@ -31,6 +31,7 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultStoreURL: String?
 
+    /// periphery: ignore
     public var defaultRoles: [User.Role] = []
 
     public var defaultStoreIDPublisher: AnyPublisher<Int64?, Never>

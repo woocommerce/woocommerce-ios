@@ -201,7 +201,7 @@ struct PointOfSaleAggregateModelTests {
 
     struct OrderTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let orderController = MockPointOfSaleOrderListController()
+        private let orderController = MockPointOfSaleOrderController()
 
         init() {
             orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
@@ -288,7 +288,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func sendReceipt_when_invoked_then_calls_controller() async throws {
             // Given
-            let orderController = MockPointOfSaleOrderListController()
+            let orderController = MockPointOfSaleOrderController()
             let sut = makePointOfSaleAggregateModel(orderController: orderController)
 
             // When
@@ -300,7 +300,7 @@ struct PointOfSaleAggregateModelTests {
 
         @Test func sendReceipt_when_invoked_with_error_then_returns_error() async throws {
             // Given
-            let orderController = MockPointOfSaleOrderListController()
+            let orderController = MockPointOfSaleOrderController()
             orderController.shouldThrowReceiptError = true
             let expectedError = NSError(domain: "some error", code: -1)
 
@@ -338,7 +338,7 @@ struct PointOfSaleAggregateModelTests {
 
     struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let orderController = MockPointOfSaleOrderListController()
+        private let orderController = MockPointOfSaleOrderController()
 
         @Test func init_sets_card_paymentState_to_idle() async throws {
             // Given that we don't specify a payment state
@@ -784,7 +784,7 @@ struct PointOfSaleAggregateModelTests {
         private let analyticsProvider = MockAnalyticsProvider()
         private let analytics: WooAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
-        private let orderController = MockPointOfSaleOrderListController()
+        private let orderController = MockPointOfSaleOrderController()
 
         init() {
             analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -966,7 +966,8 @@ private func makePointOfSaleAggregateModel(
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
-    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderListController(),
+    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
+    settingsController: PointOfSaleSettingsControllerProtocol = MockPointOfSaleSettingsController(),
     analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
@@ -983,6 +984,7 @@ private func makePointOfSaleAggregateModel(
         couponsSearchController: couponsSearchController,
         cardPresentPaymentService: cardPresentPaymentService,
         orderController: orderController,
+        settingsController: settingsController,
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,

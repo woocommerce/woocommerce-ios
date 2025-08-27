@@ -7,60 +7,58 @@ struct PointOfSaleSettingsHelpDetailView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                List {
-                    Button {
-                        showProductRestrictions = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "magnifyingglass")
+            List {
+                Button {
+                    showProductRestrictions = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.productRestrictionsInfo)
                                 .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.productRestrictionsInfo)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.productRestrictionsInfoSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
+                            Text(Localization.productRestrictionsInfoSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
                         }
                     }
-                    .buttonStyle(.plain)
-                    Button {
-                        showDocumentation = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "doc.text")
-                                .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.documentationTitle)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.documentationSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-
-                    Button {
-                        showSupport = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "questionmark")
-                                .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.getSupportTitle)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.getSupportSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
                 }
+                .buttonStyle(.plain)
+                
+                Button {
+                    showDocumentation = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "doc.text")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.documentationTitle)
+                                .font(.posBodyLargeRegular())
+                            Text(Localization.documentationSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    showSupport = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "questionmark")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.getSupportTitle)
+                                .font(.posBodyLargeRegular())
+                            Text(Localization.getSupportSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
             }
-            .padding()
         }
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView

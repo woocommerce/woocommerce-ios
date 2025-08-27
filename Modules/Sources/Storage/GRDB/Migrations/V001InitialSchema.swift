@@ -17,6 +17,7 @@ struct V001InitialSchema {
 
             productTable.column("siteID", .integer).notNull()
             productTable.column("productID", .integer).notNull()
+
             productTable.column("name", .text).notNull()
             productTable.column("productTypeKey", .text).notNull()
 
@@ -39,6 +40,7 @@ struct V001InitialSchema {
 
             productAttributeTable.column("siteID", .integer).notNull()
             productAttributeTable.column("attributeID", .integer).notNull()
+            productAttributeTable.column("productID", .integer).notNull()
 
             productAttributeTable.column("name", .text).notNull()
             productAttributeTable.column("position", .integer).notNull()
@@ -56,6 +58,7 @@ struct V001InitialSchema {
 
             productImageTable.column("siteID", .integer).notNull()
             productImageTable.column("imageID", .integer).notNull()
+            productImageTable.column("productID", .integer).notNull()
 
             productImageTable.column("dateCreated", .datetime).notNull()
             productImageTable.column("dateModified", .datetime)

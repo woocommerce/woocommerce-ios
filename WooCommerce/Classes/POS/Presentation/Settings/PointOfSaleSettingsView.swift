@@ -4,6 +4,8 @@ struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: SidebarNavigation? = .store
 
+    let settingsController: PointOfSaleSettingsControllerProtocol
+
     var body: some View {
         POSPageHeaderView(
             title: Localization.navigationTitle,
@@ -69,6 +71,9 @@ struct PointOfSaleSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+            .task {
+                await settingsController.retrievePOSReceiptSettings()
+            }
         }
     }
 }
@@ -78,7 +83,7 @@ extension PointOfSaleSettingsView {
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView()
+            PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView()
         case .help:
@@ -173,6 +178,8 @@ private extension PointOfSaleSettingsView {
     }
 }
 
+#if DEBUG
 #Preview {
-    PointOfSaleSettingsView()
+    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
 }
+#endif

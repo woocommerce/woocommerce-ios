@@ -22,6 +22,9 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
+import struct Yosemite.POSOrder
+import class Yosemite.PointOfSaleOrderListService
+import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -230,6 +233,64 @@ struct POSPreviewHelpers {
             barcodeScanService: barcodeScanService
         )
     }
+
+    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
+        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
+    }
+}
+
+// MARK: - Preview Orders Controller
+final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
+    var ordersViewState: OrderListState {
+        .loaded(
+                [
+                    POSOrder(
+                        id: 1,
+                        number: "1001",
+                        dateCreated: Date(),
+                        status: .completed,
+                        total: "25.00",
+                        customerEmail: "customer1@example.com",
+                        paymentMethodTitle: "Credit Card",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    ),
+                    POSOrder(
+                        id: 2,
+                        number: "1002",
+                        dateCreated: Date().addingTimeInterval(-3600),
+                        status: .processing,
+                        total: "45.50",
+                        customerEmail: "customer2@example.com",
+                        paymentMethodTitle: "Cash",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    ),
+                    POSOrder(
+                        id: 3,
+                        number: "1003",
+                        dateCreated: Date().addingTimeInterval(-7200),
+                        status: .completed,
+                        total: "12.75",
+                        customerEmail: nil,
+                        paymentMethodTitle: "Credit Card",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    )
+                ],
+                hasMoreItems: false
+            )
+    }
+
+    func loadOrders() async {}
+    func loadNextOrders() async {}
+    func refreshOrders() async { }
 }
 
 // MARK: - Barcode Scan Service

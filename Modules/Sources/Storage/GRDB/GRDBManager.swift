@@ -37,18 +37,23 @@ private extension GRDBManager {
         // https://swiftpackageindex.com/groue/grdb.swift/v7.6.1/documentation/grdb/migrations#Good-Practices-for-Defining-Migrations
         migrator.registerMigration("Create posProduct table") { db in
             try db.create(table: "posProduct") { t in
-                t.primaryKey("id", .text)
-                t.column("siteID", .integer)
-                t.column("productID", .integer)
-                t.column("name", .text)
-                t.column("productType", .text)
+                t.primaryKey(["siteID", "productID"])
+
+                t.column("siteID", .integer).notNull()
+                t.column("productID", .integer).notNull()
+                t.column("name", .text).notNull()
+                t.column("productTypeKey", .text).notNull()
+
+                t.column("fullDescription", .text)
+                t.column("shortDescription", .text)
+
                 t.column("sku", .text)
                 t.column("globalUniqueID", .text)
-                t.column("price", .text)
-                t.column("regularPrice", .text)
-                t.column("salePrice", .text)
-                t.column("onSale", .boolean)
-                t.column("downloadable", .boolean)
+                t.column("price", .text).notNull()
+
+                t.column("downloadable", .boolean).notNull()
+
+                t.column("parentID", .integer).notNull()
             }
         }
 

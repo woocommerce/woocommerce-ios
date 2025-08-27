@@ -6,6 +6,8 @@ struct V001InitialSchema {
         try createProductTable(db)
         try createProductAttributeTable(db)
         try createProductImageTable(db)
+        try createProductVariationTable(db)
+        try createProductVariationAttributeTable(db)
     }
 
     static func createProductTable(_ db: Database) throws {
@@ -68,6 +70,41 @@ struct V001InitialSchema {
             productImageTable.column("alt", .text)
 
             productImageTable.foreignKey(["siteID", "productID"], references: "posProduct")
+        }
+    }
+
+    private static func createProductVariationTable(_ db: Database) throws {
+        try db.create(table: "posProductVariation") { productVariationTable in
+            productVariationTable.primaryKey(["siteID", "productVariationID"])
+
+            productVariationTable.column("siteID", .integer).notNull()
+            productVariationTable.column("productVariationID", .integer).notNull()
+            productVariationTable.column("productID", .integer).notNull()
+
+            productVariationTable.column("sku", .text)
+            productVariationTable.column("globalUniqueID", .text)
+            productVariationTable.column("price", .text).notNull()
+
+            productVariationTable.column("downloadable", .boolean).notNull()
+
+            productVariationTable.column("description", .text)
+
+            productVariationTable.foreignKey(["siteID", "productID"], references: "posProduct")
+        }
+    }
+
+    private static func createProductVariationAttributeTable(_ db: Database) throws {
+        try db.create(table: "posProductVariationAttribute") { productVariationAttributeTable in
+            productVariationAttributeTable.primaryKey(["siteID", "productVariationID", "attributeID"])
+
+            productVariationAttributeTable.column("siteID", .integer).notNull()
+            productVariationAttributeTable.column("productVariationID", .integer).notNull()
+            productVariationAttributeTable.column("attributeID", .integer).notNull()
+
+            productVariationAttributeTable.column("name", .text).notNull()
+            productVariationAttributeTable.column("option", .text).notNull()
+
+            productVariationAttributeTable.foreignKey(["siteID", "productVariationID"], references: "posProductVariation")
         }
     }
 }

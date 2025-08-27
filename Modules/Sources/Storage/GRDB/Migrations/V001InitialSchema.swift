@@ -8,6 +8,7 @@ struct V001InitialSchema {
         try createProductImageTable(db)
         try createProductVariationTable(db)
         try createProductVariationAttributeTable(db)
+        try createProductVariationImageTable(db)
     }
 
     static func createProductTable(_ db: Database) throws {
@@ -105,6 +106,25 @@ struct V001InitialSchema {
             productVariationAttributeTable.column("option", .text).notNull()
 
             productVariationAttributeTable.foreignKey(["siteID", "productVariationID"], references: "productVariation")
+        }
+    }
+
+    private static func createProductVariationImageTable(_ db: Database) throws {
+        try db.create(table: "productVariationImage") { productVariationImageTable in
+            productVariationImageTable.primaryKey(["siteID", "imageID"])
+
+            productVariationImageTable.column("siteID", .integer).notNull()
+            productVariationImageTable.column("imageID", .integer).notNull()
+            productVariationImageTable.column("productVariationID", .integer).notNull()
+
+            productVariationImageTable.column("dateCreated", .datetime).notNull()
+            productVariationImageTable.column("dateModified", .datetime)
+
+            productVariationImageTable.column("src", .text).notNull()
+            productVariationImageTable.column("name", .text)
+            productVariationImageTable.column("alt", .text)
+
+            productVariationImageTable.foreignKey(["siteID", "productVariationID"], references: "productVariation")
         }
     }
 }

@@ -28,7 +28,7 @@ final class ApplicationPasswordNameAndUUIDMapperTests: XCTestCase {
 
         let password = try XCTUnwrap(passwords.first)
         XCTAssertEqual(password.uuid, "8ffe00cb-f903-49f9-a3e7-7674fb90fd1b")
-        XCTAssertEqual(password.name, "com.automattic.woocommerce.ios-app-client.iPhone")
+        XCTAssertEqual(password.name, "test-name")
     }
 }
 

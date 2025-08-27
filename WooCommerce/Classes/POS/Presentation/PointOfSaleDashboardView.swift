@@ -1,5 +1,4 @@
 import SwiftUI
-import class Yosemite.PointOfSaleSettingsService
 
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel

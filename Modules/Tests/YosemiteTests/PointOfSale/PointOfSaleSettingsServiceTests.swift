@@ -15,20 +15,6 @@ struct PointOfSaleSettingsServiceTests {
                                               settingStoreMethods: settingStoreMethods)
     }
 
-    @Test func retrievePointOfSaleSettings_when_successful_then_returns_expected_settings() async throws {
-        // Given
-        let expectedSettings = makeSiteSettings()
-        settingStoreMethods.retrievePointOfSaleSettingsResult = .success(expectedSettings)
-
-        // When
-        let settings = try await sut.retrievePointOfSaleSettings()
-
-        // Then
-        #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
-        #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == sampleSiteID)
-        #expect(settings == expectedSettings)
-    }
-
     @Test func retrievePointOfSaleSettings_when_empty_settings_then_returns_empty_array() async throws {
         // Given
         settingStoreMethods.retrievePointOfSaleSettingsResult = .success([])
@@ -78,20 +64,20 @@ struct PointOfSaleSettingsServiceTests {
         }
     }
 
-    @Test func retrievePointOfSaleSettings_with_complete_pos_settings_then_returns_all_settings() async throws {
+    @Test func retrievePointOfSaleSettings_with_expected_pos_settings_then_returns_all_settings() async throws {
         // Given
-        let completeSettings = makeSiteSettings()
-        settingStoreMethods.retrievePointOfSaleSettingsResult = .success(completeSettings)
+        let expectedSettings = makeSiteSettings()
+        settingStoreMethods.retrievePointOfSaleSettingsResult = .success(expectedSettings)
 
         // When
         let settings = try await sut.retrievePointOfSaleSettings()
 
         // Then
         #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
+        #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == sampleSiteID)
         #expect(settings.count == 5)
-        #expect(settings == completeSettings)
+        #expect(settings == expectedSettings)
 
-        // Verify specific settings
         let storeNameSetting = settings.first { $0.settingID == "woocommerce_pos_store_name" }
         #expect(storeNameSetting?.value == "WooCommerce Store")
 

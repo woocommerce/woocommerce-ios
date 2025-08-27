@@ -8,6 +8,23 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
 
+    private var cardReaderName: String {
+        if let cardReaderName = settingsController.connectedCardReader?.name {
+            return cardReaderName
+        } else {
+            return "Not set"
+        }
+    }
+    
+    private var formattedBatteryLevel: String {
+        if let batteryLevel = settingsController.connectedCardReader?.batteryLevel {
+            let percentage = Int(batteryLevel * 100)
+            return "\(percentage)%"
+        } else {
+            return "Unknown"
+        }
+    }
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
             List(HardwareDestination.allCases) { destination in
@@ -74,20 +91,16 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
             .padding()
 
-            if let cardReader = settingsController.connectedCardReader {
-                VStack(spacing: POSPadding.xSmall) {
-                    HStack {
-                        Text("Model: \(cardReader.name)")
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                        HStack {
-                            Text("Battery: \(cardReader.batteryLevel)")
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(.secondary)
-                                .multilineTextAlignment(.center)
-                        }
-                    }
+            VStack(spacing: POSPadding.xSmall) {
+                HStack {
+                    Text("Model: \(cardReaderName)")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                    Text("Battery: \(formattedBatteryLevel)")
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
                 }
             }
 

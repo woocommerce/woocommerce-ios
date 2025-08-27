@@ -8,7 +8,7 @@ public protocol PointOfSaleSettingsServiceProtocol {
 }
 
 public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
-    public private(set) var siteID: Int64
+    public let siteID: Int64
     private let settingStoreMethods: SettingStoreMethodsProtocol
 
     init(siteID: Int64,

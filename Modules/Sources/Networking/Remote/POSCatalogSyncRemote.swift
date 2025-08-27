@@ -98,6 +98,7 @@ public class POSCatalogSyncRemote: Remote {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     /// - Returns: List of products and variations in the POS catalog.
+    // periphery:ignore - TODO - remove this periphery ignore comment when this method is integrated with catalog sync
     public func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalog {
         // TODO: WOOMOB-1173 - move download task to the background using `URLSessionConfiguration.background`
         guard let url = URL(string: downloadURL) else {

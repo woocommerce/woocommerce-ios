@@ -31,10 +31,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     cardReadersView
                 case .hardware(.scanners):
                     scannersView
-                case .scanner:
-                    // This case in the navigation stack is not reached,
-                    // as we present the destination modally instead of further navigation through the stack.
-                    EmptyView()
                 }
             }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
@@ -151,7 +147,6 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 extension PointOfSaleSettingsHardwareDetailView {
     enum NavigationDestination: Hashable {
         case hardware(PointOfSaleSettingsView.HardwareDestination)
-        case scanner(ScannerDestination)
     }
 
     enum ScannerDestination: Identifiable, CaseIterable {

@@ -10,6 +10,7 @@ struct ItemListView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -43,7 +44,7 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented },
+            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
             set: { _ in }
         )
     }

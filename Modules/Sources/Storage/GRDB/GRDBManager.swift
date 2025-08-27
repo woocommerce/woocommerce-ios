@@ -3,7 +3,7 @@ import GRDB
 
 public final class GRDBManager {
 
-    private let databaseQueue: DatabaseQueue
+    let databaseQueue: DatabaseQueue
     private let databasePath: String
 
     public init(databasePath: String) throws {
@@ -16,6 +16,12 @@ public final class GRDBManager {
 
         self.databaseQueue = try DatabaseQueue(path: databasePath)
 
+        try migrateIfNeeded()
+    }
+
+    init() throws {
+        self.databasePath = "in-memory"
+        self.databaseQueue = try DatabaseQueue()
         try migrateIfNeeded()
     }
 }

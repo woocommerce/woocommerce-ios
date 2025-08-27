@@ -2,6 +2,10 @@ import Foundation
 import GRDB
 
 struct V001InitialSchema {
+    // This migration is under development and not released yet.
+    // It's still open for modification, until we ship.
+    // TODO: Mark this as final when we enable the pointOfSaleLocalCatalogi1 feature flag
+
     static func migrate(_ db: Database) throws {
         try createProductTable(db)
         try createProductAttributeTable(db)

@@ -210,7 +210,7 @@ public enum FeatureFlag: Int {
     /// Enables switching Jetpack requests to use application password
     ///
     case applicationPasswordExperiment
- 
+
     /// Enables Local Catalog i1 in Point of Sale.
     /// It syncs products and variations to local storage and display them in POS for quick access.
     ///

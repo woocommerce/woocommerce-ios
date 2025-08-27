@@ -198,15 +198,3 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertNil(storage.applicationPassword)
     }
 }
-
-private class MockApplicationPasswordStorage: ApplicationPasswordStorageType {
-    private(set) var applicationPassword: ApplicationPassword?
-
-    func saveApplicationPassword(_ password: ApplicationPassword) {
-        applicationPassword = password
-    }
-
-    func removeApplicationPassword() {
-        applicationPassword = nil
-    }
-}

@@ -1,0 +1,10 @@
+{
+    "job_id": "export_1756177181_6269",
+    "status": "processing",
+    "format": "json",
+    "filename": "wc-product-export-2025-08-26-02-59-41.json",
+    "created_at": "2025-08-26 02:59:41",
+    "progress": 5,
+    "current_batch": 2,
+    "action_scheduler_status": "pending"
+}

@@ -200,6 +200,7 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
+        deleteApplicationPassword()
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil

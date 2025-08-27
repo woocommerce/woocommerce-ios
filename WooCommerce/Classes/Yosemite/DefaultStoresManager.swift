@@ -246,11 +246,6 @@ class DefaultStoresManager: StoresManager {
         applicationPasswordGenerationFailureObserver = nil
 
         if isAuthenticated {
-            if case .wpcom = sessionManager.defaultCredentials {
-                // TODO: fetch site list and delete password for each site
-            } else {
-                sessionManager.deleteApplicationPassword()
-            }
             let resetAction = CardPresentPaymentAction.reset
             dispatch(resetAction)
         }

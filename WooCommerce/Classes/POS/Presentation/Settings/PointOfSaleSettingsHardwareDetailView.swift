@@ -303,6 +303,8 @@ private extension PointOfSaleSettingsHardwareDetailView {
     }
 }
 
+#if DEBUG
 #Preview {
     PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
 }
+#endif

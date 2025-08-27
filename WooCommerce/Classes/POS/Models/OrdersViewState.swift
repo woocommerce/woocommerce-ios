@@ -24,6 +24,16 @@ enum OrderListState: Equatable {
         }
     }
 
+    var isEmpty: Bool {
+        switch self {
+        case .loaded:
+            return false
+        case .loading(let items):
+            return items.isEmpty
+        default:
+            return true
+        }
+    }
 
     var orders: [POSOrder] {
         switch self {

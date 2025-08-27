@@ -74,7 +74,8 @@ public class AlamofireNetwork: Network {
     }
 
     public func updateAppPasswordSwitching(enabled: Bool) {
-        if enabled, let selectedSite, let credentials, case .wpcom = credentials {
+        guard let credentials, case .wpcom = credentials else { return }
+        if enabled, let selectedSite {
             observeSelectedSite(selectedSite)
         } else {
             requestConverter = RequestConverter(siteAddress: nil)

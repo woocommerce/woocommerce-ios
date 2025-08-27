@@ -5,6 +5,7 @@ struct V001InitialSchema {
     static func migrate(_ db: Database) throws {
         try createProductTable(db)
         try createProductAttributeTable(db)
+        try createProductImageTable(db)
     }
 
     static func createProductTable(_ db: Database) throws {
@@ -46,6 +47,24 @@ struct V001InitialSchema {
             productAttributeTable.column("options", .jsonText).notNull()
 
             productAttributeTable.foreignKey(["siteID", "productID"], references: "posProduct")
+        }
+    }
+
+    private static func createProductImageTable(_ db: Database) throws {
+        try db.create(table: "posProductImage") { productImageTable in
+            productImageTable.primaryKey(["siteID", "imageID"])
+
+            productImageTable.column("siteID", .integer).notNull()
+            productImageTable.column("imageID", .integer).notNull()
+
+            productImageTable.column("dateCreated", .datetime).notNull()
+            productImageTable.column("dateModified", .datetime)
+
+            productImageTable.column("src", .text).notNull()
+            productImageTable.column("name", .text)
+            productImageTable.column("alt", .text)
+
+            productImageTable.foreignKey(["siteID", "productID"], references: "posProduct")
         }
     }
 }

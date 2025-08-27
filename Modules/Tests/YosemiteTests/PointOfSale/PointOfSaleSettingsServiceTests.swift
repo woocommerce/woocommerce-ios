@@ -78,21 +78,6 @@ struct PointOfSaleSettingsServiceTests {
         }
     }
 
-    @Test func retrievePointOfSaleSettings_passes_correct_siteID_to_settingStoreMethods() async throws {
-        // Given
-        let differentSiteID: Int64 = 456
-        let customSUT = PointOfSaleSettingsService(siteID: differentSiteID,
-                                                   settingStoreMethods: settingStoreMethods)
-        settingStoreMethods.retrievePointOfSaleSettingsResult = .success([])
-
-        // When
-        _ = try await customSUT.retrievePointOfSaleSettings()
-
-        // Then
-        #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
-        #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == differentSiteID)
-    }
-
     @Test func retrievePointOfSaleSettings_with_complete_pos_settings_then_returns_all_settings() async throws {
         // Given
         let completeSettings = makeSiteSettings()

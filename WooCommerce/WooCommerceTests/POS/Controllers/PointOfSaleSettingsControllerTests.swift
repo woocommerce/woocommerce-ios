@@ -51,6 +51,49 @@ struct PointOfSaleSettingsControllerTests {
         #expect(!storeAddress.isEmpty)
     }
 
+    @Test func connectedCardReader_initially_nil() async throws {
+        // Given
+        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [])
+
+        // When
+        let cardReader = sut.connectedCardReader
+
+        // Then
+        #expect(cardReader == nil)
+    }
+
+    @Test func updateCardReader_sets_connectedCardReader() async throws {
+        // Given
+        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [])
+        let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.85)
+
+        // When
+        sut.updateCardReader(cardReader)
+
+        // Then
+        #expect(sut.connectedCardReader?.name == "WisePad 3")
+        #expect(sut.connectedCardReader?.batteryLevel == 0.85)
+    }
+
+    @Test func updateCardReader_with_nil_clears_connectedCardReader() async throws {
+        // Given
+        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [])
+        let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.85)
+        sut.updateCardReader(cardReader)
+
+        // When
+        sut.updateCardReader(nil)
+
+        // Then
+        #expect(sut.connectedCardReader == nil)
+    }
+
     private func makeSampleSiteSettings() -> [Yosemite.SiteSetting] {
         return [
             SiteSetting(siteID: 123,
@@ -105,7 +148,13 @@ final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProt
         "123 Main Street\nAnytown, ST 12345"
     }
 
+    var connectedCardReader: CardPresentPaymentCardReader? = nil
+
     func retrievePOSReceiptSettings() async {
+        // no-op
+    }
+
+    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?) {
         // no-op
     }
 }

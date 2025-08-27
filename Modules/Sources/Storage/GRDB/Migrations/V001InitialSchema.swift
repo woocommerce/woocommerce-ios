@@ -4,6 +4,7 @@ import GRDB
 struct V001InitialSchema {
     static func migrate(_ db: Database) throws {
         try createProductTable(db)
+        try createProductAttributeTable(db)
     }
 
     static func createProductTable(_ db: Database) throws {
@@ -28,6 +29,23 @@ struct V001InitialSchema {
             productTable.column("downloadable", .boolean).notNull()
 
             productTable.column("parentID", .integer).notNull()
+        }
+    }
+
+    private static func createProductAttributeTable(_ db: Database) throws {
+        try db.create(table: "posProductAttribute") { productAttributeTable in
+            productAttributeTable.primaryKey(["siteID", "attributeID"])
+
+            productAttributeTable.column("siteID", .integer).notNull()
+            productAttributeTable.column("attributeID", .integer).notNull()
+
+            productAttributeTable.column("name", .text).notNull()
+            productAttributeTable.column("position", .integer).notNull()
+            productAttributeTable.column("visible", .boolean).notNull()
+            productAttributeTable.column("variation", .boolean).notNull()
+            productAttributeTable.column("options", .jsonText).notNull()
+
+            productAttributeTable.foreignKey(["siteID", "productID"], references: "posProduct")
         }
     }
 }

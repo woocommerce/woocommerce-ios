@@ -2754,7 +2754,8 @@ extension Networking.Site {
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
-        hasSSOEnabled: CopiableProp<Bool> = .copy
+        hasSSOEnabled: CopiableProp<Bool> = .copy,
+        applicationPasswordAvailable: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2778,6 +2779,7 @@ extension Networking.Site {
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
+        let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
 
         return Networking.Site(
             siteID: siteID,
@@ -2801,7 +2803,8 @@ extension Networking.Site {
             canBlaze: canBlaze,
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial,
-            hasSSOEnabled: hasSSOEnabled
+            hasSSOEnabled: hasSSOEnabled,
+            applicationPasswordAvailable: applicationPasswordAvailable
         )
     }
 }
@@ -3093,39 +3096,6 @@ extension Networking.TopEarnerStatsItem {
             total: total,
             currency: currency,
             imageUrl: imageUrl
-        )
-    }
-}
-
-extension Networking.User {
-    public func copy(
-        localID: CopiableProp<Int64> = .copy,
-        siteID: CopiableProp<Int64> = .copy,
-        email: CopiableProp<String> = .copy,
-        username: CopiableProp<String> = .copy,
-        firstName: CopiableProp<String> = .copy,
-        lastName: CopiableProp<String> = .copy,
-        nickname: CopiableProp<String> = .copy,
-        roles: CopiableProp<[String]> = .copy
-    ) -> Networking.User {
-        let localID = localID ?? self.localID
-        let siteID = siteID ?? self.siteID
-        let email = email ?? self.email
-        let username = username ?? self.username
-        let firstName = firstName ?? self.firstName
-        let lastName = lastName ?? self.lastName
-        let nickname = nickname ?? self.nickname
-        let roles = roles ?? self.roles
-
-        return Networking.User(
-            localID: localID,
-            siteID: siteID,
-            email: email,
-            username: username,
-            firstName: firstName,
-            lastName: lastName,
-            nickname: nickname,
-            roles: roles
         )
     }
 }

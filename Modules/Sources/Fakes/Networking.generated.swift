@@ -1776,7 +1776,8 @@ extension Networking.Site {
             canBlaze: .fake(),
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
-            hasSSOEnabled: .fake()
+            hasSSOEnabled: .fake(),
+            applicationPasswordAvailable: .fake()
         )
     }
 }
@@ -2012,22 +2013,6 @@ extension Networking.UploadableMedia {
             filename: .fake(),
             mimeType: .fake(),
             altText: .fake()
-        )
-    }
-}
-extension Networking.User {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.User {
-        .init(
-            localID: .fake(),
-            siteID: .fake(),
-            email: .fake(),
-            username: .fake(),
-            firstName: .fake(),
-            lastName: .fake(),
-            nickname: .fake(),
-            roles: .fake()
         )
     }
 }

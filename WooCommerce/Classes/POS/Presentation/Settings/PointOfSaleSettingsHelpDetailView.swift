@@ -24,7 +24,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                
+
                 Button {
                     showDocumentation = true
                 } label: {

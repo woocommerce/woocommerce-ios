@@ -14,7 +14,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
@@ -26,32 +26,32 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     Text(Localization.storeInformation)
                         .font(.posBodyLargeRegular())
                 }
-                
+
                 Section {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.receiptStoreName)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: settingsController.receiptStoreName)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.physicalAddress)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: settingsController.receiptStoreAddress)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.phoneNumber)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: settingsController.receiptStorePhone)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.email)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: settingsController.receiptStoreEmail)
                     }
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())

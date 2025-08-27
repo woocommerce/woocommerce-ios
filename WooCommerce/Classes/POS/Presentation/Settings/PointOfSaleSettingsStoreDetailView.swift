@@ -124,6 +124,8 @@ private extension PointOfSaleSettingsStoreDetailView {
     }
 }
 
-//#Preview {
-//    PointOfSaleSettingsStoreDetailView(posSettingsService: PointOfSaleSettingsController())
-//}
+#if DEBUG
+#Preview {
+    PointOfSaleSettingsStoreDetailView(settingsController: PointOfSaleSettingsPreviewController())
+}
+#endif

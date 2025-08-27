@@ -99,13 +99,6 @@ protocol PointOfSaleAggregateModelProtocol {
         _viewStateCoordinator
     }
 
-    private var connectedCardReader: CardPresentPaymentCardReader? {
-        guard case .connected(let reader) = cardReaderConnectionStatus else {
-            return nil
-        }
-        return reader
-    }
-
     init(entryPointController: POSEntryPointController,
          itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,

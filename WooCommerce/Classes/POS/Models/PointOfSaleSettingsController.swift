@@ -63,20 +63,6 @@ protocol PointOfSaleSettingsControllerProtocol {
         SiteAddress(siteSettings: siteSettings).address
     }
 
-    var cardReaderName: String? {
-        connectedCardReader?.name
-    }
-
-    var cardReaderBatteryLevel: Float? {
-        connectedCardReader?.batteryLevel
-    }
-
-    var formattedBatteryLevel: String? {
-        guard let batteryLevel = cardReaderBatteryLevel else { return nil }
-        let percentage = Int(batteryLevel * 100)
-        return "\(percentage)%"
-    }
-
     @MainActor
     func retrievePOSReceiptSettings() async {
         isLoading = true
@@ -154,14 +140,6 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
         name: "WisePad 3",
         batteryLevel: 0.75
     )
-
-    var cardReaderName: String? { connectedCardReader?.name }
-    var cardReaderBatteryLevel: Float? { connectedCardReader?.batteryLevel }
-    var formattedBatteryLevel: String? {
-        guard let batteryLevel = cardReaderBatteryLevel else { return nil }
-        let percentage = Int(batteryLevel * 100)
-        return "\(percentage)%"
-    }
 
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"

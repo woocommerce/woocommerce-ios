@@ -14,7 +14,7 @@ struct V001InitialSchema {
         // Note that it's best to use strings for names in the database
         // not derive them from a Swift class.
         // https://swiftpackageindex.com/groue/grdb.swift/v7.6.1/documentation/grdb/migrations#Good-Practices-for-Defining-Migrations
-        try db.create(table: "posProduct") { productTable in
+        try db.create(table: "product") { productTable in
             productTable.primaryKey(["siteID", "productID"])
 
             productTable.column("siteID", .integer).notNull()
@@ -37,7 +37,7 @@ struct V001InitialSchema {
     }
 
     private static func createProductAttributeTable(_ db: Database) throws {
-        try db.create(table: "posProductAttribute") { productAttributeTable in
+        try db.create(table: "productAttribute") { productAttributeTable in
             productAttributeTable.primaryKey(["siteID", "attributeID"])
 
             productAttributeTable.column("siteID", .integer).notNull()
@@ -50,12 +50,12 @@ struct V001InitialSchema {
             productAttributeTable.column("variation", .boolean).notNull()
             productAttributeTable.column("options", .jsonText).notNull()
 
-            productAttributeTable.foreignKey(["siteID", "productID"], references: "posProduct")
+            productAttributeTable.foreignKey(["siteID", "productID"], references: "product")
         }
     }
 
     private static func createProductImageTable(_ db: Database) throws {
-        try db.create(table: "posProductImage") { productImageTable in
+        try db.create(table: "productImage") { productImageTable in
             productImageTable.primaryKey(["siteID", "imageID"])
 
             productImageTable.column("siteID", .integer).notNull()
@@ -69,12 +69,12 @@ struct V001InitialSchema {
             productImageTable.column("name", .text)
             productImageTable.column("alt", .text)
 
-            productImageTable.foreignKey(["siteID", "productID"], references: "posProduct")
+            productImageTable.foreignKey(["siteID", "productID"], references: "product")
         }
     }
 
     private static func createProductVariationTable(_ db: Database) throws {
-        try db.create(table: "posProductVariation") { productVariationTable in
+        try db.create(table: "productVariation") { productVariationTable in
             productVariationTable.primaryKey(["siteID", "productVariationID"])
 
             productVariationTable.column("siteID", .integer).notNull()
@@ -89,13 +89,13 @@ struct V001InitialSchema {
 
             productVariationTable.column("description", .text)
 
-            productVariationTable.foreignKey(["siteID", "productID"], references: "posProduct")
+            productVariationTable.foreignKey(["siteID", "productID"], references: "product")
         }
     }
 
     private static func createProductVariationAttributeTable(_ db: Database) throws {
-        try db.create(table: "posProductVariationAttribute") { productVariationAttributeTable in
-            productVariationAttributeTable.primaryKey(["siteID", "productVariationID", "attributeID"])
+        try db.create(table: "productVariationAttribute") { productVariationAttributeTable in
+            productVariationAttributeTable.primaryKey(["siteID", "attributeID"])
 
             productVariationAttributeTable.column("siteID", .integer).notNull()
             productVariationAttributeTable.column("productVariationID", .integer).notNull()
@@ -104,7 +104,7 @@ struct V001InitialSchema {
             productVariationAttributeTable.column("name", .text).notNull()
             productVariationAttributeTable.column("option", .text).notNull()
 
-            productVariationAttributeTable.foreignKey(["siteID", "productVariationID"], references: "posProductVariation")
+            productVariationAttributeTable.foreignKey(["siteID", "productVariationID"], references: "productVariation")
         }
     }
 }

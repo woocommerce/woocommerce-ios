@@ -5,7 +5,7 @@ import struct NetworkingCore.Order
 import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
-final class MockPointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
+final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
     var orderPages: [[POSOrder]] = []
     var errorToThrow: Error?
     var shouldReturnZeroOrders = false
@@ -21,7 +21,7 @@ final class MockPointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
         spyCallCount += 1
 
         if shouldThrowError {
-            throw PointOfSaleOrderServiceError.requestFailed
+            throw PointOfSaleOrderListServiceError.requestFailed
         }
 
         if let errorToThrow {
@@ -34,11 +34,11 @@ final class MockPointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
 
         if shouldSimulateTwoPages {
             if shouldSimulateThreePages && pageNumber > 1 {
-                return .init(items: MockPointOfSaleOrderService.makeSecondPageOrders(), hasMorePages: true, totalItems: 6)
+                return .init(items: MockPointOfSaleOrderListService.makeSecondPageOrders(), hasMorePages: true, totalItems: 6)
             } else if pageNumber > 1 {
-                return .init(items: MockPointOfSaleOrderService.makeSecondPageOrders(), hasMorePages: false, totalItems: 4)
+                return .init(items: MockPointOfSaleOrderListService.makeSecondPageOrders(), hasMorePages: false, totalItems: 4)
             } else {
-                return .init(items: MockPointOfSaleOrderService.makeInitialOrders(), hasMorePages: shouldSimulateTwoPages, totalItems: 4)
+                return .init(items: MockPointOfSaleOrderListService.makeInitialOrders(), hasMorePages: shouldSimulateTwoPages, totalItems: 4)
             }
         }
 
@@ -46,7 +46,7 @@ final class MockPointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
     }
 }
 
-extension MockPointOfSaleOrderService {
+extension MockPointOfSaleOrderListService {
     static func makeInitialOrders() -> [POSOrder] {
         let baseDate = Date(timeIntervalSince1970: 1672531200) // Fixed date: Jan 1, 2023
 

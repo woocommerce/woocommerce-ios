@@ -1,32 +1,32 @@
 import Foundation
 import Observation
-import enum Yosemite.PointOfSaleOrderServiceError
-import protocol Yosemite.PointOfSaleOrderServiceProtocol
-import protocol Yosemite.PointOfSaleOrderFetchStrategyFactoryProtocol
-import protocol Yosemite.PointOfSaleOrderFetchStrategy
+import enum Yosemite.PointOfSaleOrderListServiceError
+import protocol Yosemite.PointOfSaleOrderListServiceProtocol
+import protocol Yosemite.PointOfSaleOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.PointOfSaleOrderListFetchStrategy
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 
-protocol PointOfSaleOrdersControllerProtocol {
+protocol PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
 }
 
-@Observable final class PointOfSaleOrdersController: PointOfSaleOrdersControllerProtocol {
+@Observable final class PointOfSaleOrderListController: PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState
     private let paginationTracker: AsyncPaginationTracker
-    private var fetchStrategy: PointOfSaleOrderFetchStrategy
+    private var fetchStrategy: PointOfSaleOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
 
-    init(orderFetchStrategyFactory: PointOfSaleOrderFetchStrategyFactoryProtocol,
+    init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
          initialState: OrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.paginationTracker = .init()
-        self.fetchStrategy = orderFetchStrategyFactory.defaultStrategy()
+        self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
     }
 
     @MainActor
@@ -105,7 +105,7 @@ protocol PointOfSaleOrdersControllerProtocol {
             }
 
             return pagedOrders.hasMorePages
-        } catch PointOfSaleOrderServiceError.requestCancelled {
+        } catch PointOfSaleOrderListServiceError.requestCancelled {
             return true
         }
     }

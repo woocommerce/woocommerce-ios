@@ -1,31 +1,31 @@
 import Testing
 import Foundation
 @testable import WooCommerce
-import enum Yosemite.PointOfSaleOrderServiceError
+import enum Yosemite.PointOfSaleOrderListServiceError
 import struct NetworkingCore.Order
 import Observation
 
-final class PointOfSaleOrdersControllerTests {
-    private let orderProvider = MockPointOfSaleOrderService()
-    private lazy var fetchStrategyFactory = MockPointOfSaleOrderFetchStrategyFactory(orderService: orderProvider)
-    private lazy var sut = PointOfSaleOrdersController(orderFetchStrategyFactory: fetchStrategyFactory)
+final class PointOfSaleOrderListControllerTests {
+    private let orderListService = MockPointOfSaleOrderListService()
+    private lazy var fetchStrategyFactory = MockPointOfSaleOrderListFetchStrategyFactory(orderService: orderListService)
+    private lazy var sut = PointOfSaleOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
-        orderProvider.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateTwoPages = true
         await sut.loadOrders()
 
         await sut.loadNextOrders()
-        try #require(orderProvider.spyLastRequestedPageNumber == 2)
+        try #require(orderListService.spyLastRequestedPageNumber == 2)
 
         await sut.loadOrders()
 
-        #expect(orderProvider.spyLastRequestedPageNumber == 1)
+        #expect(orderListService.spyLastRequestedPageNumber == 1)
     }
 
     @Test func loadOrders_results_in_loaded_state() async throws {
-        let expectedOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [expectedOrders]
+        let expectedOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [expectedOrders]
         try #require(sut.ordersViewState.isLoading)
 
         await sut.loadOrders()
@@ -34,9 +34,9 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_with_more_pages_sets_hasMoreItems() async throws {
-        let expectedOrders = MockPointOfSaleOrderService.makeInitialOrders()
+        let expectedOrders = MockPointOfSaleOrderListService.makeInitialOrders()
         try #require(sut.ordersViewState.isLoading)
-        orderProvider.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateTwoPages = true
 
         await sut.loadOrders()
 
@@ -45,8 +45,8 @@ final class PointOfSaleOrdersControllerTests {
 
     @Test func loadOrders_when_called_multiple_times_then_orders_are_not_duplicated() async throws {
         try #require(sut.ordersViewState.isLoading)
-        let expectedOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [expectedOrders]
+        let expectedOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [expectedOrders]
 
         await sut.loadOrders()
         await sut.loadOrders()
@@ -64,7 +64,7 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadNextOrders_when_initial_orders_empty_then_container_state_is_content_and_orders_state_is_empty() async throws {
-        orderProvider.shouldReturnZeroOrders = true
+        orderListService.shouldReturnZeroOrders = true
 
         try #require(sut.ordersViewState.isLoading)
 
@@ -75,8 +75,8 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_when_initial_orders_has_orders_but_no_more_pages_then_state_is_loaded_with_initial_orders() async throws {
-        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [initialOrders]
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
 
         try #require(sut.ordersViewState.isLoading)
 
@@ -86,7 +86,7 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadNextOrders_when_simulateFetchNextPage_then_state_is_loaded_with_expected_orders() async throws {
-        orderProvider.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateTwoPages = true
         await sut.loadOrders()
 
         await sut.loadNextOrders()
@@ -100,17 +100,17 @@ final class PointOfSaleOrdersControllerTests {
 
     @Test func loadNextOrders_requests_second_page() async throws {
         try #require(sut.ordersViewState.isLoading)
-        orderProvider.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateTwoPages = true
         await sut.loadOrders()
 
         await sut.loadNextOrders()
 
-        #expect(orderProvider.spyLastRequestedPageNumber == 2)
+        #expect(orderListService.spyLastRequestedPageNumber == 2)
     }
 
     @Test func loadNextOrders_when_simulateFetchNextPage_then_state_is_loaded_with_hasMoreItems() async throws {
-        orderProvider.shouldSimulateTwoPages = true
-        orderProvider.shouldSimulateThreePages = true
+        orderListService.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateThreePages = true
         await sut.loadOrders()
 
         await sut.loadNextOrders()
@@ -124,30 +124,30 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadNextOrders_when_hasNextPage_is_false_then_does_not_fetch_next_page() async throws {
-        let expectedOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [expectedOrders]
+        let expectedOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [expectedOrders]
         await sut.loadOrders()
 
-        let spyCallCountBeforeLoadNext = orderProvider.spyCallCount
+        let spyCallCountBeforeLoadNext = orderListService.spyCallCount
         await sut.loadNextOrders()
 
-        #expect(orderProvider.spyCallCount == spyCallCountBeforeLoadNext)
+        #expect(orderListService.spyCallCount == spyCallCountBeforeLoadNext)
     }
 
     @Test func refreshOrders_requests_first_page() async throws {
-        orderProvider.shouldSimulateTwoPages = true
+        orderListService.shouldSimulateTwoPages = true
         await sut.loadOrders()
         await sut.loadNextOrders()
 
-        try #require(orderProvider.spyLastRequestedPageNumber == 2)
+        try #require(orderListService.spyLastRequestedPageNumber == 2)
 
         await sut.refreshOrders()
 
-        #expect(orderProvider.spyLastRequestedPageNumber == 1)
+        #expect(orderListService.spyLastRequestedPageNumber == 1)
     }
 
     @Test func loadOrders_when_error_occurs_then_shows_error_state() async throws {
-        orderProvider.shouldThrowError = true
+        orderListService.shouldThrowError = true
 
         await sut.loadOrders()
 
@@ -159,11 +159,11 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_when_error_occurs_with_existing_orders_then_shows_inline_error() async throws {
-        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [initialOrders]
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
         await sut.loadOrders()
 
-        orderProvider.shouldThrowError = true
+        orderListService.shouldThrowError = true
         await sut.refreshOrders()
 
         guard case .inlineError(let orders, _, let context) = sut.ordersViewState else {
@@ -175,8 +175,8 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_when_cached_data_available_then_shows_cached_data_with_loading_state() async throws {
-        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [initialOrders]
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
 
         // First load - should cache the data
         await sut.loadOrders()
@@ -199,8 +199,8 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_when_no_cached_data_then_starts_with_empty_loading_state() async throws {
-        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        orderProvider.orderPages = [initialOrders]
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
 
         // Initial state should be loading with empty orders
         try #require(sut.ordersViewState.isLoading)
@@ -221,11 +221,11 @@ final class PointOfSaleOrdersControllerTests {
     }
 
     @Test func loadOrders_cached_data_is_replaced_with_fresh_data() async throws {
-        let initialOrders = MockPointOfSaleOrderService.makeInitialOrders()
-        let freshOrders = MockPointOfSaleOrderService.makeSecondPageOrders()
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        let freshOrders = MockPointOfSaleOrderListService.makeSecondPageOrders()
 
         // First load
-        orderProvider.orderPages = [initialOrders]
+        orderListService.orderPages = [initialOrders]
         await sut.loadOrders()
 
         guard case .loaded(let firstLoadOrders, _) = sut.ordersViewState else {
@@ -235,7 +235,7 @@ final class PointOfSaleOrdersControllerTests {
         #expect(firstLoadOrders == initialOrders)
 
         // Second load with different data
-        orderProvider.orderPages = [freshOrders]
+        orderListService.orderPages = [freshOrders]
         await sut.loadOrders()
 
         // Should end up showing fresh data, not cached data

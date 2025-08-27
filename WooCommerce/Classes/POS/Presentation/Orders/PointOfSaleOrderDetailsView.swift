@@ -7,12 +7,12 @@ struct PointOfSaleOrderDetailsView: View {
     let orderID: String?
     let onBack: () -> Void
 
-    @Environment(PointOfSaleOrdersModel.self) private var ordersModel
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
 
     private var order: POSOrder? {
         guard let orderID = orderID,
               let orderIDInt = Int64(orderID) else { return nil }
-        return ordersModel.ordersController.ordersViewState.orders.first { $0.id == orderIDInt }
+        return orderListModel.ordersController.ordersViewState.orders.first { $0.id == orderIDInt }
     }
 
     // Show back button when in compact mode (phone) where the detail view

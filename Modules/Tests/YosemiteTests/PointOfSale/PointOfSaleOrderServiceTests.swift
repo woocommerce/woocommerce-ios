@@ -6,13 +6,13 @@ import enum NetworkingCore.OrderStatusEnum
 
 final class PointOfSaleOrderServiceTests: XCTestCase {
     private let siteID: Int64 = 13092
-    private var orderProvider: PointOfSaleOrderServiceProtocol!
+    private var orderProvider: PointOfSaleOrderListServiceProtocol!
     private var mockOrdersRemote: MockPOSOrdersRemote!
 
     override func setUp() {
         super.setUp()
         mockOrdersRemote = MockPOSOrdersRemote()
-        orderProvider = PointOfSaleOrderService(siteID: siteID, ordersRemote: mockOrdersRemote)
+        orderProvider = PointOfSaleOrderListService(siteID: siteID, ordersRemote: mockOrdersRemote)
     }
 
     override func tearDown() {
@@ -22,14 +22,14 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
     }
 
     func test_PointOfSaleOrderServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
-        let expectedError = PointOfSaleOrderServiceError.requestFailed
+        let expectedError = PointOfSaleOrderListServiceError.requestFailed
         mockOrdersRemote.mockPagedOrdersResult = .failure(expectedError)
 
         do {
             _ = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
             XCTFail("Expected an error, but got success.")
         } catch {
-            XCTAssertEqual(error as? PointOfSaleOrderServiceError, expectedError)
+            XCTAssertEqual(error as? PointOfSaleOrderListServiceError, expectedError)
         }
     }
 
@@ -106,7 +106,7 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
         do {
             _ = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
             XCTFail("Expected error to be thrown")
-        } catch PointOfSaleOrderServiceError.requestFailed {
+        } catch PointOfSaleOrderListServiceError.requestFailed {
             // Expected
         } catch {
             XCTFail("Unexpected error occurred: \(error)")

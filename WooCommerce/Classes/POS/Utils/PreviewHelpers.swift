@@ -23,8 +23,8 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
-import class Yosemite.PointOfSaleOrderService
-import class Yosemite.PointOfSaleOrderFetchStrategyFactory
+import class Yosemite.PointOfSaleOrderListService
+import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -232,13 +232,13 @@ struct POSPreviewHelpers {
         )
     }
 
-    static func makePreviewOrdersModel() -> PointOfSaleOrdersModel {
-        return PointOfSaleOrdersModel(ordersController: PointOfSalePreviewOrdersController())
+    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
+        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
     }
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrdersController: PointOfSaleOrdersControllerProtocol {
+final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState {
         .loaded(
                 [

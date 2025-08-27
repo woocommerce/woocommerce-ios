@@ -1,15 +1,15 @@
 import SwiftUI
 import struct Yosemite.POSOrder
 
-struct PointOfSaleOrdersListView: View {
+struct PointOfSaleOrderListView: View {
     @Binding var selectedOrderID: String?
     let onClose: () -> Void
 
-    @Environment(PointOfSaleOrdersModel.self) private var ordersModel
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     private var ordersViewState: OrderListState {
-        ordersModel.ordersController.ordersViewState
+        orderListModel.ordersController.ordersViewState
     }
 
     var body: some View {
@@ -29,7 +29,7 @@ struct PointOfSaleOrdersListView: View {
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
                 loadMore: {
                     guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
-                    await ordersModel.ordersController.loadNextOrders()
+                    await orderListModel.ordersController.loadNextOrders()
                 },
                 content: {
                     LazyVStack(spacing: 8) {
@@ -41,7 +41,7 @@ struct PointOfSaleOrdersListView: View {
                         case .error(let errorState):
                             ItemListErrorCardView(errorState: errorState) {
                                 Task { @MainActor in
-                                    await ordersModel.ordersController.loadOrders()
+                                    await orderListModel.ordersController.loadOrders()
                                 }
                             }
                         default:
@@ -65,10 +65,10 @@ struct PointOfSaleOrdersListView: View {
         .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
         .refreshable {
-            await ordersModel.ordersController.refreshOrders()
+            await orderListModel.ordersController.refreshOrders()
         }
         .task {
-            await ordersModel.ordersController.loadOrders()
+            await orderListModel.ordersController.loadOrders()
         }
     }
 
@@ -78,7 +78,7 @@ struct PointOfSaleOrdersListView: View {
         case .inlineError(_, let errorState, .refresh):
             ItemListErrorCardView(errorState: errorState) {
                 Task { @MainActor in
-                    await ordersModel.ordersController.loadOrders()
+                    await orderListModel.ordersController.loadOrders()
                 }
             }
         default:
@@ -100,7 +100,7 @@ struct PointOfSaleOrdersListView: View {
         case .inlineError(_, let errorState, .pagination):
             ItemListErrorCardView(errorState: errorState) {
                 Task { @MainActor in
-                    await ordersModel.ordersController.loadNextOrders()
+                    await orderListModel.ordersController.loadNextOrders()
                 }
             }
         default:
@@ -136,7 +136,7 @@ private struct OrderRowView: View {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrdersListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {
         Text("Detail View")

@@ -4,7 +4,7 @@ import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
 import protocol NetworkingCore.POSOrdersRemoteProtocol
 
-public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
+public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
     private let ordersRemote: POSOrdersRemoteProtocol
     private let siteID: Int64
 
@@ -32,9 +32,9 @@ public final class PointOfSaleOrderService: PointOfSaleOrderServiceProtocol {
                         hasMorePages: pagedOrders.hasMorePages,
                         totalItems: pagedOrders.totalItems)
         } catch AFError.explicitlyCancelled {
-            throw PointOfSaleOrderServiceError.requestCancelled
+            throw PointOfSaleOrderListServiceError.requestCancelled
         } catch {
-            throw PointOfSaleOrderServiceError.requestFailed
+            throw PointOfSaleOrderListServiceError.requestFailed
         }
     }
 }

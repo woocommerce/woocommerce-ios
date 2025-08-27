@@ -1,11 +1,11 @@
 import Foundation
 import struct NetworkingCore.PagedItems
 
-public enum PointOfSaleOrderServiceError: Error, Equatable {
+public enum PointOfSaleOrderListServiceError: Error, Equatable {
     case requestFailed
     case requestCancelled
 }
 
-public protocol PointOfSaleOrderServiceProtocol {
+public protocol PointOfSaleOrderListServiceProtocol {
     func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder>
 }

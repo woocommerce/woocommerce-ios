@@ -15,7 +15,7 @@ struct PointOfSaleEntryPointView: View {
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let ordersController: PointOfSaleOrdersControllerProtocol
+    private let ordersController: PointOfSaleOrderListControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
@@ -27,7 +27,7 @@ struct PointOfSaleEntryPointView: View {
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
-         ordersController: PointOfSaleOrdersControllerProtocol,
+         ordersController: PointOfSaleOrderListControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -81,7 +81,7 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
-        .environment(PointOfSaleOrdersModel(ordersController: ordersController))
+        .environment(PointOfSaleOrderListModel(ordersController: ordersController))
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

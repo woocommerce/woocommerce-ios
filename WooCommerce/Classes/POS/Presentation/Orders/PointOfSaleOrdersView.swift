@@ -4,12 +4,12 @@ import UIKit
 struct PointOfSaleOrdersView: View {
     @Binding var isPresented: Bool
     @State private var selectedOrderID: String?
-    @Environment(PointOfSaleOrdersModel.self) private var ordersModel
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         CustomNavigationSplitView(selection: $selectedOrderID) { _ in
-            PointOfSaleOrdersListView(selectedOrderID: $selectedOrderID) {
+            PointOfSaleOrderListView(selectedOrderID: $selectedOrderID) {
                 isPresented = false
             }
         } detail: { selection in
@@ -21,11 +21,11 @@ struct PointOfSaleOrdersView: View {
             )
         } setDefaultValue: {
             if selectedOrderID == nil,
-               let firstOrder = ordersModel.ordersController.ordersViewState.orders.first {
+               let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
                 selectedOrderID = String(firstOrder.id)
             }
         }
-        .onChange(of: ordersModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
+        .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
             guard horizontalSizeClass == .regular else { return }
 
             guard let firstOrder = newOrders.first else {

@@ -4,7 +4,7 @@ import Combine
 @testable import WooCommerce
 import struct Yosemite.Order
 
-final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
+final class MockPointOfSaleOrderListController: PointOfSaleOrderControllerProtocol {
     func collectCashPayment(changeDueAmount: String?) async throws {
         // no-op
     }

@@ -66,7 +66,7 @@ class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtoco
         if let defaultSiteName {
             return defaultSiteName
         } else {
-            return Localization.storeNotSet
+            return Localization.storeNameNotSet
         }
     }
 
@@ -128,8 +128,8 @@ private extension PointOfSaleSettingsController {
     }
 
     enum Localization {
-        static let storeNotSet = NSLocalizedString(
-            "pointOfSaleSettingsService.storeNotSet",
+        static let storeNameNotSet = NSLocalizedString(
+            "pointOfSaleSettingsService.storeNameNotSet",
             value: "Not set",
             comment: "Text displayed on Point of Sale settings when store has not been provided."
         )

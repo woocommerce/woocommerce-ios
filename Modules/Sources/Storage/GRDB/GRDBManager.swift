@@ -18,7 +18,6 @@ public final class GRDBManager {
 
         try migrateIfNeeded()
     }
-    
 }
 
 private extension GRDBManager {
@@ -26,35 +25,12 @@ private extension GRDBManager {
         var migrator = DatabaseMigrator()
 
         #if DEBUG
-        // Speed up development by nuking the database when migrations change
+        // Speed up development by dropping the database when migrations change
         migrator.eraseDatabaseOnSchemaChange = true
         #endif
 
-        // 1st migration
-
-        // Note that it's best to use strings for names in the database
-        // not derive them from a Swift class.
-        // https://swiftpackageindex.com/groue/grdb.swift/v7.6.1/documentation/grdb/migrations#Good-Practices-for-Defining-Migrations
-        migrator.registerMigration("Create posProduct table") { db in
-            try db.create(table: "posProduct") { t in
-                t.primaryKey(["siteID", "productID"])
-
-                t.column("siteID", .integer).notNull()
-                t.column("productID", .integer).notNull()
-                t.column("name", .text).notNull()
-                t.column("productTypeKey", .text).notNull()
-
-                t.column("fullDescription", .text)
-                t.column("shortDescription", .text)
-
-                t.column("sku", .text)
-                t.column("globalUniqueID", .text)
-                t.column("price", .text).notNull()
-
-                t.column("downloadable", .boolean).notNull()
-
-                t.column("parentID", .integer).notNull()
-            }
+        migrator.registerMigration("V001InitialSchema") { db in
+            try V001InitialSchema.migrate(db)
         }
 
         try migrator.migrate(databaseQueue)

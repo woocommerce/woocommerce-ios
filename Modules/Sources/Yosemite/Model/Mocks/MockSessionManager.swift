@@ -44,7 +44,7 @@ public struct MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    public func deleteApplicationPassword(using credentials: Credentials?) {
+    public func deleteApplicationPassword(using credentials: Credentials?, remoteOnly: Bool) {
         // Do nothing
     }
 }

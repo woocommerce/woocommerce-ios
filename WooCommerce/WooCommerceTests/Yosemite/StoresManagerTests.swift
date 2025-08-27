@@ -535,16 +535,16 @@ final class MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?) {
+    func deleteApplicationPassword(using credentials: Credentials?, remoteOnly: Bool) {
         deleteApplicationPasswordInvoked = true
     }
 
-    func deleteApplicationPassword() {
+    func deleteApplicationPassword(remoteOnly: Bool) {
         deleteApplicationPasswordInvoked = true
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
 }
 

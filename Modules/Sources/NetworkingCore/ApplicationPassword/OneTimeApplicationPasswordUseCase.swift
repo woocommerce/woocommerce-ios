@@ -9,11 +9,12 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     private let siteAddress: String
     private let session: URLSession
+    private let storage: ApplicationPasswordStorage
 
     public init(applicationPassword: ApplicationPassword? = nil,
                 siteAddress: String,
                 keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
-        let storage = ApplicationPasswordStorage(keychain: keychain)
+        self.storage = ApplicationPasswordStorage(keychain: keychain)
         if let applicationPassword {
             storage.saveApplicationPassword(applicationPassword)
         }
@@ -27,10 +28,23 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         throw ApplicationPasswordUseCaseError.notSupported
     }
 
-    public func deletePassword() async throws {
-        guard let uuid = try await fetchApplicationPasswordUUID(),
-              let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
+    public func deletePassword(remoteOnly: Bool) async throws {
+        let uuidToBeDeleted: String? = try await {
+            if !remoteOnly, let uuid = storage.applicationPassword?.uuid {
+                return uuid
+            } else {
+                return try await self.fetchApplicationPasswordUUID()
+            }
+        }()
+
+        guard let uuidToBeDeleted,
+              let url = URL(string: siteAddress + Path.applicationPasswords + uuidToBeDeleted) else {
             return
+        }
+
+        if !remoteOnly {
+            // Remove password from storage
+            storage.removeApplicationPassword()
         }
 
         let request = try URLRequest(url: url, method: .delete)

@@ -176,6 +176,10 @@ final class SessionManager: SessionManagerProtocol {
         }
     }
 
+    /// Keeps strong reference of the use case to keep the password deletion request alive
+    /// periphery: ignore
+    var applicationPasswordUseCase: ApplicationPasswordUseCase?
+
     /// Designated Initializer.
     ///
     init(defaults: UserDefaults,
@@ -201,7 +205,7 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
-        deleteApplicationPassword()
+        deleteApplicationPassword(remoteOnly: false)
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
@@ -228,17 +232,16 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using creds: Credentials?) {
+    func deleteApplicationPassword(using creds: Credentials?, remoteOnly: Bool) {
         let useCase: ApplicationPasswordUseCase? = {
             let credentials = creds ?? loadCredentials()
             switch credentials {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
-                                                              siteAddress: siteAddress,
-                                                              keychain: keychain)
+                                                              siteAddress: siteAddress)
             case let .applicationPassword(_, _, siteAddress):
-                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
+                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             case .wpcom:
                 guard let siteID = defaultStoreID else {
                     return nil
@@ -253,8 +256,9 @@ final class SessionManager: SessionManagerProtocol {
             return
         }
 
+        applicationPasswordUseCase = useCase
         Task {
-            try await useCase.deletePassword()
+            try await useCase.deletePassword(remoteOnly: remoteOnly)
         }
     }
 }

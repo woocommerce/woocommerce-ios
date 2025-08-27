@@ -65,20 +65,26 @@ struct PointOfSaleSettingsView: View {
                     }
                 }
                 .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-                Group {
-                    switch selection {
-                    case .store:
-                        PointOfSaleSettingsStoreDetailView()
-                    case .hardware:
-                        PointOfSaleSettingsHardwareDetailView()
-                    case .help:
-                        PointOfSaleSettingsHelpDetailView()
-                    default:
-                        EmptyView()
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                detailView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        }
+    }
+}
+
+extension PointOfSaleSettingsView {
+    @ViewBuilder
+    private var detailView: some View {
+        switch selection {
+        case .store:
+            PointOfSaleSettingsStoreDetailView()
+        case .hardware:
+            PointOfSaleSettingsHardwareDetailView()
+        case .help:
+            PointOfSaleSettingsHelpDetailView()
+        default:
+            EmptyView()
         }
     }
 }

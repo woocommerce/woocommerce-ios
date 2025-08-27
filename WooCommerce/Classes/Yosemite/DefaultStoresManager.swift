@@ -161,10 +161,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        let selectedSite = site
-            .prepend(sessionManager.defaultSite)
-            .eraseToAnyPublisher()
-        state = AuthenticatedState(credentials: credentials, selectedSite: selectedSite)
+        state = AuthenticatedState(credentials: credentials, sessionManager: sessionManager)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()

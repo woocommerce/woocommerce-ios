@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 import Yosemite
 import Networking
@@ -28,12 +27,14 @@ class AuthenticatedState: StoresManagerState {
 
     /// Designated Initializer
     ///
-    init(credentials: Credentials, selectedSite: AnyPublisher<Networking.Site?, Never>) {
+    init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
         let storageManager = ServiceLocator.storageManager
 
-        let site = selectedSite
+        let site = sessionManager.defaultSitePublisher
+            .prepend(sessionManager.defaultSite) // needed to emit the initial value upon subscription
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
+
         self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
 
         var services: [ActionsProcessor] = [
@@ -145,10 +146,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let selectedSite = sessionManager.defaultSitePublisher
-            .prepend(sessionManager.defaultSite)
-            .eraseToAnyPublisher()
-        self.init(credentials: credentials, selectedSite: selectedSite)
+        self.init(credentials: credentials, sessionManager: sessionManager)
     }
 
     /// Executed before the current state is deactivated.

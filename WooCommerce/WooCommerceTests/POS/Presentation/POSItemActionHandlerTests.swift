@@ -101,7 +101,7 @@ private func makePointOfSaleAggregateModel(
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
-    settingsController: PointOfSaleSettingsControllerProtocol = PointOfSaleSettingsPreviewController(),
+    settingsController: PointOfSaleSettingsControllerProtocol = MockPointOfSaleSettingsController(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

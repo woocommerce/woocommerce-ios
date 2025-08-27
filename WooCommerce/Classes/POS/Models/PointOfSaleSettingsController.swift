@@ -22,25 +22,6 @@ protocol PointOfSaleSettingsControllerProtocol {
     func retrievePOSReceiptSettings() async
 }
 
-class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
-    var receiptStoreName: String? = "Sample Store"
-    var receiptStoreAddress: String? = "123 Main Street\nAnytown, ST 12345"
-    var receiptStorePhone: String? = "+1 (555) 123-4567"
-    var receiptStoreEmail: String? = "store@example.com"
-    var receiptRefundReturnsPolicy: String? = "30-day return policy"
-    var isLoading: Bool = false
-    var shouldShowReceiptInformation: Bool = true
-    var storeName: String = "Sample Store"
-
-    var storeAddress: String {
-        "123 Main Street\nAnytown, ST 12345"
-    }
-
-    func retrievePOSReceiptSettings() async {
-        // no-op
-    }
-}
-
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
     private(set) var receiptStoreName: String?
     private(set) var receiptStoreAddress: String?
@@ -135,3 +116,24 @@ private extension PointOfSaleSettingsController {
         )
     }
 }
+
+#if DEBUG
+final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
+    var receiptStoreName: String? = "Sample Store"
+    var receiptStoreAddress: String? = "123 Main Street\nAnytown, ST 12345"
+    var receiptStorePhone: String? = "+1 (555) 123-4567"
+    var receiptStoreEmail: String? = "store@example.com"
+    var receiptRefundReturnsPolicy: String? = "30-day return policy"
+    var isLoading: Bool = false
+    var shouldShowReceiptInformation: Bool = true
+    var storeName: String = "Sample Store"
+
+    var storeAddress: String {
+        "123 Main Street\nAnytown, ST 12345"
+    }
+
+    func retrievePOSReceiptSettings() async {
+        // no-op
+    }
+}
+#endif

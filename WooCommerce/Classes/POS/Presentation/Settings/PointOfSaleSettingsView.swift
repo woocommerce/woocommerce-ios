@@ -178,6 +178,8 @@ private extension PointOfSaleSettingsView {
     }
 }
 
+#if DEBUG
 #Preview {
     PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
 }
+#endif

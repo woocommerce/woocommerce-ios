@@ -90,3 +90,22 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
         }
     }
 }
+
+final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
+    var receiptStoreName: String? = "Sample Store"
+    var receiptStoreAddress: String? = "123 Main Street\nAnytown, ST 12345"
+    var receiptStorePhone: String? = "+1 (555) 123-4567"
+    var receiptStoreEmail: String? = "store@example.com"
+    var receiptRefundReturnsPolicy: String? = "30-day return policy"
+    var isLoading: Bool = false
+    var shouldShowReceiptInformation: Bool = true
+    var storeName: String = "Sample Store"
+
+    var storeAddress: String {
+        "123 Main Street\nAnytown, ST 12345"
+    }
+
+    func retrievePOSReceiptSettings() async {
+        // no-op
+    }
+}

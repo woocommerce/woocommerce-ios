@@ -2,8 +2,9 @@ import SwiftUI
 import enum Yosemite.AppSettingsAction
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    let settingsController: PointOfSaleSettingsControllerProtocol
+    
     @State private var navigationPath: [NavigationDestination] = []
-    @State private var lastKnownLoadedCardReader: String?
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
@@ -316,4 +317,8 @@ private extension PointOfSaleSettingsHardwareDetailView {
             comment: "Description of Barcode scanner settings configuration."
         )
     }
+}
+
+#Preview {
+    PointOfSaleSettingsHardwareDetailView()
 }

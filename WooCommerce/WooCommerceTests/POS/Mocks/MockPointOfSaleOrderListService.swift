@@ -57,6 +57,7 @@ extension MockPointOfSaleOrderListService {
             status: .completed,
             total: "25.99",
             customerEmail: "customer1@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(itemID: 1, name: "Coffee", quantity: 2, total: "20.00"),
@@ -73,6 +74,7 @@ extension MockPointOfSaleOrderListService {
             status: .completed,
             total: "15.50",
             customerEmail: "customer2@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(itemID: 3, name: "Tea", quantity: 1, total: "15.50")
@@ -94,6 +96,7 @@ extension MockPointOfSaleOrderListService {
             status: .completed,
             total: "42.75",
             customerEmail: "customer3@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(itemID: 4, name: "Sandwich", quantity: 1, total: "12.00"),
@@ -110,6 +113,7 @@ extension MockPointOfSaleOrderListService {
             status: .refunded,
             total: "12.00",
             customerEmail: "customer4@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(itemID: 6, name: "Cookies", quantity: 1, total: "12.00")

@@ -28,9 +28,9 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         throw ApplicationPasswordUseCaseError.notSupported
     }
 
-    public func deletePassword(remoteOnly: Bool) async throws {
+    public func deletePassword(locally: Bool) async throws {
         let uuidToBeDeleted: String? = try await {
-            if !remoteOnly, let uuid = storage.applicationPassword?.uuid {
+            if locally, let uuid = storage.applicationPassword?.uuid {
                 return uuid
             } else {
                 return try await self.fetchApplicationPasswordUUID()
@@ -42,7 +42,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             return
         }
 
-        if !remoteOnly {
+        if locally {
             // Remove password from storage
             storage.removeApplicationPassword()
         }

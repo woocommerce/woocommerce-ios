@@ -255,7 +255,7 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials, remoteOnly: false)
+                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: false)
                 self.stores.updateDefaultStore(storeID: site.siteID)
                 self.stores.synchronizeEntities { [weak self] in
                     self?.stores.updateDefaultStore(site)

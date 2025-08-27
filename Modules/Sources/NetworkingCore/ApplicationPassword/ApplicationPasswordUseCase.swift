@@ -29,10 +29,10 @@ public protocol ApplicationPasswordUseCase {
 
     /// Deletes the application password
     ///
-    /// - Parameter remoteOnly: Determines whether to remove the password from the local storage
+    /// - Parameter locally: Determines whether to remove the password from the local storage
     /// or only sends an API request to delete it from the site.
     ///
-    func deletePassword(remoteOnly: Bool) async throws
+    func deletePassword(locally: Bool) async throws
 }
 
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
@@ -108,7 +108,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
                 do {
-                    try await deletePassword(remoteOnly: true)
+                    try await deletePassword(locally: true)
                 } catch ApplicationPasswordUseCaseError.unableToFindPasswordUUID {
                     // No password found with the `applicationPasswordName`
                     // We can proceed to the creation step
@@ -125,11 +125,11 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
-    public func deletePassword(remoteOnly: Bool) async throws {
+    public func deletePassword(locally: Bool) async throws {
         // Get the uuid before removing the password from storage
-        let uuidFromLocalPassword = remoteOnly ? nil : storage.applicationPassword?.uuid
+        let uuidFromLocalPassword = locally ? storage.applicationPassword?.uuid : nil
 
-        if !remoteOnly {
+        if locally {
             // Remove password from storage
             storage.removeApplicationPassword()
         }

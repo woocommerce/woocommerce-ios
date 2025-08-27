@@ -205,7 +205,6 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
-        deleteApplicationPassword(remoteOnly: false)
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
@@ -232,7 +231,7 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using creds: Credentials?, remoteOnly: Bool) {
+    func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
         let useCase: ApplicationPasswordUseCase? = {
             let credentials = creds ?? loadCredentials()
             switch credentials {
@@ -258,7 +257,7 @@ final class SessionManager: SessionManagerProtocol {
 
         applicationPasswordUseCase = useCase
         Task {
-            try await useCase.deletePassword(remoteOnly: remoteOnly)
+            try await useCase.deletePassword(locally: locally)
         }
     }
 }

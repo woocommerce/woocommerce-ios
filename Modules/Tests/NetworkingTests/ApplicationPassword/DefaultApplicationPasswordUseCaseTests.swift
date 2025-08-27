@@ -148,7 +148,7 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertTrue(failure == .unauthorizedRequest)
     }
 
-    func test_delete_application_password_with_remote_only_does_not_clear_storage() async throws {
+    func test_delete_application_password_with_locally_false_does_not_clear_storage() async throws {
         // Given
         let storage = MockApplicationPasswordStorage()
         let sut = DefaultApplicationPasswordUseCase(
@@ -172,13 +172,13 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         )
 
         // When
-        try await sut.deletePassword(remoteOnly: true)
+        try await sut.deletePassword(locally: false)
 
         // Then
         XCTAssertEqual(storage.applicationPassword, password)
     }
 
-    func test_delete_application_password_with_remote_only_false_clears_storage() async throws {
+    func test_delete_application_password_with_locally_true_clears_storage() async throws {
         // Given
         let storage = MockApplicationPasswordStorage()
         let sut = DefaultApplicationPasswordUseCase(type: .wpcom(siteID: 123), network: network, storage: storage)
@@ -192,7 +192,7 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         )
 
         // When
-        try await sut.deletePassword(remoteOnly: false)
+        try await sut.deletePassword(locally: true)
 
         // Then
         XCTAssertNil(storage.applicationPassword)

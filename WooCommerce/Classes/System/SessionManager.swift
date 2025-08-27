@@ -7,6 +7,7 @@ import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
 import class Kingfisher.ImageCache
+import class Networking.AlamofireNetwork
 
 // MARK: - SessionManager Notifications
 //
@@ -227,9 +228,10 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?) {
+    func deleteApplicationPassword(using creds: Credentials?) {
         let useCase: ApplicationPasswordUseCase? = {
-            switch credentials ?? loadCredentials() {
+            let credentials = creds ?? loadCredentials()
+            switch credentials {
             case let .wporg(username, password, siteAddress):
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
@@ -237,7 +239,13 @@ final class SessionManager: SessionManagerProtocol {
                                                               keychain: keychain)
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress, keychain: keychain)
-            default:
+            case .wpcom:
+                guard let siteID = defaultStoreID else {
+                    return nil
+                }
+                let network = AlamofireNetwork(credentials: credentials)
+                return DefaultApplicationPasswordUseCase(type: .wpcom(siteID: siteID), network: network)
+            case .none:
                 return nil
             }
         }()

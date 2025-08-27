@@ -7,65 +7,9 @@ struct PointOfSaleSettingsView: View {
     let settingsController: PointOfSaleSettingsControllerProtocol
 
     var body: some View {
-        POSPageHeaderView(
-            title: Localization.navigationTitle,
-            trailingContent: {
-                Button(action: { dismiss() }) {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
-            })
         GeometryReader { geometry in
             HStack(spacing: POSSpacing.none) {
-                VStack(alignment: .leading, spacing: POSSpacing.none) {
-                    List(selection: $selection) {
-                        Section {
-                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                                HStack {
-                                    Image(systemName: item.icon)
-                                        .font(.posBodyLargeRegular())
-                                    VStack(alignment: .leading) {
-                                        Text(item.title)
-                                            .font(.posBodyLargeRegular())
-                                        Text(item.subtitle)
-                                            .font(.posBodyMediumRegular())
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                .tag(item)
-                            }
-                        }
-                    }
-                    .safeAreaInset(edge: .bottom) {
-                        Button {
-                            selection = .help
-                        } label: {
-                            HStack {
-                                Image(systemName: SidebarNavigation.help.icon)
-                                    .font(.posBodyLargeRegular())
-                                    .foregroundStyle(selection == .help ? .white : .primary)
-                                VStack(alignment: .leading) {
-                                    Text(SidebarNavigation.help.title)
-                                        .font(.posBodyLargeRegular())
-                                        .foregroundStyle(selection == .help ? .white : .primary)
-                                    Text(SidebarNavigation.help.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
-                                }
-                                Spacer()
-                            }
-                            .padding(.vertical, POSPadding.small)
-                            .padding(.horizontal, POSPadding.medium)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .background(
-                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                                .fill(selection == .help ? Color.accentColor : Color.clear)
-                        )
-                    }
-                }
+                listView
                 .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
 
                 detailView
@@ -79,6 +23,65 @@ struct PointOfSaleSettingsView: View {
 }
 
 extension PointOfSaleSettingsView {
+    @ViewBuilder
+    private var listView: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.navigationTitle,
+                backButtonConfiguration: .init(state: .enabled,
+                                               action: { dismiss() },
+                                               buttonIcon: "xmark"))
+            .foregroundColor(.posSurface)
+
+            List(selection: $selection) {
+                Section {
+                    ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
+                        HStack {
+                            Image(systemName: item.icon)
+                                .font(.posBodyLargeRegular())
+                            VStack(alignment: .leading) {
+                                Text(item.title)
+                                    .font(.posBodyLargeRegular())
+                                Text(item.subtitle)
+                                    .font(.posBodyMediumRegular())
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .tag(item)
+                    }
+                }
+            }
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    selection = .help
+                } label: {
+                    HStack {
+                        Image(systemName: SidebarNavigation.help.icon)
+                            .font(.posBodyLargeRegular())
+                            .foregroundStyle(selection == .help ? .white : .primary)
+                        VStack(alignment: .leading) {
+                            Text(SidebarNavigation.help.title)
+                                .font(.posBodyLargeRegular())
+                                .foregroundStyle(selection == .help ? .white : .primary)
+                            Text(SidebarNavigation.help.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(selection == .help ? .secondary : .secondary)
+                        }
+                        Spacer()
+                    }
+                    .padding(.vertical, POSPadding.small)
+                    .padding(.horizontal, POSPadding.medium)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .background(
+                    RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
+                        .fill(selection == .help ? Color.accentColor : Color.clear)
+                )
+            }
+        }
+    }
+    
     @ViewBuilder
     private var detailView: some View {
         switch selection {

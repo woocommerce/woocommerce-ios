@@ -61,7 +61,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     /// Internal initializer
-    /// periphery: ignore - used in future PR for WOOMOB-1123
     init(type: AuthenticationType,
          network: Network,
          keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {

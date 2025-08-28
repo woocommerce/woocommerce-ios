@@ -1,9 +1,26 @@
 import Foundation
 
+/// Protocol for `POSCatalogSyncRemote` mainly used for mocking.
+public protocol POSCatalogSyncRemoteProtocol {
+    func generateCatalog(for siteID: Int64, forceGenerate: Bool) async throws -> POSCatalogGenerationResponse
+    func checkCatalogStatus(for siteID: Int64, jobID: String) async throws -> POSCatalogStatusResponse
+    func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalog
+}
+
 /// POS Catalog Sync: Remote Endpoints
 ///
-public class POSCatalogSyncRemote: Remote {
+public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private let dateFormatter = ISO8601DateFormatter()
+    private let backgroundDownloader: BackgroundDownloadProtocol
+    private let fileManager: FileManager
+
+    public init(network: Network, 
+                backgroundDownloader: BackgroundDownloadProtocol = BackgroundDownloadService(),
+                fileManager: FileManager = .default) {
+        self.backgroundDownloader = backgroundDownloader
+        self.fileManager = fileManager
+        super.init(network: network)
+    }
 
     /// Loads POS products modified after the specified date.
     ///
@@ -93,20 +110,42 @@ public class POSCatalogSyncRemote: Remote {
         return try await enqueue(request, mapper: mapper)
     }
 
-    /// Downloads the generated catalog at the specified download URL.
+    /// Downloads the generated catalog at the specified download URL using background downloads.
     /// - Parameters:
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     /// - Returns: List of products and variations in the POS catalog.
+    /// - Note: Uses background download with URLSessionConfiguration.background to support app suspension.
     // periphery:ignore - TODO - remove this periphery ignore comment when this method is integrated with catalog sync
     public func downloadCatalog(for siteID: Int64, downloadURL: String) async throws -> POSCatalog {
-        // TODO: WOOMOB-1173 - move download task to the background using `URLSessionConfiguration.background`
         guard let url = URL(string: downloadURL) else {
             throw NetworkError.invalidURL
         }
-        let request = URLRequest(url: url)
+
+        let sessionIdentifier = "\(POSCatalogSyncConstants.backgroundDownloadSessionPrefix).\(siteID).\(UUID().uuidString)"
+        let fileURL = try await backgroundDownloader.downloadFile(from: url, sessionIdentifier: sessionIdentifier)
+        return try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+    }
+
+    /// Parses the downloaded catalog file.
+    /// - Parameters:
+    ///   - fileURL: Local file URL of the downloaded catalog.
+    ///   - siteID: Site ID for proper mapping.
+    /// - Returns: Parsed POS catalog.
+    private func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalog {
+        let data = try Data(contentsOf: fileURL)
+
+        // Cleans up the downloaded file after reading if it's in Documents directory.
+        // Temporary files are auto-cleaned by iOS.
+        defer {
+            if let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first,
+               fileURL.path.starts(with: documentsURL.path) {
+                try? fileManager.removeItem(at: fileURL)
+            }
+        }
+
         let mapper = ListMapper<POSProduct>(siteID: siteID)
-        let items = try await enqueue(request, mapper: mapper)
+        let items = try mapper.map(response: data)
         let variationProductTypeKey = "variation"
         let products = items.filter { $0.productTypeKey != variationProductTypeKey }
         let variations = items.filter { $0.productTypeKey == variationProductTypeKey }
@@ -173,6 +212,14 @@ public enum POSCatalogStatus: String, Decodable {
 public struct POSCatalog {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
+}
+
+// MARK: - POS Catalog Sync Constants
+
+/// Constants used across POS catalog sync functionality
+public enum POSCatalogSyncConstants {
+    /// Background download session identifier prefix for POS catalog downloads
+    public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
 }
 
 private extension POSProduct {

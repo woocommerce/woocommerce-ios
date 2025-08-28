@@ -40,6 +40,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         let command = CustomerSearchUICommand(siteID: sampleSiteID) { _ in }
         let customer = Customer(
             siteID: sampleSiteID,
+            userID: 0,
             customerID: 1,
             email: "john.w@email.com",
             username: "john",

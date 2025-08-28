@@ -311,6 +311,7 @@ private extension CustomerDetailView {
 #Preview("Customer") {
     CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
                                                           customerID: 0,
+                                                          userID: 0,
                                                           name: "Pat Smith",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: "patsmith@example.com",
@@ -328,6 +329,7 @@ private extension CustomerDetailView {
 #Preview("Customer with Placeholders") {
     CustomerDetailView(viewModel: CustomerDetailViewModel(siteID: 1,
                                                           customerID: 0,
+                                                          userID: 0,
                                                           name: "Guest",
                                                           dateLastActive: "Jan 1, 2024",
                                                           email: nil,

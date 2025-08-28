@@ -837,7 +837,9 @@ final class EditableOrderViewModel: ObservableObject {
         let input = Self.createAddressesInputIfPossible(billingAddress: customer.billing, shippingAddress: customer.shipping)
         // The customer ID needs to be set before the addresses, so that the customer ID doesn't get overridden by the API response (customer_id = 0
         // by default) from updating the order's addresses remotely.
-        orderSynchronizer.setCustomerID.send(customer.customerID)
+        // Use WordPress user ID (userID) for order creation, as the WooCommerce API expects customer_id to be the user ID who owns the order
+        // For guest customers (userID = 0), the API will handle this correctly
+        orderSynchronizer.setCustomerID.send(customer.userID)
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
     }

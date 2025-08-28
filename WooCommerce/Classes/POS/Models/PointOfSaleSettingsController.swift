@@ -6,12 +6,24 @@ import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import Observation
 
+struct POSReceiptInformation {
+    let storeName: String?
+    let storeAddress: String?
+    let phone: String?
+    let email: String?
+    let refundReturnsPolicy: String?
+
+    static let empty = POSReceiptInformation(
+        storeName: nil,
+        storeAddress: nil,
+        phone: nil,
+        email: nil,
+        refundReturnsPolicy: nil
+    )
+}
+
 protocol PointOfSaleSettingsControllerProtocol {
-    var receiptStoreName: String? { get }
-    var receiptStoreAddress: String? { get }
-    var receiptStorePhone: String? { get }
-    var receiptStoreEmail: String? { get }
-    var receiptRefundReturnsPolicy: String? { get }
+    var receiptInformation: POSReceiptInformation { get }
     var isLoading: Bool { get }
     var shouldShowReceiptInformation: Bool { get }
     var storeName: String { get }
@@ -23,11 +35,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
-    private(set) var receiptStoreName: String?
-    private(set) var receiptStoreAddress: String?
-    private(set) var receiptStorePhone: String?
-    private(set) var receiptStoreEmail: String?
-    private(set) var receiptRefundReturnsPolicy: String?
+    private(set) var receiptInformation = POSReceiptInformation.empty
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
@@ -109,11 +117,13 @@ protocol PointOfSaleSettingsControllerProtocol {
     }
 
     private func updateReceiptSettings(from siteSettings: [SiteSetting]) {
-        receiptStoreName = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name")
-        receiptStoreAddress = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address")
-        receiptStorePhone = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone")
-        receiptStoreEmail = settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email")
-        receiptRefundReturnsPolicy = settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
+        receiptInformation = POSReceiptInformation(
+            storeName: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name"),
+            storeAddress: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address"),
+            phone: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone"),
+            email: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email"),
+            refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
+        )
     }
 
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
@@ -138,11 +148,13 @@ private extension PointOfSaleSettingsController {
 
 #if DEBUG
 final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
-    var receiptStoreName: String? = "Sample Store"
-    var receiptStoreAddress: String? = "123 Main Street\nAnytown, ST 12345"
-    var receiptStorePhone: String? = "+1 (555) 123-4567"
-    var receiptStoreEmail: String? = "store@example.com"
-    var receiptRefundReturnsPolicy: String? = "30-day return policy"
+    var receiptInformation = POSReceiptInformation(
+        storeName: "Sample Store",
+        storeAddress: "123 Main Street\nAnytown, ST 12345",
+        phone: "+1 (555) 123-4567",
+        email: "store@example.com",
+        refundReturnsPolicy: "30-day return policy"
+    )
     var isLoading: Bool = false
     var shouldShowReceiptInformation: Bool = true
     var storeName: String = "Sample Store"

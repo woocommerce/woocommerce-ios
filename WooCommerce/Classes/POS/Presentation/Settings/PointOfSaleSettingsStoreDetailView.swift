@@ -31,31 +31,31 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.receiptStoreName)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreName)
+                        settingValueView(for: settingsController.receiptInformation.storeName)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.physicalAddress)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreAddress)
+                        settingValueView(for: settingsController.receiptInformation.storeAddress)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.phoneNumber)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStorePhone)
+                        settingValueView(for: settingsController.receiptInformation.phone)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.email)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreEmail)
+                        settingValueView(for: settingsController.receiptInformation.email)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptRefundReturnsPolicy)
+                        settingValueView(for: settingsController.receiptInformation.refundReturnsPolicy)
                     }
                 } header: {
                     Text(Localization.receiptInformation)

@@ -39,6 +39,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
+    private let siteID: Int64
     private let defaultSiteName: String?
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let pluginsService: PluginsServiceProtocol
@@ -46,11 +47,13 @@ protocol PointOfSaleSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
-    init(settingsService: PointOfSaleSettingsServiceProtocol,
+    init(siteID: Int64,
+         settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
+        self.siteID = siteID
         self.settingsService = settingsService
         self.pluginsService = pluginsService
         self.defaultSiteName = defaultSiteName
@@ -107,7 +110,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     @MainActor
     private func isPluginSupported(_ plugin: Plugin,
                                    minimumVersion: String) async -> Bool {
-        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: settingsService.siteID, plugin: plugin, isActive: true), systemPlugin.active else {
+        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true), systemPlugin.active else {
             return false
         }
 

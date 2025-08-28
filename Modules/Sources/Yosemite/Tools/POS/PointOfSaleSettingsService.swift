@@ -3,7 +3,6 @@ import Networking
 import Storage
 
 public protocol PointOfSaleSettingsServiceProtocol {
-    var siteID: Int64 { get }
     func retrievePointOfSaleSettings() async throws -> [SiteSetting]
 }
 

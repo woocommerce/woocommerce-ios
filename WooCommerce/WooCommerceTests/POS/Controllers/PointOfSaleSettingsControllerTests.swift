@@ -9,11 +9,13 @@ struct PointOfSaleSettingsControllerTests {
     private let mockStorageManager = MockStorageManager()
     private let mockCardPresentPaymentService = MockCardPresentPaymentService()
     private let mockPluginService = MockPluginsService()
+    private let sampleSiteID: Int64 = 123
 
     @Test func storeName_when_defaultSiteName_provided_then_returns_defaultSiteName() async throws {
         // Given
         let expectedStoreName = "My Test Store"
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: expectedStoreName,
@@ -28,7 +30,8 @@ struct PointOfSaleSettingsControllerTests {
 
     @Test func storeName_when_defaultSiteName_nil_then_returns_notSet() async throws {
         // Given
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: nil,
@@ -44,7 +47,8 @@ struct PointOfSaleSettingsControllerTests {
     @Test func storeAddress_uses_injected_siteSettings() async throws {
         // Given
         let siteSettings = makeSampleSiteSettings()
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -59,7 +63,8 @@ struct PointOfSaleSettingsControllerTests {
 
     @Test func connectedCardReader_initially_nil() async throws {
         // Given
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -75,7 +80,8 @@ struct PointOfSaleSettingsControllerTests {
     @Test func cardReader_observation_updates_connectedCardReader() async throws {
         // Given
         let mockService = MockCardPresentPaymentService()
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -99,7 +105,8 @@ struct PointOfSaleSettingsControllerTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "10.0.0",
                                                                                active: true))
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -118,7 +125,8 @@ struct PointOfSaleSettingsControllerTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "9.9.0",
                                                                                active: true))
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -137,7 +145,8 @@ struct PointOfSaleSettingsControllerTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "10.0.0",
                                                                                active: false))
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -153,7 +162,8 @@ struct PointOfSaleSettingsControllerTests {
     @Test func retrievePOSReceiptSettings_when_no_plugin_then_shouldShowReceiptInformation_returns_false() async throws {
         // Given
         mockPluginService.setMockPlugin(.wooCommerce, systemPlugin: nil)
-        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
@@ -194,7 +204,6 @@ struct PointOfSaleSettingsControllerTests {
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     var retrievePointOfSaleSettingsWasCalled = false
     var retrievePointOfSaleSettingsResult: Result<[Yosemite.SiteSetting], Error> = .success([])
-    let siteID: Int64 = 123
 
     func retrievePointOfSaleSettings() async throws -> [Yosemite.SiteSetting] {
         retrievePointOfSaleSettingsWasCalled = true

@@ -24,7 +24,6 @@ struct POSReceiptInformation {
 
 protocol PointOfSaleSettingsControllerProtocol {
     var receiptInformation: POSReceiptInformation { get }
-    var isLoading: Bool { get }
     var shouldShowReceiptInformation: Bool { get }
     var storeName: String { get }
     var storeAddress: String { get }
@@ -36,7 +35,6 @@ protocol PointOfSaleSettingsControllerProtocol {
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
     private(set) var receiptInformation = POSReceiptInformation.empty
-    private(set) var isLoading: Bool = false
     private(set) var shouldShowReceiptInformation: Bool = false
 
     private let siteID: Int64
@@ -91,11 +89,9 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     @MainActor
     func retrievePOSReceiptSettings() async {
-        isLoading = true
         shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: Constants.minimumWooCommerceVersion)
 
         guard shouldShowReceiptInformation else {
-            isLoading = false
             return
         }
         do {
@@ -104,7 +100,6 @@ protocol PointOfSaleSettingsControllerProtocol {
         } catch {
             DDLogError("Failed to load POS settings: \(error)")
         }
-        isLoading = false
     }
 
     @MainActor
@@ -158,7 +153,6 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
         email: "store@example.com",
         refundReturnsPolicy: "30-day return policy"
     )
-    var isLoading: Bool = false
     var shouldShowReceiptInformation: Bool = true
     var storeName: String = "Sample Store"
 

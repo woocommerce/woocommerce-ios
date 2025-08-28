@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
+    @State private var isLoading: Bool = false
+
     let settingsController: PointOfSaleSettingsControllerProtocol
 
     var body: some View {
@@ -63,19 +65,62 @@ struct PointOfSaleSettingsStoreDetailView: View {
                 }
                 .renderedIf(settingsController.shouldShowReceiptInformation)
             }
+            .task {
+                isLoading = true
+                await settingsController.retrievePOSReceiptSettings()
+                isLoading = false
+            }
         }
     }
 
     @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
-        if settingsController.isLoading {
-            ProgressView()
-                .font(.posBodyLargeRegular())
+        if isLoading {
+            GhostSettingRowView()
         } else {
             Text(value ?? Localization.notSet)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+// Temporary: Simplified copy from PointOfSaleOrderListView.GhostOrderRowView
+private struct GhostSettingRowView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    private var minHeight: CGFloat {
+        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 70, height: 16)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shimmering()
+
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 160, height: 14)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shimmering()
+            }
+        }
+        .padding(.horizontal, POSPadding.medium * (1 / scale))
+        .padding(.vertical, POSPadding.medium * (1 / scale))
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .geometryGroup()
+    }
+    
+    private enum Constants {
+        static let orderCardMinHeight: CGFloat = 90
+        static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     }
 }
 

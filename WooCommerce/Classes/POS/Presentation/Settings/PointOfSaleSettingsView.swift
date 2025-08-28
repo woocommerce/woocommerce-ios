@@ -15,9 +15,6 @@ struct PointOfSaleSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .task {
-                await settingsController.retrievePOSReceiptSettings()
-            }
         }
     }
 }

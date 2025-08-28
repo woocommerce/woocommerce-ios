@@ -80,7 +80,7 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNil(storage.applicationPassword)
-        XCTAssertEqual(mockSession.requestCount, 1)
+        XCTAssertEqual(mockSession.requestCount, 2)
         XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL(for: deleteUUID))
         XCTAssertEqual(mockSession.lastRequest?.httpMethod, "DELETE")
         XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Basic dGVzdHVzZXI6c2VjcmV0")
@@ -117,7 +117,7 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         simulateIntrospectResponse(uuid: deleteUUID)
         simulateDeleteResponse(for: deleteUUID)
 
-        let password = createTestPassword(uuid: "original-uuid")
+        let password = createTestPassword(username: username, password: passwordValue, uuid: "original-uuid")
         let sut = createSUT(password: password)
 
         // When

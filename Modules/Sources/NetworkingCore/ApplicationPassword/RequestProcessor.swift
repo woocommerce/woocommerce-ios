@@ -1,6 +1,10 @@
 import Alamofire
 import Foundation
 
+protocol RequestProcessorDelegate: AnyObject {
+    func didFailToAuthenticateRequestWithApplicationPassword()
+}
+
 /// Authenticates and retries requests
 ///
 final class RequestProcessor: RequestInterceptor {
@@ -12,14 +16,12 @@ final class RequestProcessor: RequestInterceptor {
 
     private let notificationCenter: NotificationCenter
 
-    private let onApplicationPasswordGenerationFailure: (() -> Void)?
+    weak var delegate: RequestProcessorDelegate?
 
     init(requestAuthenticator: RequestAuthenticator,
-         notificationCenter: NotificationCenter = .default,
-         onApplicationPasswordGenerationFailure: (() -> Void)? = nil) {
+         notificationCenter: NotificationCenter = .default) {
         self.requestAuthenticator = requestAuthenticator
         self.notificationCenter = notificationCenter
-        self.onApplicationPasswordGenerationFailure = onApplicationPasswordGenerationFailure
     }
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
@@ -90,7 +92,7 @@ private extension RequestProcessor {
                 case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
                     /// Site doesn't support application password
                     completeRequests(false)
-                    onApplicationPasswordGenerationFailure?()
+                    delegate?.didFailToAuthenticateRequestWithApplicationPassword()
                 default:
                     completeRequests(false)
                 }

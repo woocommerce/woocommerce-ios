@@ -34,6 +34,8 @@ public class AlamofireNetwork: Network {
 
     private let selectedSite: AnyPublisher<JetpackSite?, Never>?
 
+    private let userDefaults: UserDefaults
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
     private var requestConverter: RequestConverter
@@ -51,9 +53,11 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil) {
         self.credentials = credentials
         self.selectedSite = selectedSite
+        self.userDefaults = userDefaults
         self.requestConverter = {
             let siteAddress: String? = {
                 switch credentials {
@@ -75,11 +79,12 @@ public class AlamofireNetwork: Network {
 
     public func updateAppPasswordSwitching(enabled: Bool) {
         guard let credentials, case .wpcom = credentials else { return }
-        if enabled, let selectedSite {
+        if enabled, let selectedSite, !userDefaults.applicationPasswordUnsupported {
             observeSelectedSite(selectedSite)
         } else {
             requestConverter = RequestConverter(siteAddress: nil)
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+            requestAuthenticator.delegate = nil
         }
     }
 
@@ -193,11 +198,13 @@ private extension AlamofireNetwork {
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
         subscription = selectedSite
             .removeDuplicates()
-            .sink { [weak self] site in
+            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupported))
+            .sink { [weak self] site, appPasswordUnsupported in
                 guard let self else { return }
-                guard let site, site.applicationPasswordAvailable else {
+                guard let site, site.applicationPasswordAvailable, !appPasswordUnsupported else {
                     requestConverter = RequestConverter(siteAddress: nil)
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    requestAuthenticator.delegate = nil
                     return
                 }
                 requestConverter = RequestConverter(siteAddress: site.siteAddress)
@@ -206,7 +213,16 @@ private extension AlamofireNetwork {
                     selectedSite: site,
                     network: self
                 ))
+                requestAuthenticator.delegate = self
             }
+    }
+}
+
+// MARK: `RequestProcessorDelegate` conformance
+//
+extension AlamofireNetwork: RequestProcessorDelegate {
+    func didFailToAuthenticateRequestWithApplicationPassword() {
+        userDefaults.applicationPasswordUnsupported = false
     }
 }
 
@@ -249,5 +265,18 @@ extension Alamofire.DataResponse {
             NetworkError(responseData: data,
                          statusCode: response.statusCode)
         }
+    }
+}
+
+// MARK: - Helper extension to save internal flag for app password availability
+//
+extension UserDefaults {
+    @objc dynamic var applicationPasswordUnsupported: Bool {
+        get { bool(forKey: Key.applicationPasswordUnsupported.rawValue) }
+        set { setValue(newValue, forKey: Key.applicationPasswordUnsupported.rawValue) }
+    }
+
+    enum Key: String {
+        case applicationPasswordUnsupported
     }
 }

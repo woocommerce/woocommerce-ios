@@ -24,6 +24,8 @@ struct CartView: View {
     private var shouldShowCoupons: Bool {
         posModel.cart.coupons.isNotEmpty
     }
+    
+    @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
         ZStack {
@@ -68,6 +70,9 @@ struct CartView: View {
                         .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                         .zIndex(1)
                 }
+            }
+            .posModal(isPresented: $showBarcodeScanningModal) {
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -126,13 +131,18 @@ private extension CartView {
 
 private extension CartView {
     enum Localization {
+        static let barcodeScanningSetup = NSLocalizedString(
+            "pos.cartView.cartTitle.barcodeScanningSetup.button",
+            value: "Scan barcode",
+            comment: "The title of the menu button to start a barcode scanner setup flow."
+        )
         static let cartTitle = NSLocalizedString(
             "pos.cartView.cartTitle",
             value: "Cart",
             comment: "Title at the header for the Cart view.")
         static let addItemsToCartHint = NSLocalizedString(
-            "pos.cartView.addItemsToCartHint",
-            value: "Tap on a product to \n add it to the cart",
+            "pos.cartView.addItemsToCartHint.1",
+            value: "Tap on a product to \n add it to the cart, or ",
             comment: "Hint to add products to the Cart when this is empty.")
         static let checkoutButtonTitle = NSLocalizedString(
             "pos.cartView.checkoutButtonTitle",
@@ -202,6 +212,18 @@ private extension CartView {
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+                Button(action: {
+                    showBarcodeScanningModal = true
+                }, label: {
+                    HStack {
+                        Text(Localization.barcodeScanningSetup)
+                            .font(Constants.secondaryFont)
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                })
+            }
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))

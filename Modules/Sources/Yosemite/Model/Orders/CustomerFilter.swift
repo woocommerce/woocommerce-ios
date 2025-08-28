@@ -10,7 +10,7 @@ public struct CustomerFilter: Codable, Hashable {
     public let username: String?
 
     public init(customer: Customer) {
-        self.id = customer.customerID
+        self.id = customer.userID
         self.firstName = customer.firstName
         self.lastName = customer.lastName
         self.email = customer.email

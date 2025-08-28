@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import struct Yosemite.SiteSetting
 import enum Yosemite.Plugin
 import class Yosemite.PluginsService
@@ -22,7 +23,6 @@ protocol PointOfSaleSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
 
     func retrievePOSReceiptSettings() async
-    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?)
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -38,17 +38,32 @@ protocol PointOfSaleSettingsControllerProtocol {
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let siteSettings: [SiteSetting]
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
+    private var cancellables: AnyCancellable?
 
     init(settingsService: PointOfSaleSettingsServiceProtocol,
+         cardPresentPaymentService: CardPresentPaymentFacade,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.settingsService = settingsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+
+        observeCardReader(from: cardPresentPaymentService)
     }
 
-    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?) {
-        connectedCardReader = cardReader
+    private func observeCardReader(from service: CardPresentPaymentFacade) {
+        cancellables = service.readerConnectionStatusPublisher
+            .sink(receiveValue: { [weak self] connectionStatus in
+                guard let self else { return }
+                let cardReader: CardPresentPaymentCardReader?
+                switch connectionStatus {
+                case .connected(let reader):
+                    cardReader = reader
+                default:
+                    cardReader = nil
+                }
+                connectedCardReader = cardReader
+            })
     }
 
     var storeName: String {
@@ -149,8 +164,5 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
         // no-op
     }
 
-    func updateCardReader(_ cardReader: CardPresentPaymentCardReader?) {
-        // no-op for preview
-    }
 }
 #endif

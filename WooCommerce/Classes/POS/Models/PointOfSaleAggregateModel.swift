@@ -133,7 +133,6 @@ protocol PointOfSaleAggregateModelProtocol {
         publishCardReaderConnectionStatus()
         publishPaymentMessages()
         setupReaderReconnectionObservation()
-        observeCardReaderForSettings()
     }
 }
 
@@ -324,21 +323,6 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    private func observeCardReaderForSettings() {
-        cardPresentPaymentService.readerConnectionStatusPublisher
-            .sink(receiveValue: { [weak self] connectionStatus in
-                guard let self else { return }
-                let cardReader: CardPresentPaymentCardReader?
-                switch connectionStatus {
-                case .connected(let reader):
-                    cardReader = reader
-                default:
-                    cardReader = nil
-                }
-                settingsController.updateCardReader(cardReader)
-            })
-            .store(in: &cancellables)
-    }
 
     /// Starts a payment immediately if a reader is connected.
     /// Otherwise, schedules a payment to start the next time a reader connects.

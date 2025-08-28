@@ -121,7 +121,8 @@ private extension POSTabCoordinator {
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
                                                                 receiptService: receiptService),
-                    settingsController: PointOfSaleSettingsController(settingsService: settingsService),
+                    settingsController: PointOfSaleSettingsController(settingsService: settingsService,
+                                                                      cardPresentPaymentService: cardPresentPaymentService),
                     collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

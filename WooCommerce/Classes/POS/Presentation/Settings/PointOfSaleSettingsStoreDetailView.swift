@@ -5,45 +5,64 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                Group {
+            List {
+                Section {
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.storeName)
+                            .font(.posBodyMediumRegular())
+                        Text(settingsController.storeName)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.address)
+                            .font(.posBodyMediumRegular())
+                        Text(settingsController.storeAddress)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                } header: {
                     Text(Localization.storeInformation)
                         .font(.posBodyLargeRegular())
-
-                    Text(Localization.storeName)
-                    Text(settingsController.storeName)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-
-                    Text(Localization.address)
-                    Text(settingsController.storeAddress)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
                 }
 
-                Group {
-                    Spacer()
+                Section {
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.receiptStoreName)
+                            .font(.posBodyMediumRegular())
+                        settingValueView(for: settingsController.receiptStoreName)
+                    }
+
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.physicalAddress)
+                            .font(.posBodyMediumRegular())
+                        settingValueView(for: settingsController.receiptStoreAddress)
+                    }
+
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.phoneNumber)
+                            .font(.posBodyMediumRegular())
+                        settingValueView(for: settingsController.receiptStorePhone)
+                    }
+
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.email)
+                            .font(.posBodyMediumRegular())
+                        settingValueView(for: settingsController.receiptStoreEmail)
+                    }
+
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.refundReturnsPolicy)
+                            .font(.posBodyMediumRegular())
+                        settingValueView(for: settingsController.receiptRefundReturnsPolicy)
+                    }
+                } header: {
                     Text(Localization.receiptInformation)
                         .font(.posBodyLargeRegular())
-                    Text(Localization.receiptStoreName)
-                    settingValueView(for: settingsController.receiptStoreName)
-
-                    Text(Localization.physicalAddress)
-                    settingValueView(for: settingsController.receiptStoreAddress)
-
-                    Text(Localization.phoneNumber)
-                    settingValueView(for: settingsController.receiptStorePhone)
-
-                    Text(Localization.email)
-                    settingValueView(for: settingsController.receiptStoreEmail)
-
-                    Text(Localization.refundReturnsPolicy)
-                    settingValueView(for: settingsController.receiptRefundReturnsPolicy)
-
                 }
                 .renderedIf(settingsController.shouldShowReceiptInformation)
             }
-            .padding()
         }
     }
 

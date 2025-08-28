@@ -26,8 +26,8 @@ struct CartView: View {
     }
 
     private var isPOSSettingsEnabled: Bool {
-           ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
-       }
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+    }
 
     @State private var showBarcodeScanningModal: Bool = false
 

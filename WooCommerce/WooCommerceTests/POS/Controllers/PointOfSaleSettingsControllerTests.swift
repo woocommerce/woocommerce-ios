@@ -1,4 +1,3 @@
-
 import Testing
 import Foundation
 @testable import WooCommerce
@@ -9,11 +8,13 @@ import Storage
 struct PointOfSaleSettingsControllerTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockStorageManager = MockStorageManager()
+    private let mockCardPresentPaymentService = MockCardPresentPaymentService()
 
     @Test func storeName_when_defaultSiteName_provided_then_returns_defaultSiteName() async throws {
         // Given
         let expectedStoreName = "My Test Store"
         let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockCardPresentPaymentService,
                                                 defaultSiteName: expectedStoreName,
                                                 siteSettings: [])
 
@@ -27,6 +28,7 @@ struct PointOfSaleSettingsControllerTests {
     @Test func storeName_when_defaultSiteName_nil_then_returns_notSet() async throws {
         // Given
         let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockCardPresentPaymentService,
                                                 defaultSiteName: nil,
                                                 siteSettings: [])
 
@@ -41,6 +43,7 @@ struct PointOfSaleSettingsControllerTests {
         // Given
         let siteSettings = makeSampleSiteSettings()
         let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockCardPresentPaymentService,
                                                 defaultSiteName: "Test Store",
                                                 siteSettings: siteSettings)
 
@@ -50,6 +53,41 @@ struct PointOfSaleSettingsControllerTests {
         // Then: address should be constructed from site settings, not empty
         #expect(!storeAddress.isEmpty)
     }
+
+    @Test func connectedCardReader_initially_nil() async throws {
+        // Given
+        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockCardPresentPaymentService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [])
+
+        // When
+        let cardReader = sut.connectedCardReader
+
+        // Then
+        #expect(cardReader == nil)
+    }
+
+    @Test func cardReader_observation_updates_connectedCardReader() async throws {
+        // Given
+        let mockService = MockCardPresentPaymentService()
+        let sut = PointOfSaleSettingsController(settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [])
+
+        // Initially nil
+        #expect(sut.connectedCardReader == nil)
+
+        // When
+        let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.75)
+        mockService.connectedReader = cardReader
+
+        // Then
+        #expect(sut.connectedCardReader?.name == "WisePad 3")
+        #expect(sut.connectedCardReader?.batteryLevel == 0.75)
+    }
+
 
     private func makeSampleSiteSettings() -> [Yosemite.SiteSetting] {
         return [
@@ -105,7 +143,10 @@ final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProt
         "123 Main Street\nAnytown, ST 12345"
     }
 
+    var connectedCardReader: CardPresentPaymentCardReader? = nil
+
     func retrievePOSReceiptSettings() async {
         // no-op
     }
+
 }

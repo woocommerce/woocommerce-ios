@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 import struct Yosemite.SiteSetting
 import enum Yosemite.Plugin
 import class Yosemite.PluginsService
@@ -19,6 +20,8 @@ protocol PointOfSaleSettingsControllerProtocol {
     var storeName: String { get }
     var storeAddress: String { get }
 
+    var connectedCardReader: CardPresentPaymentCardReader? { get }
+
     func retrievePOSReceiptSettings() async
 }
 
@@ -34,13 +37,33 @@ protocol PointOfSaleSettingsControllerProtocol {
     private let defaultSiteName: String?
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let siteSettings: [SiteSetting]
+    private(set) var connectedCardReader: CardPresentPaymentCardReader?
+    private var cancellables: AnyCancellable?
 
     init(settingsService: PointOfSaleSettingsServiceProtocol,
+         cardPresentPaymentService: CardPresentPaymentFacade,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.settingsService = settingsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+
+        observeCardReader(from: cardPresentPaymentService)
+    }
+
+    private func observeCardReader(from service: CardPresentPaymentFacade) {
+        cancellables = service.readerConnectionStatusPublisher
+            .sink(receiveValue: { [weak self] connectionStatus in
+                guard let self else { return }
+                let cardReader: CardPresentPaymentCardReader?
+                switch connectionStatus {
+                case .connected(let reader):
+                    cardReader = reader
+                default:
+                    cardReader = nil
+                }
+                connectedCardReader = cardReader
+            })
     }
 
     var storeName: String {
@@ -128,6 +151,11 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     var shouldShowReceiptInformation: Bool = true
     var storeName: String = "Sample Store"
 
+    var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
+        name: "WisePad 3",
+        batteryLevel: 0.75
+    )
+
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"
     }
@@ -135,5 +163,6 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     func retrievePOSReceiptSettings() async {
         // no-op
     }
+
 }
 #endif

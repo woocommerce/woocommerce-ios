@@ -20,6 +20,7 @@ extension Customer {
     @NSManaged public var billingPostcode: String?
     @NSManaged public var billingState: String?
     @NSManaged public var customerID: Int64
+    @NSManaged public var userID: Int64
     @NSManaged public var email: String?
     @NSManaged public var username: String?
     @NSManaged public var firstName: String?

@@ -442,6 +442,7 @@ extension Networking.Customer {
     public static func fake() -> Networking.Customer {
         .init(
             siteID: .fake(),
+            userID: .fake(),
             customerID: .fake(),
             email: .fake(),
             username: .fake(),

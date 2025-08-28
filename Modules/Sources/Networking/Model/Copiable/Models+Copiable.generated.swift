@@ -637,6 +637,7 @@ extension Networking.CreateProductVariation {
 extension Networking.Customer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
         email: CopiableProp<String> = .copy,
         username: NullableCopiableProp<String> = .copy,
@@ -646,6 +647,7 @@ extension Networking.Customer {
         shipping: NullableCopiableProp<Address> = .copy
     ) -> Networking.Customer {
         let siteID = siteID ?? self.siteID
+        let userID = userID ?? self.userID
         let customerID = customerID ?? self.customerID
         let email = email ?? self.email
         let username = username ?? self.username
@@ -656,6 +658,7 @@ extension Networking.Customer {
 
         return Networking.Customer(
             siteID: siteID,
+            userID: userID,
             customerID: customerID,
             email: email,
             username: username,

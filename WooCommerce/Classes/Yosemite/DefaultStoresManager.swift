@@ -176,7 +176,10 @@ class DefaultStoresManager: StoresManager {
         applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
                                                                                       object: nil,
                                                                                       queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
+            guard let self else { return }
+            if isAuthenticatedWithoutWPCom {
+                deauthenticate()
+            }
         }
     }
 

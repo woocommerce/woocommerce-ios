@@ -12,10 +12,14 @@ final class RequestProcessor: RequestInterceptor {
 
     private let notificationCenter: NotificationCenter
 
+    private let onApplicationPasswordGenerationFailure: (() -> Void)?
+
     init(requestAuthenticator: RequestAuthenticator,
-         notificationCenter: NotificationCenter = .default) {
+         notificationCenter: NotificationCenter = .default,
+         onApplicationPasswordGenerationFailure: (() -> Void)? = nil) {
         self.requestAuthenticator = requestAuthenticator
         self.notificationCenter = notificationCenter
+        self.onApplicationPasswordGenerationFailure = onApplicationPasswordGenerationFailure
     }
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
@@ -67,12 +71,29 @@ private extension RequestProcessor {
 
                 completeRequests(true)
             } catch {
-                isAuthenticating = false
+                defer {
+                    isAuthenticating = false
+                }
 
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                completeRequests(false)
+                switch error {
+                case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409)):
+                    /// Password with the same name already exists. Request deletion remotely and retry.
+                    do {
+                        try await requestAuthenticator.deleteApplicationPassword()
+                        generateApplicationPassword()
+                    } catch {
+                        completeRequests(false)
+                    }
+                case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
+                    /// Site doesn't support application password
+                    completeRequests(false)
+                    onApplicationPasswordGenerationFailure?()
+                default:
+                    completeRequests(false)
+                }
             }
         }
     }

@@ -21,6 +21,10 @@ protocol RequestAuthenticator {
     ///
     func generateApplicationPassword() async throws
 
+    /// Delete existing application password remotely
+    ///
+    func deleteApplicationPassword() async throws
+
     /// Checks whether the given URLRequest is eligible for retyring
     ///
     func shouldRetry(_ urlRequest: URLRequest) -> Bool
@@ -105,6 +109,13 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
+    }
+
+    func deleteApplicationPassword() async throws {
+        guard let applicationPasswordUseCase else {
+            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+        }
+        try await applicationPasswordUseCase.deletePassword(locally: false)
     }
 
     /// Checks whether the given URLRequest is eligible for retyring

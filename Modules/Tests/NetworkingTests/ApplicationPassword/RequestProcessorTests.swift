@@ -333,6 +333,10 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         }
     }
 
+    func deleteApplicationPassword() async throws {
+        fatalError("Not implemented")
+    }
+
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
         mockedShouldRetryValue ?? true
     }

@@ -2,12 +2,9 @@ import Foundation
 import Combine
 import struct Yosemite.SiteSetting
 import enum Yosemite.Plugin
-import class Yosemite.PluginsService
-import Observation
-
+import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
-import class Yosemite.PointOfSaleSettingsService
-import Storage
+import Observation
 
 protocol PointOfSaleSettingsControllerProtocol {
     var receiptStoreName: String? { get }
@@ -36,15 +33,18 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     private let defaultSiteName: String?
     private let settingsService: PointOfSaleSettingsServiceProtocol
+    private let pluginsService: PluginsServiceProtocol
     private let siteSettings: [SiteSetting]
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
     init(settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
+         pluginsService: PluginsServiceProtocol,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.settingsService = settingsService
+        self.pluginsService = pluginsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
 
@@ -81,14 +81,12 @@ protocol PointOfSaleSettingsControllerProtocol {
     @MainActor
     func retrievePOSReceiptSettings() async {
         isLoading = true
-
         shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: Constants.minimumWooCommerceVersion)
 
         guard shouldShowReceiptInformation else {
             isLoading = false
             return
         }
-
         do {
             let siteSettings = try await settingsService.retrievePointOfSaleSettings()
             updateReceiptSettings(from: siteSettings)
@@ -100,9 +98,7 @@ protocol PointOfSaleSettingsControllerProtocol {
 
     @MainActor
     private func isPluginSupported(_ plugin: Plugin,
-                                   storageManager: StorageManagerType = ServiceLocator.storageManager,
                                    minimumVersion: String) async -> Bool {
-        let pluginsService = PluginsService(storageManager: storageManager)
         guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: settingsService.siteID, plugin: plugin, isActive: true), systemPlugin.active else {
             return false
         }
@@ -163,6 +159,5 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     func retrievePOSReceiptSettings() async {
         // no-op
     }
-
 }
 #endif

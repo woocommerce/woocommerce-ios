@@ -7,6 +7,7 @@ struct V001InitialSchema {
     // TODO: Mark this as final when we enable the pointOfSaleLocalCatalogi1 feature flag
 
     static func migrate(_ db: Database) throws {
+        try createSiteTable(db)
         try createProductTable(db)
         try createProductAttributeTable(db)
         try createProductImageTable(db)
@@ -15,15 +16,19 @@ struct V001InitialSchema {
         try createProductVariationImageTable(db)
     }
 
+    static func createSiteTable(_ db: Database) throws {
+        try db.create(table: "site") { siteTable in
+            siteTable.primaryKey("id", .integer).notNull()
+        }
+    }
+
     static func createProductTable(_ db: Database) throws {
         // Note that it's best to use strings for names in the database
         // not derive them from a Swift class.
         // https://swiftpackageindex.com/groue/grdb.swift/v7.6.1/documentation/grdb/migrations#Good-Practices-for-Defining-Migrations
         try db.create(table: "product") { productTable in
-            productTable.primaryKey(["siteID", "productID"])
-
-            productTable.column("siteID", .integer).notNull()
-            productTable.column("productID", .integer).notNull()
+            productTable.primaryKey("id", .integer).notNull()
+            productTable.belongsTo("site", onDelete: .cascade).notNull()
 
             productTable.column("name", .text).notNull()
             productTable.column("productTypeKey", .text).notNull()
@@ -43,29 +48,22 @@ struct V001InitialSchema {
 
     private static func createProductAttributeTable(_ db: Database) throws {
         try db.create(table: "productAttribute") { productAttributeTable in
-            productAttributeTable.primaryKey(["siteID", "attributeID"])
-
-            productAttributeTable.column("siteID", .integer).notNull()
-            productAttributeTable.column("attributeID", .integer).notNull()
-            productAttributeTable.column("productID", .integer).notNull()
+            // This table holds local product attributes only. Global attributes belong to a site.
+            productAttributeTable.autoIncrementedPrimaryKey("id").notNull()
+            productAttributeTable.belongsTo("product", onDelete: .cascade).notNull()
 
             productAttributeTable.column("name", .text).notNull()
             productAttributeTable.column("position", .integer).notNull()
             productAttributeTable.column("visible", .boolean).notNull()
             productAttributeTable.column("variation", .boolean).notNull()
             productAttributeTable.column("options", .jsonText).notNull()
-
-            productAttributeTable.foreignKey(["siteID", "productID"], references: "product")
         }
     }
 
     private static func createProductImageTable(_ db: Database) throws {
         try db.create(table: "productImage") { productImageTable in
-            productImageTable.primaryKey(["siteID", "imageID"])
-
-            productImageTable.column("siteID", .integer).notNull()
-            productImageTable.column("imageID", .integer).notNull()
-            productImageTable.column("productID", .integer).notNull()
+            productImageTable.primaryKey("id", .integer).notNull()
+            productImageTable.belongsTo("product", onDelete: .cascade).notNull()
 
             productImageTable.column("dateCreated", .datetime).notNull()
             productImageTable.column("dateModified", .datetime)
@@ -73,18 +71,14 @@ struct V001InitialSchema {
             productImageTable.column("src", .text).notNull()
             productImageTable.column("name", .text)
             productImageTable.column("alt", .text)
-
-            productImageTable.foreignKey(["siteID", "productID"], references: "product")
         }
     }
 
     private static func createProductVariationTable(_ db: Database) throws {
         try db.create(table: "productVariation") { productVariationTable in
-            productVariationTable.primaryKey(["siteID", "productVariationID"])
-
-            productVariationTable.column("siteID", .integer).notNull()
-            productVariationTable.column("productVariationID", .integer).notNull()
-            productVariationTable.column("productID", .integer).notNull()
+            productVariationTable.primaryKey("id", .integer).notNull()
+            productVariationTable.belongsTo("site", onDelete: .cascade).notNull()
+            productVariationTable.belongsTo("product", onDelete: .cascade).notNull()
 
             productVariationTable.column("sku", .text)
             productVariationTable.column("globalUniqueID", .text)
@@ -92,34 +86,25 @@ struct V001InitialSchema {
 
             productVariationTable.column("downloadable", .boolean).notNull()
 
-            productVariationTable.column("description", .text)
-
-            productVariationTable.foreignKey(["siteID", "productID"], references: "product")
+            productVariationTable.column("fullDescription", .text)
         }
     }
 
     private static func createProductVariationAttributeTable(_ db: Database) throws {
         try db.create(table: "productVariationAttribute") { productVariationAttributeTable in
-            productVariationAttributeTable.primaryKey(["siteID", "attributeID"])
-
-            productVariationAttributeTable.column("siteID", .integer).notNull()
-            productVariationAttributeTable.column("productVariationID", .integer).notNull()
-            productVariationAttributeTable.column("attributeID", .integer).notNull()
+            // This table holds local variation attributes only. Global attributes belong to a site.
+            productVariationAttributeTable.autoIncrementedPrimaryKey("id").notNull()
+            productVariationAttributeTable.belongsTo("productVariation", onDelete: .cascade).notNull()
 
             productVariationAttributeTable.column("name", .text).notNull()
             productVariationAttributeTable.column("option", .text).notNull()
-
-            productVariationAttributeTable.foreignKey(["siteID", "productVariationID"], references: "productVariation")
         }
     }
 
     private static func createProductVariationImageTable(_ db: Database) throws {
         try db.create(table: "productVariationImage") { productVariationImageTable in
-            productVariationImageTable.primaryKey(["siteID", "imageID"])
-
-            productVariationImageTable.column("siteID", .integer).notNull()
-            productVariationImageTable.column("imageID", .integer).notNull()
-            productVariationImageTable.column("productVariationID", .integer).notNull()
+            productVariationImageTable.primaryKey("id", .integer).notNull()
+            productVariationImageTable.belongsTo("productVariation").notNull()
 
             productVariationImageTable.column("dateCreated", .datetime).notNull()
             productVariationImageTable.column("dateModified", .datetime)
@@ -127,8 +112,6 @@ struct V001InitialSchema {
             productVariationImageTable.column("src", .text).notNull()
             productVariationImageTable.column("name", .text)
             productVariationImageTable.column("alt", .text)
-
-            productVariationImageTable.foreignKey(["siteID", "productVariationID"], references: "productVariation")
         }
     }
 }

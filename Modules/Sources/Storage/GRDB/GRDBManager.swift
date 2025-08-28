@@ -2,7 +2,6 @@ import Foundation
 import GRDB
 
 public protocol GRDBManagerProtocol {
-    init(databasePath: String) throws
     var databaseConnection: GRDBDatabaseConnection { get }
 }
 
@@ -11,11 +10,8 @@ public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
 public final class GRDBManager: GRDBManagerProtocol {
 
     public var databaseConnection: GRDBDatabaseConnection
-    private let databasePath: String
 
     public init(databasePath: String) throws {
-        self.databasePath = databasePath
-
         let databaseURL = URL(fileURLWithPath: databasePath)
         let directoryURL = databaseURL.deletingLastPathComponent()
 
@@ -26,8 +22,8 @@ public final class GRDBManager: GRDBManagerProtocol {
         try migrateIfNeeded()
     }
 
+    // Creates an in-memory database, intended for use in tests.
     init() throws {
-        self.databasePath = "in-memory"
         self.databaseConnection = try DatabaseQueue()
         try migrateIfNeeded()
     }

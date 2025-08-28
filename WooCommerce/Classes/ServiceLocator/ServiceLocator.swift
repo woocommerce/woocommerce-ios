@@ -446,6 +446,7 @@ extension ServiceLocator {
         _productImageUploader = mock
     }
 
+    // periphery: ignore – for use in future tests.
     static func setGRDBManager(_ testInstance: GRDBManagerProtocol) {
         guard isRunningTests() else {
             return

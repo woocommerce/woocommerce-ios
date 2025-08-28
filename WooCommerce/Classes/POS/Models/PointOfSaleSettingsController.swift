@@ -115,8 +115,6 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
-    let siteID: Int64 = 123
-
     func retrievePointOfSaleSettings() async throws -> [SiteSetting] {
         return []
     }

@@ -36,16 +36,10 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     }
 
     public func deletePassword(locally: Bool) async throws {
-        let uuidToBeDeleted: String? = try await {
-            if locally, let uuid = storage.applicationPassword?.uuid {
-                return uuid
-            } else {
-                return try await self.fetchApplicationPasswordUUID()
-            }
-        }()
-
-        guard let uuidToBeDeleted,
-              let url = URL(string: siteAddress + Path.applicationPasswords + uuidToBeDeleted) else {
+        /// Always fetch UUID because the one in storage was generated locally only.
+        /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
+        guard let uuid = try await fetchApplicationPasswordUUID(),
+              let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
             return
         }
 

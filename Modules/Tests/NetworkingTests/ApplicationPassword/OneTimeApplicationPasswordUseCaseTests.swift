@@ -65,11 +65,11 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
 
     func test_deletePassword_locally_true_removes_from_storage_and_calls_api() async throws {
         // Given
-        let uuid = "test-uuid-123"
-        let password = createTestPassword(uuid: uuid)
+        let deleteUUID = "fetched-uuid-456"
+        simulateIntrospectResponse(uuid: deleteUUID)
+        simulateDeleteResponse(for: deleteUUID)
 
-        simulateDeleteResponse(for: uuid)
-
+        let password = createTestPassword(uuid: "original-uuid")
         let sut = createSUT(password: password)
 
         // Verify password is initially present
@@ -81,7 +81,7 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         // Then
         XCTAssertNil(storage.applicationPassword)
         XCTAssertEqual(mockSession.requestCount, 1)
-        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL(for: uuid))
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL(for: deleteUUID))
         XCTAssertEqual(mockSession.lastRequest?.httpMethod, "DELETE")
         XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Basic dGVzdHVzZXI6c2VjcmV0")
     }
@@ -111,12 +111,13 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
 
     func test_deletePassword_sets_correct_authorization_header() async throws {
         // Given
-        let uuid = "auth-test-uuid"
         let username = "testuser"
         let passwordValue = "testpassword"
-        simulateDeleteResponse(for: uuid)
+        let deleteUUID = "fetched-uuid-456"
+        simulateIntrospectResponse(uuid: deleteUUID)
+        simulateDeleteResponse(for: deleteUUID)
 
-        let password = createTestPassword(username: username, password: passwordValue, uuid: uuid)
+        let password = createTestPassword(uuid: "original-uuid")
         let sut = createSUT(password: password)
 
         // When

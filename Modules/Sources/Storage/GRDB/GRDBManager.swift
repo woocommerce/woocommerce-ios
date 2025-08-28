@@ -1,6 +1,8 @@
 import Foundation
 import GRDB
 
+// TODO: remove ignore when we start using this
+// periphery: ignore
 public final class GRDBManager {
 
     let databaseQueue: DatabaseQueue
@@ -26,6 +28,8 @@ public final class GRDBManager {
     }
 }
 
+// TODO: remove ignore when we start using this
+// periphery: ignore
 private extension GRDBManager {
     func migrateIfNeeded() throws {
         var migrator = DatabaseMigrator()

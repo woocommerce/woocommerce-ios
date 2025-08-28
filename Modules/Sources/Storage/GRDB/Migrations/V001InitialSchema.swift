@@ -1,8 +1,6 @@
 import Foundation
 import GRDB
 
-// TODO: remove ignore when we start using this
-// periphery: ignore
 struct V001InitialSchema {
     // This migration is under development and not released yet.
     // It's still open for modification, until we ship.

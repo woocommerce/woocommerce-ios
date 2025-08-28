@@ -3468,6 +3468,70 @@ final class MigrationTests: XCTestCase {
         let urlValue = migratedObject.value(forKey: "addPaymentMethodURL") as? String
         XCTAssertEqual(urlValue, "https://example.com")
     }
+
+    func test_migrating_from_124_to_125_adds_userID_to_Customer_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 124")
+        let sourceContext = sourceContainer.viewContext
+
+        // Create a customer in the source model (Model 124)
+        let object = sourceContext.insert(entityName: "Customer", properties: [
+            "siteID": 123,
+            "customerID": 456,
+            "email": "test@example.com",
+            "firstName": "John",
+            "lastName": "Doe",
+            "username": "johndoe"
+        ])
+
+        try sourceContext.save()
+
+        XCTAssertEqual(try sourceContext.count(entityName: "Customer"), 1)
+
+        // Verify the customer exists and has the expected properties
+        let sourceCustomer = try XCTUnwrap(sourceContext.allObjects(entityName: "Customer").first)
+        XCTAssertEqual(sourceCustomer.value(forKey: "siteID") as? Int64, 123)
+        XCTAssertEqual(sourceCustomer.value(forKey: "customerID") as? Int64, 456)
+        XCTAssertEqual(sourceCustomer.value(forKey: "email") as? String, "test@example.com")
+
+        // Verify userID field doesn't exist in Model 124
+        XCTAssertNil(object.entity.attributesByName["userID"], "Precondition. Attribute does not exist.")
+
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 125")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        XCTAssertEqual(try targetContext.count(entityName: "Customer"), 1)
+
+        let migratedCustomer = try XCTUnwrap(targetContext.allObjects(entityName: "Customer").first)
+
+        // Verify existing fields are preserved
+        XCTAssertEqual(migratedCustomer.value(forKey: "siteID") as? Int64, 123)
+        XCTAssertEqual(migratedCustomer.value(forKey: "customerID") as? Int64, 456)
+        XCTAssertEqual(migratedCustomer.value(forKey: "email") as? String, "test@example.com")
+        XCTAssertEqual(migratedCustomer.value(forKey: "firstName") as? String, "John")
+        XCTAssertEqual(migratedCustomer.value(forKey: "lastName") as? String, "Doe")
+        XCTAssertEqual(migratedCustomer.value(forKey: "username") as? String, "johndoe")
+
+        // Verify new userID field exists and has default value
+        XCTAssertEqual(migratedCustomer.value(forKey: "userID") as? Int64, 0)
+
+        // Verify we can set and retrieve the new userID field
+        migratedCustomer.setValue(789, forKey: "userID")
+        XCTAssertEqual(migratedCustomer.value(forKey: "userID") as? Int64, 789)
+    }
+
+
+    @discardableResult
+    func insertWooShippingOriginAddress(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "WooShippingOriginAddress", properties: [
+            "siteID": 1,
+            "id": "test-address"
+        ])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -4382,14 +4446,6 @@ private extension MigrationTests {
         context.insert(entityName: "WooShippingShipmentItem", properties: [
             "id": 4,
             "subItems": ["sub_1", "sub_2"]
-        ])
-    }
-
-    @discardableResult
-    func insertWooShippingOriginAddress(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "WooShippingOriginAddress", properties: [
-            "siteID": 1,
-            "id": "test-address"
         ])
     }
 }

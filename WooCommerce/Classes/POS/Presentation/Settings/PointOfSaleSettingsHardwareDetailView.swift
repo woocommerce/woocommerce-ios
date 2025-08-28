@@ -73,7 +73,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             List {
                 VStack(spacing: POSPadding.xSmall) {
                     HStack {
-                        Text("Model")
+                        Text(Localization.readerModelTitle)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.primary)
                         Spacer()
@@ -83,7 +83,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     }
                     .padding()
                     HStack {
-                        Text("Battery")
+                        Text(Localization.readerBatteryTitle)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.primary)
                         Spacer()
@@ -217,6 +217,18 @@ extension PointOfSaleSettingsHardwareDetailView {
 
 private extension PointOfSaleSettingsHardwareDetailView {
     enum Localization {
+        static let readerModelTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
+            value: "Model",
+            comment: "Text displayed on Point of Sale settings pointing to the card reader model."
+        )
+
+        static let readerBatteryTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle",
+            value: "Battery",
+            comment: "Text displayed on Point of Sale settings pointing to the card reader battery."
+        )
+
         static let cardReaderNotSet = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReaderNotSet",
             value: "Not set",

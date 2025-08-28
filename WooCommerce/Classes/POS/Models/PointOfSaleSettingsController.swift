@@ -114,7 +114,7 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     }
 }
 
-private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
+final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
 
     func retrievePointOfSaleSettings() async throws -> [SiteSetting] {
@@ -122,7 +122,7 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
     }
 }
 
-private final class PluginsServicePreview: PluginsServiceProtocol {
+final class PluginsServicePreview: PluginsServiceProtocol {
     func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
         return SystemPlugin(siteID: 1234,
                             plugin: "",

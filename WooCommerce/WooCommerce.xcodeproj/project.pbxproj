@@ -1603,6 +1603,7 @@
 		6856DE479EC3B2265AC1F775 /* Calendar+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D66A1963092C34D20674 /* Calendar+Extensions.swift */; };
 		6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D1A5F72A36AB3704D19D /* AgeTests.swift */; };
 		685A305F2E608F2D001E667B /* StoreSettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685A305E2E608F29001E667B /* StoreSettingsViewModelTests.swift */; };
+		685A30612E60908C001E667B /* StoreSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685A30602E60908B001E667B /* StoreSettingsViewModel.swift */; };
 		68600A8F2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */; };
 		68600A912C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */; };
 		68625DE62D4134D70042B231 /* DynamicVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68625DE52D4134D50042B231 /* DynamicVStack.swift */; };
@@ -4791,6 +4792,7 @@
 		6856D7981E11F85D5E4EFED7 /* NSMutableAttributedStringHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSMutableAttributedStringHelperTests.swift; sourceTree = "<group>"; };
 		6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProviderTests.swift; sourceTree = "<group>"; };
 		685A305E2E608F29001E667B /* StoreSettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSettingsViewModelTests.swift; sourceTree = "<group>"; };
+		685A30602E60908B001E667B /* StoreSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreSettingsViewModel.swift; sourceTree = "<group>"; };
 		68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListErrorView.swift; sourceTree = "<group>"; };
 		68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListEmptyView.swift; sourceTree = "<group>"; };
 		68625DE52D4134D50042B231 /* DynamicVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicVStack.swift; sourceTree = "<group>"; };
@@ -9959,6 +9961,7 @@
 			children = (
 				683D41172E4D9B570024CFE4 /* PointOfSaleSettingsView.swift */,
 				68707A1A2E570F2200500CD8 /* PointOfSaleSettingsStoreDetailView.swift */,
+				685A30602E60908B001E667B /* StoreSettingsViewModel.swift */,
 				68707A182E570F0000500CD8 /* PointOfSaleSettingsHelpDetailView.swift */,
 				68707A162E570EB000500CD8 /* PointOfSaleSettingsHardwareDetailView.swift */,
 			);
@@ -15297,6 +15300,7 @@
 				09BE3A8E27C91E730070B69D /* BulkUpdatePriceSettingsViewModel.swift in Sources */,
 				02FFDDC62A31A73D000F5F1C /* WooAnalyticsEvent+Blaze.swift in Sources */,
 				03B9E5212A13971F005C77F5 /* TapToPayReconnectionController.swift in Sources */,
+				685A30612E60908C001E667B /* StoreSettingsViewModel.swift in Sources */,
 				26D1E9E82949818B00A7DC62 /* AnalyticsHubTimeRageAdapter.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				02667A1C2AC159A000C77B56 /* GiftCardCodeScannerNavigationView.swift in Sources */,

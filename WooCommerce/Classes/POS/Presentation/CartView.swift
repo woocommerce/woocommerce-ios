@@ -222,6 +222,7 @@ private extension CartView {
                 }
             if isPOSSettingsEnabled {
                 Button(action: {
+                    ServiceLocator.analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
                     showBarcodeScanningModal = true
                 }, label: {
                     HStack {

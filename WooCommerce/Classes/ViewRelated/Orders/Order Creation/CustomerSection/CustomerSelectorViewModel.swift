@@ -44,15 +44,15 @@ final class CustomerSelectorViewModel {
     /// Loads the whole customer information and calls the completion closures
     ///
     func onCustomerSelected(_ customer: Customer, onCompletion: @escaping (Result<(), Error>) -> Void) {
-        guard customer.customerID != 0 else {
+        guard customer.userID != 0 else {
             // The customer is not registered, we won't get any further information. Dismiss and return data
             onCustomerSelected(customer)
             onCompletion(.success(()))
 
             return
         }
-        // Get the full data about that customer
-        stores.dispatch(CustomerAction.retrieveCustomer(siteID: siteID, customerID: customer.customerID, onCompletion: { [weak self] result in
+        // Get the full data about that customer using WordPress user ID
+        stores.dispatch(CustomerAction.retrieveCustomer(siteID: siteID, customerID: customer.userID, onCompletion: { [weak self] result in
             switch result {
             case .success(let customer):
                 self?.onCustomerSelected(customer)

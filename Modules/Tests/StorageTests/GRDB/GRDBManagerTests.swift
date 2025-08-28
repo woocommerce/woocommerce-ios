@@ -6,14 +6,14 @@ struct GRDBManagerTests {
 
     // MARK: - Migration Tests
     struct MigrationTests {
-        @Test("Migration runs successfully")
-        func migrationRunsSuccessfully() throws {
+        @Test("Migration runs successfully on initialisation")
+        func test_init_full_migration_runs_successfully() throws {
             // Should not throw – initialisation performs migrations
-            let manager = try GRDBManager()
+            _ = try GRDBManager()
         }
 
-        @Test("All tables are created")
-        func allTablesAreCreated() throws {
+        @Test("All tables are created on initialisation")
+        func test_init_all_tables_are_created() throws {
             // Given
             let manager = try GRDBManager()
 
@@ -42,14 +42,14 @@ struct GRDBManagerTests {
     // MARK: - CRUD Tests
 
     struct CRUDTests {
-        @Test("Can insert product")
-        func canInsertProduct() throws {
+        @Test("Can insert product to a freshly initialised database")
+        func test_after_init_can_insert_a_product() throws {
             // Given
             let manager = try GRDBManager()
 
             // When
             try manager.databaseQueue.write { db in
-                var record = TestProduct(
+                let record = TestProduct(
                     siteID: 1,
                     productID: 100,
                     name: "Test Product",
@@ -69,14 +69,14 @@ struct GRDBManagerTests {
             #expect(productCount == 1)
         }
 
-        @Test("Can insert product variation with foreign key relationship")
-        func canInsertProductVariationWithForeignKey() throws {
+        @Test("Can insert product variation with a relationship to a product")
+        func test_after_init_can_insert_productVariation_with_foreign_key() throws {
             // Given
             let manager = try GRDBManager()
 
             // Insert parent product
             try manager.databaseQueue.write { db in
-                var product = TestProduct(
+                let product = TestProduct(
                     siteID: 1,
                     productID: 100,
                     name: "Variable Product",
@@ -90,7 +90,7 @@ struct GRDBManagerTests {
 
             // When - Insert variation
             try manager.databaseQueue.write { db in
-                var variation = TestProductVariation(
+                let variation = TestProductVariation(
                     siteID: 1,
                     productVariationID: 200,
                     productID: 100,
@@ -110,13 +110,13 @@ struct GRDBManagerTests {
         }
 
         @Test("Can query variations by product ID")
-        func canQueryVariationsByProduct() throws {
+        func test_after_init_and_insert_can_query_productVariation_using_foreign_key() throws {
             // Given
             let manager = try GRDBManager()
 
             try manager.databaseQueue.write { db in
                 // Insert product
-                var product = TestProduct(
+                let product = TestProduct(
                     siteID: 1,
                     productID: 100,
                     name: "Variable Product",
@@ -129,7 +129,7 @@ struct GRDBManagerTests {
 
                 // Insert multiple variations
                 for i in 1...3 {
-                    var variation = TestProductVariation(
+                    let variation = TestProductVariation(
                         siteID: 1,
                         productVariationID: Int64(200 + i),
                         productID: 100,
@@ -152,14 +152,14 @@ struct GRDBManagerTests {
             #expect(variations.allSatisfy { $0.productID == 100 })
         }
 
-        @Test("Can insert product attribute with JSON options")
-        func canInsertProductAttributeWithJSONOptions() throws {
+        @Test("Can insert product attribute with options array (JSON)")
+        func test_after_init_can_insert_productAttribute_with_options_as_JSON_array() throws {
             // Given
             let manager = try GRDBManager()
 
             try manager.databaseQueue.write { db in
                 // Insert product first
-                var product = TestProduct(
+                let product = TestProduct(
                     siteID: 1,
                     productID: 100,
                     name: "Test Product",
@@ -173,7 +173,7 @@ struct GRDBManagerTests {
 
             // When
             try manager.databaseQueue.write { db in
-                var attribute = TestProductAttribute(
+                let attribute = TestProductAttribute(
                     siteID: 1,
                     attributeID: 1,
                     productID: 100,
@@ -196,13 +196,13 @@ struct GRDBManagerTests {
         }
 
         @Test("Can insert variation attributes")
-        func canInsertVariationAttributes() throws {
+        func test_after_init_can_insert_variation_attributes() throws {
             // Given
             let manager = try GRDBManager()
 
             try manager.databaseQueue.write { db in
                 // Insert product
-                var product = TestProduct(
+                let product = TestProduct(
                     siteID: 1,
                     productID: 100,
                     name: "Variable Product",
@@ -214,7 +214,7 @@ struct GRDBManagerTests {
                 try product.insert(db)
 
                 // Insert variation
-                var variation = TestProductVariation(
+                let variation = TestProductVariation(
                     siteID: 1,
                     productVariationID: 200,
                     productID: 100,
@@ -226,7 +226,7 @@ struct GRDBManagerTests {
 
             // When
             try manager.databaseQueue.write { db in
-                var variationAttribute = TestProductVariationAttribute(
+                let variationAttribute = TestProductVariationAttribute(
                     siteID: 1,
                     productVariationID: 200,
                     attributeID: 1,

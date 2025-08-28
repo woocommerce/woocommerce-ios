@@ -9,6 +9,7 @@ final class CustomerDetailViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let siteID: Int64
     private let customerID: Int64
+    private let userID: Int64
 
     /// Customer name
     let name: String
@@ -101,6 +102,7 @@ final class CustomerDetailViewModel: ObservableObject {
 
     init(siteID: Int64,
          customerID: Int64,
+         userID: Int64,
          name: String?,
          dateLastActive: String?,
          email: String?,
@@ -119,6 +121,7 @@ final class CustomerDetailViewModel: ObservableObject {
         self.storageManager = storageManager
         self.siteID = siteID
         self.customerID = customerID
+        self.userID = userID
         self.name = name ?? Localization.guestName
         self.dateLastActive = dateLastActive
         self.email = email
@@ -141,7 +144,8 @@ final class CustomerDetailViewModel: ObservableObject {
                      storageManager: StorageManagerType = ServiceLocator.storageManager) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.init(siteID: customer.siteID,
-                  customerID: customer.userID,
+                  customerID: customer.customerID,
+                  userID: customer.userID,
                   name: customer.name?.nullifyIfEmptyOrWhitespace(),
                   dateLastActive: customer.dateLastActive.map { DateFormatter.mediumLengthLocalizedDateFormatter.string(from: $0) },
                   email: customer.email?.nullifyIfEmptyOrWhitespace(),
@@ -309,13 +313,13 @@ extension CustomerDetailViewModel {
     ///
     func syncCustomerAddressData() {
         // Only try to sync the address data for registered customers
-        guard customerID != 0 else {
+        guard userID != 0 else {
             return
         }
 
         // Don't show loading state if we already have customer billing or shipping data to display
         updateStateIfNeeded(to: .loading)
-        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: customerID) { [weak self] result in
+        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: userID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:

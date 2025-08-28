@@ -24,7 +24,7 @@ struct CartView: View {
     private var shouldShowCoupons: Bool {
         posModel.cart.coupons.isNotEmpty
     }
-    
+
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {

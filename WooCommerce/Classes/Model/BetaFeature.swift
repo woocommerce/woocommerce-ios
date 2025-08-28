@@ -5,6 +5,7 @@ import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
+    case applicationPasswords
 }
 
 extension BetaFeature {
@@ -12,6 +13,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsTitle
+        case .applicationPasswords:
+            return Localization.applicationPasswordsTitle
         }
     }
 
@@ -19,6 +22,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsDescription
+        case .applicationPasswords:
+            return Localization.applicationPasswordsDescription
         }
     }
 
@@ -26,6 +31,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return \.isViewAddOnsSwitchEnabled
+        case .applicationPasswords:
+            return \.isApplicationPasswordsSwitchEnabled
         }
     }
 
@@ -35,6 +42,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return .settingsBetaFeaturesOrderAddOnsToggled
+        case .applicationPasswords:
+            return .settingsBetaFeaturesApplicationPasswordsToggled
         }
     }
 
@@ -86,5 +95,14 @@ private extension BetaFeature {
         static let viewAddOnsDescription = NSLocalizedString(
             "Test out viewing Order Add-Ons as we get ready to launch",
             comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let applicationPasswordsTitle = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.title",
+            value: "Application Passwords",
+            comment: "Cell title on the beta features screen to enable the application passwords feature")
+        static let applicationPasswordsDescription = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description",
+            value: "Switching Jetpack requests to direct requests to remote sites with application passwords",
+            comment: "Cell description on the beta features screen to enable application passwords feature")
     }
 }

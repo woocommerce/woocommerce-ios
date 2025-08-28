@@ -15,6 +15,8 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
             switch betaFeature {
                 case .viewAddOns:
                     return true
+                case .applicationPasswords:
+                    return true
             }
         }
     }

@@ -55,7 +55,7 @@ struct GRDBManagerTests {
             }
         }
 
-        @Test("Can insert product to a freshly initialised database")
+        @Test("Insert product to a freshly initialised database")
         func test_after_init_can_insert_a_product() throws {
             // Given
 
@@ -81,7 +81,7 @@ struct GRDBManagerTests {
             #expect(productCount == 1)
         }
 
-        @Test("Can insert product variation with a relationship to a product")
+        @Test("Insert product variation with a relationship to a product")
         func test_after_init_can_insert_productVariation_with_foreign_key() throws {
             // Given – parent product
             try manager.databaseQueue.write { db in
@@ -118,7 +118,7 @@ struct GRDBManagerTests {
             #expect(variations.first?.productID == 100)
         }
 
-        @Test("Can query variations by product ID")
+        @Test("Fetch variations by product ID")
         func test_after_init_and_insert_can_query_productVariation_using_foreign_key() throws {
             // Given parent product and some variations
             try manager.databaseQueue.write { db in
@@ -159,7 +159,7 @@ struct GRDBManagerTests {
             #expect(variations.allSatisfy { $0.productID == 100 })
         }
 
-        @Test("Can insert product attribute with options array (JSON)")
+        @Test("Insert product attribute with options array (JSON)")
         func test_after_init_can_insert_productAttribute_with_options_as_JSON_array() throws {
             // Given parent product
             try manager.databaseQueue.write { db in
@@ -198,7 +198,7 @@ struct GRDBManagerTests {
             #expect(attribute?.options == ["Red", "Blue", "Green"])
         }
 
-        @Test("Can insert variation attributes")
+        @Test("Insert variation attributes")
         func test_after_init_can_insert_variation_attributes() throws {
             // Given parent product and variation
             try manager.databaseQueue.write { db in

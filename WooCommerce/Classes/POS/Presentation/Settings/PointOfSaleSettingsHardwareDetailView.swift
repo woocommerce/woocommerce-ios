@@ -12,7 +12,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         if let cardReaderName = settingsController.connectedCardReader?.name {
             return cardReaderName
         } else {
-            return Localization.cardReaderNotSet
+            return Localization.cardReaderNotConnected
         }
     }
 
@@ -229,10 +229,10 @@ private extension PointOfSaleSettingsHardwareDetailView {
             comment: "Text displayed on Point of Sale settings pointing to the card reader battery."
         )
 
-        static let cardReaderNotSet = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cardReaderNotSet",
-            value: "Not set",
-            comment: "Text displayed on Point of Sale settings when any setting has not been provided."
+        static let cardReaderNotConnected = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected",
+            value: "Reader not connected",
+            comment: "Text displayed on Point of Sale settings when the card reader is not connected."
         )
 
         static let batteryLevelUnknown = NSLocalizedString(

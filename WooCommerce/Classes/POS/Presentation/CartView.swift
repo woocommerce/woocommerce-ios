@@ -25,6 +25,10 @@ struct CartView: View {
         posModel.cart.coupons.isNotEmpty
     }
 
+    private var isPOSSettingsEnabled: Bool {
+           ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+       }
+
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
@@ -141,7 +145,11 @@ private extension CartView {
             value: "Cart",
             comment: "Title at the header for the Cart view.")
         static let addItemsToCartHint = NSLocalizedString(
-            "pos.cartView.addItemsToCartHint.1",
+            "pos.cartView.addItemsToCartHint",
+            value: "Tap on a product to \n add it to the cart",
+            comment: "Hint to add products to the Cart when this is empty.")
+        static let addItemsToCartOrScanHint = NSLocalizedString(
+            "pos.cartView.addItemsToCartOrScanHint",
             value: "Tap on a product to \n add it to the cart, or ",
             comment: "Hint to add products to the Cart when this is empty.")
         static let checkoutButtonTitle = NSLocalizedString(
@@ -201,7 +209,7 @@ private extension CartView {
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
             // avoids issues when the text size is changed through dynamic type.
-            Text(Localization.addItemsToCartHint)
+            Text(isPOSSettingsEnabled ? Localization.addItemsToCartOrScanHint : Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
@@ -212,7 +220,7 @@ private extension CartView {
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+            if isPOSSettingsEnabled {
                 Button(action: {
                     showBarcodeScanningModal = true
                 }, label: {

@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -93,7 +94,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     public let hasSSOEnabled: Bool
 
     /// Whether application password authentication is available
-    /// periphery: ignore - to be used as part of WOOMOB-1123
+    ///
     public let applicationPasswordAvailable: Bool
 
     /// Decodable Conformance.
@@ -321,6 +322,10 @@ public extension Site {
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && (visibility == .privateSite)
+    }
+
+    func toJetpackSite() -> JetpackSite {
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

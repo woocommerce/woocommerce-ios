@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import struct Yosemite.SiteSetting
 import enum Yosemite.Plugin
+import struct Yosemite.SystemPlugin
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import Observation
@@ -23,24 +24,21 @@ struct POSReceiptInformation {
 }
 
 protocol PointOfSaleSettingsControllerProtocol {
-    var receiptInformation: POSReceiptInformation { get }
-    var shouldShowReceiptInformation: Bool { get }
     var storeName: String { get }
     var storeAddress: String { get }
-
     var connectedCardReader: CardPresentPaymentCardReader? { get }
 
-    func retrievePOSReceiptSettings() async
+    var siteID: Int64 { get }
+    var settingsService: PointOfSaleSettingsServiceProtocol { get }
+    var pluginsService: PluginsServiceProtocol { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
-    private(set) var receiptInformation = POSReceiptInformation.empty
-    private(set) var shouldShowReceiptInformation: Bool = false
+    let siteID: Int64
+    let settingsService: PointOfSaleSettingsServiceProtocol
+    let pluginsService: PluginsServiceProtocol
 
-    private let siteID: Int64
     private let defaultSiteName: String?
-    private let settingsService: PointOfSaleSettingsServiceProtocol
-    private let pluginsService: PluginsServiceProtocol
     private let siteSettings: [SiteSetting]
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
@@ -87,54 +85,9 @@ protocol PointOfSaleSettingsControllerProtocol {
         SiteAddress(siteSettings: siteSettings).address
     }
 
-    @MainActor
-    func retrievePOSReceiptSettings() async {
-        shouldShowReceiptInformation = await isPluginSupported(.wooCommerce, minimumVersion: Constants.minimumWooCommerceVersion)
-
-        guard shouldShowReceiptInformation else {
-            return
-        }
-        do {
-            let siteSettings = try await settingsService.retrievePointOfSaleSettings()
-            updateReceiptSettings(from: siteSettings)
-        } catch {
-            DDLogError("Failed to load POS settings: \(error)")
-        }
-    }
-
-    @MainActor
-    private func isPluginSupported(_ plugin: Plugin,
-                                   minimumVersion: String) async -> Bool {
-        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true), systemPlugin.active else {
-            return false
-        }
-
-        let isSupported = VersionHelpers.isVersionSupported(version: systemPlugin.version,
-                                                            minimumRequired: minimumVersion)
-        return isSupported
-    }
-
-    private func updateReceiptSettings(from siteSettings: [SiteSetting]) {
-        receiptInformation = POSReceiptInformation(
-            storeName: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name"),
-            storeAddress: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address"),
-            phone: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone"),
-            email: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email"),
-            refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
-        )
-    }
-
-    private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
-        let value = siteSettings.first { $0.settingID == settingID }?.value
-        return value?.isEmpty == true ? nil : value
-    }
 }
 
 private extension PointOfSaleSettingsController {
-    enum Constants {
-        static let minimumWooCommerceVersion: String = "10.0"
-    }
-
     enum Localization {
         static let storeNameNotSet = NSLocalizedString(
             "pointOfSaleSettingsService.storeNameNotSet",
@@ -146,16 +99,11 @@ private extension PointOfSaleSettingsController {
 
 #if DEBUG
 final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
-    var receiptInformation = POSReceiptInformation(
-        storeName: "Sample Store",
-        storeAddress: "123 Main Street\nAnytown, ST 12345",
-        phone: "+1 (555) 123-4567",
-        email: "store@example.com",
-        refundReturnsPolicy: "30-day return policy"
-    )
-    var shouldShowReceiptInformation: Bool = true
-    var storeName: String = "Sample Store"
+    let siteID: Int64 = 123
+    let settingsService: PointOfSaleSettingsServiceProtocol = MockPointOfSaleSettingsService()
+    let pluginsService: PluginsServiceProtocol = PluginsServicePreview()
 
+    var storeName: String = "Sample Store"
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
         batteryLevel: 0.75
@@ -164,9 +112,41 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"
     }
+}
 
-    func retrievePOSReceiptSettings() async {
-        // no-op
+private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
+    let siteID: Int64 = 123
+
+    func retrievePointOfSaleSettings() async throws -> [SiteSetting] {
+        return []
+    }
+}
+
+private final class PluginsServicePreview: PluginsServiceProtocol {
+    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
+        return SystemPlugin(siteID: 1234,
+                            plugin: "",
+                            name: "",
+                            version: "",
+                            versionLatest: "",
+                            url: "",
+                            authorName: "",
+                            authorUrl: "",
+                            networkActivated: false,
+                            active: true)
+    }
+
+    func loadPluginInStorage(siteID: Int64, plugin: Plugin, isActive: Bool?) -> SystemPlugin? {
+        return SystemPlugin(siteID: 1234,
+                            plugin: "",
+                            name: "",
+                            version: "",
+                            versionLatest: "",
+                            url: "",
+                            authorName: "",
+                            authorUrl: "",
+                            networkActivated: false,
+                            active: true)
     }
 }
 #endif

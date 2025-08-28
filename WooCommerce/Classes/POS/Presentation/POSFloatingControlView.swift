@@ -22,74 +22,17 @@ struct POSFloatingControlView: View {
         self._showSettings = showSettings
     }
 
+    private var isPOSSettingsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+    }
+
     var body: some View {
         HStack {
             Menu {
-                Button {
-                    ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
-                    showExitPOSModal = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.exitPointOfSale) },
-                        icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-                    )
-                }
-                Button {
-                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
-                    showSupport = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.getSupport) },
-                        icon: { Image(systemName: "questionmark.circle") }
-                    )
-                }
-                Button {
-                    showDocumentation = true
-                    ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
-                } label: {
-                    Label(
-                        title: { Text(Localization.viewDocumentation) },
-                        icon: { Image(systemName: "info.circle") }
-                    )
-                }
-                Button {
-                    showProductRestrictionsModal = true
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                } label: {
-                    Label(
-                        title: { Text(Localization.productRestrictionsInfo) },
-                        icon: { Image(systemName: "magnifyingglass") })
-                }
-                Button {
-                    showBarcodeScanningModal = true
-                    ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-                } label: {
-                    Label(
-                        title: {
-                            Text(Localization.barcodeScanningSetup)
-                        },
-                        icon: { Image(systemName: "barcode.viewfinder") })
-                }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
-                    Button {
-                        showSettings = true
-                    } label: {
-                        Label(
-                            title: { Text(Localization.settings) },
-                            icon: { Image(systemName: "gearshape") }
-                        )
-                    }
-                }
-
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-                    Button {
-                        showOrders = true
-                    } label: {
-                        Label(
-                            title: { Text(Localization.orders) },
-                            icon: { Image(systemName: "text.document") }
-                        )
-                    }
+                if isPOSSettingsEnabled {
+                    compactOptions()
+                } else {
+                    completeOptions()
                 }
             } label: {
                 VStack {
@@ -126,6 +69,110 @@ struct POSFloatingControlView: View {
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
         .posShadow(.large, cornerRadius: Constants.cornerRadius)
+    }
+}
+
+private extension POSFloatingControlView {
+    @ViewBuilder private func compactOptions() -> some View {
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            showExitPOSModal = true
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+            Button {
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            Button {
+                showOrders = true
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
+            }
+        }
+    }
+
+    @ViewBuilder private func completeOptions() -> some View {
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            showExitPOSModal = true
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
+            showSupport = true
+        } label: {
+            Label(
+                title: { Text(Localization.getSupport) },
+                icon: { Image(systemName: "questionmark.circle") }
+            )
+        }
+        Button {
+            showDocumentation = true
+            ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
+        } label: {
+            Label(
+                title: { Text(Localization.viewDocumentation) },
+                icon: { Image(systemName: "info.circle") }
+            )
+        }
+        Button {
+            showProductRestrictionsModal = true
+            ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+        } label: {
+            Label(
+                title: { Text(Localization.productRestrictionsInfo) },
+                icon: { Image(systemName: "magnifyingglass") })
+        }
+        Button {
+            showBarcodeScanningModal = true
+            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+        } label: {
+            Label(
+                title: {
+                    Text(Localization.barcodeScanningSetup)
+                },
+                icon: { Image(systemName: "barcode.viewfinder") })
+        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+            Button {
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            Button {
+                showOrders = true
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
+            }
+        }
     }
 }
 

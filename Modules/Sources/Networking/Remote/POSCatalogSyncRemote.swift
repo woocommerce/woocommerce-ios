@@ -119,83 +119,10 @@ private extension POSCatalogSyncRemote {
         static let page = "page"
         static let perPage = "per_page"
         static let fields = "_fields"
-        static let fullSyncFields = "fields"
     }
 
     enum Path {
         static let products = "products"
         static let variations = "variations"
-    }
-}
-
-// MARK: - Response Models
-
-/// Response from catalog generation request.
-// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct POSCatalogGenerationResponse: Decodable {
-    /// Unique identifier for tracking the catalog generation job.
-    public let jobID: String
-
-    private enum CodingKeys: String, CodingKey {
-        case jobID = "job_id"
-    }
-}
-
-/// Response from catalog status check.
-// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct POSCatalogStatusResponse: Decodable {
-    /// Current status of the catalog generation job.
-    public let status: POSCatalogStatus
-    /// Download URL for the completed catalog (available when status is complete).
-    public let downloadURL: String?
-    /// Progress percentage of the catalog generation (0.0 to 100.0).
-    public let progress: Double
-
-    private enum CodingKeys: String, CodingKey {
-        case status
-        case downloadURL = "download_url"
-        case progress
-    }
-}
-
-/// Catalog generation status.
-public enum POSCatalogStatus: String, Decodable {
-    case pending
-    case processing
-    case complete
-}
-
-/// POS catalog from download.
-// periphery:ignore - TODO - remove this periphery ignore comment when the corresponding endpoint is integrated with catalog sync
-public struct POSCatalog {
-    public let products: [POSProduct]
-    public let variations: [POSProductVariation]
-}
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
     }
 }

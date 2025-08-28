@@ -4,7 +4,7 @@ public class CustomerRemote: Remote {
     /// Retrieves a `Customer`
     ///
     /// - Parameters:
-    ///     - customerID: ID of the customer that will be retrieved
+    ///     - customerID: ID of the registered WordPress user (customer) that will be retrieved.
     ///     - siteID: Site for which we'll fetch the customer.
     ///     - completion: Closure to be executed upon completion.
     ///

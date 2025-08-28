@@ -1,6 +1,11 @@
 import Foundation
 import Storage
 
+/// Storage.Customer is an  aggregate object that combines data from multiple sources:
+/// 1. WCAnalyticsCustomer (analytics data) - contains customerID and userID (0 if WordPress user is not registered)
+/// 2. Networking.Customer (WordPress user data) - contains userId (WordPress user ID)
+///
+///
 public protocol StorageCustomerConvertible {
     var loadingID: Int64 { get }
 }
@@ -10,7 +15,7 @@ extension Yosemite.Customer: StorageCustomerConvertible {
 }
 
 extension Yosemite.WCAnalyticsCustomer: StorageCustomerConvertible {
-    public var loadingID: Int64 { userID }
+    public var loadingID: Int64 { customerID }
 }
 
 // MARK: - Storage.Customer: ReadOnlyConvertible
@@ -28,9 +33,11 @@ extension Storage.Customer: ReadOnlyConvertible {
     }
 
     /// Updates the `Storage.Customer` from the ReadOnly representation (`Networking.Customer`)
+    /// This is called when we have WordPress user customer data
     ///
     public func update(with customer: Yosemite.Customer) {
-        customerID = customer.customerID
+        // WordPress customers are registered users, so userID equals userId
+        userID = customer.userID
         siteID = customer.siteID
         email = customer.email
         firstName = customer.firstName
@@ -65,7 +72,9 @@ extension Storage.Customer: ReadOnlyConvertible {
     /// Updates the `Storage.Customer` from the ReadOnly representation (`Yosemite.WCAnalyticsCustomer`)
     ///
     public func update(with customer: Yosemite.WCAnalyticsCustomer) {
-        customerID = customer.userID
+        customerID = customer.customerID
+        // Set userID to link with WordPress user account (if registered)
+        userID = customer.userID
         siteID = customer.siteID
         email = customer.email
         username = customer.username
@@ -80,10 +89,18 @@ extension Storage.Customer: ReadOnlyConvertible {
         shippingFirstName = firstName
         shippingLastName = lastName
         shippingEmail = email
+        shippingCity = customer.city
+        shippingState = customer.region
+        shippingPostcode = customer.postcode
+        shippingCountry = customer.country
 
         billingFirstName = firstName
         billingLastName = lastName
         billingEmail = email
+        billingCity = customer.city
+        billingState = customer.region
+        billingPostcode = customer.postcode
+        billingCountry = customer.country
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`
@@ -91,7 +108,8 @@ extension Storage.Customer: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Customer {
         return Customer(
             siteID: siteID,
-            customerID: customerID,
+            userID: userID,        // WordPress user ID (if registered)
+            customerID: customerID,    // Analytics customer ID
             email: email ?? "",
             username: username ?? "",
             firstName: firstName ?? "",

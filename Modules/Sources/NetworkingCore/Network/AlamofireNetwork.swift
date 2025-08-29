@@ -280,6 +280,7 @@ extension UserDefaults {
     }
 
     enum Key: String {
+        /// This key is shared with the UI layer, so ensure to keep it in-sync with `UserDefaults+Woo`.
         case applicationPasswordUnsupportedList
     }
 }

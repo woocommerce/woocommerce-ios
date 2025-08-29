@@ -3,7 +3,7 @@
 
 23.2
 -----
-
+- [*] POS: Enhanced cash payment experience with pre-filled amounts. [https://github.com/woocommerce/woocommerce-ios/pull/16058]
 
 23.1
 -----

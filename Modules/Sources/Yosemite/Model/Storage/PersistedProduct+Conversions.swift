@@ -3,7 +3,7 @@ import Storage
 
 // MARK: - PersistedProduct Conversions
 extension PersistedProduct {
-    public init(from posProduct: POSProduct) {
+    init(from posProduct: POSProduct) {
         self.init(
             id: posProduct.productID,
             siteID: posProduct.siteID,
@@ -21,8 +21,8 @@ extension PersistedProduct {
             stockStatusKey: posProduct.stockStatusKey
         )
     }
-
-    public func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
+    
+    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
         return POSProduct(
             siteID: siteID,
             productID: id,
@@ -43,7 +43,7 @@ extension PersistedProduct {
         )
     }
     
-    public func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
+    func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
         let images = try db.read { db in
             return try request(for: PersistedProduct.images).fetchAll(db)
         }
@@ -55,11 +55,34 @@ extension PersistedProduct {
             attributes: attributes.map { $0.toProductAttribute(siteID: siteID) }
         )
     }
+    
+}
+
+// MARK: - POSProduct Storage Extensions
+extension POSProduct {
+    public func save(to db: GRDBDatabaseConnection) throws {
+        try db.write { db in
+            let product = PersistedProduct(from: self)
+            try product.insert(db)
+            
+            // Save related images
+            for image in self.images {
+                let persistedImage = PersistedProductImage(from: image, productID: self.productID)
+                try persistedImage.insert(db)
+            }
+            
+            // Save related attributes
+            for attribute in self.attributes {
+                var persistedAttribute = PersistedProductAttribute(from: attribute, productID: self.productID)
+                try persistedAttribute.insert(db)
+            }
+        }
+    }
 }
 
 // MARK: - PersistedProductAttribute Conversions
 extension PersistedProductAttribute {
-    public init(from productAttribute: ProductAttribute, productID: Int64) {
+    init(from productAttribute: ProductAttribute, productID: Int64) {
         self.init(
             productID: productID,
             name: productAttribute.name,
@@ -69,8 +92,8 @@ extension PersistedProductAttribute {
             options: productAttribute.options
         )
     }
-
-    public func toProductAttribute(siteID: Int64) -> ProductAttribute {
+    
+    func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
             attributeID: 0,
@@ -85,7 +108,7 @@ extension PersistedProductAttribute {
 
 // MARK: - PersistedProductImage Conversions
 extension PersistedProductImage {
-    public init(from productImage: ProductImage, productID: Int64) {
+    init(from productImage: ProductImage, productID: Int64) {
         self.init(
             id: productImage.imageID,
             productID: productID,
@@ -96,8 +119,8 @@ extension PersistedProductImage {
             alt: productImage.alt
         )
     }
-
-    public func toProductImage() -> ProductImage {
+    
+    func toProductImage() -> ProductImage {
         return ProductImage(
             imageID: id,
             dateCreated: dateCreated,

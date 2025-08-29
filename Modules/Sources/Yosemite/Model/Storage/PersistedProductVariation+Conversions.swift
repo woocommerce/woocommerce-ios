@@ -3,7 +3,7 @@ import Storage
 
 // MARK: - PersistedProductVariation Conversions
 extension PersistedProductVariation {
-    public init(from posProductVariation: POSProductVariation) {
+    init(from posProductVariation: POSProductVariation) {
         self.init(
             id: posProductVariation.productVariationID,
             siteID: posProductVariation.siteID,
@@ -19,7 +19,7 @@ extension PersistedProductVariation {
         )
     }
 
-    public func toPOSProductVariation(attributes: [ProductVariationAttribute] = [], image: ProductImage? = nil) -> POSProductVariation {
+    func toPOSProductVariation(attributes: [ProductVariationAttribute] = [], image: ProductImage? = nil) -> POSProductVariation {
         return POSProductVariation(
             siteID: siteID,
             productID: productID,
@@ -37,7 +37,7 @@ extension PersistedProductVariation {
         )
     }
 
-    public func toPOSProductVariation(db: GRDBDatabaseConnection) throws -> POSProductVariation {
+    func toPOSProductVariation(db: GRDBDatabaseConnection) throws -> POSProductVariation {
         let image = try db.read { db in
             return try request(for: PersistedProductVariation.image).fetchOne(db)
         }
@@ -49,11 +49,34 @@ extension PersistedProductVariation {
             image: image?.toProductImage()
         )
     }
+
+}
+
+// MARK: - POSProductVariation Storage Extensions
+extension POSProductVariation {
+    public func save(to db: GRDBDatabaseConnection) throws {
+        try db.write { db in
+            let variation = PersistedProductVariation(from: self)
+            try variation.insert(db)
+
+            // Save related image if present
+            if let image = self.image {
+                let persistedImage = PersistedProductVariationImage(from: image, productVariationID: self.productVariationID)
+                try persistedImage.insert(db)
+            }
+
+            // Save related attributes
+            for attribute in self.attributes {
+                var persistedAttribute = PersistedProductVariationAttribute(from: attribute, productVariationID: self.productVariationID)
+                try persistedAttribute.insert(db)
+            }
+        }
+    }
 }
 
 // MARK: - PersistedProductVariationAttribute Conversions
 extension PersistedProductVariationAttribute {
-    public init(from productVariationAttribute: ProductVariationAttribute, productVariationID: Int64) {
+    init(from productVariationAttribute: ProductVariationAttribute, productVariationID: Int64) {
         self.init(
             productVariationID: productVariationID,
             name: productVariationAttribute.name,
@@ -61,7 +84,7 @@ extension PersistedProductVariationAttribute {
         )
     }
 
-    public func toProductVariationAttribute() -> ProductVariationAttribute {
+    func toProductVariationAttribute() -> ProductVariationAttribute {
         return ProductVariationAttribute(
             id: id ?? 0,
             name: name,

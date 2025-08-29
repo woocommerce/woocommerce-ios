@@ -17,6 +17,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let attributes: [ProductVariationAttribute]
     public let image: ProductImage?
 
+    // periphery:ignore - Will be used for search in future
     public let fullDescription: String?
     public let sku: String?
     public let globalUniqueID: String?

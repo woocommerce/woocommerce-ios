@@ -13,6 +13,7 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let name: String
     public let productTypeKey: String
     public let fullDescription: String?
+    // periphery:ignore - Will be used for search in future
     public let shortDescription: String?
     public let sku: String?
     public let globalUniqueID: String?

@@ -55,6 +55,9 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
         static let stockQuantity = Column(CodingKeys.stockQuantity)
         static let stockStatusKey = Column(CodingKeys.stockStatusKey)
     }
+    
+    public static let attributes = hasMany(PersistedProductVariationAttribute.self)
+    public static let image = hasOne(PersistedProductVariationImage.self)
 }
 
 

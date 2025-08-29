@@ -36,6 +36,19 @@ extension PersistedProductVariation {
             stockStatusKey: stockStatusKey
         )
     }
+
+    public func toPOSProductVariation(db: GRDBDatabaseConnection) throws -> POSProductVariation {
+        let image = try db.read { db in
+            return try request(for: PersistedProductVariation.image).fetchOne(db)
+        }
+        let attributes = try db.read { db in
+            return try request(for: PersistedProductVariation.attributes).fetchAll(db)
+        }
+        return toPOSProductVariation(
+            attributes: attributes.map { $0.toProductVariationAttribute() },
+            image: image?.toProductImage()
+        )
+    }
 }
 
 // MARK: - PersistedProductVariationAttribute Conversions

@@ -349,6 +349,15 @@ public typealias StorageWooShippingSavedPredefinedPackage = Storage.WooShippingS
 public typealias StorageWooShippingShipment = Storage.WooShippingShipment
 public typealias StorageWooShippingOriginAddress = Storage.WooShippingOriginAddress
 
+// MARK: - GRDB Persisted Models
+public typealias PersistedSite = Storage.PersistedSite
+public typealias PersistedProduct = Storage.PersistedProduct
+public typealias PersistedProductAttribute = Storage.PersistedProductAttribute
+public typealias PersistedProductImage = Storage.PersistedProductImage
+public typealias PersistedProductVariation = Storage.PersistedProductVariation
+public typealias PersistedProductVariationAttribute = Storage.PersistedProductVariationAttribute
+public typealias PersistedProductVariationImage = Storage.PersistedProductVariationImage
+
 // MARK: - Internal ReadOnly Models
 
 typealias UploadableMedia = Networking.UploadableMedia

@@ -135,7 +135,6 @@ private extension RequestProcessor {
                 return .unknown
             }
         }()
-        
         delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
     }
 

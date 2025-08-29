@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithApplicationPassword()
+    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64)
 }
 
 /// Authenticates and retries requests
@@ -17,6 +17,8 @@ final class RequestProcessor: RequestInterceptor {
     private let notificationCenter: NotificationCenter
 
     private var isAuthenticatedWithWPCom = false
+
+    private var currentSiteID: Int64?
 
     weak var delegate: RequestProcessorDelegate?
 
@@ -34,6 +36,7 @@ final class RequestProcessor: RequestInterceptor {
             default: false
             }
         }()
+        currentSiteID = authenticator.jetpackSiteID
     }
 }
 
@@ -85,8 +88,8 @@ private extension RequestProcessor {
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                if isAuthenticatedWithWPCom {
-                    await retryPasswordGenerationIfNeeded(with: error)
+                if isAuthenticatedWithWPCom, let currentSiteID {
+                    await retryPasswordGenerationIfNeeded(error: error, siteID: currentSiteID)
                 } else {
                     isAuthenticating = false
                     completeRequests(false)
@@ -96,7 +99,7 @@ private extension RequestProcessor {
     }
 
     @MainActor
-    func retryPasswordGenerationIfNeeded(with error: Error) async {
+    func retryPasswordGenerationIfNeeded(error: Error, siteID: Int64) async {
         defer {
             isAuthenticating = false
         }
@@ -112,7 +115,7 @@ private extension RequestProcessor {
         case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
             /// Site doesn't support application password
             completeRequests(false)
-            delegate?.didFailToAuthenticateRequestWithApplicationPassword()
+            delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: siteID)
         default:
             completeRequests(false)
         }

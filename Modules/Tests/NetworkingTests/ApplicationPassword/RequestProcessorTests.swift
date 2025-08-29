@@ -302,6 +302,7 @@ final class RequestProcessorTests: XCTestCase {
         let request = try mockRequest()
         let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
         mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
         let mockDelegate = MockRequestProcessorDelegate()
         sut.updateAuthenticator(mockRequestAuthenticator)
         sut.delegate = mockDelegate
@@ -320,7 +321,7 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestWithApplicationPasswordCalled
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
         }
     }
 
@@ -399,6 +400,7 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     private(set) var deleteApplicationPasswordCalled = false
 
     var credentials: Networking.Credentials? = nil
+    var jetpackSiteID: Int64?
 
     var mockErrorWhileGeneratingPassword: Error?
     var mockErrorWhileDeletingPassword: Error?
@@ -450,9 +452,9 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
 }
 
 private class MockRequestProcessorDelegate: RequestProcessorDelegate {
-    private(set) var didFailToAuthenticateRequestWithApplicationPasswordCalled = false
+    private(set) var didFailToAuthenticateRequestForSiteID: Int64?
 
-    func didFailToAuthenticateRequestWithApplicationPassword() {
-        didFailToAuthenticateRequestWithApplicationPasswordCalled = true
+    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64) {
+        didFailToAuthenticateRequestForSiteID = siteID
     }
 }

@@ -79,7 +79,7 @@ public class AlamofireNetwork: Network {
 
     public func updateAppPasswordSwitching(enabled: Bool) {
         guard let credentials, case .wpcom = credentials else { return }
-        if enabled, let selectedSite, !userDefaults.applicationPasswordUnsupported {
+        if enabled, let selectedSite {
             observeSelectedSite(selectedSite)
         } else {
             requestConverter = RequestConverter(siteAddress: nil)
@@ -198,10 +198,12 @@ private extension AlamofireNetwork {
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
         subscription = selectedSite
             .removeDuplicates()
-            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupported))
-            .sink { [weak self] site, appPasswordUnsupported in
+            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
+            .print("✨")
+            .sink { [weak self] site, unsupportedList in
                 guard let self else { return }
-                guard let site, site.applicationPasswordAvailable, !appPasswordUnsupported else {
+                guard let site, site.applicationPasswordAvailable,
+                      unsupportedList.contains(site.siteID) == false else {
                     requestConverter = RequestConverter(siteAddress: nil)
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                     requestAuthenticator.delegate = nil
@@ -221,8 +223,9 @@ private extension AlamofireNetwork {
 // MARK: `RequestProcessorDelegate` conformance
 //
 extension AlamofireNetwork: RequestProcessorDelegate {
-    func didFailToAuthenticateRequestWithApplicationPassword() {
-        userDefaults.applicationPasswordUnsupported = false
+    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64) {
+        let currentList = userDefaults.applicationPasswordUnsupportedList
+        userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
     }
 }
 
@@ -271,12 +274,12 @@ extension Alamofire.DataResponse {
 // MARK: - Helper extension to save internal flag for app password availability
 //
 extension UserDefaults {
-    @objc dynamic var applicationPasswordUnsupported: Bool {
-        get { bool(forKey: Key.applicationPasswordUnsupported.rawValue) }
-        set { setValue(newValue, forKey: Key.applicationPasswordUnsupported.rawValue) }
+    @objc dynamic var applicationPasswordUnsupportedList: [Int64] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [Int64] ?? [] }
+        set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
     }
 
     enum Key: String {
-        case applicationPasswordUnsupported
+        case applicationPasswordUnsupportedList
     }
 }

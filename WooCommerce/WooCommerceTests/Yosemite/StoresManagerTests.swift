@@ -451,7 +451,9 @@ final class StoresManagerTests: XCTestCase {
         MockNotificationCenter.testingInstance.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
         // Assert
-        XCTAssertFalse(manager.isAuthenticated)
+        waitUntil {
+            manager.isAuthenticated == false
+        }
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 

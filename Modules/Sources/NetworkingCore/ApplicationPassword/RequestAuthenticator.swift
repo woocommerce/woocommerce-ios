@@ -10,6 +10,8 @@ protocol RequestAuthenticator {
     ///
     var credentials: Credentials? { get }
 
+    var jetpackSiteID: Int64? { get }
+
     /// Authenticates the provided urlRequest using the `credentials`
     ///
     /// - Parameter urlRequest: `URLRequest` to authenticate
@@ -36,6 +38,10 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
+
+    /// ID of current site if Jetpack site
+    ///
+    let jetpackSiteID: Int64?
 
     /// The use case to handle authentication with application passwords.
     ///
@@ -86,6 +92,8 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                 return selectedSite?.siteAddress
             }
         }()
+
+        jetpackSiteID = selectedSite?.siteID
     }
 
     /// Authenticates the provided urlRequest using the `credentials`

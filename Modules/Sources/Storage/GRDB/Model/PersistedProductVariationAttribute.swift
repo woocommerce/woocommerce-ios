@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 public struct PersistedProductVariationAttribute: Codable {
-    public let id: Int64?
+    public private(set) var id: Int64?
     public let productVariationID: Int64
     public let name: String
     public let option: String
@@ -18,7 +18,7 @@ public struct PersistedProductVariationAttribute: Codable {
     }
 }
 
-extension PersistedProductVariationAttribute: FetchableRecord, PersistableRecord {
+extension PersistedProductVariationAttribute: FetchableRecord, MutablePersistableRecord {
     public static var databaseTableName: String { "productVariationAttribute" }
 
     public enum Columns {
@@ -26,6 +26,10 @@ extension PersistedProductVariationAttribute: FetchableRecord, PersistableRecord
         static let productVariationID = Column(CodingKeys.productVariationID)
         static let name = Column(CodingKeys.name)
         static let option = Column(CodingKeys.option)
+    }
+
+    public mutating func didInsert(_ inserted: InsertionSuccess) {
+        id = inserted.rowID
     }
 }
 

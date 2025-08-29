@@ -177,9 +177,6 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         let expectedPrice = 12
         XCTAssertEqual(firstVariation.price, "\(expectedPrice)")
-        XCTAssertEqual(firstVariation.regularPrice, "\(expectedPrice)")
-        XCTAssertEqual(firstVariation.salePrice, "8")
-        XCTAssertFalse(firstVariation.onSale)
 
         let expectedAttributes: [ProductVariationAttribute] = [
             ProductVariationAttribute(id: 0, name: "Darkness", option: "99%"),

@@ -1249,9 +1249,6 @@ extension Networking.POSProduct {
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
@@ -1267,9 +1264,6 @@ extension Networking.POSProduct {
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let parentID = parentID ?? self.parentID
         let images = images ?? self.images
@@ -1286,9 +1280,6 @@ extension Networking.POSProduct {
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             parentID: parentID,
             images: images,
@@ -1310,9 +1301,6 @@ extension Networking.POSProductVariation {
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
@@ -1326,9 +1314,6 @@ extension Networking.POSProductVariation {
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
@@ -1343,9 +1328,6 @@ extension Networking.POSProductVariation {
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,

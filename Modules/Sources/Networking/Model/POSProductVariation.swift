@@ -21,10 +21,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let globalUniqueID: String?
 
     public let price: String
-    public let regularPrice: String?
-    public let salePrice: String?
-    public let onSale: Bool
-
     public let downloadable: Bool
 
     public let manageStock: Bool
@@ -43,9 +39,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
-                regularPrice: String?,
-                salePrice: String?,
-                onSale: Bool,
                 downloadable: Bool,
                 manageStock: Bool,
                 stockQuantity: Decimal?,
@@ -58,9 +51,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.price = price
-        self.regularPrice = regularPrice
-        self.salePrice = salePrice
-        self.onSale = onSale
         self.downloadable = downloadable
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
@@ -90,18 +80,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
             targetType: String.self,
             forKey: .price,
             alternativeTypes: [decimalString]) ?? ""
-        let regularPrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .regularPrice,
-            alternativeTypes: [decimalString])
-        let salePrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .salePrice,
-            alternativeTypes: [decimalString])
-        let onSale = container.failsafeDecodeIfPresent(
-            targetType: Bool.self,
-            forKey: .onSale,
-            alternativeTypes: [.string(transform: { NSString(string: $0).boolValue })]) ?? false
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
         let manageStock = container.failsafeDecodeIfPresent(
             targetType: Bool.self,
@@ -128,9 +106,6 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                   sku: sku,
                   globalUniqueID: globalUniqueID,
                   price: price,
-                  regularPrice: regularPrice,
-                  salePrice: salePrice,
-                  onSale: onSale,
                   downloadable: downloadable,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
@@ -158,9 +133,6 @@ private extension POSProductVariation {
         case attributes
         case image
         case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
         case sku
         case globalUniqueID = "global_unique_id"
         case downloadable

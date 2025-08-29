@@ -396,8 +396,6 @@ struct POSCatalogSyncRemoteTests {
         #expect(simpleProduct.globalUniqueID == "61732018")
         #expect(simpleProduct.name == "Synergistic Copper Clock")
         #expect(simpleProduct.price == "220")
-        #expect(simpleProduct.regularPrice == "230.04")
-        #expect(simpleProduct.onSale == true)
         #expect(simpleProduct.images.count == 1)
         #expect(simpleProduct.images.first?.src == "https://example.com/wp-content/uploads/2025/08/img-ad.png")
 
@@ -408,8 +406,6 @@ struct POSCatalogSyncRemoteTests {
         #expect(variableProduct.globalUniqueID == "")
         #expect(variableProduct.name == "Incredible Silk Chair")
         #expect(variableProduct.price == "134.58")
-        #expect(variableProduct.regularPrice == "")
-        #expect(variableProduct.onSale == false)
         #expect(variableProduct.images.count == 1)
         #expect(variableProduct.images.first?.src == "https://example.com/wp-content/uploads/2025/08/img-harum.png")
         #expect(variableProduct.attributes == [
@@ -431,8 +427,6 @@ struct POSCatalogSyncRemoteTests {
         #expect(variation.sku == "")
         #expect(variation.globalUniqueID == "")
         #expect(variation.price == "330.34")
-        #expect(variation.regularPrice == "330.34")
-        #expect(variation.onSale == false)
         #expect(variation.attributes.count == 3)
         #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
         #expect(variation.attributes == [

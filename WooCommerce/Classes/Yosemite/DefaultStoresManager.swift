@@ -220,7 +220,10 @@ class DefaultStoresManager: StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
-        sessionManager.deleteApplicationPassword()
+        /// In case of store switching, new password might be saved locally before the deletion of old password is done.
+        /// Here we delete the password remotely only to avoid the race condition
+        /// when the new password is removed from the local storage by mistake.
+        sessionManager.deleteApplicationPassword(locally: false)
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
@@ -250,6 +253,7 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
+        sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
 

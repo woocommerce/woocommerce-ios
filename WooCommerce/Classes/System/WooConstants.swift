@@ -15,7 +15,7 @@ public enum WooConstants {
 
     /// Local SQLite Database Name
     ///
-    static let localSQLiteDatabaseName = "woo-local.db"
+    static let localSQLiteDatabaseName = "woo-local.sqlite"
 
     /// Keychain Access's Service Name
     ///

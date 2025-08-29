@@ -205,7 +205,12 @@ final class ServiceLocator {
 
         guard let grdbManager = _grdbManager else {
             do {
-                let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                guard let documentsPath = FileManager.default.urls(
+                    for: .documentDirectory,
+                    in: .userDomainMask).first else {
+                    fatalError("Failed to get the path to the documents directory.")
+                }
+
                 let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
                 let manager = try GRDBManager(databasePath: databasePath)
                 DDLogInfo("Started GRDBManager with database path: \(databasePath)")

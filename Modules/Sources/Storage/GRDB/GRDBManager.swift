@@ -9,7 +9,7 @@ public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
 
 public final class GRDBManager: GRDBManagerProtocol {
 
-    public var databaseConnection: GRDBDatabaseConnection
+    public let databaseConnection: GRDBDatabaseConnection
 
     public init(databasePath: String) throws {
         let databaseURL = URL(fileURLWithPath: databasePath)

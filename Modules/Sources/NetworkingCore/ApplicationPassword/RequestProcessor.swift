@@ -16,8 +16,6 @@ final class RequestProcessor: RequestInterceptor {
 
     private let notificationCenter: NotificationCenter
 
-    private var isAuthenticatedWithWPCom = false
-
     private var currentSiteID: Int64?
 
     weak var delegate: RequestProcessorDelegate?
@@ -30,12 +28,6 @@ final class RequestProcessor: RequestInterceptor {
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
         requestAuthenticator = authenticator
-        isAuthenticatedWithWPCom = {
-            switch authenticator.credentials {
-            case .some(.wpcom): true
-            default: false
-            }
-        }()
         currentSiteID = authenticator.jetpackSiteID
     }
 }
@@ -88,8 +80,9 @@ private extension RequestProcessor {
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                if isAuthenticatedWithWPCom, let currentSiteID {
-                    await retryPasswordGenerationIfNeeded(error: error, siteID: currentSiteID)
+                let shouldRetry = await checkIfRetryingGenerationIsNeeded(error: error)
+                if shouldRetry {
+                    generateApplicationPassword()
                 } else {
                     isAuthenticating = false
                     completeRequests(false)
@@ -98,26 +91,28 @@ private extension RequestProcessor {
         }
     }
 
+    /// Checks error code to retry or mark site as unsupported for app password.
+    /// Returns whether retry is needed.
     @MainActor
-    func retryPasswordGenerationIfNeeded(error: Error, siteID: Int64) async {
-        defer {
-            isAuthenticating = false
+    func checkIfRetryingGenerationIsNeeded(error: Error) async -> Bool {
+        guard let currentSiteID else {
+            return false
         }
         switch error {
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409)):
+        case NetworkError.unacceptableStatusCode(let statusCode, _) where statusCode == 409:
             /// Password with the same name already exists. Request deletion remotely and retry.
             do {
                 try await requestAuthenticator.deleteApplicationPassword()
-                generateApplicationPassword()
+                return true
             } catch {
-                completeRequests(false)
+                return false
             }
-        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
+        case NetworkError.notFound:
             /// Site doesn't support application password
-            completeRequests(false)
-            delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: siteID)
+            delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)
+            return false
         default:
-            completeRequests(false)
+            return false
         }
     }
 

@@ -301,13 +301,14 @@ final class RequestProcessorTests: XCTestCase {
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
         mockRequestAuthenticator.credentials = wpcomCredentials
         mockRequestAuthenticator.jetpackSiteID = 123
-        let mockDelegate = MockRequestProcessorDelegate()
         sut.updateAuthenticator(mockRequestAuthenticator)
         sut.delegate = mockDelegate
 
-        let notFound404Error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        let notFound404Error = NetworkError.notFound(response: nil)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notFound404Error
 
         // When
@@ -330,7 +331,9 @@ final class RequestProcessorTests: XCTestCase {
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+
         mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
         sut.updateAuthenticator(mockRequestAuthenticator)
 
         let genericError = NSError(domain: "TestError", code: 500, userInfo: nil)
@@ -354,10 +357,12 @@ final class RequestProcessorTests: XCTestCase {
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+
         mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
         sut.updateAuthenticator(mockRequestAuthenticator)
 
-        let conflict409Error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409))
+        let conflict409Error = NetworkError.unacceptableStatusCode(statusCode: 409, response: nil)
         let deletionError = NSError(domain: "TestError", code: 500, userInfo: nil)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = conflict409Error
         mockRequestAuthenticator.mockErrorWhileDeletingPassword = deletionError

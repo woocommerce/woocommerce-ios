@@ -121,6 +121,7 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
+        ServiceLocator.analytics.track(.pointOfSaleCashPaymentTapped)
         guard validateAmountOnSubmit() else {
             return
         }

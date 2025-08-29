@@ -164,8 +164,11 @@ class DefaultStoresManager: StoresManager {
         state = AuthenticatedState(credentials: credentials, sessionManager: sessionManager)
         sessionManager.defaultCredentials = credentials
 
-        listenToApplicationPasswordGenerationFailureNotification()
-        listenToWPCOMInvalidWPCOMTokenNotification()
+        if case .wpcom = credentials {
+            listenToWPCOMInvalidWPCOMTokenNotification()
+        } else {
+            listenToApplicationPasswordGenerationFailureNotification()
+        }
 
         return self
     }
@@ -176,10 +179,7 @@ class DefaultStoresManager: StoresManager {
         applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
                                                                                       object: nil,
                                                                                       queue: .main) { [weak self] note in
-            guard let self else { return }
-            if isAuthenticatedWithoutWPCom {
-                _ = deauthenticate()
-            }
+            _ = self?.deauthenticate()
         }
     }
 

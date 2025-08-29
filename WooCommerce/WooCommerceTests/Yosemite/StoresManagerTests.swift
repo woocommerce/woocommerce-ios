@@ -452,10 +452,7 @@ final class StoresManagerTests: XCTestCase {
         MockNotificationCenter.testingInstance.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
         // Assert
-        waitUntil {
-            isLoggedInValues == [false, true, false]
-        }
-        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
     /// Verifies that user is logged out when application password regeneration fails if authenticated with wpcom
@@ -475,6 +472,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
     /// Verifies that user is logged out when WPCOM token expires

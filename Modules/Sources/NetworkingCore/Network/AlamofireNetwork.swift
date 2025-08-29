@@ -199,7 +199,6 @@ private extension AlamofireNetwork {
         subscription = selectedSite
             .removeDuplicates()
             .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
-            .print("✨")
             .sink { [weak self] site, unsupportedList in
                 guard let self else { return }
                 guard let site, site.applicationPasswordAvailable,

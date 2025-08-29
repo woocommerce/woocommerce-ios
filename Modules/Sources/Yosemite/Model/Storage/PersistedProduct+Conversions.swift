@@ -21,7 +21,7 @@ extension PersistedProduct {
             stockStatusKey: posProduct.stockStatusKey
         )
     }
-    
+
     func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
         return POSProduct(
             siteID: siteID,
@@ -42,7 +42,7 @@ extension PersistedProduct {
             stockStatusKey: stockStatusKey
         )
     }
-    
+
     func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
         let images = try db.read { db in
             return try request(for: PersistedProduct.images).fetchAll(db)
@@ -55,7 +55,7 @@ extension PersistedProduct {
             attributes: attributes.map { $0.toProductAttribute(siteID: siteID) }
         )
     }
-    
+
 }
 
 // MARK: - POSProduct Storage Extensions
@@ -64,13 +64,13 @@ extension POSProduct {
         try db.write { db in
             let product = PersistedProduct(from: self)
             try product.insert(db)
-            
+
             // Save related images
             for image in self.images {
                 let persistedImage = PersistedProductImage(from: image, productID: self.productID)
                 try persistedImage.insert(db)
             }
-            
+
             // Save related attributes
             for attribute in self.attributes {
                 var persistedAttribute = PersistedProductAttribute(from: attribute, productID: self.productID)
@@ -92,7 +92,7 @@ extension PersistedProductAttribute {
             options: productAttribute.options
         )
     }
-    
+
     func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
@@ -119,7 +119,7 @@ extension PersistedProductImage {
             alt: productImage.alt
         )
     }
-    
+
     func toProductImage() -> ProductImage {
         return ProductImage(
             imageID: id,

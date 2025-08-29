@@ -326,7 +326,7 @@ final class RequestProcessorTests: XCTestCase {
         }
     }
 
-    func test_delegate_called_when_501_error_occurs_with_wpcom_authentication() throws {
+    func test_delegate_called_when_application_password_disabled() throws {
         // Given
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
@@ -338,7 +338,41 @@ final class RequestProcessorTests: XCTestCase {
         sut.updateAuthenticator(mockRequestAuthenticator)
         sut.delegate = mockDelegate
 
-        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: nil)
+        let response = ["error": "application_passwords_disabled"]
+        let data = try JSONEncoder().encode(response)
+        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: data)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notSupportedError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+        }
+    }
+
+    func test_delegate_called_when_application_password_disabled_for_user() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let response = ["error": "application_passwords_disabled_for_user"]
+        let data = try JSONEncoder().encode(response)
+        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: data)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notSupportedError
 
         // When

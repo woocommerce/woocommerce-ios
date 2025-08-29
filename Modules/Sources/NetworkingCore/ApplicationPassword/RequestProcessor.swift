@@ -107,11 +107,15 @@ private extension RequestProcessor {
             } catch {
                 return false
             }
-        case NetworkError.unacceptableStatusCode(let statusCode, let response) where statusCode == 501:
-            fallthrough // treat this the same as 404 code
         case NetworkError.notFound:
             /// Site doesn't support application password
             delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)
+            return false
+        case let networkError as NetworkError:
+            if let code = networkError.errorCode,
+               Constants.disabledCodes.contains(code) {
+                delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)
+            }
             return false
         default:
             return false
@@ -135,6 +139,15 @@ private extension RequestProcessor {
             completion(result)
         }
         requestsToRetry.removeAll()
+    }
+}
+
+private extension RequestProcessor {
+    enum Constants {
+        static let disabledCodes = [
+            "application_passwords_disabled",
+            "application_passwords_disabled_for_user"
+        ]
     }
 }
 

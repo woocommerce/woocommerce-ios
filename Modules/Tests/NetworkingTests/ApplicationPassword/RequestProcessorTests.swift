@@ -293,6 +293,86 @@ final class RequestProcessorTests: XCTestCase {
             (self.mockNotificationCenter.notificationObject as? ApplicationPasswordUseCaseError) == applicationPasswordGenerationError
         }
     }
+
+    // MARK: Error handling when isAuthenticatedWithWPCom is true
+
+    func test_delegate_called_when_404_error_occurs_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        let mockDelegate = MockRequestProcessorDelegate()
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let notFound404Error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notFound404Error
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestWithApplicationPasswordCalled
+        }
+    }
+
+    func test_request_not_retried_when_other_error_occurs_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        sut.updateAuthenticator(mockRequestAuthenticator)
+
+        let genericError = NSError(domain: "TestError", code: 500, userInfo: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = genericError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        XCTAssertFalse(mockRequestAuthenticator.deleteApplicationPasswordCalled)
+    }
+
+    func test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        sut.updateAuthenticator(mockRequestAuthenticator)
+
+        let conflict409Error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409))
+        let deletionError = NSError(domain: "TestError", code: 500, userInfo: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = conflict409Error
+        mockRequestAuthenticator.mockErrorWhileDeletingPassword = deletionError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(mockRequestAuthenticator.deleteApplicationPasswordCalled)
+        XCTAssertFalse(shouldRetry.retryRequired)
+    }
 }
 
 // MARK: Helpers
@@ -316,10 +396,12 @@ private class MockRequestAuthenticator: RequestAuthenticator {
 
     private(set) var authenticateCalled = false
     private(set) var generateApplicationPasswordCalled = false
+    private(set) var deleteApplicationPasswordCalled = false
 
     var credentials: Networking.Credentials? = nil
 
     var mockErrorWhileGeneratingPassword: Error?
+    var mockErrorWhileDeletingPassword: Error?
 
     func authenticate(_ urlRequest: URLRequest) throws -> URLRequest {
         authenticateCalled = true
@@ -334,7 +416,10 @@ private class MockRequestAuthenticator: RequestAuthenticator {
     }
 
     func deleteApplicationPassword() async throws {
-        fatalError("Not implemented")
+        deleteApplicationPasswordCalled = true
+        if let mockErrorWhileDeletingPassword {
+            throw mockErrorWhileDeletingPassword
+        }
     }
 
     func shouldRetry(_ urlRequest: URLRequest) -> Bool {
@@ -361,5 +446,13 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
 
     override var request: URLRequest? {
         return self.convertible.urlRequest
+    }
+}
+
+private class MockRequestProcessorDelegate: RequestProcessorDelegate {
+    private(set) var didFailToAuthenticateRequestWithApplicationPasswordCalled = false
+
+    func didFailToAuthenticateRequestWithApplicationPassword() {
+        didFailToAuthenticateRequestWithApplicationPasswordCalled = true
     }
 }

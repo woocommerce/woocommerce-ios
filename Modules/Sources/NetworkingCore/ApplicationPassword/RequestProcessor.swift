@@ -16,6 +16,8 @@ final class RequestProcessor: RequestInterceptor {
 
     private let notificationCenter: NotificationCenter
 
+    private var isAuthenticatedWithWPCom = false
+
     weak var delegate: RequestProcessorDelegate?
 
     init(requestAuthenticator: RequestAuthenticator,
@@ -26,6 +28,12 @@ final class RequestProcessor: RequestInterceptor {
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
         requestAuthenticator = authenticator
+        isAuthenticatedWithWPCom = {
+            switch authenticator.credentials {
+            case .some(.wpcom): true
+            default: false
+            }
+        }()
     }
 }
 
@@ -63,7 +71,7 @@ extension RequestProcessor: RequestRetrier {
 //
 private extension RequestProcessor {
     func generateApplicationPassword() {
-        Task(priority: .medium) {
+        Task(priority: .medium) { @MainActor in
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
                 isAuthenticating = false
@@ -73,30 +81,40 @@ private extension RequestProcessor {
 
                 completeRequests(true)
             } catch {
-                defer {
-                    isAuthenticating = false
-                }
 
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                switch error {
-                case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409)):
-                    /// Password with the same name already exists. Request deletion remotely and retry.
-                    do {
-                        try await requestAuthenticator.deleteApplicationPassword()
-                        generateApplicationPassword()
-                    } catch {
-                        completeRequests(false)
-                    }
-                case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
-                    /// Site doesn't support application password
-                    completeRequests(false)
-                    delegate?.didFailToAuthenticateRequestWithApplicationPassword()
-                default:
+                if isAuthenticatedWithWPCom {
+                    await retryPasswordGenerationIfNeeded(with: error)
+                } else {
+                    isAuthenticating = false
                     completeRequests(false)
                 }
             }
+        }
+    }
+
+    @MainActor
+    func retryPasswordGenerationIfNeeded(with error: Error) async {
+        defer {
+            isAuthenticating = false
+        }
+        switch error {
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 409)):
+            /// Password with the same name already exists. Request deletion remotely and retry.
+            do {
+                try await requestAuthenticator.deleteApplicationPassword()
+                generateApplicationPassword()
+            } catch {
+                completeRequests(false)
+            }
+        case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
+            /// Site doesn't support application password
+            completeRequests(false)
+            delegate?.didFailToAuthenticateRequestWithApplicationPassword()
+        default:
+            completeRequests(false)
         }
     }
 

@@ -326,6 +326,36 @@ final class RequestProcessorTests: XCTestCase {
         }
     }
 
+    func test_delegate_called_when_501_error_occurs_with_wpcom_authentication() throws {
+        // Given
+        let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
+        let request = try mockRequest()
+        let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
+
+        mockRequestAuthenticator.credentials = wpcomCredentials
+        mockRequestAuthenticator.jetpackSiteID = 123
+        sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
+
+        let notSupportedError = NetworkError.unacceptableStatusCode(statusCode: 501, response: nil)
+        mockRequestAuthenticator.mockErrorWhileGeneratingPassword = notSupportedError
+
+        // When
+        let error = RequestAuthenticatorError.applicationPasswordNotAvailable
+        let shouldRetry = waitFor { promise in
+            self.sut.retry(request, for: session, dueTo: error) { shouldRetry in
+                promise(shouldRetry)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(shouldRetry.retryRequired)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+        }
+    }
+
     func test_request_not_retried_when_other_error_occurs_with_wpcom_authentication() throws {
         // Given
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)

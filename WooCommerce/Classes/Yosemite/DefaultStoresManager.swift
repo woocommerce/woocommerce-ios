@@ -178,7 +178,7 @@ class DefaultStoresManager: StoresManager {
                                                                                       queue: .main) { [weak self] note in
             guard let self else { return }
             if isAuthenticatedWithoutWPCom {
-                deauthenticate()
+                _ = deauthenticate()
             }
         }
     }

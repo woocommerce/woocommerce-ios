@@ -107,6 +107,8 @@ private extension RequestProcessor {
             } catch {
                 return false
             }
+        case NetworkError.unacceptableStatusCode(let statusCode, let response) where statusCode == 501:
+            fallthrough // treat this the same as 404 code
         case NetworkError.notFound:
             /// Site doesn't support application password
             delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)

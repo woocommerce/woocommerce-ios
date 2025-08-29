@@ -134,7 +134,6 @@ extension NetworkError: CustomStringConvertible {
 
 struct NetworkErrorResponse: Decodable {
     let code: String?
-    let message: String?
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -145,7 +144,6 @@ struct NetworkErrorResponse: Decodable {
             }
             return try container.decodeIfPresent(String.self, forKey: .code)
         }()
-        self.message = try container.decodeIfPresent(String.self, forKey: .message)
     }
 
     /// Coding Keys
@@ -153,6 +151,5 @@ struct NetworkErrorResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
         case error
         case code
-        case message
     }
 }

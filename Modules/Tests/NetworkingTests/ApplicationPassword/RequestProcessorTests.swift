@@ -322,7 +322,8 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
+            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
         }
     }
 
@@ -354,7 +355,8 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
+            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
         }
     }
 
@@ -386,7 +388,8 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
+            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
         }
     }
 
@@ -395,10 +398,12 @@ final class RequestProcessorTests: XCTestCase {
         let session = Alamofire.Session(configuration: URLSessionConfiguration.default)
         let request = try mockRequest()
         let wpcomCredentials = Networking.Credentials.wpcom(username: "test", authToken: "token", siteAddress: "test.com")
+        let mockDelegate = MockRequestProcessorDelegate()
 
         mockRequestAuthenticator.credentials = wpcomCredentials
         mockRequestAuthenticator.jetpackSiteID = 123
         sut.updateAuthenticator(mockRequestAuthenticator)
+        sut.delegate = mockDelegate
 
         let genericError = NSError(domain: "TestError", code: 500, userInfo: nil)
         mockRequestAuthenticator.mockErrorWhileGeneratingPassword = genericError
@@ -414,6 +419,10 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         XCTAssertFalse(mockRequestAuthenticator.deleteApplicationPasswordCalled)
+        waitUntil {
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
+            mockDelegate.didFailToAuthenticateRequestWithReason == .unknown
+        }
     }
 
     func test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication() throws {
@@ -522,8 +531,10 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
 
 private class MockRequestProcessorDelegate: RequestProcessorDelegate {
     private(set) var didFailToAuthenticateRequestForSiteID: Int64?
+    private(set) var didFailToAuthenticateRequestWithReason: AppPasswordFailureReason?
 
-    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64) {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
         didFailToAuthenticateRequestForSiteID = siteID
+        didFailToAuthenticateRequestWithReason = reason
     }
 }

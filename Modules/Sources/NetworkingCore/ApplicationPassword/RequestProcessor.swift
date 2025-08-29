@@ -1,8 +1,13 @@
 import Alamofire
 import Foundation
 
+enum AppPasswordFailureReason {
+    case notSupported
+    case unknown
+}
+
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason)
 }
 
 /// Authenticates and retries requests
@@ -80,12 +85,15 @@ private extension RequestProcessor {
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                let shouldRetry = await checkIfRetryingGenerationIsNeeded(error: error)
+                let shouldRetry = await checkIfRetryingGenerationIsNeeded(for: error)
                 if shouldRetry {
                     generateApplicationPassword()
                 } else {
                     isAuthenticating = false
                     completeRequests(false)
+                    if let currentSiteID {
+                        notifyFailure(error, for: currentSiteID)
+                    }
                 }
             }
         }
@@ -94,8 +102,8 @@ private extension RequestProcessor {
     /// Checks error code to retry or mark site as unsupported for app password.
     /// Returns whether retry is needed.
     @MainActor
-    func checkIfRetryingGenerationIsNeeded(error: Error) async -> Bool {
-        guard let currentSiteID else {
+    func checkIfRetryingGenerationIsNeeded(for error: Error) async -> Bool {
+        guard currentSiteID != nil else {
             return false
         }
         switch error {
@@ -107,19 +115,28 @@ private extension RequestProcessor {
             } catch {
                 return false
             }
-        case NetworkError.notFound:
-            /// Site doesn't support application password
-            delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)
-            return false
-        case let networkError as NetworkError:
-            if let code = networkError.errorCode,
-               Constants.disabledCodes.contains(code) {
-                delegate?.didFailToAuthenticateRequestWithApplicationPassword(siteID: currentSiteID)
-            }
-            return false
         default:
             return false
         }
+    }
+
+    func notifyFailure(_ error: Error, for siteID: Int64) {
+        let reason: AppPasswordFailureReason = {
+            switch error {
+            case NetworkError.notFound:
+                return .notSupported
+            case let networkError as NetworkError:
+                if let code = networkError.errorCode,
+                   AppPasswordConstants.disabledCodes.contains(code) {
+                    return .notSupported
+                }
+                return .unknown
+            default:
+                return .unknown
+            }
+        }()
+        
+        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
     }
 
     func shouldRetry(_ error: Error) -> Bool {
@@ -139,15 +156,6 @@ private extension RequestProcessor {
             completion(result)
         }
         requestsToRetry.removeAll()
-    }
-}
-
-private extension RequestProcessor {
-    enum Constants {
-        static let disabledCodes = [
-            "application_passwords_disabled",
-            "application_passwords_disabled_for_user"
-        ]
     }
 }
 

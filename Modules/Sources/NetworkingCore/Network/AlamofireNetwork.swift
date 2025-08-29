@@ -48,6 +48,9 @@ public class AlamofireNetwork: Network {
 
     private var subscription: AnyCancellable?
 
+    /// Keeps track of failure counts for each site when switching to direct requests
+    private var appPasswordFailures: [Int64: Int] = [:]
+
     /// Public Initializer
     ///
     ///
@@ -215,6 +218,7 @@ private extension AlamofireNetwork {
                     network: self
                 ))
                 requestAuthenticator.delegate = self
+                appPasswordFailures.removeValue(forKey: site.siteID) // reset failure count
             }
     }
 }
@@ -222,10 +226,31 @@ private extension AlamofireNetwork {
 // MARK: `RequestProcessorDelegate` conformance
 //
 extension AlamofireNetwork: RequestProcessorDelegate {
-    func didFailToAuthenticateRequestWithApplicationPassword(siteID: Int64) {
-        let currentList = userDefaults.applicationPasswordUnsupportedList
-        userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
+        switch reason {
+        case .notSupported:
+            let currentList = userDefaults.applicationPasswordUnsupportedList
+            userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+        case .unknown:
+            let currentFailureCount = appPasswordFailures[siteID] ?? 0
+            let updatedCount = currentFailureCount + 1
+            if updatedCount == AppPasswordConstants.requestFailureThreshold {
+                let currentList = userDefaults.applicationPasswordUnsupportedList
+                userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+            }
+            appPasswordFailures[siteID] = updatedCount
+        }
     }
+}
+
+// MARK: - Constants for direct request error handling
+enum AppPasswordConstants {
+    // flag site as disabled after threshold is reached
+    static let requestFailureThreshold = 10
+    static let disabledCodes = [
+        "application_passwords_disabled",
+        "application_passwords_disabled_for_user"
+    ]
 }
 
 private extension DataRequest {
@@ -279,7 +304,6 @@ extension UserDefaults {
     }
 
     enum Key: String {
-        /// This key is shared with the UI layer, so ensure to keep it in-sync with `UserDefaults+Woo`.
         case applicationPasswordUnsupportedList
     }
 }

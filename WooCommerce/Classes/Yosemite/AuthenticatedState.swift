@@ -137,7 +137,10 @@ class AuthenticatedState: StoresManagerState {
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
-        checkApplicationPasswordExperimentFeatureFlag()
+
+        DispatchQueue.main.async {
+            self.checkApplicationPasswordExperimentFeatureState()
+        }
     }
 
     /// Convenience Initializer
@@ -192,11 +195,11 @@ private extension AuthenticatedState {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
 
-    /// Uses local feature flag for development phase.
-    /// TODO: Switch to remote feature flag before release.
-    func checkApplicationPasswordExperimentFeatureFlag() {
-        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
-        network.updateAppPasswordSwitching(enabled: enabled)
+    func checkApplicationPasswordExperimentFeatureState() {
+        let action = AppSettingsAction.getAppPasswordsExperimentSwitchState { [weak self] isOn in
+            self?.network.updateAppPasswordSwitching(enabled: isOn)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

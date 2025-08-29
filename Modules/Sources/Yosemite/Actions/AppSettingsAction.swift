@@ -356,4 +356,14 @@ public enum AppSettingsAction: Action {
     /// Loads the favorite products.
     ///
     case loadFavoriteProductIDs(siteID: Int64, onCompletion: ([Int64]) -> Void)
+
+    // MARK: - Application passwords Experiment feature
+
+    /// Sets the dismiss state for the Custom Fields top banner
+    ///
+    case setAppPasswordsExperimentSwitchState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the dismiss state of the Custom Fields top banner
+    ///
+    case getAppPasswordsExperimentSwitchState(onCompletion: (Bool) -> Void)
 }

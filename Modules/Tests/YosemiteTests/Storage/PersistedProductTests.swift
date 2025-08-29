@@ -11,24 +11,6 @@ struct PersistedProductTests {
         // Given
         let siteID: Int64 = 1
         let productID: Int64 = 10
-        let images: [Yosemite.ProductImage] = [
-            ProductImage(imageID: 100,
-                         dateCreated: Date(timeIntervalSince1970: 1),
-                         dateModified: nil,
-                         src: "https://example.com/1.png",
-                         name: "img1",
-                         alt: "alt1"),
-            ProductImage(imageID: 101,
-                         dateCreated: Date(timeIntervalSince1970: 2),
-                         dateModified: Date(timeIntervalSince1970: 3),
-                         src: "https://example.com/2.png",
-                         name: "img2",
-                         alt: nil)
-        ]
-        let attributes: [Yosemite.ProductAttribute] = [
-            ProductAttribute(siteID: siteID, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Red", "Blue"]),
-            ProductAttribute(siteID: siteID, attributeID: 0, name: "Size", position: 1, visible: false, variation: false, options: ["S", "M"])
-        ]
         let posProduct = POSProduct(
             siteID: siteID,
             productID: productID,
@@ -41,8 +23,8 @@ struct PersistedProductTests {
             price: "9.99",
             downloadable: false,
             parentID: 0,
-            images: images,
-            attributes: attributes,
+            images: [],
+            attributes: [],
             manageStock: true,
             stockQuantity: 5,
             stockStatusKey: "instock"
@@ -360,5 +342,71 @@ struct PersistedProductTests {
         #expect(back.src == image.src)
         #expect(back.name == image.name)
         #expect(back.alt == image.alt)
+    }
+
+    @Test("POSProduct.save() persists complete product with relationships")
+    func test_save_persists_complete_pos_product() throws {
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        // Setup site
+        try db.write { db in
+            let site = PersistedSite(id: 1)
+            try site.insert(db)
+        }
+
+        // Given a complete POSProduct
+        let posProduct = POSProduct(
+            siteID: 1,
+            productID: 123,
+            name: "Complete Product",
+            productTypeKey: "variable",
+            fullDescription: "Complete description",
+            shortDescription: "Short",
+            sku: "COMPLETE-SKU",
+            globalUniqueID: "GID-123",
+            price: "99.99",
+            downloadable: true,
+            parentID: 0,
+            images: [
+                ProductImage(imageID: 1001, dateCreated: Date(), dateModified: nil, src: "https://example.com/1.png", name: "img1", alt: "alt1"),
+                ProductImage(imageID: 1002, dateCreated: Date(), dateModified: nil, src: "https://example.com/2.png", name: "img2", alt: nil)
+            ],
+            attributes: [
+                ProductAttribute(siteID: 1, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Red", "Blue"]),
+                ProductAttribute(siteID: 1, attributeID: 0, name: "Size", position: 1, visible: true, variation: false, options: ["S", "M", "L"])
+            ],
+            manageStock: true,
+            stockQuantity: 50,
+            stockStatusKey: "instock"
+        )
+
+        // When saving and loading back
+        try posProduct.save(to: db)
+
+        let fetchedProduct = try db.read { db in
+            try PersistedProduct.filter(PersistedProduct.Columns.id == 123).fetchOne(db)
+        }
+        let product = try #require(fetchedProduct)
+        let loadedPOSProduct = try product.toPOSProduct(db: db)
+
+        // Then all data should be preserved
+        #expect(loadedPOSProduct.productID == posProduct.productID)
+        #expect(loadedPOSProduct.name == posProduct.name)
+        #expect(loadedPOSProduct.fullDescription == posProduct.fullDescription)
+        #expect(loadedPOSProduct.shortDescription == posProduct.shortDescription)
+        #expect(loadedPOSProduct.sku == posProduct.sku)
+        #expect(loadedPOSProduct.images.count == 2)
+        #expect(loadedPOSProduct.attributes.count == 2)
+
+        // Verify images preserved
+        let img1 = loadedPOSProduct.images.first { $0.imageID == 1001 }
+        #expect(img1?.name == "img1")
+        #expect(img1?.alt == "alt1")
+
+        // Verify attributes preserved
+        let colorAttr = loadedPOSProduct.attributes.first { $0.name == "Color" }
+        #expect(colorAttr?.options == ["Red", "Blue"])
+        #expect(colorAttr?.variation == true)
     }
 }

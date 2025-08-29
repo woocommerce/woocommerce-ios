@@ -332,4 +332,91 @@ struct PersistedProductVariationTests {
         #expect(back.name == image.name)
         #expect(back.alt == image.alt)
     }
+
+    @Test("POSProductVariation.save() persists complete variation with relationships")
+    func test_save_persists_complete_pos_product_variation() throws {
+        let grdbManager = try GRDBManager()
+        let db = grdbManager.databaseConnection
+
+        // Setup site and parent product
+        try db.write { db in
+            let site = PersistedSite(id: 1)
+            try site.insert(db)
+
+            let parentProduct = PersistedProduct(
+                id: 200,
+                siteID: 1,
+                name: "Parent Product",
+                productTypeKey: "variable",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: "PARENT-SKU",
+                globalUniqueID: nil,
+                price: "0.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            try parentProduct.insert(db)
+        }
+
+        // Given a complete POSProductVariation
+        let posVariation = POSProductVariation(
+            siteID: 1,
+            productID: 200,
+            productVariationID: 456,
+            attributes: [
+                ProductVariationAttribute(id: 0, name: "Color", option: "Red"),
+                ProductVariationAttribute(id: 0, name: "Size", option: "Large")
+            ],
+            image: ProductImage(imageID: 2001,
+                                dateCreated: Date(),
+                                dateModified: nil,
+                                src: "https://example.com/var.png",
+                                name: "var-img",
+                                alt: "variation image"),
+            fullDescription: "Complete variation description",
+            sku: "VAR-COMPLETE-SKU",
+            globalUniqueID: "GID-456",
+            price: "149.99",
+            downloadable: false,
+            manageStock: true,
+            stockQuantity: 25,
+            stockStatusKey: "instock"
+        )
+
+        // When saving and loading back
+        try posVariation.save(to: db)
+
+        let fetchedVariation = try db.read { db in
+            try PersistedProductVariation.filter(PersistedProductVariation.Columns.id == 456).fetchOne(db)
+        }
+        let variation = try #require(fetchedVariation)
+        let loadedPOSVariation = try variation.toPOSProductVariation(db: db)
+
+        // Then all data should be preserved
+        #expect(loadedPOSVariation.productVariationID == posVariation.productVariationID)
+        #expect(loadedPOSVariation.productID == posVariation.productID)
+        #expect(loadedPOSVariation.siteID == posVariation.siteID)
+        #expect(loadedPOSVariation.fullDescription == posVariation.fullDescription)
+        #expect(loadedPOSVariation.sku == posVariation.sku)
+        #expect(loadedPOSVariation.price == posVariation.price)
+        #expect(loadedPOSVariation.stockQuantity == posVariation.stockQuantity)
+        #expect(loadedPOSVariation.attributes.count == 2)
+        #expect(loadedPOSVariation.image != nil)
+
+        // Verify image preserved
+        #expect(loadedPOSVariation.image?.imageID == 2001)
+        #expect(loadedPOSVariation.image?.name == "var-img")
+        #expect(loadedPOSVariation.image?.alt == "variation image")
+
+        // Verify attributes preserved
+        let colorAttr = loadedPOSVariation.attributes.first { $0.name == "Color" }
+        #expect(colorAttr?.option == "Red")
+
+        let sizeAttr = loadedPOSVariation.attributes.first { $0.name == "Size" }
+        #expect(sizeAttr?.option == "Large")
+    }
 }

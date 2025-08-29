@@ -6,18 +6,30 @@ protocol ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
 }
 
 final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
+    private let userDefaults: UserDefaults
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+    }
+
     var cachedValue: Bool {
-        return false
+        get {
+            userDefaults[.applicationPasswordsExperimentRemoteFFValue] ?? false
+        } set {
+            userDefaults[.applicationPasswordsExperimentRemoteFFValue] = newValue
+        }
     }
 
     func fetchAvailability() async -> Bool {
         await withCheckedContinuation { continuation in
             //TODO: - put the remote FF checking here
+            let mockResultValue = true
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                continuation.resume(returning: true)
+                continuation.resume(returning: mockResultValue)
             }
 
-            //TODO: - save fetched value to local cache
+            cachedValue = mockResultValue
         }
     }
 }

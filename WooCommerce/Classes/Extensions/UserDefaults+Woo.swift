@@ -69,6 +69,9 @@ extension UserDefaults {
 
         // Hide stores from store picker
         case hiddenStoreIDs
+
+        // Application passwords experiment remote FF cached value
+        case applicationPasswordsExperimentRemoteFFValue
     }
 }
 

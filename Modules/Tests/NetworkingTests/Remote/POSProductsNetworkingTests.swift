@@ -183,6 +183,8 @@ struct POSProductsNetworkingTests {
         #expect(fieldNames.contains("id"))
         #expect(fieldNames.contains("name"))
         #expect(fieldNames.contains("type"))
+        #expect(fieldNames.contains("description"))
+        #expect(fieldNames.contains("short_description"))
         #expect(fieldNames.contains("sku"))
         #expect(fieldNames.contains("global_unique_id"))
         #expect(fieldNames.contains("price"))
@@ -269,7 +271,7 @@ struct POSProductsNetworkingTests {
 
         // When
         network.simulateResponse(requestUrlSuffix: "products", filename: "pos-products")
-        let product = try await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID, globalUniqueID: globalUniqueID)
+        _ = try await remote.loadPOSProductByGlobalUniqueIdentifier(for: sampleSiteID, globalUniqueID: globalUniqueID)
 
         // Then
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)

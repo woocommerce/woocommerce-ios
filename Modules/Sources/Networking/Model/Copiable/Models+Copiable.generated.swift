@@ -1246,6 +1246,8 @@ extension Networking.POSProduct {
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
@@ -1261,6 +1263,8 @@ extension Networking.POSProduct {
         let productID = productID ?? self.productID
         let name = name ?? self.name
         let productTypeKey = productTypeKey ?? self.productTypeKey
+        let fullDescription = fullDescription ?? self.fullDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
@@ -1277,6 +1281,8 @@ extension Networking.POSProduct {
             productID: productID,
             name: name,
             productTypeKey: productTypeKey,
+            fullDescription: fullDescription,
+            shortDescription: shortDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
@@ -1298,6 +1304,7 @@ extension Networking.POSProductVariation {
         productVariationID: CopiableProp<Int64> = .copy,
         attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
         image: NullableCopiableProp<ProductImage> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
@@ -1311,6 +1318,7 @@ extension Networking.POSProductVariation {
         let productVariationID = productVariationID ?? self.productVariationID
         let attributes = attributes ?? self.attributes
         let image = image ?? self.image
+        let fullDescription = fullDescription ?? self.fullDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
@@ -1325,6 +1333,7 @@ extension Networking.POSProductVariation {
             productVariationID: productVariationID,
             attributes: attributes,
             image: image,
+            fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,

@@ -17,6 +17,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let attributes: [ProductVariationAttribute]
     public let image: ProductImage?
 
+    public let fullDescription: String?
     public let sku: String?
     public let globalUniqueID: String?
 
@@ -36,6 +37,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 productVariationID: Int64,
                 attributes: [ProductVariationAttribute],
                 image: ProductImage?,
+                fullDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
@@ -48,6 +50,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         self.productVariationID = productVariationID
         self.attributes = attributes
         self.image = image
+        self.fullDescription = fullDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.price = price
@@ -71,6 +74,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         let productID = try container.decode(Int64.self, forKey: .productID)
         let attributes = try container.decode([ProductVariationAttribute].self, forKey: .attributes)
         let image = try container.decodeIfPresent(ProductImage.self, forKey: .image)
+        let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
         let sku = container.failsafeDecodeIfPresent(
             targetType: String.self,
             forKey: .sku,
@@ -103,6 +107,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                   productVariationID: productVariationID,
                   attributes: attributes,
                   image: image,
+                  fullDescription: fullDescription,
                   sku: sku,
                   globalUniqueID: globalUniqueID,
                   price: price,
@@ -133,6 +138,7 @@ private extension POSProductVariation {
         case attributes
         case image
         case price
+        case fullDescription = "description"
         case sku
         case globalUniqueID = "global_unique_id"
         case downloadable

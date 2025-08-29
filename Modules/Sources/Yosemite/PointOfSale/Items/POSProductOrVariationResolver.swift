@@ -83,6 +83,7 @@ private extension POSProduct {
                 productVariationID: productID,
                 attributes: try attributes.compactMap { try $0.toProductVariationAttribute() },
                 image: images.first,
+                fullDescription: fullDescription,
                 sku: sku,
                 globalUniqueID: globalUniqueID,
                 price: price,

@@ -189,6 +189,7 @@ private extension POSProduct {
             productVariationID: productID,
             attributes: variationAttributes,
             image: firstImage,
+            fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,

@@ -44,6 +44,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(firstProduct.siteID == sampleSiteID)
         #expect(firstProduct.productID == 168)
         #expect(firstProduct.name == "Beanie")
+        #expect(firstProduct.fullDescription != nil)
+        #expect(firstProduct.shortDescription != nil)
     }
 
     @Test func loadProducts_relays_networking_error() async throws {
@@ -427,6 +429,7 @@ struct POSCatalogSyncRemoteTests {
         #expect(variation.sku == "")
         #expect(variation.globalUniqueID == "")
         #expect(variation.price == "330.34")
+        #expect(variation.fullDescription != nil)
         #expect(variation.attributes.count == 3)
         #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
         #expect(variation.attributes == [
@@ -470,5 +473,21 @@ struct POSCatalogSyncRemoteTests {
         await #expect(throws: NetworkError.notFound()) {
             try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
         }
+    }
+
+    @Test func posProductVariation_provides_field_names_for_request() {
+        let fieldNames = POSProductVariation.requestFields
+        #expect(fieldNames.contains("id"))
+        #expect(fieldNames.contains("parent_id"))
+        #expect(fieldNames.contains("attributes"))
+        #expect(fieldNames.contains("image"))
+        #expect(fieldNames.contains("price"))
+        #expect(fieldNames.contains("sku"))
+        #expect(fieldNames.contains("global_unique_id"))
+        #expect(fieldNames.contains("downloadable"))
+        #expect(fieldNames.contains("description"))
+        #expect(fieldNames.contains("manage_stock"))
+        #expect(fieldNames.contains("stock_quantity"))
+        #expect(fieldNames.contains("stock_status"))
     }
 }

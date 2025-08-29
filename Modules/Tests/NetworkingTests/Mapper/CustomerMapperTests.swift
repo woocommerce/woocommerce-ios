@@ -44,7 +44,8 @@ class CustomerMapperTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(customer)
-        XCTAssertEqual(customer.customerID, 25)
+        XCTAssertEqual(customer.userID, 25)
+        XCTAssertEqual(customer.customerID, 0)
         XCTAssertEqual(customer.email, "john.doe@example.com")
         XCTAssertEqual(customer.firstName, "John")
         XCTAssertEqual(customer.lastName, "Doe")
@@ -76,7 +77,8 @@ class CustomerMapperTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(customer)
-        XCTAssertEqual(customer.customerID, 25)
+        XCTAssertEqual(customer.userID, 25)
+        XCTAssertEqual(customer.customerID, 0)
         XCTAssertEqual(customer.email, "john.doe@example.com")
         XCTAssertEqual(customer.firstName, "John")
         XCTAssertEqual(customer.lastName, "Doe")

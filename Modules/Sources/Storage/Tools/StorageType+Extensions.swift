@@ -767,22 +767,22 @@ public extension StorageType {
 
     // MARK: - Customers
 
-    /// Returns a single Customer given a `siteID` and `customerID`
-    ///
-    func loadCustomer(siteID: Int64, customerID: Int64) -> Customer? {
-        let predicate = \Customer.siteID == siteID && \Customer.customerID == customerID
-        return firstObject(ofType: Customer.self, matching: predicate)
-    }
-
     func loadAllCustomers(siteID: Int64) -> [Customer] {
         let predicate = \Customer.siteID == siteID
         return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
     }
 
+    /// Returns stored Customers given a `siteID` matching `userIDs`
+    ///
+    func loadCustomers(siteID: Int64, matchingUserIDs userIDs: [Int64]) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID == %lld && userID in %@", siteID, userIDs)
+        return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
+    }
+
     /// Returns stored Customers given a `siteID` matching `customerIDs`
     ///
-    func loadCustomers(siteID: Int64, matching customerIDs: [Int64]) -> [Customer] {
-        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, customerIDs)
+    func loadCustomers(siteID: Int64, matchingCustomerIDs userIDs: [Int64]) -> [Customer] {
+        let predicate = NSPredicate(format: "siteID == %lld && customerID in %@", siteID, userIDs)
         return allObjects(ofType: Customer.self, matching: predicate, sortedBy: [])
     }
 

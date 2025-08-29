@@ -319,7 +319,7 @@ extension CustomerDetailViewModel {
 
         // Don't show loading state if we already have customer billing or shipping data to display
         updateStateIfNeeded(to: .loading)
-        let action = CustomerAction.retrieveCustomer(siteID: siteID, customerID: userID) { [weak self] result in
+        let action = CustomerAction.retrieveCustomer(siteID: siteID, userID: userID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:

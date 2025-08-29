@@ -186,7 +186,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
             passedCustomer = customer
         }
 
-        let returnedCustomer = Customer.fake().copy(customerID: 23, lastName: "Testion")
+        let returnedCustomer = Customer.fake().copy(userID: 23, customerID: 23, lastName: "Testion")
 
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
             switch action {
@@ -198,7 +198,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        let registeredCustomer = Customer.fake().copy(customerID: 23)
+        let registeredCustomer = Customer.fake().copy(userID: 23, customerID: 23)
 
         var returnedResult: (Result<(), any Error>)?
         waitForExpectation { expectation in
@@ -232,7 +232,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        let registeredCustomer = Customer.fake().copy(customerID: 23)
+        let registeredCustomer = Customer.fake().copy(userID: 23, customerID: 23)
         var passedError: NSError?
         waitForExpectation { expectation in
             viewModel.onCustomerSelected(registeredCustomer) { result in

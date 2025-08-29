@@ -66,8 +66,8 @@ public final class CustomerStore: Store {
                             onCompletion: onCompletion)
         case let .searchWCAnalyticsCustomers(siteID, pageNumber, pageSize, keyword, filter, onCompletion):
             searchWCAnalyticsCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize, keyword: keyword, filter: filter, onCompletion: onCompletion)
-        case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
-            retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
+        case .retrieveCustomer(siteID: let siteID, userID: let userID, onCompletion: let onCompletion):
+            retrieveCustomer(for: siteID, with: userID, onCompletion: onCompletion)
         case let .synchronizeLightCustomersData(siteID, pageNumber, pageSize, orderby, order, filterEmpty, onCompletion):
             synchronizeLightCustomersData(siteID: siteID,
                                           pageNumber: pageNumber,
@@ -174,14 +174,14 @@ public final class CustomerStore: Store {
     ///
     /// - Parameters:
     ///   - siteID: The site for which customers should be fetched.
-    ///   - customerID: ID of the Customer to be fetched.
+    ///   - customerID: ID of the registered WordPress user (customer) that will be retrieved.
     ///   - onCompletion: Invoked when the operation finishes. Will upsert the Customer to Storage, or return an Error.
     ///
     func retrieveCustomer(
         for siteID: Int64,
-        with customerID: Int64,
+        with userID: Int64,
         onCompletion: @escaping (Result<Customer, Error>) -> Void) {
-            customerRemote.retrieveCustomer(for: siteID, with: customerID) { [weak self] result in
+            customerRemote.retrieveCustomer(for: siteID, with: userID) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customer):
@@ -267,7 +267,7 @@ public final class CustomerStore: Store {
         let group = DispatchGroup()
         for result in searchResults {
             // At the moment, we're not searching through non-registered customers
-            // As we only search by customer ID, calls to /wc/v3/customers/0 will always fail
+            // As we only search by user ID, calls to /wc/v3/customers/0 will always fail
             // https://github.com/woocommerce/woocommerce-ios/issues/7741
             if result.userID == 0 {
                 continue
@@ -282,7 +282,7 @@ public final class CustomerStore: Store {
         }
 
         group.notify(queue: .main) {
-            self.upsertSearchCustomerResult(
+            self.upsertRegisteredSearchCustomerResult(
                 siteID: siteID,
                 keyword: keyword,
                 readOnlyCustomers: customers,
@@ -297,11 +297,13 @@ public final class CustomerStore: Store {
 // MARK: Storage operations
 private extension CustomerStore {
     /// Inserts or updates CustomerSearchResults in Storage
+    /// Only used in CommandSearchUICommand when .betterCustomerSelectionInOrder feature flag is disabled
+    /// Likely could be removed
     ///
-    private func upsertSearchCustomerResult(siteID: Int64,
-                                            keyword: String,
-                                            readOnlyCustomers: [Networking.Customer],
-                                            onCompletion: @escaping () -> Void) {
+    private func upsertRegisteredSearchCustomerResult(siteID: Int64,
+                                                      keyword: String,
+                                                      readOnlyCustomers: [Networking.Customer],
+                                                      onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
             storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
@@ -309,9 +311,9 @@ private extension CustomerStore {
             storedSearchResult.siteID = siteID
             storedSearchResult.keyword = keyword
 
-            let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.customerID })
+            let storedCustomers = storage.loadCustomers(siteID: siteID, matchingUserIDs: readOnlyCustomers.map { $0.userID })
             for result in readOnlyCustomers {
-                if let storedCustomer = storedCustomers.first(where: { $0.customerID == result.customerID }) {
+                if let storedCustomer = storedCustomers.first(where: { $0.userID == result.userID }) {
                     storedSearchResult.addToCustomers(storedCustomer)
                 }
             }
@@ -328,7 +330,7 @@ private extension CustomerStore {
                 storage.deleteCustomers(siteID: siteID)
             }
 
-            let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.loadingID })
+            let storedCustomers = storage.loadCustomers(siteID: siteID, matchingCustomerIDs: readOnlyCustomers.map { $0.customerID })
             let storedSearchResult: CustomerSearchResult? = {
                 guard let keyword else {
                     return nil
@@ -395,11 +397,11 @@ private extension CustomerStore {
                                 storedSearchResult: Storage.CustomerSearchResult?,
                                 in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
-            // If the specific customerID for that siteID already exists, return it
-            // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
+            // If the specific userId for that siteID already exists, return it
+            // If doesn't or the user is unregistered (userId == 0), insert a new one in Storage
             // Since we reset the customers everytime we request them, there's no risk of having duplicated unregistered customers
-            if readOnlyCustomer.loadingID != 0,
-               let storedCustomer = storedCustomers.first(where: { $0.customerID == readOnlyCustomer.loadingID }) {
+            if readOnlyCustomer.userID != 0,
+               let storedCustomer = storedCustomers.first(where: { $0.userID == readOnlyCustomer.userID }) {
                 return storedCustomer
             } else {
                 return storage.insertNewObject(ofType: Storage.Customer.self)

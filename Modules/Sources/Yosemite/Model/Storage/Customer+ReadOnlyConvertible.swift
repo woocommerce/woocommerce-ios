@@ -7,16 +7,12 @@ import Storage
 ///
 ///
 public protocol StorageCustomerConvertible {
-    var loadingID: Int64 { get }
+    var userID: Int64 { get }
+    var customerID: Int64 { get }
 }
 
-extension Yosemite.Customer: StorageCustomerConvertible {
-    public var loadingID: Int64 { customerID }
-}
-
-extension Yosemite.WCAnalyticsCustomer: StorageCustomerConvertible {
-    public var loadingID: Int64 { customerID }
-}
+extension Yosemite.Customer: StorageCustomerConvertible {}
+extension Yosemite.WCAnalyticsCustomer: StorageCustomerConvertible {}
 
 // MARK: - Storage.Customer: ReadOnlyConvertible
 //

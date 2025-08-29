@@ -13,7 +13,7 @@ final class CustomerStoreTests: XCTestCase {
     private var searchRemote: WCAnalyticsCustomerRemote!
     private var store: CustomerStore!
     private let dummySiteID: Int64 = 12345
-    private let dummyCustomerID: Int64 = 25
+    private let dummyUserID: Int64 = 25
     private let dummyKeyword: String = "John"
 
     override func setUp() {
@@ -39,7 +39,7 @@ final class CustomerStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Customer, Error> = waitFor { promise in
-            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, userID: self.dummyUserID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -48,7 +48,7 @@ final class CustomerStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         let customer = try result.get()
-        XCTAssertEqual(customer.customerID, 25)
+        XCTAssertEqual(customer.userID, 25)
         XCTAssertEqual(customer.firstName, "John")
         XCTAssertEqual(customer.lastName, "Doe")
         XCTAssertEqual(customer.email, "john.doe@example.com")
@@ -80,7 +80,7 @@ final class CustomerStoreTests: XCTestCase {
 
         // When
         let result: Result<Networking.Customer, Error> = waitFor { promise in
-            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
+            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, userID: self.dummyUserID) { result in
                 promise(result)
             }
             self.store.onAction(action)
@@ -198,30 +198,6 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomerSearchResults?.keyword, dummyKeyword)
         XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 2)
         XCTAssertTrue(storedCustomerSearchResults?.customers?.allSatisfy { $0.firstName?.contains(dummyKeyword) == true } ?? false )
-    }
-
-    func test_retrieveCustomer_upserts_the_returned_Customer() {
-        // Given
-        network.simulateResponse(requestUrlSuffix: "customers/25", filename: "customer")
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 0)
-
-        // When
-        let result: Result<Networking.Customer, Error> = waitFor { promise in
-            let action = CustomerAction.retrieveCustomer(siteID: self.dummySiteID, customerID: self.dummyCustomerID) { result in
-                promise(result)
-            }
-            self.store.onAction(action)
-        }
-
-        // Then
-        XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 1)
-
-        let storedCustomer = viewStorage.loadCustomer(siteID: dummySiteID, customerID: dummyCustomerID)
-        XCTAssertNotNil(storedCustomer)
-        XCTAssertEqual(storedCustomer?.siteID, dummySiteID)
-        XCTAssertEqual(storedCustomer?.customerID, dummyCustomerID)
-        XCTAssertEqual(storedCustomer?.firstName, "John")
     }
 
     func test_searchCustomers_returns_no_customers_when_customer_is_not_registered() throws {

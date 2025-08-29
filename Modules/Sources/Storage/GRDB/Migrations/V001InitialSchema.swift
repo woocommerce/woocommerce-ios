@@ -43,6 +43,10 @@ struct V001InitialSchema {
             productTable.column("downloadable", .boolean).notNull()
 
             productTable.column("parentID", .integer).notNull()
+
+            productTable.column("manageStock", .boolean).notNull()
+            productTable.column("stockQuantity", .double)
+            productTable.column("stockStatusKey", .text).notNull()
         }
     }
 
@@ -87,6 +91,10 @@ struct V001InitialSchema {
             productVariationTable.column("downloadable", .boolean).notNull()
 
             productVariationTable.column("fullDescription", .text)
+
+            productVariationTable.column("manageStock", .boolean).notNull()
+            productVariationTable.column("stockQuantity", .double)
+            productVariationTable.column("stockStatusKey", .text).notNull()
         }
     }
 

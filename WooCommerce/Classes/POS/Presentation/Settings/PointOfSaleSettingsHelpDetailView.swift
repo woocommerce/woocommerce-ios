@@ -5,8 +5,14 @@ struct PointOfSaleSettingsHelpDetailView: View {
     @State private var showDocumentation = false
     @State private var showSupport = false
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack {
+            POSPageHeaderView(title: Localization.helpTitle)
+            .foregroundColor(.posSurface)
             List {
                 Button {
                     showProductRestrictions = true
@@ -23,6 +29,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
@@ -40,6 +47,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
@@ -57,8 +65,14 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         }
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView
@@ -86,6 +100,12 @@ private extension PointOfSaleSettingsHelpDetailView {
     }
 
     enum Localization {
+        static let helpTitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.title",
+            value: "Help",
+            comment: "Navigation title for the help settings list."
+        )
+
         static let productRestrictionsInfo = NSLocalizedString(
             "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title",
             value: "Where are my products?",
@@ -147,3 +167,9 @@ private extension PointOfSaleSettingsHelpDetailView {
         .navigationViewStyle(.stack)
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleSettingsHelpDetailView()
+}
+#endif

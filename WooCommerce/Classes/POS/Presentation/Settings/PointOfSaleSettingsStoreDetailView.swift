@@ -31,6 +31,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                 } header: {
                     Text(Localization.storeInformation)
                         .font(.posBodyLargeRegular())
+                        .textCase(nil)
                 }
 
                 Section {
@@ -66,6 +67,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                 } header: {
                     Text(Localization.receiptInformation)
                         .font(.posBodyLargeRegular())
+                        .textCase(nil)
                 }
                 .renderedIf(viewModel.shouldShowReceiptInformation)
             }

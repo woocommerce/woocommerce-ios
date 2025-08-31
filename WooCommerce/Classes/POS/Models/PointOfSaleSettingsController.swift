@@ -55,7 +55,9 @@ protocol PointOfSaleSettingsControllerProtocol {
         self.siteSettings = siteSettings
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
-                                                        pluginsService: pluginsService)
+                                                        pluginsService: pluginsService,
+                                                        defaultSiteName: defaultSiteName,
+                                                        siteSettings: siteSettings)
 
         observeCardReader(from: cardPresentPaymentService)
     }
@@ -113,7 +115,9 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
 
     var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),
-                                                                              pluginsService: PluginsServicePreview())
+                                                                              pluginsService: PluginsServicePreview(),
+                                                                              defaultSiteName: "Sample Store",
+                                                                              siteSettings: [])
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

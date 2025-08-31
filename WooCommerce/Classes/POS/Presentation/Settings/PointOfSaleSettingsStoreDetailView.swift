@@ -3,11 +3,9 @@ import SwiftUI
 struct PointOfSaleSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
 
-    let settingsController: PointOfSaleSettingsControllerProtocol
     let viewModel: POSSettingsStoreViewModel
 
-    init(settingsController: PointOfSaleSettingsControllerProtocol, viewModel: POSSettingsStoreViewModel) {
-        self.settingsController = settingsController
+    init(viewModel: POSSettingsStoreViewModel) {
         self.viewModel = viewModel
     }
 
@@ -18,7 +16,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.storeName)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeName)
+                        Text(viewModel.storeName)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
@@ -26,7 +24,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeAddress)
+                        Text(viewModel.storeAddress)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
@@ -197,7 +195,6 @@ private extension PointOfSaleSettingsStoreDetailView {
 #if DEBUG
 #Preview {
     let controller = PointOfSaleSettingsPreviewController()
-    PointOfSaleSettingsStoreDetailView(settingsController: controller,
-                                       viewModel: controller.storeViewModel)
+    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

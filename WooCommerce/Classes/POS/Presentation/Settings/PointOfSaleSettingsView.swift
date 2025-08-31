@@ -59,8 +59,7 @@ extension PointOfSaleSettingsView {
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(settingsController: settingsController,
-                                               viewModel: settingsController.storeViewModel)
+            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:

@@ -11,13 +11,31 @@ final class POSSettingsStoreViewModel: ObservableObject {
     private let siteID: Int64
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let pluginsService: PluginsServiceProtocol
+    private let defaultSiteName: String?
+    private let siteSettings: [SiteSetting]
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
-         pluginsService: PluginsServiceProtocol) {
+         pluginsService: PluginsServiceProtocol,
+         defaultSiteName: String?,
+         siteSettings: [SiteSetting]) {
         self.siteID = siteID
         self.settingsService = settingsService
         self.pluginsService = pluginsService
+        self.defaultSiteName = defaultSiteName
+        self.siteSettings = siteSettings
+    }
+
+    var storeName: String {
+        if let defaultSiteName {
+            return defaultSiteName
+        } else {
+            return Localization.storeNameNotSet
+        }
+    }
+
+    var storeAddress: String {
+        SiteAddress(siteSettings: siteSettings).address
     }
 
     @MainActor
@@ -66,5 +84,13 @@ final class POSSettingsStoreViewModel: ObservableObject {
 private extension POSSettingsStoreViewModel {
     enum Constants {
         static let minimumWooCommerceVersion: String = "10.0"
+    }
+
+    enum Localization {
+        static let storeNameNotSet = NSLocalizedString(
+            "pointOfSaleSettingsService.storeNameNotSet",
+            value: "Not set",
+            comment: "Text displayed on Point of Sale settings when store has not been provided."
+        )
     }
 }

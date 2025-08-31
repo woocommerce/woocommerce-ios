@@ -15,9 +15,6 @@ struct PointOfSaleSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .task {
-                await settingsController.retrievePOSReceiptSettings()
-            }
         }
     }
 }
@@ -74,7 +71,7 @@ extension PointOfSaleSettingsView {
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
+            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:

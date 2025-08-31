@@ -27,6 +27,9 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
+            POSPageHeaderView(title: Localization.hardwareTitle)
+            .foregroundColor(.posSurface)
+
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
                     HStack(alignment: .firstTextBaseline) {
@@ -275,6 +278,12 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown",
             value: "Unknown",
             comment: "Text displayed on Point of Sale settings when card reader battery is unknown."
+        )
+
+        static let hardwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareTitle",
+            value: "Hardware",
+            comment: "Navigation title for the hardware settings list."
         )
 
         static let cardReadersTitle = NSLocalizedString(

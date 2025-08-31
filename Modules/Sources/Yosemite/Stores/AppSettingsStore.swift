@@ -289,10 +289,10 @@ public class AppSettingsStore: Store {
             dismissCustomFieldsTopBanner(onCompletion: onCompletion)
         case .loadCustomFieldsTopBannerDismissState(let onCompletion):
             loadCustomFieldsTopBannerDismissState(onCompletion: onCompletion)
-        case .setAppPasswordsExperimentSwitchState(let value, let onCompletion):
-            setAppPasswordsExperimentSwitchEnabled(isOn: value, onCompletion: onCompletion)
-        case .getAppPasswordsExperimentSwitchState(let onCompletion):
-            getAppPasswordsExperimentSwitchEnabled(onCompletion: onCompletion)
+        case .setAppPasswordsExperimentSettingState(let value, let onCompletion):
+            setAppPasswordsExperimentSettingEnabled(isOn: value, onCompletion: onCompletion)
+        case .getAppPasswordsExperimentSettingState(let onCompletion):
+            getAppPasswordsExperimentSettingEnabled(onCompletion: onCompletion)
         }
     }
 }
@@ -1276,7 +1276,7 @@ private extension AppSettingsStore {
 // MARK: - Application Passwords Experiment Feature
 //
 private extension AppSettingsStore {
-    func setAppPasswordsExperimentSwitchEnabled(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void) {
+    func setAppPasswordsExperimentSettingEnabled(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void) {
         do {
             try generalAppSettings.setValue(isOn, for: \.isApplicationPasswordsSwitchEnabled)
             onCompletion(.success(()))
@@ -1285,7 +1285,7 @@ private extension AppSettingsStore {
         }
     }
 
-    func getAppPasswordsExperimentSwitchEnabled(onCompletion: (Bool) -> Void) {
+    func getAppPasswordsExperimentSettingEnabled(onCompletion: (Bool) -> Void) {
         onCompletion(generalAppSettings.value(for: \.isApplicationPasswordsSwitchEnabled))
     }
 }

@@ -361,9 +361,9 @@ public enum AppSettingsAction: Action {
 
     /// Sets the dismiss state for the Custom Fields top banner
     ///
-    case setAppPasswordsExperimentSwitchState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
+    case setAppPasswordsExperimentSettingState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
     /// Loads the dismiss state of the Custom Fields top banner
     ///
-    case getAppPasswordsExperimentSwitchState(onCompletion: (Bool) -> Void)
+    case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
 }

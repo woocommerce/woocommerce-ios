@@ -196,10 +196,13 @@ private extension AuthenticatedState {
     }
 
     func checkApplicationPasswordExperimentFeatureState() {
-        let action = AppSettingsAction.getAppPasswordsExperimentSwitchState { [weak self] isOn in
-            self?.network.updateAppPasswordSwitching(enabled: isOn)
+        Task {
+            let isAvailableAndEnabled = await ApplicationPasswordsExperimentState().isAvailableAndEnabled
+
+            await MainActor.run {
+                network.updateAppPasswordSwitching(enabled: isAvailableAndEnabled)
+            }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

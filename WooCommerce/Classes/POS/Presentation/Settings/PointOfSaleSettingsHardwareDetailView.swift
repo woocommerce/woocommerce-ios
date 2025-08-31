@@ -41,7 +41,13 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Color.posOnPrimaryContainer)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):

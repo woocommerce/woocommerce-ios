@@ -21,7 +21,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                     .listRowSeparator(.hidden)
-                    
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
@@ -32,7 +32,8 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     .listRowSeparator(.hidden)
                 } header: {
                     Text(Localization.storeInformation)
-                        .font(.posBodyLargeRegular())
+                        .font(.posHeadingBold)
+                        .foregroundStyle(.primary)
                         .textCase(nil)
                 }
 
@@ -64,7 +65,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                         settingValueView(for: viewModel.receiptInformation.email)
                     }
                     .listRowSeparator(.hidden)
-  
+
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())
@@ -73,7 +74,8 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     .listRowSeparator(.hidden)
                 } header: {
                     Text(Localization.receiptInformation)
-                        .font(.posBodyLargeRegular())
+                        .font(.posHeadingBold)
+                        .foregroundStyle(.primary)
                         .textCase(nil)
                 }
                 .renderedIf(viewModel.shouldShowReceiptInformation)

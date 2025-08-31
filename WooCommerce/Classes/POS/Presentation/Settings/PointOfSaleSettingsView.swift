@@ -99,14 +99,14 @@ struct PointOfSaleSettingsCard: View {
             HStack {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(isSelected ? .white : .primary)
+                    .foregroundStyle(Color.posOnSurface)
                 VStack(alignment: .leading) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
-                        .foregroundStyle(isSelected ? .white : .primary)
+                        .foregroundStyle(Color.posOnSurface)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                        .foregroundStyle(Color.posOnSurface)
                 }
                 Spacer()
             }
@@ -116,8 +116,8 @@ struct PointOfSaleSettingsCard: View {
         }
         .buttonStyle(.plain)
         .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                .fill(isSelected ? Color.accentColor : Color.clear)
+            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
+                .fill(isSelected ? Color.posSecondary : Color.clear)
         )
     }
 }

@@ -123,7 +123,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .listRowBackground(Color.clear)
-            .background(Color.posSurface)
+            .background(Color.posSurfaceBright)
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
@@ -170,7 +170,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .listRowBackground(Color.clear)
-        .background(Color.posSurface)
+        .background(Color.posSurfaceBright)
         .foregroundColor(.posOnSurface)
         .navigationBarBackButtonHidden(true)
         .toolbar {

@@ -4,7 +4,7 @@ import Foundation
 @testable import Yosemite
 import Storage
 
-struct StoreSettingsViewModelTests {
+struct POSSettingsStoreViewModelTests {
     private let mockSettingsService = MockPointOfSaleSettingsService()
     private let mockPluginService = MockPluginsService()
     private let sampleSiteID: Int64 = 123
@@ -15,9 +15,9 @@ struct StoreSettingsViewModelTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "10.0.0",
                                                                                active: true))
-        let sut = StoreSettingsViewModel(siteID: sampleSiteID,
-                                         settingsService: mockSettingsService,
-                                         pluginsService: mockPluginService)
+        let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                            settingsService: mockSettingsService,
+                                            pluginsService: mockPluginService)
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -32,9 +32,9 @@ struct StoreSettingsViewModelTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "9.9.0",
                                                                                active: true))
-        let sut = StoreSettingsViewModel(siteID: sampleSiteID,
-                                         settingsService: mockSettingsService,
-                                         pluginsService: mockPluginService)
+        let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                            settingsService: mockSettingsService,
+                                            pluginsService: mockPluginService)
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -49,9 +49,9 @@ struct StoreSettingsViewModelTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "10.0.0",
                                                                                active: false))
-        let sut = StoreSettingsViewModel(siteID: sampleSiteID,
-                                         settingsService: mockSettingsService,
-                                         pluginsService: mockPluginService)
+        let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                            settingsService: mockSettingsService,
+                                            pluginsService: mockPluginService)
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -63,9 +63,9 @@ struct StoreSettingsViewModelTests {
     @Test func retrievePOSReceiptSettings_when_no_plugin_then_shouldShowReceiptInformation_returns_false() async throws {
         // Given
         mockPluginService.setMockPlugin(.wooCommerce, systemPlugin: nil)
-        let sut = StoreSettingsViewModel(siteID: sampleSiteID,
-                                         settingsService: mockSettingsService,
-                                         pluginsService: mockPluginService)
+        let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                            settingsService: mockSettingsService,
+                                            pluginsService: mockPluginService)
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -96,9 +96,9 @@ struct StoreSettingsViewModelTests {
         ]
         mockSettingsService.retrievePointOfSaleSettingsResult = .success(expectedSettings)
 
-        let sut = StoreSettingsViewModel(siteID: sampleSiteID,
-                                         settingsService: mockSettingsService,
-                                         pluginsService: mockPluginService)
+        let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
+                                            settingsService: mockSettingsService,
+                                            pluginsService: mockPluginService)
 
         // When
         await sut.retrievePOSReceiptSettings()

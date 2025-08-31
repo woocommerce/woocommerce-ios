@@ -4,7 +4,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import enum Yosemite.Plugin
 import struct Yosemite.SiteSetting
 
-final class StoreSettingsViewModel: ObservableObject {
+final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty
     @Published var shouldShowReceiptInformation: Bool = false
 
@@ -63,7 +63,7 @@ final class StoreSettingsViewModel: ObservableObject {
     }
 }
 
-private extension StoreSettingsViewModel {
+private extension POSSettingsStoreViewModel {
     enum Constants {
         static let minimumWooCommerceVersion: String = "10.0"
     }

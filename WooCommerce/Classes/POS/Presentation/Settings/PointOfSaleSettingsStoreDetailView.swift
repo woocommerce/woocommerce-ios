@@ -4,9 +4,9 @@ struct PointOfSaleSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
 
     let settingsController: PointOfSaleSettingsControllerProtocol
-    let viewModel: StoreSettingsViewModel
+    let viewModel: POSSettingsStoreViewModel
 
-    init(settingsController: PointOfSaleSettingsControllerProtocol, viewModel: StoreSettingsViewModel) {
+    init(settingsController: PointOfSaleSettingsControllerProtocol, viewModel: POSSettingsStoreViewModel) {
         self.settingsController = settingsController
         self.viewModel = viewModel
     }

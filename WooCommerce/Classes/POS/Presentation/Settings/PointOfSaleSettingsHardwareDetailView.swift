@@ -118,7 +118,13 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(Color.posSurface)
+            .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -159,7 +165,13 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 }
             }
             .buttonStyle(.plain)
+            .listRowSeparator(.hidden)
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .listRowBackground(Color.clear)
+        .background(Color.posSurface)
+        .foregroundColor(.posOnSurface)
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {

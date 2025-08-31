@@ -34,7 +34,7 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
             refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
         )
     }
-    
+
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
         let value = siteSettings.first { $0.settingID == settingID }?.value
         return value?.isEmpty == true ? nil : value

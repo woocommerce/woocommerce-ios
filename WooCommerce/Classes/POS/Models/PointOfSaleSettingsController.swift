@@ -9,19 +9,11 @@ import struct Yosemite.POSReceiptInformation
 import Observation
 
 protocol PointOfSaleSettingsControllerProtocol {
-    var storeName: String { get }
-    var storeAddress: String { get }
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
-    let siteID: Int64
-    let settingsService: PointOfSaleSettingsServiceProtocol
-    let pluginsService: PluginsServiceProtocol
-
-    private let defaultSiteName: String?
-    private let siteSettings: [SiteSetting]
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
@@ -33,11 +25,6 @@ protocol PointOfSaleSettingsControllerProtocol {
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
-        self.siteID = siteID
-        self.settingsService = settingsService
-        self.pluginsService = pluginsService
-        self.defaultSiteName = defaultSiteName
-        self.siteSettings = siteSettings
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -61,42 +48,14 @@ protocol PointOfSaleSettingsControllerProtocol {
                 connectedCardReader = cardReader
             })
     }
-
-    var storeName: String {
-        if let defaultSiteName {
-            return defaultSiteName
-        } else {
-            return Localization.storeNameNotSet
-        }
-    }
-
-    var storeAddress: String {
-        SiteAddress(siteSettings: siteSettings).address
-    }
-
-}
-
-private extension PointOfSaleSettingsController {
-    enum Localization {
-        static let storeNameNotSet = NSLocalizedString(
-            "pointOfSaleSettingsService.storeNameNotSet",
-            value: "Not set",
-            comment: "Text displayed on Point of Sale settings when store has not been provided."
-        )
-    }
 }
 
 #if DEBUG
 final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
-    var storeName: String = "Sample Store"
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
         batteryLevel: 0.75
     )
-
-    var storeAddress: String {
-        "123 Main Street\nAnytown, ST 12345"
-    }
 
     var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
                                                                               settingsService: MockPointOfSaleSettingsService(),

@@ -75,7 +75,7 @@ struct PointOfSaleSettingsServiceTests {
         // Then
         #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
         #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == sampleSiteID)
-        
+
         #expect(receiptInfo.storeName == "WooCommerce Store")
         #expect(receiptInfo.storeAddress == "123 Commerce Street\nBusiness District")
         #expect(receiptInfo.phone == "+1 (555) 123-4567")

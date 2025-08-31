@@ -3,6 +3,7 @@ import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import enum Yosemite.Plugin
 import struct Yosemite.SiteSetting
+import struct Yosemite.POSReceiptInformation
 
 final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty
@@ -46,8 +47,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
             return
         }
         do {
-            let siteSettings = try await settingsService.retrievePointOfSaleSettings()
-            updateReceiptSettings(from: siteSettings)
+            receiptInformation = try await settingsService.retrievePointOfSaleSettings()
         } catch {
             DDLogError("Failed to load POS settings: \(error)")
         }
@@ -65,20 +65,6 @@ final class POSSettingsStoreViewModel: ObservableObject {
         return isSupported
     }
 
-    private func updateReceiptSettings(from siteSettings: [SiteSetting]) {
-        receiptInformation = POSReceiptInformation(
-            storeName: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name"),
-            storeAddress: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address"),
-            phone: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone"),
-            email: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email"),
-            refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
-        )
-    }
-
-    private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
-        let value = siteSettings.first { $0.settingID == settingID }?.value
-        return value?.isEmpty == true ? nil : value
-    }
 }
 
 private extension POSSettingsStoreViewModel {

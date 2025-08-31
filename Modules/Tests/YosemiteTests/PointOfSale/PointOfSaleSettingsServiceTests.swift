@@ -15,17 +15,17 @@ struct PointOfSaleSettingsServiceTests {
                                               settingStoreMethods: settingStoreMethods)
     }
 
-    @Test func retrievePointOfSaleSettings_when_empty_settings_then_returns_empty_array() async throws {
+    @Test func retrievePointOfSaleSettings_when_empty_settings_then_returns_empty_receipt_info() async throws {
         // Given
         settingStoreMethods.retrievePointOfSaleSettingsResult = .success([])
 
         // When
-        let settings = try await sut.retrievePointOfSaleSettings()
+        let receiptInfo = try await sut.retrievePointOfSaleSettings()
 
         // Then
         #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
         #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == sampleSiteID)
-        #expect(settings.isEmpty)
+        #expect(receiptInfo == POSReceiptInformation.empty)
     }
 
     @Test func retrievePointOfSaleSettings_when_network_error_then_throws_error() async throws {
@@ -64,34 +64,23 @@ struct PointOfSaleSettingsServiceTests {
         }
     }
 
-    @Test func retrievePointOfSaleSettings_with_expected_pos_settings_then_returns_all_settings() async throws {
+    @Test func retrievePointOfSaleSettings_with_expected_pos_settings_then_returns_mapped_receipt_info() async throws {
         // Given
         let expectedSettings = makeSiteSettings()
         settingStoreMethods.retrievePointOfSaleSettingsResult = .success(expectedSettings)
 
         // When
-        let settings = try await sut.retrievePointOfSaleSettings()
+        let receiptInfo = try await sut.retrievePointOfSaleSettings()
 
         // Then
         #expect(settingStoreMethods.retrievePointOfSaleSettingsCalled)
         #expect(settingStoreMethods.retrievePointOfSaleSettingsSiteID == sampleSiteID)
-        #expect(settings.count == 5)
-        #expect(settings == expectedSettings)
-
-        let storeNameSetting = settings.first { $0.settingID == "woocommerce_pos_store_name" }
-        #expect(storeNameSetting?.value == "WooCommerce Store")
-
-        let addressSetting = settings.first { $0.settingID == "woocommerce_pos_store_address" }
-        #expect(addressSetting?.value == "123 Commerce Street\nBusiness District")
-
-        let phoneSetting = settings.first { $0.settingID == "woocommerce_pos_store_phone" }
-        #expect(phoneSetting?.value == "+1 (555) 123-4567")
-
-        let emailSetting = settings.first { $0.settingID == "woocommerce_pos_store_email" }
-        #expect(emailSetting?.value == "contact@store.com")
-
-        let policySetting = settings.first { $0.settingID == "woocommerce_pos_refund_returns_policy" }
-        #expect(policySetting?.value == "30-day return policy with receipt")
+        
+        #expect(receiptInfo.storeName == "WooCommerce Store")
+        #expect(receiptInfo.storeAddress == "123 Commerce Street\nBusiness District")
+        #expect(receiptInfo.phone == "+1 (555) 123-4567")
+        #expect(receiptInfo.email == "contact@store.com")
+        #expect(receiptInfo.refundReturnsPolicy == "30-day return policy with receipt")
     }
 
     private func makeSiteSettings() -> [SiteSetting] {

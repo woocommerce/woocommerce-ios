@@ -88,21 +88,14 @@ struct POSSettingsStoreViewModelTests {
                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                version: "10.0.0",
                                                                                active: true))
-        let expectedSettings = [
-            SiteSetting(siteID: sampleSiteID,
-                       settingID: "woocommerce_pos_store_name",
-                       label: "Store Name",
-                       settingDescription: "",
-                       value: "Test Store",
-                       settingGroupKey: "pos"),
-            SiteSetting(siteID: sampleSiteID,
-                       settingID: "woocommerce_pos_store_phone",
-                       label: "Phone",
-                       settingDescription: "",
-                       value: "+1234567890",
-                       settingGroupKey: "pos")
-        ]
-        mockSettingsService.retrievePointOfSaleSettingsResult = .success(expectedSettings)
+        let expectedReceiptInfo = POSReceiptInformation(
+            storeName: "Test Store",
+            storeAddress: nil,
+            phone: "+1234567890",
+            email: nil,
+            refundReturnsPolicy: nil
+        )
+        mockSettingsService.retrievePointOfSaleSettingsResult = .success(expectedReceiptInfo)
 
         let sut = POSSettingsStoreViewModel(siteID: sampleSiteID,
                                             settingsService: mockSettingsService,
@@ -124,13 +117,13 @@ struct POSSettingsStoreViewModelTests {
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
     var retrievePointOfSaleSettingsWasCalled = false
-    var retrievePointOfSaleSettingsResult: Result<[Yosemite.SiteSetting], Error> = .success([])
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
-    func retrievePointOfSaleSettings() async throws -> [Yosemite.SiteSetting] {
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         retrievePointOfSaleSettingsWasCalled = true
         switch retrievePointOfSaleSettingsResult {
-        case .success(let settings):
-            return settings
+        case .success(let receiptInfo):
+            return receiptInfo
         case .failure(let error):
             throw error
         }

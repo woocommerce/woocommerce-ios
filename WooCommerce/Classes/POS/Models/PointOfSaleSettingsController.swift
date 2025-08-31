@@ -5,23 +5,8 @@ import enum Yosemite.Plugin
 import struct Yosemite.SystemPlugin
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
+import struct Yosemite.POSReceiptInformation
 import Observation
-
-struct POSReceiptInformation {
-    let storeName: String?
-    let storeAddress: String?
-    let phone: String?
-    let email: String?
-    let refundReturnsPolicy: String?
-
-    static let empty = POSReceiptInformation(
-        storeName: nil,
-        storeAddress: nil,
-        phone: nil,
-        email: nil,
-        refundReturnsPolicy: nil
-    )
-}
 
 protocol PointOfSaleSettingsControllerProtocol {
     var storeName: String { get }
@@ -121,8 +106,8 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
-    func retrievePointOfSaleSettings() async throws -> [SiteSetting] {
-        return []
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        return .empty
     }
 }
 

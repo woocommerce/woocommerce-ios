@@ -128,13 +128,13 @@ struct PointOfSaleSettingsControllerTests {
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     let siteID: Int64 = 123
     var retrievePointOfSaleSettingsWasCalled = false
-    var retrievePointOfSaleSettingsResult: Result<[Yosemite.SiteSetting], Error> = .success([])
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
 
-    func retrievePointOfSaleSettings() async throws -> [Yosemite.SiteSetting] {
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         retrievePointOfSaleSettingsWasCalled = true
         switch retrievePointOfSaleSettingsResult {
-        case .success(let settings):
-            return settings
+        case .success(let receiptInfo):
+            return receiptInfo
         case .failure(let error):
             throw error
         }

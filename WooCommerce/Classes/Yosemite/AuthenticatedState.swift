@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
+import Combine
 
 // MARK: - AuthenticatedState
 //
@@ -24,6 +25,8 @@ class AuthenticatedState: StoresManagerState {
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
     private let network: AlamofireNetwork
+
+    private var cancellables: Set<AnyCancellable> = []
 
     /// Designated Initializer
     ///
@@ -137,6 +140,7 @@ class AuthenticatedState: StoresManagerState {
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
+        observeExperimentFeatureSettings()
 
         DispatchQueue.main.async {
             self.checkApplicationPasswordExperimentFeatureState()
@@ -217,5 +221,22 @@ private extension AuthenticatedState {
                                         resetOrdersSettings,
                                         resetProductsSettings,
                                         resetGeneralStoreSettings])
+    }
+}
+
+/// Observe beta experiment settings
+private extension AuthenticatedState {
+    func observeExperimentFeatureSettings() {
+        ServiceLocator
+            .generalAppSettings
+            .betaFeatureEnabledPublisher(
+                .applicationPasswords
+            )
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.checkApplicationPasswordExperimentFeatureState()
+            }
+            .store(in: &cancellables)
     }
 }

@@ -34,7 +34,6 @@ class AuthenticatedState: StoresManagerState {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
-            .prepend(sessionManager.defaultSite) // needed to emit the initial value upon subscription
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 

@@ -9,6 +9,10 @@ struct PointOfSaleSettingsStoreDetailView: View {
         self.viewModel = viewModel
     }
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack {
             List {
@@ -31,10 +35,17 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     }
                     .listRowSeparator(.hidden)
                 } header: {
-                    Text(Localization.storeInformation)
-                        .font(.posHeadingBold)
-                        .foregroundStyle(.primary)
-                        .textCase(nil)
+                    ZStack {
+                        backgroundColor
+                        Text(Localization.storeInformation)
+                            .font(.posHeadingBold)
+                            .foregroundColor(.posOnSurface)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, POSPadding.medium)
+                            .padding(.vertical, POSPadding.small)
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets())
                 }
 
                 Section {
@@ -73,16 +84,23 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     }
                     .listRowSeparator(.hidden)
                 } header: {
-                    Text(Localization.receiptInformation)
-                        .font(.posHeadingBold)
-                        .foregroundStyle(.primary)
-                        .textCase(nil)
+                    ZStack {
+                        backgroundColor
+                        Text(Localization.receiptInformation)
+                            .font(.posHeadingBold)
+                            .foregroundColor(.posOnSurface)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, POSPadding.medium)
+                            .padding(.vertical, POSPadding.small)
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets())
                 }
                 .renderedIf(viewModel.shouldShowReceiptInformation)
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            .background(Color.posOnPrimaryContainer)
+            .background(backgroundColor)
             .listRowSeparator(.hidden)
             .listSectionSeparator(.hidden)
             .task {

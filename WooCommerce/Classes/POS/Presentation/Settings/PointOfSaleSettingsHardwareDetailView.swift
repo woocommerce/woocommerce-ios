@@ -25,6 +25,10 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
@@ -48,7 +52,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            .background(Color.posOnPrimaryContainer)
+            .background(backgroundColor)
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
@@ -123,7 +127,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
             .listRowBackground(Color.clear)
-            .background(Color.posSurfaceBright)
+            .background(backgroundColor)
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
@@ -142,6 +146,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 }
             }
         }
+        .toolbarBackground(backgroundColor, for: .navigationBar)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
@@ -170,7 +175,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .listRowBackground(Color.clear)
-        .background(Color.posSurfaceBright)
+        .background(backgroundColor)
         .foregroundColor(.posOnSurface)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -188,6 +193,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 }
             }
         }
+        .toolbarBackground(backgroundColor, for: .navigationBar)
     }
 
 }

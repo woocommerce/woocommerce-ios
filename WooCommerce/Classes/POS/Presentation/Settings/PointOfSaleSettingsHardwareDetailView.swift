@@ -111,7 +111,22 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 .buttonStyle(.plain)
             }
         }
-        .navigationTitle(Localization.cardReadersTitle)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    navigationPath.removeLast()
+                } label: {
+                    HStack(spacing: POSSpacing.small) {
+                        Image(systemName: "chevron.left")
+                        Text(Localization.cardReadersTitle)
+                    }
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurface)
+                    .contentShape(Rectangle())
+                }
+            }
+        }
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
@@ -136,7 +151,22 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             }
             .buttonStyle(.plain)
         }
-        .navigationTitle(Localization.scannersTitle)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    navigationPath.removeLast()
+                } label: {
+                    HStack(spacing: POSSpacing.small) {
+                        Image(systemName: "chevron.left")
+                        Text(Localization.scannersTitle)
+                    }
+                    .font(.posBodyLargeRegular())
+                    .foregroundColor(.posOnSurface)
+                    .contentShape(Rectangle())
+                }
+            }
+        }
     }
 
 }

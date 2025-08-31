@@ -359,11 +359,11 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Application passwords Experiment feature
 
-    /// Sets the dismiss state for the Custom Fields top banner
+    /// Sets the state of the App Passwords Experiment feature
     ///
     case setAppPasswordsExperimentSettingState(isOn: Bool, onCompletion: (Result<Void, Error>) -> Void)
 
-    /// Loads the dismiss state of the Custom Fields top banner
+    /// Loads Loads the state of the App Passwords Experiment feature
     ///
     case getAppPasswordsExperimentSettingState(onCompletion: (Bool) -> Void)
 }

@@ -1290,7 +1290,6 @@ private extension AppSettingsStore {
     }
 }
 
-
 // MARK: - Errors
 
 /// Errors

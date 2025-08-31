@@ -36,7 +36,15 @@ final class POSSettingsStoreViewModel: ObservableObject {
     }
 
     var storeAddress: String {
-        SiteAddress(siteSettings: siteSettings).address
+        let siteAddress = SiteAddress(siteSettings: siteSettings)
+        let address1 = siteAddress.address
+        let address2 = siteAddress.address2
+
+        if address2.isEmpty {
+            return address1
+        } else {
+            return "\(address1)\n\(address2)"
+        }
     }
 
     @MainActor

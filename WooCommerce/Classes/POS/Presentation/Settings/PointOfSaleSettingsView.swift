@@ -65,6 +65,7 @@ extension PointOfSaleSettingsView {
             }
             .padding(.horizontal, POSPadding.medium)
         }
+        .background(Color.posSurface)
     }
 
     @ViewBuilder

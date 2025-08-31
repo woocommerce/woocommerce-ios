@@ -20,7 +20,8 @@ struct PointOfSaleSettingsStoreDetailView: View {
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
-
+                    .listRowSeparator(.hidden)
+                    
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
@@ -28,6 +29,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
+                    .listRowSeparator(.hidden)
                 } header: {
                     Text(Localization.storeInformation)
                         .font(.posBodyLargeRegular())
@@ -40,30 +42,35 @@ struct PointOfSaleSettingsStoreDetailView: View {
                             .font(.posBodyMediumRegular())
                         settingValueView(for: viewModel.receiptInformation.storeName)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.physicalAddress)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: viewModel.receiptInformation.storeAddress)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.phoneNumber)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: viewModel.receiptInformation.phone)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.email)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: viewModel.receiptInformation.email)
                     }
-
+                    .listRowSeparator(.hidden)
+  
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())
                         settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
                     }
+                    .listRowSeparator(.hidden)
                 } header: {
                     Text(Localization.receiptInformation)
                         .font(.posBodyLargeRegular())
@@ -71,6 +78,11 @@ struct PointOfSaleSettingsStoreDetailView: View {
                 }
                 .renderedIf(viewModel.shouldShowReceiptInformation)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Color.posOnPrimaryContainer)
+            .listRowSeparator(.hidden)
+            .listSectionSeparator(.hidden)
             .task {
                 isLoading = true
                 await viewModel.retrievePOSReceiptSettings()

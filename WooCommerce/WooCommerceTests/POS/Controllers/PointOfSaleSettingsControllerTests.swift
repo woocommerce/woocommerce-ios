@@ -142,13 +142,12 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
 }
 
 final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
-    let siteID: Int64 = 123
-    let settingsService: PointOfSaleSettingsServiceProtocol = MockPointOfSaleSettingsService()
-    let pluginsService: PluginsServiceProtocol = MockPluginsService()
-
     var storeName: String = "Sample Store"
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"
     }
     var connectedCardReader: CardPresentPaymentCardReader? = nil
+    var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
+                                                                              settingsService: MockPointOfSaleSettingsService(),
+                                                                              pluginsService: MockPluginsService())
 }

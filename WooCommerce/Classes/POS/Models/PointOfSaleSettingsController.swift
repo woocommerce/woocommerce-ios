@@ -27,10 +27,7 @@ protocol PointOfSaleSettingsControllerProtocol {
     var storeName: String { get }
     var storeAddress: String { get }
     var connectedCardReader: CardPresentPaymentCardReader? { get }
-
-    var siteID: Int64 { get }
-    var settingsService: PointOfSaleSettingsServiceProtocol { get }
-    var pluginsService: PluginsServiceProtocol { get }
+    var storeViewModel: POSSettingsStoreViewModel { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -43,6 +40,8 @@ protocol PointOfSaleSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
 
+    let storeViewModel: POSSettingsStoreViewModel
+
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
@@ -54,6 +53,9 @@ protocol PointOfSaleSettingsControllerProtocol {
         self.pluginsService = pluginsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+        self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
+                                                        settingsService: settingsService,
+                                                        pluginsService: pluginsService)
 
         observeCardReader(from: cardPresentPaymentService)
     }
@@ -99,10 +101,6 @@ private extension PointOfSaleSettingsController {
 
 #if DEBUG
 final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerProtocol {
-    let siteID: Int64 = 123
-    let settingsService: PointOfSaleSettingsServiceProtocol = MockPointOfSaleSettingsService()
-    let pluginsService: PluginsServiceProtocol = PluginsServicePreview()
-
     var storeName: String = "Sample Store"
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
@@ -112,6 +110,10 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
     var storeAddress: String {
         "123 Main Street\nAnytown, ST 12345"
     }
+
+    var storeViewModel: POSSettingsStoreViewModel = POSSettingsStoreViewModel(siteID: 123,
+                                                                              settingsService: MockPointOfSaleSettingsService(),
+                                                                              pluginsService: PluginsServicePreview())
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

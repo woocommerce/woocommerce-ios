@@ -60,9 +60,7 @@ extension PointOfSaleSettingsView {
         switch selection {
         case .store:
             PointOfSaleSettingsStoreDetailView(settingsController: settingsController,
-                                               viewModel: POSSettingsStoreViewModel(siteID: settingsController.siteID,
-                                                                                    settingsService: settingsController.settingsService,
-                                                                                    pluginsService: settingsController.pluginsService))
+                                               viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:

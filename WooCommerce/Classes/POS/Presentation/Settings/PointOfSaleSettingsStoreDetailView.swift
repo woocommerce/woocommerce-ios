@@ -196,9 +196,8 @@ private extension PointOfSaleSettingsStoreDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsStoreDetailView(settingsController: PointOfSaleSettingsPreviewController(),
-                                       viewModel: .init(siteID: 123,
-                                                        settingsService: MockPointOfSaleSettingsService(),
-                                                        pluginsService: PluginsServicePreview()))
+    let controller = PointOfSaleSettingsPreviewController()
+    PointOfSaleSettingsStoreDetailView(settingsController: controller,
+                                       viewModel: controller.storeViewModel)
 }
 #endif

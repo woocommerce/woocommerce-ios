@@ -180,37 +180,50 @@ struct PersistedProductVariationTests {
         }
 
         // Test automatic fetching via associations
-        let fetchedVariation = try db.read { db in
-            try PersistedProductVariation.filter(PersistedProductVariation.Columns.id == 500).fetchOne(db)
+        struct DetailedVariation: Decodable, FetchableRecord {
+            var variation: PersistedProductVariation
+            var image: PersistedProductVariationImage
+            var attributes: [PersistedProductVariationAttribute]
+
+            enum CodingKeys: CodingKey   {
+                case variation
+                case image
+                case attributes
+            }
         }
 
-        let variation = try #require(fetchedVariation)
-        let posVariation = try variation.toPOSProductVariation(db: db)
+        let fetchedVariation = try db.read { db in
+            try PersistedProductVariation
+                .including(optional: PersistedProductVariation.image)
+                .including(all: PersistedProductVariation.attributes)
+                .asRequest(of: DetailedVariation.self)
+                .fetchAll(db)
+        }.first
 
         // Verify variation fields
-        #expect(posVariation.productVariationID == 500)
-        #expect(posVariation.siteID == 2)
-        #expect(posVariation.productID == 50)
-        #expect(posVariation.sku == "VAR-SKU")
-        #expect(posVariation.fullDescription == "Variation description")
-        #expect(posVariation.price == "15.50")
-        #expect(posVariation.downloadable == true)
-        #expect(posVariation.manageStock == false)
-        #expect(posVariation.stockQuantity == nil)
-        #expect(posVariation.stockStatusKey == "outofstock")
+        #expect(fetchedVariation?.variation.id == 500)
+        #expect(fetchedVariation?.variation.siteID == 2)
+        #expect(fetchedVariation?.variation.productID == 50)
+        #expect(fetchedVariation?.variation.sku == "VAR-SKU")
+        #expect(fetchedVariation?.variation.fullDescription == "Variation description")
+        #expect(fetchedVariation?.variation.price == "15.50")
+        #expect(fetchedVariation?.variation.downloadable == true)
+        #expect(fetchedVariation?.variation.manageStock == false)
+        #expect(fetchedVariation?.variation.stockQuantity == nil)
+        #expect(fetchedVariation?.variation.stockStatusKey == "outofstock")
 
         // Verify image was fetched
-        #expect(posVariation.image?.imageID == 600)
-        #expect(posVariation.image?.src == "https://example.com/var-img.png")
-        #expect(posVariation.image?.name == "Variation Image")
-        #expect(posVariation.image?.alt == "Variation alt text")
+        #expect(fetchedVariation?.image.id == 600)
+        #expect(fetchedVariation?.image.src == "https://example.com/var-img.png")
+        #expect(fetchedVariation?.image.name == "Variation Image")
+        #expect(fetchedVariation?.image.alt == "Variation alt text")
 
         // Verify attributes were fetched
-        #expect(posVariation.attributes.count == 2)
-        let colorAttr = posVariation.attributes.first { $0.name == "Color" }
+        #expect(fetchedVariation?.attributes.count == 2)
+        let colorAttr = fetchedVariation?.attributes.first { $0.name == "Color" }
         #expect(colorAttr?.option == "Purple")
 
-        let materialAttr = posVariation.attributes.first { $0.name == "Material" }
+        let materialAttr = fetchedVariation?.attributes.first { $0.name == "Material" }
         #expect(materialAttr?.option == "Cotton")
     }
 

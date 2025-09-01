@@ -82,7 +82,14 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     private var cardReadersView: some View {
-        VStack(spacing: POSSpacing.large) {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
             List {
                 VStack(spacing: POSPadding.xSmall) {
                     HStack {
@@ -131,71 +138,47 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    navigationPath.removeLast()
-                } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "chevron.left")
-                        Text(Localization.cardReadersTitle)
-                    }
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .contentShape(Rectangle())
-                }
-            }
-        }
-        .toolbarBackground(backgroundColor, for: .navigationBar)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
     private var scannersView: some View {
-        List(ScannerDestination.allCases) { destination in
-            Button {
-                handleScannerDestination(destination)
-            } label: {
-                HStack(alignment: .firstTextBaseline) {
-                    Image(systemName: destination.icon)
-                        .font(.posBodyLargeRegular())
-                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                        Text(destination.title)
-                            .font(.posBodyLargeRegular())
-                        Text(destination.subtitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-            .buttonStyle(.plain)
-            .listRowSeparator(.hidden)
-        }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .listRowBackground(Color.clear)
-        .background(backgroundColor)
-        .foregroundColor(.posOnSurface)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.scannersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
                     navigationPath.removeLast()
-                } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "chevron.left")
-                        Text(Localization.scannersTitle)
-                    }
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .contentShape(Rectangle())
-                }
-            }
-        }
-        .toolbarBackground(backgroundColor, for: .navigationBar)
-    }
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
 
+            List(ScannerDestination.allCases) { destination in
+                Button {
+                    handleScannerDestination(destination)
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: destination.icon)
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
+        }
+        .navigationBarBackButtonHidden(true)
+    }
 }
 
 extension PointOfSaleSettingsHardwareDetailView {

@@ -99,7 +99,7 @@ struct PointOfSaleSettingsCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.medium) {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)

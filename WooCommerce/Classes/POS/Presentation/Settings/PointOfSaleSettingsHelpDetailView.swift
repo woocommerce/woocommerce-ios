@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    
     @State private var showProductRestrictions = false
     @State private var showDocumentation = false
     @State private var showSupport = false
@@ -17,16 +19,20 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showProductRestrictions = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "magnifyingglass")
                             .font(.posBodyLargeRegular())
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.productRestrictionsInfo)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.productRestrictionsInfoSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
                 .listRowSeparator(.hidden)
@@ -35,16 +41,20 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showDocumentation = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.documentationTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.documentationSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
                 .listRowSeparator(.hidden)
@@ -53,16 +63,20 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showSupport = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "questionmark")
                             .font(.posBodyLargeRegular())
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.getSupportTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.getSupportSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
                 .listRowSeparator(.hidden)

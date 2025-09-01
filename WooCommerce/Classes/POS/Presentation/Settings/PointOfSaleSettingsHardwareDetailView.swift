@@ -136,6 +136,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                         Spacer()
                     }
                 }
+                .padding()
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)

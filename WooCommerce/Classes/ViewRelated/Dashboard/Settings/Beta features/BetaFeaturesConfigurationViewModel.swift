@@ -1,24 +1,20 @@
 import SwiftUI
 import protocol Experiments.FeatureFlagService
 import struct Storage.GeneralAppSettingsStorage
-import Yosemite
 
 final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
     private let featureFlagService: FeatureFlagService
-    private let stores: StoresManager
 
     private let betaFeatures = BetaFeature.allCases
 
     private let appPasswordsExperimentAvailabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol
 
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.appSettings = appSettings
         self.featureFlagService = featureFlagService
-        self.stores = stores
         self.appPasswordsExperimentAvailabilityChecker = ApplicationPasswordsExperimentAvailabilityChecker()
 
         setupInitialFeaturesVisibility()

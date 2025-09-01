@@ -25,7 +25,7 @@ final class ApplicationPasswordsExperimentState {
     private var isEnabled: Bool {
         get async {
             return await withCheckedContinuation { continuation in
-                ServiceLocator.stores.dispatch(
+                stores.dispatch(
                     AppSettingsAction.getAppPasswordsExperimentSettingState { isOn in
                         continuation.resume(with: .success(isOn))
                     }

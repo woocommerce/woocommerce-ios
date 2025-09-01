@@ -60,7 +60,7 @@ extension PersistedProductAttribute {
     public func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
-            attributeID: 0,
+            attributeID: id ?? 0,
             name: name,
             position: Int(position),
             visible: visible,

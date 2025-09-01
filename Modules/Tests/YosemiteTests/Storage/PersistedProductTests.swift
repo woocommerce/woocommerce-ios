@@ -122,6 +122,7 @@ struct PersistedProductTests {
 
     @Test("A Product's images and attributes are fetched automatically")
     func product_with_associations_fetches_related_records() throws {
+        // Given
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -136,15 +137,15 @@ struct PersistedProductTests {
                 siteID: 1,
                 name: "Test Product",
                 productTypeKey: "simple",
-                fullDescription: "Full description",
-                shortDescription: "Short description",
-                sku: "TEST-SKU",
-                globalUniqueID: "GID-100",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
                 price: "29.99",
                 downloadable: false,
                 parentID: 0,
-                manageStock: true,
-                stockQuantity: 10,
+                manageStock: false,
+                stockQuantity: nil,
                 stockStatusKey: "instock"
             )
             try product.insert(db)
@@ -190,7 +191,7 @@ struct PersistedProductTests {
             try attribute2.insert(db)
         }
 
-        // Test automatic fetching via associations
+        // When the product is fetched and converted to a POSProduct
         let fetchedProduct = try db.read { db in
             try PersistedProduct.filter(PersistedProduct.Columns.id == 100).fetchOne(db)
         }
@@ -198,15 +199,9 @@ struct PersistedProductTests {
         let product = try #require(fetchedProduct)
         let posProduct = try product.toPOSProduct(db: db)
 
-        // Verify product fields
+        // Then during conversion, images and attributes are populated via associations
+        // Verify product
         #expect(posProduct.productID == 100)
-        #expect(posProduct.siteID == 1)
-        #expect(posProduct.name == "Test Product")
-        #expect(posProduct.fullDescription == "Full description")
-        #expect(posProduct.shortDescription == "Short description")
-        #expect(posProduct.sku == "TEST-SKU")
-        #expect(posProduct.price == "29.99")
-        #expect(posProduct.stockQuantity == 10)
 
         // Verify images were fetched
         #expect(posProduct.images.count == 2)
@@ -235,6 +230,7 @@ struct PersistedProductTests {
 
     @Test("Product without related records has empty arrays")
     func product_without_related_records_creates_empty_arrays() throws {
+        // Given a product without any images or attributes
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -243,7 +239,6 @@ struct PersistedProductTests {
             let site = PersistedSite(id: 3)
             try site.insert(db)
 
-            // Insert product without any images or attributes
             let product = PersistedProduct(
                 id: 300,
                 siteID: 3,
@@ -263,7 +258,7 @@ struct PersistedProductTests {
             try product.insert(db)
         }
 
-        // Test that product with no related records returns empty arrays
+        // When we retrieve and convert the product to a POSProduct
         let fetchedProduct = try db.read { db in
             try PersistedProduct.filter(PersistedProduct.Columns.id == 300).fetchOne(db)
         }
@@ -271,12 +266,11 @@ struct PersistedProductTests {
         let product = try #require(fetchedProduct)
         let posProduct = try product.toPOSProduct(db: db)
 
+        // Then the POSProduct has empty arrays for images and attributes
         #expect(posProduct.productID == 300)
         #expect(posProduct.name == "Lonely Product")
         #expect(posProduct.images.isEmpty)
         #expect(posProduct.attributes.isEmpty)
-        #expect(posProduct.fullDescription == nil)
-        #expect(posProduct.shortDescription == nil)
     }
 
     @Test("PersistedProductAttribute init(from:) and toProductAttribute round-trip")

@@ -112,6 +112,7 @@ struct PersistedProductVariationTests {
 
     @Test("ProductVariation with associations fetches attributes and image automatically")
     func product_variation_with_associations_fetches_related_records() throws {
+        // Given a persisted variation with associations
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -179,7 +180,7 @@ struct PersistedProductVariationTests {
             try attr2.insert(db)
         }
 
-        // Test automatic fetching via associations
+        // When we fetch it, specifying inclusion of image and attributes
         struct DetailedVariation: Decodable, FetchableRecord {
             var variation: PersistedProductVariation
             var image: PersistedProductVariationImage
@@ -212,6 +213,7 @@ struct PersistedProductVariationTests {
         #expect(fetchedVariation?.variation.stockQuantity == nil)
         #expect(fetchedVariation?.variation.stockStatusKey == "outofstock")
 
+        // Then the image and attributes are included in the fetched data
         // Verify image was fetched
         #expect(fetchedVariation?.image.id == 600)
         #expect(fetchedVariation?.image.src == "https://example.com/var-img.png")
@@ -229,6 +231,7 @@ struct PersistedProductVariationTests {
 
     @Test("ProductVariation without image returns nil image")
     func product_variation_without_image_returns_nil() throws {
+        // Given a persisted variation without an image
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -280,7 +283,7 @@ struct PersistedProductVariationTests {
             try attr.insert(db)
         }
 
-        // Test that variation with no image returns nil for image
+        // When we fetch that variation
         let fetchedVariation = try db.read { db in
             try PersistedProductVariation.filter(PersistedProductVariation.Columns.id == 700).fetchOne(db)
         }
@@ -288,6 +291,7 @@ struct PersistedProductVariationTests {
         let variation = try #require(fetchedVariation)
         let posVariation = try variation.toPOSProductVariation(db: db)
 
+        // Then the image is nil
         #expect(posVariation.productVariationID == 700)
         #expect(posVariation.image == nil)
         #expect(posVariation.attributes.count == 1)

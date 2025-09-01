@@ -44,12 +44,12 @@ extension PersistedProduct {
     }
 
     func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
-        let images = try db.read { db in
-            return try request(for: PersistedProduct.images).fetchAll(db)
+        let (images, attributes) = try db.read { db in
+            let images = try request(for: PersistedProduct.images).fetchAll(db)
+            let attributes = try request(for: PersistedProduct.attributes).fetchAll(db)
+            return (images, attributes)
         }
-        let attributes = try db.read { db in
-            return try request(for: PersistedProduct.attributes).fetchAll(db)
-        }
+
         return toPOSProduct(
             images: images.map { $0.toProductImage() },
             attributes: attributes.map { $0.toProductAttribute(siteID: siteID) }
@@ -96,7 +96,7 @@ extension PersistedProductAttribute {
     func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
-            attributeID: 0,
+            attributeID: id ?? 0,
             name: name,
             position: Int(position),
             visible: visible,

@@ -2,6 +2,7 @@ import Foundation
 import Storage
 
 // MARK: - PersistedProductVariation Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariation {
     init(from posProductVariation: POSProductVariation) {
         self.init(
@@ -53,6 +54,7 @@ extension PersistedProductVariation {
 }
 
 // MARK: - POSProductVariation Storage Extensions
+// periphery:ignore - TODO: remove ignore when populating database
 extension POSProductVariation {
     public func save(to db: GRDBDatabaseConnection) throws {
         try db.write { db in
@@ -75,6 +77,7 @@ extension POSProductVariation {
 }
 
 // MARK: - PersistedProductVariationAttribute Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariationAttribute {
     init(from productVariationAttribute: ProductVariationAttribute, productVariationID: Int64) {
         self.init(
@@ -94,6 +97,7 @@ extension PersistedProductVariationAttribute {
 }
 
 // MARK: - PersistedProductVariationImage Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariationImage {
     public init(from productImage: ProductImage, productVariationID: Int64) {
         self.init(

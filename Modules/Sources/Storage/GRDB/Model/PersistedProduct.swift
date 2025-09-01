@@ -1,6 +1,7 @@
 import Foundation
 import GRDB
 
+// periphery:ignore - TODO: remove ignore when populating database
 public struct PersistedProduct: Codable {
     public let id: Int64
     public let siteID: Int64
@@ -48,6 +49,7 @@ public struct PersistedProduct: Codable {
     }
 }
 
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProduct: FetchableRecord, PersistableRecord {
     public static var databaseTableName: String { "product" }
 
@@ -72,6 +74,7 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
     public static let attributes = hasMany(PersistedProductAttribute.self)
 }
 
+// periphery:ignore - TODO: remove ignore when populating database
 private extension PersistedProduct {
     enum CodingKeys: String, CodingKey {
         case id

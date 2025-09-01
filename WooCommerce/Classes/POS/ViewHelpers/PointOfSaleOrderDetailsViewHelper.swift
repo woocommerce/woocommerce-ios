@@ -50,7 +50,7 @@ struct PointOfSaleOrderDetailsViewHelper {
     /// Formats discount total (already includes negative sign from data)
     /// Follows TotalsView pattern using discountTotal directly
     func formattedDiscountTotal(for order: POSOrder) -> String? {
-        guard let discountTotal = Double(order.discountTotal), discountTotal > 0 else {
+        guard let discountTotal = Double(order.discountTotal), discountTotal != 0 else {
             return nil
         }
 
@@ -60,22 +60,16 @@ struct PointOfSaleOrderDetailsViewHelper {
     /// Determines if discount should be shown
     func shouldShowDiscount(for order: POSOrder) -> Bool {
         guard let discountTotal = Double(order.discountTotal) else { return false }
-        return discountTotal > 0
+        return discountTotal != 0
     }
 
     /// Formats tax total
     func formattedTaxTotal(for order: POSOrder) -> String? {
-        guard let taxTotal = Double(order.totalTax), taxTotal > 0 else {
+        guard let taxTotal = Double(order.totalTax), taxTotal != 0 else {
             return nil
         }
 
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
-    }
-
-    /// Determines if taxes should be shown
-    func shouldShowTaxes(for order: POSOrder) -> Bool {
-        guard let taxTotal = Double(order.totalTax) else { return false }
-        return taxTotal > 0
     }
 
     /// Formats the main order total

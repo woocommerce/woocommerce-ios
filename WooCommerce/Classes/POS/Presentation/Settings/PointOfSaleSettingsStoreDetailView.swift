@@ -1,7 +1,13 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    @State private var isLoading: Bool = false
+
+    let viewModel: POSSettingsStoreViewModel
+
+    init(viewModel: POSSettingsStoreViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         NavigationStack {
@@ -10,7 +16,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.storeName)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeName)
+                        Text(viewModel.storeName)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
@@ -18,7 +24,7 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeAddress)
+                        Text(viewModel.storeAddress)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
@@ -31,51 +37,94 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.receiptStoreName)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreName)
+                        settingValueView(for: viewModel.receiptInformation.storeName)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.physicalAddress)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreAddress)
+                        settingValueView(for: viewModel.receiptInformation.storeAddress)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.phoneNumber)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStorePhone)
+                        settingValueView(for: viewModel.receiptInformation.phone)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.email)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreEmail)
+                        settingValueView(for: viewModel.receiptInformation.email)
                     }
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptRefundReturnsPolicy)
+                        settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
                     }
                 } header: {
                     Text(Localization.receiptInformation)
                         .font(.posBodyLargeRegular())
                 }
-                .renderedIf(settingsController.shouldShowReceiptInformation)
+                .renderedIf(viewModel.shouldShowReceiptInformation)
+            }
+            .task {
+                isLoading = true
+                await viewModel.retrievePOSReceiptSettings()
+                isLoading = false
             }
         }
     }
 
     @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
-        if settingsController.isLoading {
-            ProgressView()
-                .font(.posBodyLargeRegular())
+        if isLoading {
+            GhostSettingRowView()
         } else {
             Text(value ?? Localization.notSet)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+// Temporary: Simplified copy from PointOfSaleOrderListView.GhostOrderRowView
+private struct GhostSettingRowView: View {
+    @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+
+    private var minHeight: CGFloat {
+        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 70, height: 16)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shimmering()
+
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 160, height: 14)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shimmering()
+            }
+        }
+        .padding(.horizontal, POSPadding.medium * (1 / scale))
+        .padding(.vertical, POSPadding.medium * (1 / scale))
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .geometryGroup()
+    }
+
+    private enum Constants {
+        static let orderCardMinHeight: CGFloat = 90
+        static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     }
 }
 
@@ -145,6 +194,7 @@ private extension PointOfSaleSettingsStoreDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsStoreDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    let controller = PointOfSaleSettingsPreviewController()
+    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

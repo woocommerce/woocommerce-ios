@@ -283,109 +283,74 @@ struct POSCatalogSyncRemoteTests {
         #expect(queryParametersDictionary["page"] as? String == String(largePageNumber))
     }
 
-    // MARK: - Catalog Generation Tests
+    @Test func loadProducts_fullSync_returns_hasMorePages_based_on_header() async throws {
+        // Given a response with 3 pages
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-TotalPages": "3"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
 
-    @Test func generateCatalog_sets_correct_parameters() async throws {
+        // When loading page 1
+        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
+
+        // Then there are more pages
+        #expect(pagedProducts.hasMorePages == true)
+    }
+
+    // MARK: - Full Sync Product Tests
+
+    @Test func loadProducts_fullSync_sets_correct_parameters() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
+        let pageNumber = 2
 
         // When
-        _ = try? await remote.generateCatalog(for: sampleSiteID)
+        _ = try? await remote.loadProducts(siteID: sampleSiteID, pageNumber: pageNumber)
 
         // Then
         let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
-        #expect(queryParametersDictionary["fields"] as? [String] == POSProduct.requestFields)
+        #expect(queryParametersDictionary["page"] as? String == String(pageNumber))
+        #expect(queryParametersDictionary["per_page"] as? String == "100")
+        #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
+        #expect(queryParametersDictionary["modified_after"] == nil)
     }
 
-    @Test func generateCatalog_returns_parsed_response() async throws {
+    @Test func loadProducts_fullSync_returns_parsed_products() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
-        let expectedJobID = "export_1756177061_7885"
+        let expectedProductsCount = 2
 
         // When
-        network.simulateResponse(requestUrlSuffix: "catalog", filename: "pos-catalog-generation")
-        let response = try await remote.generateCatalog(for: sampleSiteID)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-pos")
+        let pagedProducts = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
 
         // Then
-        #expect(response.jobID == expectedJobID)
+        #expect(pagedProducts.items.count == expectedProductsCount)
+
+        let firstProduct = try #require(pagedProducts.items.first)
+        #expect(firstProduct.siteID == sampleSiteID)
+        #expect(firstProduct.productID == 168)
+        #expect(firstProduct.name == "Beanie")
     }
 
-    @Test func generateCatalog_relays_networking_error() async throws {
+    @Test func loadProducts_fullSync_relays_networking_error() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.generateCatalog(for: sampleSiteID)
+            try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1)
         }
     }
 
-    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_complete() async throws {
+    // MARK: - Full Sync Product Variations Tests
+
+    @Test func loadProductVariations_fullSync_sets_correct_parameters() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
-        let jobID = "job_12345"
+        let pageNumber = 3
 
         // When
-        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-complete")
-        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
-
-        // Then
-        #expect(response.status == .complete)
-        #expect(response.progress == 100.0)
-        #expect(response.downloadURL != nil)
-    }
-
-    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_pending() async throws {
-        // Given
-        let remote = POSCatalogSyncRemote(network: network)
-        let jobID = "job_12345"
-
-        // When
-        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-pending")
-        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
-
-        // Then
-        #expect(response.status == .pending)
-        #expect(response.progress == 0.0)
-        #expect(response.downloadURL == nil)
-    }
-
-    @Test func checkCatalogStatus_returns_parsed_response_when_status_is_processing() async throws {
-        // Given
-        let remote = POSCatalogSyncRemote(network: network)
-        let jobID = "job_12345"
-
-        // When
-        network.simulateResponse(requestUrlSuffix: "catalog/status/\(jobID)", filename: "pos-catalog-status-processing")
-        let response = try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
-
-        // Then
-        #expect(response.status == .processing)
-        #expect(response.progress == 5.0)
-        #expect(response.downloadURL == nil)
-    }
-
-    @Test func checkCatalogStatus_relays_networking_error() async throws {
-        // Given
-        let remote = POSCatalogSyncRemote(network: network)
-        let jobID = "job_12345"
-
-        // When/Then
-        await #expect(throws: NetworkError.notFound()) {
-            try await remote.checkCatalogStatus(for: sampleSiteID, jobID: jobID)
-        }
-    }
-
-    // MARK: - Download Catalog Tests
-
-    @Test func downloadCatalog_returns_parsed_catalog_with_products_and_variations() async throws {
-        // Given
-        let remote = POSCatalogSyncRemote(network: network)
-        let downloadURL = "https://example.com/catalog.json"
-
-        // When
-        network.simulateResponse(requestUrlSuffix: "", filename: "pos-catalog-download-mixed")
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+        _ = try? await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: pageNumber)
 
         // Then
         #expect(catalog.products.count == 2)
@@ -437,42 +402,52 @@ struct POSCatalogSyncRemoteTests {
             .init(id: 0, name: "ab", option: "deserunt"),
             .init(id: 2, name: "Numeric Size", option: "19")
         ])
+
+        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        #expect(queryParametersDictionary["page"] as? String == String(pageNumber))
+        #expect(queryParametersDictionary["per_page"] as? String == "100")
+        #expect(queryParametersDictionary["_fields"] as? String == POSProductVariation.requestFields.joined(separator: ","))
+        #expect(queryParametersDictionary["modified_after"] == nil)
     }
 
-    @Test func downloadCatalog_handles_empty_catalog() async throws {
+    @Test func loadProductVariations_fullSync_returns_parsed_variations() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
-        let downloadURL = "https://example.com/catalog.json"
 
         // When
-        network.simulateResponse(requestUrlSuffix: "", filename: "empty-data-array")
-        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "product-variations-load-pos")
+        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
 
         // Then
-        #expect(catalog.products.count == 0)
-        #expect(catalog.variations.count == 0)
+        #expect(pagedVariations.items.count == 1)
+
+        let firstVariation = try #require(pagedVariations.items.first)
+        #expect(firstVariation.siteID == sampleSiteID)
+        #expect(firstVariation.productVariationID == 123)
+        #expect(firstVariation.productID == 119)
     }
 
-    @Test func downloadCatalog_throws_error_for_empty_url() async throws {
+    @Test func loadProductVariations_fullSync_relays_networking_error() async throws {
         // Given
         let remote = POSCatalogSyncRemote(network: network)
-        let emptyURL = ""
-
-        // When/Then
-        await #expect(throws: NetworkError.invalidURL) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL)
-        }
-    }
-
-    @Test func downloadCatalog_relays_networking_error() async throws {
-        // Given
-        let remote = POSCatalogSyncRemote(network: network)
-        let downloadURL = "https://example.com/catalog.json"
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL)
+            try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
         }
+    }
+
+    @Test func loadProductVariations_fullSync_returns_hasMorePages_based_on_header() async throws {
+        // Given a response with 3 pages
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-TotalPages": "3"]
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When loading page 1
+        let pagedVariations = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1)
+
+        // Then there are more pages
+        #expect(pagedVariations.hasMorePages == true)
     }
 
     @Test func posProductVariation_provides_field_names_for_request() {

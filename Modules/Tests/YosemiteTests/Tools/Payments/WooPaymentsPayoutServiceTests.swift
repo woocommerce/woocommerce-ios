@@ -99,7 +99,9 @@ final class WooPaymentsPayoutServiceTests: XCTestCase {
 
     func testFetchPayoutsOverviewError() async {
         // Given
-        let mockError = DotcomError.noRestRoute
+        let mockError = NetworkError.from(
+            dotcomError: DotcomError.noRestRoute,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 404, response: nil))
         mockNetwork.simulateError(requestUrlSuffix: "payments/deposits/overview-all", error: mockError)
 
         do {
@@ -108,7 +110,8 @@ final class WooPaymentsPayoutServiceTests: XCTestCase {
             XCTFail("Expected an error, but the call succeeded.")
         } catch {
             // Then
-            XCTAssertEqual(error as? DotcomError, mockError)
+            let networkError = error as? NetworkError
+            XCTAssertEqual(networkError?.apiErrorCode, "rest_no_route")
         }
     }
 }

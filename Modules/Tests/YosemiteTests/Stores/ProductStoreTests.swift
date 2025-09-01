@@ -134,7 +134,9 @@ final class ProductStoreTests: XCTestCase {
     func test_addProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenAddingProduct(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.requestFailed,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
@@ -236,7 +238,9 @@ final class ProductStoreTests: XCTestCase {
     func test_deleteProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
-        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(DotcomError.requestFailed))
+        remote.whenDeletingProduct(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.requestFailed,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // Action
@@ -763,10 +767,16 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let dotComError = DotcomError.unknown(code: ProductLoadError.ErrorCode.invalidID.rawValue, message: nil)
+        let errorData =
+        """
+            {"code": "\(ProductLoadError.ErrorCode.invalidID.rawValue)",
+            "message": "Product not found"}
+            """
+            .data(using: .utf8)!
+        let networkError = NetworkError.unacceptableStatusCode(statusCode: 404, response: errorData)
 
         // Action
-        network.simulateError(requestUrlSuffix: "products/282", error: dotComError)
+        network.simulateError(requestUrlSuffix: "products/282", error: networkError)
         let result: Result<Yosemite.Product, Error> = waitFor { promise in
             let action = ProductAction.retrieveProduct(siteID: self.sampleSiteID, productID: self.sampleProductID) { result in
                 promise(result)

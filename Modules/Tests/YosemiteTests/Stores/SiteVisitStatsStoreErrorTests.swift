@@ -4,24 +4,31 @@ import XCTest
 
 class SiteStatsStoreErrorTests: XCTestCase {
     func testNoPermissionError() {
-        let remoteError = DotcomError.noStatsPermission
+        let remoteError = NetworkError.from(
+            dotcomError: DotcomError.noStatsPermission,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))
+
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .noPermission)
     }
 
     func testStatsModuleDisabledError() {
-        let remoteError = DotcomError.statsModuleDisabled
+        let remoteError = NetworkError.from(
+            dotcomError: DotcomError.statsModuleDisabled,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .statsModuleDisabled)
     }
 
     func testOtherDotcomError() {
-        let remoteError = DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected")
+        let remoteError = NetworkError.from(
+            dotcomError: DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected"),
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .unknown)
     }
 
-    func testNonDotcomRemoteError() {
+    func testNonNetworkRemoteError() {
         let remoteError = NSError(domain: "Woo", code: 404, userInfo: nil)
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .unknown)

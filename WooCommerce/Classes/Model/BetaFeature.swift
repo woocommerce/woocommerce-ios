@@ -56,6 +56,26 @@ extension BetaFeature {
     }
 }
 
+extension BetaFeature {
+    typealias DescriptionLink = (text: String, url: URL)
+
+    var descriptionLink: DescriptionLink? {
+        switch self {
+        case .viewAddOns:
+            return nil
+        case .applicationPasswords:
+            guard let url = URL(string: Constants.applicationPasswordsDocURL) else {
+                return nil
+            }
+
+            return DescriptionLink(
+                text: Localization.applicationPasswordsDescriptionLinkText,
+                url: url
+            )
+        }
+    }
+}
+
 extension GeneralAppSettingsStorage {
     func betaFeatureEnabled(_ feature: BetaFeature) -> Bool {
         value(for: feature.settingsKey)
@@ -102,7 +122,19 @@ private extension BetaFeature {
             comment: "Cell title on the beta features screen to enable the application passwords feature")
         static let applicationPasswordsDescription = NSLocalizedString(
             "experimentalFeatures.applicationPasswords.description",
-            value: "Switching Jetpack requests to direct requests to remote sites with application passwords",
-            comment: "Cell description on the beta features screen to enable application passwords feature")
+            value: "Enable %@ to let the app fetch data directly from your WooCommerce site rather than via Jetpack connections",
+            comment: "Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title."
+        )
+
+        static let applicationPasswordsDescriptionLinkText = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description.linkText",
+            value: "Application Passwords",
+            comment: "Link text to open Application Passwords documentation page"
+        )
+    }
+
+    enum Constants {
+        static let applicationPasswordsDocURL =
+            "https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/"
     }
 }

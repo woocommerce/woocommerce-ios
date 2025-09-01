@@ -20,7 +20,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showProductRestrictions = true
                 } label: {
-                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "magnifyingglass")
                             .font(.posBodyLargeRegular())
                             .accessibilityHidden(true)
@@ -44,7 +44,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showDocumentation = true
                 } label: {
-                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
                             .accessibilityHidden(true)
@@ -68,7 +68,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                 Button {
                     showSupport = true
                 } label: {
-                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "questionmark")
                             .font(.posBodyLargeRegular())
                             .accessibilityHidden(true)

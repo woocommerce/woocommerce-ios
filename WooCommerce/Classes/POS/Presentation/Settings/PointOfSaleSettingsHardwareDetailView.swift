@@ -39,7 +39,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
 
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
                             .accessibilityHidden(true)
@@ -125,7 +125,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Button {
                     showCardReaderDocumentationModal = true
                 } label: {
-                    DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
                             .accessibilityHidden(true)

@@ -91,7 +91,14 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     private var cardReadersView: some View {
-        VStack(spacing: POSSpacing.large) {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
             List {
                 VStack(spacing: POSPadding.xSmall) {
                     HStack {
@@ -148,78 +155,48 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             .foregroundColor(.posOnSurface)
         }
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    navigationPath.removeLast()
-                } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "chevron.left")
-                        Text(Localization.cardReadersTitle)
-                    }
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .contentShape(Rectangle())
-                }
-            }
-        }
-        .toolbarBackground(backgroundColor, for: .navigationBar)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
     private var scannersView: some View {
-        List(ScannerDestination.allCases) { destination in
-            Button {
-                handleScannerDestination(destination)
-            } label: {
-                DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
-                    Image(systemName: destination.icon)
-                        .font(.posBodyLargeRegular())
-                        .accessibilityHidden(true)
-                        .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.scannersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
 
-                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                        Text(destination.title)
+            List(ScannerDestination.allCases) { destination in
+                Button {
+                    handleScannerDestination(destination)
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                        Text(destination.subtitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     Spacer()
                 }
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
             }
-            .buttonStyle(.plain)
-            .accessibilityAddTraits(.isButton)
-            .listRowSeparator(.hidden)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .listRowBackground(Color.clear)
-        .background(backgroundColor)
-        .foregroundColor(.posOnSurface)
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button {
-                    navigationPath.removeLast()
-                } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "chevron.left")
-                        Text(Localization.scannersTitle)
-                    }
-                    .font(.posBodyLargeRegular())
-                    .foregroundColor(.posOnSurface)
-                    .contentShape(Rectangle())
-                }
-            }
-        }
-        .toolbarBackground(backgroundColor, for: .navigationBar)
     }
-
 }
 
 extension PointOfSaleSettingsHardwareDetailView {

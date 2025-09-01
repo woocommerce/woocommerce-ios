@@ -7,7 +7,7 @@ import GRDB
 struct PersistedProductTests {
 
     @Test("PersistedProduct init(from:) maps all POSProduct fields")
-    func test_product_init_from_posProduct_maps_all_fields() throws {
+    func product_init_from_posProduct_maps_all_fields() throws {
         // Given
         let siteID: Int64 = 1
         let productID: Int64 = 10
@@ -51,7 +51,7 @@ struct PersistedProductTests {
     }
 
     @Test("PersistedProduct toPOSProduct maps back with images and attributes")
-    func test_product_toPOSProduct_maps_back_including_images_and_attributes() throws {
+    func product_toPOSProduct_maps_back_including_images_and_attributes() throws {
         // Given
         let siteID: Int64 = 2
         let productID: Int64 = 20
@@ -121,7 +121,7 @@ struct PersistedProductTests {
     }
 
     @Test("A Product's images and attributes are fetched automatically")
-    func test_product_with_associations_fetches_related_records() throws {
+    func product_with_associations_fetches_related_records() throws {
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -234,7 +234,7 @@ struct PersistedProductTests {
     }
 
     @Test("Product without related records has empty arrays")
-    func test_product_without_related_records_creates_empty_arrays() throws {
+    func product_without_related_records_creates_empty_arrays() throws {
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 
@@ -280,7 +280,7 @@ struct PersistedProductTests {
     }
 
     @Test("PersistedProductAttribute init(from:) and toProductAttribute round-trip")
-    func test_product_attribute_round_trip() throws {
+    func product_attribute_round_trip() throws {
         // Given
         let siteID: Int64 = 3
         let productID: Int64 = 30
@@ -313,7 +313,7 @@ struct PersistedProductTests {
     }
 
     @Test("PersistedProductImage init(from:) and toProductImage round-trip")
-    func test_product_image_round_trip() throws {
+    func product_image_round_trip() throws {
         // Given
         let productID: Int64 = 40
         let image = ProductImage(imageID: 400,
@@ -345,7 +345,7 @@ struct PersistedProductTests {
     }
 
     @Test("POSProduct.save() persists complete product with relationships")
-    func test_save_persists_complete_pos_product() throws {
+    func save_persists_complete_pos_product() throws {
         let grdbManager = try GRDBManager()
         let db = grdbManager.databaseConnection
 

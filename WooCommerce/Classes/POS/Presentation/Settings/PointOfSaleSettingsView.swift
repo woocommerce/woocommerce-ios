@@ -32,6 +32,7 @@ extension PointOfSaleSettingsView {
                                                },
                                                buttonIcon: "xmark"))
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
                 PointOfSaleSettingsCard(
@@ -102,6 +103,7 @@ struct PointOfSaleSettingsCard: View {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
+                    .accessibilityHidden(true)
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
                 VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -121,6 +123,7 @@ struct PointOfSaleSettingsCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
         .background(
             RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
                 .fill(isSelected ? Color.posSecondary : Color.clear)

@@ -15,6 +15,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
         NavigationStack {
             POSPageHeaderView(title: Localization.helpTitle)
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
             List {
                 Button {
                     showProductRestrictions = true
@@ -22,6 +23,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "magnifyingglass")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.productRestrictionsInfo)
@@ -35,6 +37,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
@@ -44,6 +47,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.documentationTitle)
@@ -57,6 +61,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
@@ -66,6 +71,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                     DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "questionmark")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.getSupportTitle)
@@ -79,6 +85,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
                         Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
             }

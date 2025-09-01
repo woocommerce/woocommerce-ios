@@ -35,12 +35,14 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
                     DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
@@ -119,6 +121,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
                             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
@@ -134,6 +137,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
@@ -172,6 +176,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                     Image(systemName: destination.icon)
                         .font(.posBodyLargeRegular())
+                        .accessibilityHidden(true)
                         .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
                     VStack(alignment: .leading, spacing: POSPadding.xSmall) {
@@ -187,6 +192,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 }
             }
             .buttonStyle(.plain)
+            .accessibilityAddTraits(.isButton)
             .listRowSeparator(.hidden)
         }
         .listStyle(.plain)

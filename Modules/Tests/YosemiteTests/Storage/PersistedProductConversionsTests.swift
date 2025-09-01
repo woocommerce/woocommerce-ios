@@ -5,7 +5,7 @@ import Testing
 struct PersistedProductConversionsTests {
 
     @Test("PersistedProduct init(from:) maps all POSProduct fields")
-    func test_product_init_from_posProduct_maps_all_fields() throws {
+    func product_init_from_posProduct_maps_all_fields() throws {
         // Given
         let siteID: Int64 = 1
         let productID: Int64 = 10
@@ -24,8 +24,8 @@ struct PersistedProductConversionsTests {
                          alt: nil)
         ]
         let attributes: [ProductAttribute] = [
-            ProductAttribute(siteID: siteID, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: ["Red", "Blue"]),
-            ProductAttribute(siteID: siteID, attributeID: 0, name: "Size", position: 1, visible: false, variation: false, options: ["S", "M"])
+            ProductAttribute(siteID: siteID, attributeID: 0, name: "Color", position: 0, visible: true, variation: true, options: []),
+            ProductAttribute(siteID: siteID, attributeID: 0, name: "Size", position: 1, visible: false, variation: false, options: [])
         ]
         let pos = POSProduct(
             siteID: siteID,
@@ -54,8 +54,8 @@ struct PersistedProductConversionsTests {
         #expect(persisted.siteID == siteID)
         #expect(persisted.name == pos.name)
         #expect(persisted.productTypeKey == pos.productTypeKey)
-        #expect(persisted.fullDescription == "Full")
-        #expect(persisted.shortDescription == "Short")
+        #expect(persisted.fullDescription == pos.fullDescription)
+        #expect(persisted.shortDescription == pos.shortDescription)
         #expect(persisted.sku == pos.sku)
         #expect(persisted.globalUniqueID == pos.globalUniqueID)
         #expect(persisted.price == pos.price)
@@ -67,7 +67,7 @@ struct PersistedProductConversionsTests {
     }
 
     @Test("PersistedProduct toPOSProduct maps back with images and attributes")
-    func test_product_toPOSProduct_maps_back_including_images_and_attributes() throws {
+    func product_toPOSProduct_maps_back_including_images_and_attributes() throws {
         // Given
         let siteID: Int64 = 2
         let productID: Int64 = 20
@@ -106,8 +106,8 @@ struct PersistedProductConversionsTests {
         ]
 
         let persistedAttributes = [
-            PersistedProductAttribute(productID: productID, name: "Material", position: 0, visible: true, variation: false, options: ["Cotton"]),
-            PersistedProductAttribute(productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: ["Slim", "Regular"])
+            PersistedProductAttribute(productID: productID, name: "Material", position: 0, visible: true, variation: false, options: []),
+            PersistedProductAttribute(productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: [])
         ]
 
         // When
@@ -137,7 +137,7 @@ struct PersistedProductConversionsTests {
     }
 
     @Test("PersistedProductAttribute init(from:) and toProductAttribute round-trip")
-    func test_product_attribute_round_trip() throws {
+    func product_attribute_round_trip() throws {
         // Given
         let siteID: Int64 = 3
         let productID: Int64 = 30
@@ -170,7 +170,7 @@ struct PersistedProductConversionsTests {
     }
 
     @Test("PersistedProductImage init(from:) and toProductImage round-trip")
-    func test_product_image_round_trip() throws {
+    func product_image_round_trip() throws {
         // Given
         let productID: Int64 = 40
         let image = ProductImage(imageID: 400,

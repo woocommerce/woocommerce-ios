@@ -5,7 +5,7 @@ import Testing
 struct PersistedProductVariationConversionsTests {
 
     @Test("PersistedProductVariation init(from:) maps all POSProductVariation fields")
-    func test_variation_init_from_posProductVariation_maps_all_fields() throws {
+    func variation_init_from_posProductVariation_maps_all_fields() throws {
         // Given
         let siteID: Int64 = 5
         let productID: Int64 = 50
@@ -54,7 +54,7 @@ struct PersistedProductVariationConversionsTests {
     }
 
     @Test("PersistedProductVariation toPOSProductVariation maps back with attributes and optional image")
-    func test_variation_toPOSProductVariation_maps_back_including_attributes_and_image() throws {
+    func variation_toPOSProductVariation_maps_back_including_attributes_and_image() throws {
         // Given
         let siteID: Int64 = 6
         let productID: Int64 = 60
@@ -109,7 +109,7 @@ struct PersistedProductVariationConversionsTests {
     }
 
     @Test("PersistedProductVariationAttribute init(from:) and toProductVariationAttribute round-trip")
-    func test_variation_attribute_round_trip() throws {
+    func variation_attribute_round_trip() throws {
         // Given
         let variationID: Int64 = 700
         let attr = ProductVariationAttribute(id: 0, name: "Style", option: "Modern")
@@ -128,7 +128,7 @@ struct PersistedProductVariationConversionsTests {
     }
 
     @Test("PersistedProductVariationImage init(from:) and toProductImage round-trip")
-    func test_variation_image_round_trip() throws {
+    func variation_image_round_trip() throws {
         // Given
         let variationID: Int64 = 800
         let image = ProductImage(imageID: 801,

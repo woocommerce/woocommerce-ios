@@ -2,8 +2,9 @@ import Foundation
 import Storage
 
 // MARK: - PersistedProduct Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProduct {
-    public init(from posProduct: POSProduct) {
+    init(from posProduct: POSProduct) {
         self.init(
             id: posProduct.productID,
             siteID: posProduct.siteID,
@@ -22,7 +23,7 @@ extension PersistedProduct {
         )
     }
 
-    public func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
+    func toPOSProduct(images: [ProductImage] = [], attributes: [ProductAttribute] = []) -> POSProduct {
         return POSProduct(
             siteID: siteID,
             productID: id,
@@ -42,11 +43,49 @@ extension PersistedProduct {
             stockStatusKey: stockStatusKey
         )
     }
+
+    func toPOSProduct(db: GRDBDatabaseConnection) throws -> POSProduct {
+        let (images, attributes) = try db.read { db in
+            let images = try request(for: PersistedProduct.images).fetchAll(db)
+            let attributes = try request(for: PersistedProduct.attributes).fetchAll(db)
+            return (images, attributes)
+        }
+
+        return toPOSProduct(
+            images: images.map { $0.toProductImage() },
+            attributes: attributes.map { $0.toProductAttribute(siteID: siteID) }
+        )
+    }
+
+}
+
+// MARK: - POSProduct Storage Extensions
+// periphery:ignore - TODO: remove ignore when populating database
+extension POSProduct {
+    public func save(to db: GRDBDatabaseConnection) throws {
+        try db.write { db in
+            let product = PersistedProduct(from: self)
+            try product.insert(db)
+
+            // Save related images
+            for image in self.images {
+                let persistedImage = PersistedProductImage(from: image, productID: self.productID)
+                try persistedImage.insert(db)
+            }
+
+            // Save related attributes
+            for attribute in self.attributes {
+                var persistedAttribute = PersistedProductAttribute(from: attribute, productID: self.productID)
+                try persistedAttribute.insert(db)
+            }
+        }
+    }
 }
 
 // MARK: - PersistedProductAttribute Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductAttribute {
-    public init(from productAttribute: ProductAttribute, productID: Int64) {
+    init(from productAttribute: ProductAttribute, productID: Int64) {
         self.init(
             productID: productID,
             name: productAttribute.name,
@@ -57,7 +96,7 @@ extension PersistedProductAttribute {
         )
     }
 
-    public func toProductAttribute(siteID: Int64) -> ProductAttribute {
+    func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
             attributeID: id ?? 0,
@@ -71,8 +110,9 @@ extension PersistedProductAttribute {
 }
 
 // MARK: - PersistedProductImage Conversions
+// periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductImage {
-    public init(from productImage: ProductImage, productID: Int64) {
+    init(from productImage: ProductImage, productID: Int64) {
         self.init(
             id: productImage.imageID,
             productID: productID,
@@ -84,7 +124,7 @@ extension PersistedProductImage {
         )
     }
 
-    public func toProductImage() -> ProductImage {
+    func toProductImage() -> ProductImage {
         return ProductImage(
             imageID: id,
             dateCreated: dateCreated,

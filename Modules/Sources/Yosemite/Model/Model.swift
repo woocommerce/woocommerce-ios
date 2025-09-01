@@ -350,12 +350,19 @@ public typealias StorageWooShippingShipment = Storage.WooShippingShipment
 public typealias StorageWooShippingOriginAddress = Storage.WooShippingOriginAddress
 
 // MARK: - GRDB Persisted Models
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedSite = Storage.PersistedSite
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProduct = Storage.PersistedProduct
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProductAttribute = Storage.PersistedProductAttribute
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProductImage = Storage.PersistedProductImage
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProductVariation = Storage.PersistedProductVariation
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProductVariationAttribute = Storage.PersistedProductVariationAttribute
+// periphery:ignore - TODO: remove ignore when populating database
 public typealias PersistedProductVariationImage = Storage.PersistedProductVariationImage
 
 // MARK: - Internal ReadOnly Models

@@ -10,8 +10,13 @@ struct CommonReaderConfigProviderTests {
         let adminURL = "https://example.com/wp-admin/set-address"
         let mockRemote = MockCardReaderCapableRemote(
             resultForDefaultReaderLocation: .failure(
-                DotcomError.unknown(code: "store_address_is_incomplete",
-                                    message: adminURL)))
+                NetworkError.from(
+                    dotcomError: DotcomError.unknown(
+                        code: "store_address_is_incomplete",
+                        message: adminURL),
+                    originalNetworkError: NetworkError.unacceptableStatusCode(
+                        statusCode: 400,
+                        response: nil))))
 
         let sut = CommonReaderConfigProvider(siteID: 123,
                                              readerConfigRemote: mockRemote)
@@ -29,8 +34,13 @@ struct CommonReaderConfigProviderTests {
     @Test func fetchDefaultLocationID_returns_invalidPostalCode_error_when_jetpack_site_has_no_postcode() async throws {
         let mockRemote = MockCardReaderCapableRemote(
             resultForDefaultReaderLocation: .failure(
-                DotcomError.unknown(code: "postal_code_invalid",
-                                    message: "")))
+                NetworkError.from(
+                    dotcomError: DotcomError.unknown(
+                        code: "postal_code_invalid",
+                        message: ""),
+                    originalNetworkError: NetworkError.unacceptableStatusCode(
+                        statusCode: 400,
+                        response: nil))))
 
         let sut = CommonReaderConfigProvider(siteID: 123,
                                              readerConfigRemote: mockRemote)

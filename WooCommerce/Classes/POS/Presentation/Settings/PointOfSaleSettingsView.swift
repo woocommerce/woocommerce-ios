@@ -90,23 +90,29 @@ extension PointOfSaleSettingsView {
 }
 
 struct PointOfSaleSettingsCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            HStack {
+            DynamicHStack(horizontalAlignment: .leading, spacing: POSSpacing.medium) {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
-                VStack(alignment: .leading) {
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 }
                 Spacer()
             }

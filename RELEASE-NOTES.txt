@@ -3,7 +3,7 @@
 
 23.2
 -----
-
+- [*] Adds a toggle for Application Passwords feature in Experimental Features settings screen [https://github.com/woocommerce/woocommerce-ios/pull/16059]
 
 23.1
 -----

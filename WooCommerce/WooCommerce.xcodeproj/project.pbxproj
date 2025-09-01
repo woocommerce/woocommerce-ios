@@ -1230,6 +1230,7 @@
 		26FFC50C2BED7C5A0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		26FFC50D2BED7C5B0067B3A4 /* WatchDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B249702BEC801400730730 /* WatchDependencies.swift */; };
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
+		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
 		2DB877522E25466C0001B175 /* ShippingItemRowAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */; };
@@ -4412,6 +4413,7 @@
 		26FFD32628C6A0A4002E5E5E /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		26FFD32928C6A0F4002E5E5E /* UIImage+Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Widgets.swift"; sourceTree = "<group>"; };
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
+		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
 		2DB877512E25466B0001B175 /* ShippingItemRowAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingItemRowAccessibility.swift; sourceTree = "<group>"; };
@@ -11517,6 +11519,7 @@
 		BA143222273662DE00E4B3AB /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */,
 				023BD5892BFDCF9500A10D7B /* POS */,
 				BAFEF51D273C2151005F94CC /* SettingsViewModelTests.swift */,
 				02AA586528531D0E0068B6F0 /* CloseAccountCoordinatorTests.swift */,
@@ -17728,6 +17731,7 @@
 				0247F510286E7D26009C177E /* ProductVariationFormViewModel+ImageUploaderTests.swift in Sources */,
 				020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */,
 				DECEA4492C81C1A800C28C10 /* ProductImagePickerViewModelTests.swift in Sources */,
+				2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				579CDF01274D811D00E8903D /* StoreStatsUsageTracksEventEmitterTests.swift in Sources */,
 				CE4AFE482CD239B90013C52B /* WooShippingPostPurchaseViewModelTests.swift in Sources */,

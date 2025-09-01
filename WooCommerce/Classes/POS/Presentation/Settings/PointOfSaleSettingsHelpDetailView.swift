@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    
+
     @State private var showProductRestrictions = false
     @State private var showDocumentation = false
     @State private var showSupport = false

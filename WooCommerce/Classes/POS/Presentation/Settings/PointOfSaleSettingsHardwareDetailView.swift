@@ -173,20 +173,25 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Button {
                     handleScannerDestination(destination)
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(destination.subtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
-                    Spacer()
                 }
                 .buttonStyle(.plain)
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)

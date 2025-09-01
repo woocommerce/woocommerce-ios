@@ -25,6 +25,12 @@ struct CartView: View {
         posModel.cart.coupons.isNotEmpty
     }
 
+    private var isPOSSettingsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+    }
+
+    @State private var showBarcodeScanningModal: Bool = false
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -68,6 +74,9 @@ struct CartView: View {
                         .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                         .zIndex(1)
                 }
+            }
+            .posModal(isPresented: $showBarcodeScanningModal) {
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -126,6 +135,11 @@ private extension CartView {
 
 private extension CartView {
     enum Localization {
+        static let barcodeScanningSetup = NSLocalizedString(
+            "pos.cartView.cartTitle.barcodeScanningSetup.button",
+            value: "Scan barcode",
+            comment: "The title of the menu button to start a barcode scanner setup flow."
+        )
         static let cartTitle = NSLocalizedString(
             "pos.cartView.cartTitle",
             value: "Cart",
@@ -133,6 +147,10 @@ private extension CartView {
         static let addItemsToCartHint = NSLocalizedString(
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
+            comment: "Hint to add products to the Cart when this is empty.")
+        static let addItemsToCartOrScanHint = NSLocalizedString(
+            "pos.cartView.addItemsToCartOrScanHint",
+            value: "Tap on a product to \n add it to the cart, or ",
             comment: "Hint to add products to the Cart when this is empty.")
         static let checkoutButtonTitle = NSLocalizedString(
             "pos.cartView.checkoutButtonTitle",
@@ -191,7 +209,7 @@ private extension CartView {
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
             // avoids issues when the text size is changed through dynamic type.
-            Text(Localization.addItemsToCartHint)
+            Text(isPOSSettingsEnabled ? Localization.addItemsToCartOrScanHint : Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
@@ -202,6 +220,19 @@ private extension CartView {
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
+            if isPOSSettingsEnabled {
+                Button(action: {
+                    ServiceLocator.analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
+                    showBarcodeScanningModal = true
+                }, label: {
+                    HStack {
+                        Text(Localization.barcodeScanningSetup)
+                            .font(Constants.secondaryFont)
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                })
+            }
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))

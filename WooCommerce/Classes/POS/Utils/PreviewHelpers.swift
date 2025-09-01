@@ -22,6 +22,9 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
+import struct Yosemite.POSOrder
+import class Yosemite.PointOfSaleOrderListService
+import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -209,6 +212,7 @@ struct POSPreviewHelpers {
         couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
+        settingsController: PointOfSaleSettingsControllerProtocol = PointOfSaleSettingsPreviewController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -222,12 +226,74 @@ struct POSPreviewHelpers {
             couponsSearchController: couponsSearchController,
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
+            settingsController: settingsController,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
             barcodeScanService: barcodeScanService
         )
     }
+
+    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
+        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
+    }
+}
+
+// MARK: - Preview Orders Controller
+final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
+    var ordersViewState: OrderListState {
+        .loaded(
+                [
+                    POSOrder(
+                        id: 1,
+                        number: "1001",
+                        dateCreated: Date(),
+                        status: .completed,
+                        total: "25.00",
+                        customerEmail: "customer1@example.com",
+                        paymentMethodID: "cod",
+                        paymentMethodTitle: "Cash",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    ),
+                    POSOrder(
+                        id: 2,
+                        number: "1002",
+                        dateCreated: Date().addingTimeInterval(-3600),
+                        status: .processing,
+                        total: "45.50",
+                        customerEmail: "a.long.customer.name@withalongdomain.com",
+                        paymentMethodID: "woocommerce_payments",
+                        paymentMethodTitle: "Credit Card",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    ),
+                    POSOrder(
+                        id: 3,
+                        number: "1003",
+                        dateCreated: Date().addingTimeInterval(-7200),
+                        status: .completed,
+                        total: "12.75",
+                        customerEmail: nil,
+                        paymentMethodID: "woocommerce_payments",
+                        paymentMethodTitle: "Credit Card",
+                        lineItems: [],
+                        refunds: [],
+                        currency: "USD",
+                        currencySymbol: "$"
+                    )
+                ],
+                hasMoreItems: false
+            )
+    }
+
+    func loadOrders() async {}
+    func loadNextOrders() async {}
+    func refreshOrders() async { }
 }
 
 // MARK: - Barcode Scan Service

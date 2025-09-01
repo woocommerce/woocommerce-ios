@@ -23,11 +23,19 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
+    private let network: AlamofireNetwork
+
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+
+        let site = sessionManager.defaultSitePublisher
+            .prepend(sessionManager.defaultSite) // needed to emit the initial value upon subscription
+            .map { $0?.toJetpackSite() }
+            .eraseToAnyPublisher()
+
+        self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -129,6 +137,7 @@ class AuthenticatedState: StoresManagerState {
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
+        checkApplicationPasswordExperimentFeatureFlag()
     }
 
     /// Convenience Initializer
@@ -137,8 +146,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-
-        self.init(credentials: credentials)
+        self.init(credentials: credentials, sessionManager: sessionManager)
     }
 
     /// Executed before the current state is deactivated.
@@ -182,6 +190,13 @@ private extension AuthenticatedState {
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
+    }
+
+    /// Uses local feature flag for development phase.
+    /// TODO: Switch to remote feature flag before release.
+    func checkApplicationPasswordExperimentFeatureFlag() {
+        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
+        network.updateAppPasswordSwitching(enabled: enabled)
     }
 }
 

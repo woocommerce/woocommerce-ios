@@ -1,5 +1,6 @@
 import Foundation
 import Codegen
+import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -92,6 +93,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     ///
     public let hasSSOEnabled: Bool
 
+    /// Whether application password authentication is available
+    ///
+    public let applicationPasswordAvailable: Bool
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -156,7 +161,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   canBlaze: canBlaze,
                   isAdmin: isAdmin,
                   wasEcommerceTrial: wasEcommerceTrial,
-                  hasSSOEnabled: hasSSOEnabled)
+                  hasSSOEnabled: hasSSOEnabled,
+                  applicationPasswordAvailable: false) // to be updated by fetching SiteAPI
     }
 
     /// Designated Initializer.
@@ -182,7 +188,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 canBlaze: Bool,
                 isAdmin: Bool,
                 wasEcommerceTrial: Bool,
-                hasSSOEnabled: Bool) {
+                hasSSOEnabled: Bool,
+                applicationPasswordAvailable: Bool) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -205,6 +212,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.isAdmin = isAdmin
         self.wasEcommerceTrial = wasEcommerceTrial
         self.hasSSOEnabled = hasSSOEnabled
+        self.applicationPasswordAvailable = applicationPasswordAvailable
     }
 }
 
@@ -314,6 +322,10 @@ public extension Site {
     ///
     var isPrivateWPCOMSite: Bool {
         return isWordPressComStore && (visibility == .privateSite)
+    }
+
+    func toJetpackSite() -> JetpackSite {
+        JetpackSite(siteID: siteID, siteAddress: url, applicationPasswordAvailable: applicationPasswordAvailable)
     }
 }
 

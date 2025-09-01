@@ -134,6 +134,28 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         await fulfillment(of: [exp], timeout: Constants.expectationTimeout)
     }
 
+    func test_authenticate_returns_REST_request_with_authorization_header_when_authenticated_with_wpcom_and_selected_site_is_provided() throws {
+        // Given
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wpcom(username: "username", authToken: "auth_token", siteAddress: siteURL)
+        let selectedSite = JetpackSite(siteID: 123, siteAddress: siteURL, applicationPasswordAvailable: true)
+        let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, selectedSite: selectedSite, applicationPasswordUseCase: useCase)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let basePath = RESTRequest.Settings.basePath
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
+
+        // When
+        let request = try restRequest.asURLRequest()
+        let updatedRequest = try authenticator.authenticate(request)
+
+        // Then
+        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
+        assertEqual(expectedURL, updatedRequest.url?.absoluteString)
+        let authorizationValue = try XCTUnwrap(updatedRequest.allHTTPHeaderFields?["Authorization"])
+        XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
+    }
+
     func test_shouldRetry_returns_true_for_REST_request() throws {
         // Given
         let siteURL = "https://test.com/"
@@ -163,6 +185,23 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
 
         // Then
         XCTAssertFalse(authenticator.shouldRetry(request))
+    }
+
+    func test_shouldRetry_returns_true_for_REST_request_when_authenticated_with_wpcom_credentials_and_selected_site_is_provided() throws {
+        // Given
+        let siteURL = "https://test.com/"
+        let credentials: Credentials = .wpcom(username: "username", authToken: "auth_token", siteAddress: siteURL)
+        let selectedSite = JetpackSite(siteID: 123, siteAddress: siteURL, applicationPasswordAvailable: true)
+        let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, selectedSite: selectedSite, applicationPasswordUseCase: useCase)
+        let wooAPIVersion = WooAPIVersion.mark1
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
+
+        // When
+        let request = try restRequest.asURLRequest()
+
+        // Then
+        XCTAssertTrue(authenticator.shouldRetry(request))
     }
 }
 
@@ -196,7 +235,7 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
         throw mockGenerationError ?? NetworkError.notFound()
     }
 
-    func deletePassword() async throws {
+    func deletePassword(locally: Bool) async throws {
         throw mockDeletionError ?? NetworkError.notFound()
     }
 }

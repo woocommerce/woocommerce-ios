@@ -2,6 +2,19 @@ import Combine
 import Foundation
 import Alamofire
 
+/// Helper type to observe selected site info
+public struct JetpackSite: Equatable {
+    let siteID: Int64
+    let siteAddress: String
+    let applicationPasswordAvailable: Bool
+
+    public init(siteID: Int64, siteAddress: String, applicationPasswordAvailable: Bool) {
+        self.siteID = siteID
+        self.siteAddress = siteAddress
+        self.applicationPasswordAvailable = applicationPasswordAvailable
+    }
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -17,9 +30,13 @@ public class AlamofireNetwork: Network {
         return sessionManager
     }()
 
+    private let credentials: Credentials?
+
+    private let selectedSite: AnyPublisher<JetpackSite?, Never>?
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
-    private let requestConverter: RequestConverter
+    private var requestConverter: RequestConverter
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -27,14 +44,42 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
+    private var subscription: AnyCancellable?
+
     /// Public Initializer
     ///
     ///
-    public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
-        self.requestConverter = RequestConverter(credentials: credentials)
+    public required init(credentials: Credentials?,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         sessionManager: Alamofire.Session? = nil) {
+        self.credentials = credentials
+        self.selectedSite = selectedSite
+        self.requestConverter = {
+            let siteAddress: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress):
+                    return siteAddress
+                case let .applicationPassword(_, _, siteAddress):
+                    return siteAddress
+                default:
+                    return nil
+                }
+            }()
+            return RequestConverter(siteAddress: siteAddress)
+        }()
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
             self.alamofireSession = sessionManager
+        }
+    }
+
+    public func updateAppPasswordSwitching(enabled: Bool) {
+        guard let credentials, case .wpcom = credentials else { return }
+        if enabled, let selectedSite {
+            observeSelectedSite(selectedSite)
+        } else {
+            requestConverter = RequestConverter(siteAddress: nil)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
         }
     }
 
@@ -141,6 +186,27 @@ private extension AlamofireNetwork {
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
+    }
+
+    /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
+    ///
+    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
+        subscription = selectedSite
+            .removeDuplicates()
+            .sink { [weak self] site in
+                guard let self else { return }
+                guard let site, site.applicationPasswordAvailable else {
+                    requestConverter = RequestConverter(siteAddress: nil)
+                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    return
+                }
+                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                    credentials: credentials,
+                    selectedSite: site,
+                    network: self
+                ))
+            }
     }
 }
 

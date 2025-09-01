@@ -161,7 +161,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager {
-        state = AuthenticatedState(credentials: credentials)
+        state = AuthenticatedState(credentials: credentials, sessionManager: sessionManager)
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
@@ -220,7 +220,10 @@ class DefaultStoresManager: StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
-        sessionManager.deleteApplicationPassword()
+        /// In case of store switching, new password might be saved locally before the deletion of old password is done.
+        /// Here we delete the password remotely only to avoid the race condition
+        /// when the new password is removed from the local storage by mistake.
+        sessionManager.deleteApplicationPassword(locally: false)
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
@@ -250,6 +253,7 @@ class DefaultStoresManager: StoresManager {
             dispatch(resetAction)
         }
 
+        sessionManager.deleteApplicationPassword(locally: true)
         sessionManager.reset()
         state = DeauthenticatedState()
 
@@ -295,7 +299,20 @@ class DefaultStoresManager: StoresManager {
         guard site.siteID == sessionManager.defaultStoreID else {
             return
         }
+
         sessionManager.defaultSite = site
+
+        /// Triggers root endpoint to check if application password is available
+        dispatch(SettingAction.retrieveSiteAPI(siteID: site.siteID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let siteAPI):
+                let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
+                sessionManager.defaultSite = updatedSite
+            case .failure:
+                break // ignores failure
+            }
+        })
     }
 
     /// Updates the user roles for the default Store site.
@@ -648,9 +665,9 @@ private extension DefaultStoresManager {
 
         if siteID == WooConstants.placeholderStoreID,
            let url = sessionManager.defaultCredentials?.siteAddress {
-            restoreSessionSite(with: url)
+            restoreWordPressSite(with: url)
         } else {
-            restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)
+            restoreJetpackSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
         synchronizeSettings(with: siteID) {
@@ -674,7 +691,7 @@ private extension DefaultStoresManager {
 
     /// Load the site with the specified URL into the session if possible.
     ///
-    func restoreSessionSite(with url: String) {
+    func restoreWordPressSite(with url: String) {
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: url) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -706,16 +723,26 @@ private extension DefaultStoresManager {
     /// Loads the specified siteID into the Session, if possible.
     /// If the site does not exist in storage, it synchronizes the site asynchronously.
     ///
-    func restoreSessionSiteAndSynchronizeIfNeeded(with siteID: Int64) {
+    func restoreJetpackSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let action = AccountAction
-            .loadAndSynchronizeSite(siteID: siteID,
-                                    forcedUpdate: false) { [weak self] result in
-            guard let self = self else { return }
+            .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false) { [weak self] result in
+            guard let self else { return }
             guard case .success(let site) = result else {
                 return
             }
-            self.sessionManager.defaultSite = site
-            self.updateAndReloadWidgetInformation(with: siteID)
+            /// Triggers root endpoint to check if application password is available
+            dispatch(SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let siteAPI):
+                    let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
+                    sessionManager.defaultSite = updatedSite
+                    updateAndReloadWidgetInformation(with: siteID)
+                case .failure:
+                    sessionManager.defaultSite = site
+                    updateAndReloadWidgetInformation(with: siteID)
+                }
+            })
         }
         dispatch(action)
     }

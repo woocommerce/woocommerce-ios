@@ -1296,6 +1296,12 @@ enum WooAnalyticsStat: String {
     case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
     case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
     case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
+    case pointOfSaleSettingsMenuItemTapped = "settings_open"
+    case pointOfSaleSettingsCloseButtonTapped = "settings_closed"
+    case pointOfSaleSettingsStoreDetailsTapped = "settings_store_details_tapped"
+    case pointOfSaleSettingsHardwareTapped = "settings_hardware_tapped"
+    case pointOfSaleSettingsHelpTapped = "settings_help_tapped"
+    case pointOfSaleEmptyCartSetupScannerTapped = "empty_cart_set_up_scanner_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

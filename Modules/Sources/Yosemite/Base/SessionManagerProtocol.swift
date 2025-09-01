@@ -51,13 +51,13 @@ public protocol SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?)
+    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool)
 }
 
 /// Helper methods
 public extension SessionManagerProtocol {
     /// Let the session manager figure out the credentials by itself
-    func deleteApplicationPassword() {
-        deleteApplicationPassword(using: nil)
+    func deleteApplicationPassword(locally: Bool) {
+        deleteApplicationPassword(using: nil, locally: locally)
     }
 }

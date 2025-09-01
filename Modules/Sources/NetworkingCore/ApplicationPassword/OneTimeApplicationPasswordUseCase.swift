@@ -1,6 +1,12 @@
 import Foundation
 import KeychainAccess
 
+public protocol URLSessionProtocol {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse)
+}
+
+extension URLSession: URLSessionProtocol {}
+
 /// Use case to save application password generated from web view;
 /// The password will not be re-generated because no cookie authentication is available.
 ///
@@ -8,18 +14,20 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     public let applicationPassword: ApplicationPassword?
 
     private let siteAddress: String
-    private let session: URLSession
+    private let session: URLSessionProtocol
+    private let storage: ApplicationPasswordStorageType
 
     public init(applicationPassword: ApplicationPassword? = nil,
                 siteAddress: String,
-                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
-        let storage = ApplicationPasswordStorage(keychain: keychain)
+                injectedStorage: ApplicationPasswordStorageType? = nil,
+                session: URLSessionProtocol = URLSession(configuration: .default)) {
+        self.storage = injectedStorage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         if let applicationPassword {
             storage.saveApplicationPassword(applicationPassword)
         }
         self.applicationPassword = storage.applicationPassword
         self.siteAddress = siteAddress
-        self.session = URLSession(configuration: .default)
+        self.session = session
     }
 
     public func generateNewPassword() async throws -> ApplicationPassword {
@@ -27,10 +35,17 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         throw ApplicationPasswordUseCaseError.notSupported
     }
 
-    public func deletePassword() async throws {
+    public func deletePassword(locally: Bool) async throws {
+        /// Always fetch UUID because the one in storage was generated locally only.
+        /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
         guard let uuid = try await fetchApplicationPasswordUUID(),
               let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
             return
+        }
+
+        if locally {
+            // Remove password from storage
+            storage.removeApplicationPassword()
         }
 
         let request = try URLRequest(url: url, method: .delete)

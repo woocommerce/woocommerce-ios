@@ -4,10 +4,12 @@ import UIKit
 struct PointOfSaleOrdersView: View {
     @Binding var isPresented: Bool
     @State private var selectedOrderID: String?
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         CustomNavigationSplitView(selection: $selectedOrderID) { _ in
-            PointOfSaleOrdersListView(selectedOrderID: $selectedOrderID) {
+            PointOfSaleOrderListView(selectedOrderID: $selectedOrderID) {
                 isPresented = false
             }
         } detail: { selection in
@@ -18,7 +20,23 @@ struct PointOfSaleOrdersView: View {
                 }
             )
         } setDefaultValue: {
-            selectedOrderID = "order1"
+            if selectedOrderID == nil,
+               let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
+                selectedOrderID = String(firstOrder.id)
+            }
+        }
+        .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
+            guard horizontalSizeClass == .regular else { return }
+
+            guard let firstOrder = newOrders.first else {
+                return
+            }
+
+            if let selectedOrderID, newOrders.map(\.number).contains(selectedOrderID) {
+                return
+            }
+
+            self.selectedOrderID = String(firstOrder.id)
         }
     }
 }
@@ -92,5 +110,6 @@ private enum Constants {
 #if DEBUG
 #Preview("Orders View") {
     PointOfSaleOrdersView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewOrdersModel())
 }
 #endif

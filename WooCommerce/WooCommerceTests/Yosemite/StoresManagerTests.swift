@@ -309,7 +309,20 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockProductImageUploader.resetWasCalled)
     }
 
-    func test_removing_default_store_invokes_delete_application_password() {
+    func test_deauthenticate_invokes_delete_application_password() {
+        // Given
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager)
+
+        // When
+        sut.deauthenticate()
+
+        // Then
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordLocally)
+    }
+
+    func test_removingDefaultStore_invokes_delete_application_password() {
         // Given
         let mockSessionManager = MockSessionManager()
         let sut = DefaultStoresManager(sessionManager: mockSessionManager)
@@ -319,6 +332,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+        XCTAssertFalse(mockSessionManager.deleteApplicationPasswordLocally)
     }
 
     func test_updating_default_storeID_sets_storePhoneNumber_to_nil() throws {
@@ -500,6 +514,7 @@ final class MockAuthenticationManager: AuthenticationManager {
 final class MockSessionManager: SessionManagerProtocol {
 
     private(set) var deleteApplicationPasswordInvoked: Bool = false
+    private(set) var deleteApplicationPasswordLocally = false
 
     var defaultAccount: Yosemite.Account? = nil
 
@@ -535,16 +550,13 @@ final class MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?) {
+    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
         deleteApplicationPasswordInvoked = true
-    }
-
-    func deleteApplicationPassword() {
-        deleteApplicationPasswordInvoked = true
+        deleteApplicationPasswordLocally = locally
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
 }
 

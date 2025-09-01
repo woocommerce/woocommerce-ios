@@ -367,6 +367,35 @@ public struct PagedItems<T> {
     }
 }
 
+// MARK: - Pagination Helpers
+//
+public extension Remote {
+    /// Creates a PagedItems instance from response data and headers.
+    ///
+    /// - Parameters:
+    ///   - items: The parsed items from the response.
+    ///   - responseHeaders: HTTP response headers containing pagination info.
+    ///   - currentPageNumber: The current page number for determining if more pages exist.
+    /// - Returns: PagedItems instance with pagination metadata.
+    func createPagedItems<T>(items: [T],
+                             responseHeaders: [String: String]?,
+                             currentPageNumber: Int) -> PagedItems<T> {
+        // Extract total pages from response headers (case insensitive)
+        let totalPages = responseHeaders?.first(where: {
+            $0.key.lowercased() == PaginationHeaderKey.totalPagesCount.lowercased()
+        }).flatMap { Int($0.value) }
+
+        let hasMorePages = totalPages.map { currentPageNumber < $0 } ?? true
+
+        // Extract total count from response headers (case insensitive)
+        let totalItems = responseHeaders?.first(where: {
+            $0.key.lowercased() == PaginationHeaderKey.totalCount.lowercased()
+        }).flatMap { Int($0.value) }
+
+        return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalItems)
+    }
+}
+
 // MARK: - Constants!
 //
 public extension Remote {

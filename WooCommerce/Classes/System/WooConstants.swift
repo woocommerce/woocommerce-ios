@@ -13,6 +13,10 @@ public enum WooConstants {
     ///
     static let databaseStackName = "WooCommerce"
 
+    /// Local SQLite Database Name
+    ///
+    static let localSQLiteDatabaseName = "woo-local.sqlite"
+
     /// Keychain Access's Service Name
     ///
     public static let keychainServiceName = "com.automattic.woocommerce"

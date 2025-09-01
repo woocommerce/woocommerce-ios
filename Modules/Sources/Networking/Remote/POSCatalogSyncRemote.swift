@@ -1,8 +1,45 @@
 import Foundation
 
+/// Protocol for POS Catalog Sync Remote operations.
+public protocol POSCatalogSyncRemoteProtocol {
+    /// Loads POS products modified after the specified date for incremental sync.
+    ///
+    /// - Parameters:
+    ///   - modifiedAfter: Only products modified after this date will be returned.
+    ///   - siteID: Site ID to load products from.
+    ///   - pageNumber: Page number for pagination.
+    /// - Returns: Paginated list of POS products.
+    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    /// Loads POS product variations modified after the specified date for incremental sync.
+    ///
+    /// - Parameters:
+    ///   - modifiedAfter: Only variations modified after this date will be returned.
+    ///   - siteID: Site ID to load variations from.
+    ///   - pageNumber: Page number for pagination.
+    /// - Returns: Paginated list of POS product variations.
+    func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+
+    /// Loads POS products for full sync.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site ID to load products from.
+    ///   - pageNumber: Page number for pagination.
+    /// - Returns: Paginated list of POS products.
+    func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
+
+    /// Loads POS product variations for full sync.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site ID to load variations from.
+    ///   - pageNumber: Page number for pagination.
+    /// - Returns: Paginated list of POS product variations.
+    func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+}
+
 /// POS Catalog Sync: Remote Endpoints
 ///
-public class POSCatalogSyncRemote: Remote {
+public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     private let dateFormatter = ISO8601DateFormatter()
 
     // MARK: - Incremental Sync Endpoints

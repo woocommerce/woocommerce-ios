@@ -186,7 +186,7 @@ struct PersistedProductVariationTests {
             var image: PersistedProductVariationImage
             var attributes: [PersistedProductVariationAttribute]
 
-            enum CodingKeys: CodingKey   {
+            enum CodingKeys: CodingKey {
                 case variation
                 case image
                 case attributes

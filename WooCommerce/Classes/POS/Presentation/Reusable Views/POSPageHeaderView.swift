@@ -38,10 +38,11 @@ struct POSPageHeaderItem: Identifiable {
 
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
-struct POSPageHeaderView<TrailingContent: View>: View {
+struct POSPageHeaderView<TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
     private let trailingContent: TrailingContent?
+    private let bottomContent: BottomContent?
 
     private var hStackAlignment: VerticalAlignment {
         items.first?.subtitle == nil ? .center: .firstTextBaseline
@@ -56,21 +57,25 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
+        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
+        @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
+        self.bottomContent = bottomContent()
     }
 
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
+        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
+        @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
+        self.bottomContent = bottomContent()
     }
 
     var body: some View {
@@ -113,6 +118,10 @@ struct POSPageHeaderView<TrailingContent: View>: View {
                                 .minimumScaleFactor(0.5)
                                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                                 .foregroundColor(.posOnSurface)
+                        }
+
+                        if let bottomContent {
+                            bottomContent
                         }
                     }
                 }
@@ -253,6 +262,33 @@ private enum Constants {
                 .foregroundColor(.posOnSurface)
             }
         }
+
+        // Header with bottom content.
+        POSPageHeaderView(
+            title: "Order Details",
+            subtitle: "Created: 2024-01-01 • customer@example.com",
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                Text("Completed")
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posSuccess)
+                    .padding(.horizontal, POSPadding.small)
+                    .padding(.vertical, POSPadding.xSmall)
+                    .background(Color.posSuccess.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            },
+            bottomContent: {
+                HStack {
+                    Button("Print Receipt") {}
+                        .buttonStyle(.bordered)
+                    Spacer()
+                    Button("Refund") {}
+                        .buttonStyle(.borderedProminent)
+                }
+                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .padding(.top, POSSpacing.medium)
+            }
+        )
     }
     .background(Color.posSurface)
 }

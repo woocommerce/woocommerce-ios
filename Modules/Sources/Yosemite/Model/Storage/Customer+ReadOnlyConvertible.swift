@@ -80,10 +80,18 @@ extension Storage.Customer: ReadOnlyConvertible {
         shippingFirstName = firstName
         shippingLastName = lastName
         shippingEmail = email
+        shippingCity = customer.city
+        shippingState = customer.region
+        shippingPostcode = customer.postcode
+        shippingCountry = customer.country
 
         billingFirstName = firstName
         billingLastName = lastName
         billingEmail = email
+        billingCity = customer.city
+        billingState = customer.region
+        billingPostcode = customer.postcode
+        billingCountry = customer.country
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`

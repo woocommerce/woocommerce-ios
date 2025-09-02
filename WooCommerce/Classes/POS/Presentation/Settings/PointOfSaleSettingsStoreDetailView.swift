@@ -41,36 +41,11 @@ struct PointOfSaleSettingsStoreDetailView: View {
     @ViewBuilder
     private var storeInformationView: some View {
         VStack(spacing: POSSpacing.none) {
-            ZStack {
-                backgroundColor
-                Text(Localization.storeInformation)
-                    .font(.posBodyLargeBold)
-                    .foregroundColor(.posOnSurface)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
-            }
+            sectionHeaderView(title: Localization.storeInformation)
 
             VStack(spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.storeName)
-                        .font(.posBodyMediumRegular())
-                    Text(viewModel.storeName)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.address)
-                        .font(.posBodyMediumRegular())
-                    Text(viewModel.storeAddress)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
+                fieldRowView(label: Localization.storeName, value: viewModel.storeName)
+                fieldRowView(label: Localization.address, value: viewModel.storeAddress)
             }
             .padding(.bottom, POSPadding.medium)
         }
@@ -79,59 +54,54 @@ struct PointOfSaleSettingsStoreDetailView: View {
     @ViewBuilder
     private var receiptInformationView: some View {
         VStack(spacing: POSSpacing.none) {
-            ZStack {
-                backgroundColor
-                Text(Localization.receiptInformation)
-                    .font(.posBodyLargeBold)
-                    .foregroundColor(.posOnSurface)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
-            }
+            sectionHeaderView(title: Localization.receiptInformation)
 
             VStack(spacing: POSSpacing.medium) {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.receiptStoreName)
-                        .font(.posBodyMediumRegular())
-                    settingValueView(for: viewModel.receiptInformation.storeName)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.physicalAddress)
-                        .font(.posBodyMediumRegular())
-                    settingValueView(for: viewModel.receiptInformation.storeAddress)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.phoneNumber)
-                        .font(.posBodyMediumRegular())
-                    settingValueView(for: viewModel.receiptInformation.phone)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.email)
-                        .font(.posBodyMediumRegular())
-                    settingValueView(for: viewModel.receiptInformation.email)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
-
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.refundReturnsPolicy)
-                        .font(.posBodyMediumRegular())
-                    settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, POSPadding.medium)
+                receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
             }
             .padding(.bottom, POSPadding.medium)
         }
+    }
+
+    @ViewBuilder
+    private func sectionHeaderView(title: String) -> some View {
+        ZStack {
+            backgroundColor
+            Text(title)
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.vertical, POSPadding.small)
+        }
+    }
+
+    @ViewBuilder
+    private func fieldRowView(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            Text(value)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
+    }
+
+    @ViewBuilder
+    private func receiptFieldRowView(label: String, value: String?) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            settingValueView(for: value)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder

@@ -1,6 +1,6 @@
 import Foundation
 
-public enum POSConstants {
+enum POSConstants {
     enum URLs: String, CaseIterable {
         /// Returns the URL version of the receiver
         ///

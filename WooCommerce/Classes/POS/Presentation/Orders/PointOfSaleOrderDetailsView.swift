@@ -134,7 +134,8 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     func imageSource(for item: POSOrderItem) -> String? {
-        return nil
+        // TODO: Will be addressed in the following PR
+        return "\(item.productID - item.variationID)"
     }
 
     @ViewBuilder
@@ -288,12 +289,6 @@ private extension PointOfSaleOrderDetailsView {
 // MARK: - Localization
 
 private enum Localization {
-    static let orderDetailsTitle = NSLocalizedString(
-        "pos.orderDetailsView.title",
-        value: "Order Details",
-        comment: "Title for the order details screen when no specific order is selected"
-    )
-
     static func orderTitle(_ orderNumber: String) -> String {
         let format = NSLocalizedString(
             "pos.orderDetailsView.orderTitle",

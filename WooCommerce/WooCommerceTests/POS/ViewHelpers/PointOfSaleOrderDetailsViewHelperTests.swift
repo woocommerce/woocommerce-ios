@@ -413,7 +413,6 @@ private func makePOSOrder(
     lineItems: [POSOrderItem] = [],
     refunds: [POSOrderRefund] = [],
     currency: String = "USD",
-    currencySymbol: String = "$",
     discountTotal: String = "0.00",
     totalTax: String = "0.00"
 ) -> POSOrder {
@@ -430,7 +429,6 @@ private func makePOSOrder(
         lineItems: lineItems,
         refunds: refunds,
         currency: currency,
-        currencySymbol: currencySymbol,
         discountTotal: discountTotal,
         totalTax: totalTax
     )

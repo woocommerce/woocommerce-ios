@@ -276,7 +276,6 @@ struct POSPreviewHelpers {
             ],
             refunds: [],
             currency: "USD",
-            currencySymbol: "$",
             discountTotal: "0.00",
             totalTax: "3.76"
         )
@@ -322,7 +321,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         ],
                         refunds: [],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "-5.24",
                         totalTax: "4.75"
                     ),
@@ -373,7 +371,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                             )
                         ],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "-15.00",
                         totalTax: "8.95"
                     ),
@@ -404,7 +401,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         ],
                         refunds: [],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "0.00",
                         totalTax: "0.00"
                     ),
@@ -438,7 +434,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         ],
                         refunds: [],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "0.00",
                         totalTax: "3.25"
                     ),
@@ -495,7 +490,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                             POSOrderRefund(refundID: 5, total: "-8.25", reason: nil)
                         ],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "-25.00",
                         totalTax: "7.89"
                     ),
@@ -526,7 +520,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         ],
                         refunds: [],
                         currency: "USD",
-                        currencySymbol: "$",
                         discountTotal: "0.00",
                         totalTax: "0.00"
                     )

@@ -19,7 +19,6 @@ public struct POSOrder: Equatable, Hashable {
     public let lineItems: [POSOrderItem]
     public let refunds: [POSOrderRefund]
     public let currency: String
-    public let currencySymbol: String
     public let discountTotal: String
     public let totalTax: String
 
@@ -35,7 +34,6 @@ public struct POSOrder: Equatable, Hashable {
                 lineItems: [POSOrderItem] = [],
                 refunds: [POSOrderRefund] = [],
                 currency: String,
-                currencySymbol: String,
                 discountTotal: String,
                 totalTax: String) {
         self.id = id
@@ -50,7 +48,6 @@ public struct POSOrder: Equatable, Hashable {
         self.lineItems = lineItems
         self.refunds = refunds
         self.currency = currency
-        self.currencySymbol = currencySymbol
         self.discountTotal = discountTotal
         self.totalTax = totalTax
     }
@@ -81,7 +78,6 @@ public extension POSOrder {
             lineItems: posLineItems,
             refunds: posRefunds,
             currency: order.currency,
-            currencySymbol: order.currencySymbol,
             discountTotal: order.discountTotal,
             totalTax: order.totalTax
         )

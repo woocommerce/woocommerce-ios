@@ -102,7 +102,6 @@ extension MockPointOfSaleOrderListService {
             ],
             refunds: [],
             currency: "USD",
-            currencySymbol: "$",
             discountTotal: "0.00",
             totalTax: "0.00"
         )
@@ -132,7 +131,6 @@ extension MockPointOfSaleOrderListService {
             ],
             refunds: [],
             currency: "USD",
-            currencySymbol: "$",
             discountTotal: "0.00",
             totalTax: "0.00"
         )
@@ -179,7 +177,6 @@ extension MockPointOfSaleOrderListService {
             ],
             refunds: [],
             currency: "USD",
-            currencySymbol: "$",
             discountTotal: "0.00",
             totalTax: "0.00"
         )
@@ -211,7 +208,6 @@ extension MockPointOfSaleOrderListService {
                 POSOrderRefund(refundID: 1001, total: "-12.00", reason: "Customer request")
             ],
             currency: "USD",
-            currencySymbol: "$",
             discountTotal: "0.00",
             totalTax: "0.00"
         )

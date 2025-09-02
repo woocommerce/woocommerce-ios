@@ -18,7 +18,7 @@ extension PersistedSite: FetchableRecord, PersistableRecord {
 
     public enum Columns {
         // periphery:ignore - TODO: remove ignore when populating database
-        static let id = Column(CodingKeys.id)
+        public static let id = Column(CodingKeys.id)
     }
 }
 

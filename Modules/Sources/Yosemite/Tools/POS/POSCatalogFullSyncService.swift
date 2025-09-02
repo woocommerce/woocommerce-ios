@@ -178,6 +178,12 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     private func persistCatalog(_ catalog: POSCatalog, siteID: Int64, db: GRDBDatabaseConnection) async throws {
         DDLogInfo("💾 Starting database persistence for \(catalog.products.count) products and \(catalog.variations.count) variations")
 
+        // Clear existing data for this site first (CASCADE will remove all related data)
+        try await db.write { db in
+            DDLogInfo("🗑️ Clearing existing catalog data for site \(siteID)")
+            try PersistedSite.deleteAll(db, keys: [["id": siteID]])
+        }
+
         try await withThrowingTaskGroup(of: Void.self) { group in
             // Persist site first
             group.addTask {

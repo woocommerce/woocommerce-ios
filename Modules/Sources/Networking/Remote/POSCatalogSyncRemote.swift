@@ -126,29 +126,3 @@ private extension POSCatalogSyncRemote {
         static let variations = "variations"
     }
 }
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            fullDescription: fullDescription,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
-    }
-}

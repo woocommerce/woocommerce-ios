@@ -177,11 +177,11 @@ public extension NetworkError {
         guard let originalNetworkError = originalNetworkError else {
             // No original NetworkError - this is likely from successful HTTP response with API error content
             let (code, message) = dotcomError.getCodeAndMessage()
-            let errorData = dotcomError.createEnhancedErrorResponseData(originalResponse: nil)
+            let errorData = dotcomError.createEnhancedErrorResponseData()
             return .apiError(code: code, message: message, response: errorData)
         }
 
-        let enhancedErrorData = dotcomError.createEnhancedErrorResponseData(originalResponse: originalNetworkError.response)
+        let enhancedErrorData = dotcomError.createEnhancedErrorResponseData()
 
         switch originalNetworkError {
         case .notFound:
@@ -205,7 +205,7 @@ public extension NetworkError {
 //
 private extension DotcomError {
     /// Creates enhanced JSON error response data that preserves original response while adding structured error details
-    func createEnhancedErrorResponseData(originalResponse: Data?) -> Data? {
+    func createEnhancedErrorResponseData() -> Data? {
         let (code, message) = getCodeAndMessage()
 
         let errorResponse: [String: Any] = [

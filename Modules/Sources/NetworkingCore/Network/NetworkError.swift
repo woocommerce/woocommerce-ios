@@ -164,6 +164,7 @@ extension NetworkError: CustomStringConvertible {
 
 public extension NetworkError {
     /// Returns true if this error represents a "not found" condition
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
     var isNotFound: Bool {
         switch self {
         case .notFound:
@@ -176,6 +177,7 @@ public extension NetworkError {
     }
 
     /// Returns true if this error represents an authorization issue
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
     var isUnauthorized: Bool {
         switch self {
         case .invalidCookieNonce:
@@ -190,6 +192,7 @@ public extension NetworkError {
     }
 
     /// Returns true if this error represents a timeout
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
     var isTimeout: Bool {
         switch self {
         case .timeout:
@@ -202,6 +205,7 @@ public extension NetworkError {
     }
 
     /// Returns true if this error represents invalid input/parameters
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
     var isInvalidInput: Bool {
         switch self {
         case .unacceptableStatusCode(let statusCode, _):
@@ -212,6 +216,7 @@ public extension NetworkError {
     }
 
     /// Returns a user-friendly error message, preferring API error message over generic description
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
     var userFriendlyMessage: String {
         return apiErrorMessage ?? localizedDescription
     }
@@ -220,12 +225,7 @@ public extension NetworkError {
 // MARK: - Supporting Types
 
 /// Represents error details from API response JSON
-public struct APIErrorDetails: Codable {
-    public let code: String
-    public let message: String?
-
-    public init(code: String, message: String?) {
-        self.code = code
-        self.message = message
-    }
+struct APIErrorDetails: Codable {
+    let code: String
+    let message: String?
 }

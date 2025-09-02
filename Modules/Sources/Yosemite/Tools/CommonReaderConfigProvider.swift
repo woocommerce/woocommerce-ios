@@ -83,18 +83,3 @@ private extension CardReaderConfigError {
         }
     }
 }
-
-private struct CardReaderConfigNetworkErrorDetails: Decodable {
-    let code: ErrorCode
-    let message: String?
-
-    enum CodingKeys: CodingKey {
-        case code
-        case message
-    }
-
-    enum ErrorCode: String, Decodable {
-        case storeAddressIncomplete = "store_address_is_incomplete"
-        case postalCodeInvalid = "postal_code_invalid"
-    }
-}

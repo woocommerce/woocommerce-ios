@@ -136,7 +136,7 @@ struct ProductBarcodeSetupInformation: View {
 }
 
 private enum Constants {
-    static let detailsLink = WooConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL()
+    static let detailsLink = POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL()
 }
 
 private enum Localization {

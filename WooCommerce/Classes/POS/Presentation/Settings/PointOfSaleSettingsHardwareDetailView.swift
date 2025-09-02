@@ -67,7 +67,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
-                SafariView(url: WooConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
+                SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
             }
         }
     }

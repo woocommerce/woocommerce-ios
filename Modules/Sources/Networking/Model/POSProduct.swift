@@ -12,13 +12,13 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
     public let productID: Int64
     public let name: String
     public let productTypeKey: String
+    public let fullDescription: String?
+    // periphery:ignore - Will be used for search in future
+    public let shortDescription: String?
     public let sku: String?
     public let globalUniqueID: String?
 
     public let price: String
-    public let regularPrice: String?
-    public let salePrice: String?
-    public let onSale: Bool
 
     public let downloadable: Bool
 
@@ -47,12 +47,11 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                 productID: Int64,
                 name: String,
                 productTypeKey: String,
+                fullDescription: String?,
+                shortDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
-                regularPrice: String?,
-                salePrice: String?,
-                onSale: Bool,
                 downloadable: Bool,
                 parentID: Int64,
                 images: [ProductImage],
@@ -64,13 +63,12 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         self.productID = productID
         self.name = name
         self.productTypeKey = productTypeKey
+        self.fullDescription = fullDescription
+        self.shortDescription = shortDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
 
         self.price = price
-        self.regularPrice = regularPrice
-        self.salePrice = salePrice
-        self.onSale = onSale
 
         self.downloadable = downloadable
 
@@ -101,6 +99,8 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
         let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name)
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
+        let fullDescription = try container.decodeIfPresent(String.self, forKey: .fullDescription)
+        let shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
         let sku = container.failsafeDecodeIfPresent(
             targetType: String.self,
             forKey: .sku,
@@ -111,24 +111,6 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
             targetType: String.self,
             forKey: .price,
             alternativeTypes: [decimalString]) ?? ""
-        let regularPrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .regularPrice,
-            alternativeTypes: [decimalString])
-        let onSale = container.failsafeDecodeIfPresent(
-            targetType: Bool.self,
-            forKey: .onSale,
-            alternativeTypes: [ .string(transform: { NSString(string: $0).boolValue })]) ?? false
-
-        // Even though a plain install of WooCommerce Core provides string values,
-        // some plugins alter the field value from String to Int or Decimal.
-        let salePrice = container.failsafeDecodeIfPresent(
-            targetType: String.self,
-            forKey: .salePrice,
-            shouldDecodeTargetTypeFirst: false,
-            alternativeTypes: [
-                .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
-                decimalString])
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
 
@@ -146,12 +128,11 @@ public struct POSProduct: Codable, Equatable, GeneratedCopiable, GeneratedFakeab
                   productID: productID,
                   name: name,
                   productTypeKey: productTypeKey,
+                  fullDescription: fullDescription,
+                  shortDescription: shortDescription,
                   sku: sku,
                   globalUniqueID: globalUniqueID,
                   price: price,
-                  regularPrice: regularPrice,
-                  salePrice: salePrice,
-                  onSale: onSale,
                   downloadable: downloadable,
                   parentID: parentID,
                   images: images,
@@ -179,12 +160,11 @@ private extension POSProduct {
         case productID = "id"
         case name
         case productTypeKey = "type"
+        case fullDescription = "description"
+        case shortDescription = "short_description"
         case sku
         case globalUniqueID = "global_unique_id"
         case price
-        case regularPrice = "regular_price"
-        case salePrice = "sale_price"
-        case onSale = "on_sale"
         case downloadable
         case parentID = "parent_id"
         case images

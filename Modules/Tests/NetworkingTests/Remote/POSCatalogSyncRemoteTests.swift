@@ -44,6 +44,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(firstProduct.siteID == sampleSiteID)
         #expect(firstProduct.productID == 168)
         #expect(firstProduct.name == "Beanie")
+        #expect(firstProduct.fullDescription != nil)
+        #expect(firstProduct.shortDescription != nil)
     }
 
     @Test func loadProducts_relays_networking_error() async throws {
@@ -396,5 +398,22 @@ struct POSCatalogSyncRemoteTests {
 
         // Then there are more pages
         #expect(pagedVariations.hasMorePages == true)
+    }
+
+    @Test func posProductVariation_provides_field_names_for_request() {
+        let fieldNames = POSProductVariation.requestFields
+        #expect(fieldNames.contains("id"))
+        #expect(fieldNames.contains("parent_id"))
+        #expect(fieldNames.contains("attributes"))
+        #expect(fieldNames.contains("image"))
+        #expect(fieldNames.contains("price"))
+        #expect(fieldNames.contains("description"))
+        #expect(fieldNames.contains("sku"))
+        #expect(fieldNames.contains("global_unique_id"))
+        #expect(fieldNames.contains("downloadable"))
+        #expect(fieldNames.contains("description"))
+        #expect(fieldNames.contains("manage_stock"))
+        #expect(fieldNames.contains("stock_quantity"))
+        #expect(fieldNames.contains("stock_status"))
     }
 }

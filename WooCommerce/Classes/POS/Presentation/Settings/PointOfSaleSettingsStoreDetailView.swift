@@ -22,105 +22,115 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
                 ScrollView {
                     VStack(spacing: POSSpacing.medium) {
-                        VStack(spacing: POSSpacing.none) {
-                            ZStack {
-                                backgroundColor
-                                Text(Localization.storeInformation)
-                                    .font(.posBodyLargeBold)
-                                    .foregroundColor(.posOnSurface)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, POSPadding.medium)
-                                    .padding(.vertical, POSPadding.small)
-                            }
+                        storeInformationView
 
-                            VStack(spacing: POSSpacing.medium) {
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.storeName)
-                                        .font(.posBodyMediumRegular())
-                                    Text(viewModel.storeName)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-                                
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.address)
-                                        .font(.posBodyMediumRegular())
-                                    Text(viewModel.storeAddress)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(.secondary)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-                            }
-                            .padding(.bottom, POSPadding.medium)
-                        }
-
-                        VStack(spacing: POSSpacing.none) {
-                            ZStack {
-                                backgroundColor
-                                Text(Localization.receiptInformation)
-                                    .font(.posBodyLargeBold)
-                                    .foregroundColor(.posOnSurface)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.horizontal, POSPadding.medium)
-                                    .padding(.vertical, POSPadding.small)
-                            }
-
-                            VStack(spacing: POSSpacing.medium) {
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.receiptStoreName)
-                                        .font(.posBodyMediumRegular())
-                                    settingValueView(for: viewModel.receiptInformation.storeName)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.physicalAddress)
-                                        .font(.posBodyMediumRegular())
-                                    settingValueView(for: viewModel.receiptInformation.storeAddress)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.phoneNumber)
-                                        .font(.posBodyMediumRegular())
-                                    settingValueView(for: viewModel.receiptInformation.phone)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.email)
-                                        .font(.posBodyMediumRegular())
-                                    settingValueView(for: viewModel.receiptInformation.email)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-
-                                VStack(alignment: .leading, spacing: POSPadding.small) {
-                                    Text(Localization.refundReturnsPolicy)
-                                        .font(.posBodyMediumRegular())
-                                    settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.horizontal, POSPadding.medium)
-                            }
-                            .padding(.bottom, POSPadding.medium)
-                        }
+                        receiptInformationView
+                            .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
-                    .renderedIf(viewModel.shouldShowReceiptInformation)
                 }
+                .background(backgroundColor)
             }
-            .background(backgroundColor)
+            .task {
+                isLoading = true
+                await viewModel.retrievePOSReceiptSettings()
+                isLoading = false
+            }
         }
-        .task {
-            isLoading = true
-            await viewModel.retrievePOSReceiptSettings()
-            isLoading = false
+    }
+
+    @ViewBuilder
+    private var storeInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            ZStack {
+                backgroundColor
+                Text(Localization.storeInformation)
+                    .font(.posBodyLargeBold)
+                    .foregroundColor(.posOnSurface)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.small)
+            }
+
+            VStack(spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.storeName)
+                        .font(.posBodyMediumRegular())
+                    Text(viewModel.storeName)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.address)
+                        .font(.posBodyMediumRegular())
+                    Text(viewModel.storeAddress)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+            }
+            .padding(.bottom, POSPadding.medium)
+        }
+    }
+
+    @ViewBuilder
+    private var receiptInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            ZStack {
+                backgroundColor
+                Text(Localization.receiptInformation)
+                    .font(.posBodyLargeBold)
+                    .foregroundColor(.posOnSurface)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.small)
+            }
+
+            VStack(spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.receiptStoreName)
+                        .font(.posBodyMediumRegular())
+                    settingValueView(for: viewModel.receiptInformation.storeName)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.physicalAddress)
+                        .font(.posBodyMediumRegular())
+                    settingValueView(for: viewModel.receiptInformation.storeAddress)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.phoneNumber)
+                        .font(.posBodyMediumRegular())
+                    settingValueView(for: viewModel.receiptInformation.phone)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.email)
+                        .font(.posBodyMediumRegular())
+                    settingValueView(for: viewModel.receiptInformation.email)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.refundReturnsPolicy)
+                        .font(.posBodyMediumRegular())
+                    settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+            }
+            .padding(.bottom, POSPadding.medium)
         }
     }
 

@@ -22,7 +22,8 @@ struct DashboardView: View {
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
 
-    private let syncService = POSCatalogFullSyncService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)!
+    private let syncService = POSCatalogFullSyncService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials!,
+                                                        grdbManager: ServiceLocator.grdbManager)!
     private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID!
 
     /// Set externally in the hosting controller.
@@ -122,7 +123,7 @@ struct DashboardView: View {
                 Button {
                     Task {
                         do {
-                            let catalog = try await syncService.startFullSync(for: siteID)
+                            let catalog = try await syncService.startFullSyncAndPersist(for: siteID)
                             print("Full sync completed with \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
                         } catch {
                             print("Full sync failed for siteID \(siteID) with error: \(error)")

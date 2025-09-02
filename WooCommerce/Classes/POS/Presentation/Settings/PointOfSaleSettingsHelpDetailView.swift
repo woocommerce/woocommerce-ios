@@ -82,7 +82,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
         .posFullScreenCover(isPresented: $showDocumentation) {
             // TODO: Remove copy on PointOfSaleDashboardView.documentationView
             // WOOMOB-1168
-            SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+            SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
 
         }
         .posFullScreenCover(isPresented: $showSupport) {

@@ -15,6 +15,9 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     var body: some View {
         NavigationStack {
+            POSPageHeaderView(title: Localization.storeTitle)
+            .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
             List {
                 Section {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
@@ -135,6 +138,12 @@ private extension PointOfSaleSettingsStoreDetailView {
     }
 
     enum Localization {
+        static let storeTitle = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.storeTitle",
+            value: "Store",
+            comment: "Navigation title for the store details in POS settings."
+        )
+
         static let notSet = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.notSet",
             value: "Not set",

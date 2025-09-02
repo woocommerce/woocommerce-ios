@@ -65,12 +65,12 @@ extension POSProduct {
     public func save(to db: GRDBDatabaseConnection) throws {
         try db.write { db in
             let product = PersistedProduct(from: self)
-            try product.insert(db)
+            try product.save(db)
 
-            // Save related images
+            // Save related images (upsert to handle shared images)
             for image in self.images {
                 let persistedImage = PersistedProductImage(from: image, productID: self.productID)
-                try persistedImage.insert(db)
+                try persistedImage.save(db)
             }
 
             // Save related attributes

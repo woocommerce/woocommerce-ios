@@ -59,12 +59,12 @@ extension POSProductVariation {
     public func save(to db: GRDBDatabaseConnection) throws {
         try db.write { db in
             let variation = PersistedProductVariation(from: self)
-            try variation.insert(db)
+            try variation.save(db)
 
-            // Save related image if present
+            // Save related image if present (upsert to handle shared images)
             if let image = self.image {
                 let persistedImage = PersistedProductVariationImage(from: image, productVariationID: self.productVariationID)
-                try persistedImage.insert(db)
+                try persistedImage.save(db)
             }
 
             // Save related attributes

@@ -9,6 +9,8 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load products from.
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS products.
+    // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
+    // periphery:ignore
     func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations modified after the specified date for incremental sync.
@@ -18,6 +20,8 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to load variations from.
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS product variations.
+    // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
+    // periphery:ignore
     func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
     /// Loads POS products for full sync.

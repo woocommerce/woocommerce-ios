@@ -21,6 +21,8 @@ public struct POSCatalog {
     public let variations: [POSProductVariation]
 }
 
+// TODO - remove the periphery ignore comment when the service is integrated with POS.
+// periphery:ignore
 public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let batchSize: Int

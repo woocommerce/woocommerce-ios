@@ -53,7 +53,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             let (products, variations) = try await (productsTask, variationsTask)
             let catalog = POSCatalog(products: products, variations: variations)
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
-            return .init(products: products, variations: [])
+            return .init(products: products, variations: variations)
         } catch {
             throw error
         }

@@ -162,16 +162,7 @@ private struct OrderRowView: View {
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 
-                HStack(spacing: POSSpacing.xSmall) {
-                    if let paymentMethodIcon = paymentMethodIcon {
-                        Image(systemName: paymentMethodIcon)
-                            .foregroundStyle(statusColor)
-                            .font(.caption)
-                    }
-                    Text(order.status.localizedName)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(statusColor)
-                }
+                PointOfSaleOrderBadgeView(order: order)
             }
             .multilineTextAlignment(.trailing)
         }
@@ -184,28 +175,7 @@ private struct OrderRowView: View {
 }
 
 private extension OrderRowView {
-    var paymentMethodIcon: String? {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        switch paymentMethod {
-        case .cod:
-            return "banknote"
-        case .stripe, .woocommercePayments:
-            return "creditcard"
-        default:
-            return nil
-        }
-    }
-
-    var statusColor: Color {
-        switch order.status {
-        case .completed:
-            return .posSuccess
-        case .failed:
-            return .posError
-        default:
-            return .posOnSurfaceVariantLowest
-        }
-    }
+    // No additional helpers needed - using shared PointOfSaleOrderBadgeView
 }
 
 private struct GhostOrderRowView: View {
@@ -260,6 +230,56 @@ private struct GhostOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
+    }
+}
+
+// MARK: - Order Badge View
+
+struct PointOfSaleOrderBadgeView: View {
+    let order: POSOrder
+
+    init(order: POSOrder) {
+        self.order = order
+    }
+
+    var body: some View {
+        HStack(spacing: POSSpacing.xSmall) {
+            if let paymentMethodIcon = paymentMethodIcon {
+                Image(systemName: paymentMethodIcon)
+                    .foregroundStyle(statusColor)
+                    .font(.caption)
+            }
+            Text(order.status.localizedName)
+                .font(.posCaptionRegular)
+                .foregroundStyle(statusColor)
+        }
+        .padding(.horizontal, POSPadding.small)
+        .padding(.vertical, POSPadding.xSmall)
+        .background(statusColor.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+    }
+
+    private var paymentMethodIcon: String? {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        switch paymentMethod {
+        case .cod:
+            return "banknote"
+        case .stripe, .woocommercePayments:
+            return "creditcard"
+        default:
+            return nil
+        }
+    }
+
+    private var statusColor: Color {
+        switch order.status {
+        case .completed:
+            return .posSuccess
+        case .failed:
+            return .posError
+        default:
+            return .posOnSurfaceVariantLowest
+        }
     }
 }
 

@@ -22,7 +22,7 @@ struct PointOfSaleOrderDetailsView: View {
             POSPageHeaderView(
                 title: Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: { orderStatusBadge(order.status) },
+                trailingContent: { PointOfSaleOrderBadgeView(order: order) },
                 bottomContent: { headerBottomContent(for: order) }
             )
 
@@ -110,16 +110,6 @@ private extension PointOfSaleOrderDetailsView {
         .multilineTextAlignment(.leading)
     }
 
-    @ViewBuilder
-    func orderStatusBadge(_ status: OrderStatusEnum) -> some View {
-        Text(status.localizedName)
-            .font(.posBodySmallRegular())
-            .foregroundStyle(statusColor(for: status))
-            .padding(.horizontal, POSPadding.small)
-            .padding(.vertical, POSPadding.xSmall)
-            .background(statusColor(for: status).opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-    }
 }
 
 // MARK: - Product Components
@@ -291,21 +281,6 @@ private extension PointOfSaleOrderDetailsView {
             Spacer()
             Text(amount)
                 .font(amountFont)
-        }
-    }
-}
-
-// MARK: - Helpers
-
-private extension PointOfSaleOrderDetailsView {
-    func statusColor(for status: OrderStatusEnum) -> Color {
-        switch status {
-        case .completed:
-            return .posSuccess
-        case .failed:
-            return .posError
-        default:
-            return .posOnSurfaceVariantLowest
         }
     }
 }

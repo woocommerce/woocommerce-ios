@@ -27,11 +27,14 @@ struct PointOfSaleOrderDetailsLoadingView: View {
     @ViewBuilder
     private var shimmeringHeaderTrailingContent: some View {
         GeometryReader { geometry in
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.6, height: 16)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-                .shimmering()
+            HStack {
+                Spacer()
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: geometry.size.width * 0.3, height: 16)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .shimmering()
+            }
         }
         .frame(height: 16)
     }

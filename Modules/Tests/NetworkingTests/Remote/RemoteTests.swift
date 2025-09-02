@@ -307,7 +307,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { 
+        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: {
             guard let networkError = $0 as? NetworkError,
                   case .apiError(let code, _, _) = networkError else { return false }
             return code == "http_request_failed"
@@ -407,7 +407,7 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { 
+        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: {
             guard let networkError = $0 as? NetworkError,
                   case .apiError(let code, _, _) = networkError else { return false }
             return code == "http_request_failed"

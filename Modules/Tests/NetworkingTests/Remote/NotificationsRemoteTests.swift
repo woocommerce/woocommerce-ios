@@ -95,7 +95,7 @@ final class NotificationsRemoteTests: XCTestCase {
                 return
             }
             XCTAssertEqual(error.apiErrorCode, "unauthorized", "Expected apiErrorCode 'unauthorized' but got '\(error.apiErrorCode ?? "nil")'")
-            
+
             expectation.fulfill()
         }
 
@@ -133,7 +133,7 @@ final class NotificationsRemoteTests: XCTestCase {
             }
 
             XCTAssertEqual(error.apiErrorCode, "unauthorized", "Expected apiErrorCode 'unauthorized' but got '\(error.apiErrorCode ?? "nil")'")
-            
+
             expectation.fulfill()
         }
 

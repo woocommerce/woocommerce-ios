@@ -50,10 +50,10 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
-        }, errorAssert: { 
+        }, errorAssert: {
             guard let networkError = $0 as? NetworkError else { return false }
             return networkError.apiErrorCode == "blog_name_only_lowercase_letters_and_numbers" &&
-                   networkError.apiErrorMessage == "Site names can only contain lowercase letters (a-z) and numbers."
+            networkError.apiErrorMessage == "Site names can only contain lowercase letters (a-z) and numbers."
         })
     }
 
@@ -132,7 +132,7 @@ final class SiteRemoteTests: XCTestCase {
         }, errorAssert: { error in
             guard let networkError = error as? NetworkError else { return false }
             return networkError.apiErrorCode == "no-upgrades-permitted" &&
-                   networkError.apiErrorMessage == "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades"
+            networkError.apiErrorMessage == "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades"
         })
     }
 
@@ -321,10 +321,10 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.loadSite(domain: domain)
-        }, errorAssert: { 
+        }, errorAssert: {
             guard let networkError = $0 as? NetworkError else { return false }
             return networkError.apiErrorCode == "parse_error" &&
-                   networkError.apiErrorMessage == "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]"
+            networkError.apiErrorMessage == "The Jetpack site is inaccessible or returned an error: parse error (local). not well formed [-32710]"
         })
     }
 

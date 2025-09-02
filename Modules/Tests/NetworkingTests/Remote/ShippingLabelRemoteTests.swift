@@ -101,7 +101,11 @@ final class ShippingLabelRemoteTests: XCTestCase {
         // Then
         let networkError = result.failure as? NetworkError
         XCTAssertEqual(networkError?.apiErrorCode, "wcc_server_error_response")
-        XCTAssertEqual(networkError?.apiErrorMessage, "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. The parcel has been shipped. ( 400 )")
+        XCTAssertEqual(
+            networkError?.apiErrorMessage,
+            "Error: The WooCommerce Shipping & Tax server returned: " +
+            "Bad Request Unable to request refund. " +
+            "The parcel has been shipped. ( 400 )")
     }
 
     func test_shippingAddressValidation_returns_address_on_success() throws {

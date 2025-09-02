@@ -22,7 +22,7 @@ class SiteStatsStoreErrorTests: XCTestCase {
 
     func testOtherDotcomError() {
         let remoteError = NetworkError.from(
-            dotcomError: DotcomError.unknown(code: "invalid_blog", message: "This blog does not have Jetpack connected"),
+            dotcomError: DotcomError.unknown(code: "something_else", message: "This blog does not have a coffee machine connected"),
             originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))
         let error = SiteStatsStoreError(error: remoteError)
         XCTAssertEqual(error, .unknown)

@@ -189,10 +189,11 @@ public class AccountRemote: Remote, AccountRemoteProtocol {
             let result: CreateAccountResult = try await enqueue(request)
             return .success(result)
         } catch {
-            guard let dotcomError = error as? DotcomError else {
+            if let networkError = error as? NetworkError {
+                return .failure(CreateAccountError(error: networkError))
+            } else {
                 return .failure(.unknown(error: error as NSError))
             }
-            return .failure(CreateAccountError(dotcomError: dotcomError))
         }
     }
 
@@ -247,26 +248,22 @@ public enum CreateAccountError: Error, Equatable {
     case invalidUsername
     case invalidEmail
     case invalidPassword(message: String?)
-    case unexpected(error: DotcomError)
+    case unexpected(error: NetworkError)
     case unknown(error: NSError)
 
-    /// Decodable Initializer.
+    /// NetworkError Initializer.
     ///
-    init(dotcomError error: DotcomError) {
-        if case let .unknown(code, message) = error {
-            switch code {
-            case Constants.emailExists:
-                self = .emailExists
-            case Constants.invalidEmail:
-                self = .invalidEmail
-            case Constants.invalidPassword:
-                self = .invalidPassword(message: message)
-            case Constants.invalidUsername, Constants.usernameExists:
-                self = .invalidUsername
-            default:
-                self = .unexpected(error: error)
-            }
-        } else {
+    init(error: NetworkError) {
+        switch error.apiErrorCode {
+        case Constants.emailExists:
+            self = .emailExists
+        case Constants.invalidEmail:
+            self = .invalidEmail
+        case Constants.invalidPassword:
+            self = .invalidPassword(message: error.apiErrorMessage)
+        case Constants.invalidUsername, Constants.usernameExists:
+            self = .invalidUsername
+        default:
             self = .unexpected(error: error)
         }
     }

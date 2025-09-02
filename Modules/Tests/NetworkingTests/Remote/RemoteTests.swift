@@ -258,8 +258,8 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        let networkError = result.failure as? NetworkError
-        XCTAssertEqual(networkError?.apiErrorCode, "http_request_failed")
+        let networkError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(networkError.apiErrorCode, "http_request_failed")
     }
 
     /// Verifies that dotcom v1.1 request parses DotcomError
@@ -273,7 +273,11 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { $0 is DotcomError })
+        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: {
+            guard let networkError = $0 as? NetworkError,
+                  case .apiError(let code, _, _) = networkError else { return false }
+            return code == "http_request_failed"
+        })
     }
 
     /// Verifies that dotcom v1.1 request doesn't parse WordPressApiError
@@ -303,7 +307,11 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { $0 is DotcomError })
+        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { 
+            guard let networkError = $0 as? NetworkError,
+                  case .apiError(let code, _, _) = networkError else { return false }
+            return code == "http_request_failed"
+        })
     }
 
     /// Verifies that dotcom v1.2 request doesn't parse WordPressApiError
@@ -399,7 +407,11 @@ final class RemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "mock", filename: "timeout_error")
 
-        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { $0 is DotcomError })
+        await assertThrowsError({ _ = try await remote.enqueue(request, mapper: mapper)}, errorAssert: { 
+            guard let networkError = $0 as? NetworkError,
+                  case .apiError(let code, _, _) = networkError else { return false }
+            return code == "http_request_failed"
+        })
     }
 
     /// Verifies that Jetpack request doesn't parse WordPressApiError

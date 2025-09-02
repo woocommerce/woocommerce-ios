@@ -173,7 +173,14 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
 public extension NetworkError {
     /// Creates a NetworkError from a DotcomError, preserving the original NetworkError's status code and response data
     /// This is used in Remote.mapNetworkError to maintain real HTTP status codes while adding parsed API error details
-    static func from(dotcomError: DotcomError, originalNetworkError: NetworkError) -> NetworkError {
+    static func from(dotcomError: DotcomError, originalNetworkError: NetworkError? = nil) -> NetworkError {
+        guard let originalNetworkError = originalNetworkError else {
+            // No original NetworkError - this is likely from successful HTTP response with API error content
+            let (code, message) = dotcomError.getCodeAndMessage()
+            let errorData = dotcomError.createEnhancedErrorResponseData(originalResponse: nil)
+            return .apiError(code: code, message: message, response: errorData)
+        }
+
         let enhancedErrorData = dotcomError.createEnhancedErrorResponseData(originalResponse: originalNetworkError.response)
 
         switch originalNetworkError {
@@ -183,6 +190,9 @@ public extension NetworkError {
             return .timeout(response: enhancedErrorData)
         case let .unacceptableStatusCode(statusCode, _):
             return .unacceptableStatusCode(statusCode: statusCode, response: enhancedErrorData)
+        case let .apiError(_, _, response):
+            let (code, message) = dotcomError.getCodeAndMessage()
+            return .apiError(code: code, message: message, response: response)
         case .invalidURL:
             return .invalidURL
         case .invalidCookieNonce:
@@ -208,7 +218,7 @@ private extension DotcomError {
     }
 
     /// Extracts the appropriate error code and message for each DotcomError case
-    private func getCodeAndMessage() -> (code: String, message: String) {
+    func getCodeAndMessage() -> (code: String, message: String) {
         switch self {
         case .empty:
             return ("empty", "Empty response")

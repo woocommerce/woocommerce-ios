@@ -22,6 +22,9 @@ public enum NetworkError: Error, Equatable {
     /// Error for REST API requests with invalid cookie nonce
     case invalidCookieNonce
 
+    /// API-level error parsed from a successful HTTP response
+    case apiError(code: String, message: String?, response: Data? = nil)
+
     /// The HTTP response code of the network error, for cases that are deducted from the status code.
     public var responseCode: Int? {
         switch self {
@@ -31,7 +34,7 @@ public enum NetworkError: Error, Equatable {
             return StatusCode.timeout
         case let .unacceptableStatusCode(statusCode, _):
             return statusCode
-        default:
+        case .apiError, .invalidURL, .invalidCookieNonce:
             return nil
         }
     }
@@ -44,6 +47,8 @@ public enum NetworkError: Error, Equatable {
         case .timeout(let response):
             return response
         case .unacceptableStatusCode(_, let response):
+            return response
+        case .apiError(_, _, let response):
             return response
         case .invalidURL, .invalidCookieNonce:
             return nil
@@ -58,12 +63,22 @@ public enum NetworkError: Error, Equatable {
 
     /// API error code from response, if available
     public var apiErrorCode: String? {
-        return apiErrorDetails?.code
+        switch self {
+        case .apiError(let code, _, _):
+            return code
+        default:
+            return apiErrorDetails?.code
+        }
     }
 
     /// API error message from response, if available
     public var apiErrorMessage: String? {
-        return apiErrorDetails?.message
+        switch self {
+        case .apiError(_, let message, _):
+            return message
+        default:
+            return apiErrorDetails?.message
+        }
     }
 }
 
@@ -134,6 +149,13 @@ extension NetworkError: CustomStringConvertible {
                 "NetworkError.invalidCookieNonce",
                 value: "Sorry, your session has expired. Please log in again.",
                 comment: "Error message when session cookie has expired.")
+        case let .apiError(code, message, _):
+            let messageText = message ?? ""
+            let format = NSLocalizedString(
+                "NetworkError.apiError",
+                value: "API Error: [%1$@] %2$@",
+                comment: "Error message for API-level errors. %1$@ is the error code, %2$@ is the error message")
+            return String.localizedStringWithFormat(format, code, messageText)
         }
     }
 }

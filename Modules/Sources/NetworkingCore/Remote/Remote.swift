@@ -35,6 +35,9 @@ open class Remote: NSObject {
                         let validator = request.responseDataValidator()
                         try validator.validate(data: data)
                         continuation.resume()
+                    } catch let dotcomError as DotcomError {
+                        self.handleResponseError(error: dotcomError, for: request)
+                        continuation.resume(throwing: NetworkError.from(dotcomError: dotcomError))
                     } catch {
                         self.handleResponseError(error: error, for: request)
                         continuation.resume(throwing: error)
@@ -62,6 +65,9 @@ open class Remote: NSObject {
                         try validator.validate(data: data)
                         let document = try JSONDecoder().decode(T.self, from: data)
                         continuation.resume(returning: document)
+                    } catch let dotcomError as DotcomError {
+                        self.handleResponseError(error: dotcomError, for: request)
+                        continuation.resume(throwing: NetworkError.from(dotcomError: dotcomError))
                     } catch {
                         self.handleResponseError(error: error, for: request)
                         self.handleDecodingError(error: error, for: request, entityName: "\(T.self)")
@@ -102,6 +108,10 @@ open class Remote: NSObject {
                 try validator.validate(data: data)
                 let parsed = try mapper.map(response: data)
                 completion(parsed, nil)
+            } catch let dotcomError as DotcomError {
+                self.handleResponseError(error: dotcomError, for: request)
+                let networkError = NetworkError.from(dotcomError: dotcomError)
+                completion(nil, networkError)
             } catch {
                 self.handleResponseError(error: error, for: request)
                 self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
@@ -135,6 +145,10 @@ open class Remote: NSObject {
                     try validator.validate(data: data)
                     let parsed = try mapper.map(response: data)
                     completion(.success(parsed))
+                } catch let dotcomError as DotcomError {
+                    self.handleResponseError(error: dotcomError, for: request)
+                    let networkError = NetworkError.from(dotcomError: dotcomError)
+                    completion(.failure(networkError))
                 } catch {
                     self.handleResponseError(error: error, for: request)
                     self.handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")
@@ -183,6 +197,14 @@ open class Remote: NSObject {
                     self?.handleDecodingError(error: decodingError, for: request, entityName: "\(M.Output.self)")
                 }
             })
+            .map { (result: Result<M.Output, Error>) -> Result<M.Output, Error> in
+                guard case let .failure(error) = result,
+                      let dotcomError = error as? DotcomError
+                else {
+                    return result
+                }
+                return .failure(NetworkError.from(dotcomError: dotcomError))
+            }
             .eraseToAnyPublisher()
     }
 
@@ -256,6 +278,10 @@ private extension Remote {
         do {
             try validator.validate(data: data)
             return try mapper.map(response: data)
+        } catch let dotcomError as DotcomError {
+            DDLogError("<> Mapping Error: \(dotcomError)")
+            handleResponseError(error: dotcomError, for: request)
+            throw NetworkError.from(dotcomError: dotcomError)
         } catch {
             DDLogError("<> Mapping Error: \(error)")
             handleDecodingError(error: error, for: request, entityName: "\(M.Output.self)")

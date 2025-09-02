@@ -106,6 +106,10 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         static let noStatsPermission = "user cannot view stats"
         static let resourceDoesNotExist = "Resource does not exist."
         static let jetpackNotConnected = "This blog does not have Jetpack connected"
+        static let unauthorized = "Missing or invalid authorization"
+        static let invalidToken = "Invalid authentication token"
+        static let requestFailed = "Request failed"
+        static let noRestRoute = "No matching REST route"
     }
 }
 
@@ -161,5 +165,81 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
         return codeLHS == codeRHS
     default:
         return false
+    }
+}
+
+// MARK: - NetworkError Conversion
+//
+public extension NetworkError {
+    /// Creates a NetworkError from a DotcomError, preserving the original NetworkError's status code and response data
+    /// This is used in Remote.mapNetworkError to maintain real HTTP status codes while adding parsed API error details
+    static func from(dotcomError: DotcomError, originalNetworkError: NetworkError? = nil) -> NetworkError {
+        guard let originalNetworkError = originalNetworkError else {
+            // No original NetworkError - this is likely from successful HTTP response with API error content
+            let (code, message) = dotcomError.getCodeAndMessage()
+            let errorData = dotcomError.createEnhancedErrorResponseData()
+            return .apiError(code: code, message: message, response: errorData)
+        }
+
+        let enhancedErrorData = dotcomError.createEnhancedErrorResponseData()
+
+        switch originalNetworkError {
+        case .notFound:
+            return .notFound(response: enhancedErrorData)
+        case .timeout:
+            return .timeout(response: enhancedErrorData)
+        case let .unacceptableStatusCode(statusCode, _):
+            return .unacceptableStatusCode(statusCode: statusCode, response: enhancedErrorData)
+        case let .apiError(_, _, response):
+            let (code, message) = dotcomError.getCodeAndMessage()
+            return .apiError(code: code, message: message, response: response)
+        case .invalidURL:
+            return .invalidURL
+        case .invalidCookieNonce:
+            return .invalidCookieNonce
+        }
+    }
+}
+
+// MARK: - Helper for NetworkError creation
+//
+private extension DotcomError {
+    /// Creates enhanced JSON error response data that preserves original response while adding structured error details
+    func createEnhancedErrorResponseData() -> Data? {
+        let (code, message) = getCodeAndMessage()
+
+        let errorResponse: [String: Any] = [
+            "code": code,
+            "message": message
+        ]
+
+        // Return the enhanced structured error data (the original response is already parsed)
+        return try? JSONSerialization.data(withJSONObject: errorResponse)
+    }
+
+    /// Extracts the appropriate error code and message for each DotcomError case
+    func getCodeAndMessage() -> (code: String, message: String) {
+        switch self {
+        case .empty:
+            return ("empty", "Empty response")
+        case .unauthorized:
+            return (Constants.unauthorized, ErrorMessages.unauthorized)
+        case .noStatsPermission:
+            return (Constants.unauthorized, ErrorMessages.noStatsPermission)
+        case .invalidToken:
+            return (Constants.invalidToken, ErrorMessages.invalidToken)
+        case .requestFailed:
+            return (Constants.requestFailed, ErrorMessages.requestFailed)
+        case .noRestRoute:
+            return (Constants.noRestRoute, ErrorMessages.noRestRoute)
+        case .jetpackNotConnected:
+            return (Constants.unknownToken, ErrorMessages.jetpackNotConnected)
+        case .statsModuleDisabled:
+            return (Constants.invalidBlog, ErrorMessages.statsModuleDisabled)
+        case .resourceDoesNotExist:
+            return (Constants.restTermInvalid, ErrorMessages.resourceDoesNotExist)
+        case .unknown(let code, let message):
+            return (code, message ?? "Unknown error")
+        }
     }
 }

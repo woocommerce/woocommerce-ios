@@ -154,7 +154,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
                        clientSecret: String) async -> Result<CreateAccountResult, CreateAccountError> {
         guard let result = createAccountResult else {
             XCTFail("Could not find result for creating an account.")
-            return .failure(.unexpected(error: .empty))
+            return .failure(.unexpected(error: .notFound(response: nil)))
         }
         return result
     }

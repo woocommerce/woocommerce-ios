@@ -60,6 +60,6 @@ class ReportRemoteTests: XCTestCase {
 
         //Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? DotcomError, .unauthorized)
+        XCTAssertEqual((result.failure as? NetworkError)?.apiErrorCode, "unauthorized")
     }
 }

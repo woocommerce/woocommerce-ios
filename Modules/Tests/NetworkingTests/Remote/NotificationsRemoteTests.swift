@@ -90,12 +90,12 @@ final class NotificationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_error")
 
         remote.updateLastSeen("") { error in
-            guard let error = error as? DotcomError else {
-                XCTFail()
+            guard let error = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
+            XCTAssertEqual(error.apiErrorCode, "unauthorized", "Expected apiErrorCode 'unauthorized' but got '\(error.apiErrorCode ?? "nil")'")
 
-            XCTAssert(error == .unauthorized)
             expectation.fulfill()
         }
 
@@ -127,12 +127,12 @@ final class NotificationsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
 
         remote.updateReadStatus(noteIDs: [], read: true) { error in
-            guard let error = error as? DotcomError else {
-                XCTFail()
+            guard let error = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
 
-            XCTAssert(error == .unauthorized)
+            XCTAssertEqual(error.apiErrorCode, "unauthorized", "Expected apiErrorCode 'unauthorized' but got '\(error.apiErrorCode ?? "nil")'")
 
             expectation.fulfill()
         }

@@ -193,7 +193,9 @@ final class WooShippingStoreTests: XCTestCase {
     func test_deletePackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
-        let error = DotcomError.requestFailed
+        let error = NetworkError.from(
+            dotcomError: DotcomError.requestFailed,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))
         remote.whenDeletePackage(siteID: sampleSiteID, thenReturn: .failure(error))
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 

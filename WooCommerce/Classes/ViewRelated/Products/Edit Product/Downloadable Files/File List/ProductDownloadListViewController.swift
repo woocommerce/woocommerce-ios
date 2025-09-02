@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 import Photos
 import MobileCoreServices
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 final class ProductDownloadListViewController: UIViewController {
     private let product: ProductFormDataModel
@@ -348,7 +348,7 @@ private extension ProductDownloadListViewController {
     func showMediaUploadAlert(error: Error) {
         let errorMessage: String = {
             switch error {
-            case DotcomError.unknown(let code, _) where code == Constants.unsupportedMimeTypeCode:
+            case let error as NetworkError where error.apiErrorCode == Constants.unsupportedMimeTypeCode:
                 Localization.unsupportedFileType
             case MediaAssetExporter.AssetExportError.unsupportedPHAssetMediaType:
                 Localization.unsupportedFileType

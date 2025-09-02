@@ -72,7 +72,9 @@ final class MediaStoreTests: XCTestCase {
         // Given
         let mediaID: Int64 = 22
         let remote = MockMediaRemote()
-        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unauthorized,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -92,8 +94,8 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.loadMedia(siteID: sampleSiteID, mediaID: mediaID)])
 
-        let error = try XCTUnwrap(result.failure as? DotcomError)
-        XCTAssertEqual(error, .unauthorized)
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "unauthorized")
     }
 
     // MARK: test cases for `MediaAction.retrieveMediaLibrary`
@@ -310,7 +312,9 @@ final class MediaStoreTests: XCTestCase {
     func test_retrieveMediaLibrary_from_jcp_site_returns_error_upon_empty_response() throws {
         // Given
         let remote = MockMediaRemote()
-        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unauthorized,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -332,8 +336,8 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
 
-        let error = try XCTUnwrap(result.failure as? DotcomError)
-        XCTAssertEqual(error, .unauthorized)
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "unauthorized")
     }
 
     // MARK: test cases for `MediaAction.uploadMedia`
@@ -423,7 +427,9 @@ final class MediaStoreTests: XCTestCase {
         }()
 
         let remote = MockMediaRemote()
-        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unauthorized,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))))
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
 
@@ -543,7 +549,9 @@ final class MediaStoreTests: XCTestCase {
         }()
 
         let remote = MockMediaRemote()
-        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unauthorized,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))))
 
         let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
 
@@ -566,8 +574,8 @@ final class MediaStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
 
-        let error = try XCTUnwrap(result.failure as? DotcomError)
-        XCTAssertEqual(error, .unauthorized)
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "unauthorized")
     }
 
     // MARK: test cases for `MediaAction.uploadFile`
@@ -666,7 +674,9 @@ final class MediaStoreTests: XCTestCase {
     func test_updateProductID_returns_error_upon_response_error() throws {
         // Given
         let remote = MockMediaRemote()
-        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized))
+        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unauthorized,
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 401, response: nil))))
         let mediaStore = MediaStore(dispatcher: dispatcher,
                                     storageManager: storageManager,
                                     network: network,
@@ -683,8 +693,8 @@ final class MediaStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure as? DotcomError)
-        XCTAssertEqual(error, .unauthorized)
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "unauthorized")
     }
 
     func test_toMedia_converts_rendered_title_to_file_name_if_media_detail_is_not_available() {

@@ -22,17 +22,20 @@ public enum NetworkError: Error, Equatable {
     /// Error for REST API requests with invalid cookie nonce
     case invalidCookieNonce
 
+    /// API-level error parsed from a successful HTTP response
+    case apiError(code: String, message: String?, response: Data? = nil)
+
     /// The HTTP response code of the network error, for cases that are deducted from the status code.
     public var responseCode: Int? {
         switch self {
-            case .notFound:
-                return StatusCode.notFound
-            case .timeout:
-                return StatusCode.timeout
-            case let .unacceptableStatusCode(statusCode, _):
-                return statusCode
-            default:
-                return nil
+        case .notFound:
+            return StatusCode.notFound
+        case .timeout:
+            return StatusCode.timeout
+        case let .unacceptableStatusCode(statusCode, _):
+            return statusCode
+        case .apiError, .invalidURL, .invalidCookieNonce:
+            return nil
         }
     }
 
@@ -45,8 +48,36 @@ public enum NetworkError: Error, Equatable {
             return response
         case .unacceptableStatusCode(_, let response):
             return response
+        case .apiError(_, _, let response):
+            return response
         case .invalidURL, .invalidCookieNonce:
             return nil
+        }
+    }
+
+    /// Parsed API error details from response data
+    var apiErrorDetails: APIErrorDetails? {
+        guard let data = response else { return nil }
+        return try? JSONDecoder().decode(APIErrorDetails.self, from: data)
+    }
+
+    /// API error code from response, if available
+    public var apiErrorCode: String? {
+        switch self {
+        case .apiError(let code, _, _):
+            return code
+        default:
+            return apiErrorDetails?.code
+        }
+    }
+
+    /// API error message from response, if available
+    public var apiErrorMessage: String? {
+        switch self {
+        case .apiError(_, let message, _):
+            return message
+        default:
+            return apiErrorDetails?.message
         }
     }
 }
@@ -118,6 +149,83 @@ extension NetworkError: CustomStringConvertible {
                 "NetworkError.invalidCookieNonce",
                 value: "Sorry, your session has expired. Please log in again.",
                 comment: "Error message when session cookie has expired.")
+        case let .apiError(code, message, _):
+            let messageText = message ?? ""
+            let format = NSLocalizedString(
+                "NetworkError.apiError",
+                value: "API Error: [%1$@] %2$@",
+                comment: "Error message for API-level errors. %1$@ is the error code, %2$@ is the error message")
+            return String.localizedStringWithFormat(format, code, messageText)
         }
     }
+}
+
+// MARK: - Convenience Properties for Common Error Conditions
+
+public extension NetworkError {
+    /// Returns true if this error represents a "not found" condition
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
+    var isNotFound: Bool {
+        switch self {
+        case .notFound:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 404
+        default:
+            return false
+        }
+    }
+
+    /// Returns true if this error represents an authorization issue
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
+    var isUnauthorized: Bool {
+        switch self {
+        case .invalidCookieNonce:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 401 || statusCode == 403
+        default:
+            // Check for specific unauthorized error codes in API response
+            return apiErrorCode?.contains("unauthorized") == true ||
+            apiErrorCode?.contains("invalid_token") == true
+        }
+    }
+
+    /// Returns true if this error represents a timeout
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
+    var isTimeout: Bool {
+        switch self {
+        case .timeout:
+            return true
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 408
+        default:
+            return false
+        }
+    }
+
+    /// Returns true if this error represents invalid input/parameters
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
+    var isInvalidInput: Bool {
+        switch self {
+        case .unacceptableStatusCode(let statusCode, _):
+            return statusCode == 400
+        default:
+            return apiErrorCode?.contains("invalid_param") == true
+        }
+    }
+
+    /// Returns a user-friendly error message, preferring API error message over generic description
+    // periphery:ignore - TODO: remove this ignore when we merge NetworkError use
+    var userFriendlyMessage: String {
+        return apiErrorMessage ?? localizedDescription
+    }
+}
+
+// MARK: - Supporting Types
+
+/// Represents error details from API response JSON
+struct APIErrorDetails: Codable {
+    let code: String
+    let message: String?
 }

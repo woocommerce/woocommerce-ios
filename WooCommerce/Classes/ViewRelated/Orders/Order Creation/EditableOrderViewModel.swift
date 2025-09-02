@@ -4,7 +4,7 @@ import protocol Storage.StorageManagerType
 import Experiments
 import UIKit
 import WooFoundation
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 
 /// Encapsulates the item type an order can have, products or variations
 ///
@@ -2509,19 +2509,19 @@ extension EditableOrderViewModel {
         /// This is needed because old stores error when sending empty emails.
         ///
         private static func isEmailError(_ error: Error, order: Order) -> Bool {
-            switch error as? DotcomError {
-            case .unknown(code: "rest_invalid_param", let message?):
+            if let networkError = error as? NetworkError,
+               networkError.apiErrorCode == "rest_invalid_param",
+               let message = networkError.apiErrorMessage {
                 return message.contains("billing") && order.billingAddress?.hasEmailAddress == false
-            default:
-                return false
             }
+            return false
         }
 
         private static func isCouponsError(_ error: Error) -> Bool {
-            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+            if let networkError = error as? NetworkError,
+               networkError.apiErrorCode == "woocommerce_rest_invalid_coupon" {
                 return true
             }
-
             return false
         }
 

@@ -310,7 +310,8 @@ private extension ProductStore {
                                                    shouldDeleteExistingProducts: shouldDeleteExistingProducts)
             let hasNextPage = products.count == pageSize
             return hasNextPage
-        } catch let error as DotcomError where error == .unknown(code: "rest_invalid_param", message: "Invalid parameter(s): type") {
+        } catch let error as NetworkError where error.apiErrorCode == "rest_invalid_param" &&
+                                                        error.apiErrorMessage?.starts(with: "Invalid parameter(s): type") == true {
             if let productType,
                ProductType.coreTypes.contains(productType) == false {
                 return false
@@ -678,7 +679,7 @@ private extension ProductStore {
                                                                                 feature: .productDetailsFromScannedTexts,
                                                                                 responseFormat: .json)
                 guard let jsonData = jsonString.data(using: .utf8) else {
-                    return completion(.failure(DotcomError.resourceDoesNotExist))
+                    return completion(.failure(NetworkError.invalidURL))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 completion(.success(.init(name: details.name, description: details.description)))
@@ -1376,19 +1377,15 @@ public enum ProductUpdateError: Error, Equatable {
     case generic(message: String)
 
     init(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: error.toAnyError)
-            return
-        }
-        switch dotcomError {
-        case let .unknown(code, message):
-            guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown(error: dotcomError.toAnyError)
+        if let networkError = error as? NetworkError,
+           let apiErrorCode = networkError.apiErrorCode {
+            guard let errorCode = ErrorCode(rawValue: apiErrorCode) else {
+                self = .unknown(error: error.toAnyError)
                 return
             }
-            self = errorCode.error(with: message)
-        default:
-            self = .unknown(error: dotcomError.toAnyError)
+            self = errorCode.error(with: networkError.apiErrorMessage)
+        } else {
+            self = .unknown(error: error.toAnyError)
         }
     }
 
@@ -1462,12 +1459,12 @@ public enum ProductLoadError: Error, Equatable {
     case unknown(error: AnyError)
 
     init(underlyingError error: Error) {
-        guard case let DotcomError.unknown(code, _) = error else {
+        if let networkError = error as? NetworkError,
+           let apiErrorCode = networkError.apiErrorCode {
+            self = ErrorCode(rawValue: apiErrorCode)?.error ?? .unknown(error: error.toAnyError)
+        } else {
             self = .unknown(error: error.toAnyError)
-            return
         }
-
-        self = ErrorCode(rawValue: code)?.error ?? .unknown(error: error.toAnyError)
     }
 
     enum ErrorCode: String {

@@ -99,11 +99,13 @@ final class ShippingLabelRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError
-            .unknown(code: "wcc_server_error_response",
-                     message: "Error: The WooCommerce Shipping & Tax server returned: Bad Request Unable to request refund. " +
-                        "The parcel has been shipped. ( 400 )")
-        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+        let networkError = result.failure as? NetworkError
+        XCTAssertEqual(networkError?.apiErrorCode, "wcc_server_error_response")
+        XCTAssertEqual(
+            networkError?.apiErrorMessage,
+            "Error: The WooCommerce Shipping & Tax server returned: " +
+            "Bad Request Unable to request refund. " +
+            "The parcel has been shipped. ( 400 )")
     }
 
     func test_shippingAddressValidation_returns_address_on_success() throws {
@@ -276,10 +278,9 @@ final class ShippingLabelRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError
-            .unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                     message: "At least one of the new custom packages has the same name as existing packages.")
-        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+        let networkError = result.failure as? NetworkError
+        XCTAssertEqual(networkError?.apiErrorCode, "duplicate_custom_package_names_of_existing_packages")
+        XCTAssertEqual(networkError?.apiErrorMessage, "At least one of the new custom packages has the same name as existing packages.")
     }
 
     func test_createPackage_returns_missingPackage_error_with_no_packages() throws {

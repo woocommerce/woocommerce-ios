@@ -2,7 +2,6 @@ import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageManagerType
-import enum Networking.DotcomError
 import enum Networking.NetworkError
 
 /// View model for `MostActiveCouponsCard`.
@@ -97,7 +96,7 @@ final class MostActiveCouponsCardViewModel: ObservableObject {
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .coupons))
         } catch {
             switch error {
-            case DotcomError.noRestRoute, NetworkError.notFound:
+            case let networkError as NetworkError where networkError.isNotFound || networkError.apiErrorCode == "rest_no_route":
                 analyticsEnabled = false
             default:
                 analyticsEnabled = true

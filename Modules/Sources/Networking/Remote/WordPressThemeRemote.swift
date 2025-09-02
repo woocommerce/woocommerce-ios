@@ -70,8 +70,8 @@ public enum InstallThemeError: Error {
     case themeAlreadyInstalled
 
     init?(_ error: Error) {
-        guard let dotcomError = error as? DotcomError,
-              case let .unknown(code, _) = dotcomError else {
+        guard let networkError = error as? NetworkError,
+        let code = networkError.apiErrorCode else {
             return nil
         }
 

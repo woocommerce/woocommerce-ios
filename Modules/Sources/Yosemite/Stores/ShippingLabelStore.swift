@@ -161,7 +161,8 @@ private extension ShippingLabelStore {
                 }
                 onCompletion(eligibility.isEligible)
             case .failure(let error):
-                if error as? DotcomError == .noRestRoute {
+                if let networkError = error as? NetworkError,
+                   networkError.apiErrorCode == "rest_no_route" {
                     DDLogError("⚠️ Endpoint for shipping label creation eligibility is unreachable for order: \(orderID). WC Shipping plugin may be missing.")
                 } else {
                     DDLogError("⛔️ Error checking shipping label creation eligibility for order \(orderID): \(error)")
@@ -487,19 +488,12 @@ public enum PackageCreationError: Error, Equatable {
     case unknown(error: AnyError)
 
     init(error: Error) {
-        guard let dotcomError = error as? DotcomError else {
-            self = .unknown(error: error.toAnyError)
-            return
-        }
-        switch dotcomError {
-        case .unknown(let code, _):
-            guard let errorCode = ErrorCode(rawValue: code) else {
-                self = .unknown(error: dotcomError.toAnyError)
-                return
-            }
+        if let networkError = error as? NetworkError,
+           let code = networkError.apiErrorCode,
+           let errorCode = ErrorCode(rawValue: code) {
             self = errorCode.error
-        default:
-            self = .unknown(error: dotcomError.toAnyError)
+        } else {
+            self = .unknown(error: error.toAnyError)
         }
     }
 

@@ -1,4 +1,5 @@
 import XCTest
+import enum Networking.NetworkError
 import enum Networking.DotcomError
 import enum Networking.SiteCreationError
 import enum Networking.WordPressApiError
@@ -125,8 +126,15 @@ final class SiteStoreTests: XCTestCase {
 
     func test_createSite_returns_domainExists_error_on_Dotcom_blog_name_exists_error() throws {
         // Given
+        let errorData =
+        """
+        {
+            "code": "blog_name_exists",
+            "message": "Sorry, that site already exists!"
+        }
+        """.data(using: .utf8)!
         remote.whenCreatingSite(thenReturn: .failure(
-            DotcomError.unknown(code: "blog_name_exists", message: "Sorry, that site already exists!")
+            NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
         ))
 
         // When
@@ -145,9 +153,15 @@ final class SiteStoreTests: XCTestCase {
 
     func test_createSite_returns_invalidDomain_error_on_Dotcom_blog_name_error() throws {
         // Given
+        let errorData = """
+{
+    "code": "blog_name_only_lowercase_letters_and_numbers",
+    "message": "Site names can only contain lowercase letters (a-z) and numbers."
+}
+"""
+            .data(using: .utf8)!
         remote.whenCreatingSite(thenReturn: .failure(
-            DotcomError.unknown(code: "blog_name_only_lowercase_letters_and_numbers",
-                                message: "Site names can only contain lowercase letters (a-z) and numbers.")
+            NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
         ))
 
         // When
@@ -232,7 +246,9 @@ final class SiteStoreTests: XCTestCase {
 
     func test_enableFreeTrial_returns_error_on_failure() throws {
         // Given
-        remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenEnablingFreeTrial(thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unknown(code: "error", message: nil),
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
 
         // When
         let result = waitFor { promise in
@@ -242,8 +258,8 @@ final class SiteStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "error")
     }
 
      // MARK: - `updateSiteTitle`
@@ -270,7 +286,9 @@ final class SiteStoreTests: XCTestCase {
     func test_updateSiteTitle_returns_error_on_failure() throws {
         // Given
         let siteID: Int64 = 123
-        remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenUpdatingSiteTitle(thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unknown(code: "error", message: nil),
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
 
         // When
         let result = waitFor { promise in
@@ -281,8 +299,8 @@ final class SiteStoreTests: XCTestCase {
 
         // Then
         XCTAssertFalse(result.isSuccess)
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "error")
     }
 
     // MARK: - `uploadStoreProfilerAnswers`
@@ -307,7 +325,9 @@ final class SiteStoreTests: XCTestCase {
 
     func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
         // Given
-        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(NetworkError.from(
+            dotcomError: DotcomError.unknown(code: "error", message: nil),
+            originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
 
         // When
         let result = waitFor { promise in
@@ -320,8 +340,8 @@ final class SiteStoreTests: XCTestCase {
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+        let error = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(error.apiErrorCode, "error")
     }
 
     // MARK: - `syncSiteByDomain`
@@ -348,9 +368,10 @@ final class SiteStoreTests: XCTestCase {
 
    func test_syncSiteByDomain_returns_error_on_failure() throws {
        // Given
-       let siteID: Int64 = 123
        let domain = "example.com"
-       remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+       remote.whenLoadingSite(thenReturn: .failure(NetworkError.from(
+           dotcomError: DotcomError.unknown(code: "error", message: nil),
+           originalNetworkError: NetworkError.unacceptableStatusCode(statusCode: 400, response: nil))))
 
        // When
        let result = waitFor { promise in
@@ -361,8 +382,8 @@ final class SiteStoreTests: XCTestCase {
 
        // Then
        XCTAssertFalse(result.isSuccess)
-       let error = try XCTUnwrap(result.failure)
-       XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+       let error = try XCTUnwrap(result.failure as? NetworkError)
+       XCTAssertEqual(error.apiErrorCode, "error")
    }
 
 }

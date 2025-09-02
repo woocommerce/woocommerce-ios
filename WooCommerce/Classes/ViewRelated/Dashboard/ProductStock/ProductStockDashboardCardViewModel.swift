@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 import protocol WooFoundation.Analytics
-import enum Networking.DotcomError
 import enum Networking.NetworkError
 
 /// View model for `ProductStockDashboardCard`
@@ -53,7 +52,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
             switch error {
-            case DotcomError.noRestRoute, NetworkError.notFound:
+            case let networkError as NetworkError where networkError.isNotFound || networkError.apiErrorCode == "rest_no_route":
                 analyticsEnabled = false
             default:
                 analyticsEnabled = true

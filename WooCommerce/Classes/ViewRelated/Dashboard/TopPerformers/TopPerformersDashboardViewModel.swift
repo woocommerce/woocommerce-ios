@@ -3,7 +3,6 @@ import Foundation
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
-import enum Networking.DotcomError
 import enum Networking.NetworkError
 
 /// View model for `TopPerformersDashboardView`
@@ -127,7 +126,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
             syncingDidFinishPublisher.send(nil)
         } catch {
             switch error {
-            case DotcomError.noRestRoute, NetworkError.notFound:
+            case let networkError as NetworkError where networkError.isNotFound || networkError.apiErrorCode == "rest_no_route":
                 analyticsEnabled = false
             default:
                 analyticsEnabled = true

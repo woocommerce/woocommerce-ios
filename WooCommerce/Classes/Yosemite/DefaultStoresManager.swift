@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
-import enum Networking.DotcomError
+import enum Networking.NetworkError
 import class Networking.UserAgent
 import class Networking.WordPressOrgNetwork
 import KeychainAccess
@@ -542,7 +542,7 @@ private extension DefaultStoresManager {
     func synchronizeAddOnsGroups(siteID: Int64) {
         let action = AddOnGroupAction.synchronizeAddOnGroups(siteID: siteID) { result in
             if let error = result.failure {
-                if error as? DotcomError == .noRestRoute {
+                if let networkError = error as? NetworkError, networkError.apiErrorCode == "rest_no_route" {
                     DDLogError("⚠️ Endpoint for add-on groups is unreachable for siteID: \(siteID). WC Product Add-Ons plugin may be missing.")
                 } else {
                     DDLogError("⛔️ Failed to sync add-on groups for siteID: \(siteID). Error: \(error)")

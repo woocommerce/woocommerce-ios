@@ -31,7 +31,8 @@ final class JetpackSettingsRemoteTests: XCTestCase {
             // When
             try await remote.enableJetpackModule(for: sampleSiteID, moduleSlug: "invalidmodule")
         }, errorAssert: { error in
-            (error as? DotcomError) == .unknown(code: "some_updated", message: "Invalid option: invalidmodule.")
+            let networkError = error as? NetworkError
+            return networkError?.apiErrorCode == "some_updated" && networkError?.apiErrorMessage == "Invalid option: invalidmodule."
         })
     }
 

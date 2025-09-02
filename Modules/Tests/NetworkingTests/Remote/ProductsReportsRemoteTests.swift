@@ -56,6 +56,6 @@ class ProductsReportsRemoteTests: XCTestCase {
                                                        earliestDateToInclude: Date(),
                                                        latestDateToInclude: Date(),
                                                        quantity: 5)
-        }, errorAssert: { ($0 as? DotcomError) == .unauthorized })
+        }, errorAssert: { ($0 as? NetworkError)?.apiErrorCode == "unauthorized" })
     }
 }

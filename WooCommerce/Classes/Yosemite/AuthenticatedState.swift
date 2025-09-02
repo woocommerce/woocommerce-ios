@@ -186,7 +186,7 @@ private extension AuthenticatedState {
         }
     }
 
-    /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *main* error handling flow!
+    /// Executed whenever a NetworkError is received (ApplicationLayer). This allows us to have a *main* error handling flow!
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)

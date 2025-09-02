@@ -197,8 +197,8 @@ public enum SiteCreationError: Error, Equatable {
     /// When the site creation result is returned but its `success` boolean is `false`.
     case unsuccessful
     /// Unexpected error from WPCOM.
-    case unexpected(error: DotcomError)
-    /// Unknown error that is not a `DotcomError` nor `Networking.SiteCreationError`.
+    case unexpected(error: NetworkError)
+    /// Unknown error that is not a `NetworkError` nor `Networking.SiteCreationError`.
     case unknown(description: String)
 
     public init(remoteError: Error) {
@@ -208,19 +208,18 @@ public enum SiteCreationError: Error, Equatable {
             case .invalidDomain:
                 self = .invalidDomain
             }
-        case let remoteError as DotcomError:
-            switch remoteError {
-            case let .unknown(code, _):
+        case let networkError as NetworkError:
+            if let code = networkError.apiErrorCode {
                 switch code {
                 case "blog_name_exists":
                     self = .domainExists
                 case "blog_name_only_lowercase_letters_and_numbers":
                     self = .invalidDomain
                 default:
-                    self = .unexpected(error: remoteError)
+                    self = .unexpected(error: networkError)
                 }
-            default:
-                self = .unexpected(error: remoteError)
+            } else {
+                self = .unexpected(error: networkError)
             }
         default:
             self = .unknown(description: remoteError.localizedDescription)

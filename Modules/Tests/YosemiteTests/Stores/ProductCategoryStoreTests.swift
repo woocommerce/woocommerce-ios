@@ -349,7 +349,15 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     func test_synchronizeProductCategory_fails_with_resourceDoesNotExist_then_it_provides_right_error() {
         let categoryID: Int64 = 123
-        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: DotcomError.resourceDoesNotExist)
+        let errorData =
+        """
+            {
+                "code": "resource_not_found",
+                "message": "Resource does not exist"
+            }
+        """.data(using: .utf8)!
+        let networkError = NetworkError.notFound(response: errorData)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: networkError)
 
         let retrievedError: Error? = waitFor { [weak self] promise in
             guard let self = self else {

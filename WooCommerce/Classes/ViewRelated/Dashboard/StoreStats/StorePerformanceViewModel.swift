@@ -5,7 +5,6 @@ import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import enum Storage.StatsVersion
-import enum Networking.DotcomError
 import enum Networking.NetworkError
 
 /// Different display modes of site visit stats
@@ -191,7 +190,7 @@ final class StorePerformanceViewModel: ObservableObject {
             syncingDidFinishPublisher.send(nil)
         } catch {
             switch error {
-            case DotcomError.noRestRoute, NetworkError.notFound:
+            case let networkError as NetworkError where networkError.isNotFound || networkError.apiErrorCode == "rest_no_route":
                 analyticsEnabled = false
             default:
                 analyticsEnabled = true

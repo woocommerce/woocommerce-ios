@@ -250,10 +250,6 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for Point of Sale documentation
-        ///
-        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
-
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"

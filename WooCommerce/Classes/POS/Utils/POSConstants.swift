@@ -8,6 +8,10 @@ public enum POSConstants {
             Self.trustedURL(self.rawValue)
         }
 
+        /// URL for Point of Sale documentation
+        ///
+        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
+
         /// URL for Point of Sale's barcode scanner documentation
         ///
         case pointOfSaleBarcodeScannerDocumentation = "https://woocommerce.com/document/barcode-and-qr-code-scanner/"

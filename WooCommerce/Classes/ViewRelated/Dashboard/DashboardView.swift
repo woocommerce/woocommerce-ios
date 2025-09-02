@@ -5,6 +5,7 @@ import struct Yosemite.StoreOnboardingTask
 import struct Yosemite.Coupon
 import struct Yosemite.Order
 import struct Yosemite.DashboardCard
+import class Yosemite.POSCatalogFullSyncService
 
 /// View for the dashboard screen
 ///
@@ -20,6 +21,9 @@ struct DashboardView: View {
     @State private var troubleshootURL: URL?
     @State private var storePlanState: StorePlanSyncState = .loading
     @State private var connectivityStatus: ConnectivityStatus = .notReachable
+
+    private let syncService = POSCatalogFullSyncService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials!)!
+    private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID!
 
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
@@ -114,6 +118,20 @@ struct DashboardView: View {
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task {
+                        do {
+                            let catalog = try await syncService.startFullSync(for: siteID)
+                            print("Full sync completed with \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+                        } catch {
+                            print("Full sync failed for siteID \(siteID) with error: \(error)")
+                        }
+                    }
+                } label: {
+                    Image(systemName: "arrow.down.circle")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 if let url = viewModel.siteURLToShare {
                     ShareLink(item: url) {

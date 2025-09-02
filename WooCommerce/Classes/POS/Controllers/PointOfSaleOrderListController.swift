@@ -11,16 +11,19 @@ import class Yosemite.Store
 
 protocol PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState { get }
+    var selectedOrder: POSOrder? { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
+    func selectOrder(_ order: POSOrder?)
 }
 
-@Observable final class PointOfSaleOrderListController: PointOfSaleOrderListControllerProtocol {
+@Observable final class PointOfSaleOrderListController: @MainActor PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState
     private let paginationTracker: AsyncPaginationTracker
     private var fetchStrategy: PointOfSaleOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
+    private(set) var selectedOrder: POSOrder?
 
     init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
          initialState: OrderListState = .loading([])) {
@@ -117,5 +120,10 @@ protocol PointOfSaleOrderListControllerProtocol {
         }
 
         ordersViewState = .loading(cachedOrders)
+    }
+
+    @MainActor
+    func selectOrder(_ order: POSOrder?) {
+        selectedOrder = order
     }
 }

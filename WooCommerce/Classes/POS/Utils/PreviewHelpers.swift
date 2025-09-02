@@ -258,7 +258,12 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         paymentMethodID: "cod",
                         paymentMethodTitle: "Cash on Delivery",
                         lineItems: [
-                            POSOrderItem(itemID: 1, name: "Premium Coffee Beans", productID: 101, variationID: 0, quantity: 2.0, price: NSDecimalNumber(string: "12.50"), subtotal: "25.00", total: "25.00", attributes: []),
+                            POSOrderItem(itemID: 1,
+                                         name: "Premium Coffee Beans",
+                                         productID: 101,
+                                         variationID: 0,
+                                         quantity: 2.0,
+                                         price: NSDecimalNumber(string: "12.50"), subtotal: "25.00", total: "25.00", attributes: []),
                             POSOrderItem(
                                 itemID: 2,
                                 name: "Organic Tea - Earl Grey",
@@ -489,9 +494,14 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
             )
     }
 
+    var selectedOrder: POSOrder? {
+        ordersViewState.orders.first
+    }
+
     func loadOrders() async {}
     func loadNextOrders() async {}
-    func refreshOrders() async { }
+    func refreshOrders() async {}
+    func selectOrder(_ order: POSOrder?) {}
 }
 
 // MARK: - Barcode Scan Service

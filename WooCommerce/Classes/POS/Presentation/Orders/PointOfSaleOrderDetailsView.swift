@@ -6,16 +6,13 @@ import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
 struct PointOfSaleOrderDetailsView: View {
-    let orderID: String?
     let onBack: () -> Void
 
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var order: POSOrder? {
-        guard let orderID = orderID,
-              let orderIDInt = Int64(orderID) else { return nil }
-        return orderListModel.ordersController.ordersViewState.orders.first { $0.id == orderIDInt }
+        return orderListModel.ordersController.selectedOrder
     }
 
     private let helper = PointOfSaleOrderDetailsViewHelper()
@@ -156,7 +153,6 @@ private extension PointOfSaleOrderDetailsView {
 private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem, order: POSOrder) -> some View {
-
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             productImageView(for: item)
             productDetailsView(item: item, order: order)
@@ -439,7 +435,7 @@ private enum Localization {
 
 #if DEBUG
 #Preview("Order Details") {
-    PointOfSaleOrderDetailsView(orderID: "2", onBack: {})
+    PointOfSaleOrderDetailsView(onBack: {})
         .environment(POSPreviewHelpers.makePreviewOrdersModel())
 }
 #endif

@@ -3,26 +3,27 @@ import UIKit
 
 struct PointOfSaleOrdersView: View {
     @Binding var isPresented: Bool
-    @State private var selectedOrderID: String?
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        CustomNavigationSplitView(selection: $selectedOrderID) { _ in
-            PointOfSaleOrderListView(selectedOrderID: $selectedOrderID) {
+        CustomNavigationSplitView(selection: Binding(
+            get: { orderListModel.ordersController.selectedOrder },
+            set: { orderListModel.ordersController.selectOrder($0) }
+        )) { _ in
+            PointOfSaleOrderListView() {
                 isPresented = false
             }
         } detail: { selection in
             PointOfSaleOrderDetailsView(
-                orderID: selection,
                 onBack: {
-                    $selectedOrderID.wrappedValue = nil
+                    orderListModel.ordersController.selectOrder(nil)
                 }
             )
         } setDefaultValue: {
-            if selectedOrderID == nil,
+            if orderListModel.ordersController.selectedOrder == nil,
                let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
-                selectedOrderID = String(firstOrder.id)
+                orderListModel.ordersController.selectOrder(firstOrder)
             }
         }
         .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
@@ -32,11 +33,11 @@ struct PointOfSaleOrdersView: View {
                 return
             }
 
-            if let selectedOrderID, newOrders.map(\.number).contains(selectedOrderID) {
+            if let selectedOrder = orderListModel.ordersController.selectedOrder, newOrders.map(\.id).contains(selectedOrder.id) {
                 return
             }
 
-            self.selectedOrderID = String(firstOrder.id)
+            orderListModel.ordersController.selectOrder(firstOrder)
         }
     }
 }

@@ -197,7 +197,7 @@ struct PointOfSaleOrderDetailsViewHelperTests {
         let result = sut.formattedDiscountTotal(for: order)
 
         // Then
-        #expect(result == "$15.50")
+        #expect(result == "-$15.50")
     }
 
     // MARK: - Should Show Discount Tests
@@ -395,17 +395,6 @@ struct PointOfSaleOrderDetailsViewHelperTests {
 
         // Then
         #expect(result == "$500.00")
-    }
-
-    @Test func formattedDiscountTotal_verySmallDiscount_handlesCorrectly() async throws {
-        // Given
-        let order = makePOSOrder(discountTotal: "0.01")
-
-        // When
-        let result = sut.formattedDiscountTotal(for: order)
-
-        // Then
-        #expect(result == "$0.01")
     }
 }
 

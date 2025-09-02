@@ -4,7 +4,6 @@ import enum Yosemite.OrderPaymentMethod
 import WooFoundation
 
 struct PointOfSaleOrderListView: View {
-    @Binding var selectedOrderID: String?
     let onClose: () -> Void
 
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
@@ -51,9 +50,9 @@ struct PointOfSaleOrderListView: View {
                             let orders = ordersViewState.orders
                             ForEach(orders, id: \.id) { order in
                                 Button(action: {
-                                    selectedOrderID = String(order.id)
+                                    orderListModel.ordersController.selectOrder(order)
                                 }) {
-                                    OrderRowView(order: order, isSelected: selectedOrderID == String(order.id))
+                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -273,7 +272,7 @@ private enum Localization {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {

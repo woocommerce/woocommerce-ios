@@ -47,14 +47,14 @@ struct PointOfSaleOrderDetailsViewHelper {
         !order.refunds.isEmpty
     }
 
-    /// Formats discount total (already includes negative sign from data)
+    /// Formats discount total
     /// Follows TotalsView pattern using discountTotal directly
     func formattedDiscountTotal(for order: POSOrder) -> String? {
         guard let discountTotal = Double(order.discountTotal), discountTotal != 0 else {
             return nil
         }
 
-        return currencyFormatter.formatAmount(order.discountTotal, with: order.currency)
+        return currencyFormatter.formatAmount(order.discountTotal, with: order.currency, isNegative: true)
     }
 
     /// Determines if discount should be shown

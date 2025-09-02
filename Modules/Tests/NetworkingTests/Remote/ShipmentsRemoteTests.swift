@@ -88,13 +88,13 @@ final class ShipmentsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
         remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
             XCTAssertNil(shipmentTrackings)
-            XCTAssertNotNil(error)
+            XCTAssertNotNil(error, "Expected an error but got nil")
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
+            guard let networkError = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertEqual(networkError.apiErrorCode, "rest_no_route", "Expected apiErrorCode 'rest_no_route' but got '\(networkError.apiErrorCode ?? "nil")'")
             expectation.fulfill()
         })
 
@@ -182,13 +182,14 @@ final class ShipmentsRemoteTests: XCTestCase {
                                       dateShipped: "2019-04-01",
                                       trackingNumber: "1111") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
+            XCTAssertNotNil(error, "Expected an error but got nil")
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
+            guard let networkError = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertEqual(networkError.apiErrorCode, "rest_no_route", "Expected apiErrorCode 'rest_no_route' but got '\(networkError.apiErrorCode ?? "nil")'")
+
             expectation.fulfill()
         }
 
@@ -280,13 +281,12 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         trackingURL: "https://somewhere.online.net.com?q=%1$s",
                                                         dateShipped: "1234") { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
+            XCTAssertNotNil(error, "Expected an error but got nil")
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
-                return
+            guard let networkError = error as? NetworkError else {
+                return XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertEqual(networkError.apiErrorCode, "rest_no_route", "Expected apiErrorCode 'rest_no_route' but got '\(networkError.apiErrorCode ?? "nil")'")
             expectation.fulfill()
         }
 
@@ -360,13 +360,14 @@ final class ShipmentsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment_tracking_plugin_not_active")
         remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID) { (shipmentTracking, error) in
             XCTAssertNil(shipmentTracking)
-            XCTAssertNotNil(error)
+            XCTAssertNotNil(error, "Expected an error but got nil")
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
+            guard let networkError = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertEqual(networkError.apiErrorCode, "rest_no_route", "Expected apiErrorCode 'rest_no_route' but got '\(networkError.apiErrorCode ?? "nil")'")
+
             expectation.fulfill()
         }
 
@@ -435,13 +436,14 @@ final class ShipmentsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
         remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
             XCTAssertNil(shipmentTrackingGroups)
-            XCTAssertNotNil(error)
+            XCTAssertNotNil(error, "Expected an error but got nil")
 
-            guard let dotComError = error as? DotcomError else {
-                XCTFail()
+            guard let networkError = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
-            XCTAssertTrue(dotComError == .noRestRoute)
+            XCTAssertEqual(networkError.apiErrorCode, "rest_no_route", "Expected apiErrorCode 'rest_no_route' but got '\(networkError.apiErrorCode ?? "nil")'")
+
             expectation.fulfill()
         }
 

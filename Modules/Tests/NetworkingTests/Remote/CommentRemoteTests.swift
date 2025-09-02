@@ -142,12 +142,13 @@ class CommentRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/comments/\(sampleCommentID)", filename: "generic_error")
         remote.moderateComment(siteID: sampleSiteID, commentID: sampleCommentID, status: .untrash) { (updatedStatus, error) in
-            guard let error = error as? DotcomError else {
-                XCTFail()
+            XCTAssertNotNil(error, "Expected an error but got nil")
+            guard let networkError = error as? NetworkError else {
+                XCTFail("Expected NetworkError but got \(type(of: error)): \(String(describing: error))")
                 return
             }
+            XCTAssertEqual(networkError.apiErrorCode, "unauthorized", "Expected apiErrorCode 'unauthorized' but got '\(networkError.apiErrorCode ?? "nil")'")
 
-            XCTAssert(error == .unauthorized)
             XCTAssertNil(updatedStatus)
 
             expectation.fulfill()

@@ -102,10 +102,9 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError
-            .unknown(code: "duplicate_custom_package_names_of_existing_packages",
-                     message: "At least one of the new custom packages has the same name as existing packages.")
-        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+        let networkError = result.failure as? NetworkError
+        XCTAssertEqual(networkError?.apiErrorCode, "duplicate_custom_package_names_of_existing_packages")
+        XCTAssertEqual(networkError?.apiErrorMessage, "At least one of the new custom packages has the same name as existing packages.")
     }
 
     func test_createPackage_returns_missingPackage_error_with_no_packages() throws {
@@ -163,8 +162,8 @@ final class WooShippingRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedError = DotcomError.unauthorized
-        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+        let networkError = result.failure as? NetworkError
+        XCTAssertEqual(networkError?.apiErrorCode, "unauthorized")
     }
 
     func test_loadLabelRates_sends_correct_params_and_parses_success_response() throws {

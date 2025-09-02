@@ -92,10 +92,16 @@ extension PointOfSaleSettingsView {
 
 struct PointOfSaleSettingsCard: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
 
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
+
+    private var selectionBackgroundColor: Color {
+        guard isSelected else { return Color.clear }
+        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
+    }
 
     var body: some View {
         Button(action: onTap) {
@@ -126,7 +132,7 @@ struct PointOfSaleSettingsCard: View {
         .accessibilityAddTraits(.isButton)
         .background(
             RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
-                .fill(isSelected ? Color.posSecondary : Color.clear)
+                .fill(selectionBackgroundColor)
         )
     }
 }

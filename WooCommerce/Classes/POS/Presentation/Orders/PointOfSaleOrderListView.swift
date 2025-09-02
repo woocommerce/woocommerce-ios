@@ -217,35 +217,41 @@ private struct GhostOrderRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 70, height: 16)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                HStack(alignment: .center, spacing: POSSpacing.medium) {
+                    VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.2, height: 16)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 160, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.4, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
 
-            Spacer()
+                    Spacer()
 
-            VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 80, height: 18)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                    VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.25, height: 18)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 90, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.28, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
+                }
+                Spacer()
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))

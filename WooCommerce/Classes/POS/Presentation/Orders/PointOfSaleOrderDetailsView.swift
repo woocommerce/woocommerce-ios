@@ -6,14 +6,10 @@ import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
 struct PointOfSaleOrderDetailsView: View {
+    let order: POSOrder
     let onBack: () -> Void
 
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
-    private var order: POSOrder? {
-        return orderListModel.ordersController.selectedOrder
-    }
 
     private let helper = PointOfSaleOrderDetailsViewHelper()
 
@@ -23,32 +19,21 @@ struct PointOfSaleOrderDetailsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if let order = order {
-                POSPageHeaderView(
-                    title: Localization.orderTitle(order.number),
-                    backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                    trailingContent: { orderStatusBadge(order.status) },
-                    bottomContent: { headerBottomContent(for: order) }
-                )
-            } else {
-                POSPageHeaderView(
-                    title: Localization.orderDetailsTitle,
-                    backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil
-                )
-            }
+            POSPageHeaderView(
+                title: Localization.orderTitle(order.number),
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                trailingContent: { orderStatusBadge(order.status) },
+                bottomContent: { headerBottomContent(for: order) }
+            )
 
-            if let order = order {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                        if !order.lineItems.isEmpty {
-                            productsSection(order)
-                        }
-                        totalsSection(order)
+            ScrollView {
+                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    if !order.lineItems.isEmpty {
+                        productsSection(order)
                     }
-                    .padding(.horizontal, POSPadding.medium)
+                    totalsSection(order)
                 }
-            } else {
-                emptyStateView
+                .padding(.horizontal, POSPadding.medium)
             }
         }
         .background(Color.posSurface)
@@ -59,17 +44,6 @@ struct PointOfSaleOrderDetailsView: View {
 // MARK: - Main Sections
 
 private extension PointOfSaleOrderDetailsView {
-    @ViewBuilder
-    var emptyStateView: some View {
-        VStack {
-            Spacer()
-            Text(Localization.orderNotFound)
-                .font(.posBodyLargeRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            Spacer()
-        }
-    }
-
     @ViewBuilder
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -354,12 +328,6 @@ private enum Localization {
         return String(format: format, orderNumber)
     }
 
-    static let orderNotFound = NSLocalizedString(
-        "pos.orderDetailsView.orderNotFound",
-        value: "Order not found",
-        comment: "Message shown when the selected order cannot be found"
-    )
-
     static let productsTitle = NSLocalizedString(
         "pos.orderDetailsView.productsTitle",
         value: "Products",
@@ -435,7 +403,9 @@ private enum Localization {
 
 #if DEBUG
 #Preview("Order Details") {
-    PointOfSaleOrderDetailsView(onBack: {})
-        .environment(POSPreviewHelpers.makePreviewOrdersModel())
+    PointOfSaleOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrder(),
+        onBack: {}
+    )
 }
 #endif

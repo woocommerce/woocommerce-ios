@@ -240,6 +240,47 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
         return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
     }
+
+    static func makePreviewOrder() -> POSOrder {
+        return POSOrder(
+            id: 1,
+            number: "1001",
+            dateCreated: Date(),
+            datePaid: Date(),
+            status: .completed,
+            total: "45.75",
+            customerEmail: "customer@example.com",
+            paymentMethodID: "cod",
+            paymentMethodTitle: "Cash on Delivery",
+            lineItems: [
+                POSOrderItem(itemID: 1,
+                             name: "Premium Coffee Beans",
+                             productID: 101,
+                             variationID: 0,
+                             quantity: 2.0,
+                             price: NSDecimalNumber(string: "12.50"), subtotal: "25.00", total: "25.00", attributes: []),
+                POSOrderItem(
+                    itemID: 2,
+                    name: "Organic Tea - Earl Grey",
+                    productID: 102,
+                    variationID: 203,
+                    quantity: 1.0,
+                    price: NSDecimalNumber(string: "15.99"),
+                    subtotal: "15.99",
+                    total: "15.99",
+                    attributes: [
+                        OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                        OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                    ]
+                )
+            ],
+            refunds: [],
+            currency: "USD",
+            currencySymbol: "$",
+            discountTotal: "0.00",
+            totalTax: "3.76"
+        )
+    }
 }
 
 // MARK: - Preview Orders Controller

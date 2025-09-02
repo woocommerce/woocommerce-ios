@@ -1,7 +1,17 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    @State private var isLoading: Bool = false
+
+    let viewModel: POSSettingsStoreViewModel
+
+    init(viewModel: POSSettingsStoreViewModel) {
+        self.viewModel = viewModel
+    }
+
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
 
     var body: some View {
         NavigationStack {
@@ -10,67 +20,105 @@ struct PointOfSaleSettingsStoreDetailView: View {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.storeName)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeName)
+                        Text(viewModel.storeName)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.address)
                             .font(.posBodyMediumRegular())
-                        Text(settingsController.storeAddress)
+                        Text(viewModel.storeAddress)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
                     }
+                    .listRowSeparator(.hidden)
                 } header: {
-                    Text(Localization.storeInformation)
-                        .font(.posBodyLargeRegular())
+                    ZStack {
+                        backgroundColor
+                        Text(Localization.storeInformation)
+                            .font(.posHeadingBold)
+                            .foregroundColor(.posOnSurface)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, POSPadding.medium)
+                            .padding(.vertical, POSPadding.small)
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets())
                 }
 
                 Section {
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.receiptStoreName)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreName)
+                        settingValueView(for: viewModel.receiptInformation.storeName)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.physicalAddress)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreAddress)
+                        settingValueView(for: viewModel.receiptInformation.storeAddress)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.phoneNumber)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStorePhone)
+                        settingValueView(for: viewModel.receiptInformation.phone)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.email)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreEmail)
+                        settingValueView(for: viewModel.receiptInformation.email)
                     }
+                    .listRowSeparator(.hidden)
 
                     VStack(alignment: .leading, spacing: POSPadding.small) {
                         Text(Localization.refundReturnsPolicy)
                             .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptRefundReturnsPolicy)
+                        settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
                     }
+                    .listRowSeparator(.hidden)
                 } header: {
-                    Text(Localization.receiptInformation)
-                        .font(.posBodyLargeRegular())
+                    ZStack {
+                        backgroundColor
+                        Text(Localization.receiptInformation)
+                            .font(.posHeadingBold)
+                            .foregroundColor(.posOnSurface)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, POSPadding.medium)
+                            .padding(.vertical, POSPadding.small)
+                            .textCase(nil)
+                    }
+                    .listRowInsets(EdgeInsets())
                 }
-                .renderedIf(settingsController.shouldShowReceiptInformation)
+                .renderedIf(viewModel.shouldShowReceiptInformation)
+            }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowSeparator(.hidden)
+            .listSectionSeparator(.hidden)
+            .task {
+                isLoading = true
+                await viewModel.retrievePOSReceiptSettings()
+                isLoading = false
             }
         }
     }
 
     @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
-        if settingsController.isLoading {
-            ProgressView()
-                .font(.posBodyLargeRegular())
+        if isLoading {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shimmeringTextWidth, height: Constants.shimmeringTextHeight)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         } else {
             Text(value ?? Localization.notSet)
                 .font(.posBodyMediumRegular())
@@ -79,7 +127,13 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 }
 
+
 private extension PointOfSaleSettingsStoreDetailView {
+    enum Constants {
+        static let shimmeringTextWidth: CGFloat = 70
+        static let shimmeringTextHeight: CGFloat = 16
+    }
+
     enum Localization {
         static let notSet = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.notSet",
@@ -145,6 +199,7 @@ private extension PointOfSaleSettingsStoreDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsStoreDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    let controller = PointOfSaleSettingsPreviewController()
+    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

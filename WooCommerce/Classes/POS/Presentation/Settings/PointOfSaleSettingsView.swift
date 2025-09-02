@@ -15,9 +15,6 @@ struct PointOfSaleSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .task {
-                await settingsController.retrievePOSReceiptSettings()
-            }
         }
     }
 }
@@ -29,7 +26,10 @@ extension PointOfSaleSettingsView {
             POSPageHeaderView(
                 title: Localization.navigationTitle,
                 backButtonConfiguration: .init(state: .enabled,
-                                               action: { dismiss() },
+                                               action: {
+                                                   ServiceLocator.analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                   dismiss()
+                                               },
                                                buttonIcon: "xmark"))
             .foregroundColor(.posSurface)
 
@@ -37,13 +37,19 @@ extension PointOfSaleSettingsView {
                 PointOfSaleSettingsCard(
                     item: .store,
                     isSelected: selection == .store,
-                    onTap: { selection = .store }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        selection = .store
+                    }
                 )
 
                 PointOfSaleSettingsCard(
                     item: .hardware,
                     isSelected: selection == .hardware,
-                    onTap: { selection = .hardware }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        selection = .hardware
+                    }
                 )
 
                 Spacer()
@@ -51,18 +57,22 @@ extension PointOfSaleSettingsView {
                 PointOfSaleSettingsCard(
                     item: .help,
                     isSelected: selection == .help,
-                    onTap: { selection = .help }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHelpTapped)
+                        selection = .help
+                    }
                 )
             }
             .padding(.horizontal, POSPadding.medium)
         }
+        .background(Color.posSurface)
     }
 
     @ViewBuilder
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
+            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:
@@ -89,14 +99,14 @@ struct PointOfSaleSettingsCard: View {
             HStack {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(isSelected ? .white : .primary)
+                    .foregroundStyle(Color.posOnSurface)
                 VStack(alignment: .leading) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
-                        .foregroundStyle(isSelected ? .white : .primary)
+                        .foregroundStyle(Color.posOnSurface)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                        .foregroundStyle(Color.posOnSurface)
                 }
                 Spacer()
             }
@@ -106,8 +116,8 @@ struct PointOfSaleSettingsCard: View {
         }
         .buttonStyle(.plain)
         .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                .fill(isSelected ? Color.accentColor : Color.clear)
+            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
+                .fill(isSelected ? Color.posSecondary : Color.clear)
         )
     }
 }

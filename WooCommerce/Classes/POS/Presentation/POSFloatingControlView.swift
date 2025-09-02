@@ -85,6 +85,7 @@ private extension POSFloatingControlView {
         }
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
             Button {
+                ServiceLocator.analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
                 Label(

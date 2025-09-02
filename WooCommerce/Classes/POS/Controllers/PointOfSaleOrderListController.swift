@@ -18,7 +18,7 @@ protocol PointOfSaleOrderListControllerProtocol {
     func selectOrder(_ order: POSOrder?)
 }
 
-@Observable final class PointOfSaleOrderListController: @MainActor PointOfSaleOrderListControllerProtocol {
+@Observable final class PointOfSaleOrderListController: PointOfSaleOrderListControllerProtocol {
     var ordersViewState: OrderListState
     private let paginationTracker: AsyncPaginationTracker
     private var fetchStrategy: PointOfSaleOrderListFetchStrategy

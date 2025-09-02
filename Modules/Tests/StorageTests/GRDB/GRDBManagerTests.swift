@@ -18,7 +18,7 @@ struct GRDBManagerTests {
             let manager = try GRDBManager()
 
             // When
-            let tableExists = try manager.databaseQueue.read { db in
+            let tableExists = try manager.databaseConnection.read { db in
                 return (
                     try db.tableExists("site"),
                     try db.tableExists("product"),
@@ -49,7 +49,7 @@ struct GRDBManagerTests {
 
         init() throws {
             self.manager = try GRDBManager()
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let record = TestSite(id: sampleSiteID)
                 try record.insert(db)
             }
@@ -60,7 +60,7 @@ struct GRDBManagerTests {
             // Given
 
             // When
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let record = TestProduct(
                     siteID: 1,
                     id: 100,
@@ -68,13 +68,15 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try record.insert(db)
             }
 
             // Then
-            let productCount = try manager.databaseQueue.read { db in
+            let productCount = try manager.databaseConnection.read { db in
                 try TestProduct.fetchCount(db)
             }
 
@@ -84,7 +86,7 @@ struct GRDBManagerTests {
         @Test("Insert product variation with a relationship to a product")
         func test_after_init_can_insert_productVariation_with_foreign_key() throws {
             // Given – parent product
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let product = TestProduct(
                     siteID: 1,
                     id: 100,
@@ -92,25 +94,29 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
             }
 
             // When - Insert variation
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let variation = TestProductVariation(
                     siteID: 1,
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
             }
 
             // Then
-            let variations = try manager.databaseQueue.read { db in
+            let variations = try manager.databaseConnection.read { db in
                 try TestProductVariation.fetchAll(db)
             }
 
@@ -121,7 +127,7 @@ struct GRDBManagerTests {
         @Test("Fetch variations by product ID")
         func test_after_init_and_insert_can_query_productVariation_using_foreign_key() throws {
             // Given parent product and some variations
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 // Insert product
                 let product = TestProduct(
                     siteID: 1,
@@ -130,7 +136,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -141,14 +149,16 @@ struct GRDBManagerTests {
                         id: Int64(200 + i),
                         productID: 100,
                         price: "\(10 + i).00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
             }
 
             // When
-            let variations = try manager.databaseQueue.read { db in
+            let variations = try manager.databaseConnection.read { db in
                 try TestProductVariation
                     .filter(Column("productID") == 100)
                     .fetchAll(db)
@@ -162,7 +172,7 @@ struct GRDBManagerTests {
         @Test("Insert product attribute with options array (JSON)")
         func test_after_init_can_insert_productAttribute_with_options_as_JSON_array() throws {
             // Given parent product
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 // Insert product first
                 let product = TestProduct(
                     siteID: 1,
@@ -171,13 +181,15 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
             }
 
             // When
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let attribute = TestProductAttribute(
                     productID: 100,
                     name: "Color",
@@ -190,7 +202,7 @@ struct GRDBManagerTests {
             }
 
             // Then
-            let attribute = try manager.databaseQueue.read { db in
+            let attribute = try manager.databaseConnection.read { db in
                 try TestProductAttribute.fetchOne(db)
             }
 
@@ -201,7 +213,7 @@ struct GRDBManagerTests {
         @Test("Insert variation attributes")
         func test_after_init_can_insert_variation_attributes() throws {
             // Given parent product and variation
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 // Insert product
                 let product = TestProduct(
                     siteID: 1,
@@ -210,7 +222,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -220,13 +234,15 @@ struct GRDBManagerTests {
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
             }
 
             // When
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let variationAttribute = TestProductVariationAttribute(
                     productVariationID: 200,
                     name: "Color",
@@ -236,7 +252,7 @@ struct GRDBManagerTests {
             }
 
             // Then
-            let attributes = try manager.databaseQueue.read { db in
+            let attributes = try manager.databaseConnection.read { db in
                 try TestProductVariationAttribute.fetchAll(db)
             }
 
@@ -247,14 +263,14 @@ struct GRDBManagerTests {
         @Test("Deleting site cascades to all related entities")
         func test_deleting_site_cascades_to_all_related_entities() throws {
             // Given - Create a separate site for this test to avoid interfering with other tests
-            let testSiteId = try manager.databaseQueue.write { db -> Int64 in
+            let testSiteId = try manager.databaseConnection.write { db -> Int64 in
                 let site = TestSite(id: 999)
                 try site.insert(db)
                 return 999
             }
 
             // Insert full entity hierarchy
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let product = TestProduct(
                     siteID: testSiteId,
                     id: 100,
@@ -262,7 +278,9 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -271,7 +289,9 @@ struct GRDBManagerTests {
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
 
@@ -294,7 +314,7 @@ struct GRDBManagerTests {
             }
 
             // Verify entities exist for test site
-            let countsBefore = try manager.databaseQueue.read { db in
+            let countsBefore = try manager.databaseConnection.read { db in
                 return (
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
                     variations: try TestProductVariation.filter(Column("siteID") == testSiteId).fetchCount(db),
@@ -309,12 +329,12 @@ struct GRDBManagerTests {
             #expect(countsBefore.variationAttributes == 1)
 
             // When - Delete the site
-            _ = try manager.databaseQueue.write { db in
+            _ = try manager.databaseConnection.write { db in
                 try TestSite.filter(Column("id") == testSiteId).deleteAll(db)
             }
 
             // Then - All related entities should be deleted
-            let countsAfter = try manager.databaseQueue.read { db in
+            let countsAfter = try manager.databaseConnection.read { db in
                 return (
                     sites: try TestSite.filter(Column("id") == testSiteId).fetchCount(db),
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
@@ -334,13 +354,13 @@ struct GRDBManagerTests {
         @Test("Fetch products by site")
         func test_can_fetch_products_by_site() throws {
             // Given - Create second site and products for both sites
-            let site2Id = try manager.databaseQueue.write { db -> Int64 in
+            let site2Id = try manager.databaseConnection.write { db -> Int64 in
                 let site = TestSite(id: 2)
                 try site.insert(db)
                 return 2
             }
 
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 // Site 1 products
                 for i in 1...3 {
                     let product = TestProduct(
@@ -350,7 +370,9 @@ struct GRDBManagerTests {
                         productTypeKey: "simple",
                         price: "\(i * 10).00",
                         downloadable: false,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
@@ -364,20 +386,22 @@ struct GRDBManagerTests {
                         productTypeKey: "variable",
                         price: "\(i * 5).00",
                         downloadable: true,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
             }
 
             // When
-            let site1Products = try manager.databaseQueue.read { db in
+            let site1Products = try manager.databaseConnection.read { db in
                 try TestProduct
                     .filter(Column("siteID") == sampleSiteID)
                     .fetchAll(db)
             }
 
-            let site2Products = try manager.databaseQueue.read { db in
+            let site2Products = try manager.databaseConnection.read { db in
                 try TestProduct
                     .filter(Column("siteID") == site2Id)
                     .fetchAll(db)
@@ -397,7 +421,7 @@ struct GRDBManagerTests {
         @Test("Fetch variations by site")
         func test_can_fetch_variations_by_site() throws {
             // Given - Product and variations
-            try manager.databaseQueue.write { db in
+            try manager.databaseConnection.write { db in
                 let product = TestProduct(
                     siteID: sampleSiteID,
                     id: 100,
@@ -405,7 +429,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -415,14 +441,16 @@ struct GRDBManagerTests {
                         id: Int64(200 + i),
                         productID: 100,
                         price: "\(10 + i).00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
             }
 
             // When
-            let variations = try manager.databaseQueue.read { db in
+            let variations = try manager.databaseConnection.read { db in
                 try TestProductVariation
                     .filter(Column("siteID") == sampleSiteID)
                     .fetchAll(db)
@@ -438,7 +466,7 @@ struct GRDBManagerTests {
         func test_cannot_insert_product_without_valid_site() throws {
             // When/Then
             #expect(throws: DatabaseError.self) {
-                try manager.databaseQueue.write { db in
+                try manager.databaseConnection.write { db in
                     let product = TestProduct(
                         siteID: 999, // Non-existent site
                         id: 100,
@@ -446,7 +474,9 @@ struct GRDBManagerTests {
                         productTypeKey: "simple",
                         price: "10.00",
                         downloadable: false,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
@@ -457,13 +487,15 @@ struct GRDBManagerTests {
         func test_cannot_insert_variation_without_valid_product() throws {
             // When/Then
             #expect(throws: DatabaseError.self) {
-                try manager.databaseQueue.write { db in
+                try manager.databaseConnection.write { db in
                     let variation = TestProductVariation(
                         siteID: sampleSiteID,
                         id: 200,
                         productID: 999, // Non-existent product
                         price: "12.00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
@@ -494,11 +526,15 @@ struct TestProduct: Codable {
     let price: String
     let downloadable: Bool
     let parentID: Int64
+    let manageStock: Bool
+    let stockQuantity: Double?
+    let stockStatusKey: String
 
     init(siteID: Int64, id: Int64, name: String, productTypeKey: String,
          price: String, downloadable: Bool, parentID: Int64,
+         manageStock: Bool, stockStatusKey: String,
          fullDescription: String? = nil, shortDescription: String? = nil,
-         sku: String? = nil, globalUniqueID: String? = nil) {
+         sku: String? = nil, globalUniqueID: String? = nil, stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.name = name
@@ -506,10 +542,13 @@ struct TestProduct: Codable {
         self.price = price
         self.downloadable = downloadable
         self.parentID = parentID
+        self.manageStock = manageStock
+        self.stockStatusKey = stockStatusKey
         self.fullDescription = fullDescription
         self.shortDescription = shortDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
+        self.stockQuantity = stockQuantity
     }
 }
 
@@ -526,18 +565,25 @@ struct TestProductVariation: Codable {
     let price: String
     let downloadable: Bool
     let fullDescription: String?
+    let manageStock: Bool
+    let stockQuantity: Double?
+    let stockStatusKey: String
 
     init(siteID: Int64, id: Int64, productID: Int64,
-         price: String, downloadable: Bool,
-         sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil) {
+         price: String, downloadable: Bool, manageStock: Bool, stockStatusKey: String,
+         sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil,
+         stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.productID = productID
         self.price = price
         self.downloadable = downloadable
+        self.manageStock = manageStock
+        self.stockStatusKey = stockStatusKey
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.fullDescription = fullDescription
+        self.stockQuantity = stockQuantity
     }
 }
 

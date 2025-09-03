@@ -249,6 +249,8 @@ struct POSPreviewHelpers {
             datePaid: Date(),
             status: .completed,
             total: "45.75",
+            formattedTotal: "$45.75",
+            formattedSubtotal: "$41.99",
             customerEmail: "customer@example.com",
             paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
@@ -258,7 +260,12 @@ struct POSPreviewHelpers {
                              productID: 101,
                              variationID: 0,
                              quantity: 2.0,
-                             price: NSDecimalNumber(string: "12.50"), subtotal: "25.00", total: "25.00", attributes: []),
+                             price: NSDecimalNumber(string: "12.50"),
+                             formattedPrice: "$12.50",
+                             subtotal: "25.00",
+                             total: "25.00",
+                             formattedTotal: "$25.00",
+                             attributes: []),
                 POSOrderItem(
                     itemID: 2,
                     name: "Organic Tea - Earl Grey",
@@ -266,8 +273,10 @@ struct POSPreviewHelpers {
                     variationID: 203,
                     quantity: 1.0,
                     price: NSDecimalNumber(string: "15.99"),
+                    formattedPrice: "$15.99",
                     subtotal: "15.99",
                     total: "15.99",
+                    formattedTotal: "$15.99",
                     attributes: [
                         OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
                         OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
@@ -277,255 +286,131 @@ struct POSPreviewHelpers {
             refunds: [],
             currency: "USD",
             discountTotal: "0.00",
-            totalTax: "3.76"
+            totalTax: "3.76",
+            formattedTotalTax: "$3.76",
+            formattedDiscountTotal: "$0.00",
+            formattedPaymentTotal: "$45.75",
+            formattedNetAmount: nil
         )
     }
 }
 
 // MARK: - Preview Orders Controller
 final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
-    var ordersViewState: OrderListState {
-        .loaded(
-                [
-                    POSOrder(
-                        id: 1,
-                        number: "1001",
-                        dateCreated: Date(),
-                        datePaid: Date(),
-                        status: .completed,
-                        total: "45.75",
-                        customerEmail: "customer@example.com",
-                        paymentMethodID: "cod",
-                        paymentMethodTitle: "Cash on Delivery",
-                        lineItems: [
-                            POSOrderItem(itemID: 1,
-                                         name: "Premium Coffee Beans",
-                                         productID: 101,
-                                         variationID: 0,
-                                         quantity: 2.0,
-                                         price: NSDecimalNumber(string: "12.50"), subtotal: "25.00", total: "25.00", attributes: []),
-                            POSOrderItem(
-                                itemID: 2,
-                                name: "Organic Tea - Earl Grey",
-                                productID: 102,
-                                variationID: 203,
-                                quantity: 1.0,
-                                price: NSDecimalNumber(string: "15.99"),
-                                subtotal: "15.99",
-                                total: "15.99",
-                                attributes: [
-                                    OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
-                                    OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
-                                ]
-                            )
-                        ],
-                        refunds: [],
-                        currency: "USD",
-                        discountTotal: "-5.24",
-                        totalTax: "4.75"
-                    ),
-
-                    // Order with refunds and long customer email
-                    POSOrder(
-                        id: 2,
-                        number: "1002",
-                        dateCreated: Date().addingTimeInterval(-3600),
-                        datePaid: Date().addingTimeInterval(-3000),
-                        status: .processing,
-                        total: "89.50",
-                        customerEmail: "very.long.customer.email@withverylongdomainname.com",
-                        paymentMethodID: "woocommerce_payments",
-                        paymentMethodTitle: "WooCommerce Payments",
-                        lineItems: [
-                            POSOrderItem(
-                                itemID: 3,
-                                name: "Artisan Chocolate Box",
-                                productID: 103,
-                                variationID: 0,
-                                quantity: 3.0,
-                                price: NSDecimalNumber(string: "19.99"),
-                                subtotal: "59.97",
-                                total: "59.97",
-                                attributes: []
-                            ),
-                            POSOrderItem(
-                                itemID: 4,
-                                name: "Gourmet Cookie Set - Mixed",
-                                productID: 104,
-                                variationID: 401,
-                                quantity: 1.0,
-                                price: NSDecimalNumber(string: "29.99"),
-                                subtotal: "29.99",
-                                total: "29.99",
-                                attributes: [
-                                    OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
-                                    OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
-                                ]
-                            )
-                        ],
-                        refunds: [
-                            POSOrderRefund(
-                                refundID: 1,
-                                total: "-19.99",
-                                reason: "Customer requested partial refund"
-                            )
-                        ],
-                        currency: "USD",
-                        discountTotal: "-15.00",
-                        totalTax: "8.95"
-                    ),
-
-                    // Simple order without customer, no discount, no tax
-                    POSOrder(
-                        id: 3,
-                        number: "1003",
-                        dateCreated: Date().addingTimeInterval(-7200),
-                        datePaid: Date().addingTimeInterval(-7000),
-                        status: .completed,
-                        total: "12.50",
-                        customerEmail: nil,
-                        paymentMethodID: "stripe",
-                        paymentMethodTitle: "Credit Card (Stripe)",
-                        lineItems: [
-                            POSOrderItem(
-                                itemID: 5,
-                                name: "Simple Product",
-                                productID: 105,
-                                variationID: 0,
-                                quantity: 1.0,
-                                price: NSDecimalNumber(string: "12.50"),
-                                subtotal: "12.50",
-                                total: "12.50",
-                                attributes: []
-                            )
-                        ],
-                        refunds: [],
-                        currency: "USD",
-                        discountTotal: "0.00",
-                        totalTax: "0.00"
-                    ),
-
-                    // Failed order with single item and variation (no datePaid = unpaid)
-                    POSOrder(
-                        id: 4,
-                        number: "1004",
-                        dateCreated: Date().addingTimeInterval(-10800),
-                        datePaid: nil,
-                        status: .failed,
-                        total: "35.25",
-                        customerEmail: "test@test.com",
-                        paymentMethodID: "bacs",
-                        paymentMethodTitle: "Bank Transfer",
-                        lineItems: [
-                            POSOrderItem(
-                                itemID: 6,
-                                name: "Variable Product - Red Large",
-                                productID: 106,
-                                variationID: 601,
-                                quantity: 1.0,
-                                price: NSDecimalNumber(string: "32.00"),
-                                subtotal: "32.00",
-                                total: "32.00",
-                                attributes: [
-                                    OrderItemAttribute(metaID: 5, name: "Color", value: "Red"),
-                                    OrderItemAttribute(metaID: 6, name: "Size", value: "Large")
-                                ]
-                            )
-                        ],
-                        refunds: [],
-                        currency: "USD",
-                        discountTotal: "0.00",
-                        totalTax: "3.25"
-                    ),
-
-                    // Order with high discount and multiple refunds
-                    POSOrder(
-                        id: 5,
-                        number: "1005",
-                        dateCreated: Date().addingTimeInterval(-14400),
-                        datePaid: Date().addingTimeInterval(-14000),
-                        status: .completed,
-                        total: "78.90",
-                        customerEmail: "big.order@company.co.uk",
-                        paymentMethodID: "cod",
-                        paymentMethodTitle: "Cash on Delivery",
-                        lineItems: [
-                            POSOrderItem(
-                                itemID: 7,
-                                name: "Bulk Product Pack",
-                                productID: 107,
-                                variationID: 0,
-                                quantity: 5.0,
-                                price: NSDecimalNumber(string: "19.99"),
-                                subtotal: "99.95",
-                                total: "99.95",
-                                attributes: []
-                            ),
-                            POSOrderItem(
-                                itemID: 8,
-                                name: "Accessory Kit - Premium",
-                                productID: 108,
-                                variationID: 801,
-                                quantity: 2.0,
-                                price: NSDecimalNumber(string: "24.99"),
-                                subtotal: "49.98",
-                                total: "49.98",
-                                attributes: [
-                                    OrderItemAttribute(metaID: 7, name: "Model", value: "Premium"),
-                                    OrderItemAttribute(metaID: 8, name: "Color", value: "Black")
-                                ]
-                            )
-                        ],
-                        refunds: [
-                            POSOrderRefund(
-                                refundID: 3,
-                                total: "-25.50",
-                                reason: "Damaged item replacement"
-                            ),
-                            POSOrderRefund(
-                                refundID: 4,
-                                total: "-15.75",
-                                reason: "Customer satisfaction"
-                            ),
-                            POSOrderRefund(refundID: 5, total: "-8.25", reason: nil)
-                        ],
-                        currency: "USD",
-                        discountTotal: "-25.00",
-                        totalTax: "7.89"
-                    ),
-
-                    // Order with zero tax and zero discount (on hold = unpaid)
-                    POSOrder(
-                        id: 6,
-                        number: "1006",
-                        dateCreated: Date().addingTimeInterval(-18000),
-                        datePaid: nil,
-                        status: .onHold,
-                        total: "22.00",
-                        customerEmail: nil,
-                        paymentMethodID: "cheque",
-                        paymentMethodTitle: "Check Payment",
-                        lineItems: [
-                            POSOrderItem(
-                                itemID: 9,
-                                name: "Tax-free Item",
-                                productID: 109,
-                                variationID: 0,
-                                quantity: 2.0,
-                                price: NSDecimalNumber(string: "11.00"),
-                                subtotal: "22.00",
-                                total: "22.00",
-                                attributes: []
-                            )
-                        ],
-                        refunds: [],
-                        currency: "USD",
-                        discountTotal: "0.00",
-                        totalTax: "0.00"
+    var ordersViewState: POSOrderListState {
+        let orders = [
+            POSOrder(
+                id: 1,
+                number: "1001",
+                dateCreated: Date(),
+                datePaid: Date(),
+                status: .completed,
+                total: "45.75",
+                formattedTotal: "$45.75",
+                formattedSubtotal: "$40.99",
+                customerEmail: "customer@example.com",
+                paymentMethodID: "cod",
+                paymentMethodTitle: "Cash on Delivery",
+                lineItems: [
+                    POSOrderItem(itemID: 1,
+                                 name: "Premium Coffee Beans",
+                                 productID: 101,
+                                 variationID: 0,
+                                 quantity: 2.0,
+                                 price: NSDecimalNumber(string: "12.50"),
+                                 formattedPrice: "$12.50",
+                                 subtotal: "25.00",
+                                 total: "25.00",
+                                 formattedTotal: "$25.00",
+                                 attributes: []),
+                    POSOrderItem(
+                        itemID: 2,
+                        name: "Organic Tea - Earl Grey",
+                        productID: 102,
+                        variationID: 203,
+                        quantity: 1.0,
+                        price: NSDecimalNumber(string: "15.99"),
+                        formattedPrice: "$15.99",
+                        subtotal: "15.99",
+                        total: "15.99",
+                        formattedTotal: "$15.99",
+                        attributes: [
+                            OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                            OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                        ]
                     )
                 ],
-                hasMoreItems: false
+                refunds: [],
+                currency: "USD",
+                discountTotal: "-5.24",
+                totalTax: "4.75",
+                formattedTotalTax: "$4.75",
+                formattedDiscountTotal: "-$5.24",
+                formattedPaymentTotal: "$45.75",
+                formattedNetAmount: nil
+            ),
+            POSOrder(
+                id: 2,
+                number: "1002",
+                dateCreated: Date().addingTimeInterval(-3600),
+                datePaid: Date().addingTimeInterval(-3000),
+                status: .processing,
+                total: "89.50",
+                formattedTotal: "$89.50",
+                formattedSubtotal: "$89.96",
+                customerEmail: "very.long.customer.email@withverylongdomainname.com",
+                paymentMethodID: "woocommerce_payments",
+                paymentMethodTitle: "WooCommerce Payments",
+                lineItems: [
+                    POSOrderItem(
+                        itemID: 3,
+                        name: "Artisan Chocolate Box",
+                        productID: 103,
+                        variationID: 0,
+                        quantity: 3.0,
+                        price: NSDecimalNumber(string: "19.99"),
+                        formattedPrice: "$19.99",
+                        subtotal: "59.97",
+                        total: "59.97",
+                        formattedTotal: "$59.97",
+                        attributes: []
+                    ),
+                    POSOrderItem(
+                        itemID: 4,
+                        name: "Gourmet Cookie Set - Mixed",
+                        productID: 104,
+                        variationID: 401,
+                        quantity: 1.0,
+                        price: NSDecimalNumber(string: "29.99"),
+                        formattedPrice: "$29.99",
+                        subtotal: "29.99",
+                        total: "29.99",
+                        formattedTotal: "$29.99",
+                        attributes: [
+                            OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
+                            OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
+                        ]
+                    )
+                ],
+                refunds: [
+                    POSOrderRefund(
+                        refundID: 1,
+                        total: "-19.99",
+                        formattedTotal: "-$19.99",
+                        reason: "Customer requested partial refund"
+                    )
+                ],
+                currency: "USD",
+                discountTotal: "-15.00",
+                totalTax: "8.95",
+                formattedTotalTax: "$8.95",
+                formattedDiscountTotal: "-$15.00",
+                formattedPaymentTotal: "$89.50",
+                formattedNetAmount: "$69.51"
             )
+        ]
+
+        return .loaded(orders, hasMoreItems: false)
     }
 
     var selectedOrder: POSOrder? {

@@ -53,10 +53,6 @@ struct BetaFeaturesConfiguration: View {
     }
 }
 
-private enum Layout {
-    static let spacing: CGFloat = 4
-}
-
 private enum Localization {
     static let title = NSLocalizedString("Experimental Features", comment: "Experimental features navigation title")
 }

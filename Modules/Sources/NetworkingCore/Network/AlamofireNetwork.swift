@@ -346,6 +346,8 @@ private extension AlamofireNetwork {
                     incrementFailureCount(for: siteID)
                 }
             }
+            // remove retried request from list
+            retriedJetpackRequests.remove(at: index)
         }
     }
 

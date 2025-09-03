@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let settingsController: PointOfSaleSettingsControllerProtocol
 
     @State private var navigationPath: [NavigationDestination] = []
@@ -33,19 +35,26 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         NavigationStack(path: $navigationPath) {
             POSPageHeaderView(title: Localization.hardwareTitle)
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(destination.subtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
                 .listRowSeparator(.hidden)
@@ -116,19 +125,26 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Button {
                     showCardReaderDocumentationModal = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.cardReaderDocumentationTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.cardReaderDocumentationSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
-                .buttonStyle(.plain)
+                .padding()
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)
@@ -156,19 +172,24 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Button {
                     handleScannerDestination(destination)
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(destination.subtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
-                .buttonStyle(.plain)
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
             }
             .listStyle(.plain)

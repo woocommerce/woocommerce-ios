@@ -32,6 +32,7 @@ extension PointOfSaleSettingsView {
                                                },
                                                buttonIcon: "xmark"))
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
                 PointOfSaleSettingsCard(
@@ -90,23 +91,30 @@ extension PointOfSaleSettingsView {
 }
 
 struct PointOfSaleSettingsCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            HStack {
+            HStack(spacing: POSSpacing.medium) {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
-                VStack(alignment: .leading) {
+                    .accessibilityHidden(true)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
                         .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 }
                 Spacer()
             }
@@ -115,6 +123,7 @@ struct PointOfSaleSettingsCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
         .background(
             RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
                 .fill(isSelected ? Color.posSecondary : Color.clear)

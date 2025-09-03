@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @State private var showProductRestrictions = false
     @State private var showDocumentation = false
     @State private var showSupport = false
@@ -13,58 +15,77 @@ struct PointOfSaleSettingsHelpDetailView: View {
         NavigationStack {
             POSPageHeaderView(title: Localization.helpTitle)
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
             List {
                 Button {
                     showProductRestrictions = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "magnifyingglass")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.productRestrictionsInfo)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.productRestrictionsInfoSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
                     showDocumentation = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.documentationTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.documentationSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
                     showSupport = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "questionmark")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.getSupportTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.getSupportSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
                 .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
             }

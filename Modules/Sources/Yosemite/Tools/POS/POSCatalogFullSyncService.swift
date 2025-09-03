@@ -48,22 +48,28 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
         do {
-            // Loads products and variations in batches in parallel.
-            async let productsTask = loadAllProducts(for: siteID, syncRemote: syncRemote)
-            async let variationsTask = loadAllProductVariations(for: siteID, syncRemote: syncRemote)
-
-            let (products, variations) = try await (productsTask, variationsTask)
-            let catalog = POSCatalog(products: products, variations: variations)
+            let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
-            return .init(products: products, variations: variations)
+            return catalog
         } catch {
             throw error
         }
     }
+}
 
-    // MARK: - Private Methods
+// MARK: - Remote Loading
 
-    private func loadAllProducts(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProduct] {
+private extension POSCatalogFullSyncService {
+    func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+        // Loads products and variations in batches in parallel.
+        async let productsTask = loadAllProducts(for: siteID, syncRemote: syncRemote)
+        async let variationsTask = loadAllProductVariations(for: siteID, syncRemote: syncRemote)
+
+        let (products, variations) = try await (productsTask, variationsTask)
+        return POSCatalog(products: products, variations: variations)
+    }
+
+    func loadAllProducts(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProduct] {
         DDLogInfo("🔄 Starting products sync for site ID: \(siteID)")
 
         var allProducts: [POSProduct] = []
@@ -103,7 +109,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         return allProducts
     }
 
-    private func loadAllProductVariations(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProductVariation] {
+    func loadAllProductVariations(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProductVariation] {
         DDLogInfo("🔄 Starting variations sync for site ID: \(siteID)")
 
         var allVariations: [POSProductVariation] = []

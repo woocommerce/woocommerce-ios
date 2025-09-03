@@ -12,11 +12,6 @@ public protocol POSCatalogFullSyncServiceProtocol {
     /// - Parameter siteID: The site ID to sync catalog for
     /// - Returns: The synced catalog containing products and variations
     func startFullSync(for siteID: Int64) async throws -> POSCatalog
-
-    /// Starts a full catalog sync and persists to local database
-    /// - Parameter siteID: The site ID to sync catalog for
-    /// - Returns: The synced catalog containing products and variations
-    func startFullSyncAndPersist(for siteID: Int64) async throws -> POSCatalog
 }
 
 /// POS catalog from full sync.
@@ -62,40 +57,35 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
         do {
-            // Loads products and variations in batches in parallel.
-            async let productsTask = loadAllProducts(for: siteID, syncRemote: syncRemote)
-            async let variationsTask = loadAllProductVariations(for: siteID, syncRemote: syncRemote)
-
-            let (products, variations) = try await (productsTask, variationsTask)
-            let catalog = POSCatalog(products: products, variations: variations)
-            DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
-            return .init(products: products, variations: variations)
-        } catch {
-            throw error
-        }
-    }
-
-    public func startFullSyncAndPersist(for siteID: Int64) async throws -> POSCatalog {
-        DDLogInfo("🔄 Starting full catalog sync with persistence for site ID: \(siteID)")
-
-        do {
             // First sync from network
-            let catalog = try await startFullSync(for: siteID)
+            let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
 
             // Then persist to database
             try await persistCatalog(catalog, siteID: siteID, db: grdbManager.databaseConnection)
 
-            DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+            DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
             return catalog
         } catch {
             DDLogError("❌ Failed to sync and persist catalog: \(error)")
             throw error
         }
     }
+}
 
-    // MARK: - Private Methods
+// MARK: - Remote Loading
 
-    private func loadAllProducts(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProduct] {
+private extension POSCatalogFullSyncService {
+    func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+        // Loads products and variations in batches in parallel.
+        async let productsTask = loadAllProducts(for: siteID, syncRemote: syncRemote)
+        async let variationsTask = loadAllProductVariations(for: siteID, syncRemote: syncRemote)
+
+        let (products, variations) = try await (productsTask, variationsTask)
+        return POSCatalog(products: products, variations: variations)
+    }
+
+    func loadAllProducts(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProduct] {
         DDLogInfo("🔄 Starting products sync for site ID: \(siteID)")
 
         var allProducts: [POSProduct] = []
@@ -124,7 +114,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             let newProducts = batchResults.flatMap { $0.items.items }
             allProducts.append(contentsOf: newProducts)
 
-            let highestPageResult = batchResults.last(where: { $0.pageNumber == pagesToFetch.max() })?.items
+            let highestPageResult = batchResults.last?.items
             hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newProducts.isEmpty
             currentPage += batchSize
 
@@ -135,7 +125,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         return allProducts
     }
 
-    private func loadAllProductVariations(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProductVariation] {
+    func loadAllProductVariations(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProductVariation] {
         DDLogInfo("🔄 Starting variations sync for site ID: \(siteID)")
 
         var allVariations: [POSProductVariation] = []
@@ -164,7 +154,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             let newVariations = batchResults.flatMap { $0.items.items }
             allVariations.append(contentsOf: newVariations)
 
-            let highestPageResult = batchResults.last(where: { $0.pageNumber == pagesToFetch.max() })?.items
+            let highestPageResult = batchResults.last?.items
             hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newVariations.isEmpty
             currentPage += batchSize
 

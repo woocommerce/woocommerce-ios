@@ -572,7 +572,6 @@ struct EditAddressForm_Previews: PreviewProvider {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Single address form") {
     @Previewable @State var viewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
     ScrollView {

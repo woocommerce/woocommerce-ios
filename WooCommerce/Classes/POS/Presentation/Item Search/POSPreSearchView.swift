@@ -1,7 +1,6 @@
 import SwiftUI
 import enum Yosemite.POSItem
 
-@available(iOS 17.0, *)
 struct POSPreSearchView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @ScaledMetric private var chipHeight: CGFloat = 56.0
@@ -104,7 +103,6 @@ struct POSPreSearchView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSPreSearchView {
     enum Localization {
         static let recentSearchesTitle = NSLocalizedString(

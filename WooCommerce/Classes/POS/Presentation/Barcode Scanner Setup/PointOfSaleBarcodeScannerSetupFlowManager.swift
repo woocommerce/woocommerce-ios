@@ -3,7 +3,6 @@ import GameController
 import WooFoundation
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow Manager
-@available(iOS 17.0, *)
 @Observable
 class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection

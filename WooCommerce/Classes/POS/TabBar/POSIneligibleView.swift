@@ -2,7 +2,6 @@ import SwiftUI
 
 /// A view that displays when the Point of Sale (POS) feature is not available for the current store.
 /// Shows the specific reason why POS is ineligible and provides a button to re-check eligibility.
-@available(iOS 17.0, *)
 struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
@@ -158,7 +157,6 @@ struct POSIneligibleView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSIneligibleView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -175,7 +173,6 @@ private extension POSIneligibleView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSIneligibleReason {
     var shouldShowRetryButton: Bool {
         switch self {

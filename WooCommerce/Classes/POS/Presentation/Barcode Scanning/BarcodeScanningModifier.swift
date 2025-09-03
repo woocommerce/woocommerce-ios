@@ -2,29 +2,23 @@ import SwiftUI
 
 /// A view modifier that adds barcode scanning capability to a view.
 /// The barcode scanner is added in a ZStack below the content view.
-@available(iOS 17.0, *)
 struct BarcodeScanningModifier: ViewModifier {
     /// Whether barcode scanning is enabled
     @Binding var enabled: Bool
     /// Callback that is triggered when a barcode is successfully scanned
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
-    private var isBarcodeScani1FeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
-    }
-
     func body(content: Content) -> some View {
         ZStack {
             content
 
-            if enabled && isBarcodeScani1FeatureEnabled {
+            if enabled {
                 BarcodeScannerContainer(onScan: onScan)
             }
         }
     }
 }
 
-@available(iOS 17.0, *)
 extension View {
     /// Adds barcode scanning capability to a view.
     /// - Parameters:

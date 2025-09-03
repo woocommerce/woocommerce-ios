@@ -32,15 +32,25 @@ final class POSSheetManager: ObservableObject {
 
 struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     @EnvironmentObject var sheetManager: POSSheetManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     let sheetContent: () -> SheetContent
 
     @State private var sheetId = UUID().uuidString
 
+    private var sheetIsPresented: Binding<Bool> {
+        Binding<Bool>(get: {
+            // Don't show a sheet if a full screen overlay is presented on top
+            return self.$isPresented.wrappedValue && !coverManager.isPresented
+        }, set: {
+            self.$isPresented.wrappedValue = $0
+        })
+    }
+
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $isPresented, onDismiss: onDismiss, content: sheetContent)
+            .sheet(isPresented: sheetIsPresented, onDismiss: onDismiss, content: sheetContent)
             .onChange(of: isPresented) { _, newValue in
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)
@@ -53,16 +63,27 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
 
 struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent: View>: ViewModifier {
     @EnvironmentObject var sheetManager: POSSheetManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
     let sheetContent: (Item) -> SheetContent
 
     @State private var sheetId = UUID().uuidString
 
+    private var sheetItem: Binding<Item?> {
+        Binding<Item?>(get: {
+            // Don't show a sheet if a full screen overlay is presented on top
+            guard !coverManager.isPresented else { return nil }
+            return self.$item.wrappedValue
+        }, set: {
+            self.$item.wrappedValue = $0
+        })
+    }
+
     func body(content: Content) -> some View {
         content
-            .sheet(item: $item, onDismiss: onDismiss, content: sheetContent)
-            .onChange(of: item) { _, newItem in
+            .sheet(item: sheetItem, onDismiss: onDismiss, content: sheetContent)
+            .onChange(of: sheetItem.wrappedValue) { _, newItem in
                 let newValue = newItem != nil
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)

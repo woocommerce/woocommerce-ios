@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 
-@available(iOS 17.0, *)
 @Observable
 final class POSBrightnessControl {
     private var originalBrightness: CGFloat = 0.0
@@ -34,7 +33,6 @@ final class POSBrightnessControl {
 }
 
 /// SwiftUI View Modifier for automatic brightness control
-@available(iOS 17.0, *)
 struct POSBrightnessControlModifier: ViewModifier {
     @State private var brightnessControl = POSBrightnessControl()
 
@@ -49,7 +47,6 @@ struct POSBrightnessControlModifier: ViewModifier {
     }
 }
 
-@available(iOS 17.0, *)
 extension View {
     /// Applies brightness control to the view, increasing brightness to maximum when the view appears
     func maximumScreenBrightness() -> some View {

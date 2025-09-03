@@ -2,6 +2,19 @@ import Combine
 import Foundation
 import Alamofire
 
+/// Helper type to observe selected site info
+public struct JetpackSite: Equatable {
+    let siteID: Int64
+    let siteAddress: String
+    let applicationPasswordAvailable: Bool
+
+    public init(siteID: Int64, siteAddress: String, applicationPasswordAvailable: Bool) {
+        self.siteID = siteID
+        self.siteAddress = siteAddress
+        self.applicationPasswordAvailable = applicationPasswordAvailable
+    }
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -11,15 +24,22 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+    /// Lazy-initialized session manager. Use ensuresSessionManagerIsInitialized=true to avoid race conditions with concurrent requests.
     private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSession(configuration: sessionConfiguration)
         return sessionManager
     }()
 
+    private let credentials: Credentials?
+
+    private let selectedSite: AnyPublisher<JetpackSite?, Never>?
+
+    private let userDefaults: UserDefaults
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
-    private let requestConverter: RequestConverter
+    private var requestConverter: RequestConverter
 
     /// Authenticator to update requests authorization header if possible.
     ///
@@ -27,14 +47,56 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
+    private var subscription: AnyCancellable?
+
+    /// Keeps track of failure counts for each site when switching to direct requests
+    private var appPasswordFailures: [Int64: Int] = [:]
+
     /// Public Initializer
     ///
-    ///
-    public required init(credentials: Credentials?, sessionManager: Alamofire.Session? = nil) {
-        self.requestConverter = RequestConverter(credentials: credentials)
+    /// - Parameters:
+    ///   - credentials: Authentication credentials for requests.
+    ///   - selectedSite: Publisher for site selection changes.
+    ///   - sessionManager: Optional pre-configured session manager.
+    ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
+    ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
+    public required init(credentials: Credentials?,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         userDefaults: UserDefaults = .standard,
+                         sessionManager: Alamofire.Session? = nil,
+                         ensuresSessionManagerIsInitialized: Bool = false) {
+        self.credentials = credentials
+        self.selectedSite = selectedSite
+        self.userDefaults = userDefaults
+        self.requestConverter = {
+            let siteAddress: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress):
+                    return siteAddress
+                case let .applicationPassword(_, _, siteAddress):
+                    return siteAddress
+                default:
+                    return nil
+                }
+            }()
+            return RequestConverter(siteAddress: siteAddress)
+        }()
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
             self.alamofireSession = sessionManager
+        } else if ensuresSessionManagerIsInitialized {
+            self.alamofireSession = makeSession(configuration: URLSessionConfiguration.default)
+        }
+    }
+
+    public func updateAppPasswordSwitching(enabled: Bool) {
+        guard let credentials, case .wpcom = credentials else { return }
+        if enabled, let selectedSite {
+            observeSelectedSite(selectedSite)
+        } else {
+            requestConverter = RequestConverter(siteAddress: nil)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+            requestAuthenticator.delegate = nil
         }
     }
 
@@ -142,6 +204,62 @@ private extension AlamofireNetwork {
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
         Alamofire.Session(configuration: sessionConfiguration, interceptor: requestAuthenticator)
     }
+
+    /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
+    ///
+    func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
+        subscription = selectedSite
+            .removeDuplicates()
+            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
+            .sink { [weak self] site, unsupportedList in
+                guard let self else { return }
+                guard let site, site.applicationPasswordAvailable,
+                      unsupportedList.contains(site.siteID) == false else {
+                    requestConverter = RequestConverter(siteAddress: nil)
+                    requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    requestAuthenticator.delegate = nil
+                    return
+                }
+                requestConverter = RequestConverter(siteAddress: site.siteAddress)
+                requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(
+                    credentials: credentials,
+                    selectedSite: site,
+                    network: self
+                ))
+                requestAuthenticator.delegate = self
+                appPasswordFailures.removeValue(forKey: site.siteID) // reset failure count
+            }
+    }
+}
+
+// MARK: `RequestProcessorDelegate` conformance
+//
+extension AlamofireNetwork: RequestProcessorDelegate {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
+        switch reason {
+        case .notSupported:
+            let currentList = userDefaults.applicationPasswordUnsupportedList
+            userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+        case .unknown:
+            let currentFailureCount = appPasswordFailures[siteID] ?? 0
+            let updatedCount = currentFailureCount + 1
+            if updatedCount == AppPasswordConstants.requestFailureThreshold {
+                let currentList = userDefaults.applicationPasswordUnsupportedList
+                userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+            }
+            appPasswordFailures[siteID] = updatedCount
+        }
+    }
+}
+
+// MARK: - Constants for direct request error handling
+enum AppPasswordConstants {
+    // flag site as disabled after threshold is reached
+    static let requestFailureThreshold = 10
+    static let disabledCodes = [
+        "application_passwords_disabled",
+        "application_passwords_disabled_for_user"
+    ]
 }
 
 private extension DataRequest {
@@ -183,5 +301,18 @@ extension Alamofire.DataResponse {
             NetworkError(responseData: data,
                          statusCode: response.statusCode)
         }
+    }
+}
+
+// MARK: - Helper extension to save internal flag for app password availability
+//
+extension UserDefaults {
+    @objc dynamic var applicationPasswordUnsupportedList: [Int64] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [Int64] ?? [] }
+        set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
+    }
+
+    enum Key: String {
+        case applicationPasswordUnsupportedList
     }
 }

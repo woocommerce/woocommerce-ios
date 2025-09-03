@@ -55,14 +55,15 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         canBlaze: false,
         isAdmin: false,
         wasEcommerceTrial: false,
-        hasSSOEnabled: false
+        hasSSOEnabled: false,
+        applicationPasswordAvailable: false
     )
 
     /// May not be needed anymore if we're not mocking the API
     let defaultSiteAPI = SiteAPI(siteID: 1, namespaces: [
         WooAPIVersion.mark3.rawValue,
         WooAPIVersion.mark4.rawValue,
-    ])
+    ], applicationPasswordAvailable: false)
 
     var sites: [Site] {
         return [defaultSite]

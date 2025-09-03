@@ -91,7 +91,6 @@ struct BarcodeScannerInformation: View {
     }
 }
 
-@available(iOS 17.0, *)
 struct ProductBarcodeSetupInformation: View {
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
@@ -119,7 +118,7 @@ struct ProductBarcodeSetupInformation: View {
     private var productSetupTextWithLink: AttributedString {
         let mainContent = Localization.productBarcodeSetupMessage
         let linkText = Localization.productBarcodeSetupLinkText
-        let link = Constants.detailsLink?.absoluteString ?? ""
+        let link = Constants.detailsLink.absoluteString
 
         let content = String.localizedStringWithFormat(mainContent, linkText)
         var attributedText = AttributedString(content)
@@ -137,7 +136,7 @@ struct ProductBarcodeSetupInformation: View {
 }
 
 private enum Constants {
-    static let detailsLink = URL(string: "https://woocommerce.com/document/barcode-and-qr-code-scanner/")
+    static let detailsLink = POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL()
 }
 
 private enum Localization {
@@ -281,7 +280,6 @@ private enum Localization {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerInformationModal(isPresented: .constant(true))
 }

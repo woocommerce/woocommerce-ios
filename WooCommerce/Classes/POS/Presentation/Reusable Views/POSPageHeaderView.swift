@@ -10,6 +10,13 @@ struct POSPageHeaderBackButtonConfiguration {
 
     let state: State
     let action: () -> Void
+    let buttonIcon: String?
+
+    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil) {
+        self.state = state
+        self.action = action
+        self.buttonIcon = buttonIcon
+    }
 }
 
 struct POSPageHeaderItem: Identifiable {
@@ -17,19 +24,20 @@ struct POSPageHeaderItem: Identifiable {
     let title: String
     let subtitle: String?
     let isSelected: Bool
+    let isLoading: Bool
     let action: (() -> Void)?
 
-    init(title: String, subtitle: String? = nil, isSelected: Bool, action: (() -> Void)? = nil) {
+    init(title: String, subtitle: String? = nil, isSelected: Bool, isLoading: Bool = false, action: (() -> Void)? = nil) {
         self.title = title
         self.subtitle = subtitle
         self.isSelected = isSelected
+        self.isLoading = isLoading
         self.action = action
     }
 }
 
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
-@available(iOS 17.0, *)
 struct POSPageHeaderView<TrailingContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
@@ -46,10 +54,11 @@ struct POSPageHeaderView<TrailingContent: View>: View {
     init(
         title: String,
         subtitle: String? = nil,
+        isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
     ) {
-        self.items = [.init(title: title, subtitle: subtitle, isSelected: true)]
+        self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
         self.trailingContent = trailingContent()
     }
@@ -73,20 +82,29 @@ struct POSPageHeaderView<TrailingContent: View>: View {
             HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        Button(action: {
-                            items[index].action?()
-                        }) {
-                            Text(items[index].title)
-                                .font(.posHeadingBold)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                        HStack(spacing: POSSpacing.small) {
+                            Button(action: {
+                                items[index].action?()
+                            }) {
+                                Text(items[index].title)
+                                    .font(.posHeadingBold)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.5)
+                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                    .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                            }
+                            .disabled(items[index].isSelected)
+                            .accessibilityElement()
+                            .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                            .accessibilityLabel(items[index].title)
+
+                            if items[index].isLoading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.7)
+                                    .transition(.opacity.combined(with: .scale))
+                            }
                         }
-                        .disabled(items[index].isSelected)
-                        .accessibilityElement()
-                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                        .accessibilityLabel(items[index].title)
 
                         if let subtitle = items[index].subtitle {
                             Text(subtitle)
@@ -133,7 +151,6 @@ private enum Constants {
 
 
 
-@available(iOS 17.0, *)
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
 
@@ -185,6 +202,13 @@ private enum Constants {
         POSPageHeaderView(
             title: "Cash payment",
             subtitle: "Total: $100.00",
+            backButtonConfiguration: .init(state: .enabled, action: {})
+        )
+
+        // Header with loading indicator.
+        POSPageHeaderView(
+            title: "Orders",
+            isLoading: true,
             backButtonConfiguration: .init(state: .enabled, action: {})
         )
 

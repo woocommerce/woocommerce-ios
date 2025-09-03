@@ -12,6 +12,8 @@ struct PointOfSaleErrorState: Equatable {
         case couponsDisabled
         case couponsNextPageError
         case couponsRefreshError
+        case ordersLoadError
+        case ordersNextPageError
     }
 
     let errorType: ErrorType
@@ -87,6 +89,22 @@ struct PointOfSaleErrorState: Equatable {
         PointOfSaleErrorState(
             errorType: .couponsRefreshError,
             title: Constants.failedToRefreshCouponsTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
+    static func errorOnLoadingOrders(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .ordersLoadError,
+            title: Constants.failedToLoadOrdersTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
+    static func errorOnLoadingOrdersNextPage(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .ordersNextPageError,
+            title: Constants.failedToLoadOrdersNextPageTitle,
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
@@ -172,6 +190,17 @@ struct PointOfSaleErrorState: Equatable {
             "pos.itemList.connectivityErrorSubtitle",
             value: "Please check your internet connection and try again.",
             comment: "Subtitle appearing on error screens when there is a network connectivity error."
+        )
+        static let failedToLoadOrdersTitle = NSLocalizedString(
+            "pos.orderList.failedToLoadOrdersTitle",
+            value: "Unable to load orders",
+            comment: "Text appearing on the order list screen when there's an error loading orders."
+        )
+        static let failedToLoadOrdersNextPageTitle = NSLocalizedString(
+            "pos.orderList.failedToLoadOrdersNextPageTitle",
+            value: "Unable to load more orders",
+            comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
+            "the first. Shown inline with the previously loaded orders above."
         )
     }
 }

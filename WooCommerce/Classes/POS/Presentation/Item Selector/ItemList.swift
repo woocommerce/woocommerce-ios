@@ -3,7 +3,6 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSVariableParentProduct
 
 /// Displays a list of POS items or placeholder card based on the given state.
-@available(iOS 17.0, *)
 struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -145,7 +144,6 @@ private enum Constants {
     static let itemSpacing: CGFloat = POSSpacing.medium
 }
 
-@available(iOS 17.0, *)
 struct ItemListRow: View {
     let item: POSItem
     let itemActionHandler: POSItemActionHandler
@@ -203,7 +201,6 @@ struct ItemListRow: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListRow {
     enum Localization {
         static let variationsAvailable = NSLocalizedString(
@@ -215,7 +212,6 @@ private extension ItemListRow {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview("Loaded with items") {
     let itemList: ItemListState = .loaded(
         [
@@ -249,7 +245,6 @@ private extension ItemListRow {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Loading") {
     ItemList(itemsController: PointOfSalePreviewItemsController(),
              node: .root,

@@ -1,7 +1,6 @@
 import SwiftUI
 import protocol Experiments.FeatureFlagService
 
-@available(iOS 17.0, *)
 @Observable final class POSEntryPointController {
     private(set) var eligibilityState: POSEligibilityState?
     private let posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol

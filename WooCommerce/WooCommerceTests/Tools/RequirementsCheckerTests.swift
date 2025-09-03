@@ -60,7 +60,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case .retrieveSiteAPI(_, let onCompletion):
-                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v3"])))
+                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v3"], applicationPasswordAvailable: true)))
             default:
                 break
             }
@@ -93,7 +93,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case .retrieveSiteAPI(_, let onCompletion):
-                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"])))
+                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"], applicationPasswordAvailable: true)))
             default:
                 break
             }
@@ -164,7 +164,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case .retrieveSiteAPI(_, let onCompletion):
-                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
+                onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
             default:
                 break
             }
@@ -188,7 +188,7 @@ final class RequirementsCheckerTests: XCTestCase {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case .retrieveSiteAPI(_, let completion):
-                completion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
+                completion(.success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
             default:
                 break
             }

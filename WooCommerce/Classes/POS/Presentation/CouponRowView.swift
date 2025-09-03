@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct CouponRowView: View {
     private let couponItem: Cart.CouponItem
     private let couponRowState: CouponRowState?
@@ -86,7 +85,6 @@ struct CouponRowView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CouponRowView {
     enum Constants {
         static let couponCardSize: CGFloat = 96
@@ -100,7 +98,6 @@ private extension CouponRowView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CouponRowView {
     private enum Localization {
         static let invalidCoupon = NSLocalizedString(
@@ -111,7 +108,6 @@ private extension CouponRowView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview(traits: .sizeThatFitsLayout) {
     CouponRowView(couponItem: Cart.CouponItem(id: UUID(), code: "10-Discount", summary: "$10 Off · All products"), couponRowState: .idle) {}
 }

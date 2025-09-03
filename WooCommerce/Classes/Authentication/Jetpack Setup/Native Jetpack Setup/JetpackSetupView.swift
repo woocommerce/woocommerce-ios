@@ -7,33 +7,37 @@ import protocol WooFoundation.Analytics
 final class JetpackSetupHostingController: UIHostingController<JetpackSetupView> {
     private let viewModel: JetpackSetupViewModel
     private let authentication: Authentication
-    private let connectionWebViewCredentials: Credentials?
+    private let wpcomCredentials: Credentials
+
+    private var connectionWebView: UINavigationController?
 
     init(siteURL: String,
          connectionOnly: Bool,
-         connectionWebViewCredentials: Credentials? = nil,
+         wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
                                                connectionOnly: connectionOnly,
+                                               wpcomCredentials: wpcomCredentials,
                                                stores: stores,
                                                analytics: analytics,
                                                onStoreNavigation: onStoreNavigation)
         self.authentication = authentication
-        self.connectionWebViewCredentials = connectionWebViewCredentials
+        self.wpcomCredentials = wpcomCredentials
         super.init(rootView: JetpackSetupView(viewModel: viewModel))
 
         rootView.webViewPresentationHandler = { [weak self] in
-            self?.presentJetpackConnectionWebView()
+            guard let url = self?.viewModel.jetpackConnectionURL else {
+                return
+            }
+            self?.presentJetpackConnectionWebView(with: url)
         }
 
         rootView.supportHandler = { [weak self] in
             guard let self else { return }
-
-            self.viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenGetSupportTapped, properties: self.viewModel.currentSetupStep?.analyticsDescription)
-            self.viewModel.trackSetupAfterLogin(tap: .support)
+            self.viewModel.trackSetup(tap: .support)
             self.presentSupport()
         }
 
@@ -47,8 +51,6 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenViewed)
         configureNavigationBarAppearance()
     }
 
@@ -61,28 +63,26 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
 
     @objc
     private func dismissView() {
-        viewModel.trackSetupDuringLogin(.loginJetpackSetupScreenDismissed, properties: viewModel.currentSetupStep?.analyticsDescription)
-        viewModel.trackSetupAfterLogin(tap: .dismiss)
+        viewModel.trackSetup(tap: .dismiss)
         dismiss(animated: true)
     }
 
     @objc
     private func dismissWebView() {
-        dismiss(animated: true)
+        connectionWebView?.dismiss(animated: true)
+        connectionWebView = nil
     }
 
-    private func presentJetpackConnectionWebView() {
-        guard let connectionURL = viewModel.jetpackConnectionURL else {
-            return
-        }
-
-        let webViewModel = JetpackConnectionWebViewModel(initialURL: connectionURL,
+    private func presentJetpackConnectionWebView(with url: URL) {
+        let webViewModel = JetpackConnectionWebViewModel(initialURL: url,
                                                          siteURL: viewModel.siteURL,
                                                          completion: { [weak self] in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
             self.viewModel.didAuthorizeJetpackConnection()
             self.dismissView()
+        }, onAuthorization: { [weak self] url in
+            self?.presentJetpackConnectionWebView(with: url)
         }, onFailure: { [weak self] errorCode in
             guard let self else { return }
             self.viewModel.shouldPresentWebView = false
@@ -92,13 +92,20 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
             guard let self else { return }
             self.viewModel.jetpackConnectionInterrupted = true
         })
-        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: connectionWebViewCredentials)
+
+        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: wpcomCredentials)
         webView.navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel,
                                                                    style: .plain,
                                                                    target: self,
                                                                    action: #selector(self.dismissWebView))
-        let navigationController = UINavigationController(rootViewController: webView)
-        self.present(navigationController, animated: true)
+        if let connectionWebView {
+            /// Replace the web view to avoid unnecessary navigations
+            connectionWebView.viewControllers = [webView]
+        } else {
+            let navigationController = UINavigationController(rootViewController: webView)
+            self.present(navigationController, animated: true)
+            self.connectionWebView = navigationController
+        }
     }
 
     private func presentSupport() {
@@ -325,12 +332,5 @@ private extension JetpackSetupView {
         static let supportImageSize: CGFloat = 18
         static let errorContentSpacing: CGFloat = 16
         static let interruptedConnectionActionHandlerDelayTime: Double = 0.3
-    }
-}
-
-struct JetpackSetupView_Previews: PreviewProvider {
-    static var previews: some View {
-        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: true))
-        JetpackSetupView(viewModel: JetpackSetupViewModel(siteURL: "https://test.com", connectionOnly: false))
     }
 }

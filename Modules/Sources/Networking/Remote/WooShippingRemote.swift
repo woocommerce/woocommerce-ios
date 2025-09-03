@@ -63,6 +63,7 @@ public protocol WooShippingRemoteProtocol {
     func updateDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
+                                  isVerified: Bool,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
     func loadConfig(siteID: Int64,
                     orderID: Int64,
@@ -465,17 +466,12 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func updateDestinationAddress(siteID: Int64,
                                          orderID: Int64,
                                          address: WooShippingDestinationAddress,
+                                         isVerified: Bool,
                                          completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
         do {
             let parameters: [String: Any] = [
                 ParameterKey.address: try address.toDictionary(),
-                /*
-                 * Always gets saved as true, because this endpoint is called after the address is normalized
-                 * and the normalized address is suggested to the user to confirm and use.
-                 * The user may however choose to not use the normalized address, in which case the isVerified will
-                 * still be true, as they've confirmed the address
-                 */
-                ParameterKey.isVerified: true
+                ParameterKey.isVerified: isVerified
             ]
             let path = Path.updateDestination(orderID: orderID)
             let request = JetpackRequest(wooApiVersion: .wooShipping,

@@ -1246,12 +1246,11 @@ extension Networking.POSProduct {
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
@@ -1264,12 +1263,11 @@ extension Networking.POSProduct {
         let productID = productID ?? self.productID
         let name = name ?? self.name
         let productTypeKey = productTypeKey ?? self.productTypeKey
+        let fullDescription = fullDescription ?? self.fullDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let parentID = parentID ?? self.parentID
         let images = images ?? self.images
@@ -1283,12 +1281,11 @@ extension Networking.POSProduct {
             productID: productID,
             name: name,
             productTypeKey: productTypeKey,
+            fullDescription: fullDescription,
+            shortDescription: shortDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             parentID: parentID,
             images: images,
@@ -1307,12 +1304,10 @@ extension Networking.POSProductVariation {
         productVariationID: CopiableProp<Int64> = .copy,
         attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
         image: NullableCopiableProp<ProductImage> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
@@ -1323,12 +1318,10 @@ extension Networking.POSProductVariation {
         let productVariationID = productVariationID ?? self.productVariationID
         let attributes = attributes ?? self.attributes
         let image = image ?? self.image
+        let fullDescription = fullDescription ?? self.fullDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
@@ -1340,12 +1333,10 @@ extension Networking.POSProductVariation {
             productVariationID: productVariationID,
             attributes: attributes,
             image: image,
+            fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
@@ -2754,7 +2745,8 @@ extension Networking.Site {
         canBlaze: CopiableProp<Bool> = .copy,
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
-        hasSSOEnabled: CopiableProp<Bool> = .copy
+        hasSSOEnabled: CopiableProp<Bool> = .copy,
+        applicationPasswordAvailable: CopiableProp<Bool> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2778,6 +2770,7 @@ extension Networking.Site {
         let isAdmin = isAdmin ?? self.isAdmin
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
+        let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
 
         return Networking.Site(
             siteID: siteID,
@@ -2801,7 +2794,8 @@ extension Networking.Site {
             canBlaze: canBlaze,
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial,
-            hasSSOEnabled: hasSSOEnabled
+            hasSSOEnabled: hasSSOEnabled,
+            applicationPasswordAvailable: applicationPasswordAvailable
         )
     }
 }
@@ -3093,39 +3087,6 @@ extension Networking.TopEarnerStatsItem {
             total: total,
             currency: currency,
             imageUrl: imageUrl
-        )
-    }
-}
-
-extension Networking.User {
-    public func copy(
-        localID: CopiableProp<Int64> = .copy,
-        siteID: CopiableProp<Int64> = .copy,
-        email: CopiableProp<String> = .copy,
-        username: CopiableProp<String> = .copy,
-        firstName: CopiableProp<String> = .copy,
-        lastName: CopiableProp<String> = .copy,
-        nickname: CopiableProp<String> = .copy,
-        roles: CopiableProp<[String]> = .copy
-    ) -> Networking.User {
-        let localID = localID ?? self.localID
-        let siteID = siteID ?? self.siteID
-        let email = email ?? self.email
-        let username = username ?? self.username
-        let firstName = firstName ?? self.firstName
-        let lastName = lastName ?? self.lastName
-        let nickname = nickname ?? self.nickname
-        let roles = roles ?? self.roles
-
-        return Networking.User(
-            localID: localID,
-            siteID: siteID,
-            email: email,
-            username: username,
-            firstName: firstName,
-            lastName: lastName,
-            nickname: nickname,
-            roles: roles
         )
     }
 }

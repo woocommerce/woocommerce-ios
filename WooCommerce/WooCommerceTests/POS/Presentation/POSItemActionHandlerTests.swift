@@ -7,7 +7,6 @@ import protocol Yosemite.POSSearchHistoryProviding
 @testable import WooCommerce
 
 struct POSItemActionHandlerTests {
-    @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_list_then_does_not_add_it_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
         let sut = StandardPOSItemActionHandler(
@@ -25,7 +24,6 @@ struct POSItemActionHandlerTests {
         #expect(aggregateModel.cart.coupons.count == 1)
     }
 
-    @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_search_then_does_not_add_it_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
         let sut = SearchResultItemActionHandler(
@@ -44,7 +42,6 @@ struct POSItemActionHandlerTests {
         #expect(aggregateModel.cart.coupons.count == 1)
     }
 
-    @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_list_then_adds_them_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
         let sut = StandardPOSItemActionHandler(
@@ -62,7 +59,6 @@ struct POSItemActionHandlerTests {
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
 
-    @available(iOS 17.0, *)
     @Test func handleTap_when_attempt_to_add_duplicated_products_in_search_then_adds_them_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
         let sut = SearchResultItemActionHandler(
@@ -97,7 +93,6 @@ private func makeProductItem() -> POSItem {
                                 stockStatusKey: ""))
 }
 
-@available(iOS 17.0, *)
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -106,6 +101,7 @@ private func makePointOfSaleAggregateModel(
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
+    settingsController: PointOfSaleSettingsControllerProtocol = MockPointOfSaleSettingsController(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -119,6 +115,7 @@ private func makePointOfSaleAggregateModel(
         couponsSearchController: couponsSearchController,
         cardPresentPaymentService: cardPresentPaymentService,
         orderController: orderController,
+        settingsController: settingsController,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,

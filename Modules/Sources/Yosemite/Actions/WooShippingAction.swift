@@ -98,6 +98,7 @@ public enum WooShippingAction: Action {
     case updateDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   address: WooShippingDestinationAddress,
+                                  isVerified: Bool,
                                   completion: (Result<WooShippingDestinationAddressUpdate, Error>) -> Void)
 
     /// Loads label config for a given order

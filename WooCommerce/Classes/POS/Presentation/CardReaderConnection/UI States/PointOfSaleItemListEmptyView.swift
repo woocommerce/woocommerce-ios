@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -85,7 +84,6 @@ struct PointOfSaleItemListEmptyView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleItemListEmptyView {
     enum Constants {
         static let iconSize: CGFloat = 88
@@ -244,7 +242,6 @@ struct PointOfSaleItemListEmptyViewModel {
 
 // MARK: - Preview
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListEmptyView(
         viewModel: PointOfSaleItemListEmptyViewModel(
@@ -254,7 +251,6 @@ struct PointOfSaleItemListEmptyViewModel {
     ) {}
 }
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleItemListEmptyView(
         viewModel: PointOfSaleItemListEmptyViewModel(

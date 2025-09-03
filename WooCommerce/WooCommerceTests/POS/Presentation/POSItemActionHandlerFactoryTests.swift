@@ -12,7 +12,6 @@ private enum AnalyticsKeys {
 }
 
 struct POSItemActionHandlerFactoryTests {
-    @available(iOS 17.0, *)
     @Test func products_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
@@ -37,7 +36,6 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "simple")
     }
 
-    @available(iOS 17.0, *)
     @Test func coupons_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
@@ -62,7 +60,6 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] == nil)
     }
 
-    @available(iOS 17.0, *)
     @Test func products_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
@@ -87,7 +84,6 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "simple")
     }
 
-    @available(iOS 17.0, *)
     @Test func coupons_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
@@ -112,7 +108,6 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] == nil)
     }
 
-    @available(iOS 17.0, *)
     @Test func variation_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
@@ -137,7 +132,6 @@ struct POSItemActionHandlerFactoryTests {
         #expect(event.properties[AnalyticsKeys.productType] as? String == "variation")
     }
 
-    @available(iOS 17.0, *)
     @Test func variation_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()

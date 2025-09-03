@@ -205,6 +205,14 @@ private extension TracksProvider {
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
             WooAnalyticsStat.couponCreationSuccess,
+
+            // Settings
+            WooAnalyticsStat.pointOfSaleSettingsMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleSettingsCloseButtonTapped,
+            WooAnalyticsStat.pointOfSaleSettingsStoreDetailsTapped,
+            WooAnalyticsStat.pointOfSaleSettingsHardwareTapped,
+            WooAnalyticsStat.pointOfSaleSettingsHelpTapped,
+            WooAnalyticsStat.pointOfSaleEmptyCartSetupScannerTapped
         ]
 
         guard Self.isPOSModeActive, pointOfSaleEventList.contains(event) else {

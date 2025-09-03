@@ -9,8 +9,6 @@ struct OrderDetailsShipmentDetailsView: View {
     let onViewItems: () -> Void
     let onCreateLabel: () -> Void
     let onViewLabel: (ShippingLabel) -> Void
-    let onPrintLabel: (ShippingLabel) -> Void
-    let onPrintCustomsForm: (String) -> Void
     let onRefund: (ShippingLabel) -> Void
 
     var body: some View {
@@ -29,12 +27,6 @@ struct OrderDetailsShipmentDetailsView: View {
                             onRefund(label)
                         }
                         .renderedIf(label.isRefundable)
-
-                        if let url = label.commercialInvoiceURL, url.isNotEmpty {
-                            Button(Localization.printCustomsForm) {
-                                onPrintCustomsForm(url)
-                            }
-                        }
                     } label: {
                         Image(systemName: "ellipsis")
                             .foregroundStyle(Color.accentColor)
@@ -117,15 +109,6 @@ struct OrderDetailsShipmentDetailsView: View {
                     }
                 }
                 .buttonStyle(.plain)
-
-                Divider()
-                    .padding(.trailing, -Layout.contentPadding)
-
-                Button(String.localizedStringWithFormat(Localization.printShippingLabel, shipmentIndex)) {
-                    onPrintLabel(shippingLabel)
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .padding(.vertical, Layout.extraSpacing)
             }
         }
     }
@@ -171,11 +154,6 @@ private extension OrderDetailsShipmentDetailsView {
             value: "Request a refund",
             comment: "Button to request a refund for a purchased shipping label."
         )
-        static let printCustomsForm = NSLocalizedString(
-            "orderDetailsShipmentDetailsView.printCustomsForm",
-            value: "Print customs form",
-            comment: "Button to print the customs form for a purchased shipping label."
-        )
         static let refundMessage = NSLocalizedString(
             "orderDetailsShipmentDetailsView.refundMessage",
             value: "You have successfully submitted a request for refund. " +
@@ -196,12 +174,6 @@ private extension OrderDetailsShipmentDetailsView {
             "orderDetailsShipmentDetailsView.createShippingLabel",
             value: "Create Shipping Label",
             comment: "Button to create a shipping label for a shipment"
-        )
-        static let printShippingLabel = NSLocalizedString(
-            "orderDetailsShipmentDetailsView.printShippingLabel",
-            value: "Print Shipping Label (%1$@)",
-            comment: "Button to print a shipping label for a shipment. Placeholder is the shipment index. " +
-            "Reads like: Print Shipping Label (1/2)"
         )
         static let trackingNumber = NSLocalizedString(
             "orderDetailsShipmentDetailsView.trackingNumber",

@@ -2,7 +2,6 @@ import Testing
 @testable import WooCommerce
 
 struct POSEntryPointControllerTests {
-    @available(iOS 17.0, *)
     @Test func eligibilityState_is_always_eligible_when_i2_feature_is_disabled_regardless_of_eligibility_checker() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
@@ -19,7 +18,6 @@ struct POSEntryPointControllerTests {
         #expect(controller.eligibilityState == .eligible)
     }
 
-    @available(iOS 17.0, *)
     @Test func eligibilityState_is_set_to_ineligible_when_i2_feature_is_enabled_and_checker_returns_ineligible() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()
@@ -40,7 +38,6 @@ struct POSEntryPointControllerTests {
         #expect(controller.eligibilityState == expectedState)
     }
 
-    @available(iOS 17.0, *)
     @Test func eligibilityState_is_set_to_eligible_when_i2_feature_is_enabled_and_checker_returns_eligible() async throws {
         // Given
         let mockEligibilityChecker = MockPOSEligibilityChecker()

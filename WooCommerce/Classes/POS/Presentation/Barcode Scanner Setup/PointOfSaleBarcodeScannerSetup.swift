@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetup: View {
     @Binding var isPresented: Bool
     @State private var flowManager: PointOfSaleBarcodeScannerSetupFlowManager
@@ -91,7 +90,6 @@ private enum Constants {
 }
 
 // MARK: - Private Localization Extension
-@available(iOS 17.0, *)
 private extension PointOfSaleBarcodeScannerSetup {
     enum Localization {
         static let starBSH20BTitle = NSLocalizedString(
@@ -119,7 +117,6 @@ private extension PointOfSaleBarcodeScannerSetup {
 
 // MARK: - Previews
 
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleBarcodeScannerSetup(isPresented: .constant(true))
 }
@@ -131,7 +128,6 @@ private extension PointOfSaleBarcodeScannerSetup {
 /// - On content change: fades out old content, replaces it, then fades in new content.
 /// - Handles height changes with a spring animation.
 ///
-@available(iOS 17.0, *)
 private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
     let maxWidth: CGFloat
     let maxHeight: CGFloat

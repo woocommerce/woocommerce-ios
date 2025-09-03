@@ -13,6 +13,10 @@ public enum WooConstants {
     ///
     static let databaseStackName = "WooCommerce"
 
+    /// Local SQLite Database Name
+    ///
+    static let localSQLiteDatabaseName = "woo-local.sqlite"
+
     /// Keychain Access's Service Name
     ///
     public static let keychainServiceName = "com.automattic.woocommerce"
@@ -246,10 +250,6 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for Point of Sale documentation
-        ///
-        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
-
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
@@ -337,7 +337,7 @@ extension WooConstants {
 
         case customFieldsProductLearnMore = "https://woocommerce.com/document/custom-product-fields/"
         case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
-        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29"
+        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-35"
 
         /// Returns the URL version of the receiver
         ///

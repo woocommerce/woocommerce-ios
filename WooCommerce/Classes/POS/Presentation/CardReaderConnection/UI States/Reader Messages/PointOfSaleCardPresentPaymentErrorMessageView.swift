@@ -56,7 +56,6 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Generic retry") {
     @Previewable @Namespace var namespace
 
@@ -70,7 +69,6 @@ struct PointOfSaleCardPresentPaymentErrorMessageView: View {
     )
 }
 
-@available(iOS 17.0, *)
 #Preview("Retry with another payment method") {
     @Previewable @Namespace var namespace
 

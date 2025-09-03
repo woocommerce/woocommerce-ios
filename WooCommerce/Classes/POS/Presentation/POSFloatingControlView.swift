@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -8,70 +7,32 @@ struct POSFloatingControlView: View {
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
+    @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
+    @State private var showOrders: Bool = false
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>) {
+         showDocumentation: Binding<Bool>,
+         showSettings: Binding<Bool>) {
         self._showExitPOSModal = showExitPOSModal
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
+        self._showSettings = showSettings
+    }
+
+    private var isPOSSettingsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
     }
 
     var body: some View {
         HStack {
             Menu {
-                Button {
-                    ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
-                    showExitPOSModal = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.exitPointOfSale) },
-                        icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-                    )
-                }
-                Button {
-                    ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
-                    showSupport = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.getSupport) },
-                        icon: { Image(systemName: "questionmark.circle") }
-                    )
-                }
-                Button {
-                    showDocumentation = true
-                    ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
-                } label: {
-                    Label(
-                        title: { Text(Localization.viewDocumentation) },
-                        icon: { Image(systemName: "info.circle") }
-                    )
-                }
-                Button {
-                    showProductRestrictionsModal = true
-                    ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
-                } label: {
-                    Label(
-                        title: { Text(Localization.productRestrictionsInfo) },
-                        icon: { Image(systemName: "magnifyingglass") })
-                }
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1) {
-                    Button {
-                        showBarcodeScanningModal = true
-                        ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
-                    } label: {
-                        Label(
-                            title: {
-                                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
-                                    Text(Localization.barcodeScanningSetup)
-                                } else {
-                                    Text(Localization.barcodeScanning)
-                                }
-                            },
-                            icon: { Image(systemName: "barcode.viewfinder") })
-                    }
+                if isPOSSettingsEnabled {
+                    compactOptions()
+                } else {
+                    completeOptions()
                 }
             } label: {
                 VStack {
@@ -99,11 +60,10 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi2) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
-            } else {
-                PointOfSaleBarcodeScannerInformationModal(isPresented: $showBarcodeScanningModal)
-            }
+            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+        }
+        .posFullScreenCover(isPresented: $showOrders) {
+            PointOfSaleOrdersView(isPresented: $showOrders)
         }
         .frame(height: Constants.size)
         .background(Color.clear)
@@ -112,7 +72,111 @@ struct POSFloatingControlView: View {
     }
 }
 
-@available(iOS 17.0, *)
+private extension POSFloatingControlView {
+    @ViewBuilder private func compactOptions() -> some View {
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            showExitPOSModal = true
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+            Button {
+                ServiceLocator.analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            Button {
+                showOrders = true
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
+            }
+        }
+    }
+
+    @ViewBuilder private func completeOptions() -> some View {
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            showExitPOSModal = true
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
+        }
+        Button {
+            ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
+            showSupport = true
+        } label: {
+            Label(
+                title: { Text(Localization.getSupport) },
+                icon: { Image(systemName: "questionmark.circle") }
+            )
+        }
+        Button {
+            showDocumentation = true
+            ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
+        } label: {
+            Label(
+                title: { Text(Localization.viewDocumentation) },
+                icon: { Image(systemName: "info.circle") }
+            )
+        }
+        Button {
+            showProductRestrictionsModal = true
+            ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+        } label: {
+            Label(
+                title: { Text(Localization.productRestrictionsInfo) },
+                icon: { Image(systemName: "magnifyingglass") })
+        }
+        Button {
+            showBarcodeScanningModal = true
+            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+        } label: {
+            Label(
+                title: {
+                    Text(Localization.barcodeScanningSetup)
+                },
+                icon: { Image(systemName: "barcode.viewfinder") })
+        }
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+            Button {
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+            Button {
+                showOrders = true
+            } label: {
+                Label(
+                    title: { Text(Localization.orders) },
+                    icon: { Image(systemName: "text.document") }
+                )
+            }
+        }
+    }
+}
+
 private extension POSFloatingControlView {
     var backgroundColor: Color {
         switch backgroundAppearance {
@@ -133,14 +197,12 @@ private extension POSFloatingControlView {
     }
 }
 
-@available(iOS 17.0, *)
 extension POSFloatingControlView {
     static var secondaryFontColor: Color {
         .posOnDisabledContainer
     }
 }
 
-@available(iOS 17.0, *)
 private extension POSFloatingControlView {
     enum Constants {
         static let size: CGFloat = 80
@@ -148,6 +210,12 @@ private extension POSFloatingControlView {
     }
 
     enum Localization {
+        static let orders = NSLocalizedString(
+            "pointOfSale.floatingButtons.orders.button.title",
+            value: "Orders",
+            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
+        )
+
         static let exitPointOfSale = NSLocalizedString(
             "pointOfSale.floatingButtons.exit.button.title",
             value: "Exit POS",
@@ -174,44 +242,50 @@ private extension POSFloatingControlView {
             "We only show simple and variable products in POS, this shows a modal to help explain that limitation."
         )
 
-        static let barcodeScanning = NSLocalizedString(
-            "pointOfSale.floatingButtons.barcodeScanning.button.title",
-            value: "Barcode scanning",
-            comment: "The title of the menu button to view barcode scanner documentation, shown in a popover menu."
-        )
-
         static let barcodeScanningSetup = NSLocalizedString(
             "pointOfSale.floatingButtons.barcodeScanningSetup.button.title",
             value: "Initial barcode scanner setup",
             comment: "The title of the menu button to start a barcode scanner setup flow."
+        )
+
+        static let settings = NSLocalizedString(
+            "pointOfSale.floatingButtons.settings.button.title",
+            value: "Settings",
+            comment: "The title of the menu button to access Point of Sale settings."
         )
     }
 }
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false),
+                           showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
-@available(iOS 17.0, *)
 #Preview("Reader Connected") {
     let paymentService = CardPresentPaymentPreviewService()
     paymentService.readerConnectionStatus = .connected(.init(name: "", batteryLevel: 0.6))
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    return POSFloatingControlView(showExitPOSModal: .constant(false),
+                                  showSupport: .constant(false),
+                                  showDocumentation: .constant(false),
+                                  showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
-@available(iOS 17.0, *)
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false), showSupport: .constant(false), showDocumentation: .constant(false))
+    POSFloatingControlView(showExitPOSModal: .constant(false),
+                           showSupport: .constant(false),
+                           showDocumentation: .constant(false),
+                           showSettings: .constant(false))
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

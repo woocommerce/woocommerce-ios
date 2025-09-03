@@ -2,7 +2,6 @@ import SwiftUI
 import Combine
 import WooFoundation
 
-@available(iOS 17.0, *)
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -120,7 +119,6 @@ struct PointOfSaleCollectCashView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
         guard validateAmountOnSubmit() else {
@@ -152,7 +150,6 @@ private extension PointOfSaleCollectCashView {
         }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleCollectCashView {
     enum Constants {
         static let minimumPadding: CGFloat = POSSpacing.xSmall
@@ -197,7 +194,6 @@ private extension PointOfSaleCollectCashView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     PointOfSaleCollectCashView(orderTotal: "$1.23")
         .environment(POSPreviewHelpers.makePreviewAggregateModel())

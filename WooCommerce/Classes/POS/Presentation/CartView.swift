@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     private let viewHelper = CartViewHelper()
@@ -25,6 +24,12 @@ struct CartView: View {
     private var shouldShowCoupons: Bool {
         posModel.cart.coupons.isNotEmpty
     }
+
+    private var isPOSSettingsEnabled: Bool {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+    }
+
+    @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
         ZStack {
@@ -70,6 +75,9 @@ struct CartView: View {
                         .zIndex(1)
                 }
             }
+            .posModal(isPresented: $showBarcodeScanningModal) {
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+            }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
             .background(content: {
@@ -107,7 +115,6 @@ private struct ScrollViewHeightPreferenceKey: PreferenceKey {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     var backgroundColor: Color {
         .posSurfaceBright
@@ -126,9 +133,13 @@ private extension CartView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     enum Localization {
+        static let barcodeScanningSetup = NSLocalizedString(
+            "pos.cartView.cartTitle.barcodeScanningSetup.button",
+            value: "Scan barcode",
+            comment: "The title of the menu button to start a barcode scanner setup flow."
+        )
         static let cartTitle = NSLocalizedString(
             "pos.cartView.cartTitle",
             value: "Cart",
@@ -136,6 +147,10 @@ private extension CartView {
         static let addItemsToCartHint = NSLocalizedString(
             "pos.cartView.addItemsToCartHint",
             value: "Tap on a product to \n add it to the cart",
+            comment: "Hint to add products to the Cart when this is empty.")
+        static let addItemsToCartOrScanHint = NSLocalizedString(
+            "pos.cartView.addItemsToCartOrScanHint",
+            value: "Tap on a product to \n add it to the cart, or ",
             comment: "Hint to add products to the Cart when this is empty.")
         static let checkoutButtonTitle = NSLocalizedString(
             "pos.cartView.checkoutButtonTitle",
@@ -160,7 +175,6 @@ private enum Constants {
 
 /// View sub-components
 ///
-@available(iOS 17.0, *)
 private extension CartView {
     var checkoutButton: some View {
         Button {
@@ -195,7 +209,7 @@ private extension CartView {
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top
             // avoids issues when the text size is changed through dynamic type.
-            Text(Localization.addItemsToCartHint)
+            Text(isPOSSettingsEnabled ? Localization.addItemsToCartOrScanHint : Localization.addItemsToCartHint)
                 .font(Constants.secondaryFont)
                 .foregroundColor(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
@@ -206,6 +220,19 @@ private extension CartView {
                         .offset(y: -(Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing))
                         .aspectRatio(contentMode: .fit)
                 }
+            if isPOSSettingsEnabled {
+                Button(action: {
+                    ServiceLocator.analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
+                    showBarcodeScanningModal = true
+                }, label: {
+                    HStack {
+                        Text(Localization.barcodeScanningSetup)
+                            .font(Constants.secondaryFont)
+                            .foregroundColor(Color.posOnSurfaceVariantLowest)
+                        Image(systemName: "barcode.viewfinder")
+                    }
+                })
+            }
             Spacer()
         }
         .background(backgroundColor.ignoresSafeArea(.all))
@@ -213,7 +240,6 @@ private extension CartView {
 
 }
 
-@available(iOS 17.0, *)
 private struct CartClearMenuButton: View {
     let removeAllItemsFromCart: () -> Void
 
@@ -244,7 +270,6 @@ private struct CartClearMenuButton: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CartScrollViewContent: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -351,7 +376,6 @@ private struct CartScrollViewContent: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct CouponsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var shouldShowItemImages: Bool
@@ -386,7 +410,6 @@ private struct CouponsCartSection: View {
     }
 }
 
-@available(iOS 17.0, *)
 private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Binding var shouldShowItemImages: Bool
@@ -443,7 +466,6 @@ private struct PurchasableItemsCartSection: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension CartView {
     func trackCheckoutTapped() {
         let purchasableItems = posModel.cart.purchasableItems.count
@@ -458,13 +480,11 @@ private extension CartView {
 }
 
 #if DEBUG
-@available(iOS 17.0, *)
 #Preview {
     CartView()
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 
-@available(iOS 17.0, *)
 #Preview("Cart with one item") {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel()
     posModel.addToCart(.simpleProduct(.init(id: UUID(),

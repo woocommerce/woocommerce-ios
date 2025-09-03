@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(iOS 17.0, *)
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -8,6 +7,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
+    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -90,7 +90,8 @@ struct PointOfSaleDashboardView: View {
 
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
-                                   showDocumentation: $showDocumentation)
+                                   showDocumentation: $showDocumentation,
+                                   showSettings: $showSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -129,6 +130,9 @@ struct PointOfSaleDashboardView: View {
         }
         .posSheet(isPresented: $showDocumentation) {
             documentationView
+        }
+        .posFullScreenCover(isPresented: $showSettings) {
+            PointOfSaleSettingsView(settingsController: posModel.settingsController)
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard newValue == .eligible else { return }
@@ -182,7 +186,6 @@ struct PointOfSaleDashboardView: View {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
@@ -201,7 +204,7 @@ private extension PointOfSaleDashboardView {
     }
 
     var documentationView: some View {
-        SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+        SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
     func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
@@ -219,7 +222,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     func trackTimeForInitialLoadingState() {
         waitingTimeTracker = WaitingTimeTracker(trackScenario: .pointOfSaleLoaded)
@@ -244,7 +246,6 @@ extension EnvironmentValues {
     }
 }
 
-@available(iOS 17.0, *)
 private extension PointOfSaleDashboardView {
     enum Constants {
         // For the moment we're just considering landscape for the POS mode
@@ -268,7 +269,6 @@ private extension PointOfSaleDashboardView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Container loading state") {
     return NavigationStack {
         PointOfSaleDashboardView()
@@ -277,7 +277,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-@available(iOS 17.0, *)
 #Preview("Content loading state") {
     let itemsController = PointOfSalePreviewItemsController()
     itemsController.itemsViewState = .init(containerState: .content, itemsStack: .init(root: .loading([]), itemStates: [:]))

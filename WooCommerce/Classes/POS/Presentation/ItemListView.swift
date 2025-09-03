@@ -2,7 +2,6 @@ import SwiftUI
 import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
-@available(iOS 17.0, *)
 struct ItemListView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -10,6 +9,7 @@ struct ItemListView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
+    @EnvironmentObject var coverManager: POSFullScreenCoverManager
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -43,21 +43,13 @@ struct ItemListView: View {
 
     private var isBarcodeScanningEnabled: Binding<Bool> {
         Binding(
-            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented },
+            get: { !isSearching && !modalManager.isPresented && !sheetManager.isPresented && !coverManager.isPresented },
             set: { _ in }
         )
     }
 
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
-
-    private var isBarcodeScani1FeatureEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBarcodeScanningi1)
-    }
-
-    private var isBarcodeScanSimulatorEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.showPointOfSaleBarcodeSimulator)
-    }
 
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
@@ -70,9 +62,6 @@ struct ItemListView: View {
     }
 
     @State private var showCouponCreationModal: Bool = false
-
-    @State private var barcodeScanSimulatorIsPresented: Bool = false
-    @State private var barcodeScanSimulatorText: String = ""
 
     var body: some View {
         if #available(iOS 18.0, *) {
@@ -223,7 +212,6 @@ struct ItemListView: View {
 
 /// Header view
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
@@ -244,9 +232,6 @@ private extension ItemListView {
                     } else {
                         createCouponButton
 
-                        simulatedScanButton
-                            .renderedIf(isBarcodeScanSimulatorEnabled && isBarcodeScani1FeatureEnabled)
-
                         POSPageHeaderActionButton(systemName: "magnifyingglass") {
                             analyticsTracker.trackSearchTapped(itemListType: selectedItemListType)
                             setSearch(true)
@@ -256,9 +241,6 @@ private extension ItemListView {
 
                 }
             })
-
-            barcodeScanSimulator
-                .renderedIf(barcodeScanSimulatorIsPresented)
         }
         .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
         .animation(.easeInOut(duration: Constants.animationDuration), value: isAddingCouponAllowed)
@@ -295,7 +277,6 @@ private extension ItemListView {
 
 /// View Helpers
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     @ViewBuilder
     private var createCouponButton: some View {
@@ -305,31 +286,6 @@ private extension ItemListView {
         }
         .renderedIf(isAddingCouponAllowed)
         .transition(.opacity.combined(with: .scale))
-    }
-
-    @ViewBuilder
-    private var simulatedScanButton: some View {
-        POSPageHeaderActionButton(systemName: "barcode") {
-            barcodeScanSimulatorIsPresented.toggle()
-        }
-        .transition(.opacity.combined(with: .scale))
-    }
-
-    @ViewBuilder
-    private var barcodeScanSimulator: some View {
-        HStack {
-            TextField(text: $barcodeScanSimulatorText) {
-                Text("Barcode value")
-            }
-
-            Button {
-                posModel.barcodeScanned(.success(barcodeScanSimulatorText))
-            } label: {
-                Text("Scan!")
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
-        }
-        .padding([.bottom, .horizontal], 16)
     }
 
     @ViewBuilder
@@ -374,7 +330,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func displayItemListType(_ itemListType: ItemListType) {
         // Clear search term when switching tabs
@@ -390,7 +345,6 @@ private extension ItemListView {
     }
 }
 
-@available(iOS 17.0, *)
 private extension ItemListView {
     func itemsController(_ itemType: ItemListType) -> PointOfSaleItemsControllerProtocol {
         switch itemType {
@@ -421,7 +375,6 @@ private extension ItemListView {
 
 /// Constants
 ///
-@available(iOS 17.0, *)
 private extension ItemListView {
     enum Constants {
         static let animationDuration: CGFloat = 0.2
@@ -448,7 +401,6 @@ private extension ItemListView {
 
 #if DEBUG
 
-@available(iOS 17.0, *)
 #Preview("Loaded with all product types") {
     let itemsController = PointOfSalePreviewItemsController()
     Task { @MainActor in
@@ -462,7 +414,6 @@ private extension ItemListView {
         .environmentObject(POSSheetManager())
 }
 
-@available(iOS 17.0, *)
 #Preview("Loading") {
     ItemListView(selectedItemListType: .constant(.products(search: false)),
                  searchTerm: .constant(""))

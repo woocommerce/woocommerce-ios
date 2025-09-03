@@ -3,7 +3,6 @@ import Testing
 
 struct PointOfSaleBarcodeScannerSetupScanTesterTests {
 
-    @available(iOS 17.0, *)
     @Test func test_scanTester_calls_onTestPass_when_scan_received_for_expected_barcode() {
         // Given a test EAN13 barcode
         let expectedBarcode = PointOfSaleBarcodeScannerTestBarcode.ean13
@@ -26,7 +25,6 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
         #expect(onTestTimeoutCalled == false)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_scanTester_calls_onTestFailure_when_scan_received_for_unexpected_barcode() {
         // Given a test EAN13 barcode
         let expectedBarcode = PointOfSaleBarcodeScannerTestBarcode.ean13
@@ -55,7 +53,6 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
         #expect(receivedScanValue == unexpectedBarcode)
     }
 
-    @available(iOS 17.0, *)
     @Test func test_scanTester_calls_onTestFailure_when_scan_fails() {
         // Given a test EAN13 barcode
         let expectedBarcode = PointOfSaleBarcodeScannerTestBarcode.ean13
@@ -83,7 +80,6 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
         #expect(receivedScanValue == "short")
     }
 
-    @available(iOS 17.0, *)
     @Test func test_scanTester_provides_correct_barcode_asset() {
         // Given a test EAN13 barcode
         let expectedBarcode = PointOfSaleBarcodeScannerTestBarcode.ean13

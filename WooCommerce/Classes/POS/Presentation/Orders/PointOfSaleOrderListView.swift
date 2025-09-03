@@ -9,7 +9,7 @@ struct PointOfSaleOrderListView: View {
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
-    private var ordersViewState: OrderListState {
+    private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
     }
 
@@ -122,14 +122,8 @@ private struct OrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
-    }
-
-    private var formattedTotal: String {
-        currencyFormatter.formatAmount(order.total, with: order.currency) ?? ""
     }
 
     var body: some View {
@@ -158,7 +152,7 @@ private struct OrderRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Text(formattedTotal)
+                Text(order.formattedTotal)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 

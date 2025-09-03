@@ -11,8 +11,6 @@ struct PointOfSaleOrderDetailsView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    private let helper = PointOfSaleOrderDetailsViewHelper()
-
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
     }
@@ -150,7 +148,8 @@ private extension PointOfSaleOrderDetailsView {
                 productAttributesView(item.attributes)
             }
 
-            Text(Localization.quantityLabel(item.quantity.intValue, helper.formatItemPrice(item.price, with: order.currency)))
+            Text(Localization.quantityLabel(item.quantity.intValue,
+                                            item.formattedPrice))
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
         }
@@ -166,7 +165,7 @@ private extension PointOfSaleOrderDetailsView {
 
     @ViewBuilder
     func productTotalView(item: POSOrderItem, order: POSOrder) -> some View {
-        Text(helper.formatItemTotal(item.total, with: order.currency))
+        Text(item.formattedTotal)
             .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)
     }
@@ -177,40 +176,35 @@ private extension PointOfSaleOrderDetailsView {
 private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
     func productsSubtotalRow(_ order: POSOrder) -> some View {
-        if helper.shouldShowProductsSubtotal(for: order) {
-            totalsRow(
-                title: Localization.productsLabel,
-                amount: helper.productsSubtotal(for: order)
-            )
-        }
+        totalsRow(
+            title: Localization.productsLabel,
+            amount: order.formattedSubtotal
+        )
     }
 
     @ViewBuilder
     func discountTotalRow(_ order: POSOrder) -> some View {
-        if helper.shouldShowDiscount(for: order),
-           let discountAmount = helper.formattedDiscountTotal(for: order) {
+        if let formattedDiscountTotal = order.formattedDiscountTotal {
             totalsRow(
                 title: Localization.discountTotalLabel,
-                amount: discountAmount
+                amount: formattedDiscountTotal
             )
         }
     }
 
     @ViewBuilder
     func taxTotalRow(_ order: POSOrder) -> some View {
-        if let taxAmount = helper.formattedTaxTotal(for: order) {
-            totalsRow(
-                title: Localization.taxesLabel,
-                amount: taxAmount
-            )
-        }
+        totalsRow(
+            title: Localization.taxesLabel,
+            amount: order.formattedTotalTax
+        )
     }
 
     @ViewBuilder
     func mainTotalRow(_ order: POSOrder) -> some View {
         totalsRow(
             title: Localization.totalLabel,
-            amount: helper.formattedOrderTotal(for: order),
+            amount: order.formattedTotal,
             titleFont: .posBodyMediumBold
         )
     }
@@ -220,13 +214,15 @@ private extension PointOfSaleOrderDetailsView {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             totalsRow(
                 title: Localization.paidLabel,
-                amount: helper.formattedPaidAmount(for: order),
+                amount: order.formattedPaymentTotal,
                 titleFont: .posBodyMediumBold
             )
 
-            Text(order.paymentMethodTitle)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            if order.paymentMethodTitle.isNotEmpty {
+                Text(order.paymentMethodTitle)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
         }
     }
 
@@ -237,8 +233,8 @@ private extension PointOfSaleOrderDetailsView {
                 refundRow(refund: refund, order: order)
             }
 
-            if helper.shouldShowNetPayment(for: order) {
-                netPaymentRow(order: order)
+            if let netAmount = order.formattedNetAmount {
+                netPaymentRow(netAmount: netAmount)
             }
         }
     }
@@ -248,7 +244,7 @@ private extension PointOfSaleOrderDetailsView {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             totalsRow(
                 title: Localization.refundLabel,
-                amount: helper.formattedRefundTotal(refund, currency: order.currency),
+                amount: refund.formattedTotal,
                 titleFont: .posBodyMediumBold
             )
 
@@ -261,10 +257,10 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     @ViewBuilder
-    func netPaymentRow(order: POSOrder) -> some View {
+    func netPaymentRow(netAmount: String) -> some View {
         totalsRow(
             title: Localization.netPaymentLabel,
-            amount: helper.netPaymentAfterRefunds(for: order),
+            amount: netAmount,
             titleFont: .posBodyMediumBold
         )
     }

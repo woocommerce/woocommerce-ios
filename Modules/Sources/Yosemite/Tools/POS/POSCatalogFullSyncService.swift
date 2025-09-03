@@ -54,16 +54,27 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     // MARK: - Protocol Conformance
 
     public func startFullSync(for siteID: Int64) async throws -> POSCatalog {
+        let totalStartTime = CFAbsoluteTimeGetCurrent()
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
         do {
             // First sync from network
+            let loadStartTime = CFAbsoluteTimeGetCurrent()
             let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
+            let loadEndTime = CFAbsoluteTimeGetCurrent()
+            let loadDuration = loadEndTime - loadStartTime
+            DDLogInfo("✅ Catalog loading completed in \(String(format: "%.2f", loadDuration))s")
 
             // Then persist to database
+            let persistStartTime = CFAbsoluteTimeGetCurrent()
             try await persistCatalog(catalog, siteID: siteID, db: grdbManager.databaseConnection)
+            let persistEndTime = CFAbsoluteTimeGetCurrent()
+            let persistDuration = persistEndTime - persistStartTime
+            DDLogInfo("✅ Database persistence completed in \(String(format: "%.2f", persistDuration))s")
 
-            DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+            let totalEndTime = CFAbsoluteTimeGetCurrent()
+            let totalDuration = totalEndTime - totalStartTime
+            DDLogInfo("✅ Total sync completed in \(String(format: "%.2f", totalDuration))s - Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
             return catalog
         } catch {

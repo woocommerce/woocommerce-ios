@@ -15,100 +15,93 @@ struct PointOfSaleSettingsStoreDetailView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.storeName)
-                            .font(.posBodyMediumRegular())
-                        Text(viewModel.storeName)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                    .listRowSeparator(.hidden)
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.storeTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.address)
-                            .font(.posBodyMediumRegular())
-                        Text(viewModel.storeAddress)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
+                ScrollView {
+                    VStack(spacing: POSSpacing.medium) {
+                        storeInformationView
+
+                        receiptInformationView
+                            .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
-                    .listRowSeparator(.hidden)
-                } header: {
-                    ZStack {
-                        backgroundColor
-                        Text(Localization.storeInformation)
-                            .font(.posHeadingBold)
-                            .foregroundColor(.posOnSurface)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, POSPadding.medium)
-                            .padding(.vertical, POSPadding.small)
-                            .textCase(nil)
-                    }
-                    .listRowInsets(EdgeInsets())
                 }
-
-                Section {
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.receiptStoreName)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: viewModel.receiptInformation.storeName)
-                    }
-                    .listRowSeparator(.hidden)
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.physicalAddress)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: viewModel.receiptInformation.storeAddress)
-                    }
-                    .listRowSeparator(.hidden)
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.phoneNumber)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: viewModel.receiptInformation.phone)
-                    }
-                    .listRowSeparator(.hidden)
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.email)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: viewModel.receiptInformation.email)
-                    }
-                    .listRowSeparator(.hidden)
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.refundReturnsPolicy)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: viewModel.receiptInformation.refundReturnsPolicy)
-                    }
-                    .listRowSeparator(.hidden)
-                } header: {
-                    ZStack {
-                        backgroundColor
-                        Text(Localization.receiptInformation)
-                            .font(.posHeadingBold)
-                            .foregroundColor(.posOnSurface)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, POSPadding.medium)
-                            .padding(.vertical, POSPadding.small)
-                            .textCase(nil)
-                    }
-                    .listRowInsets(EdgeInsets())
-                }
-                .renderedIf(viewModel.shouldShowReceiptInformation)
+                .background(backgroundColor)
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
-            .background(backgroundColor)
-            .listRowSeparator(.hidden)
-            .listSectionSeparator(.hidden)
             .task {
                 isLoading = true
                 await viewModel.retrievePOSReceiptSettings()
                 isLoading = false
             }
         }
+    }
+
+    @ViewBuilder
+    private var storeInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            sectionHeaderView(title: Localization.storeInformation)
+
+            VStack(spacing: POSSpacing.medium) {
+                fieldRowView(label: Localization.storeName, value: viewModel.storeName)
+                fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+            }
+            .padding(.bottom, POSPadding.medium)
+        }
+    }
+
+    @ViewBuilder
+    private var receiptInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            sectionHeaderView(title: Localization.receiptInformation)
+
+            VStack(spacing: POSSpacing.medium) {
+                receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+            }
+            .padding(.bottom, POSPadding.medium)
+        }
+    }
+
+    @ViewBuilder
+    private func sectionHeaderView(title: String) -> some View {
+        ZStack {
+            backgroundColor
+            Text(title)
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.vertical, POSPadding.small)
+        }
+    }
+
+    @ViewBuilder
+    private func fieldRowView(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            Text(value)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
+    }
+
+    @ViewBuilder
+    private func receiptFieldRowView(label: String, value: String?) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            settingValueView(for: value)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
     }
 
     @ViewBuilder
@@ -135,6 +128,12 @@ private extension PointOfSaleSettingsStoreDetailView {
     }
 
     enum Localization {
+        static let storeTitle = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.storeTitle",
+            value: "Store",
+            comment: "Navigation title for the store details in POS settings."
+        )
+
         static let notSet = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.notSet",
             value: "Not set",

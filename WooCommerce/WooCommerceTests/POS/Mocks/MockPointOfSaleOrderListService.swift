@@ -73,6 +73,8 @@ extension MockPointOfSaleOrderListService {
             datePaid: baseDate,
             status: .completed,
             total: "25.99",
+            formattedTotal: "$25.99",
+            formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
             paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
@@ -84,8 +86,10 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 2,
                     price: NSDecimalNumber(string: "10.00"),
+                    formattedPrice: "$10.00",
                     subtotal: "20.00",
                     total: "20.00",
+                    formattedTotal: "$20.00",
                     attributes: []
                 ),
                 POSOrderItem(
@@ -95,15 +99,21 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 1,
                     price: NSDecimalNumber(string: "5.99"),
+                    formattedPrice: "$5.99",
                     subtotal: "5.99",
                     total: "5.99",
+                    formattedTotal: "$5.99",
                     attributes: []
                 )
             ],
             refunds: [],
             currency: "USD",
             discountTotal: "0.00",
-            totalTax: "0.00"
+            totalTax: "0.00",
+            formattedTotalTax: "$0.00",
+            formattedDiscountTotal: nil,
+            formattedPaymentTotal: "$25.99",
+            formattedNetAmount: nil
         )
 
         let order2 = POSOrder(
@@ -113,6 +123,8 @@ extension MockPointOfSaleOrderListService {
             datePaid: baseDate.addingTimeInterval(3600),
             status: .completed,
             total: "15.50",
+            formattedTotal: "$15.50",
+            formattedSubtotal: "$15.50",
             customerEmail: "customer2@example.com",
             paymentMethodID: "cod",
             paymentMethodTitle: "Card",
@@ -124,15 +136,21 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 1,
                     price: NSDecimalNumber(string: "15.50"),
+                    formattedPrice: "$15.50",
                     subtotal: "15.50",
                     total: "15.50",
+                    formattedTotal: "$15.50",
                     attributes: []
                 )
             ],
             refunds: [],
             currency: "USD",
             discountTotal: "0.00",
-            totalTax: "0.00"
+            totalTax: "0.00",
+            formattedTotalTax: "$0.00",
+            formattedDiscountTotal: nil,
+            formattedPaymentTotal: "$15.50",
+            formattedNetAmount: nil
         )
 
         return [order1, order2]
@@ -148,6 +166,8 @@ extension MockPointOfSaleOrderListService {
             datePaid: baseDate.addingTimeInterval(7200),
             status: .completed,
             total: "42.75",
+            formattedTotal: "$42.75",
+            formattedSubtotal: "$42.75",
             customerEmail: "customer3@example.com",
             paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
@@ -159,8 +179,10 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 1,
                     price: NSDecimalNumber(string: "12.00"),
+                    formattedPrice: "$12.00",
                     subtotal: "12.00",
                     total: "12.00",
+                    formattedTotal: "$12.00",
                     attributes: []
                 ),
                 POSOrderItem(
@@ -170,15 +192,21 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 2,
                     price: NSDecimalNumber(string: "15.375"),
+                    formattedPrice: "$15.38",
                     subtotal: "30.75",
                     total: "30.75",
+                    formattedTotal: "$30.75",
                     attributes: []
                 )
             ],
             refunds: [],
             currency: "USD",
             discountTotal: "0.00",
-            totalTax: "0.00"
+            totalTax: "0.00",
+            formattedTotalTax: "$0.00",
+            formattedDiscountTotal: nil,
+            formattedPaymentTotal: "$42.75",
+            formattedNetAmount: nil
         )
 
         let order4 = POSOrder(
@@ -188,6 +216,8 @@ extension MockPointOfSaleOrderListService {
             datePaid: baseDate.addingTimeInterval(10800),
             status: .refunded,
             total: "12.00",
+            formattedTotal: "$12.00",
+            formattedSubtotal: "$12.00",
             customerEmail: "customer4@example.com",
             paymentMethodID: "cod",
             paymentMethodTitle: "Card",
@@ -199,17 +229,23 @@ extension MockPointOfSaleOrderListService {
                     variationID: 0,
                     quantity: 1,
                     price: NSDecimalNumber(string: "12.00"),
+                    formattedPrice: "$12.00",
                     subtotal: "12.00",
                     total: "12.00",
+                    formattedTotal: "$12.00",
                     attributes: []
                 )
             ],
             refunds: [
-                POSOrderRefund(refundID: 1001, total: "-12.00", reason: "Customer request")
+                POSOrderRefund(refundID: 1001, total: "-12.00", formattedTotal: "-$12.00", reason: "Customer request")
             ],
             currency: "USD",
             discountTotal: "0.00",
-            totalTax: "0.00"
+            totalTax: "0.00",
+            formattedTotalTax: "$0.00",
+            formattedDiscountTotal: nil,
+            formattedPaymentTotal: "$12.00",
+            formattedNetAmount: "$0.00"
         )
 
         return [order3, order4]

@@ -68,7 +68,9 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try record.insert(db)
             }
@@ -92,7 +94,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
             }
@@ -104,7 +108,9 @@ struct GRDBManagerTests {
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
             }
@@ -130,7 +136,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -141,7 +149,9 @@ struct GRDBManagerTests {
                         id: Int64(200 + i),
                         productID: 100,
                         price: "\(10 + i).00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
@@ -171,7 +181,9 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
             }
@@ -210,7 +222,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -220,7 +234,9 @@ struct GRDBManagerTests {
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
             }
@@ -262,7 +278,9 @@ struct GRDBManagerTests {
                     productTypeKey: "simple",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -271,7 +289,9 @@ struct GRDBManagerTests {
                     id: 200,
                     productID: 100,
                     price: "12.00",
-                    downloadable: false
+                    downloadable: false,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try variation.insert(db)
 
@@ -350,7 +370,9 @@ struct GRDBManagerTests {
                         productTypeKey: "simple",
                         price: "\(i * 10).00",
                         downloadable: false,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
@@ -364,7 +386,9 @@ struct GRDBManagerTests {
                         productTypeKey: "variable",
                         price: "\(i * 5).00",
                         downloadable: true,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
@@ -405,7 +429,9 @@ struct GRDBManagerTests {
                     productTypeKey: "variable",
                     price: "10.00",
                     downloadable: false,
-                    parentID: 0
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
                 )
                 try product.insert(db)
 
@@ -415,7 +441,9 @@ struct GRDBManagerTests {
                         id: Int64(200 + i),
                         productID: 100,
                         price: "\(10 + i).00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
@@ -446,7 +474,9 @@ struct GRDBManagerTests {
                         productTypeKey: "simple",
                         price: "10.00",
                         downloadable: false,
-                        parentID: 0
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try product.insert(db)
                 }
@@ -463,7 +493,9 @@ struct GRDBManagerTests {
                         id: 200,
                         productID: 999, // Non-existent product
                         price: "12.00",
-                        downloadable: false
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
                     )
                     try variation.insert(db)
                 }
@@ -494,11 +526,15 @@ struct TestProduct: Codable {
     let price: String
     let downloadable: Bool
     let parentID: Int64
+    let manageStock: Bool
+    let stockQuantity: Double?
+    let stockStatusKey: String
 
     init(siteID: Int64, id: Int64, name: String, productTypeKey: String,
          price: String, downloadable: Bool, parentID: Int64,
+         manageStock: Bool, stockStatusKey: String,
          fullDescription: String? = nil, shortDescription: String? = nil,
-         sku: String? = nil, globalUniqueID: String? = nil) {
+         sku: String? = nil, globalUniqueID: String? = nil, stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.name = name
@@ -506,10 +542,13 @@ struct TestProduct: Codable {
         self.price = price
         self.downloadable = downloadable
         self.parentID = parentID
+        self.manageStock = manageStock
+        self.stockStatusKey = stockStatusKey
         self.fullDescription = fullDescription
         self.shortDescription = shortDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
+        self.stockQuantity = stockQuantity
     }
 }
 
@@ -526,18 +565,25 @@ struct TestProductVariation: Codable {
     let price: String
     let downloadable: Bool
     let fullDescription: String?
+    let manageStock: Bool
+    let stockQuantity: Double?
+    let stockStatusKey: String
 
     init(siteID: Int64, id: Int64, productID: Int64,
-         price: String, downloadable: Bool,
-         sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil) {
+         price: String, downloadable: Bool, manageStock: Bool, stockStatusKey: String,
+         sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil,
+         stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.productID = productID
         self.price = price
         self.downloadable = downloadable
+        self.manageStock = manageStock
+        self.stockStatusKey = stockStatusKey
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.fullDescription = fullDescription
+        self.stockQuantity = stockQuantity
     }
 }
 

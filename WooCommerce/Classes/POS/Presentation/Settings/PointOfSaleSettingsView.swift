@@ -32,6 +32,7 @@ extension PointOfSaleSettingsView {
                                                },
                                                buttonIcon: "xmark"))
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
                 PointOfSaleSettingsCard(
@@ -65,6 +66,7 @@ extension PointOfSaleSettingsView {
             }
             .padding(.horizontal, POSPadding.medium)
         }
+        .background(Color.posSurface)
     }
 
     @ViewBuilder
@@ -89,23 +91,36 @@ extension PointOfSaleSettingsView {
 }
 
 struct PointOfSaleSettingsCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
+
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
 
+    private var selectionBackgroundColor: Color {
+        guard isSelected else { return Color.clear }
+        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
+    }
+
     var body: some View {
         Button(action: onTap) {
-            HStack {
+            HStack(spacing: POSSpacing.medium) {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(isSelected ? .white : .primary)
-                VStack(alignment: .leading) {
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityHidden(true)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
-                        .foregroundStyle(isSelected ? .white : .primary)
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 }
                 Spacer()
             }
@@ -114,9 +129,10 @@ struct PointOfSaleSettingsCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
         .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                .fill(isSelected ? Color.accentColor : Color.clear)
+            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
+                .fill(selectionBackgroundColor)
         )
     }
 }

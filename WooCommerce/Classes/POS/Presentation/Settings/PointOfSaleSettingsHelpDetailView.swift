@@ -1,64 +1,99 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     @State private var showProductRestrictions = false
     @State private var showDocumentation = false
     @State private var showSupport = false
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack {
+            POSPageHeaderView(title: Localization.helpTitle)
+            .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
             List {
                 Button {
                     showProductRestrictions = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "magnifyingglass")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.productRestrictionsInfo)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.productRestrictionsInfoSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
                     showDocumentation = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.documentationTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.documentationSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
 
                 Button {
                     showSupport = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "questionmark")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.getSupportTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.getSupportSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
                 .buttonStyle(.plain)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         }
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView
@@ -68,7 +103,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
         .posFullScreenCover(isPresented: $showDocumentation) {
             // TODO: Remove copy on PointOfSaleDashboardView.documentationView
             // WOOMOB-1168
-            SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+            SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
 
         }
         .posFullScreenCover(isPresented: $showSupport) {
@@ -86,6 +121,12 @@ private extension PointOfSaleSettingsHelpDetailView {
     }
 
     enum Localization {
+        static let helpTitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.title",
+            value: "Help",
+            comment: "Navigation title for the help settings list."
+        )
+
         static let productRestrictionsInfo = NSLocalizedString(
             "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title",
             value: "Where are my products?",
@@ -147,3 +188,9 @@ private extension PointOfSaleSettingsHelpDetailView {
         .navigationViewStyle(.stack)
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleSettingsHelpDetailView()
+}
+#endif

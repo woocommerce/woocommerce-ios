@@ -190,22 +190,22 @@ private enum Constants {
         // Header with trailing content.
         POSPageHeaderView(
             title: "Products",
-            backButtonConfiguration: .init(state: .enabled, action: {})
-        ) {
-            HStack(spacing: 16) {
-                Button(action: {}) {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                HStack(spacing: 16) {
+                    Button(action: {}) {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
 
-                Button(action: {}) {
-                    Text(Image(systemName: "trash"))
-                        .font(.posButtonSymbolLarge)
+                    Button(action: {}) {
+                        Text(Image(systemName: "trash"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
                 }
-                .foregroundColor(.posOnSurface)
-            }
-        }
+        })
 
         // Header with subtitle.
         POSPageHeaderView(
@@ -232,36 +232,39 @@ private enum Constants {
         POSPageHeaderView(
             title: "Title",
             subtitle: "Subtitle",
-            backButtonConfiguration: .init(state: .enabled, action: {})
-        ) {
-            Button(action: {}) {
-                Text(Image(systemName: "info.circle"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .foregroundColor(.posOnSurface)
-        }
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                Button(action: {}) {
+                    Text(Image(systemName: "info.circle"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+            },
+            bottomContent: {
+                Text("Bottom content")
+            })
 
         // Header with two items and trailing content.
         POSPageHeaderView(
             items: [
                 .init(title: "Products", isSelected: isProductsSelected) { isProductsSelected.toggle() },
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
-            ]
-        ) {
-            HStack(spacing: 16) {
-                Button(action: {}) {
-                    Text(Image(systemName: "plus"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
+            ],
+            trailingContent: {
+                HStack(spacing: 16) {
+                    Button(action: {}) {
+                        Text(Image(systemName: "plus"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
 
-                Button(action: {}) {
-                    Text(Image(systemName: "magnifyingglass"))
-                        .font(.posButtonSymbolLarge)
+                    Button(action: {}) {
+                        Text(Image(systemName: "magnifyingglass"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
                 }
-                .foregroundColor(.posOnSurface)
-            }
-        }
+            })
 
         // Header with bottom content.
         POSPageHeaderView(

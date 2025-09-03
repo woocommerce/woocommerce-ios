@@ -29,9 +29,10 @@ public protocol ApplicationPasswordUseCase {
 
     /// Deletes the application password
     ///
-    ///  Deletes locally and also sends an API request to delete it from the site
+    /// - Parameter locally: Determines whether to remove the password from the local storage
+    /// or only sends an API request to delete it from the site.
     ///
-    func deletePassword() async throws
+    func deletePassword(locally: Bool) async throws
 }
 
 final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
@@ -45,28 +46,21 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 
     /// To store application password
     ///
-    private let storage: ApplicationPasswordStorage
+    private let storage: ApplicationPasswordStorageType
 
     /// Used to name the password in wpadmin.
     ///
-    private var applicationPasswordName: String {
-#if !os(watchOS)
-        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
-        let model = UIDevice.current.model
-        let identifierForVendor = UIDevice.current.identifierForVendor?.uuidString ?? ""
-        return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
-#else
-        fatalError("Unexpected error: Application password should not be generated through watch app")
-#endif
-    }
+    private let applicationPasswordName: String
 
     /// Internal initializer
-    init(type: AuthenticationType,
-         network: Network,
-         keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) {
+    public init(type: AuthenticationType,
+                network: Network,
+                passwordName: String? = nil,
+                storage: ApplicationPasswordStorageType? = nil) {
         self.authenticationType = type
-        self.storage = ApplicationPasswordStorage(keychain: keychain)
+        self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
+        self.applicationPasswordName = passwordName ?? Self.createPasswordName()
     }
 
     /// Public initializer for wporg authentication
@@ -74,9 +68,10 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 password: String,
                 siteAddress: String,
                 network: Network? = nil,
-                keychain: Keychain = Keychain(service: WooConstants.keychainServiceName)) throws {
+                storage: ApplicationPasswordStorageType? = nil) throws {
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
-        self.storage = ApplicationPasswordStorage(keychain: keychain)
+        self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
+        self.applicationPasswordName = Self.createPasswordName()
 
         if let network {
             self.network = network
@@ -113,7 +108,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 return try await createApplicationPassword()
             } catch ApplicationPasswordUseCaseError.duplicateName {
                 do {
-                    try await deletePassword()
+                    try await deletePassword(locally: true)
                 } catch ApplicationPasswordUseCaseError.unableToFindPasswordUUID {
                     // No password found with the `applicationPasswordName`
                     // We can proceed to the creation step
@@ -130,12 +125,14 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
-    public func deletePassword() async throws {
+    public func deletePassword(locally: Bool) async throws {
         // Get the uuid before removing the password from storage
-        let uuidFromLocalPassword = applicationPassword?.uuid
+        let uuidFromLocalPassword = locally ? storage.applicationPassword?.uuid : nil
 
-        // Remove password from storage
-        storage.removeApplicationPassword()
+        if locally {
+            // Remove password from storage
+            storage.removeApplicationPassword()
+        }
 
         let uuidToBeDeleted = try await {
             if let uuidFromLocalPassword {
@@ -149,6 +146,18 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 }
 
 private extension DefaultApplicationPasswordUseCase {
+    /// Helper method to create password name from device
+    static func createPasswordName() -> String {
+        #if !os(watchOS)
+        let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
+        let model = UIDevice.current.model
+        let identifierForVendor = UIDevice.current.identifierForVendor?.uuidString ?? ""
+        return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
+        #else
+        fatalError("Unexpected error: Application password should not be generated through watch app")
+        #endif
+    }
+
     /// Helper method to construct network requests either directly with the remote site
     /// or through Jetpack proxy.
     func constructRequest(method: HTTPMethod, path: String, parameters: [String: Any]? = nil) -> Request {
@@ -294,7 +303,7 @@ private extension DefaultApplicationPasswordUseCase {
 }
 
 extension DefaultApplicationPasswordUseCase {
-    enum AuthenticationType {
+    public enum AuthenticationType {
         case wporg(username: String, password: String, siteAddress: String)
         case wpcom(siteID: Int64)
     }

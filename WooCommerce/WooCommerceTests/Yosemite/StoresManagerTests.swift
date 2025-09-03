@@ -309,7 +309,20 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockProductImageUploader.resetWasCalled)
     }
 
-    func test_removing_default_store_invokes_delete_application_password() {
+    func test_deauthenticate_invokes_delete_application_password() {
+        // Given
+        let mockSessionManager = MockSessionManager()
+        let sut = DefaultStoresManager(sessionManager: mockSessionManager)
+
+        // When
+        sut.deauthenticate()
+
+        // Then
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordLocally)
+    }
+
+    func test_removingDefaultStore_invokes_delete_application_password() {
         // Given
         let mockSessionManager = MockSessionManager()
         let sut = DefaultStoresManager(sessionManager: mockSessionManager)
@@ -319,6 +332,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
+        XCTAssertFalse(mockSessionManager.deleteApplicationPasswordLocally)
     }
 
     func test_updating_default_storeID_sets_storePhoneNumber_to_nil() throws {
@@ -421,9 +435,10 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
     }
 
-    /// Verifies that user is logged out when application password regeneration fails
+    /// Verifies that user is logged out when application password regeneration fails if authenticated with wporg
     ///
-    func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification() {
+    @MainActor
+    func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification_when_authenticated_without_wpcom() {
         // Given
         let manager = DefaultStoresManager.testingInstance
         var isLoggedInValues = [Bool]()
@@ -439,6 +454,26 @@ final class StoresManagerTests: XCTestCase {
         // Assert
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
+
+    /// Verifies that user is logged out when application password regeneration fails if authenticated with wpcom
+    ///
+    func test_it_does_not_deauthenticate_upon_receiving_application_password_generation_failure_notification_when_authenticated_with_wpcom() {
+        // Given
+        let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        let error = ApplicationPasswordUseCaseError.unauthorizedRequest
+        MockNotificationCenter.testingInstance.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
+
+        // Assert
+        XCTAssertTrue(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true])
     }
 
     /// Verifies that user is logged out when WPCOM token expires
@@ -500,6 +535,7 @@ final class MockAuthenticationManager: AuthenticationManager {
 final class MockSessionManager: SessionManagerProtocol {
 
     private(set) var deleteApplicationPasswordInvoked: Bool = false
+    private(set) var deleteApplicationPasswordLocally = false
 
     var defaultAccount: Yosemite.Account? = nil
 
@@ -535,16 +571,13 @@ final class MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?) {
+    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
         deleteApplicationPasswordInvoked = true
-    }
-
-    func deleteApplicationPassword() {
-        deleteApplicationPasswordInvoked = true
+        deleteApplicationPasswordLocally = locally
     }
 }
 
-private class MockNotificationCenter: NotificationCenter {
+private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
 }
 

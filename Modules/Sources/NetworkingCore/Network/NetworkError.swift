@@ -49,6 +49,16 @@ public enum NetworkError: Error, Equatable {
             return nil
         }
     }
+
+    /// Content of the `code` field in the response if available
+    var errorCode: String? {
+        guard let response else { return nil }
+        let decoder = JSONDecoder()
+        guard let decodedResponse = try? decoder.decode(NetworkErrorResponse.self, from: response) else {
+            return nil
+        }
+        return decodedResponse.code
+    }
 }
 
 
@@ -119,5 +129,27 @@ extension NetworkError: CustomStringConvertible {
                 value: "Sorry, your session has expired. Please log in again.",
                 comment: "Error message when session cookie has expired.")
         }
+    }
+}
+
+struct NetworkErrorResponse: Decodable {
+    let code: String?
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.code = try {
+            let errorValue = try container.decodeIfPresent(String.self, forKey: .error)
+            if let errorValue {
+                return errorValue
+            }
+            return try container.decodeIfPresent(String.self, forKey: .code)
+        }()
+    }
+
+    /// Coding Keys
+    ///
+    private enum CodingKeys: String, CodingKey {
+        case error
+        case code
     }
 }

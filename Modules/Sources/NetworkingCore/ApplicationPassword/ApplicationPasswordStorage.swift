@@ -1,7 +1,18 @@
 import Foundation
 import KeychainAccess
 
-public struct ApplicationPasswordStorage {
+public protocol ApplicationPasswordStorageType {
+    /// Returns the saved application password if available
+    var applicationPassword: ApplicationPassword? { get }
+
+    /// Saves application password into keychain
+    func saveApplicationPassword(_ password: ApplicationPassword)
+
+    /// Removes the currently saved password from storage
+    func removeApplicationPassword()
+}
+
+public struct ApplicationPasswordStorage: ApplicationPasswordStorageType {
     /// Stores the application password
     ///
     private let keychain: Keychain

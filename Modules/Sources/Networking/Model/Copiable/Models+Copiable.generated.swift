@@ -1246,12 +1246,11 @@ extension Networking.POSProduct {
         productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         productTypeKey: CopiableProp<String> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
+        shortDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         parentID: CopiableProp<Int64> = .copy,
         images: CopiableProp<[ProductImage]> = .copy,
@@ -1264,12 +1263,11 @@ extension Networking.POSProduct {
         let productID = productID ?? self.productID
         let name = name ?? self.name
         let productTypeKey = productTypeKey ?? self.productTypeKey
+        let fullDescription = fullDescription ?? self.fullDescription
+        let shortDescription = shortDescription ?? self.shortDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let parentID = parentID ?? self.parentID
         let images = images ?? self.images
@@ -1283,12 +1281,11 @@ extension Networking.POSProduct {
             productID: productID,
             name: name,
             productTypeKey: productTypeKey,
+            fullDescription: fullDescription,
+            shortDescription: shortDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             parentID: parentID,
             images: images,
@@ -1307,12 +1304,10 @@ extension Networking.POSProductVariation {
         productVariationID: CopiableProp<Int64> = .copy,
         attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
         image: NullableCopiableProp<ProductImage> = .copy,
+        fullDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
-        regularPrice: NullableCopiableProp<String> = .copy,
-        salePrice: NullableCopiableProp<String> = .copy,
-        onSale: CopiableProp<Bool> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
@@ -1323,12 +1318,10 @@ extension Networking.POSProductVariation {
         let productVariationID = productVariationID ?? self.productVariationID
         let attributes = attributes ?? self.attributes
         let image = image ?? self.image
+        let fullDescription = fullDescription ?? self.fullDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
         let price = price ?? self.price
-        let regularPrice = regularPrice ?? self.regularPrice
-        let salePrice = salePrice ?? self.salePrice
-        let onSale = onSale ?? self.onSale
         let downloadable = downloadable ?? self.downloadable
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
@@ -1340,12 +1333,10 @@ extension Networking.POSProductVariation {
             productVariationID: productVariationID,
             attributes: attributes,
             image: image,
+            fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
             price: price,
-            regularPrice: regularPrice,
-            salePrice: salePrice,
-            onSale: onSale,
             downloadable: downloadable,
             manageStock: manageStock,
             stockQuantity: stockQuantity,

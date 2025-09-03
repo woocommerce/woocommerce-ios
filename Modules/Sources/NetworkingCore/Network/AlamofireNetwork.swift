@@ -330,8 +330,9 @@ private extension AlamofireNetwork {
             let retriedRequest = try? retriedRequest.request.asURLRequest()
             return urlRequest == retriedRequest
         }
+        guard let index = retriedRequestIndex else { return }
 
-        if failure == nil, let index = retriedRequestIndex {
+        if failure == nil {
             let siteID = retriedJetpackRequests[index].request.siteID
             let originalFailure = retriedJetpackRequests[index].error
             switch originalFailure {
@@ -346,9 +347,10 @@ private extension AlamofireNetwork {
                     incrementFailureCount(for: siteID)
                 }
             }
-            // remove retried request from list
-            retriedJetpackRequests.remove(at: index)
         }
+
+        // remove retried request from list
+        retriedJetpackRequests.remove(at: index)
     }
 
     func handleFailureForDirectRequestIfNeeded(originalRequest: URLRequestConvertible,

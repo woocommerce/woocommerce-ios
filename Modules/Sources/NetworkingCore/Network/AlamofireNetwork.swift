@@ -35,6 +35,8 @@ public class AlamofireNetwork: Network {
 
     private let selectedSite: AnyPublisher<JetpackSite?, Never>?
 
+    private let userDefaults: UserDefaults
+
     /// Converter to convert Jetpack tunnel requests into REST API requests if applicable
     ///
     private var requestConverter: RequestConverter
@@ -47,6 +49,9 @@ public class AlamofireNetwork: Network {
 
     private var subscription: AnyCancellable?
 
+    /// Keeps track of failure counts for each site when switching to direct requests
+    private var appPasswordFailures: [Int64: Int] = [:]
+
     /// Public Initializer
     ///
     /// - Parameters:
@@ -57,10 +62,12 @@ public class AlamofireNetwork: Network {
     ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil,
                          ensuresSessionManagerIsInitialized: Bool = false) {
         self.credentials = credentials
         self.selectedSite = selectedSite
+        self.userDefaults = userDefaults
         self.requestConverter = {
             let siteAddress: String? = {
                 switch credentials {
@@ -89,6 +96,7 @@ public class AlamofireNetwork: Network {
         } else {
             requestConverter = RequestConverter(siteAddress: nil)
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+            requestAuthenticator.delegate = nil
         }
     }
 
@@ -202,11 +210,14 @@ private extension AlamofireNetwork {
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
         subscription = selectedSite
             .removeDuplicates()
-            .sink { [weak self] site in
+            .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
+            .sink { [weak self] site, unsupportedList in
                 guard let self else { return }
-                guard let site, site.applicationPasswordAvailable else {
+                guard let site, site.applicationPasswordAvailable,
+                      unsupportedList.contains(site.siteID) == false else {
                     requestConverter = RequestConverter(siteAddress: nil)
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+                    requestAuthenticator.delegate = nil
                     return
                 }
                 requestConverter = RequestConverter(siteAddress: site.siteAddress)
@@ -215,8 +226,40 @@ private extension AlamofireNetwork {
                     selectedSite: site,
                     network: self
                 ))
+                requestAuthenticator.delegate = self
+                appPasswordFailures.removeValue(forKey: site.siteID) // reset failure count
             }
     }
+}
+
+// MARK: `RequestProcessorDelegate` conformance
+//
+extension AlamofireNetwork: RequestProcessorDelegate {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
+        switch reason {
+        case .notSupported:
+            let currentList = userDefaults.applicationPasswordUnsupportedList
+            userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+        case .unknown:
+            let currentFailureCount = appPasswordFailures[siteID] ?? 0
+            let updatedCount = currentFailureCount + 1
+            if updatedCount == AppPasswordConstants.requestFailureThreshold {
+                let currentList = userDefaults.applicationPasswordUnsupportedList
+                userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+            }
+            appPasswordFailures[siteID] = updatedCount
+        }
+    }
+}
+
+// MARK: - Constants for direct request error handling
+enum AppPasswordConstants {
+    // flag site as disabled after threshold is reached
+    static let requestFailureThreshold = 10
+    static let disabledCodes = [
+        "application_passwords_disabled",
+        "application_passwords_disabled_for_user"
+    ]
 }
 
 private extension DataRequest {
@@ -258,5 +301,18 @@ extension Alamofire.DataResponse {
             NetworkError(responseData: data,
                          statusCode: response.statusCode)
         }
+    }
+}
+
+// MARK: - Helper extension to save internal flag for app password availability
+//
+extension UserDefaults {
+    @objc dynamic var applicationPasswordUnsupportedList: [Int64] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [Int64] ?? [] }
+        set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
+    }
+
+    enum Key: String {
+        case applicationPasswordUnsupportedList
     }
 }

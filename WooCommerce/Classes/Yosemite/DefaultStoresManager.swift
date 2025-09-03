@@ -164,8 +164,11 @@ class DefaultStoresManager: StoresManager {
         state = AuthenticatedState(credentials: credentials, sessionManager: sessionManager)
         sessionManager.defaultCredentials = credentials
 
-        listenToApplicationPasswordGenerationFailureNotification()
-        listenToWPCOMInvalidWPCOMTokenNotification()
+        if case .wpcom = credentials {
+            listenToWPCOMInvalidWPCOMTokenNotification()
+        } else {
+            listenToApplicationPasswordGenerationFailureNotification()
+        }
 
         return self
     }

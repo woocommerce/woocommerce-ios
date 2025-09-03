@@ -10,6 +10,8 @@ protocol RequestAuthenticator {
     ///
     var credentials: Credentials? { get }
 
+    var jetpackSiteID: Int64? { get }
+
     /// Authenticates the provided urlRequest using the `credentials`
     ///
     /// - Parameter urlRequest: `URLRequest` to authenticate
@@ -20,6 +22,10 @@ protocol RequestAuthenticator {
     /// Generates application password
     ///
     func generateApplicationPassword() async throws
+
+    /// Delete existing application password remotely
+    ///
+    func deleteApplicationPassword() async throws
 
     /// Checks whether the given URLRequest is eligible for retyring
     ///
@@ -32,6 +38,10 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
+
+    /// ID of current site if Jetpack site
+    ///
+    let jetpackSiteID: Int64?
 
     /// The use case to handle authentication with application passwords.
     ///
@@ -82,6 +92,8 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                 return selectedSite?.siteAddress
             }
         }()
+
+        jetpackSiteID = selectedSite?.siteID
     }
 
     /// Authenticates the provided urlRequest using the `credentials`
@@ -105,6 +117,13 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         }
         let _ = try await applicationPasswordUseCase.generateNewPassword()
         return
+    }
+
+    func deleteApplicationPassword() async throws {
+        guard let applicationPasswordUseCase else {
+            throw RequestAuthenticatorError.applicationPasswordUseCaseNotAvailable
+        }
+        try await applicationPasswordUseCase.deletePassword(locally: false)
     }
 
     /// Checks whether the given URLRequest is eligible for retyring

@@ -13,6 +13,8 @@ public struct POSOrder: Equatable, Hashable {
     public let datePaid: Date?
     public let status: OrderStatusEnum
     public let total: String
+    public let formattedTotal: String
+    public let formattedSubtotal: String
     public let customerEmail: String?
     public let paymentMethodID: String
     public let paymentMethodTitle: String
@@ -20,7 +22,11 @@ public struct POSOrder: Equatable, Hashable {
     public let refunds: [POSOrderRefund]
     public let currency: String
     public let discountTotal: String
+    public let formattedDiscountTotal: String?
     public let totalTax: String
+    public let formattedTotalTax: String
+    public let formattedPaymentTotal: String
+    public let formattedNetAmount: String?
 
     public init(id: Int64,
                 number: String,
@@ -28,6 +34,8 @@ public struct POSOrder: Equatable, Hashable {
                 datePaid: Date? = nil,
                 status: OrderStatusEnum,
                 total: String,
+                formattedTotal: String,
+                formattedSubtotal: String,
                 customerEmail: String? = nil,
                 paymentMethodID: String,
                 paymentMethodTitle: String,
@@ -35,13 +43,19 @@ public struct POSOrder: Equatable, Hashable {
                 refunds: [POSOrderRefund] = [],
                 currency: String,
                 discountTotal: String,
-                totalTax: String) {
+                totalTax: String,
+                formattedTotalTax: String,
+                formattedDiscountTotal: String?,
+                formattedPaymentTotal: String,
+                formattedNetAmount: String? = nil) {
         self.id = id
         self.number = number
         self.dateCreated = dateCreated
         self.datePaid = datePaid
         self.status = status
         self.total = total
+        self.formattedTotal = formattedTotal
+        self.formattedSubtotal = formattedSubtotal
         self.customerEmail = customerEmail
         self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
@@ -50,36 +64,9 @@ public struct POSOrder: Equatable, Hashable {
         self.currency = currency
         self.discountTotal = discountTotal
         self.totalTax = totalTax
-    }
-}
-
-// MARK: - Conversion from NetworkingCore.Order
-public extension POSOrder {
-    init(from order: NetworkingCore.Order) {
-        // Extract customer email from billing address
-        let customerEmail = order.billingAddress?.email
-
-        // Convert line items to POS format
-        let posLineItems = order.items.map { POSOrderItem(from: $0) }
-
-        // Convert refunds to POS format
-        let posRefunds = order.refunds.map { POSOrderRefund(from: $0) }
-
-        self.init(
-            id: order.orderID,
-            number: order.number,
-            dateCreated: order.dateCreated,
-            datePaid: order.datePaid,
-            status: order.status,
-            total: order.total,
-            customerEmail: customerEmail,
-            paymentMethodID: order.paymentMethodID,
-            paymentMethodTitle: order.paymentMethodTitle,
-            lineItems: posLineItems,
-            refunds: posRefunds,
-            currency: order.currency,
-            discountTotal: order.discountTotal,
-            totalTax: order.totalTax
-        )
+        self.formattedTotalTax = formattedTotalTax
+        self.formattedDiscountTotal = formattedDiscountTotal
+        self.formattedPaymentTotal = formattedPaymentTotal
+        self.formattedNetAmount = formattedNetAmount
     }
 }

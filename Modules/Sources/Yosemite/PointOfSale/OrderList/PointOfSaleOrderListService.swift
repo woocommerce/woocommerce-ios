@@ -3,14 +3,21 @@ import enum Alamofire.AFError
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
 import protocol NetworkingCore.POSOrdersRemoteProtocol
+import class WooFoundationCore.CurrencyFormatter
 
 public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
     private let ordersRemote: POSOrdersRemoteProtocol
     private let siteID: Int64
+    private let mapper: POSOrderMapper
 
-    public init(siteID: Int64, ordersRemote: POSOrdersRemoteProtocol) {
+    public init(
+        siteID: Int64,
+        ordersRemote: POSOrdersRemoteProtocol,
+        currencyFormatter: CurrencyFormatter
+    ) {
         self.siteID = siteID
         self.ordersRemote = ordersRemote
+        self.mapper = POSOrderMapper(currencyFormatter: currencyFormatter)
     }
 
     public func providePointOfSaleOrders(pageNumber: Int = 1) async throws -> PagedItems<POSOrder> {
@@ -26,7 +33,7 @@ public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProto
             }
 
             // Convert Order objects to POSOrder objects
-            let posOrders = pagedOrders.items.map { POSOrder(from: $0) }
+            let posOrders = pagedOrders.items.map { mapper.map(order: $0) }
 
             return .init(items: posOrders,
                         hasMorePages: pagedOrders.hasMorePages,

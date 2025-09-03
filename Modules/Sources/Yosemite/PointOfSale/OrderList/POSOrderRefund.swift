@@ -1,27 +1,20 @@
 import Foundation
 import struct NetworkingCore.OrderRefundCondensed
+import class WooFoundationCore.CurrencyFormatter
 
 public struct POSOrderRefund: Equatable, Hashable {
     public let refundID: Int64
     public let total: String
+    public let formattedTotal: String
     public let reason: String?
 
     public init(refundID: Int64,
                 total: String,
+                formattedTotal: String,
                 reason: String? = nil) {
         self.refundID = refundID
         self.total = total
+        self.formattedTotal = formattedTotal
         self.reason = reason
-    }
-}
-
-// MARK: - Conversion from NetworkingCore.OrderRefundCondensed
-public extension POSOrderRefund {
-    init(from refund: OrderRefundCondensed) {
-        self.init(
-            refundID: refund.refundID,
-            total: refund.total,
-            reason: refund.reason
-        )
     }
 }

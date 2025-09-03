@@ -1,6 +1,4 @@
 import Foundation
-import struct NetworkingCore.OrderItem
-import struct NetworkingCore.OrderItemAttribute
 
 public struct POSOrderItem: Equatable, Hashable {
     public let itemID: Int64
@@ -9,8 +7,10 @@ public struct POSOrderItem: Equatable, Hashable {
     public let variationID: Int64
     public let quantity: Decimal
     public let price: NSDecimalNumber
+    public let formattedPrice: String
     public let subtotal: String
     public let total: String
+    public let formattedTotal: String
     public let attributes: [OrderItemAttribute]
 
     public init(itemID: Int64,
@@ -19,8 +19,10 @@ public struct POSOrderItem: Equatable, Hashable {
                 variationID: Int64,
                 quantity: Decimal,
                 price: NSDecimalNumber,
+                formattedPrice: String,
                 subtotal: String,
                 total: String,
+                formattedTotal: String,
                 attributes: [OrderItemAttribute]) {
         self.itemID = itemID
         self.name = name
@@ -28,25 +30,10 @@ public struct POSOrderItem: Equatable, Hashable {
         self.variationID = variationID
         self.quantity = quantity
         self.price = price
+        self.formattedPrice = formattedPrice
         self.subtotal = subtotal
         self.total = total
+        self.formattedTotal = formattedTotal
         self.attributes = attributes
-    }
-}
-
-// MARK: - Conversion from NetworkingCore.OrderItem
-public extension POSOrderItem {
-    init(from orderItem: OrderItem) {
-        self.init(
-            itemID: orderItem.itemID,
-            name: orderItem.name,
-            productID: orderItem.productID,
-            variationID: orderItem.variationID,
-            quantity: orderItem.quantity,
-            price: orderItem.price,
-            subtotal: orderItem.subtotal,
-            total: orderItem.total,
-            attributes: orderItem.attributes
-        )
     }
 }

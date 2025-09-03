@@ -257,8 +257,9 @@ final class SessionManager: SessionManagerProtocol {
         }
 
         applicationPasswordUseCase = useCase
-        Task {
+        Task { @MainActor in
             try await useCase.deletePassword(locally: locally)
+            applicationPasswordUseCase = nil
         }
     }
 }

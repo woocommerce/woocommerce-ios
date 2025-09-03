@@ -1,15 +1,39 @@
 import SwiftUI
-import enum Yosemite.AppSettingsAction
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    let settingsController: PointOfSaleSettingsControllerProtocol
+
     @State private var navigationPath: [NavigationDestination] = []
-    @State private var lastKnownLoadedCardReader: String?
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
 
+    private var cardReaderName: String {
+        if let cardReaderName = settingsController.connectedCardReader?.name {
+            return cardReaderName
+        } else {
+            return Localization.cardReaderNotConnected
+        }
+    }
+
+    private var formattedBatteryLevel: String {
+        if let batteryLevel = settingsController.connectedCardReader?.batteryLevel {
+            let percentage = Int(batteryLevel * 100)
+            return "\(percentage)%"
+        } else {
+            return Localization.batteryLevelUnknown
+        }
+    }
+
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
+            POSPageHeaderView(title: Localization.hardwareTitle)
+            .foregroundColor(.posSurface)
+
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
                     HStack(alignment: .firstTextBaseline) {
@@ -24,7 +48,13 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                         }
                     }
                 }
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
@@ -37,7 +67,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
-                SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+                SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
             }
         }
     }
@@ -52,38 +82,37 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     private var cardReadersView: some View {
-        VStack(spacing: POSSpacing.large) {
-            VStack(spacing: POSSpacing.medium) {
-                VStack(spacing: POSPadding.small) {
-                    Text(Localization.cardReadersDescription)
-                        .font(.posBodyLargeRegular())
-                        .multilineTextAlignment(.center)
-                    Text(Localization.cardReadersSubtitle1)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                    Text(Localization.cardReadersSubtitle2)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                    Text(Localization.cardReadersSubtitle3)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-            }
-            .padding()
-
-            if let lastKnownLoadedCardReader {
-                HStack {
-                    Text("Model: \(lastKnownLoadedCardReader)")
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-            }
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
 
             List {
+                VStack(spacing: POSPadding.xSmall) {
+                    HStack {
+                        Text(Localization.readerModelTitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(cardReaderName)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    HStack {
+                        Text(Localization.readerBatteryTitle)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Text(formattedBatteryLevel)
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                }
                 Button {
                     showCardReaderDocumentationModal = true
                 } label: {
@@ -100,48 +129,56 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
         }
-        .navigationTitle(Localization.cardReadersTitle)
+        .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
-        }
-        .task { @MainActor in
-            // TODO: WOOMOB-1172
-            let action = AppSettingsAction.loadCardReader { reader in
-                switch reader {
-                case let .success(foundReader):
-                    lastKnownLoadedCardReader = foundReader
-                case let .failure(error):
-                    debugPrint(error)
-                }
-            }
-            ServiceLocator.stores.dispatch(action)
         }
     }
 
     private var scannersView: some View {
-        List(ScannerDestination.allCases) { destination in
-            Button {
-                handleScannerDestination(destination)
-            } label: {
-                HStack(alignment: .firstTextBaseline) {
-                    Image(systemName: destination.icon)
-                        .font(.posBodyLargeRegular())
-                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                        Text(destination.title)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.scannersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            List(ScannerDestination.allCases) { destination in
+                Button {
+                    handleScannerDestination(destination)
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
-                        Text(destination.subtitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .buttonStyle(.plain)
+                .listRowSeparator(.hidden)
             }
-            .buttonStyle(.plain)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
         }
-        .navigationTitle(Localization.scannersTitle)
+        .navigationBarBackButtonHidden(true)
     }
-
 }
 
 extension PointOfSaleSettingsHardwareDetailView {
@@ -220,6 +257,36 @@ extension PointOfSaleSettingsHardwareDetailView {
 
 private extension PointOfSaleSettingsHardwareDetailView {
     enum Localization {
+        static let readerModelTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.readerModelTitle",
+            value: "Model",
+            comment: "Text displayed on Point of Sale settings pointing to the card reader model."
+        )
+
+        static let readerBatteryTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.readerBatteryTitle",
+            value: "Battery",
+            comment: "Text displayed on Point of Sale settings pointing to the card reader battery."
+        )
+
+        static let cardReaderNotConnected = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected",
+            value: "Reader not connected",
+            comment: "Text displayed on Point of Sale settings when the card reader is not connected."
+        )
+
+        static let batteryLevelUnknown = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown",
+            value: "Unknown",
+            comment: "Text displayed on Point of Sale settings when card reader battery is unknown."
+        )
+
+        static let hardwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareTitle",
+            value: "Hardware",
+            comment: "Navigation title for the hardware settings list."
+        )
+
         static let cardReadersTitle = NSLocalizedString(
             "pointOfSaleSettingsHardwareDetailView.cardReadersTitle",
             value: "Card readers",
@@ -254,30 +321,6 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle",
             value: "Learn more about barcode scanning in POS",
             comment: "Subtitle describing barcode scanner documentation in Point of Sale settings."
-        )
-
-        static let cardReadersDescription = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cardReadersDescription",
-            value: "Accept secure and fast payments in person",
-            comment: "Main description for card readers functionality in Point of Sale settings."
-        )
-
-        static let cardReadersSubtitle1 = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.1",
-            value: "Make sure the card reader is charged",
-            comment: "Subtitle describing card reader connection in Point of Sale settings."
-        )
-
-        static let cardReadersSubtitle2 = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.2",
-            value: "Turn the card reader on, and place it next to the mobile device",
-            comment: "Subtitle describing card reader connection in Point of Sale settings."
-        )
-
-        static let cardReadersSubtitle3 = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cardReadersSubtitle.3",
-            value: "Turn the mobile device bluetooth on",
-            comment: "Subtitle describing card reader connection in Point of Sale settings."
         )
 
         static let cardReaderDocumentationTitle = NSLocalizedString(
@@ -317,3 +360,9 @@ private extension PointOfSaleSettingsHardwareDetailView {
         )
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleSettingsHardwareDetailView(settingsController: PointOfSaleSettingsPreviewController())
+}
+#endif

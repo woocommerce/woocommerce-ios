@@ -177,8 +177,8 @@ private struct BackgroundTaskSystemInfo {
             let monitor = NWPathMonitor()
 
             monitor.pathUpdateHandler = { path in
-                continuation.resume(returning: NetworkInfo(path: path))
                 monitor.cancel()
+                continuation.resume(returning: NetworkInfo(path: path))
             }
 
             let queue = DispatchQueue(label: "network.monitor.queue")

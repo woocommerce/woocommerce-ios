@@ -5,62 +5,74 @@ struct PointOfSaleSettingsHelpDetailView: View {
     @State private var showDocumentation = false
     @State private var showSupport = false
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                List {
-                    Button {
-                        showProductRestrictions = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "magnifyingglass")
+            POSPageHeaderView(title: Localization.helpTitle)
+            .foregroundColor(.posSurface)
+            List {
+                Button {
+                    showProductRestrictions = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.productRestrictionsInfo)
                                 .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.productRestrictionsInfo)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.productRestrictionsInfoSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
+                            Text(Localization.productRestrictionsInfoSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
                         }
                     }
-                    .buttonStyle(.plain)
-                    Button {
-                        showDocumentation = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "doc.text")
-                                .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.documentationTitle)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.documentationSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
-
-                    Button {
-                        showSupport = true
-                    } label: {
-                        HStack(alignment: .firstTextBaseline) {
-                            Image(systemName: "questionmark")
-                                .font(.posBodyLargeRegular())
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(Localization.getSupportTitle)
-                                    .font(.posBodyLargeRegular())
-                                Text(Localization.getSupportSubtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .buttonStyle(.plain)
                 }
+                .listRowSeparator(.hidden)
+                .buttonStyle(.plain)
+
+                Button {
+                    showDocumentation = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "doc.text")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.documentationTitle)
+                                .font(.posBodyLargeRegular())
+                            Text(Localization.documentationSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .listRowSeparator(.hidden)
+                .buttonStyle(.plain)
+
+                Button {
+                    showSupport = true
+                } label: {
+                    HStack(alignment: .firstTextBaseline) {
+                        Image(systemName: "questionmark")
+                            .font(.posBodyLargeRegular())
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(Localization.getSupportTitle)
+                                .font(.posBodyLargeRegular())
+                            Text(Localization.getSupportSubtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                .listRowSeparator(.hidden)
+                .buttonStyle(.plain)
             }
-            .padding()
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
         }
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView
@@ -70,7 +82,7 @@ struct PointOfSaleSettingsHelpDetailView: View {
         .posFullScreenCover(isPresented: $showDocumentation) {
             // TODO: Remove copy on PointOfSaleDashboardView.documentationView
             // WOOMOB-1168
-            SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+            SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
 
         }
         .posFullScreenCover(isPresented: $showSupport) {
@@ -88,6 +100,12 @@ private extension PointOfSaleSettingsHelpDetailView {
     }
 
     enum Localization {
+        static let helpTitle = NSLocalizedString(
+            "PointOfSaleSettingsHelpDetailView.help.title",
+            value: "Help",
+            comment: "Navigation title for the help settings list."
+        )
+
         static let productRestrictionsInfo = NSLocalizedString(
             "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title",
             value: "Where are my products?",
@@ -149,3 +167,9 @@ private extension PointOfSaleSettingsHelpDetailView {
         .navigationViewStyle(.stack)
     }
 }
+
+#if DEBUG
+#Preview {
+    PointOfSaleSettingsHelpDetailView()
+}
+#endif

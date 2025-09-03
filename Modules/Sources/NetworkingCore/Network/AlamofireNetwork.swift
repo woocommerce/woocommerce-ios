@@ -24,6 +24,7 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+    /// Lazy-initialized session manager. Use ensuresSessionManagerIsInitialized=true to avoid race conditions with concurrent requests.
     private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
         let sessionManager = makeSession(configuration: sessionConfiguration)
@@ -53,11 +54,17 @@ public class AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
-    ///
+    /// - Parameters:
+    ///   - credentials: Authentication credentials for requests.
+    ///   - selectedSite: Publisher for site selection changes.
+    ///   - sessionManager: Optional pre-configured session manager.
+    ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
+    ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
                          userDefaults: UserDefaults = .standard,
-                         sessionManager: Alamofire.Session? = nil) {
+                         sessionManager: Alamofire.Session? = nil,
+                         ensuresSessionManagerIsInitialized: Bool = false) {
         self.credentials = credentials
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
@@ -77,6 +84,8 @@ public class AlamofireNetwork: Network {
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
         if let sessionManager {
             self.alamofireSession = sessionManager
+        } else if ensuresSessionManagerIsInitialized {
+            self.alamofireSession = makeSession(configuration: URLSessionConfiguration.default)
         }
     }
 

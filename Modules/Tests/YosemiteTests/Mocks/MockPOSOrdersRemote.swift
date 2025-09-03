@@ -33,4 +33,24 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
         spyCreatePOSOrderFields = fields
         return Order.fake()
     }
+
+    var mockPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+    var loadPOSOrdersCalled = false
+    var spySiteID: Int64?
+    var spyPageNumber: Int?
+    var spyPageSize: Int?
+
+    func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        loadPOSOrdersCalled = true
+        spySiteID = siteID
+        spyPageNumber = pageNumber
+        spyPageSize = pageSize
+
+        switch mockPagedOrdersResult {
+        case .success(let pagedOrders):
+            return pagedOrders
+        case .failure(let error):
+            throw error
+        }
+    }
 }

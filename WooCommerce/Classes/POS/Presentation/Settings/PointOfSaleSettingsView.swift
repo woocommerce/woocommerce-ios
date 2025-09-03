@@ -4,66 +4,12 @@ struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selection: SidebarNavigation? = .store
 
+    let settingsController: PointOfSaleSettingsControllerProtocol
+
     var body: some View {
-        POSPageHeaderView(
-            title: Localization.navigationTitle,
-            trailingContent: {
-                Button(action: { dismiss() }) {
-                    Text(Image(systemName: "xmark"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
-            })
         GeometryReader { geometry in
             HStack(spacing: POSSpacing.none) {
-                VStack(alignment: .leading, spacing: POSSpacing.none) {
-                    List(selection: $selection) {
-                        Section {
-                            ForEach([SidebarNavigation.store, SidebarNavigation.hardware], id: \.self) { item in
-                                HStack {
-                                    Image(systemName: item.icon)
-                                        .font(.posBodyLargeRegular())
-                                    VStack(alignment: .leading) {
-                                        Text(item.title)
-                                            .font(.posBodyLargeRegular())
-                                        Text(item.subtitle)
-                                            .font(.posBodyMediumRegular())
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                .tag(item)
-                            }
-                        }
-                    }
-                    .safeAreaInset(edge: .bottom) {
-                        Button {
-                            selection = .help
-                        } label: {
-                            HStack {
-                                Image(systemName: SidebarNavigation.help.icon)
-                                    .font(.posBodyLargeRegular())
-                                    .foregroundStyle(selection == .help ? .white : .primary)
-                                VStack(alignment: .leading) {
-                                    Text(SidebarNavigation.help.title)
-                                        .font(.posBodyLargeRegular())
-                                        .foregroundStyle(selection == .help ? .white : .primary)
-                                    Text(SidebarNavigation.help.subtitle)
-                                        .font(.posBodyMediumRegular())
-                                        .foregroundStyle(selection == .help ? .secondary : .secondary)
-                                }
-                                Spacer()
-                            }
-                            .padding(.vertical, POSPadding.small)
-                            .padding(.horizontal, POSPadding.medium)
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .background(
-                            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                                .fill(selection == .help ? Color.accentColor : Color.clear)
-                        )
-                    }
-                }
+                listView
                 .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
 
                 detailView
@@ -75,12 +21,60 @@ struct PointOfSaleSettingsView: View {
 
 extension PointOfSaleSettingsView {
     @ViewBuilder
+    private var listView: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.navigationTitle,
+                backButtonConfiguration: .init(state: .enabled,
+                                               action: {
+                                                   ServiceLocator.analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                   dismiss()
+                                               },
+                                               buttonIcon: "xmark"))
+            .foregroundColor(.posSurface)
+
+            VStack(spacing: POSSpacing.small) {
+                PointOfSaleSettingsCard(
+                    item: .store,
+                    isSelected: selection == .store,
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        selection = .store
+                    }
+                )
+
+                PointOfSaleSettingsCard(
+                    item: .hardware,
+                    isSelected: selection == .hardware,
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        selection = .hardware
+                    }
+                )
+
+                Spacer()
+
+                PointOfSaleSettingsCard(
+                    item: .help,
+                    isSelected: selection == .help,
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHelpTapped)
+                        selection = .help
+                    }
+                )
+            }
+            .padding(.horizontal, POSPadding.medium)
+        }
+        .background(Color.posSurface)
+    }
+
+    @ViewBuilder
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView()
+            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
-            PointOfSaleSettingsHardwareDetailView()
+            PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:
             PointOfSaleSettingsHelpDetailView()
         default:
@@ -95,7 +89,40 @@ extension PointOfSaleSettingsView {
     }
 }
 
-private extension PointOfSaleSettingsView {
+struct PointOfSaleSettingsCard: View {
+    let item: PointOfSaleSettingsView.SidebarNavigation
+    let isSelected: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Image(systemName: item.icon)
+                    .font(.posBodyLargeRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                VStack(alignment: .leading) {
+                    Text(item.title)
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                    Text(item.subtitle)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                }
+                Spacer()
+            }
+            .padding(.vertical, POSPadding.small)
+            .padding(.horizontal, POSPadding.medium)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(
+            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
+                .fill(isSelected ? Color.posSecondary : Color.clear)
+        )
+    }
+}
+
+extension PointOfSaleSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
@@ -173,6 +200,8 @@ private extension PointOfSaleSettingsView {
     }
 }
 
+#if DEBUG
 #Preview {
-    PointOfSaleSettingsView()
+    PointOfSaleSettingsView(settingsController: PointOfSaleSettingsPreviewController())
 }
+#endif

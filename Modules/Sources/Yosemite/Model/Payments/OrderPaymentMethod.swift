@@ -1,5 +1,5 @@
 /// Order Payment methods
-enum OrderPaymentMethod: RawRepresentable {
+public enum OrderPaymentMethod: RawRepresentable {
     /// Booking (confirmed by Shop manager)
     case booking
 

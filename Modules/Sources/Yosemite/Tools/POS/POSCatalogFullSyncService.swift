@@ -92,7 +92,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             let newProducts = batchResults.flatMap { $0.items.items }
             allProducts.append(contentsOf: newProducts)
 
-            let highestPageResult = batchResults.last(where: { $0.pageNumber == pagesToFetch.max() })?.items
+            let highestPageResult = batchResults.last?.items
             hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newProducts.isEmpty
             currentPage += batchSize
 
@@ -132,7 +132,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             let newVariations = batchResults.flatMap { $0.items.items }
             allVariations.append(contentsOf: newVariations)
 
-            let highestPageResult = batchResults.last(where: { $0.pageNumber == pagesToFetch.max() })?.items
+            let highestPageResult = batchResults.last?.items
             hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newVariations.isEmpty
             currentPage += batchSize
 

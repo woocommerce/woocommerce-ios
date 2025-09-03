@@ -3,7 +3,7 @@
 
 23.2
 -----
-- [*] POS: Point of Sale settings is now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
+- [*] POS: Point of Sale settings are now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
 
 23.1
 -----

@@ -16,12 +16,19 @@ extension AttributedString {
     static func withEmbeddedLink(
         mainContent: String,
         linkText: String,
-        link: String
+        link: String,
+        font: Font? = .body,
+        foregroundColor: Color? = Color(uiColor: .text)
     ) -> AttributedString {
         let content = String.localizedStringWithFormat(mainContent, linkText)
         var attributedText = AttributedString(content)
-        attributedText.font = .body
-        attributedText.foregroundColor = Color(uiColor: .text)
+
+        if let font {
+            attributedText.font = font
+        }
+        if let foregroundColor {
+            attributedText.foregroundColor = foregroundColor
+        }
 
         if let range = attributedText.range(of: linkText),
            let url = URL(string: link) {

@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
+import Combine
 
 // MARK: - AuthenticatedState
 //
@@ -25,13 +26,14 @@ class AuthenticatedState: StoresManagerState {
 
     private let network: AlamofireNetwork
 
+    private var cancellables: Set<AnyCancellable> = []
+
     /// Designated Initializer
     ///
     init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
-            .prepend(sessionManager.defaultSite) // needed to emit the initial value upon subscription
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
@@ -137,7 +139,11 @@ class AuthenticatedState: StoresManagerState {
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
-        checkApplicationPasswordExperimentFeatureFlag()
+        observeExperimentFeatureSettings()
+
+        DispatchQueue.main.async {
+            self.checkApplicationPasswordExperimentFeatureState()
+        }
     }
 
     /// Convenience Initializer
@@ -192,11 +198,14 @@ private extension AuthenticatedState {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
 
-    /// Uses local feature flag for development phase.
-    /// TODO: Switch to remote feature flag before release.
-    func checkApplicationPasswordExperimentFeatureFlag() {
-        let enabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.applicationPasswordExperiment)
-        network.updateAppPasswordSwitching(enabled: enabled)
+    func checkApplicationPasswordExperimentFeatureState() {
+        Task {
+            let isAvailableAndEnabled = await ApplicationPasswordsExperimentState().isAvailableAndEnabled
+
+            await MainActor.run {
+                network.updateAppPasswordSwitching(enabled: isAvailableAndEnabled)
+            }
+        }
     }
 }
 
@@ -211,5 +220,22 @@ private extension AuthenticatedState {
                                         resetOrdersSettings,
                                         resetProductsSettings,
                                         resetGeneralStoreSettings])
+    }
+}
+
+/// Observe beta experiment settings
+private extension AuthenticatedState {
+    func observeExperimentFeatureSettings() {
+        ServiceLocator
+            .generalAppSettings
+            .betaFeatureEnabledPublisher(
+                .applicationPasswords
+            )
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.checkApplicationPasswordExperimentFeatureState()
+            }
+            .store(in: &cancellables)
     }
 }

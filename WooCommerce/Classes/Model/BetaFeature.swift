@@ -5,6 +5,7 @@ import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
+    case applicationPasswords
 }
 
 extension BetaFeature {
@@ -12,6 +13,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsTitle
+        case .applicationPasswords:
+            return Localization.applicationPasswordsTitle
         }
     }
 
@@ -19,6 +22,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsDescription
+        case .applicationPasswords:
+            return Localization.applicationPasswordsDescription
         }
     }
 
@@ -26,6 +31,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return \.isViewAddOnsSwitchEnabled
+        case .applicationPasswords:
+            return \.isApplicationPasswordsSwitchEnabled
         }
     }
 
@@ -35,6 +42,8 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return .settingsBetaFeaturesOrderAddOnsToggled
+        case .applicationPasswords:
+            return .settingsBetaFeaturesApplicationPasswordsToggled
         }
     }
 
@@ -44,6 +53,26 @@ extension BetaFeature {
             properties["feature_name"] = self.rawValue
         }
         return properties
+    }
+}
+
+extension BetaFeature {
+    typealias DescriptionLink = (text: String, url: URL)
+
+    var descriptionLink: DescriptionLink? {
+        switch self {
+        case .viewAddOns:
+            return nil
+        case .applicationPasswords:
+            guard let url = URL(string: Constants.applicationPasswordsDocURL) else {
+                return nil
+            }
+
+            return DescriptionLink(
+                text: Localization.applicationPasswordsDescriptionLinkText,
+                url: url
+            )
+        }
     }
 }
 
@@ -86,5 +115,26 @@ private extension BetaFeature {
         static let viewAddOnsDescription = NSLocalizedString(
             "Test out viewing Order Add-Ons as we get ready to launch",
             comment: "Cell description on the beta features screen to enable the order add-ons feature")
+
+        static let applicationPasswordsTitle = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.title",
+            value: "Application Passwords",
+            comment: "Cell title on the beta features screen to enable the application passwords feature")
+        static let applicationPasswordsDescription = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description",
+            value: "Enable %@ to let the app fetch data directly from your WooCommerce site rather than via Jetpack connections",
+            comment: "Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title."
+        )
+
+        static let applicationPasswordsDescriptionLinkText = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description.linkText",
+            value: "Application Passwords",
+            comment: "Link text to open Application Passwords documentation page"
+        )
+    }
+
+    enum Constants {
+        static let applicationPasswordsDocURL =
+            "https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/"
     }
 }

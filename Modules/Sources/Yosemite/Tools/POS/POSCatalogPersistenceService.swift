@@ -30,49 +30,96 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
         let db = grdbManager.databaseConnection
         try await db.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
-            try PersistedSite.deleteOne(db, key: siteID)
+            // currently, we can't save for more than one site as entity IDs are not namespaced.
+            try PersistedSite.deleteAll(db)
+//            try PersistedSite.deleteOne(db, key: siteID)
         }
     }
 
     public func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws {
-        let db = grdbManager.databaseConnection
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            // Persist site first
-            group.addTask {
-                try db.write { db in
-                    let site = PersistedSite(id: siteID)
-                    try site.insert(db)
-                }
+        try await grdbManager.databaseConnection.write { db in
+            let site = PersistedSite(id: siteID)
+            try site.insert(db)
+
+            for product in catalog.productsToPersist {
+                try product.insert(db, onConflict: .ignore)
             }
 
-            // Wait for site to be persisted before continuing
-            try await group.next()
-
-            // Persist products
-            for product in catalog.products {
-                group.addTask {
-                    try product.insertWithRelationships(in: db)
-                }
+            for image in catalog.productImagesToPersist {
+                try image.insert(db, onConflict: .ignore)
             }
 
-            // Persist variations
-            for variation in catalog.variations {
-                group.addTask {
-                    try variation.insertWithRelationships(in: db)
-                }
+            for var attribute in catalog.productAttributesToPersist {
+                try attribute.insert(db)
             }
 
-            // Wait for all saves to complete
-            for try await _ in group {}
+            for variation in catalog.variationsToPersist {
+                try variation.insert(db, onConflict: .ignore)
+            }
+
+            for image in catalog.variationImagesToPersist {
+                try image.insert(db, onConflict: .ignore)
+            }
+
+            for var attribute in catalog.variationAttributesToPersist {
+                try attribute.insert(db)
+            }
         }
 
         DDLogInfo("✅ Catalog persistence complete")
+
+        try await grdbManager.databaseConnection.read { db in
+            let productCount = try PersistedProduct.fetchCount(db)
+            let productImageCount = try PersistedProductImage.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+
+            DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
+                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
+                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
+        }
     }
 
     public func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         try await clearSiteData(for: siteID)
         try await persistCatalog(catalog, siteID: siteID)
+    }
+}
+
+private extension POSCatalog {
+    var productsToPersist: [PersistedProduct] {
+        products.map { PersistedProduct(from: $0) }
+    }
+
+    var productImagesToPersist: [PersistedProductImage] {
+        products.flatMap { product in
+            product.images.map { PersistedProductImage(from: $0, productID: product.productID) }
+        }
+    }
+
+    var productAttributesToPersist: [PersistedProductAttribute] {
+        products.flatMap { product in
+            product.attributes.map { PersistedProductAttribute(from: $0, productID: product.productID) }
+        }
+    }
+
+    var variationsToPersist: [PersistedProductVariation] {
+        variations.map { PersistedProductVariation(from: $0) }
+    }
+
+    var variationImagesToPersist: [PersistedProductVariationImage] {
+        variations.compactMap { variation in
+            variation.image.map { PersistedProductVariationImage(from: $0, productVariationID: variation.productVariationID) }
+        }
+    }
+
+    var variationAttributesToPersist: [PersistedProductVariationAttribute] {
+        variations.flatMap { variation in
+            variation.attributes.map { PersistedProductVariationAttribute(from: $0, productVariationID: variation.productVariationID) }
+        }
     }
 }

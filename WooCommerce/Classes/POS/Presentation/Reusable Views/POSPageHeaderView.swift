@@ -96,8 +96,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        if items[index].title.isNotEmpty {
-                            HStack(spacing: POSSpacing.small) {
+                        HStack(spacing: POSSpacing.small) {
+                            if items[index].title.isNotEmpty {
                                 Button(action: {
                                     items[index].action?()
                                 }) {
@@ -216,7 +216,7 @@ private enum Constants {
                     }
                     .foregroundColor(.posOnSurface)
                 }
-        })
+            })
 
         // Header with subtitle.
         POSPageHeaderView(

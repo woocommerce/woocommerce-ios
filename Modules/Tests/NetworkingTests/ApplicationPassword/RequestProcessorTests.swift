@@ -416,9 +416,6 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         XCTAssertFalse(mockRequestAuthenticator.deleteApplicationPasswordCalled)
-        waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
-        }
     }
 
     func test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication() throws {

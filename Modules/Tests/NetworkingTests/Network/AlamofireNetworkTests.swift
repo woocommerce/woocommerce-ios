@@ -292,8 +292,428 @@ final class AlamofireNetworkTests: XCTestCase {
             // Then
             XCTAssertTrue(true)
         } catch {
-            XCTFail("Requests should fail with sessionDeinitialized error")
+            XCTFail("Requests should fail with sessionDeinitialized error, got \(error) instead")
         }
+    }
+
+    // MARK: - Retry Logic Tests
+
+    func test_responseData_with_completion_retries_direct_request_when_converted_request_fails() throws {
+        // Given
+        let siteID: Int64 = 123
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products")
+        let restRequest = createRESTRequest(path: "products")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailure(jetpackRequest: jetpackRequest,
+                                             restRequest: restRequest,
+                                             failureStatusCode: 401,
+                                             failureResponse: ["error": "unauthorized"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        let responseDict = try JSONSerialization.jsonObject(with: result.0!, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "data")
+    }
+
+    func test_responseData_with_result_retries_direct_request_when_converted_request_fails() throws {
+        // Given
+        let siteID: Int64 = 456
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "orders")
+        let restRequest = createRESTRequest(path: "orders")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 403,
+                                                             failureResponse: ["error": "forbidden"],
+                                                             successResponse: ["success": "orders"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let data = try XCTUnwrap(result.get())
+        let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "orders")
+    }
+
+    func test_responseData_flags_site_as_unsupported_when_jetpack_retry_succeeds_after_401_failure() throws {
+        // Given
+        let siteID: Int64 = 789
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "customers")
+        let restRequest = createRESTRequest(path: "customers")
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 401,
+                                                             failureResponse: ["error": "unauthorized"],
+                                                             successResponse: ["success": "customers"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    func test_responseDataAndHeaders_retries_direct_request_when_converted_request_fails() async throws {
+        // Given
+        let siteID: Int64 = 101
+        let testParameters = ["name": "Test Product"]
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
+        let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 429,
+                                                             failureResponse: ["error": "rate_limited"],
+                                                             successResponse: ["product": "created"])
+
+        // When
+        let result = try await network.responseDataAndHeaders(for: jetpackRequest)
+
+        // Then
+        let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["product"], "created")
+    }
+
+    func test_responseDataAndHeaders_flags_site_as_unsupported_when_jetpack_retry_succeeds_after_403_failure() async throws {
+        // Given
+        let siteID: Int64 = 202
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "reports")
+        let restRequest = createRESTRequest(path: "reports")
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 403,
+                                                             failureResponse: ["error": "forbidden"],
+                                                             successResponse: ["reports": "data"])
+
+        // When
+        let result = try await network.responseDataAndHeaders(for: jetpackRequest)
+
+        // Then
+        let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["reports"], "data")
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    func test_responseDataPublisher_retries_direct_request_when_converted_request_fails() {
+        // Given
+        let siteID: Int64 = 303
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "settings")
+        let restRequest = createRESTRequest(path: "settings")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try! setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                              restRequest: restRequest,
+                                                              failureStatusCode: 500,
+                                                              failureResponse: ["error": "server_error"],
+                                                              successResponse: ["settings": "values"])
+
+        // When
+        let result = waitFor { promise in
+            self.responseDataSubscription = network.responseDataPublisher(for: jetpackRequest)
+                .sink { result in
+                    promise(result)
+                }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let data = try! result.get()
+        let responseDict = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: String]
+        XCTAssertEqual(responseDict["settings"], "values")
+    }
+
+    func test_responseDataPublisher_flags_site_as_unsupported_when_jetpack_retry_succeeds_after_429_failure() {
+        // Given
+        let siteID: Int64 = 404
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "stats")
+        let restRequest = createRESTRequest(path: "stats")
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try! setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                              restRequest: restRequest,
+                                                              failureStatusCode: 429,
+                                                              failureResponse: ["error": "rate_limited"],
+                                                              successResponse: ["stats": "data"])
+
+        // When
+        let result = waitFor { promise in
+            self.responseDataSubscription = network.responseDataPublisher(for: jetpackRequest)
+                .sink { result in
+                    promise(result)
+                }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    func test_uploadMultipartFormData_retries_direct_request_when_converted_request_fails() {
+        // Given
+        let siteID: Int64 = 505
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "media", method: .post)
+        let restRequest = createRESTRequest(path: "media", method: .post)
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try! setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                              restRequest: restRequest,
+                                                              failureStatusCode: 400,
+                                                              failureResponse: ["error": "upload_failed"],
+                                                              successResponse: ["media": "uploaded"])
+
+        // When
+        let result = waitFor { promise in
+            network.uploadMultipartFormData(multipartFormData: { formData in
+                let testData = "test data".data(using: .utf8)!
+                formData.append(testData, withName: "file")
+            }, to: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        let responseDict = try! JSONSerialization.jsonObject(with: result.0!, options: []) as! [String: String]
+        XCTAssertEqual(responseDict["media"], "uploaded")
+    }
+
+    func test_uploadMultipartFormData_flags_site_as_unsupported_when_jetpack_retry_succeeds_after_failure() {
+        // Given
+        let siteID: Int64 = 606
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "media", method: .post)
+        let restRequest = createRESTRequest(path: "media", method: .post)
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try! setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                              restRequest: restRequest,
+                                                              failureStatusCode: 401,
+                                                              failureResponse: ["error": "unauthorized"],
+                                                              successResponse: ["upload": "success"])
+
+        // When
+        let result = waitFor { promise in
+            network.uploadMultipartFormData(multipartFormData: { formData in
+                let imageData = "fake image data".data(using: .utf8)!
+                formData.append(imageData, withName: "image")
+            }, to: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    // MARK: - Application Password Error Code Tests
+
+    func test_responseData_flags_site_as_unsupported_when_jetpack_retry_succeeds_after_application_passwords_disabled_error() throws {
+        // Given
+        let siteID: Int64 = 707
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "plugins")
+        let restRequest = createRESTRequest(path: "plugins")
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 400,
+                                                             failureResponse: [
+                                                                "code": "application_passwords_disabled",
+                                                                "message": "Application passwords are disabled"
+                                                             ],
+                                                             successResponse: ["plugins": "list"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    func test_responseData_increments_failure_count_when_jetpack_retry_succeeds_after_unknown_error() throws {
+        // Given
+        let siteID: Int64 = 808
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "system_status")
+        let restRequest = createRESTRequest(path: "system_status")
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 400,
+                                                             failureResponse: [
+                                                                "code": "unknown_error",
+                                                                "message": "Some unknown error"
+                                                             ],
+                                                             successResponse: ["status": "ok"])
+
+        // When - Call once, should not flag site yet
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+    }
+
+    func test_responseData_flags_site_as_unsupported_when_unknown_error_threshold_reached() throws {
+        // Given
+        let siteID: Int64 = 909
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
+
+        // When - Call 10 times to reach threshold
+        for i in 1...10 {
+            let jetpackRequest = createJetpackRequest(siteID: siteID, path: "test_\(i)")
+            let restRequest = createRESTRequest(path: "test_\(i)")
+
+            try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                                 restRequest: restRequest,
+                                                                 failureStatusCode: 400,
+                                                                 failureResponse: [
+                                                                    "code": "random_error",
+                                                                    "message": "Random error \(i)"
+                                                                 ],
+                                                                 successResponse: ["result": "success_\(i)"])
+
+            let result = waitFor { promise in
+                network.responseData(for: jetpackRequest) { data, error in
+                    promise((data, error))
+                }
+            }
+
+            XCTAssertNil(result.1)
+            XCTAssertNotNil(result.0)
+        }
+
+        // Then
+        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+    }
+
+    func test_responseData_does_not_retry_when_jetpack_request_not_available_as_rest() throws {
+        // Given
+        let siteID: Int64 = 111
+        let jetpackRequest = JetpackRequest(wooApiVersion: .mark3,
+                                            method: .get,
+                                            siteID: siteID,
+                                            path: "test",
+                                            availableAsRESTRequest: false)
+        let network = createNetworkWithSelectedSite(siteID: siteID, userDefaults: userDefaults)
+
+        // Mock Jetpack request to fail
+        let jetpackUrlRequest = try XCTUnwrap(try? jetpackRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(["error": "failed"], statusCode: 400, for: jetpackUrlRequest)
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then - Should return error without retrying
+        XCTAssertNotNil(result.1)
+        let networkError = result.1 as? NetworkError
+        XCTAssertEqual(networkError?.errorCode, "failed")
+    }
+
+    func test_responseData_does_not_retry_when_credentials_not_wpcom() throws {
+        // Given
+        let siteID: Int64 = 333
+        let restRequest = createRESTRequest(path: "test")
+        let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
+        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wporgCredentials, userDefaults: userDefaults)
+
+        // Mock Jetpack request to fail
+        let urlRequest = try XCTUnwrap(try? restRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(["error": "failed"], statusCode: 400, for: urlRequest)
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: restRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then - Should return error without retrying
+        XCTAssertNotNil(result.1)
+        let networkError = result.1 as? NetworkError
+        XCTAssertEqual(networkError?.errorCode, "failed")
+    }
+
+    func test_responseData_does_not_retry_when_no_selected_site_injected() throws {
+        // Given
+        let siteID: Int64 = 333
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "test")
+        let wpcomCredentials = createWPComCredentials()
+        let network = AlamofireNetwork(credentials: wpcomCredentials, sessionManager: createSessionWithMockURLProtocol())
+
+        // Mock Jetpack request to fail
+        let jetpackUrlRequest = try XCTUnwrap(try? jetpackRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(["error": "failed"], statusCode: 400, for: jetpackUrlRequest)
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: jetpackRequest) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then - Should return error without retrying since no selected site means no request conversion
+        XCTAssertNotNil(result.1)
+        let networkError = result.1 as? NetworkError
+        XCTAssertEqual(networkError?.errorCode, "failed")
     }
 }
 
@@ -302,5 +722,71 @@ private extension AlamofireNetworkTests {
         let configuration = URLSessionConfiguration.default
         configuration.protocolClasses = [MockURLProtocol.self]
         return Session(configuration: configuration)
+    }
+
+    func createJetpackRequest(siteID: Int64, path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> JetpackRequest {
+        return JetpackRequest(wooApiVersion: .mark3,
+                             method: method,
+                             siteID: siteID,
+                             path: path,
+                             parameters: parameters,
+                             availableAsRESTRequest: true)
+    }
+
+    func createRESTRequest(path: String, method: HTTPMethod = .get, parameters: [String: Any]? = nil) -> RESTRequest {
+        return RESTRequest(siteURL: "https://example.com",
+                          wooApiVersion: .mark3,
+                          method: method,
+                          path: path,
+                          parameters: parameters)
+    }
+
+    func createWPComCredentials() -> Credentials {
+        return Credentials.wpcom(username: "user", authToken: "token", siteAddress: "https://example.com")
+    }
+
+    func createSelectedSitePublisher(siteID: Int64) -> AnyPublisher<JetpackSite?, Never> {
+        let site = JetpackSite(siteID: siteID, siteAddress: "https://example.com", applicationPasswordAvailable: true)
+        return Just(site).eraseToAnyPublisher()
+    }
+
+    func createNetworkWithSelectedSite(siteID: Int64, credentials: Credentials? = nil, userDefaults: UserDefaults? = nil) -> AlamofireNetwork {
+        let networkCredentials = credentials ?? createWPComCredentials()
+        let selectedSite = createSelectedSitePublisher(siteID: siteID)
+        let network = AlamofireNetwork(
+            credentials: networkCredentials,
+            selectedSite: selectedSite,
+            userDefaults: userDefaults ?? .standard,
+            sessionManager: createSessionWithMockURLProtocol()
+        )
+        network.updateAppPasswordSwitching(enabled: true)
+        return network
+    }
+
+    func setupMockForDirectRequestFailure(jetpackRequest: JetpackRequest,
+                                          restRequest: RESTRequest,
+                                          failureStatusCode: Int,
+                                          failureResponse: AnyCodable = ["error": "failed"]) throws {
+        // Mock REST request to fail
+        let restUrlRequest = try XCTUnwrap(try? restRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(failureResponse, statusCode: failureStatusCode, for: restUrlRequest)
+
+        // Mock Jetpack request to succeed
+        let jetpackUrlRequest = try XCTUnwrap(try? jetpackRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(["success": "data"], statusCode: 200, for: jetpackUrlRequest)
+    }
+
+    func setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: JetpackRequest,
+                                                          restRequest: RESTRequest,
+                                                          failureStatusCode: Int,
+                                                          failureResponse: AnyCodable = ["error": "failed"],
+                                                          successResponse: AnyCodable) throws {
+        // Mock REST request to fail
+        let restUrlRequest = try XCTUnwrap(try? restRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(failureResponse, statusCode: failureStatusCode, for: restUrlRequest)
+
+        // Mock Jetpack request to succeed with custom response
+        let jetpackUrlRequest = try XCTUnwrap(try? jetpackRequest.asURLRequest())
+        MockURLProtocol.Mocks.mockResponse(successResponse, statusCode: 200, for: jetpackUrlRequest)
     }
 }

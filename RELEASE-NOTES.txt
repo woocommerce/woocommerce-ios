@@ -3,6 +3,7 @@
 
 23.2
 -----
+- [*] Blaze: Fixed issue dismissing the Blaze flow from an empty campaign list. [https://github.com/woocommerce/woocommerce-ios/pull/16085]
 - [*] POS: Enhanced cash payment experience with pre-filled amounts. [https://github.com/woocommerce/woocommerce-ios/pull/16058]
 - [*] POS: Point of Sale settings are now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
 

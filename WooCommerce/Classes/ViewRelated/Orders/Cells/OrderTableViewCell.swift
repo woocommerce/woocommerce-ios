@@ -33,6 +33,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     /// Retains the content trait registration token, so it's not deallocated immediately
     ///
+    // periphery: ignore - False negative. Perhaps does not catch non-dreict reads?
     private var contentSizeTraitRegistration: UITraitChangeRegistration?
 
     static func register(for tableView: UITableView) {

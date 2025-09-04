@@ -2,22 +2,15 @@ import SwiftUI
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
+import enum Yosemite.OrderStatusEnum
+import typealias Yosemite.OrderItemAttribute
 
 struct PointOfSaleOrderDetailsView: View {
-    let orderID: String?
+    let order: POSOrder
     let onBack: () -> Void
 
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
-
-    private var order: POSOrder? {
-        guard let orderID = orderID,
-              let orderIDInt = Int64(orderID) else { return nil }
-        return orderListModel.ordersController.ordersViewState.orders.first { $0.id == orderIDInt }
-    }
-
-    // Show back button when in compact mode (phone) where the detail view
-    // is presented as a pushed view, not when in regular mode (tablet split view)
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
     }
@@ -25,204 +18,355 @@ struct PointOfSaleOrderDetailsView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: order.map { "Order #\($0.number)" } ?? "Order Details",
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil
+                title: Localization.orderTitle(order.number),
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                trailingContent: { PointOfSaleOrderBadgeView(order: order) },
+                bottomContent: { headerBottomContent(for: order) }
             )
 
-            if let order = order {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        orderSummarySection(order)
+            ScrollView {
+                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    if !order.lineItems.isEmpty {
                         productsSection(order)
-                        totalsSection(order)
                     }
-                    .padding()
+                    totalsSection(order)
                 }
-            } else {
-                VStack {
-                    Spacer()
-                    Text("Order not found")
-                    Spacer()
-                }
+                .padding(.horizontal, POSPadding.medium)
             }
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
     }
+}
 
+// MARK: - Main Sections
 
-
+private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
-    private func orderSummarySection(_ order: POSOrder) -> some View {
-        VStack(spacing: 12) {
-            HStack {
-                Text("Order #\(order.number)")
-                    .font(.headline)
-                Spacer()
-                Text(order.status.rawValue)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(4)
-            }
+    func productsSection(_ order: POSOrder) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.productsTitle)
+                .font(.posBodyLargeBold)
+                .foregroundStyle(Color.posOnSurface)
 
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Date & Time")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text(order.dateCreated, style: .date)
-                    Text(order.dateCreated, style: .time)
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text("Total")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("\(order.currencySymbol)\(order.total)")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                }
-            }
-
-            if let customerEmail = order.customerEmail {
-                HStack {
-                    Text("Customer Email")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Text(customerEmail)
-                }
-            }
-
-            HStack {
-                Text("Payment Method")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(order.paymentMethodTitle)
-            }
-
-            HStack {
-                Text("Currency")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                Spacer()
-                Text(order.currency)
-            }
-        }
-        .padding()
-        .background(Color.posSurface)
-        .cornerRadius(12)
-    }
-
-    @ViewBuilder
-    private func productsSection(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Products")
-                .font(.headline)
-
-            VStack(spacing: 8) {
+            VStack(spacing: POSSpacing.small) {
                 ForEach(order.lineItems, id: \.itemID) { item in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(item.name)
-                                .fontWeight(.medium)
-                            Text("Qty: \(item.quantity.intValue)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        Text("\(order.currencySymbol)\(item.total)")
-                            .fontWeight(.semibold)
-                    }
-                    .padding()
-                    .background(Color.posSurface)
-                    .cornerRadius(8)
+                    productRow(item: item)
                 }
             }
         }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
     }
 
     @ViewBuilder
-    private func totalsSection(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Totals")
-                .font(.headline)
+    func totalsSection(_ order: POSOrder) -> some View {
 
-            VStack(spacing: 8) {
-                HStack {
-                    Text("Subtotal")
-                    Spacer()
-                    Text("\(order.currencySymbol)\(order.total)")
-                }
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.totalsTitle)
+                .font(.posBodyLargeBold)
+                .foregroundStyle(Color.posOnSurface)
+
+            VStack(spacing: POSSpacing.medium) {
+                productsSubtotalRow(order)
+                discountTotalRow(order)
+                taxTotalRow(order)
 
                 Divider()
+                    .background(Color.posSurfaceDim)
 
-                HStack {
-                    Text("Total")
-                        .fontWeight(.semibold)
-                    Spacer()
-                    Text("\(order.currencySymbol)\(order.total)")
-                        .fontWeight(.semibold)
-                }
-
-                HStack {
-                    Text("Paid")
-                    Spacer()
-                    Text("\(order.currencySymbol)\(order.total)")
-                }
-
-                if !order.refunds.isEmpty {
-                    let refundedTotal = order.refunds.reduce(0.0) { $0 + (Double($1.total) ?? 0.0) }
-                    HStack {
-                        Text("Refunded")
-                        Spacer()
-                        Text("-\(order.currencySymbol)\(String(format: "%.2f", refundedTotal))")
-                            .foregroundColor(.red)
-                    }
-
-                    ForEach(order.refunds, id: \.refundID) { refund in
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack {
-                                Text("Refund #\(refund.refundID)")
-                                    .font(.caption)
-                                Spacer()
-                                Text("-\(order.currencySymbol)\(refund.total)")
-                                    .font(.caption)
-                                    .foregroundColor(.red)
-                            }
-                            if let reason = refund.reason, !reason.isEmpty {
-                                Text("Reason: \(reason)")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-
-                    let netPayment = (Double(order.total) ?? 0.0) - refundedTotal
-                    HStack {
-                        Text("Net Payment")
-                            .fontWeight(.semibold)
-                        Spacer()
-                        Text("\(order.currencySymbol)\(String(format: "%.2f", netPayment))")
-                            .fontWeight(.semibold)
-                    }
-                }
+                mainTotalRow(order)
+                paidAmountRow(order)
+                refundsSection(order)
             }
-            .padding()
-            .background(Color.posSurface)
-            .cornerRadius(8)
         }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+    }
+}
+
+// MARK: - Header Components
+
+private extension PointOfSaleOrderDetailsView {
+    @ViewBuilder
+    func headerBottomContent(for order: POSOrder) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
+                Text(customerEmail)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .multilineTextAlignment(.leading)
     }
 
 }
 
+// MARK: - Product Components
+
+private extension PointOfSaleOrderDetailsView {
+    @ViewBuilder
+    func productRow(item: POSOrderItem) -> some View {
+        HStack(alignment: .top, spacing: POSSpacing.medium) {
+            productImageView()
+            productDetailsView(item: item)
+            Spacer()
+            productTotalView(item: item)
+        }
+        .padding(.vertical, POSPadding.small)
+    }
+
+    @ViewBuilder
+    func productImageView() -> some View {
+        POSItemImageView(imageSource: nil, imageSize: 40, scale: 1)
+            .frame(width: 40, height: 40)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+    }
+
+    @ViewBuilder
+    func productDetailsView(item: POSOrderItem) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(item.name)
+                .font(.posBodyMediumBold)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !item.attributes.isEmpty {
+                productAttributesView(item.attributes)
+            }
+
+            Text(Localization.quantityLabel(item.quantity.intValue,
+                                            item.formattedPrice))
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+        }
+    }
+
+    @ViewBuilder
+    func productAttributesView(_ attributes: [OrderItemAttribute]) -> some View {
+        let attributeText = attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", ")
+        Text(attributeText)
+            .font(.posBodySmallRegular())
+            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+    }
+
+    @ViewBuilder
+    func productTotalView(item: POSOrderItem) -> some View {
+        Text(item.formattedTotal)
+            .font(.posBodyMediumRegular())
+            .foregroundStyle(Color.posOnSurface)
+    }
+}
+
+// MARK: - Totals Components
+
+private extension PointOfSaleOrderDetailsView {
+    @ViewBuilder
+    func productsSubtotalRow(_ order: POSOrder) -> some View {
+        totalsRow(
+            title: Localization.productsLabel,
+            amount: order.formattedSubtotal
+        )
+    }
+
+    @ViewBuilder
+    func discountTotalRow(_ order: POSOrder) -> some View {
+        if let formattedDiscountTotal = order.formattedDiscountTotal {
+            totalsRow(
+                title: Localization.discountTotalLabel,
+                amount: formattedDiscountTotal
+            )
+        }
+    }
+
+    @ViewBuilder
+    func taxTotalRow(_ order: POSOrder) -> some View {
+        totalsRow(
+            title: Localization.taxesLabel,
+            amount: order.formattedTotalTax
+        )
+    }
+
+    @ViewBuilder
+    func mainTotalRow(_ order: POSOrder) -> some View {
+        totalsRow(
+            title: Localization.totalLabel,
+            amount: order.formattedTotal,
+            titleFont: .posBodyMediumBold
+        )
+    }
+
+    @ViewBuilder
+    func paidAmountRow(_ order: POSOrder) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            totalsRow(
+                title: Localization.paidLabel,
+                amount: order.formattedPaymentTotal,
+                titleFont: .posBodyMediumBold
+            )
+
+            if order.paymentMethodTitle.isNotEmpty {
+                Text(order.paymentMethodTitle)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func refundsSection(_ order: POSOrder) -> some View {
+        if !order.refunds.isEmpty {
+            ForEach(order.refunds, id: \.refundID) { refund in
+                refundRow(refund: refund)
+            }
+
+            if let netAmount = order.formattedNetAmount {
+                netPaymentRow(netAmount: netAmount)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func refundRow(refund: POSOrderRefund) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            totalsRow(
+                title: Localization.refundLabel,
+                amount: refund.formattedTotal,
+                titleFont: .posBodyMediumBold
+            )
+
+            if let reason = refund.reason, !reason.isEmpty {
+                Text(Localization.reasonLabel(reason))
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func netPaymentRow(netAmount: String) -> some View {
+        totalsRow(
+            title: Localization.netPaymentLabel,
+            amount: netAmount,
+            titleFont: .posBodyMediumBold
+        )
+    }
+
+    @ViewBuilder
+    func totalsRow(
+        title: String,
+        amount: String,
+        titleFont: POSFontStyle = .posBodyMediumRegular(),
+        amountFont: POSFontStyle = .posBodyMediumRegular()
+    ) -> some View {
+        HStack {
+            Text(title)
+                .font(titleFont)
+            Spacer()
+            Text(amount)
+                .font(amountFont)
+        }
+    }
+}
+
+// MARK: - Localization
+
+private enum Localization {
+    static func orderTitle(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.orderTitle",
+            value: "Order #%1$@",
+            comment: "Order title with order number. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
+
+    static let productsTitle = NSLocalizedString(
+        "pos.orderDetailsView.productsTitle",
+        value: "Products",
+        comment: "Section title for the products list"
+    )
+
+    static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.quantityLabel",
+            value: "%1$d × %2$@",
+            comment: "Product quantity and price label. %1$d is the quantity, %2$@ is the unit price."
+        )
+        return String(format: format, quantity, unitPrice)
+    }
+
+    static let totalsTitle = NSLocalizedString(
+        "pos.orderDetailsView.totalsTitle",
+        value: "Totals",
+        comment: "Section title for the order totals breakdown"
+    )
+
+    static let productsLabel = NSLocalizedString(
+        "pos.orderDetailsView.productsLabel",
+        value: "Products",
+        comment: "Label for products subtotal in the totals section"
+    )
+
+    static let discountTotalLabel = NSLocalizedString(
+        "pos.orderDetailsView.discountTotalLabel",
+        value: "Discount total",
+        comment: "Label for discount total in the totals section"
+    )
+
+    static let taxesLabel = NSLocalizedString(
+        "pos.orderDetailsView.taxesLabel",
+        value: "Taxes",
+        comment: "Label for taxes in the totals section"
+    )
+
+    static let totalLabel = NSLocalizedString(
+        "pos.orderDetailsView.totalLabel",
+        value: "Total",
+        comment: "Label for the order total"
+    )
+
+    static let paidLabel = NSLocalizedString(
+        "pos.orderDetailsView.paidLabel",
+        value: "Paid",
+        comment: "Label for the paid amount"
+    )
+
+    static let refundLabel = NSLocalizedString(
+        "pos.orderDetailsView.refundLabel",
+        value: "Refunded",
+        comment: "Label for a refund entry. %1$lld is the refund ID."
+    )
+
+    static func reasonLabel(_ reason: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.reasonLabel",
+            value: "Reason: %1$@",
+            comment: "Label for refund reason. %1$@ is the reason text."
+        )
+        return String(format: format, reason)
+    }
+
+    static let netPaymentLabel = NSLocalizedString(
+        "pos.orderDetailsView.netPaymentLabel",
+        value: "Net Payment",
+        comment: "Label for net payment amount after refunds"
+    )
+}
 
 #if DEBUG
 #Preview("Order Details") {
-    PointOfSaleOrderDetailsView(orderID: "1", onBack: {})
-        .environment(POSPreviewHelpers.makePreviewOrdersModel())
+    PointOfSaleOrderDetailsView(
+        order: POSPreviewHelpers.makePreviewOrder(),
+        onBack: {}
+    )
 }
 #endif

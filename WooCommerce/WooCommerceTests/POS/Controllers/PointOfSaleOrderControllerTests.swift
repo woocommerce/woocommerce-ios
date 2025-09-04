@@ -659,9 +659,6 @@ struct PointOfSaleOrderControllerTests {
 
             // Then
             let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_success" }))
-            print(indexOfEvent)
-            print(analyticsProvider.receivedEvents)
-            print(analyticsProvider.receivedProperties)
             #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == true)
         }
 
@@ -680,9 +677,6 @@ struct PointOfSaleOrderControllerTests {
             } catch {
                 // Then
                 let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_failed" }))
-                print(indexOfEvent)
-                print(analyticsProvider.receivedEvents)
-                print(analyticsProvider.receivedProperties)
                 #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] == nil)
             }
         }

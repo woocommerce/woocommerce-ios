@@ -1,16 +1,14 @@
 import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
-import WooFoundation
 
 struct PointOfSaleOrderListView: View {
-    @Binding var selectedOrderID: String?
     let onClose: () -> Void
 
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
-    private var ordersViewState: OrderListState {
+    private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
     }
 
@@ -51,9 +49,9 @@ struct PointOfSaleOrderListView: View {
                             let orders = ordersViewState.orders
                             ForEach(orders, id: \.id) { order in
                                 Button(action: {
-                                    selectedOrderID = String(order.id)
+                                    orderListModel.ordersController.selectOrder(order)
                                 }) {
-                                    OrderRowView(order: order, isSelected: selectedOrderID == String(order.id))
+                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -123,14 +121,8 @@ private struct OrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
-    }
-
-    private var formattedTotal: String {
-        currencyFormatter.formatAmount(order.total, with: order.currency) ?? ""
     }
 
     var body: some View {
@@ -159,20 +151,11 @@ private struct OrderRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Text(formattedTotal)
+                Text(order.formattedTotal)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 
-                HStack(spacing: POSSpacing.xSmall) {
-                    if let paymentMethodIcon = paymentMethodIcon {
-                        Image(systemName: paymentMethodIcon)
-                            .foregroundStyle(statusColor)
-                            .font(.caption)
-                    }
-                    Text(order.status.localizedName)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(statusColor)
-                }
+                PointOfSaleOrderBadgeView(order: order)
             }
             .multilineTextAlignment(.trailing)
         }
@@ -185,28 +168,7 @@ private struct OrderRowView: View {
 }
 
 private extension OrderRowView {
-    var paymentMethodIcon: String? {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        switch paymentMethod {
-        case .cod:
-            return "banknote"
-        case .stripe, .woocommercePayments:
-            return "creditcard"
-        default:
-            return nil
-        }
-    }
-
-    var statusColor: Color {
-        switch order.status {
-        case .completed:
-            return .posSuccess
-        case .failed:
-            return .posError
-        default:
-            return .posOnSurfaceVariantLowest
-        }
-    }
+    // No additional helpers needed - using shared PointOfSaleOrderBadgeView
 }
 
 private struct GhostOrderRowView: View {
@@ -218,35 +180,41 @@ private struct GhostOrderRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 70, height: 16)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                HStack(alignment: .center, spacing: POSSpacing.medium) {
+                    VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.2, height: 16)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 160, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.4, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
 
-            Spacer()
+                    Spacer()
 
-            VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 80, height: 18)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                    VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.25, height: 18)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 90, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.28, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
+                }
+                Spacer()
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
@@ -255,6 +223,56 @@ private struct GhostOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
+    }
+}
+
+// MARK: - Order Badge View
+
+struct PointOfSaleOrderBadgeView: View {
+    let order: POSOrder
+
+    init(order: POSOrder) {
+        self.order = order
+    }
+
+    var body: some View {
+        HStack(spacing: POSSpacing.xSmall) {
+            if let paymentMethodIcon = paymentMethodIcon {
+                Image(systemName: paymentMethodIcon)
+                    .foregroundStyle(statusColor)
+                    .font(.caption)
+            }
+            Text(order.status.localizedName)
+                .font(.posCaptionRegular)
+                .foregroundStyle(statusColor)
+        }
+        .padding(.horizontal, POSPadding.small)
+        .padding(.vertical, POSPadding.xSmall)
+        .background(statusColor.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+    }
+
+    private var paymentMethodIcon: String? {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        switch paymentMethod {
+        case .cod:
+            return "banknote"
+        case .stripe, .woocommercePayments:
+            return "creditcard"
+        default:
+            return nil
+        }
+    }
+
+    private var statusColor: Color {
+        switch order.status {
+        case .completed:
+            return .posSuccess
+        case .failed:
+            return .posError
+        default:
+            return .posOnSurfaceVariantLowest
+        }
     }
 }
 
@@ -273,7 +291,7 @@ private enum Localization {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {

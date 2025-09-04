@@ -3,6 +3,7 @@ import XCTest
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
 import enum NetworkingCore.OrderStatusEnum
+import WooFoundation
 
 final class PointOfSaleOrderServiceTests: XCTestCase {
     private let siteID: Int64 = 13092
@@ -12,7 +13,11 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockOrdersRemote = MockPOSOrdersRemote()
-        orderProvider = PointOfSaleOrderListService(siteID: siteID, ordersRemote: mockOrdersRemote)
+        orderProvider = PointOfSaleOrderListService(
+            siteID: siteID,
+            ordersRemote: mockOrdersRemote,
+            currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings())
+        )
     }
 
     override func tearDown() {

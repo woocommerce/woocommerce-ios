@@ -10,20 +10,23 @@ import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 
 protocol PointOfSaleOrderListControllerProtocol {
-    var ordersViewState: OrderListState { get }
+    var ordersViewState: POSOrderListState { get }
+    var selectedOrder: POSOrder? { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
+    func selectOrder(_ order: POSOrder?)
 }
 
 @Observable final class PointOfSaleOrderListController: PointOfSaleOrderListControllerProtocol {
-    var ordersViewState: OrderListState
+    var ordersViewState: POSOrderListState
     private let paginationTracker: AsyncPaginationTracker
     private var fetchStrategy: PointOfSaleOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
+    private(set) var selectedOrder: POSOrder?
 
     init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
-         initialState: OrderListState = .loading([])) {
+         initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.paginationTracker = .init()
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
@@ -56,7 +59,7 @@ protocol PointOfSaleOrderListControllerProtocol {
         } catch {
             ordersViewState = .inlineError(currentOrders,
                                           error: .errorOnLoadingOrdersNextPage(error: error),
-                                          context: OrderListState.InlineErrorContext.pagination)
+                                          context: POSOrderListState.InlineErrorContext.pagination)
         }
     }
 
@@ -74,7 +77,7 @@ protocol PointOfSaleOrderListControllerProtocol {
             } else {
                 ordersViewState = .inlineError(orders,
                                               error: .errorOnLoadingOrders(error: error),
-                                              context: OrderListState.InlineErrorContext.refresh)
+                                              context: POSOrderListState.InlineErrorContext.refresh)
             }
         }
     }
@@ -117,5 +120,10 @@ protocol PointOfSaleOrderListControllerProtocol {
         }
 
         ordersViewState = .loading(cachedOrders)
+    }
+
+    @MainActor
+    func selectOrder(_ order: POSOrder?) {
+        selectedOrder = order
     }
 }

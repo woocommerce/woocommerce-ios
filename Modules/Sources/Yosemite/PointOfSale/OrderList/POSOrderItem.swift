@@ -1,31 +1,32 @@
 import Foundation
-import struct NetworkingCore.OrderItem
 
 public struct POSOrderItem: Equatable, Hashable {
     public let itemID: Int64
     public let name: String
+    // periphery:ignore - Will be used for images
+    public let productID: Int64
+    // periphery:ignore - Will be used for images
+    public let variationID: Int64
     public let quantity: Decimal
-    public let total: String
+    public let formattedPrice: String
+    public let formattedTotal: String
+    public let attributes: [OrderItemAttribute]
 
     public init(itemID: Int64,
                 name: String,
+                productID: Int64,
+                variationID: Int64,
                 quantity: Decimal,
-                total: String) {
+                formattedPrice: String,
+                formattedTotal: String,
+                attributes: [OrderItemAttribute]) {
         self.itemID = itemID
         self.name = name
+        self.productID = productID
+        self.variationID = variationID
         self.quantity = quantity
-        self.total = total
-    }
-}
-
-// MARK: - Conversion from NetworkingCore.OrderItem
-public extension POSOrderItem {
-    init(from orderItem: OrderItem) {
-        self.init(
-            itemID: orderItem.itemID,
-            name: orderItem.name,
-            quantity: orderItem.quantity,
-            total: orderItem.total
-        )
+        self.formattedPrice = formattedPrice
+        self.formattedTotal = formattedTotal
+        self.attributes = attributes
     }
 }

@@ -632,9 +632,13 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0",
                                                                                     active: true))
 
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService
                                                  pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order
@@ -657,9 +661,12 @@ struct PointOfSaleOrderControllerTests {
 
         @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
             // Given
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 analytics: analytics)
+                                                 analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService)
 
             // When
             do {

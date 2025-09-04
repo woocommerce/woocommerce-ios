@@ -379,12 +379,15 @@ private extension AlamofireNetwork {
 // MARK: `RequestProcessorDelegate` conformance
 //
 extension AlamofireNetwork: RequestProcessorDelegate {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, request: URLRequest, reason: AppPasswordFailureReason) {
         switch reason {
         case .notSupported:
             flagSiteAsUnsupported(for: siteID)
         case .unknown:
             incrementFailureCount(for: siteID)
+            if let jetpackRequest = JetpackRequest.from(directRequest: request, siteID: siteID) {
+                // Can trigger the request here but no info about completion handler available.
+            }
         }
     }
 

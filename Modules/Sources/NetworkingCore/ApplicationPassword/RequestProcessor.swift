@@ -7,7 +7,7 @@ enum AppPasswordFailureReason {
 }
 
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, request: URLRequest, reason: AppPasswordFailureReason)
 }
 
 /// Authenticates and retries requests
@@ -62,7 +62,7 @@ extension RequestProcessor: RequestRetrier {
         requestsToRetry.append(completion)
         if !isAuthenticating {
             isAuthenticating = true
-            generateApplicationPassword()
+            generateApplicationPassword(for: urlRequest)
         }
     }
 }
@@ -70,7 +70,7 @@ extension RequestProcessor: RequestRetrier {
 // MARK: Helpers
 //
 private extension RequestProcessor {
-    func generateApplicationPassword() {
+    func generateApplicationPassword(for request: URLRequest) {
         Task(priority: .medium) { @MainActor in
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
@@ -87,12 +87,12 @@ private extension RequestProcessor {
 
                 let shouldRetry = await checkIfRetryingGenerationIsNeeded(for: error)
                 if shouldRetry {
-                    generateApplicationPassword()
+                    generateApplicationPassword(for: request)
                 } else {
                     isAuthenticating = false
                     completeRequests(false)
                     if let currentSiteID {
-                        notifyFailure(error, for: currentSiteID)
+                        notifyFailure(error, for: currentSiteID, request: request)
                     }
                 }
             }
@@ -120,7 +120,7 @@ private extension RequestProcessor {
         }
     }
 
-    func notifyFailure(_ error: Error, for siteID: Int64) {
+    func notifyFailure(_ error: Error, for siteID: Int64, request: URLRequest) {
         let reason: AppPasswordFailureReason = {
             switch error {
             case NetworkError.notFound:
@@ -135,7 +135,7 @@ private extension RequestProcessor {
                 return .unknown
             }
         }()
-        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
+        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, request: request, reason: reason)
     }
 
     func shouldRetry(_ error: Error) -> Bool {

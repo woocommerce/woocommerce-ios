@@ -68,7 +68,6 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.availableAsRESTRequest = availableAsRESTRequest
     }
 
-
     /// Returns a URLRequest instance reprensenting the current Jetpack Request.
     ///
     public func asURLRequest() throws -> URLRequest {
@@ -181,5 +180,83 @@ private extension JetpackRequest {
         }
 
         return parameters.toJSONEncoded()
+    }
+}
+
+// MARK: - URLRequest Conversion
+//
+extension JetpackRequest {
+
+    /// Creates a JetpackRequest from URLRequest of a direct request.
+    ///
+    /// - Parameters:
+    ///     - urlRequest: The URLRequest to convert to a JetpackRequest.
+    ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
+    ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
+    /// - Returns: A JetpackRequest instance created from the direct request, and nil if the request is Jetpack proxied.
+    ///
+    static func from(directRequest: URLRequest, siteID: Int64) -> JetpackRequest? {
+        guard let url = directRequest.url,
+              let httpMethod = directRequest.httpMethod else {
+            return nil
+        }
+
+        // Check if this is a jetpack proxy request
+        let urlPath = url.path
+        let jetpackProxyPattern = "/wpcom/v2/jetpack-blogs/\\d+/rest-api/"
+        let isJetpackProxy = urlPath.range(of: jetpackProxyPattern, options: .regularExpression) != nil
+
+        guard !isJetpackProxy else {
+            return nil
+        }
+
+        // Determine WooAPIVersion from URL path using CaseIterable
+        let wooApiVersion = WooAPIVersion.allCases.first { version in
+            version != .none && urlPath.contains(version.path)
+        } ?? .none
+
+        // Extract path without the API version prefix
+        let path: String
+        if wooApiVersion != .none {
+            let apiVersionPath = wooApiVersion.path
+            if urlPath.hasPrefix(apiVersionPath) {
+                path = String(urlPath.dropFirst(apiVersionPath.count))
+            } else if let range = urlPath.range(of: apiVersionPath) {
+                path = String(urlPath[range.upperBound...])
+            } else {
+                path = urlPath
+            }
+        } else {
+            path = urlPath
+        }
+
+        var parameters: [String: Any] = [:]
+
+        // Extract query parameters
+        if let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems {
+            for queryItem in queryItems {
+                parameters[queryItem.name] = queryItem.value
+            }
+        }
+
+        // Extract body parameters for non-GET requests
+        let method = HTTPMethod(rawValue: httpMethod)
+        if method != .get, let httpBody = directRequest.httpBody {
+            if let bodyString = String(data: httpBody, encoding: .utf8),
+               let bodyData = bodyString.data(using: .utf8),
+               let bodyParams = try? JSONSerialization.jsonObject(with: bodyData) as? [String: Any] {
+                parameters.merge(bodyParams) { _, new in new }
+            }
+        }
+
+        let jetpackRequest = JetpackRequest(wooApiVersion: wooApiVersion,
+                                           method: method,
+                                           siteID: siteID,
+                                           locale: nil,
+                                           path: path,
+                                           parameters: parameters,
+                                           availableAsRESTRequest: true)
+
+        return jetpackRequest
     }
 }

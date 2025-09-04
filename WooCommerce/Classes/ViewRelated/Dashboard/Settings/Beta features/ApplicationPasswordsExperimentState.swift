@@ -36,18 +36,26 @@ final class ApplicationPasswordsExperimentState {
 }
 
 protocol ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
-    var cachedValue: Bool { get }
+    var isAvailable: Bool { get }
     func fetchAvailability() async -> Bool
 }
 
 final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
     private let userDefaults: UserDefaults
+    private let stores: StoresManager
 
-    init(userDefaults: UserDefaults = .standard) {
+    init(userDefaults: UserDefaults = .standard, stores: StoresManager = ServiceLocator.stores) {
         self.userDefaults = userDefaults
+        self.stores = stores
     }
 
-    var cachedValue: Bool {
+    var isAvailable: Bool {
+        /// The feature is only available when the user is signed in using WordPress.com account
+        let isUserAuthenticatedByWPCom = !stores.isAuthenticatedWithoutWPCom
+        return isUserAuthenticatedByWPCom && cachedRemoteFFValue
+    }
+
+    private var cachedRemoteFFValue: Bool {
         get {
             userDefaults[.applicationPasswordsExperimentRemoteFFValue] ?? false
         } set {
@@ -67,7 +75,7 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
                 continuation.resume(returning: mockResultValue)
             }
 
-            cachedValue = mockResultValue
+            cachedRemoteFFValue = mockResultValue
         }
     }
 }

@@ -32,7 +32,7 @@ private extension BetaFeaturesConfigurationViewModel {
             case .viewAddOns:
                 return true
             case .applicationPasswords:
-                return appPasswordsExperimentAvailabilityChecker.cachedValue
+                return appPasswordsExperimentAvailabilityChecker.isAvailable
         }
     }
 

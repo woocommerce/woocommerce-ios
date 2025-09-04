@@ -12,6 +12,10 @@ final class FilteredOrdersHeaderBar: UIView {
 
     private let bottomBorder = CALayer()
 
+    /// Retains the content trait registration token, so it's not deallocated immediately
+    ///
+    private var contentSizeTraitRegistration: UITraitChangeRegistration?
+
     /// The number of filters applied
     ///
     private var numberOfFilters = 0
@@ -28,6 +32,19 @@ final class FilteredOrdersHeaderBar: UIView {
         configureButtons()
         configureBackground()
         updateStackViewAxis(for: traitCollection)
+    }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+
+        if newSuperview != nil {
+            contentSizeTraitRegistration = registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
+                guard let self = self else { return }
+                self.updateStackViewAxis(for: self.traitCollection)
+            }
+        } else {
+            contentSizeTraitRegistration = nil
+        }
     }
 
     override func layoutSubviews() {
@@ -55,16 +72,6 @@ final class FilteredOrdersHeaderBar: UIView {
 /// The `Last updated: time` tends to get truncated at larger text sizes by the filter button.
 /// Laying out the overall stack view vertically avoids this with accessibility sizes.
 extension FilteredOrdersHeaderBar {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        guard let previousTraitCollection,
-              traitCollection.preferredContentSizeCategory != previousTraitCollection.preferredContentSizeCategory else {
-            return
-        }
-        updateStackViewAxis(for: traitCollection)
-    }
-
     private func updateStackViewAxis(for traitCollection: UITraitCollection) {
         if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
             headerBarLayoutStackView.axis = .vertical

@@ -310,11 +310,26 @@ private extension AlamofireNetwork {
     func shouldRetryJetpackRequest(originalRequest: URLRequestConvertible,
                                    convertedRequest: URLRequestConvertible,
                                    failure: Error?) -> Bool {
-        if let request = originalRequest as? JetpackRequest,
-           convertedRequest is RESTRequest,
-           case .some(.wpcom) = credentials,
-           let failure = failure as? NetworkError {
-            let retriedRequest = RetriedJetpackRequest(request: request, error: failure)
+        guard let error = failure,
+              let request = originalRequest as? JetpackRequest,
+              convertedRequest is RESTRequest,
+              case .some(.wpcom) = credentials else {
+            return false
+        }
+
+        let isExpectedError: Bool = {
+            switch error {
+            case AFError.requestAdaptationFailed:
+                return true
+            case _ as NetworkError:
+                return true
+            default:
+                return false
+            }
+        }()
+
+        if isExpectedError {
+            let retriedRequest = RetriedJetpackRequest(request: request, error: error)
             retriedJetpackRequests.append(retriedRequest)
             return true
         }
@@ -336,12 +351,14 @@ private extension AlamofireNetwork {
             let siteID = retriedJetpackRequests[index].request.siteID
             let originalFailure = retriedJetpackRequests[index].error
             switch originalFailure {
-            case .unacceptableStatusCode(statusCode: 401, _),
-                .unacceptableStatusCode(statusCode: 403, _),
-                .unacceptableStatusCode(statusCode: 429, _):
+            case NetworkError.unacceptableStatusCode(statusCode: 401, _),
+                NetworkError.unacceptableStatusCode(statusCode: 403, _),
+                NetworkError.unacceptableStatusCode(statusCode: 429, _):
                 flagSiteAsUnsupported(for: siteID)
             default:
-                if let code = originalFailure.errorCode, AppPasswordConstants.disabledCodes.contains(code) {
+                if let networkError = originalFailure as? NetworkError,
+                   let code = networkError.errorCode,
+                    AppPasswordConstants.disabledCodes.contains(code) {
                     flagSiteAsUnsupported(for: siteID)
                 } else {
                     incrementFailureCount(for: siteID)
@@ -372,7 +389,7 @@ private extension AlamofireNetwork {
     ///
     struct RetriedJetpackRequest {
         let request: JetpackRequest
-        let error: NetworkError
+        let error: Error
     }
 
     func incrementFailureCount(for siteID: Int64) {
@@ -442,6 +459,10 @@ extension Alamofire.DataResponse {
 
         // Passthru URL Errors: These are right there, even without calling Alamofire's validation.
         if let error = error as NSError?, error.domain == NSURLErrorDomain {
+            return error
+        }
+
+        if case .some(AFError.requestAdaptationFailed) = error?.asAFError {
             return error
         }
 

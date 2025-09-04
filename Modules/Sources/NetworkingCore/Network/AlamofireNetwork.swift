@@ -374,27 +374,6 @@ private extension AlamofireNetwork {
         let request: JetpackRequest
         let error: NetworkError
     }
-}
-
-// MARK: `RequestProcessorDelegate` conformance
-//
-extension AlamofireNetwork: RequestProcessorDelegate {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, request: URLRequest, reason: AppPasswordFailureReason) {
-        switch reason {
-        case .notSupported:
-            flagSiteAsUnsupported(for: siteID)
-        case .unknown:
-            incrementFailureCount(for: siteID)
-            if let jetpackRequest = JetpackRequest.from(directRequest: request, siteID: siteID) {
-                // Can trigger the request here but no info about completion handler available.
-            }
-        }
-    }
-
-    func flagSiteAsUnsupported(for siteID: Int64) {
-        let currentList = userDefaults.applicationPasswordUnsupportedList
-        userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
-    }
 
     func incrementFailureCount(for siteID: Int64) {
         let currentFailureCount = appPasswordFailures[siteID] ?? 0
@@ -404,6 +383,19 @@ extension AlamofireNetwork: RequestProcessorDelegate {
             userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
         }
         appPasswordFailures[siteID] = updatedCount
+    }
+}
+
+// MARK: `RequestProcessorDelegate` conformance
+//
+extension AlamofireNetwork: RequestProcessorDelegate {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64) {
+        flagSiteAsUnsupported(for: siteID)
+    }
+
+    func flagSiteAsUnsupported(for siteID: Int64) {
+        let currentList = userDefaults.applicationPasswordUnsupportedList
+        userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
     }
 }
 

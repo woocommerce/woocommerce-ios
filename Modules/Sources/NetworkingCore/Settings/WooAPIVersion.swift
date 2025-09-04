@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines the supported Woo API Versions.
 ///
-public enum WooAPIVersion: String, CaseIterable, Sendable {
+public enum WooAPIVersion: String {
 
     /// No version
     ///

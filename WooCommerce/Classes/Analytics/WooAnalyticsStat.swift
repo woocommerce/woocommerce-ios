@@ -1258,6 +1258,7 @@ enum WooAnalyticsStat: String {
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleCheckoutCashPaymentTapped = "checkout_cash_payment_tapped"
     case pointOfSaleCashPaymentTapped = "cash_payment_tapped"
     case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"

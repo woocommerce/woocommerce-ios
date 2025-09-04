@@ -474,6 +474,29 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         let hasMorePages = orders.count == pageSize
         return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
     }
+
+    public func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        let parameters: [String: Any] = [
+            ParameterKeys.keyword: searchTerm,
+            ParameterKeys.page: String(pageNumber),
+            ParameterKeys.perPage: String(pageSize),
+            ParameterKeys.statusKey: Defaults.statusAny,
+            ParameterKeys.usesGMTDates: true,
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.createdVia: "pos-rest-api"
+        ]
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   parameters: parameters,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderListMapper(siteID: siteID)
+        let orders: [Order] = try await enqueue(request, mapper: mapper)
+        let hasMorePages = orders.count == pageSize
+        return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
+    }
 }
 
 

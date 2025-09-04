@@ -15,6 +15,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
 
     var spyLastRequestedPageNumber: Int?
     var spyCallCount = 0
+    var spyLastSearchTerm: String?
 
     func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         spyLastRequestedPageNumber = pageNumber
@@ -58,6 +59,38 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
             items: (orderPages[safe: pageNumber - 1] ?? []),
             hasMorePages: orderPages.count > pageNumber,
             totalItems: 2
+        )
+    }
+
+    func searchPointOfSaleOrders(searchTerm: String, pageNumber: Int) async throws -> PagedItems<POSOrder> {
+        spyLastSearchTerm = searchTerm
+        spyLastRequestedPageNumber = pageNumber
+        spyCallCount += 1
+
+        if shouldThrowError {
+            throw PointOfSaleOrderListServiceError.requestFailed
+        }
+
+        if let errorToThrow {
+            throw errorToThrow
+        }
+
+        if shouldReturnZeroOrders {
+            return .init(items: [], hasMorePages: false, totalItems: 0)
+        }
+
+        // For testing purposes, return filtered results based on search term
+        let allOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        let filteredOrders = allOrders.filter { order in
+            order.number.contains(searchTerm) ||
+            order.customerEmail?.contains(searchTerm) == true ||
+            order.lineItems.contains { $0.name.lowercased().contains(searchTerm.lowercased()) }
+        }
+
+        return .init(
+            items: filteredOrders,
+            hasMorePages: false,
+            totalItems: filteredOrders.count
         )
     }
 }

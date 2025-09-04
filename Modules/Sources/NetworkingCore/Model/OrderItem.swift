@@ -240,5 +240,19 @@ private struct OrderItemProductAddOnContainer: Decodable {
 // MARK: - Order Item Product Image
 //
 public struct OrderItemProductImage: Codable, Equatable, Hashable, Sendable {
-    public let src: String
+    public let src: String?
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.src = try? container.decodeIfPresent(String.self, forKey: .src)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(src, forKey: .src)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case src
+    }
 }

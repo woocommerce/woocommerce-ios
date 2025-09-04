@@ -14,7 +14,7 @@ extension View {
                     .onAppear {
                         callback(proxy.size.height)
                     }
-                    .onChange(of: proxy.size.height) { newHeight in
+                    .onChange(of: proxy.size.height) { _, newHeight in
                         callback(newHeight)
                     }
             }
@@ -32,7 +32,7 @@ extension View {
                     .onAppear {
                         callback(proxy.size.width)
                     }
-                    .onChange(of: proxy.size.width) { newWidth in
+                    .onChange(of: proxy.size.width) { _, newWidth in
                         callback(newWidth)
                     }
             }
@@ -48,10 +48,10 @@ extension View {
                     .onAppear {
                         callback(proxy.frame(in: .global))
                     }
-                    .onChange(of: proxy.size.height) { newHeight in
+                    .onChange(of: proxy.size.height) { _, newHeight in
                         callback(proxy.frame(in: .global))
                     }
-                    .onChange(of: proxy.frame(in: .global)) { newHeight in
+                    .onChange(of: proxy.frame(in: .global)) { _, newHeight in
                         callback(proxy.frame(in: .global))
                     }
             }

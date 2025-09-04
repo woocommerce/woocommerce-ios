@@ -51,7 +51,7 @@ private extension PointOfSaleOrderDetailsView {
 
             VStack(spacing: POSSpacing.small) {
                 ForEach(order.lineItems, id: \.itemID) { item in
-                    productRow(item: item, order: order)
+                    productRow(item: item)
                 }
             }
         }
@@ -114,7 +114,7 @@ private extension PointOfSaleOrderDetailsView {
 
 private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
-    func productRow(item: POSOrderItem, order: POSOrder) -> some View {
+    func productRow(item: POSOrderItem) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             productImageView(for: item)
             productDetailsView(item: item)
@@ -126,12 +126,12 @@ private extension PointOfSaleOrderDetailsView {
 
     @ViewBuilder
     func productImageView(for item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: imageSource(for: item), imageSize: 40, scale: 1)
+        POSItemImageView(imageSource: imageSource(), imageSize: 40, scale: 1)
             .frame(width: 40, height: 40)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
-    func imageSource(for item: POSOrderItem) -> String? {
+    func imageSource() -> String? {
         // TODO: Will be addressed in the following PR
         return nil
     }
@@ -230,7 +230,7 @@ private extension PointOfSaleOrderDetailsView {
     func refundsSection(_ order: POSOrder) -> some View {
         if !order.refunds.isEmpty {
             ForEach(order.refunds, id: \.refundID) { refund in
-                refundRow(refund: refund, order: order)
+                refundRow(refund: refund)
             }
 
             if let netAmount = order.formattedNetAmount {
@@ -240,7 +240,7 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     @ViewBuilder
-    func refundRow(refund: POSOrderRefund, order: POSOrder) -> some View {
+    func refundRow(refund: POSOrderRefund) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             totalsRow(
                 title: Localization.refundLabel,

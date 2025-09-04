@@ -47,6 +47,11 @@ final class IssueRefundViewController: UIViewController {
         observeViewModel()
         viewModel.fetch()
         updateWithViewModelContent()
+
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: IssueRefundViewController, _: UITraitCollection) in
+            self?.configureHeaderStackView()
+            self?.tableView.updateHeaderHeight()
+        }
     }
 
     override func viewWillLayoutSubviews() {
@@ -191,16 +196,6 @@ private extension IssueRefundViewController {
         } else {
             nextButton.hideActivityIndicator()
         }
-    }
-}
-
-// MARK: Accessibility handling
-//
-extension IssueRefundViewController {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        configureHeaderStackView()
-        tableView.updateHeaderHeight()
     }
 }
 

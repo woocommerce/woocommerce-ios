@@ -6,10 +6,7 @@ public struct POSOrderItem: Equatable, Hashable {
     public let productID: Int64
     public let variationID: Int64
     public let quantity: Decimal
-    public let price: NSDecimalNumber
     public let formattedPrice: String
-    public let subtotal: String
-    public let total: String
     public let formattedTotal: String
     public let attributes: [OrderItemAttribute]
 
@@ -18,10 +15,7 @@ public struct POSOrderItem: Equatable, Hashable {
                 productID: Int64,
                 variationID: Int64,
                 quantity: Decimal,
-                price: NSDecimalNumber,
                 formattedPrice: String,
-                subtotal: String,
-                total: String,
                 formattedTotal: String,
                 attributes: [OrderItemAttribute]) {
         self.itemID = itemID
@@ -29,10 +23,7 @@ public struct POSOrderItem: Equatable, Hashable {
         self.productID = productID
         self.variationID = variationID
         self.quantity = quantity
-        self.price = price
         self.formattedPrice = formattedPrice
-        self.subtotal = subtotal
-        self.total = total
         self.formattedTotal = formattedTotal
         self.attributes = attributes
     }

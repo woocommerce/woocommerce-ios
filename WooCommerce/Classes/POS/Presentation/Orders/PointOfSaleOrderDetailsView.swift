@@ -117,9 +117,9 @@ private extension PointOfSaleOrderDetailsView {
     func productRow(item: POSOrderItem, order: POSOrder) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             productImageView(for: item)
-            productDetailsView(item: item, order: order)
+            productDetailsView(item: item)
             Spacer()
-            productTotalView(item: item, order: order)
+            productTotalView(item: item)
         }
         .padding(.vertical, POSPadding.small)
     }
@@ -137,7 +137,7 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     @ViewBuilder
-    func productDetailsView(item: POSOrderItem, order: POSOrder) -> some View {
+    func productDetailsView(item: POSOrderItem) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(item.name)
                 .font(.posBodyMediumBold)
@@ -164,7 +164,7 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     @ViewBuilder
-    func productTotalView(item: POSOrderItem, order: POSOrder) -> some View {
+    func productTotalView(item: POSOrderItem) -> some View {
         Text(item.formattedTotal)
             .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)

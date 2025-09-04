@@ -1,7 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
-import WooFoundation
 
 struct PointOfSaleOrderListView: View {
     let onClose: () -> Void

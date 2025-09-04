@@ -30,9 +30,7 @@ struct POSOrderMapper {
             id: order.orderID,
             number: order.number,
             dateCreated: order.dateCreated,
-            datePaid: order.datePaid,
             status: order.status,
-            total: order.total,
             formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
             customerEmail: customerEmail,
@@ -40,9 +38,6 @@ struct POSOrderMapper {
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,
-            currency: order.currency,
-            discountTotal: order.discountTotal,
-            totalTax: order.totalTax,
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedDiscountTotal: formattedDiscountTotal,
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
@@ -57,10 +52,7 @@ struct POSOrderMapper {
             productID: orderItem.productID,
             variationID: orderItem.variationID,
             quantity: orderItem.quantity,
-            price: orderItem.price,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
-            subtotal: orderItem.subtotal,
-            total: orderItem.total,
             formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
             attributes: orderItem.attributes
         )
@@ -69,7 +61,6 @@ struct POSOrderMapper {
     private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefund {
         return POSOrderRefund(
             refundID: orderRefund.refundID,
-            total: orderRefund.total,
             formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
             reason: orderRefund.reason
         )

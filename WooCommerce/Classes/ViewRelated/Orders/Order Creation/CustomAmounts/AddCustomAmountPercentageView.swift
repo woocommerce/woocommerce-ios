@@ -65,7 +65,9 @@ private extension AddCustomAmountPercentageView {
                           text: $text,
                           prompt: Text("0").foregroundColor(Color(.textSubtle))
                 )
-                .onChange(of: text, perform: onChangeText)
+                .onChange(of: text) {
+                    onChangeText(text)
+                }
                 .focused()
                 .focused($focusPercentageInput)
                 .keyboardType(.decimalPad)

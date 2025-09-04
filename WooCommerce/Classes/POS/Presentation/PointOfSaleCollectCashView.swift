@@ -56,7 +56,7 @@ struct PointOfSaleCollectCashView: View {
                                         await submitCashAmount()
                                     }
                                 }
-                                .onChange(of: textFieldViewModel.amount) { newValue in
+                                .onChange(of: textFieldViewModel.amount) { _, newValue in
                                     textFieldAmountInput = newValue
                                     updateChangeDueMessage()
                                 }
@@ -99,7 +99,7 @@ struct PointOfSaleCollectCashView: View {
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
                 .animation(.easeInOut, value: changeDueMessage != nil)
-                .onChange(of: textFieldAmountInput) { _ in
+                .onChange(of: textFieldAmountInput) {
                     errorMessage = nil
                 }
                 .onReceive(Publishers.keyboardFrame) {

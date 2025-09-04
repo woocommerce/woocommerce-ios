@@ -31,13 +31,18 @@ struct PointOfSaleOrderListView: View {
                     if isSearching {
                         POSSearchField(
                             searchTerm: $searchTerm,
-                            searchable: POSOrderSearchable(),
+                            searchable: POSOrderSearchable(ordersController: orderListModel.ordersController),
                             onBack: {
                                 setSearch(false)
                             }
                         )
                         .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
                         .transition(.opacity.combined(with: .move(edge: .leading)))
+                        .onChange(of: searchTerm) { _, newValue in
+                            if newValue.isEmpty {
+                                orderListModel.ordersController.clearSearchOrders()
+                            }
+                        }
                     }
                 },
                 trailingContent: {
@@ -303,31 +308,46 @@ struct PointOfSaleOrderBadgeView: View {
     }
 }
 
-/// A simple POSSearchable implementation for orders (UI only, no functionality)
-private struct POSOrderSearchable: POSSearchable {
-    var itemListType: ItemListType {
-        .products(search: false) // Placeholder for now
-    }
-
-    var searchHistory: [String] {
-        [] // Empty for now as we're only implementing UI
-    }
-
-    func performSearch(term: String) async {
-        // No-op for now - UI only implementation
-    }
-
-    func clearSearchResults() {
-        // No-op for now - UI only implementation
-    }
-}
+// MARK: - Search
 
 private extension PointOfSaleOrderListView {
     func setSearch(_ isSearchingValue: Bool) {
-        searchTerm = isSearchingValue ? searchTerm : ""
-        isSearching = isSearchingValue
+        if isSearchingValue {
+            isSearching = true
+        } else {
+            searchTerm = ""
+            isSearching = false
+            // Clear search results and return to default orders
+            orderListModel.ordersController.clearSearchOrders()
+        }
     }
 }
+
+final class POSOrderSearchable: POSSearchable {
+    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
+
+    var itemListType: ItemListType {
+        .products(search: false)
+    }
+
+    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
+        self.ordersController = ordersController
+    }
+
+    var searchHistory: [String] {
+        []
+    }
+
+    func performSearch(term: String) async {
+        await ordersController.searchOrders(searchTerm: term)
+    }
+
+    func clearSearchResults() {
+        ordersController.clearSearchOrders()
+    }
+}
+
+// MARK: - Constants
 
 private enum Constants {
     static let orderCardMinHeight: CGFloat = 90

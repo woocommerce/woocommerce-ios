@@ -638,7 +638,7 @@ struct PointOfSaleOrderControllerTests {
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
-                                                 featureFlagService: mockFeatureFlagService
+                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order

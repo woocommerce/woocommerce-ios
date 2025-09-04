@@ -26,6 +26,13 @@ struct POSOrderMapper {
             return currencyFormatter.formatAmount(order.discountTotal, with: order.currency, isNegative: true) ?? ""
         }()
 
+        let formattedNetAmount: String? = {
+            guard !order.refunds.isEmpty else {
+                return nil
+            }
+            return order.netAmount(currencyFormatter: currencyFormatter)
+        }()
+
         return POSOrder(
             id: order.orderID,
             number: order.number,
@@ -41,7 +48,7 @@ struct POSOrderMapper {
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedDiscountTotal: formattedDiscountTotal,
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
-            formattedNetAmount: order.netAmount(currencyFormatter: currencyFormatter)
+            formattedNetAmount: formattedNetAmount
         )
     }
 

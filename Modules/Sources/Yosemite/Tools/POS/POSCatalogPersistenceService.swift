@@ -1,7 +1,8 @@
+// periphery:ignore:all
 import Foundation
 import Storage
 
-public protocol POSCatalogPersistenceServiceProtocol {
+protocol POSCatalogPersistenceServiceProtocol {
     /// Clears all catalog data for the specified site
     /// - Parameter siteID: The site ID to clear data for
     func clearSiteData(for siteID: Int64) async throws
@@ -19,14 +20,14 @@ public protocol POSCatalogPersistenceServiceProtocol {
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
 }
 
-public final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
     private let grdbManager: GRDBManagerProtocol
 
-    public init(grdbManager: GRDBManagerProtocol) {
+    init(grdbManager: GRDBManagerProtocol) {
         self.grdbManager = grdbManager
     }
 
-    public func clearSiteData(for siteID: Int64) async throws {
+    func clearSiteData(for siteID: Int64) async throws {
         let db = grdbManager.databaseConnection
         try await db.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
@@ -36,7 +37,7 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
         }
     }
 
-    public func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws {
+    func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws {
         DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
         try await grdbManager.databaseConnection.write { db in
@@ -84,7 +85,7 @@ public final class POSCatalogPersistenceService: POSCatalogPersistenceServicePro
         }
     }
 
-    public func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         try await clearSiteData(for: siteID)
         try await persistCatalog(catalog, siteID: siteID)
     }

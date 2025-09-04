@@ -116,7 +116,7 @@ private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
-            productImageView(for: item)
+            productImageView()
             productDetailsView(item: item)
             Spacer()
             productTotalView(item: item)
@@ -125,15 +125,10 @@ private extension PointOfSaleOrderDetailsView {
     }
 
     @ViewBuilder
-    func productImageView(for item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: imageSource(), imageSize: 40, scale: 1)
+    func productImageView() -> some View {
+        POSItemImageView(imageSource: nil, imageSize: 40, scale: 1)
             .frame(width: 40, height: 40)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-    }
-
-    func imageSource() -> String? {
-        // TODO: Will be addressed in the following PR
-        return nil
     }
 
     @ViewBuilder

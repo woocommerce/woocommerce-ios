@@ -817,6 +817,7 @@ struct PointOfSaleOrderControllerTests {
                                                  analytics: ServiceLocator.analytics,
                                                  featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
+
             mockOrderService.orderToReturn = Order.fake()
 
             // We need an existing order before we can update its email, and send a receipt:

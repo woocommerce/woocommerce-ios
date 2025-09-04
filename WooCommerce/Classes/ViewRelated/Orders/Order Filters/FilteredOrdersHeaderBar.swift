@@ -38,7 +38,9 @@ final class FilteredOrdersHeaderBar: UIView {
         super.willMove(toSuperview: newSuperview)
 
         if newSuperview != nil {
-            contentSizeTraitRegistration = registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
+            contentSizeTraitRegistration = registerForTraitChanges([
+                UITraitPreferredContentSizeCategory.self
+            ]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
                 guard let self = self else { return }
                 self.updateStackViewAxis(for: self.traitCollection)
             }

@@ -111,11 +111,13 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     override func willMove(toSuperview newSuperview: UIView?) {
         super.willMove(toSuperview: newSuperview)
-        
+
         // Registers for trait changes when the cell is about to be added to view hierarchy,
         // applies initial layout, and cleans up when removed from hierarchy
         if newSuperview != nil {
-            contentSizeTraitRegistration = registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: OrderTableViewCell, _: UITraitCollection) in
+            contentSizeTraitRegistration = registerForTraitChanges([
+                UITraitPreferredContentSizeCategory.self
+            ]) { [weak self] (_: OrderTableViewCell, _: UITraitCollection) in
                 self?.applyContentSizeCategoryLayout()
             }
             applyContentSizeCategoryLayout()

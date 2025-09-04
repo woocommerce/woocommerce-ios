@@ -177,20 +177,20 @@ final class AlamofireNetworkTests: XCTestCase {
 
     // MARK: - `didFailToAuthenticateRequestWithAppPassword`
 
-    func test_didFailToAuthenticateRequestWithAppPassword_notSupported_adds_siteID_to_unsupported_list() {
+    func test_didFailToAuthenticateRequestWithAppPassword_adds_siteID_to_unsupported_list() {
         // Given
         let siteID: Int64 = 123
         let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
 
         // When
-        network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: .notSupported)
+        network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID)
 
         // Then
         XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
     }
 
-    func test_didFailToAuthenticateRequestWithAppPassword_notSupported_appends_to_existing_unsupported_list() {
+    func test_didFailToAuthenticateRequestWithAppPassword_appends_to_existing_unsupported_list() {
         // Given
         let existingSiteID: Int64 = 456
         let newSiteID: Int64 = 123
@@ -198,58 +198,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
 
         // When
-        network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID, reason: .notSupported)
+        network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID)
 
         // Then
         XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [existingSiteID, newSiteID])
-    }
-
-    func test_didFailToAuthenticateRequestWithAppPassword_unknown_below_threshold_does_not_add_to_unsupported_list() {
-        // Given
-        let siteID: Int64 = 123
-        let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
-        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
-
-        // When - Call 9 times (below threshold of 10)
-        for _ in 1...9 {
-            network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: .unknown)
-        }
-
-        // Then
-        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
-    }
-
-    func test_didFailToAuthenticateRequestWithAppPassword_unknown_at_threshold_adds_siteID_to_unsupported_list() {
-        // Given
-        let siteID: Int64 = 123
-        let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
-        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
-
-        // When - Call exactly 10 times (threshold)
-        for _ in 1...10 {
-            network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: .unknown)
-        }
-
-        // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
-    }
-
-    func test_didFailToAuthenticateRequestWithAppPassword_unknown_multiple_sites_tracks_separately() {
-        // Given
-        let siteID1: Int64 = 123
-        let siteID2: Int64 = 456
-        let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
-
-        // When - Call site1 5 times, site2 10 times
-        for _ in 1...5 {
-            network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID1, reason: .unknown)
-        }
-        for _ in 1...10 {
-            network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID2, reason: .unknown)
-        }
-
-        // Then - Only site2 should be in unsupported list
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID2])
     }
 
     // MARK: - Session Initialization Tests

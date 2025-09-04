@@ -163,8 +163,35 @@ class OrderListMapperTests: XCTestCase {
             }
         }
     }
-}
 
+    /// Verifies that OrderItem decoding is robust for various image field scenarios from WooCommerce API
+    ///
+    func test_order_item_image_decoding_robustness() {
+        let orders = mapOrders(from: "order-item-image")
+        XCTAssertEqual(orders.count, 1)
+
+        let order = orders[0]
+        XCTAssertEqual(order.items.count, 4)
+
+        // Item 1: Product with valid image src
+        let item1 = order.items[0]
+        XCTAssertNotNil(item1.image)
+        XCTAssertEqual(item1.image?.src, "https://example.com/image.jpg")
+
+        // Item 2: Product with no image field
+        let item2 = order.items[1]
+        XCTAssertNil(item2.image)
+
+        // Item 3: Product with image but no src field
+        let item3 = order.items[2]
+        XCTAssertNotNil(item3.image)
+        XCTAssertNil(item3.image?.src)
+
+        // Item 4: Product with wrong src type
+        let item4 = order.items[3]
+        XCTAssertNil(item4.image?.src)
+    }
+}
 
 /// Private Methods.
 ///

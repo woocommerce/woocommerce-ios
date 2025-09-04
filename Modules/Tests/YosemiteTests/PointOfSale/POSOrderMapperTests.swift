@@ -193,7 +193,8 @@ private extension POSOrderMapperTests {
             quantity: quantity,
             price: price,
             subtotal: subtotal,
-            total: total
+            total: total,
+            image: nil
         )
     }
 

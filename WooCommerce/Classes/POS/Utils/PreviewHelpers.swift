@@ -255,8 +255,6 @@ struct POSPreviewHelpers {
             lineItems: [
                 POSOrderItem(itemID: 1,
                              name: "Premium Coffee Beans",
-                             productID: 101,
-                             variationID: 0,
                              quantity: 2.0,
                              formattedPrice: "$12.50",
                              formattedTotal: "$25.00",
@@ -265,8 +263,6 @@ struct POSPreviewHelpers {
                 POSOrderItem(
                     itemID: 2,
                     name: "Organic Tea - Earl Grey",
-                    productID: 102,
-                    variationID: 203,
                     quantity: 1.0,
                     formattedPrice: "$15.99",
                     formattedTotal: "$15.99",
@@ -303,8 +299,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                 lineItems: [
                     POSOrderItem(itemID: 1,
                                  name: "Premium Coffee Beans",
-                                 productID: 101,
-                                 variationID: 0,
                                  quantity: 2.0,
                                  formattedPrice: "$12.50",
                                  formattedTotal: "$25.00",
@@ -313,8 +307,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                     POSOrderItem(
                         itemID: 2,
                         name: "Organic Tea - Earl Grey",
-                        productID: 102,
-                        variationID: 203,
                         quantity: 1.0,
                         formattedPrice: "$15.99",
                         formattedTotal: "$15.99",
@@ -345,8 +337,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                     POSOrderItem(
                         itemID: 3,
                         name: "Artisan Chocolate Box",
-                        productID: 103,
-                        variationID: 0,
                         quantity: 3.0,
                         formattedPrice: "$19.99",
                         formattedTotal: "$59.97",
@@ -356,8 +346,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                     POSOrderItem(
                         itemID: 4,
                         name: "Gourmet Cookie Set - Mixed",
-                        productID: 104,
-                        variationID: 401,
                         quantity: 1.0,
                         formattedPrice: "$29.99",
                         formattedTotal: "$29.99",

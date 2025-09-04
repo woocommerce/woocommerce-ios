@@ -240,11 +240,9 @@ private struct OrderItemProductAddOnContainer: Decodable {
 // MARK: - Order Item Product Image
 //
 public struct OrderItemProductImage: Codable, Equatable, Hashable, Sendable {
-    public let id: String
     public let src: String
 
-    public init(id: String, src: String) {
-        self.id = id
+    public init(src: String) {
         self.src = src
     }
 }

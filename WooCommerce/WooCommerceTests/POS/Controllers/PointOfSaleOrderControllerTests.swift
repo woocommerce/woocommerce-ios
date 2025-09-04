@@ -220,7 +220,8 @@ struct PointOfSaleOrderControllerTests {
         do {
             // Given/When
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                                 receiptService: mockReceiptService)
+                                                 receiptService: mockReceiptService,
+                                                 celebration: MockPaymentCaptureCelebration())
             try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
             // Then
@@ -253,7 +254,8 @@ struct PointOfSaleOrderControllerTests {
     @Test func collectCashPayment_passes_changeDueAmount_to_order_service() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             celebration: MockPaymentCaptureCelebration())
 
         let orderItem = OrderItem.fake()
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -600,7 +602,8 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: MockReceiptService(),
-                                                 analytics: mockAnalytics)
+                                                 analytics: mockAnalytics,
+                                                 celebration: MockPaymentCaptureCelebration())
 
             // In order to test the order controller failure we need to succeed first in creating a successful order:
             let orderItem = OrderItem.fake()

@@ -3,7 +3,9 @@ import Foundation
 public struct POSOrderItem: Equatable, Hashable {
     public let itemID: Int64
     public let name: String
+    // periphery:ignore - Will be used for images
     public let productID: Int64
+    // periphery:ignore - Will be used for images
     public let variationID: Int64
     public let quantity: Decimal
     public let formattedPrice: String

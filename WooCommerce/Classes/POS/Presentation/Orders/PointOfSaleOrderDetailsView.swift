@@ -133,7 +133,7 @@ private extension PointOfSaleOrderDetailsView {
 
     func imageSource(for item: POSOrderItem) -> String? {
         // TODO: Will be addressed in the following PR
-        return "\(item.productID - item.variationID)"
+        return nil
     }
 
     @ViewBuilder

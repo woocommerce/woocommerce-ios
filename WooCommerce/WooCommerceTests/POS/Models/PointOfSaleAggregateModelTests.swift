@@ -906,6 +906,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.startCashPayment()
 
             // Then
+            print(analyticsProvider.receivedEvents)
             #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
         }
     }

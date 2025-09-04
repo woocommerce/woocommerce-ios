@@ -31,6 +31,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     ///
     @IBOutlet weak var contentStackView: UIStackView!
 
+    /// Retains the content trait registration token, so it's not deallocated immediately
+    ///
+    private var contentSizeTraitRegistration: UITraitChangeRegistration?
+
     static func register(for tableView: UITableView) {
         tableView.registerNib(for: self)
     }
@@ -75,17 +79,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
-            contentStackView.axis = .vertical
-        } else {
-            contentStackView.axis = .horizontal
-        }
-    }
-
     // MARK: - Overridden Methods
-
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -107,18 +101,38 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
+        contentSizeTraitRegistration = nil
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
     }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        
+        // Registers for trait changes when the cell is about to be added to view hierarchy,
+        // applies initial layout, and cleans up when removed from hierarchy
+        if newSuperview != nil {
+            contentSizeTraitRegistration = registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: OrderTableViewCell, _: UITraitCollection) in
+                self?.applyContentSizeCategoryLayout()
+            }
+            applyContentSizeCategoryLayout()
+        } else {
+            contentSizeTraitRegistration = nil
+        }
+    }
 }
 
-
-// MARK: - Private
-//
 private extension OrderTableViewCell {
+    func applyContentSizeCategoryLayout() {
+        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
+            contentStackView.axis = .vertical
+        } else {
+            contentStackView.axis = .horizontal
+        }
+    }
 
     /// Reset the UI to a "no data" state.
     ///

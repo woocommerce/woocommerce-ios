@@ -8,6 +8,10 @@ struct PointOfSaleOrderListView: View {
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
+    @State private var isSearching: Bool = false
+    @State private var searchTerm: String = ""
+    @Namespace private var searchTransition
+
     private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
     }
@@ -15,15 +19,38 @@ struct PointOfSaleOrderListView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: Localization.ordersTitle,
-                isLoading: {
+                title: isSearching ? "" : Localization.ordersTitle,
+                isLoading: isSearching ? false : {
                     if case .loading(let orders) = ordersViewState {
                         return !orders.isEmpty
                     }
                     return false
                 }(),
-                backButtonConfiguration: .init(state: .enabled, action: onClose, buttonIcon: "xmark")
+                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
+                leadingContent: {
+                    if isSearching {
+                        POSSearchField(
+                            searchTerm: $searchTerm,
+                            searchable: POSOrderSearchable(),
+                            onBack: {
+                                setSearch(false)
+                            }
+                        )
+                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
+                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                    }
+                },
+                trailingContent: {
+                    if !isSearching {
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            setSearch(true)
+                        }
+                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
+                        .transition(.opacity.combined(with: .scale))
+                    }
+                }
             )
+            .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
             InfiniteScrollView(
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
@@ -276,9 +303,37 @@ struct PointOfSaleOrderBadgeView: View {
     }
 }
 
+/// A simple POSSearchable implementation for orders (UI only, no functionality)
+private struct POSOrderSearchable: POSSearchable {
+    var itemListType: ItemListType {
+        .products(search: false) // Placeholder for now
+    }
+
+    var searchHistory: [String] {
+        [] // Empty for now as we're only implementing UI
+    }
+
+    func performSearch(term: String) async {
+        // No-op for now - UI only implementation
+    }
+
+    func clearSearchResults() {
+        // No-op for now - UI only implementation
+    }
+}
+
+private extension PointOfSaleOrderListView {
+    func setSearch(_ isSearchingValue: Bool) {
+        searchTerm = isSearchingValue ? searchTerm : ""
+        isSearching = isSearchingValue
+    }
+}
+
 private enum Constants {
     static let orderCardMinHeight: CGFloat = 90
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
+    static let animationDuration: CGFloat = 0.2
+    static let searchControlID = "searchControl"
 }
 
 private enum Localization {

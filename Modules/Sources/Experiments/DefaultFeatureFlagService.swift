@@ -95,7 +95,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleOrdersi2:
             return true
         case .pointOfSaleSettingsi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .orderAddressMapSearch:
             return true
         case .pointOfSaleHistoricalOrdersi1:

@@ -1,76 +1,117 @@
 import SwiftUI
 
 struct PointOfSaleSettingsStoreDetailView: View {
-    let settingsController: PointOfSaleSettingsControllerProtocol
+    @State private var isLoading: Bool = false
+
+    let viewModel: POSSettingsStoreViewModel
+
+    init(viewModel: POSSettingsStoreViewModel) {
+        self.viewModel = viewModel
+    }
+
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.storeName)
-                            .font(.posBodyMediumRegular())
-                        Text(settingsController.storeName)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.storeTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.address)
-                            .font(.posBodyMediumRegular())
-                        Text(settingsController.storeAddress)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
+                ScrollView {
+                    VStack(spacing: POSSpacing.medium) {
+                        storeInformationView
+
+                        receiptInformationView
+                            .renderedIf(viewModel.shouldShowReceiptInformation)
                     }
-                } header: {
-                    Text(Localization.storeInformation)
-                        .font(.posBodyLargeRegular())
                 }
-
-                Section {
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.receiptStoreName)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreName)
-                    }
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.physicalAddress)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreAddress)
-                    }
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.phoneNumber)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStorePhone)
-                    }
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.email)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptStoreEmail)
-                    }
-
-                    VStack(alignment: .leading, spacing: POSPadding.small) {
-                        Text(Localization.refundReturnsPolicy)
-                            .font(.posBodyMediumRegular())
-                        settingValueView(for: settingsController.receiptRefundReturnsPolicy)
-                    }
-                } header: {
-                    Text(Localization.receiptInformation)
-                        .font(.posBodyLargeRegular())
-                }
-                .renderedIf(settingsController.shouldShowReceiptInformation)
+                .background(backgroundColor)
+            }
+            .task {
+                isLoading = true
+                await viewModel.retrievePOSReceiptSettings()
+                isLoading = false
             }
         }
     }
 
     @ViewBuilder
+    private var storeInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            sectionHeaderView(title: Localization.storeInformation)
+
+            VStack(spacing: POSSpacing.medium) {
+                fieldRowView(label: Localization.storeName, value: viewModel.storeName)
+                fieldRowView(label: Localization.address, value: viewModel.storeAddress)
+            }
+            .padding(.bottom, POSPadding.medium)
+        }
+    }
+
+    @ViewBuilder
+    private var receiptInformationView: some View {
+        VStack(spacing: POSSpacing.none) {
+            sectionHeaderView(title: Localization.receiptInformation)
+
+            VStack(spacing: POSSpacing.medium) {
+                receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                receiptFieldRowView(label: Localization.refundReturnsPolicy, value: viewModel.receiptInformation.refundReturnsPolicy)
+            }
+            .padding(.bottom, POSPadding.medium)
+        }
+    }
+
+    @ViewBuilder
+    private func sectionHeaderView(title: String) -> some View {
+        ZStack {
+            backgroundColor
+            Text(title)
+                .font(.posBodyLargeBold)
+                .foregroundColor(.posOnSurface)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, POSPadding.medium)
+                .padding(.vertical, POSPadding.small)
+        }
+    }
+
+    @ViewBuilder
+    private func fieldRowView(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            Text(value)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
+    }
+
+    @ViewBuilder
+    private func receiptFieldRowView(label: String, value: String?) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+            settingValueView(for: value)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.medium)
+    }
+
+    @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
-        if settingsController.isLoading {
-            ProgressView()
-                .font(.posBodyLargeRegular())
+        if isLoading {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shimmeringTextWidth, height: Constants.shimmeringTextHeight)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         } else {
             Text(value ?? Localization.notSet)
                 .font(.posBodyMediumRegular())
@@ -79,8 +120,20 @@ struct PointOfSaleSettingsStoreDetailView: View {
     }
 }
 
+
 private extension PointOfSaleSettingsStoreDetailView {
+    enum Constants {
+        static let shimmeringTextWidth: CGFloat = 70
+        static let shimmeringTextHeight: CGFloat = 16
+    }
+
     enum Localization {
+        static let storeTitle = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.storeTitle",
+            value: "Store",
+            comment: "Navigation title for the store details in POS settings."
+        )
+
         static let notSet = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.notSet",
             value: "Not set",
@@ -145,6 +198,7 @@ private extension PointOfSaleSettingsStoreDetailView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleSettingsStoreDetailView(settingsController: PointOfSaleSettingsPreviewController())
+    let controller = PointOfSaleSettingsPreviewController()
+    PointOfSaleSettingsStoreDetailView(viewModel: controller.storeViewModel)
 }
 #endif

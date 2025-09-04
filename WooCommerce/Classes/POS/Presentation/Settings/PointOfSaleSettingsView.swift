@@ -15,9 +15,6 @@ struct PointOfSaleSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .task {
-                await settingsController.retrievePOSReceiptSettings()
-            }
         }
     }
 }
@@ -29,21 +26,31 @@ extension PointOfSaleSettingsView {
             POSPageHeaderView(
                 title: Localization.navigationTitle,
                 backButtonConfiguration: .init(state: .enabled,
-                                               action: { dismiss() },
+                                               action: {
+                                                   ServiceLocator.analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                   dismiss()
+                                               },
                                                buttonIcon: "xmark"))
             .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
                 PointOfSaleSettingsCard(
                     item: .store,
                     isSelected: selection == .store,
-                    onTap: { selection = .store }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        selection = .store
+                    }
                 )
 
                 PointOfSaleSettingsCard(
                     item: .hardware,
                     isSelected: selection == .hardware,
-                    onTap: { selection = .hardware }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        selection = .hardware
+                    }
                 )
 
                 Spacer()
@@ -51,18 +58,22 @@ extension PointOfSaleSettingsView {
                 PointOfSaleSettingsCard(
                     item: .help,
                     isSelected: selection == .help,
-                    onTap: { selection = .help }
+                    onTap: {
+                        ServiceLocator.analytics.track(.pointOfSaleSettingsHelpTapped)
+                        selection = .help
+                    }
                 )
             }
             .padding(.horizontal, POSPadding.medium)
         }
+        .background(Color.posSurface)
     }
 
     @ViewBuilder
     private var detailView: some View {
         switch selection {
         case .store:
-            PointOfSaleSettingsStoreDetailView(settingsController: settingsController)
+            PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .help:
@@ -80,23 +91,36 @@ extension PointOfSaleSettingsView {
 }
 
 struct PointOfSaleSettingsCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
+
     let item: PointOfSaleSettingsView.SidebarNavigation
     let isSelected: Bool
     let onTap: () -> Void
 
+    private var selectionBackgroundColor: Color {
+        guard isSelected else { return Color.clear }
+        return colorScheme == .dark ? Color.posPrimary : Color.posSecondary
+    }
+
     var body: some View {
         Button(action: onTap) {
-            HStack {
+            HStack(spacing: POSSpacing.medium) {
                 Image(systemName: item.icon)
                     .font(.posBodyLargeRegular())
-                    .foregroundStyle(isSelected ? .white : .primary)
-                VStack(alignment: .leading) {
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityHidden(true)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                     Text(item.title)
                         .font(.posBodyLargeRegular())
-                        .foregroundStyle(isSelected ? .white : .primary)
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                     Text(item.subtitle)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
+                        .foregroundStyle(Color.posOnSurface)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 }
                 Spacer()
             }
@@ -105,9 +129,10 @@ struct PointOfSaleSettingsCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(.isButton)
         .background(
-            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value, style: .continuous)
-                .fill(isSelected ? Color.accentColor : Color.clear)
+            RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value, style: .continuous)
+                .fill(selectionBackgroundColor)
         )
     }
 }

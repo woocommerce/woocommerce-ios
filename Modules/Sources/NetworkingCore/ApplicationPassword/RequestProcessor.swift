@@ -1,6 +1,15 @@
 import Alamofire
 import Foundation
 
+enum AppPasswordFailureReason {
+    case notSupported
+    case unknown
+}
+
+protocol RequestProcessorDelegate: AnyObject {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason)
+}
+
 /// Authenticates and retries requests
 ///
 final class RequestProcessor: RequestInterceptor {
@@ -12,6 +21,10 @@ final class RequestProcessor: RequestInterceptor {
 
     private let notificationCenter: NotificationCenter
 
+    private var currentSiteID: Int64?
+
+    weak var delegate: RequestProcessorDelegate?
+
     init(requestAuthenticator: RequestAuthenticator,
          notificationCenter: NotificationCenter = .default) {
         self.requestAuthenticator = requestAuthenticator
@@ -20,6 +33,7 @@ final class RequestProcessor: RequestInterceptor {
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
         requestAuthenticator = authenticator
+        currentSiteID = authenticator.jetpackSiteID
     }
 }
 
@@ -57,7 +71,7 @@ extension RequestProcessor: RequestRetrier {
 //
 private extension RequestProcessor {
     func generateApplicationPassword() {
-        Task(priority: .medium) {
+        Task(priority: .medium) { @MainActor in
             do {
                 let _ = try await requestAuthenticator.generateApplicationPassword()
                 isAuthenticating = false
@@ -67,14 +81,61 @@ private extension RequestProcessor {
 
                 completeRequests(true)
             } catch {
-                isAuthenticating = false
 
                 // Post a notification for tracking
                 notificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
-                completeRequests(false)
+                let shouldRetry = await checkIfRetryingGenerationIsNeeded(for: error)
+                if shouldRetry {
+                    generateApplicationPassword()
+                } else {
+                    isAuthenticating = false
+                    completeRequests(false)
+                    if let currentSiteID {
+                        notifyFailure(error, for: currentSiteID)
+                    }
+                }
             }
         }
+    }
+
+    /// Checks error code to retry or mark site as unsupported for app password.
+    /// Returns whether retry is needed.
+    @MainActor
+    func checkIfRetryingGenerationIsNeeded(for error: Error) async -> Bool {
+        guard currentSiteID != nil else {
+            return false
+        }
+        switch error {
+        case NetworkError.unacceptableStatusCode(let statusCode, _) where statusCode == 409:
+            /// Password with the same name already exists. Request deletion remotely and retry.
+            do {
+                try await requestAuthenticator.deleteApplicationPassword()
+                return true
+            } catch {
+                return false
+            }
+        default:
+            return false
+        }
+    }
+
+    func notifyFailure(_ error: Error, for siteID: Int64) {
+        let reason: AppPasswordFailureReason = {
+            switch error {
+            case NetworkError.notFound:
+                return .notSupported
+            case let networkError as NetworkError:
+                if let code = networkError.errorCode,
+                   AppPasswordConstants.disabledCodes.contains(code) {
+                    return .notSupported
+                }
+                return .unknown
+            default:
+                return .unknown
+            }
+        }()
+        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
     }
 
     func shouldRetry(_ error: Error) -> Bool {

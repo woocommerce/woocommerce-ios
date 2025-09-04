@@ -3,8 +3,7 @@ import Networking
 import Storage
 
 public protocol PointOfSaleSettingsServiceProtocol {
-    var siteID: Int64 { get }
-    func retrievePointOfSaleSettings() async throws -> [SiteSetting]
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation
 }
 
 public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
@@ -25,7 +24,19 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
                                                                            network: network))
     }
 
-    public func retrievePointOfSaleSettings() async throws -> [SiteSetting] {
-        return try await settingStoreMethods.retrievePointOfSaleSettings(siteID: siteID)
+    public func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        let siteSettings = try await settingStoreMethods.retrievePointOfSaleSettings(siteID: siteID)
+        return POSReceiptInformation(
+            storeName: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_name"),
+            storeAddress: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_address"),
+            phone: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_phone"),
+            email: settingValue(from: siteSettings, settingID: "woocommerce_pos_store_email"),
+            refundReturnsPolicy: settingValue(from: siteSettings, settingID: "woocommerce_pos_refund_returns_policy")
+        )
+    }
+
+    private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {
+        let value = siteSettings.first { $0.settingID == settingID }?.value
+        return value?.isEmpty == true ? nil : value
     }
 }

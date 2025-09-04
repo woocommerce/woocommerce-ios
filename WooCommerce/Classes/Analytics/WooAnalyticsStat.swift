@@ -299,6 +299,7 @@ enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
+    case settingsBetaFeaturesApplicationPasswordsToggled = "settings_beta_features_application_passwords_toggled"
     case settingsBetaFeatureToggled = "settings_beta_feature_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
@@ -1297,6 +1298,12 @@ enum WooAnalyticsStat: String {
     case pointOfSaleBarcodeScannerSetupDismissed = "barcode_scanner_setup_dismissed"
     case pointOfSaleBarcodeScannerSetupRetryTapped = "barcode_scanner_setup_retry_tapped"
     case pointOfSaleBarcodeScannerSetupScannerConnected = "barcode_scanner_setup_scanner_connected"
+    case pointOfSaleSettingsMenuItemTapped = "settings_open"
+    case pointOfSaleSettingsCloseButtonTapped = "settings_closed"
+    case pointOfSaleSettingsStoreDetailsTapped = "settings_store_details_tapped"
+    case pointOfSaleSettingsHardwareTapped = "settings_hardware_tapped"
+    case pointOfSaleSettingsHelpTapped = "settings_help_tapped"
+    case pointOfSaleEmptyCartSetupScannerTapped = "empty_cart_set_up_scanner_tapped"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

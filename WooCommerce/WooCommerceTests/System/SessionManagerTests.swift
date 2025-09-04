@@ -378,6 +378,28 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertTrue(mockCache.clearCacheCalled)
     }
 
+    /// Verifies that image cache is cleared upon reset
+    ///
+    func test_applicationPasswordUnsupportedList_is_cleared_upon_reset() throws {
+        // Given
+        let siteID: Int64 = 13
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        defaults[.applicationPasswordUnsupportedList] = [siteID]
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(defaults[.applicationPasswordUnsupportedList] as? [Int64]), [siteID])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.applicationPasswordUnsupportedList])
+    }
+
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain
     ///
     func testDefaultCredentialsAreEffectivelyNuked() {

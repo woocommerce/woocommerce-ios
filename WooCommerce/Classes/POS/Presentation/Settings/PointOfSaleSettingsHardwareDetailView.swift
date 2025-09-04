@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct PointOfSaleSettingsHardwareDetailView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     let settingsController: PointOfSaleSettingsControllerProtocol
 
     @State private var navigationPath: [NavigationDestination] = []
@@ -25,23 +27,43 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
     }
 
+    private var backgroundColor: Color {
+        Color.posOnSecondaryContainer
+    }
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
+            POSPageHeaderView(title: Localization.hardwareTitle)
+            .foregroundColor(.posSurface)
+            .accessibilityAddTraits(.isHeader)
+
             List(HardwareDestination.allCases) { destination in
                 NavigationLink(value: NavigationDestination.hardware(destination)) {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(destination.title)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(destination.subtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(backgroundColor)
+            .listRowBackground(Color.clear)
+            .listRowSeparator(.hidden)
             .navigationDestination(for: NavigationDestination.self) { destination in
                 switch destination {
                 case .hardware(.cardReaders):
@@ -54,7 +76,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
-                SafariView(url: WooConstants.URLs.pointOfSaleDocumentation.asURL())
+                SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
             }
         }
     }
@@ -69,7 +91,14 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     }
 
     private var cardReadersView: some View {
-        VStack(spacing: POSSpacing.large) {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.cardReadersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
             List {
                 VStack(spacing: POSPadding.xSmall) {
                     HStack {
@@ -96,49 +125,81 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 Button {
                     showCardReaderDocumentationModal = true
                 } label: {
-                    HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: POSSpacing.medium) {
                         Image(systemName: "doc.text")
                             .font(.posBodyLargeRegular())
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+
                         VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                             Text(Localization.cardReaderDocumentationTitle)
                                 .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                             Text(Localization.cardReaderDocumentationSubtitle)
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
+                        Spacer()
                     }
                 }
-                .buttonStyle(.plain)
+                .padding()
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
         }
-        .navigationTitle(Localization.cardReadersTitle)
+        .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
             SafariView(url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
     private var scannersView: some View {
-        List(ScannerDestination.allCases) { destination in
-            Button {
-                handleScannerDestination(destination)
-            } label: {
-                HStack(alignment: .firstTextBaseline) {
-                    Image(systemName: destination.icon)
-                        .font(.posBodyLargeRegular())
-                    VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                        Text(destination.title)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: Localization.scannersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    navigationPath.removeLast()
+                }, buttonIcon: "chevron.left"))
+            .foregroundColor(.posSurface)
+
+            List(ScannerDestination.allCases) { destination in
+                Button {
+                    handleScannerDestination(destination)
+                } label: {
+                    HStack(spacing: POSSpacing.medium) {
+                        Image(systemName: destination.icon)
                             .font(.posBodyLargeRegular())
-                        Text(destination.subtitle)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
+                            .accessibilityHidden(true)
+                            .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeRegular())
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        }
+                        Spacer()
                     }
                 }
+                .accessibilityAddTraits(.isButton)
+                .listRowSeparator(.hidden)
             }
-            .buttonStyle(.plain)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .listRowBackground(Color.clear)
+            .background(backgroundColor)
+            .foregroundColor(.posOnSurface)
         }
-        .navigationTitle(Localization.scannersTitle)
+        .navigationBarBackButtonHidden(true)
     }
-
 }
 
 extension PointOfSaleSettingsHardwareDetailView {
@@ -239,6 +300,12 @@ private extension PointOfSaleSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown",
             value: "Unknown",
             comment: "Text displayed on Point of Sale settings when card reader battery is unknown."
+        )
+
+        static let hardwareTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareTitle",
+            value: "Hardware",
+            comment: "Navigation title for the hardware settings list."
         )
 
         static let cardReadersTitle = NSLocalizedString(

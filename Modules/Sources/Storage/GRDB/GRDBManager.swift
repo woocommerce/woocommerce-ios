@@ -1,35 +1,34 @@
 import Foundation
 import GRDB
 
-// TODO: remove ignore when we start using this
-// periphery: ignore
-public final class GRDBManager {
+public protocol GRDBManagerProtocol {
+    var databaseConnection: GRDBDatabaseConnection { get }
+}
 
-    let databaseQueue: DatabaseQueue
-    private let databasePath: String
+public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
+
+public final class GRDBManager: GRDBManagerProtocol {
+
+    public let databaseConnection: GRDBDatabaseConnection
 
     public init(databasePath: String) throws {
-        self.databasePath = databasePath
-
         let databaseURL = URL(fileURLWithPath: databasePath)
         let directoryURL = databaseURL.deletingLastPathComponent()
 
         try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
 
-        self.databaseQueue = try DatabaseQueue(path: databasePath)
+        self.databaseConnection = try DatabaseQueue(path: databasePath)
 
         try migrateIfNeeded()
     }
 
+    // Creates an in-memory database, intended for use in tests.
     init() throws {
-        self.databasePath = "in-memory"
-        self.databaseQueue = try DatabaseQueue()
+        self.databaseConnection = try DatabaseQueue()
         try migrateIfNeeded()
     }
 }
 
-// TODO: remove ignore when we start using this
-// periphery: ignore
 private extension GRDBManager {
     func migrateIfNeeded() throws {
         var migrator = DatabaseMigrator()
@@ -43,6 +42,8 @@ private extension GRDBManager {
             try V001InitialSchema.migrate(db)
         }
 
-        try migrator.migrate(databaseQueue)
+        try migrator.migrate(databaseConnection)
     }
 }
+
+extension DatabaseQueue: GRDBDatabaseConnection {}

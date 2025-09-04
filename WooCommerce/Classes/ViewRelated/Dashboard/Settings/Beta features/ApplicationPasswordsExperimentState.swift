@@ -58,7 +58,10 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
     func fetchAvailability() async -> Bool {
         await withCheckedContinuation { continuation in
             //TODO: - put the remote FF checking here
-            let mockResultValue = true
+            //For now rely on local FF for mocked value to avoid unwanted exposure
+            let mockResultValue = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+                .applicationPasswordExperiment
+            )
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 continuation.resume(returning: mockResultValue)

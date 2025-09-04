@@ -241,8 +241,4 @@ private struct OrderItemProductAddOnContainer: Decodable {
 //
 public struct OrderItemProductImage: Codable, Equatable, Hashable, Sendable {
     public let src: String
-
-    public init(src: String) {
-        self.src = src
-    }
 }

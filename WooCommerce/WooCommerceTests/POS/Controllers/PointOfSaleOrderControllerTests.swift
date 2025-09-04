@@ -638,6 +638,7 @@ struct PointOfSaleOrderControllerTests {
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+            analyticsProvider.receivedEvents.removeAll()
 
             // When
             try await sut.sendReceipt(recipientEmail: "test@example.com")
@@ -683,6 +684,7 @@ struct PointOfSaleOrderControllerTests {
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+            analyticsProvider.receivedEvents.removeAll()
 
             // When
             do {

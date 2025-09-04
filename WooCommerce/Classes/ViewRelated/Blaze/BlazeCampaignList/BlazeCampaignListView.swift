@@ -155,7 +155,7 @@ struct BlazeCampaignListView: View {
         }) { url in
             detailView(url: url)
         }
-        .onChange(of: viewModel.shouldShowIntroView) { shouldShow in
+        .onChange(of: viewModel.shouldShowIntroView) { _, shouldShow in
             if shouldShow {
                 onCreateCampaign(nil)
                 viewModel.shouldShowIntroView = false

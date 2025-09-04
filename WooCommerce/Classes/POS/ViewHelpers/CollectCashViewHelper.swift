@@ -57,11 +57,16 @@ final class CollectCashViewHelper {
     func isPaymentButtonEnabled(orderTotal: String,
                                 textFieldAmountInput: String,
                                 isLoading: Bool) -> Bool {
-        guard let orderDecimal = parseCurrency(orderTotal),
-              let inputDecimal = parseCurrency(textFieldAmountInput.isNotEmpty ? textFieldAmountInput : "0") else {
+        guard !isLoading else {
             return false
         }
-        return inputDecimal >= orderDecimal && !isLoading
+
+        let inputAmount = textFieldAmountInput.isNotEmpty ? textFieldAmountInput : "0"
+        guard let orderDecimal = parseCurrency(orderTotal),
+              let inputDecimal = parseCurrency(inputAmount) else {
+            return false
+        }
+        return inputDecimal >= orderDecimal
     }
 
     func parseCurrency(_ amountString: String) -> Decimal? {

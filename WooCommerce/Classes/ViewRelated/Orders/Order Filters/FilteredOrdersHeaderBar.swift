@@ -14,7 +14,7 @@ final class FilteredOrdersHeaderBar: UIView {
 
     /// Retains the content trait registration token, so it's not deallocated immediately
     ///
-    // periphery: ignore - False negative. Perhaps does not catch non-dreict reads?
+    // periphery: ignore - False negative. Perhaps does not catch non-direct reads?
     private var contentSizeTraitRegistration: UITraitChangeRegistration?
 
     /// The number of filters applied

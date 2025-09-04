@@ -635,7 +635,7 @@ struct PointOfSaleOrderControllerTests {
             let mockPluginsService = MockPluginsService()
             mockPluginsService.setMockPlugin(.wooCommerce,
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
-                                                                                    version: "10.0.0",
+                                                                                    version: "10.0.0-dev",
                                                                                     active: true))
 
             let mockFeatureFlagService = MockFeatureFlagService()
@@ -654,7 +654,6 @@ struct PointOfSaleOrderControllerTests {
             analyticsProvider.receivedEvents.removeAll()
 
             // When
-            print("Plugin state: \(String(describing: mockPluginsService.loadPluginInStorage(siteID: 1, plugin: .wooCommerce, isActive: true)))")
             try await sut.sendReceipt(recipientEmail: "test@example.com")
 
             // Then

@@ -125,7 +125,6 @@ protocol PointOfSaleOrderControllerProtocol {
                     minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
                     siteID: order.siteID
                 )
-                print("POS receipt eligibility: \(posReceiptEligibility)")
             } else {
                 posReceiptEligibility = false
             }

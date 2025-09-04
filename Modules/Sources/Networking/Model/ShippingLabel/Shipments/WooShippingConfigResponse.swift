@@ -174,6 +174,5 @@ enum WooShippingConfigDecodingError: Error {
 }
 
 public struct HazmatSelection: Decodable, Equatable {
-    public let isHazmat: Bool
     public let category: String
 }

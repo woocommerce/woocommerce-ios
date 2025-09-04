@@ -38,9 +38,10 @@ struct POSPageHeaderItem: Identifiable {
 
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
-struct POSPageHeaderView<TrailingContent: View, BottomContent: View>: View {
+struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
+    private let leadingContent: LeadingContent?
     private let trailingContent: TrailingContent?
     private let bottomContent: BottomContent?
 
@@ -57,11 +58,13 @@ struct POSPageHeaderView<TrailingContent: View, BottomContent: View>: View {
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
+        self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
     }
@@ -69,17 +72,23 @@ struct POSPageHeaderView<TrailingContent: View, BottomContent: View>: View {
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
+        self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
     }
 
     var body: some View {
         HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            if let leadingContent {
+                leadingContent
+            }
+
             if showsBackButton {
                 backButton
             }
@@ -87,21 +96,23 @@ struct POSPageHeaderView<TrailingContent: View, BottomContent: View>: View {
             HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        HStack(spacing: POSSpacing.small) {
-                            Button(action: {
-                                items[index].action?()
-                            }) {
-                                Text(items[index].title)
-                                    .font(.posHeadingBold)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
-                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                    .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                        if items[index].title.isNotEmpty {
+                            HStack(spacing: POSSpacing.small) {
+                                Button(action: {
+                                    items[index].action?()
+                                }) {
+                                    Text(items[index].title)
+                                        .font(.posHeadingBold)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                        .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                }
+                                .disabled(items[index].isSelected)
+                                .accessibilityElement()
+                                .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                .accessibilityLabel(items[index].title)
                             }
-                            .disabled(items[index].isSelected)
-                            .accessibilityElement()
-                            .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                            .accessibilityLabel(items[index].title)
 
                             if items[index].isLoading {
                                 ProgressView()

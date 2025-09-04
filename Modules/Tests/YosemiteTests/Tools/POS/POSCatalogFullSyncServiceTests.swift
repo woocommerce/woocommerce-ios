@@ -146,7 +146,7 @@ struct POSCatalogFullSyncServiceTests {
     @Test func init_with_nil_credentials_returns_nil() throws {
         // Given
         let grdbManager = try GRDBManager()
-        
+
         // When
         let service = POSCatalogFullSyncService(credentials: nil, grdbManager: grdbManager)
 
@@ -243,28 +243,13 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 // MARK: - Mock POSCatalogPersistenceService
 
 final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
-    private(set) var clearSiteDataCallCount = 0
-    private(set) var persistCatalogCallCount = 0
     private(set) var replaceAllCatalogDataCallCount = 0
-    
-    private(set) var lastClearedSiteID: Int64?
     private(set) var lastPersistedCatalog: POSCatalog?
     private(set) var lastPersistedSiteID: Int64?
-    
-    func clearSiteData(for siteID: Int64) async throws {
-        clearSiteDataCallCount += 1
-        lastClearedSiteID = siteID
-    }
-    
-    func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws {
-        persistCatalogCallCount += 1
-        lastPersistedCatalog = catalog
-        lastPersistedSiteID = siteID
-    }
-    
+
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         replaceAllCatalogDataCallCount += 1
-        try await clearSiteData(for: siteID)
-        try await persistCatalog(catalog, siteID: siteID)
+        lastPersistedSiteID = siteID
+        lastPersistedCatalog = catalog
     }
 }

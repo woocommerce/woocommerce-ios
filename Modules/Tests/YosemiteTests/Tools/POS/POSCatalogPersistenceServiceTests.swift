@@ -13,35 +13,9 @@ struct POSCatalogPersistenceServiceTests {
         self.sut = POSCatalogPersistenceService(grdbManager: grdbManager)
     }
 
-    // MARK: - Clear Site Data Tests
+    // MARK: - Replace Catalog Data Tests
 
-    @Test func clearSiteData_removes_all_existing_data() async throws {
-        // Given - existing data in database
-        let existingCatalog = POSCatalog(
-            products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)],
-            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 1)]
-        )
-        try await sut.persistCatalog(existingCatalog, siteID: sampleSiteID)
-
-        // When
-        try await sut.clearSiteData(for: sampleSiteID)
-
-        // Then - all data should be removed
-        let db = grdbManager.databaseConnection
-        try await db.read { db in
-            let siteCount = try PersistedSite.fetchCount(db)
-            let productCount = try PersistedProduct.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-
-            #expect(siteCount == 0)
-            #expect(productCount == 0)
-            #expect(variationCount == 0)
-        }
-    }
-
-    // MARK: - Persist Catalog Tests
-
-    @Test func persistCatalog_saves_site_products_and_variations() async throws {
+    @Test func replaceAllCatalogData_saves_site_products_and_variations() async throws {
         // Given
         let catalog = POSCatalog(
             products: [
@@ -55,7 +29,7 @@ struct POSCatalogPersistenceServiceTests {
         )
 
         // When
-        try await sut.persistCatalog(catalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
         let db = grdbManager.databaseConnection
@@ -73,7 +47,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistCatalog_saves_product_images_and_attributes() async throws {
+    @Test func replaceAllCatalogData_saves_product_images_and_attributes() async throws {
         // Given
         let productWithRelations = POSProduct.fake().copy(
             siteID: sampleSiteID,
@@ -84,7 +58,7 @@ struct POSCatalogPersistenceServiceTests {
         let catalog = POSCatalog(products: [productWithRelations], variations: [])
 
         // When
-        try await sut.persistCatalog(catalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
         let db = grdbManager.databaseConnection
@@ -97,7 +71,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistCatalog_saves_variation_images_and_attributes() async throws {
+    @Test func replaceAllCatalogData_saves_variation_images_and_attributes() async throws {
         // Given
         let variationWithRelations = POSProductVariation.fake().copy(
             siteID: sampleSiteID,
@@ -109,7 +83,7 @@ struct POSCatalogPersistenceServiceTests {
                                  variations: [variationWithRelations])
 
         // When
-        try await sut.persistCatalog(catalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
         let db = grdbManager.databaseConnection
@@ -122,7 +96,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistCatalog_handles_duplicate_image_ids_gracefully() async throws {
+    @Test func replaceAllCatalogData_handles_duplicate_image_ids_gracefully() async throws {
         // Given - products with same image ID
         let sharedImageID: Int64 = 300
         let product1 = POSProduct.fake().copy(
@@ -138,7 +112,7 @@ struct POSCatalogPersistenceServiceTests {
         let catalog = POSCatalog(products: [product1, product2], variations: [])
 
         // When
-        try await sut.persistCatalog(catalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then - should not fail and should handle duplicates
         let db = grdbManager.databaseConnection
@@ -153,15 +127,13 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    // MARK: - Replace All Data Tests
-
     @Test func replaceAllCatalogData_clears_existing_and_persists_new() async throws {
         // Given - existing data
         let existingCatalog = POSCatalog(
             products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 80)],
             variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 80, productVariationID: 100)]
         )
-        try await sut.persistCatalog(existingCatalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with new data
         let newCatalog = POSCatalog(
@@ -196,7 +168,7 @@ struct POSCatalogPersistenceServiceTests {
             attributes: [ProductAttribute.fake()]
         )
         let existingCatalog = POSCatalog(products: [existingProduct], variations: [])
-        try await sut.persistCatalog(existingCatalog, siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with empty catalog
         let emptyCatalog = POSCatalog(products: [], variations: [])
@@ -212,26 +184,6 @@ struct POSCatalogPersistenceServiceTests {
             #expect(productCount == 0)
             #expect(imageCount == 0)
             #expect(attributeCount == 0)
-        }
-    }
-
-    @Test func persistCatalog_handles_empty_catalog_gracefully() async throws {
-        // Given
-        let emptyCatalog = POSCatalog(products: [], variations: [])
-
-        // When
-        try await sut.persistCatalog(emptyCatalog, siteID: sampleSiteID)
-
-        // Then
-        let db = grdbManager.databaseConnection
-        try await db.read { db in
-            let siteCount = try PersistedSite.fetchCount(db)
-            let productCount = try PersistedProduct.fetchCount(db)
-            let variationCount = try PersistedProductVariation.fetchCount(db)
-
-            #expect(siteCount == 1)
-            #expect(productCount == 0)
-            #expect(variationCount == 0)
         }
     }
 }

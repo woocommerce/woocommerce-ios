@@ -3,16 +3,6 @@ import Foundation
 import Storage
 
 protocol POSCatalogPersistenceServiceProtocol {
-    /// Clears all catalog data for the specified site
-    /// - Parameter siteID: The site ID to clear data for
-    func clearSiteData(for siteID: Int64) async throws
-
-    /// Persists catalog data to the database
-    /// - Parameters:
-    ///   - catalog: The catalog to persist
-    ///   - siteID: The site ID to associate the catalog with
-    func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws
-
     /// Clears existing data and persists new catalog data
     /// - Parameters:
     ///   - catalog: The catalog to persist
@@ -27,20 +17,15 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         self.grdbManager = grdbManager
     }
 
-    func clearSiteData(for siteID: Int64) async throws {
-        let db = grdbManager.databaseConnection
-        try await db.write { db in
+    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+        DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
+
+        try await grdbManager.databaseConnection.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
             // currently, we can't save for more than one site as entity IDs are not namespaced.
             try PersistedSite.deleteAll(db)
 //            try PersistedSite.deleteOne(db, key: siteID)
-        }
-    }
 
-    func persistCatalog(_ catalog: POSCatalog, siteID: Int64) async throws {
-        DDLogInfo("💾 Persisting catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
-
-        try await grdbManager.databaseConnection.write { db in
             let site = PersistedSite(id: siteID)
             try site.insert(db)
 
@@ -83,11 +68,6 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }
-    }
-
-    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        try await clearSiteData(for: siteID)
-        try await persistCatalog(catalog, siteID: siteID)
     }
 }
 

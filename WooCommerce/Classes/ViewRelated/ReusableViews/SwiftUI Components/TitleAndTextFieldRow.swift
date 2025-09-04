@@ -66,9 +66,9 @@ struct TitleAndTextFieldRow: View {
             HStack {
                 TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                     .foregroundColor(contentColor)
-                    .onChange(of: text, perform: { newValue in
+                    .onChange(of: text) { _, newValue in
                         text = formatText(newValue)
-                    })
+                    }
                     .onAppear {
                         text = formatText(text)
                     }

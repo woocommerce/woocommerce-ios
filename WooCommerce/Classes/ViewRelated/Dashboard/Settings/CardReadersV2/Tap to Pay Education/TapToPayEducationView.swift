@@ -58,7 +58,7 @@ struct TapToPayEducationView: View {
             }
         }
         .interactiveDismissDisabled(viewModel.isInteractiveDismissDisabled)
-        .onChange(of: viewModel.dismiss) { _ in
+        .onChange(of: viewModel.dismiss) {
             dismiss()
         }
         .onAppear {

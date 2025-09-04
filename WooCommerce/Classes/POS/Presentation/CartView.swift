@@ -301,11 +301,11 @@ private struct CartScrollViewContent: View {
                     .onAppear {
                         updateItemImageVisibility(cartListWidth: geometry.size.width)
                     }
-                    .onChange(of: geometry.size.width) {
-                        updateItemImageVisibility(cartListWidth: $0)
+                    .onChange(of: geometry.size.width) { _, newValue in
+                        updateItemImageVisibility(cartListWidth: newValue)
                     }
-                    .onChange(of: dynamicTypeSize) {
-                        updateItemImageVisibility(dynamicTypeSize: $0, cartListWidth: geometry.size.width)
+                    .onChange(of: dynamicTypeSize) { _, newValue in
+                        updateItemImageVisibility(dynamicTypeSize: newValue, cartListWidth: geometry.size.width)
                     }
                 })
                 .onPreferenceChange(ScrollOffSetPreferenceKey.self) { position in
@@ -328,7 +328,7 @@ private struct CartScrollViewContent: View {
                 scrollViewHeight = height
             }
             .coordinateSpace(name: Constants.scrollViewCoordinateSpaceIdentifier)
-            .onChange(of: posModel.cart.purchasableItems.first?.id) { itemToScrollTo in
+            .onChange(of: posModel.cart.purchasableItems.first?.id) { _, itemToScrollTo in
                 if posModel.orderStage == .building {
                     withAnimation {
                         proxy.scrollTo(itemToScrollTo)
@@ -428,7 +428,7 @@ private struct PurchasableItemsCartSection: View {
                 .transition(.opacity)
                 .accessibilityFocused($accessibilityFocusedItem, equals: cartItem.id)
             }
-            .onChange(of: posModel.cart.accessibilityFocusedItemID) { itemID in
+            .onChange(of: posModel.cart.accessibilityFocusedItemID) { _, itemID in
                  if let itemID = itemID {
                      Task { @MainActor in
                          accessibilityFocusedItem = itemID

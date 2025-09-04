@@ -170,7 +170,7 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
                         .onAppear {
                             updateSize(to: proxy.size.height)
                         }
-                        .onChange(of: proxy.size) { newSize in
+                        .onChange(of: proxy.size) { _, newSize in
                             updateSize(to: newSize.height)
                         }
                 }
@@ -182,7 +182,7 @@ private struct AnimatedTransitionContainer<Content: View, ID: Equatable>: View {
             .onAppear {
                 hasAppeared = true
             }
-            .onChange(of: contentID) { newID in
+            .onChange(of: contentID) { _, newID in
                 guard newID != previousID else { return }
 
                 if hasAppeared {

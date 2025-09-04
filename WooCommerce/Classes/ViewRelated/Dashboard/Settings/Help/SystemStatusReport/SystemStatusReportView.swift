@@ -60,7 +60,7 @@ struct SystemStatusReportView: View {
                   primaryButton: .default(Text(Localization.tryAgainButton), action: viewModel.fetchReport),
                   secondaryButton: .default(Text(Localization.cancelButton), action: dismissAction))
         }
-        .onChange(of: viewModel.errorFetchingReport) { newValue in
+        .onChange(of: viewModel.errorFetchingReport) { _, newValue in
             showingErrorAlert = newValue
         }
         .toolbar {

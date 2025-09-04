@@ -25,6 +25,9 @@ final class MockPointOfSaleOrderListFetchStrategyFactory: PointOfSaleOrderListFe
 private struct MockPointOfSaleOrderListFetchStrategy: PointOfSaleOrderListFetchStrategy {
     let orderService: PointOfSaleOrderListServiceProtocol
 
+    var supportsCaching: Bool { true }
+    var showsLoadingWithItems: Bool { true }
+
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.providePointOfSaleOrders(pageNumber: pageNumber)
     }
@@ -33,6 +36,9 @@ private struct MockPointOfSaleOrderListFetchStrategy: PointOfSaleOrderListFetchS
 private struct MockPointOfSaleOrderListSearchFetchStrategy: PointOfSaleOrderListFetchStrategy {
     let orderService: PointOfSaleOrderListServiceProtocol
     let searchTerm: String
+
+    var supportsCaching: Bool { false }
+    var showsLoadingWithItems: Bool { false }
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.searchPointOfSaleOrders(searchTerm: searchTerm, pageNumber: pageNumber)

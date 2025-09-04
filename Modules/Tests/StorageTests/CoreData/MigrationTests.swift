@@ -3468,6 +3468,37 @@ final class MigrationTests: XCTestCase {
         let urlValue = migratedObject.value(forKey: "addPaymentMethodURL") as? String
         XCTAssertEqual(urlValue, "https://example.com")
     }
+
+    func test_migrating_from_124_to_125_adds_new_attribute_hazmatCategory_to_shippingLabel() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 124")
+        let sourceContext = sourceContainer.viewContext
+
+        let label = insertShippingLabel(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(label.entity.attributesByName["hazmatCategory"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 125")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedLabel = try XCTUnwrap(targetContext.first(entityName: "ShippingLabel"))
+
+        // `hazmatCategory` should be present in `migratedLabel`
+        XCTAssertNotNil(migratedLabel.entity.attributesByName["hazmatCategory"])
+
+        let hazmatCategory = migratedLabel.value(forKey: "hazmatCategory") as? String
+        XCTAssertNil(hazmatCategory) // default value
+
+        let category = "1"
+        migratedLabel.setValue(category, forKey: "hazmatCategory")
+        try targetContext.save()
+
+        let updatedCategory = migratedLabel.value(forKey: "hazmatCategory") as? String
+        XCTAssertEqual(updatedCategory, category)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

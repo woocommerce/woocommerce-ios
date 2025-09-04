@@ -285,7 +285,7 @@ struct POSPreviewHelpers {
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
+final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState {
         let orders = [
             POSOrder(
@@ -387,6 +387,8 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
+    func searchOrders(searchTerm: String) async {}
+    func clearSearchOrders() {}
 }
 
 // MARK: - Barcode Scan Service

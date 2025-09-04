@@ -921,10 +921,10 @@ final class OrdersRemoteTests: XCTestCase {
         // Given
         let remote = OrdersRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-        
+
         // When
         let result = try await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: "test", pageNumber: 1, pageSize: 25)
-        
+
         // Then
         XCTAssert(result.items.count == 4)
         XCTAssertEqual(result.hasMorePages, false)
@@ -936,14 +936,14 @@ final class OrdersRemoteTests: XCTestCase {
         let searchTerm = "test search"
         let pageNumber = 2
         let pageSize = 10
-        
+
         // When
         _ = try? await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: searchTerm, pageNumber: pageNumber, pageSize: pageSize)
-        
+
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let parameters = request.parameters
-        
+
         XCTAssertEqual(parameters["search"] as? String, searchTerm)
         XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
         XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
@@ -956,7 +956,7 @@ final class OrdersRemoteTests: XCTestCase {
     func test_searchPOSOrders_properly_relays_networking_error() async throws {
         // Given
         let remote = OrdersRemote(network: network)
-        
+
         do {
             // When
             _ = try await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: "test", pageNumber: 1, pageSize: 25)

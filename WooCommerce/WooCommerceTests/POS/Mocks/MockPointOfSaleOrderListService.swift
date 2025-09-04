@@ -7,6 +7,7 @@ import WooFoundation
 
 final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
     var orderPages: [[POSOrder]] = []
+    var searchOrderPages: [[POSOrder]] = []
     var errorToThrow: Error?
     var shouldReturnZeroOrders = false
     var shouldSimulateTwoPages = false
@@ -16,6 +17,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
     var spyLastRequestedPageNumber: Int?
     var spyCallCount = 0
     var spyLastSearchTerm: String?
+    var lastSearchTerm: String?
 
     func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         spyLastRequestedPageNumber = pageNumber
@@ -64,6 +66,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
 
     func searchPointOfSaleOrders(searchTerm: String, pageNumber: Int) async throws -> PagedItems<POSOrder> {
         spyLastSearchTerm = searchTerm
+        lastSearchTerm = searchTerm
         spyLastRequestedPageNumber = pageNumber
         spyCallCount += 1
 
@@ -77,6 +80,15 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
 
         if shouldReturnZeroOrders {
             return .init(items: [], hasMorePages: false, totalItems: 0)
+        }
+
+        // Use searchOrderPages if available, otherwise filter based on search term
+        if !searchOrderPages.isEmpty {
+            return .init(
+                items: (searchOrderPages[safe: pageNumber - 1] ?? []),
+                hasMorePages: searchOrderPages.count > pageNumber,
+                totalItems: searchOrderPages.flatMap { $0 }.count
+            )
         }
 
         // For testing purposes, return filtered results based on search term
@@ -244,5 +256,40 @@ extension MockPointOfSaleOrderListService {
         )
 
         return [order3, order4]
+    }
+
+    static func makeSearchOrders() -> [POSOrder] {
+        let baseDate = Date(timeIntervalSince1970: 1672531200) // Fixed date: Jan 1, 2023
+
+        let searchOrder = POSOrder(
+            id: 2001,
+            number: "2001",
+            dateCreated: baseDate.addingTimeInterval(14400),
+            status: .completed,
+            formattedTotal: "$18.50",
+            formattedSubtotal: "$18.50",
+            customerEmail: "search@example.com",
+            paymentMethodID: "cod",
+            paymentMethodTitle: "Cash",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 7,
+                    name: "Test Product",
+                    productID: 107,
+                    variationID: 0,
+                    quantity: 1,
+                    formattedPrice: "$18.50",
+                    formattedTotal: "$18.50",
+                    attributes: []
+                )
+            ],
+            refunds: [],
+            formattedTotalTax: "$0.00",
+            formattedDiscountTotal: nil,
+            formattedPaymentTotal: "$18.50",
+            formattedNetAmount: nil
+        )
+
+        return [searchOrder]
     }
 }

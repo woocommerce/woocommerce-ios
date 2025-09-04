@@ -111,11 +111,13 @@ public struct WooShippingLabelData: Decodable, Equatable {
 
         let destinations = storedData?.selectedDestinations
         let origins = storedData?.selectedOrigins
+        let hazmatSelections = storedData?.selectedHazmat
 
         if destinations?.isEmpty == false || origins?.isEmpty == false {
             orderLabels = WooShippingLabelData.mapAddresses(
                 origins: origins,
                 destinations: destinations,
+                hazmatSelections: hazmatSelections,
                 into: decodedOrderLabels
             )
         } else {
@@ -136,14 +138,17 @@ public struct WooShippingLabelData: Decodable, Equatable {
 
 public extension WooShippingLabelData {
     typealias WooShippingLabelAddressMap = [String: WooShippingAddress]
+    typealias WooShippingHazmatMap = [String: HazmatSelection]
 
     struct StoredData: Decodable, Equatable {
         let selectedDestinations: WooShippingLabelAddressMap?
         let selectedOrigins: WooShippingLabelAddressMap?
+        let selectedHazmat: WooShippingHazmatMap?
 
         public enum CodingKeys: String, CodingKey {
             case selectedDestination = "selected_destination"
             case selectedOrigin = "selected_origin"
+            case selectedHazmat = "selected_hazmat"
         }
 
         public init(from decoder: any Decoder) throws {
@@ -156,6 +161,7 @@ public extension WooShippingLabelData {
                 WooShippingLabelAddressMap.self,
                 forKey: CodingKeys.selectedOrigin
             )
+            selectedHazmat = try? container.decodeIfPresent(WooShippingHazmatMap.self, forKey: .selectedHazmat)
         }
     }
 }
@@ -165,4 +171,9 @@ public extension WooShippingLabelData {
 enum WooShippingConfigDecodingError: Error {
     case missingSiteID
     case missingOrderID
+}
+
+public struct HazmatSelection: Decodable, Equatable {
+    public let isHazmat: Bool
+    public let category: String
 }

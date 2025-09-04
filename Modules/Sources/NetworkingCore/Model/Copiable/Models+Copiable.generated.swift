@@ -713,7 +713,8 @@ extension NetworkingCore.ShippingLabel {
         productNames: CopiableProp<[String]> = .copy,
         commercialInvoiceURL: NullableCopiableProp<String> = .copy,
         usedDate: NullableCopiableProp<Date> = .copy,
-        expiryDate: NullableCopiableProp<Date> = .copy
+        expiryDate: NullableCopiableProp<Date> = .copy,
+        hazmatCategory: NullableCopiableProp<String> = .copy
     ) -> NetworkingCore.ShippingLabel {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -736,6 +737,7 @@ extension NetworkingCore.ShippingLabel {
         let commercialInvoiceURL = commercialInvoiceURL ?? self.commercialInvoiceURL
         let usedDate = usedDate ?? self.usedDate
         let expiryDate = expiryDate ?? self.expiryDate
+        let hazmatCategory = hazmatCategory ?? self.hazmatCategory
 
         return NetworkingCore.ShippingLabel(
             siteID: siteID,
@@ -758,7 +760,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: productNames,
             commercialInvoiceURL: commercialInvoiceURL,
             usedDate: usedDate,
-            expiryDate: expiryDate
+            expiryDate: expiryDate,
+            hazmatCategory: hazmatCategory
         )
     }
 }

@@ -50,7 +50,8 @@ extension Storage.ShippingLabel: ReadOnlyConvertible {
               productNames: productNames,
               commercialInvoiceURL: commercialInvoiceURL,
               usedDate: usedDate,
-              expiryDate: expiryDate)
+              expiryDate: expiryDate,
+              hazmatCategory: nil) // TODO: update core data model
     }
 }
 

@@ -20,7 +20,7 @@ final class WooShippingUpdateShipmentMapperTests: XCTestCase {
     }
 
     func test_shipments_are_properly_parsed_when_response_has_no_data_envelope() throws {
-        guard let shipments = mapLoadShippingLabelConfig() else {
+        guard let shipments = mapLoadShippingLabelConfigWithoutDataEnvelope() else {
             XCTFail()
             return
         }

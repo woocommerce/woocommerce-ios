@@ -85,6 +85,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 2,
                     formattedPrice: "$10.00",
                     formattedTotal: "$20.00",
+                    imageSrc: nil,
                     attributes: []
                 ),
                 POSOrderItem(
@@ -95,6 +96,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 1,
                     formattedPrice: "$5.99",
                     formattedTotal: "$5.99",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -124,6 +126,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 1,
                     formattedPrice: "$15.50",
                     formattedTotal: "$15.50",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -159,6 +162,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 1,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
+                    imageSrc: nil,
                     attributes: []
                 ),
                 POSOrderItem(
@@ -169,6 +173,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 2,
                     formattedPrice: "$15.38",
                     formattedTotal: "$30.75",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -198,6 +203,7 @@ extension MockPointOfSaleOrderListService {
                     quantity: 1,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],

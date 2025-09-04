@@ -444,6 +444,7 @@ extension NetworkingCore.OrderItem {
         totalTax: CopiableProp<String> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
         addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
+        image: NullableCopiableProp<OrderItemProductImage> = .copy,
         parent: NullableCopiableProp<Int64> = .copy,
         bundleConfiguration: CopiableProp<[OrderItemBundleItem]> = .copy
     ) -> NetworkingCore.OrderItem {
@@ -462,6 +463,7 @@ extension NetworkingCore.OrderItem {
         let totalTax = totalTax ?? self.totalTax
         let attributes = attributes ?? self.attributes
         let addOns = addOns ?? self.addOns
+        let image = image ?? self.image
         let parent = parent ?? self.parent
         let bundleConfiguration = bundleConfiguration ?? self.bundleConfiguration
 
@@ -481,6 +483,7 @@ extension NetworkingCore.OrderItem {
             totalTax: totalTax,
             attributes: attributes,
             addOns: addOns,
+            image: image,
             parent: parent,
             bundleConfiguration: bundleConfiguration
         )

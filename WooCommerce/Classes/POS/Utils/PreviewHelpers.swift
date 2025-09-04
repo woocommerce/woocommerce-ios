@@ -260,6 +260,7 @@ struct POSPreviewHelpers {
                              quantity: 2.0,
                              formattedPrice: "$12.50",
                              formattedTotal: "$25.00",
+                             imageSrc: nil,
                              attributes: []),
                 POSOrderItem(
                     itemID: 2,
@@ -269,6 +270,7 @@ struct POSPreviewHelpers {
                     quantity: 1.0,
                     formattedPrice: "$15.99",
                     formattedTotal: "$15.99",
+                    imageSrc: nil,
                     attributes: [
                         OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
                         OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
@@ -306,6 +308,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                                  quantity: 2.0,
                                  formattedPrice: "$12.50",
                                  formattedTotal: "$25.00",
+                                 imageSrc: nil,
                                  attributes: []),
                     POSOrderItem(
                         itemID: 2,
@@ -315,6 +318,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         quantity: 1.0,
                         formattedPrice: "$15.99",
                         formattedTotal: "$15.99",
+                        imageSrc: nil,
                         attributes: [
                             OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
                             OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
@@ -346,6 +350,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         quantity: 3.0,
                         formattedPrice: "$19.99",
                         formattedTotal: "$59.97",
+                        imageSrc: nil,
                         attributes: []
                     ),
                     POSOrderItem(
@@ -356,6 +361,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControlle
                         quantity: 1.0,
                         formattedPrice: "$29.99",
                         formattedTotal: "$29.99",
+                        imageSrc: nil,
                         attributes: [
                             OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
                             OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")

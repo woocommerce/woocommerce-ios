@@ -10,6 +10,7 @@ public struct POSOrderItem: Equatable, Hashable {
     public let quantity: Decimal
     public let formattedPrice: String
     public let formattedTotal: String
+    public let imageSrc: String?
     public let attributes: [OrderItemAttribute]
 
     public init(itemID: Int64,
@@ -19,6 +20,7 @@ public struct POSOrderItem: Equatable, Hashable {
                 quantity: Decimal,
                 formattedPrice: String,
                 formattedTotal: String,
+                imageSrc: String?,
                 attributes: [OrderItemAttribute]) {
         self.itemID = itemID
         self.name = name
@@ -27,6 +29,7 @@ public struct POSOrderItem: Equatable, Hashable {
         self.quantity = quantity
         self.formattedPrice = formattedPrice
         self.formattedTotal = formattedTotal
+        self.imageSrc = imageSrc
         self.attributes = attributes
     }
 }

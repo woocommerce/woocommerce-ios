@@ -61,6 +61,7 @@ struct POSOrderMapper {
             quantity: orderItem.quantity,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
             formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
+            imageSrc: orderItem.image?.src,
             attributes: orderItem.attributes
         )
     }

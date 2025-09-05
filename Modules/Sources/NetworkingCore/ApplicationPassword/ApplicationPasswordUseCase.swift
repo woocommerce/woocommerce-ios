@@ -3,8 +3,10 @@ import enum Alamofire.AFError
 import struct Alamofire.HTTPMethod
 import KeychainAccess
 
-#if canImport(UIKit)
+#if !os(watchOS)
 import UIKit
+#else
+import WatchKit
 #endif
 
 public enum ApplicationPasswordUseCaseError: Error {
@@ -148,13 +150,16 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 private extension DefaultApplicationPasswordUseCase {
     /// Helper method to create password name from device
     static func createPasswordName() -> String {
-        #if !os(watchOS)
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
+        #if !os(watchOS)
         let model = UIDevice.current.model
         let identifierForVendor = UIDevice.current.identifierForVendor?.uuidString ?? ""
         return "\(bundleIdentifier).ios-app-client.\(model).\(identifierForVendor)"
         #else
-        fatalError("Unexpected error: Application password should not be generated through watch app")
+        let model = WKInterfaceDevice.current().model
+        let identifierForVendor =
+        WKInterfaceDevice.current().identifierForVendor?.uuidString ?? ""
+        return "\(bundleIdentifier).watch-app-client.\(model).\(identifierForVendor)"
         #endif
     }
 

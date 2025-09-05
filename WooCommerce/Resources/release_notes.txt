@@ -1,4 +1,1 @@
-- [*] Blaze: Fixed issue dismissing the Blaze flow from an empty campaign list. [https://github.com/woocommerce/woocommerce-ios/pull/16085]
-- [*] POS: Enhanced cash payment experience with pre-filled amounts. [https://github.com/woocommerce/woocommerce-ios/pull/16058]
-- [*] POS: Point of Sale settings are now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
-- [*] Shipping Labels: Show correct HAZMAT category for purchased labels. [https://github.com/woocommerce/woocommerce-ios/pull/16081]
+This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable—just how you need it!

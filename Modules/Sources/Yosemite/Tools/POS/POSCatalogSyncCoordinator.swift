@@ -1,6 +1,5 @@
 import Foundation
 import Storage
-import CocoaLumberjackSwift
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync for the specified site

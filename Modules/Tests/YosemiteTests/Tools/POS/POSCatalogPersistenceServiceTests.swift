@@ -121,9 +121,9 @@ struct POSCatalogPersistenceServiceTests {
             let imageCount = try PersistedProductImage.fetchCount(db)
 
             #expect(productCount == 2)
-            // One or both images should be saved (depending on conflict resolution)
-            #expect(imageCount >= 1)
-            #expect(imageCount <= 2)
+            // While there's only one, the current implementation doesn't
+            // have a join table so only one product has a reference to it
+            #expect(imageCount == 1)
         }
     }
 

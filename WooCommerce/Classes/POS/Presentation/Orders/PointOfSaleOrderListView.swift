@@ -33,7 +33,11 @@ struct PointOfSaleOrderListView: View {
                 backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
                 trailingContent: {
                     if !isSearching {
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                        POSPageHeaderActionButton(
+                            systemName: "magnifyingglass",
+                            backgroundColor: .posSurface,
+                            imageColor: .posOnSurface
+                        ) {
                             setSearch(true)
                         }
                         .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)

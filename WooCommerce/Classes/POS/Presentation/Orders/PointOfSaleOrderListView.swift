@@ -333,12 +333,12 @@ private extension PointOfSaleOrderListView {
 final class POSOrderSearchable: POSSearchable {
     private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
 
-    var itemListType: ItemListType {
-        .products(search: false)
-    }
-
     init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
         self.ordersController = ordersController
+    }
+
+    var searchFieldPlaceholder: String {
+        Localization.searchFieldPlaceholder
     }
 
     var searchHistory: [String] {
@@ -368,6 +368,12 @@ private enum Localization {
         "pos.orderListView.ordersTitle",
         value: "Orders",
         comment: "Title at the header for the Orders view.")
+
+    static let searchFieldPlaceholder = NSLocalizedString(
+        "pos.orderListView.searchFieldPlaceholder",
+        value: "Search orders",
+        comment: "Placeholder for a search field in the Orders view."
+    )
 }
 
 #if DEBUG

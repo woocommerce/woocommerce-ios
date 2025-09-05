@@ -269,11 +269,10 @@ extension MockPointOfSaleOrderListService {
                 POSOrderItem(
                     itemID: 7,
                     name: "Test Product",
-                    productID: 107,
-                    variationID: 0,
                     quantity: 1,
-                    formattedPrice: "$18.50",
+                    formattedPrice: "src",
                     formattedTotal: "$18.50",
+                    imageSrc: "$18.50",
                     attributes: []
                 )
             ],

@@ -27,6 +27,7 @@ private struct MockPointOfSaleOrderListFetchStrategy: PointOfSaleOrderListFetchS
 
     var supportsCaching: Bool { true }
     var showsLoadingWithItems: Bool { true }
+    var id: String = "default"
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.providePointOfSaleOrders(pageNumber: pageNumber)
@@ -39,6 +40,7 @@ private struct MockPointOfSaleOrderListSearchFetchStrategy: PointOfSaleOrderList
 
     var supportsCaching: Bool { false }
     var showsLoadingWithItems: Bool { false }
+    var id: String = "search"
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.searchPointOfSaleOrders(searchTerm: searchTerm, pageNumber: pageNumber)

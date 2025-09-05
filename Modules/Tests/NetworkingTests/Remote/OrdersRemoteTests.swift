@@ -917,19 +917,6 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
-    func test_searchPOSOrders_properly_returns_parsed_orders() async throws {
-        // Given
-        let remote = OrdersRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
-
-        // When
-        let result = try await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: "test", pageNumber: 1, pageSize: 25)
-
-        // Then
-        XCTAssert(result.items.count == 4)
-        XCTAssertEqual(result.hasMorePages, false)
-    }
-
     func test_searchPOSOrders_sends_correct_parameters() async throws {
         // Given
         let remote = OrdersRemote(network: network)

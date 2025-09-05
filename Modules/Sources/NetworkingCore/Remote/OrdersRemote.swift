@@ -458,7 +458,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
             ParameterKeys.fields: ParameterValues.fieldValues,
-            ParameterKeys.createdVia: "pos-rest-api"
+            ParameterKeys.createdVia: ParameterValues.posFilter
         ]
 
         let path = Constants.ordersPath
@@ -469,10 +469,8 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
-
-        let orders: [Order] = try await enqueue(request, mapper: mapper)
-        let hasMorePages = orders.count == pageSize
-        return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
+        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
     public func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
@@ -483,7 +481,7 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
             ParameterKeys.fields: ParameterValues.fieldValues,
-            ParameterKeys.createdVia: "pos-rest-api"
+            ParameterKeys.createdVia: ParameterValues.posFilter
         ]
         let path = Constants.ordersPath
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -493,9 +491,8 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
         let mapper = OrderListMapper(siteID: siteID)
-        let orders: [Order] = try await enqueue(request, mapper: mapper)
-        let hasMorePages = orders.count == pageSize
-        return PagedItems(items: orders, hasMorePages: hasMorePages, totalItems: nil)
+        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 }
 
@@ -545,6 +542,7 @@ public extension OrdersRemote {
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
         static let dateModifiedField = "date_modified_gmt"
+        static let posFilter = "pos-rest-api"
     }
 
     enum NestedFieldKeys {

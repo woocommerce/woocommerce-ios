@@ -157,10 +157,11 @@ struct POSCatalogFullSyncServiceTests {
     @Test func init_with_custom_batch_size_uses_specified_size() async throws {
         // Given
         let customBatchSize = 5
-        let mockPersistence = MockPOSCatalogPersistenceService()
 
         // When
-        let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: customBatchSize, persistenceService: mockPersistence)
+        let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
+                                                batchSize: customBatchSize,
+                                                persistenceService: mockPersistenceService)
         _ = try await service.startFullSync(for: sampleSiteID)
 
         // Then

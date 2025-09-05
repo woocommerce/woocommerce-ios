@@ -106,6 +106,7 @@ private extension ProductLoaderViewControllerModelTests {
                   totalTax: "",
                   attributes: [],
                   addOns: [],
+                  image: nil,
                   parent: nil,
                   bundleConfiguration: [])
     }

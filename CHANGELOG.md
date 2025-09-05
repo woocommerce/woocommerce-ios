@@ -2,7 +2,7 @@
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
 ## 23.2
-This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable—just how you need it!
+This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable — just how you need it!
 
 ## 23.1
 Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!

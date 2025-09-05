@@ -182,8 +182,11 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService()
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             featureFlagService: mockFeatureFlagService)
         let email = "test@example.com"
 
         // When
@@ -199,8 +202,11 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService()
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             featureFlagService: mockFeatureFlagService)
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -632,9 +638,13 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order
@@ -654,9 +664,12 @@ struct PointOfSaleOrderControllerTests {
 
         @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
             // Given
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 analytics: analytics)
+                                                 analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService)
 
             // When
             do {
@@ -676,9 +689,12 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
 
             receiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))

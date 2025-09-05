@@ -56,11 +56,10 @@ struct POSOrderMapper {
         return POSOrderItem(
             itemID: orderItem.itemID,
             name: orderItem.name,
-            productID: orderItem.productID,
-            variationID: orderItem.variationID,
             quantity: orderItem.quantity,
             formattedPrice: currencyFormatter.formatAmount(orderItem.price, with: currency) ?? "",
             formattedTotal: currencyFormatter.formatAmount(orderItem.total, with: currency) ?? "",
+            imageSrc: orderItem.image?.src,
             attributes: orderItem.attributes
         )
     }

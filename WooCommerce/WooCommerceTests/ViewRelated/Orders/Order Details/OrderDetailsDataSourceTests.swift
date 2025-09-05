@@ -1104,6 +1104,7 @@ private extension OrderDetailsDataSourceTests {
                   totalTax: "1",
                   attributes: [],
                   addOns: [],
+                  image: nil,
                   parent: nil,
                   bundleConfiguration: [])
     }

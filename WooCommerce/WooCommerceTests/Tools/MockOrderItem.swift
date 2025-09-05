@@ -34,6 +34,7 @@ public struct MockOrderItem {
                          totalTax: totalTax,
                          attributes: attributes,
                          addOns: [],
+                         image: nil,
                          parent: parent,
                          bundleConfiguration: [])
     }

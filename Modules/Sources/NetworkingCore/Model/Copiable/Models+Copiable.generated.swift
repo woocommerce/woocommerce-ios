@@ -444,6 +444,7 @@ extension NetworkingCore.OrderItem {
         totalTax: CopiableProp<String> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
         addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
+        image: NullableCopiableProp<OrderItemProductImage> = .copy,
         parent: NullableCopiableProp<Int64> = .copy,
         bundleConfiguration: CopiableProp<[OrderItemBundleItem]> = .copy
     ) -> NetworkingCore.OrderItem {
@@ -462,6 +463,7 @@ extension NetworkingCore.OrderItem {
         let totalTax = totalTax ?? self.totalTax
         let attributes = attributes ?? self.attributes
         let addOns = addOns ?? self.addOns
+        let image = image ?? self.image
         let parent = parent ?? self.parent
         let bundleConfiguration = bundleConfiguration ?? self.bundleConfiguration
 
@@ -481,6 +483,7 @@ extension NetworkingCore.OrderItem {
             totalTax: totalTax,
             attributes: attributes,
             addOns: addOns,
+            image: image,
             parent: parent,
             bundleConfiguration: bundleConfiguration
         )
@@ -713,7 +716,8 @@ extension NetworkingCore.ShippingLabel {
         productNames: CopiableProp<[String]> = .copy,
         commercialInvoiceURL: NullableCopiableProp<String> = .copy,
         usedDate: NullableCopiableProp<Date> = .copy,
-        expiryDate: NullableCopiableProp<Date> = .copy
+        expiryDate: NullableCopiableProp<Date> = .copy,
+        hazmatCategory: NullableCopiableProp<String> = .copy
     ) -> NetworkingCore.ShippingLabel {
         let siteID = siteID ?? self.siteID
         let orderID = orderID ?? self.orderID
@@ -736,6 +740,7 @@ extension NetworkingCore.ShippingLabel {
         let commercialInvoiceURL = commercialInvoiceURL ?? self.commercialInvoiceURL
         let usedDate = usedDate ?? self.usedDate
         let expiryDate = expiryDate ?? self.expiryDate
+        let hazmatCategory = hazmatCategory ?? self.hazmatCategory
 
         return NetworkingCore.ShippingLabel(
             siteID: siteID,
@@ -758,7 +763,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: productNames,
             commercialInvoiceURL: commercialInvoiceURL,
             usedDate: usedDate,
-            expiryDate: expiryDate
+            expiryDate: expiryDate,
+            hazmatCategory: hazmatCategory
         )
     }
 }

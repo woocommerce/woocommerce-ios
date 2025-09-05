@@ -200,7 +200,8 @@ private extension WooShippingRefundView {
             productNames: [],
             commercialInvoiceURL: nil,
             usedDate: nil,
-            expiryDate: nil
+            expiryDate: nil,
+            hazmatCategory: nil,
         )
     ), onRefundRequested: { _ in })
 }

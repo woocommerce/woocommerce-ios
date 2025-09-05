@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 125 (Release 23.2.0.0)
+- @itsmeichigo 2025-09-04
+  - Added `hazmatCategory` attribute to `ShippingLabel` entity.
+
 ## Model 124 (Release 22.9.0.0)
 - @itsmeichigo 2025-07-11
   - Added `WooShippingShipment` entity.

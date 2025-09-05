@@ -125,21 +125,19 @@ extension MockPointOfSaleOrderListService {
                 POSOrderItem(
                     itemID: 1,
                     name: "Coffee",
-                    productID: 101,
-                    variationID: 0,
                     quantity: 2,
                     formattedPrice: "$10.00",
                     formattedTotal: "$20.00",
+                    imageSrc: nil,
                     attributes: []
                 ),
                 POSOrderItem(
                     itemID: 2,
                     name: "Muffin",
-                    productID: 102,
-                    variationID: 0,
                     quantity: 1,
                     formattedPrice: "$5.99",
                     formattedTotal: "$5.99",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -164,11 +162,10 @@ extension MockPointOfSaleOrderListService {
                 POSOrderItem(
                     itemID: 3,
                     name: "Tea",
-                    productID: 103,
-                    variationID: 0,
                     quantity: 1,
                     formattedPrice: "$15.50",
                     formattedTotal: "$15.50",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -199,21 +196,19 @@ extension MockPointOfSaleOrderListService {
                 POSOrderItem(
                     itemID: 4,
                     name: "Sandwich",
-                    productID: 104,
-                    variationID: 0,
                     quantity: 1,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
+                    imageSrc: nil,
                     attributes: []
                 ),
                 POSOrderItem(
                     itemID: 5,
                     name: "Soup",
-                    productID: 105,
-                    variationID: 0,
                     quantity: 2,
                     formattedPrice: "$15.38",
                     formattedTotal: "$30.75",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],
@@ -238,11 +233,10 @@ extension MockPointOfSaleOrderListService {
                 POSOrderItem(
                     itemID: 6,
                     name: "Cookies",
-                    productID: 106,
-                    variationID: 0,
                     quantity: 1,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
+                    imageSrc: nil,
                     attributes: []
                 )
             ],

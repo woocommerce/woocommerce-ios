@@ -645,6 +645,7 @@ private extension ReceiptStoreTests {
                            totalTax: "",
                            attributes: [],
                            addOns: [],
+                           image: nil,
                            parent: nil,
                            bundleConfiguration: [])
     }

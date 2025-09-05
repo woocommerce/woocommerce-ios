@@ -270,6 +270,7 @@ extension NetworkingCore.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
+            image: .fake(),
             parent: .fake(),
             bundleConfiguration: .fake()
         )
@@ -455,7 +456,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: .fake(),
             commercialInvoiceURL: .fake(),
             usedDate: .fake(),
-            expiryDate: .fake()
+            expiryDate: .fake(),
+            hazmatCategory: .fake()
         )
     }
 }

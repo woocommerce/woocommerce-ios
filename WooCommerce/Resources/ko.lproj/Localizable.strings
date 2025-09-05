@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-13 09:54:07+0000 */
+/* Translation-Revision-Date: 2025-08-26 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1757,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "쿠폰 생성";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "배송 레이블 만들기";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1926,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "세관 양식을 인쇄하고 이러한 국제 배송에 포함해야 함";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "집에서 모바일 장치로 배송 레이블을 할인된 요금으로 인쇄하여 우체국에 가는 시간을 줄이세요!";
 
 /* Country option for a site address. */
 "Cyprus" = "사이프러스";
@@ -3578,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3600,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "카드 리더에 대해 더 알아보기";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -5691,9 +5683,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "시간과 돈 절약";
 
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "WooCommerce 배송으로 처리하여 시간과 비용 절약";
-
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "제품 저장...";
 
@@ -6496,9 +6485,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "아이템 환불 수량을 눌러서 수정";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "눌러서 배송 레이블 만들기에 대한 정보 표시";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "모바일 장치에서 배송 레이블을 인쇄하는 방법에 대한 지침을 눌러서 표시";
@@ -7957,9 +7943,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "우커머스 설정";
-
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce 배송";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce 배송에서는 현재 %1$@을(를) 통한 HAZMAT 배송이 지원되지 않습니다.";
@@ -10727,12 +10710,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d개 아이템";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "세관 양식 인쇄";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "배송 레이블 인쇄(%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "환불 요청이 제출되었습니다. 새 레이블을 구매할 수 있습니다.";
 
@@ -11276,9 +11253,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "쿠폰이 적용되지 않음";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "바코드 스캔 중";
-
 /* The title of the menu button to start a barcode scanner setup flow. */
 "pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "최초 바코드 스캐너 설정";
 
@@ -11294,6 +11268,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "고객 지원";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "주문";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "내 상품은 어디에 있나요?";
 
@@ -11305,6 +11282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "연결 해제 중";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "설정";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "설명서";

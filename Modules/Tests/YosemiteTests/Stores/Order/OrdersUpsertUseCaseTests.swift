@@ -549,6 +549,7 @@ private extension OrdersUpsertUseCaseTests {
                   totalTax: "",
                   attributes: [],
                   addOns: [],
+                  image: nil,
                   parent: nil,
                   bundleConfiguration: [])
     }
@@ -573,6 +574,7 @@ private extension OrdersUpsertUseCaseTests {
               totalTax: "0.00",
               attributes: attributes,
               addOns: [],
+              image: nil,
               parent: nil,
               bundleConfiguration: [])
     }

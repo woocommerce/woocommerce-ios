@@ -159,7 +159,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func replaceAllCatalogData_removes_related_images_and_attributes() async throws {
+    @Test func replaceAllCatalogData_removes_related_images_and_attributes_for_products() async throws {
         // Given - existing data with relations
         let existingProduct = POSProduct.fake().copy(
             siteID: sampleSiteID,
@@ -184,6 +184,41 @@ struct POSCatalogPersistenceServiceTests {
             #expect(productCount == 0)
             #expect(imageCount == 0)
             #expect(attributeCount == 0)
+        }
+    }
+
+    @Test func replaceAllCatalogData_removes_related_images_and_attributes_for_variations() async throws {
+        // Given - existing data with variation relations
+        let parentProduct = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 10
+        )
+        let existingVariation = POSProductVariation.fake().copy(
+            siteID: sampleSiteID,
+            productID: 10,
+            productVariationID: 5,
+            attributes: [ProductVariationAttribute.fake()],
+            image: ProductImage.fake().copy(imageID: 500)
+        )
+        let existingCatalog = POSCatalog(products: [parentProduct], variations: [existingVariation])
+        try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
+
+        // When - replace with catalog containing only parent product (no variations)
+        let catalogWithoutVariations = POSCatalog(products: [parentProduct], variations: [])
+        try await sut.replaceAllCatalogData(catalogWithoutVariations, siteID: sampleSiteID)
+
+        // Then - variation and its related data should be gone
+        let db = grdbManager.databaseConnection
+        try await db.read { db in
+            let productCount = try PersistedProduct.fetchCount(db)
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+
+            #expect(productCount == 1) // Parent product should remain
+            #expect(variationCount == 0) // Variation should be gone
+            #expect(variationImageCount == 0) // Variation image should be gone
+            #expect(variationAttributeCount == 0) // Variation attributes should be gone
         }
     }
 }

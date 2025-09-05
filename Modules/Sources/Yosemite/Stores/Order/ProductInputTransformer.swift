@@ -241,6 +241,7 @@ private extension ProductInputTransformer {
                          totalTax: "",
                          attributes: [],
                          addOns: [],
+                         image: nil,
                          parent: nil,
                          bundleConfiguration: input.bundleConfiguration.map {
             switch $0.productOrVariation {

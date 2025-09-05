@@ -59,7 +59,8 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
                                                        productNames: ["Password protected!"],
                                                        commercialInvoiceURL: "https://woocommerce.com",
                                                        usedDate: nil,
-                                                       expiryDate: Date(timeIntervalSince1970: 1619268278.000))
+                                                       expiryDate: Date(timeIntervalSince1970: 1619268278.000),
+                                                       hazmatCategory: nil)
         let shippingLabelWithRefund = ShippingLabel(siteID: sampleSiteID,
                                                     orderID: sampleOrderID,
                                                     shippingLabelID: 2511668,
@@ -80,7 +81,8 @@ final class OrderShippingLabelListMapperTests: XCTestCase {
                                                     productNames: ["Password protected!"],
                                                     commercialInvoiceURL: nil,
                                                     usedDate: nil,
-                                                    expiryDate: Date(timeIntervalSince1970: 1619267426.000))
+                                                    expiryDate: Date(timeIntervalSince1970: 1619267426.000),
+                                                    hazmatCategory: nil)
         XCTAssertEqual(response.shippingLabels, [shippingLabelWithoutRefund, shippingLabelWithRefund])
     }
 

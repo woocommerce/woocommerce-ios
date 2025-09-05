@@ -235,7 +235,7 @@ struct OrderForm: View {
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
             }
-            .onChange(of: horizontalSizeClass) { _ in
+            .onChange(of: horizontalSizeClass) {
                 viewModel.saveInFlightOrderNotes()
                 viewModel.saveInflightCustomerDetails()
             }

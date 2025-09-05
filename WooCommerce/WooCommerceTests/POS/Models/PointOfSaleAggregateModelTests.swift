@@ -906,7 +906,20 @@ struct PointOfSaleAggregateModelTests {
             await sut.startCashPayment()
 
             // Then
-            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_tapped" }) != nil)
+            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "checkout_cash_payment_tapped" }) != nil)
+        }
+
+        @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {
+            // Given
+            let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+            let sut = makePointOfSaleAggregateModel(orderController: orderController,
+                                                    collectOrderPaymentAnalyticsTracker: analyticsTracker)
+
+            // When
+            try await sut.collectCashPayment(changeDueAmount: "0.00")
+
+            // Then
+            #expect(analyticsTracker.didCallTrackSuccessfulCashPayment == true)
         }
     }
 

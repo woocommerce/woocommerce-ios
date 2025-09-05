@@ -51,7 +51,7 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: sheetIsPresented, onDismiss: onDismiss, content: sheetContent)
-            .onChange(of: isPresented) { newValue in
+            .onChange(of: isPresented) { _, newValue in
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)
                 } else {
@@ -83,7 +83,7 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
     func body(content: Content) -> some View {
         content
             .sheet(item: sheetItem, onDismiss: onDismiss, content: sheetContent)
-            .onChange(of: sheetItem.wrappedValue) { newItem in
+            .onChange(of: sheetItem.wrappedValue) { _, newItem in
                 let newValue = newItem != nil
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-14 14:54:09+0000 */
+/* Translation-Revision-Date: 2025-08-25 16:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -1757,8 +1757,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "Создать купон";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "Создание транспортной этикетки";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1926,9 +1925,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "К этим международным отправлениям должны прилагаться бумажные таможенные формы";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Сократите очередь на почте, распечатывая транспортные этикетки дома с мобильного устройства со скидкой!";
 
 /* Country option for a site address. */
 "Cyprus" = "Кипр";
@@ -3578,8 +3574,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Узнайте, как надёжно упаковать опасные вещества, выполнить адресацию и доставить их с помощью USPS® в %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3600,9 +3595,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "Подробнее об устройствах чтения карт";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "Узнать больше о распечатке этикеток с вашего мобильного устройства";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -5691,9 +5683,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "Экономьте время и деньги";
 
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Экономьте время и деньги, выполняя заказы с помощью WooCommerce Shipping";
-
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Сохранение продукта...";
 
@@ -6496,9 +6485,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Нажмите, чтобы изменить сумму к возврату за позицию";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Коснитесь для просмотра сведений о создании транспортной этикетки";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Нажмите, чтобы показать инструкции, как распечатать транспортную этикетку на мобильном устройстве";
@@ -7957,9 +7943,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "Настройка WooCommerce";
-
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "В настоящее время WooCommerce Shipping не поддерживает доставку опасных веществ с помощью %1$@.";
@@ -10727,12 +10710,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "Товары (%1$d)";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "Распечатать таможенную форму";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "Напечатать транспортную этикетку (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "Запрос на возврат средств успешно отправлен. Вы можете приобрести новую этикетку.";
 
@@ -11276,9 +11253,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Купон не применён";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Сканирование штрихкодов";
-
 /* The title of the menu button to start a barcode scanner setup flow. */
 "pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Начальная настройка сканера штрихкодов";
 
@@ -11294,6 +11268,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Поддержка";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Заказы";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Где мои товары?";
 
@@ -11305,6 +11282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Отключение";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Настройки";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Документация";

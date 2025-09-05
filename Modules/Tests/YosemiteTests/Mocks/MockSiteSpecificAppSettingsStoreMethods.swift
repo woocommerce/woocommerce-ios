@@ -1,4 +1,5 @@
 @testable import Yosemite
+import Foundation
 import Storage
 
 final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
@@ -83,4 +84,10 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         spySetSearchTermsSiteID = siteID
         mockSearchTerms[itemType] = terms
     }
+
+    func getPOSLastFullSyncDate(for siteID: Int64) -> Date? {
+        return Date.now
+    }
+
+    func setPOSLastFullSyncDate(_ date: Date?, for siteID: Int64) { }
 }

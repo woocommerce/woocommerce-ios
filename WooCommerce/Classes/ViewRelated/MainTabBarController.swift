@@ -799,7 +799,7 @@ private extension MainTabBarController {
             return nil
         }
 
-        return POSCatalogSyncCoordinator(syncService: syncService)
+        return POSCatalogSyncCoordinator(syncService: syncService, grdbManager: ServiceLocator.grdbManager)
     }
 
     func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {

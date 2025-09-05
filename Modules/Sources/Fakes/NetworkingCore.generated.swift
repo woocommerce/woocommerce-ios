@@ -456,7 +456,8 @@ extension NetworkingCore.ShippingLabel {
             productNames: .fake(),
             commercialInvoiceURL: .fake(),
             usedDate: .fake(),
-            expiryDate: .fake()
+            expiryDate: .fake(),
+            hazmatCategory: .fake()
         )
     }
 }

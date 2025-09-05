@@ -85,7 +85,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     /// Whether the POS tab is visible for this store.
     ///
     public var isPOSTabVisible: Bool?
-    
+
     /// Last time a POS catalog full sync was completed for this store.
     ///
     public var posLastFullSyncDate: Date?

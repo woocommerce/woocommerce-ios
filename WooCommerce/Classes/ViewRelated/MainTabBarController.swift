@@ -768,7 +768,7 @@ private extension MainTabBarController {
 
         // Configure POS catalog sync coordinator for local catalog syncing
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            posCatalogSyncCoordinator = createPOSCatalogSyncCoordinator(siteID: siteID)
+            posCatalogSyncCoordinator = createPOSCatalogSyncCoordinator()
         }
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
@@ -792,7 +792,7 @@ private extension MainTabBarController {
         OrdersSplitViewWrapperController(siteID: siteID)
     }
 
-    func createPOSCatalogSyncCoordinator(siteID: Int64) -> POSCatalogSyncCoordinatorProtocol? {
+    func createPOSCatalogSyncCoordinator() -> POSCatalogSyncCoordinatorProtocol? {
         guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
               let syncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
         else {

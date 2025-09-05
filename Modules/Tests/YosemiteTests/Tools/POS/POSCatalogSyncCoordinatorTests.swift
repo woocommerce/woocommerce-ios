@@ -161,4 +161,3 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         return startFullSyncResult
     }
 }
-

@@ -18,17 +18,31 @@ protocol PointOfSaleOrderListControllerProtocol {
     func selectOrder(_ order: POSOrder?)
 }
 
-@Observable final class PointOfSaleOrderListController: PointOfSaleOrderListControllerProtocol {
+protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListControllerProtocol {
+    func searchOrders(searchTerm: String) async
+    func clearSearchOrders()
+}
+
+@Observable final class PointOfSaleOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState
-    private let paginationTracker: AsyncPaginationTracker
+    private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: PointOfSaleOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private let orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol
+    private var paginationTracker: AsyncPaginationTracker {
+        if let existing = strategyPaginationTracker[fetchStrategy.id] {
+             return existing
+         }
+         let tracker = AsyncPaginationTracker()
+         strategyPaginationTracker[fetchStrategy.id] = tracker
+         return tracker
+    }
 
     init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
-        self.paginationTracker = .init()
+        self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
     }
 
@@ -50,7 +64,7 @@ protocol PointOfSaleOrderListControllerProtocol {
             return
         }
         let currentOrders = ordersViewState.orders
-        ordersViewState = .loading(currentOrders)
+        ordersViewState = fetchStrategy.showsLoadingWithItems ? .loading(currentOrders) : .loading([])
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -83,6 +97,11 @@ protocol PointOfSaleOrderListControllerProtocol {
     }
 
     private func setLoadingState() {
+        if !fetchStrategy.showsLoadingWithItems {
+            ordersViewState = .loading([])
+            return
+        }
+
         let orders = ordersViewState.orders
         let isInitialState = ordersViewState.isLoading && orders.isEmpty
         if !isInitialState {
@@ -103,7 +122,7 @@ protocol PointOfSaleOrderListControllerProtocol {
 
             ordersViewState = allOrders.isEmpty ? .empty : .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
 
-            if pageNumber == 1 && !appendToExistingOrders {
+            if fetchStrategy.supportsCaching {
                 cachedOrders = allOrders
             }
 
@@ -115,6 +134,10 @@ protocol PointOfSaleOrderListControllerProtocol {
 
     @MainActor
     private func setCachedData() {
+        guard fetchStrategy.supportsCaching else {
+            return
+        }
+
         guard !ordersViewState.orders.isEmpty || !cachedOrders.isEmpty else {
             return
         }
@@ -125,5 +148,25 @@ protocol PointOfSaleOrderListControllerProtocol {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+    }
+
+    @MainActor
+    func searchOrders(searchTerm: String) async {
+        fetchStrategy = orderListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        ordersViewState = .loading([])
+        await loadFirstPage()
+    }
+
+    @MainActor
+    func clearSearchOrders() {
+        fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
+        if cachedOrders.isNotEmpty {
+            ordersViewState = .loaded(cachedOrders, hasMoreItems: true)
+        } else {
+            ordersViewState = .loading([])
+            Task {
+                await loadFirstPage()
+            }
+        }
     }
 }

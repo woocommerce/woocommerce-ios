@@ -44,4 +44,30 @@ public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProto
             throw PointOfSaleOrderListServiceError.requestFailed
         }
     }
+
+    public func searchPointOfSaleOrders(searchTerm: String, pageNumber: Int = 1) async throws -> PagedItems<POSOrder> {
+        do {
+            let pagedOrders = try await ordersRemote.searchPOSOrders(
+                siteID: siteID,
+                searchTerm: searchTerm,
+                pageNumber: pageNumber,
+                pageSize: 25
+            )
+
+            if pageNumber != 1 && pagedOrders.items.count == 0 {
+                return .init(items: [], hasMorePages: false, totalItems: 0)
+            }
+
+            // Convert Order objects to POSOrder objects
+            let posOrders = pagedOrders.items.map { mapper.map(order: $0) }
+
+            return .init(items: posOrders,
+                        hasMorePages: pagedOrders.hasMorePages,
+                        totalItems: pagedOrders.totalItems)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleOrderListServiceError.requestCancelled
+        } catch {
+            throw PointOfSaleOrderListServiceError.requestFailed
+        }
+    }
 }

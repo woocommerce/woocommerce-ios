@@ -5,6 +5,7 @@ import class WooFoundationCore.CurrencyFormatter
 
 public protocol PointOfSaleOrderListFetchStrategyFactoryProtocol {
     func defaultStrategy() -> PointOfSaleOrderListFetchStrategy
+    func searchStrategy(searchTerm: String) -> PointOfSaleOrderListFetchStrategy
 }
 
 public final class PointOfSaleOrderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol {
@@ -28,6 +29,17 @@ public final class PointOfSaleOrderListFetchStrategyFactory: PointOfSaleOrderLis
                 ordersRemote: ordersRemote,
                 currencyFormatter: currencyFormatter
             )
+        )
+    }
+
+    public func searchStrategy(searchTerm: String) -> PointOfSaleOrderListFetchStrategy {
+        PointOfSaleSearchOrderListFetchStrategy(
+            orderListService: PointOfSaleOrderListService(
+                siteID: siteID,
+                ordersRemote: ordersRemote,
+                currencyFormatter: currencyFormatter
+            ),
+            searchTerm: searchTerm
         )
     }
 }

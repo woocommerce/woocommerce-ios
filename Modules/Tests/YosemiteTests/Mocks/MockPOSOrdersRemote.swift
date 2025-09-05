@@ -53,4 +53,23 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
             throw error
         }
     }
+
+    var mockSearchPagedOrdersResult: Result<PagedItems<Order>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
+    var searchPOSOrdersCalled = false
+    var spySearchTerm: String?
+
+    func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
+        searchPOSOrdersCalled = true
+        spySiteID = siteID
+        spySearchTerm = searchTerm
+        spyPageNumber = pageNumber
+        spyPageSize = pageSize
+
+        switch mockSearchPagedOrdersResult {
+        case .success(let pagedOrders):
+            return pagedOrders
+        case .failure(let error):
+            throw error
+        }
+    }
 }

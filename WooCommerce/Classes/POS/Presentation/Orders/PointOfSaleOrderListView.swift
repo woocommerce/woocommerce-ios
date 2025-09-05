@@ -19,15 +19,27 @@ struct PointOfSaleOrderListView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: isSearching ? "" : Localization.ordersTitle,
-                isLoading: isSearching ? false : {
-                    if case .loading(let orders) = ordersViewState {
-                        return !orders.isEmpty
-                    }
-                    return false
-                }(),
+                items: isSearching ? [] : [.init(
+                    title: Localization.ordersTitle,
+                    subtitle: nil,
+                    isSelected: true,
+                    isLoading: isSearching ? false : {
+                        if case .loading(let orders) = ordersViewState {
+                            return !orders.isEmpty
+                        }
+                        return false
+                    }()
+                )],
                 backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
-                leadingContent: {
+                trailingContent: {
+                    if !isSearching {
+                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
+                            setSearch(true)
+                        }
+                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
+                        .transition(.opacity.combined(with: .scale))
+                    }
+
                     if isSearching {
                         POSSearchField(
                             searchTerm: $searchTerm,
@@ -43,15 +55,6 @@ struct PointOfSaleOrderListView: View {
                                 orderListModel.ordersController.clearSearchOrders()
                             }
                         }
-                    }
-                },
-                trailingContent: {
-                    if !isSearching {
-                        POSPageHeaderActionButton(systemName: "magnifyingglass") {
-                            setSearch(true)
-                        }
-                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
-                        .transition(.opacity.combined(with: .scale))
                     }
                 }
             )

@@ -112,6 +112,10 @@ final class ServiceLocator {
     ///
     private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
 
+    /// POS catalog sync coordinator
+    ///
+    private static var _posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -298,6 +302,28 @@ final class ServiceLocator {
     ///
     static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
         _startupWaitingTimeTracker
+    }
+
+    /// Provides access point to the `POSCatalogSyncCoordinator`.
+    ///
+    static var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            fatalError("POSCatalogSyncCoordinator accessed when pointOfSaleLocalCatalogi1 feature flag is disabled")
+        }
+
+        guard let coordinator = _posCatalogSyncCoordinator else {
+            guard let credentials = stores.sessionManager.defaultCredentials,
+                  let syncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
+            else {
+                fatalError("Failed to create POSCatalogSyncCoordinator due to missing credentials")
+            }
+
+            let coordinator = POSCatalogSyncCoordinator(syncService: syncService, grdbManager: grdbManager)
+            _posCatalogSyncCoordinator = coordinator
+            return coordinator
+        }
+
+        return coordinator
     }
 }
 

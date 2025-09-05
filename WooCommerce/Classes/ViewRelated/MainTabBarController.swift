@@ -768,7 +768,7 @@ private extension MainTabBarController {
 
         // Configure POS catalog sync coordinator for local catalog syncing
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            posCatalogSyncCoordinator = createPOSCatalogSyncCoordinator()
+            posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
         }
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
@@ -792,15 +792,6 @@ private extension MainTabBarController {
         OrdersSplitViewWrapperController(siteID: siteID)
     }
 
-    func createPOSCatalogSyncCoordinator() -> POSCatalogSyncCoordinatorProtocol? {
-        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-              let syncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
-        else {
-            return nil
-        }
-
-        return POSCatalogSyncCoordinator(syncService: syncService, grdbManager: ServiceLocator.grdbManager)
-    }
 
     func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
         guard let coordinator = posCatalogSyncCoordinator else {
@@ -809,7 +800,7 @@ private extension MainTabBarController {
 
         // Check if sync is needed (older than 24 hours)
         let maxAge: TimeInterval = 24 * 60 * 60
-        guard coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+        guard await coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -817,6 +808,8 @@ private extension MainTabBarController {
         Task.detached {
             do {
                 _ = try await coordinator.performFullSync(for: siteID)
+            } catch POSCatalogSyncError.syncAlreadyInProgress {
+                DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
             } catch {
                 DDLogError("⚠️ POS catalog sync failed: \(error)")
             }

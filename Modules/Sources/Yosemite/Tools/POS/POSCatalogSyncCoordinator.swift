@@ -6,6 +6,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync for the specified site
     /// - Parameter siteID: The site ID to sync catalog for
     /// - Returns: The synced catalog containing products and variations
+    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     func performFullSync(for siteID: Int64) async throws -> POSCatalog
 
     /// Determines if a full sync should be performed based on the age of the last sync
@@ -13,13 +14,20 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - siteID: The site ID to check
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
-    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) -> Bool
+    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool
 }
 
-public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
+public enum POSCatalogSyncError: Error, Equatable {
+    case syncAlreadyInProgress(siteID: Int64)
+}
+
+public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let syncService: POSCatalogFullSyncServiceProtocol
     private let settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol
     private let grdbManager: GRDBManagerProtocol
+
+    /// Tracks ongoing syncs by site ID to prevent duplicates
+    private var ongoingSyncs: Set<Int64> = []
 
     public init(syncService: POSCatalogFullSyncServiceProtocol,
                 settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
@@ -30,18 +38,31 @@ public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     }
 
     public func performFullSync(for siteID: Int64) async throws -> POSCatalog {
+        if ongoingSyncs.contains(siteID) {
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Sync already in progress for site \(siteID)")
+            throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
+        }
+
+        // Mark sync as in progress
+        ongoingSyncs.insert(siteID)
+
+        // Ensure cleanup happens regardless of success or failure
+        defer {
+            ongoingSyncs.remove(siteID)
+        }
+
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
         let catalog = try await syncService.startFullSync(for: siteID)
 
-        // Record the sync timestamp
         settingsStore.setPOSLastFullSyncDate(Date(), for: siteID)
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
+
         return catalog
     }
 
-    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) -> Bool {
+    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
         if !siteExistsInDatabase(siteID: siteID) {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) not found in database, sync needed")
             return true

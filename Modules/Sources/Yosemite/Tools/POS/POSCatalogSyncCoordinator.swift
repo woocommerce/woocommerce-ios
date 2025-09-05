@@ -1,6 +1,5 @@
 import Foundation
 import Storage
-import CocoaLumberjackSwift
 import GRDB
 
 public protocol POSCatalogSyncCoordinatorProtocol {

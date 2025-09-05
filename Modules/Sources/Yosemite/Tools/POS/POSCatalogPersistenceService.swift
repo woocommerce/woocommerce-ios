@@ -24,7 +24,6 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
             // currently, we can't save for more than one site as entity IDs are not namespaced.
             try PersistedSite.deleteAll(db)
-//            try PersistedSite.deleteOne(db, key: siteID)
 
             let site = PersistedSite(id: siteID)
             try site.insert(db)

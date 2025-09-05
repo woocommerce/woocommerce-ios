@@ -25,16 +25,23 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
 
 @Observable final class PointOfSaleOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState
-    private let paginationTracker: AsyncPaginationTracker
+    private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: PointOfSaleOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
     private let orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol
+    private var paginationTracker: AsyncPaginationTracker {
+        if let existing = strategyPaginationTracker[fetchStrategy.id] {
+             return existing
+         }
+         let tracker = AsyncPaginationTracker()
+         strategyPaginationTracker[fetchStrategy.id] = tracker
+         return tracker
+    }
 
     init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
-        self.paginationTracker = .init()
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
     }

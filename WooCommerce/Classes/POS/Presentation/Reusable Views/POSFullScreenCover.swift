@@ -77,7 +77,7 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
                     .environmentObject(sheetManager)
                     .environmentObject(coverManager)
             })
-            .onChange(of: isPresented) { newValue in
+            .onChange(of: isPresented) { _, newValue in
                 parentCoverManager.isPresented = newValue
             }
     }
@@ -104,7 +104,7 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
                     .environmentObject(sheetManager)
                     .environmentObject(coverManager)
             })
-            .onChange(of: item) { newValue in
+            .onChange(of: item) { _, newValue in
                 parentCoverManager.isPresented = newValue != nil
             }
     }

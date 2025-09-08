@@ -110,7 +110,7 @@ protocol PointOfSaleOrderControllerProtocol {
 
     @MainActor
     func sendReceipt(recipientEmail: String) async throws {
-        var isEligibleForPOSReceipt: Bool?
+        var isEligibleForPOSReceipt: Bool = false
         do {
             guard let order else {
                 throw PointOfSaleOrderControllerError.noOrder
@@ -118,21 +118,15 @@ protocol PointOfSaleOrderControllerProtocol {
 
             try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
 
-            let posReceiptEligibility: Bool
-            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
-                posReceiptEligibility = isPluginSupported(
-                    .wooCommerce,
-                    minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
-                    siteID: order.siteID
-                )
-            } else {
-                posReceiptEligibility = false
-            }
-            isEligibleForPOSReceipt = posReceiptEligibility
+            isEligibleForPOSReceipt = isPluginSupported(
+                .wooCommerce,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: order.siteID
+            )
 
-            try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
+            try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
 
-            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": posReceiptEligibility])
+            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": isEligibleForPOSReceipt])
         } catch {
             let properties = [
                 "eligible_for_pos_receipt": isEligibleForPOSReceipt

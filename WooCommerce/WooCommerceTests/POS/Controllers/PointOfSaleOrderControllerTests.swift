@@ -182,11 +182,8 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
         // Given
-        let mockFeatureFlagService = MockFeatureFlagService()
-        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService,
-                                             featureFlagService: mockFeatureFlagService)
+                                             receiptService: mockReceiptService)
         let email = "test@example.com"
 
         // When
@@ -202,11 +199,8 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
         // Given
-        let mockFeatureFlagService = MockFeatureFlagService()
-        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService,
-                                             featureFlagService: mockFeatureFlagService)
+                                             receiptService: mockReceiptService)
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -638,13 +632,9 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
-            let mockFeatureFlagService = MockFeatureFlagService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
-
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
-                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order
@@ -664,12 +654,9 @@ struct PointOfSaleOrderControllerTests {
 
         @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
             // Given
-            let mockFeatureFlagService = MockFeatureFlagService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 analytics: analytics,
-                                                 featureFlagService: mockFeatureFlagService)
+                                                 analytics: analytics)
 
             // When
             do {
@@ -677,7 +664,7 @@ struct PointOfSaleOrderControllerTests {
             } catch {
                 // Then
                 let indexOfEvent = try #require(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_failed" }))
-                #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] == nil)
+                #expect(analyticsProvider.receivedProperties[indexOfEvent]["eligible_for_pos_receipt"] as? Bool == false)
             }
         }
 
@@ -689,12 +676,9 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
-            let mockFeatureFlagService = MockFeatureFlagService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
-                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
 
             receiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))
@@ -723,13 +707,11 @@ struct PointOfSaleOrderControllerTests {
     struct ReceiptTests {
         private let mockOrderService = MockPOSOrderService()
 
-        @Test("Eligible core plugin versions with feature flag enabled", arguments: Constants.eligibleWCPluginVersions)
-        func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
+        @Test("Eligible core plugin versions", arguments: Constants.eligibleWCPluginVersions)
+        func sendReceipt_when_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce,
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
@@ -738,7 +720,6 @@ struct PointOfSaleOrderControllerTests {
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
 
@@ -753,47 +734,11 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == true)
         }
 
-        @Test(
-            "All core plugin versions with feature flag disabled",
-            arguments: Constants.eligibleWCPluginVersions + Constants.ineligibleWCPluginVersions
-        )
-        func sendReceipt_when_feature_flag_disabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
-            // Given
-            let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
-            let mockPluginsService = MockPluginsService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = false
-            // Plugin setup is irrelevant when feature flag is disabled
-            mockPluginsService.setMockPlugin(.wooCommerce,
-                                             systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
-                                                                                    version: wcPluginVersion,
-                                                                                    active: true))
-
-            let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                                 receiptService: mockReceiptService,
-                                                 analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService,
-                                                 pluginsService: mockPluginsService)
-            mockOrderService.orderToReturn = Order.fake()
-
-            // We need an existing order before we can update its email, and send a receipt:
-            await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
-
-            // When
-            try await sut.sendReceipt(recipientEmail: "test@example.com")
-
-            // Then
-            #expect(mockReceiptService.sendReceiptWasCalled == true)
-            #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
-        }
-
         @Test("Ineligible core plugin versions with feature flag enabled", arguments: Constants.ineligibleWCPluginVersions)
-        func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
+        func sendReceipt_when_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce,
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
@@ -802,7 +747,6 @@ struct PointOfSaleOrderControllerTests {
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
 
@@ -817,23 +761,20 @@ struct PointOfSaleOrderControllerTests {
             #expect(mockReceiptService.spyIsEligibleForPOSReceipt == false)
         }
 
-        @Test("Unavailable core plugin with feature flag enabled",
+        @Test("Unavailable core plugin",
               arguments: [
                 SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", active: false),
                 nil
               ])
-        func sendReceipt_when_feature_flag_enabled_and_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
+        func sendReceipt_when_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
-            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
 
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptService: mockReceiptService,
                                                  analytics: ServiceLocator.analytics,
-                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             mockOrderService.orderToReturn = Order.fake()
 

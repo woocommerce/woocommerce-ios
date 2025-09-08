@@ -864,9 +864,13 @@ private extension MainTabBarController {
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
-        let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
 
-        self.notificationsBadge.updateBadge(with: input)
+        switch action {
+        case .show:
+            tabBar.items?[tabIndex].badgeValue = "•"
+        case .hide:
+            tabBar.items?[tabIndex].badgeValue = nil
+        }
     }
 }
 

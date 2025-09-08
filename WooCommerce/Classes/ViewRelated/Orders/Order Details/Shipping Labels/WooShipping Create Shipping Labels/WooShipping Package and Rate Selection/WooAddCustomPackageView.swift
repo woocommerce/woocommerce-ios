@@ -149,10 +149,10 @@ struct WooAddCustomPackageView: View {
                     .padding(.horizontal)
                     .frame(minHeight: geometry.size.height)
                     .frame(width: geometry.size.width)
-                    .onChange(of: viewModel.showSaveTemplate) { newValue in
+                    .onChange(of: viewModel.showSaveTemplate) { _, newValue in
                         packageTemplateNameFieldFocused = newValue
                     }
-                    .onChange(of: packageTemplateNameFieldFocused) { focused in
+                    .onChange(of: packageTemplateNameFieldFocused) { _, focused in
                         if focused {
                             // More info about why small delay is added:
                             // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901

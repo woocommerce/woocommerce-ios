@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -45,7 +44,6 @@ protocol PointOfSaleOrderControllerProtocol {
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
@@ -54,7 +52,6 @@ protocol PointOfSaleOrderControllerProtocol {
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pluginsService = pluginsService
         self.celebration = celebration
     }
@@ -67,7 +64,6 @@ protocol PointOfSaleOrderControllerProtocol {
     private let storeCurrency: CurrencyCode
     private let analytics: Analytics
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle

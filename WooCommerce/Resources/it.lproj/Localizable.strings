@@ -9428,14 +9428,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Il totale dell'ordine è cambiato dall'inizio del pagamento. Torna indietro e controlla che l'ordine sia corretto, quindi riprova il pagamento.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "L'importo deve essere maggiore o uguale al totale.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Resto dovuto: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Errore durante l'elaborazione del pagamento. Riprova.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Seleziona il prodotto per la campagna Blaze.";

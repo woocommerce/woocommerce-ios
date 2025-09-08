@@ -9425,14 +9425,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "Ödemenin başlangıcından itibaren sipariş toplamı değişti. Lütfen geri gidin ve siparişin doğru olduğunu kontrol edin, ardından ödemeyi tekrar deneyin.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "Tutar toplamdan daha fazla veya toplama eşit olmalıdır.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Ödenmesi gereken para üstü: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "Ödeme işlenmeye çalışılırken hata oluştu. Tekrar deneyin.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze kampanyası için ürün seçer.";

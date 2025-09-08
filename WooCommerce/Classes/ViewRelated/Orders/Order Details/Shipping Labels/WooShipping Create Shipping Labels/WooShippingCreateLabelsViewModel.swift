@@ -80,12 +80,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// View model for split shipments.
     private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
-    var splitShipmentsAvailable: Bool {
-        itemsDataSource.items.map(\.quantity).reduce(0, +) > 1 &&
-        shipments.count == 1 &&
-        canViewLabel == false
-    }
-
     private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
 
     var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
@@ -501,6 +495,33 @@ private extension WooShippingCreateLabelsViewModel {
     /// This is useful for checking countries in the customs form and listing countries in the edit address form.
     func syncCountries() {
         stores.dispatch(DataAction.synchronizeCountries(siteID: order.siteID) { _ in })
+    }
+}
+
+// MARK: Split Shipments
+// Accessors describing Split Shipments elements availability
+extension WooShippingCreateLabelsViewModel {
+    private var hasMultipleProducts: Bool {
+        return itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
+    }
+
+    private var splitShipmentsFeatureAvailable: Bool {
+        return true
+    }
+
+    /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.
+    var editSplitShipmentsOptionVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        hasUnfulfilledShipments
+    }
+
+    /// Determines if the "Split Shipments" row is visible above the "Products" section
+    var splitShipmentsRowVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        shipments.count == 1 &&
+        canViewLabel == false
     }
 }
 

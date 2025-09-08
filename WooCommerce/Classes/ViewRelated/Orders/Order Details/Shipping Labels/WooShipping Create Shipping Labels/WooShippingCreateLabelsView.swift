@@ -182,7 +182,7 @@ private extension WooShippingCreateLabelsView {
                     .padding(.horizontal)
             }
             .accessibilityHint(Localization.Accessibility.editButtonHint)
-            .renderedIf(viewModel.hasUnfulfilledShipments)
+            .renderedIf(viewModel.editSplitShipmentsOptionVisible)
         }
         .disabled(viewModel.isPurchasingLabel)
     }
@@ -191,7 +191,7 @@ private extension WooShippingCreateLabelsView {
     var mainView: some View {
         ScrollView {
             VStack(spacing: Layout.verticalSpacing) {
-                if viewModel.splitShipmentsAvailable {
+                if viewModel.splitShipmentsRowVisible {
                     WooShippingSplitShipmentsRow(onShowingSplitShipments: {
                         showingSplitShipments = true
                     })

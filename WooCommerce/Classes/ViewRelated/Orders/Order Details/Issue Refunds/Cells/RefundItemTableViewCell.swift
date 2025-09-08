@@ -41,9 +41,18 @@ final class RefundItemTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
         applyAccessibilityChanges()
+    }
 
-        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: RefundItemTableViewCell, _: UITraitCollection) in
-            self?.applyAccessibilityChanges()
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        let sizeTraits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self
+        ]
+
+        registerForTraitChanges(sizeTraits) { (self: Self, _: UITraitCollection) in
+            self.applyAccessibilityChanges()
         }
     }
 

@@ -88,7 +88,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
             let productIDs = catalog.products.map { $0.productID }.map { String($0) }.joined(separator: ",")
 
-            try PersistedProductVariationImage
+            try PersistedProductImage
                 .filter(sql: "\(PersistedProductImage.Columns.productID.name) IN (\(productIDs))")
                 .deleteAll(db)
             for image in catalog.productImagesToPersist {

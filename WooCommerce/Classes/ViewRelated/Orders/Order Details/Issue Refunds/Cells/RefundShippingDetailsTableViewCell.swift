@@ -52,7 +52,7 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
         applyAccessibilityChanges()
-        
+
         let traits: [UITrait] = [
             UITraitPreferredContentSizeCategory.self,
             UITraitUserInterfaceIdiom.self,

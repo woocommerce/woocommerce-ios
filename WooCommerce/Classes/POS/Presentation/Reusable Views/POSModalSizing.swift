@@ -9,6 +9,7 @@ extension View {
 
 struct POSModalSizing: ViewModifier {
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.posModalParentSize) private var parentSize
 
     func body(content: Content) -> some View {
         content
@@ -19,6 +20,10 @@ struct POSModalSizing: ViewModifier {
 
 private extension POSModalSizing {
     var frameWidth: CGFloat {
+        return min(preferredFrameWidth, maxAvailableFrameWidth)
+    }
+
+    var preferredFrameWidth: CGFloat {
         switch sizeCategory {
         case .extraSmall, .small:
             return 560
@@ -37,7 +42,15 @@ private extension POSModalSizing {
         }
     }
 
+    var maxAvailableFrameWidth: CGFloat {
+        return parentSize.width
+    }
+
     var frameHeight: CGFloat {
+        return min(preferredFrameHeight, parentSize.height)
+    }
+
+    var preferredFrameHeight: CGFloat {
         switch sizeCategory {
         case .extraSmall, .small:
             return 640
@@ -54,6 +67,10 @@ private extension POSModalSizing {
         @unknown default:
             return 656
         }
+    }
+
+    var maxAvailableFrameHeight: CGFloat {
+        parentSize.height
     }
 
     var windowBounds: CGRect {

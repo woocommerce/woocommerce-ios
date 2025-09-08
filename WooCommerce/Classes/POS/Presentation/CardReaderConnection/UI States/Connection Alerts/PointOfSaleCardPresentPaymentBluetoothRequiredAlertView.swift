@@ -29,13 +29,13 @@ struct PointOfSaleCardPresentPaymentBluetoothRequiredAlertView: View {
                 .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             Button(viewModel.openSettingsButtonViewModel.title,
                    action: viewModel.openSettingsButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.dismissButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.dismissButtonViewModel.title)
         .multilineTextAlignment(.center)

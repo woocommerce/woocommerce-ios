@@ -35,6 +35,7 @@ struct POSRootModalViewModifier: ViewModifier {
                             .padding()
                     }
                     .zIndex(1)
+                    // Scale the modal container in and out, fading appropriately.
                     // Unfortunately combined doesn't work on removal.
                     // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
                     // consistent even when animating out, which it wouldn't be if unspecified.

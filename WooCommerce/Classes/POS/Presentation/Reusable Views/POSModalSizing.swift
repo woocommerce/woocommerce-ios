@@ -47,7 +47,7 @@ private extension POSModalSizing {
     }
 
     var frameHeight: CGFloat {
-        return min(preferredFrameHeight, parentSize.height)
+        return min(preferredFrameHeight, maxAvailableFrameHeight)
     }
 
     var preferredFrameHeight: CGFloat {

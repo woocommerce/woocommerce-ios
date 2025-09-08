@@ -1,31 +1,68 @@
 import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
-import WooFoundation
 
 struct PointOfSaleOrderListView: View {
-    @Binding var selectedOrderID: String?
     let onClose: () -> Void
 
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
-    private var ordersViewState: OrderListState {
+    @State private var isSearching: Bool = false
+    @State private var searchTerm: String = ""
+    @Namespace private var searchTransition
+
+    private var ordersViewState: POSOrderListState {
         orderListModel.ordersController.ordersViewState
     }
 
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: Localization.ordersTitle,
-                isLoading: {
-                    if case .loading(let orders) = ordersViewState {
-                        return !orders.isEmpty
+                items: isSearching ? [] : [.init(
+                    title: Localization.ordersTitle,
+                    subtitle: nil,
+                    isSelected: true,
+                    isLoading: isSearching ? false : {
+                        if case .loading(let orders) = ordersViewState {
+                            return !orders.isEmpty
+                        }
+                        return false
+                    }()
+                )],
+                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
+                trailingContent: {
+                    if !isSearching {
+                        POSPageHeaderActionButton(
+                            systemName: "magnifyingglass",
+                            backgroundColor: .posSurface,
+                            imageColor: .posOnSurface
+                        ) {
+                            setSearch(true)
+                        }
+                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
+                        .transition(.opacity.combined(with: .scale))
                     }
-                    return false
-                }(),
-                backButtonConfiguration: .init(state: .enabled, action: onClose, buttonIcon: "xmark")
+
+                    if isSearching {
+                        POSSearchField(
+                            searchTerm: $searchTerm,
+                            searchable: POSOrderSearchable(ordersController: orderListModel.ordersController),
+                            onBack: {
+                                setSearch(false)
+                            }
+                        )
+                        .matchedGeometryEffect(id: Constants.searchControlID, in: searchTransition)
+                        .transition(.opacity.combined(with: .move(edge: .leading)))
+                        .onChange(of: searchTerm) { _, newValue in
+                            if newValue.isEmpty {
+                                orderListModel.ordersController.clearSearchOrders()
+                            }
+                        }
+                    }
+                }
             )
+            .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
             InfiniteScrollView(
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
@@ -51,9 +88,9 @@ struct PointOfSaleOrderListView: View {
                             let orders = ordersViewState.orders
                             ForEach(orders, id: \.id) { order in
                                 Button(action: {
-                                    selectedOrderID = String(order.id)
+                                    orderListModel.ordersController.selectOrder(order)
                                 }) {
-                                    OrderRowView(order: order, isSelected: selectedOrderID == String(order.id))
+                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -123,14 +160,8 @@ private struct OrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
-    }
-
-    private var formattedTotal: String {
-        currencyFormatter.formatAmount(order.total, with: order.currency) ?? ""
     }
 
     var body: some View {
@@ -159,20 +190,11 @@ private struct OrderRowView: View {
             Spacer()
 
             VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Text(formattedTotal)
+                Text(order.formattedTotal)
                     .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 
-                HStack(spacing: POSSpacing.xSmall) {
-                    if let paymentMethodIcon = paymentMethodIcon {
-                        Image(systemName: paymentMethodIcon)
-                            .foregroundStyle(statusColor)
-                            .font(.caption)
-                    }
-                    Text(order.status.localizedName)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(statusColor)
-                }
+                PointOfSaleOrderBadgeView(order: order)
             }
             .multilineTextAlignment(.trailing)
         }
@@ -185,28 +207,7 @@ private struct OrderRowView: View {
 }
 
 private extension OrderRowView {
-    var paymentMethodIcon: String? {
-        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
-        switch paymentMethod {
-        case .cod:
-            return "banknote"
-        case .stripe, .woocommercePayments:
-            return "creditcard"
-        default:
-            return nil
-        }
-    }
-
-    var statusColor: Color {
-        switch order.status {
-        case .completed:
-            return .posSuccess
-        case .failed:
-            return .posError
-        default:
-            return .posOnSurfaceVariantLowest
-        }
-    }
+    // No additional helpers needed - using shared PointOfSaleOrderBadgeView
 }
 
 private struct GhostOrderRowView: View {
@@ -218,35 +219,41 @@ private struct GhostOrderRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 70, height: 16)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+        GeometryReader { geometry in
+            VStack {
+                Spacer()
+                HStack(alignment: .center, spacing: POSSpacing.medium) {
+                    VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.2, height: 16)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 160, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.4, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
 
-            Spacer()
+                    Spacer()
 
-            VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 80, height: 18)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                    VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.25, height: 18)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 90, height: 14)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+                        Rectangle()
+                            .fill(Color.posOnSurfaceVariantLowest)
+                            .frame(width: geometry.size.width * 0.28, height: 14)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                            .shimmering()
+                    }
+                }
+                Spacer()
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
@@ -258,9 +265,102 @@ private struct GhostOrderRowView: View {
     }
 }
 
+// MARK: - Order Badge View
+
+struct PointOfSaleOrderBadgeView: View {
+    let order: POSOrder
+
+    init(order: POSOrder) {
+        self.order = order
+    }
+
+    var body: some View {
+        HStack(spacing: POSSpacing.xSmall) {
+            if let paymentMethodIcon = paymentMethodIcon {
+                Image(systemName: paymentMethodIcon)
+                    .foregroundStyle(statusColor)
+                    .font(.caption)
+            }
+            Text(order.status.localizedName)
+                .font(.posCaptionRegular)
+                .foregroundStyle(statusColor)
+        }
+        .padding(.horizontal, POSPadding.small)
+        .padding(.vertical, POSPadding.xSmall)
+        .background(statusColor.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+    }
+
+    private var paymentMethodIcon: String? {
+        let paymentMethod = OrderPaymentMethod(rawValue: order.paymentMethodID)
+        switch paymentMethod {
+        case .cod:
+            return "banknote"
+        case .stripe, .woocommercePayments:
+            return "creditcard"
+        default:
+            return nil
+        }
+    }
+
+    private var statusColor: Color {
+        switch order.status {
+        case .completed:
+            return .posSuccess
+        case .failed:
+            return .posError
+        default:
+            return .posOnSurfaceVariantLowest
+        }
+    }
+}
+
+// MARK: - Search
+
+private extension PointOfSaleOrderListView {
+    func setSearch(_ isSearchingValue: Bool) {
+        if isSearchingValue {
+            isSearching = true
+        } else {
+            searchTerm = ""
+            isSearching = false
+            // Clear search results and return to default orders
+            orderListModel.ordersController.clearSearchOrders()
+        }
+    }
+}
+
+final class POSOrderSearchable: POSSearchable {
+    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
+
+    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
+        self.ordersController = ordersController
+    }
+
+    var searchFieldPlaceholder: String {
+        Localization.searchFieldPlaceholder
+    }
+
+    var searchHistory: [String] {
+        []
+    }
+
+    func performSearch(term: String) async {
+        await ordersController.searchOrders(searchTerm: term)
+    }
+
+    func clearSearchResults() {
+        ordersController.clearSearchOrders()
+    }
+}
+
+// MARK: - Constants
+
 private enum Constants {
     static let orderCardMinHeight: CGFloat = 90
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
+    static let animationDuration: CGFloat = 0.2
+    static let searchControlID = "searchControl"
 }
 
 private enum Localization {
@@ -268,12 +368,18 @@ private enum Localization {
         "pos.orderListView.ordersTitle",
         value: "Orders",
         comment: "Title at the header for the Orders view.")
+
+    static let searchFieldPlaceholder = NSLocalizedString(
+        "pos.orderListView.searchFieldPlaceholder",
+        value: "Search orders",
+        comment: "Placeholder for a search field in the Orders view."
+    )
 }
 
 #if DEBUG
 #Preview("List") {
     NavigationSplitView {
-        PointOfSaleOrderListView(selectedOrderID: .constant("1"), onClose: {})
+        PointOfSaleOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {

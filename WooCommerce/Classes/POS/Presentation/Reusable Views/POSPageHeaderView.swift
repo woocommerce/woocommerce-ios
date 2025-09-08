@@ -38,10 +38,12 @@ struct POSPageHeaderItem: Identifiable {
 
 /// A header view for POS pages.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
-struct POSPageHeaderView<TrailingContent: View>: View {
+struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
     private let backButtonConfiguration: POSPageHeaderBackButtonConfiguration?
-    private let trailingContent: TrailingContent?
+    private let leadingContent: LeadingContent
+    private let trailingContent: TrailingContent
+    private let bottomContent: BottomContent
 
     private var hStackAlignment: VerticalAlignment {
         items.first?.subtitle == nil ? .center: .firstTextBaseline
@@ -56,75 +58,89 @@ struct POSPageHeaderView<TrailingContent: View>: View {
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
+        @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
+        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
+        @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
+        self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
+        self.bottomContent = bottomContent()
     }
 
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
-        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() }
+        @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
+        @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
+        @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
+        self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
+        self.bottomContent = bottomContent()
     }
 
     var body: some View {
         HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            leadingContent
+
             if showsBackButton {
                 backButton
             }
 
-            HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
-                ForEach(0..<items.count, id: \.self) { index in
-                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                        HStack(spacing: POSSpacing.small) {
-                            Button(action: {
-                                items[index].action?()
-                            }) {
-                                Text(items[index].title)
-                                    .font(.posHeadingBold)
+            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
+                    ForEach(0..<items.count, id: \.self) { index in
+                        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                            HStack(spacing: POSSpacing.small) {
+                                if items[index].title.isNotEmpty {
+                                    Button(action: {
+                                        items[index].action?()
+                                    }) {
+                                        Text(items[index].title)
+                                            .font(.posHeadingBold)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.5)
+                                            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                            .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                    }
+                                    .disabled(items[index].isSelected)
+                                    .accessibilityElement()
+                                    .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                    .accessibilityLabel(items[index].title)
+                                }
+
+                                if items[index].isLoading {
+                                    ProgressView()
+                                        .progressViewStyle(.circular)
+                                        .scaleEffect(0.7)
+                                        .transition(.opacity.combined(with: .scale))
+                                }
+                            }
+
+                            if let subtitle = items[index].subtitle {
+                                Text(subtitle)
+                                    .font(.posBodyLargeRegular())
                                     .lineLimit(1)
                                     .minimumScaleFactor(0.5)
                                     .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                    .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                    .foregroundColor(.posOnSurface)
                             }
-                            .disabled(items[index].isSelected)
-                            .accessibilityElement()
-                            .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                            .accessibilityLabel(items[index].title)
-
-                            if items[index].isLoading {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.7)
-                                    .transition(.opacity.combined(with: .scale))
-                            }
-                        }
-
-                        if let subtitle = items[index].subtitle {
-                            Text(subtitle)
-                                .font(.posBodyLargeRegular())
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                .foregroundColor(.posOnSurface)
                         }
                     }
                 }
+
+                bottomContent
             }
 
             if items.isNotEmpty {
                 Spacer()
             }
 
-            if let trailingContent {
-                trailingContent
-            }
+            trailingContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
@@ -149,7 +165,7 @@ private enum Constants {
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
 
-
+// MARK: - Previews
 
 #Preview {
     @Previewable @State var isProductsSelected: Bool = true
@@ -181,22 +197,22 @@ private enum Constants {
         // Header with trailing content.
         POSPageHeaderView(
             title: "Products",
-            backButtonConfiguration: .init(state: .enabled, action: {})
-        ) {
-            HStack(spacing: 16) {
-                Button(action: {}) {
-                    Text(Image(systemName: "info.circle"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                HStack(spacing: 16) {
+                    Button(action: {}) {
+                        Text(Image(systemName: "info.circle"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
 
-                Button(action: {}) {
-                    Text(Image(systemName: "trash"))
-                        .font(.posButtonSymbolLarge)
+                    Button(action: {}) {
+                        Text(Image(systemName: "trash"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
                 }
-                .foregroundColor(.posOnSurface)
-            }
-        }
+            })
 
         // Header with subtitle.
         POSPageHeaderView(
@@ -223,36 +239,66 @@ private enum Constants {
         POSPageHeaderView(
             title: "Title",
             subtitle: "Subtitle",
-            backButtonConfiguration: .init(state: .enabled, action: {})
-        ) {
-            Button(action: {}) {
-                Text(Image(systemName: "info.circle"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .foregroundColor(.posOnSurface)
-        }
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                Button(action: {}) {
+                    Text(Image(systemName: "info.circle"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurface)
+            },
+            bottomContent: {
+                Text("Bottom content")
+            })
 
         // Header with two items and trailing content.
         POSPageHeaderView(
             items: [
                 .init(title: "Products", isSelected: isProductsSelected) { isProductsSelected.toggle() },
                 .init(title: "Coupons", isSelected: !isProductsSelected) { isProductsSelected.toggle() }
-            ]
-        ) {
-            HStack(spacing: 16) {
-                Button(action: {}) {
-                    Text(Image(systemName: "plus"))
-                        .font(.posButtonSymbolLarge)
-                }
-                .foregroundColor(.posOnSurface)
+            ],
+            trailingContent: {
+                HStack(spacing: 16) {
+                    Button(action: {}) {
+                        Text(Image(systemName: "plus"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
 
-                Button(action: {}) {
-                    Text(Image(systemName: "magnifyingglass"))
-                        .font(.posButtonSymbolLarge)
+                    Button(action: {}) {
+                        Text(Image(systemName: "magnifyingglass"))
+                            .font(.posButtonSymbolLarge)
+                    }
+                    .foregroundColor(.posOnSurface)
                 }
-                .foregroundColor(.posOnSurface)
+            })
+
+        // Header with bottom content.
+        POSPageHeaderView(
+            title: "Order Details",
+            subtitle: "Created: 2024-01-01 • customer@example.com",
+            backButtonConfiguration: .init(state: .enabled, action: {}),
+            trailingContent: {
+                Text("Completed")
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posSuccess)
+                    .padding(.horizontal, POSPadding.small)
+                    .padding(.vertical, POSPadding.xSmall)
+                    .background(Color.posSuccess.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            },
+            bottomContent: {
+                HStack {
+                    Button("Print Receipt") {}
+                        .buttonStyle(.bordered)
+                    Spacer()
+                    Button("Refund") {}
+                        .buttonStyle(.borderedProminent)
+                }
+                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .padding(.top, POSSpacing.medium)
             }
-        }
+        )
     }
     .background(Color.posSurface)
 }

@@ -2,9 +2,9 @@ import Foundation
 import Observation
 
 @Observable final class PointOfSaleOrderListModel {
-    let ordersController: PointOfSaleOrderListControllerProtocol
+    let ordersController: PointOfSaleSearchingOrderListControllerProtocol
 
-    init(ordersController: PointOfSaleOrderListControllerProtocol) {
+    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
         self.ordersController = ordersController
     }
 }

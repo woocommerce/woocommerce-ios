@@ -112,7 +112,7 @@ struct V001InitialSchema {
     private static func createProductVariationImageTable(_ db: Database) throws {
         try db.create(table: "productVariationImage") { productVariationImageTable in
             productVariationImageTable.primaryKey("id", .integer).notNull()
-            productVariationImageTable.belongsTo("productVariation").notNull()
+            productVariationImageTable.belongsTo("productVariation", onDelete: .cascade).notNull()
 
             productVariationImageTable.column("dateCreated", .datetime).notNull()
             productVariationImageTable.column("dateModified", .datetime)

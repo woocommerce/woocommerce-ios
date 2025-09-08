@@ -128,6 +128,7 @@ struct ItemListView: View {
                     searchable: POSProductSearchable(itemListType: selectedItemListType,
                                                      itemsController: searchItemsController,
                                                      searchHistoryProvider: posModel.searchHistoryService),
+                    itemListType: selectedItemListType,
                     searchTerm: $searchTerm
                 ) { _ in
                     itemListContent(selectedItemListType)

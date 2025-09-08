@@ -81,7 +81,7 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: item) { newItem in
+            .onChange(of: item) { _, newItem in
                 // Don't show a modal if a full screen overlay is presented on top
                 guard !coverManager.isPresented else { return }
 
@@ -111,7 +111,7 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: isPresented) { newValue in
+            .onChange(of: isPresented) { _, newValue in
                 // Don't show a modal if a full screen overlay is presented on top
                 guard !coverManager.isPresented else { return }
 
@@ -182,7 +182,7 @@ struct POSInteractiveDismissModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: disabled) { newValue in
+            .onChange(of: disabled) { _, newValue in
                 modalManager.setInteractiveDismissal(!newValue)
             }
             .onAppear {

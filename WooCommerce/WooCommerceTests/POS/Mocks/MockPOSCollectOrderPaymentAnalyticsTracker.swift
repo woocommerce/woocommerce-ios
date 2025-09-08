@@ -28,8 +28,9 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         // no-op
     }
 
+    var didCallTrackSuccessfulCashPayment = false
     func trackSuccessfulCashPayment() {
-        // no-op
+        didCallTrackSuccessfulCashPayment = true
     }
 
     var connectedReaderModel: String?

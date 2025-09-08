@@ -71,6 +71,9 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
     /// Expiry date of the label
     public let expiryDate: Date?
 
+    /// Selected HAZMAT category of the label
+    public let hazmatCategory: String?
+
     public init(siteID: Int64,
                 orderID: Int64,
                 shippingLabelID: Int64,
@@ -91,7 +94,8 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
                 productNames: [String],
                 commercialInvoiceURL: String?,
                 usedDate: Date?,
-                expiryDate: Date?) {
+                expiryDate: Date?,
+                hazmatCategory: String?) {
         self.siteID = siteID
         self.orderID = orderID
         self.shippingLabelID = shippingLabelID
@@ -113,6 +117,7 @@ public struct ShippingLabel: Equatable, Sendable, GeneratedCopiable, GeneratedFa
         self.commercialInvoiceURL = commercialInvoiceURL
         self.usedDate = usedDate
         self.expiryDate = expiryDate
+        self.hazmatCategory = hazmatCategory
     }
 }
 
@@ -177,7 +182,8 @@ extension ShippingLabel: Decodable {
                   productNames: productNames,
                   commercialInvoiceURL: commercialInvoiceURL,
                   usedDate: usedDate,
-                  expiryDate: expiryDate)
+                  expiryDate: expiryDate,
+                  hazmatCategory: nil) // hazmat category is not available in label details, will be updated later
     }
 
     private enum CodingKeys: String, CodingKey {

@@ -79,7 +79,7 @@ struct POSSendReceiptView: View {
                 .padding(.bottom, keyboardFrame.height)
             }
             .animation(.easeInOut, value: errorMessage)
-            .onChange(of: textFieldInput) { _ in
+            .onChange(of: textFieldInput) {
                 errorMessage = nil
             }
             .onReceive(Publishers.keyboardFrame) {

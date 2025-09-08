@@ -172,7 +172,7 @@ struct TopTabView<Content: View>: View {
                                                     scrollFocusTab(in: scrollViewProxy, at: index)
                                                 }
                                             }
-                                            .onChange(of: geometry.size) { newSize in
+                                            .onChange(of: geometry.size) { _, newSize in
                                                 /// Support dynamic type size change
                                                 if index < tabWidths.count {
                                                     tabWidths[index] = newSize.width
@@ -194,11 +194,11 @@ struct TopTabView<Content: View>: View {
                                     .offset(x: underlineOffset),
                                 alignment: .bottomLeading
                             )
-                            .onChange(of: selectedTab, perform: { newSelectedTab in
+                            .onChange(of: selectedTab) { _, newSelectedTab in
                                 withAnimation {
                                     selectTab(in: scrollViewProxy, at: newSelectedTab)
                                 }
-                            })
+                            }
                             .coordinateSpace(name: Constants.tabsHorizontalStackNameSpace)
                         }
                         .padding(.horizontal, tabsContainerHorizontalPadding)
@@ -235,7 +235,7 @@ struct TopTabView<Content: View>: View {
                                 .onAppear {
                                     contentSize = contentGeometry.size
                                 }
-                                .onChange(of: contentGeometry.size) { newSize in
+                                .onChange(of: contentGeometry.size) { _, newSize in
                                     contentSize = newSize
                                 }
                         })

@@ -288,7 +288,7 @@ struct JetpackSetupView: View {
             .renderedIf(viewModel.setupFailed)
         })
         .padding()
-        .onChange(of: viewModel.shouldPresentWebView) { shouldPresent in
+        .onChange(of: viewModel.shouldPresentWebView) { _, shouldPresent in
             if shouldPresent {
                 webViewPresentationHandler()
             }

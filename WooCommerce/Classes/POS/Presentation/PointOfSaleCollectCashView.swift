@@ -25,6 +25,12 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
+    private var isButtonEnabled: Bool {
+        viewHelper.isPaymentButtonEnabled(orderTotal: orderTotal,
+                                          textFieldAmountInput: textFieldAmountInput,
+                                          isLoading: isLoading)
+    }
+
     @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
                                                                                       locale: Locale.autoupdatingCurrent,
                                                                                       storeCurrencySettings: ServiceLocator.currencySettings,
@@ -56,7 +62,7 @@ struct PointOfSaleCollectCashView: View {
                                         await submitCashAmount()
                                     }
                                 }
-                                .onChange(of: textFieldViewModel.amount) { newValue in
+                                .onChange(of: textFieldViewModel.amount) { _, newValue in
                                     textFieldAmountInput = newValue
                                     updateChangeDueMessage()
                                 }
@@ -89,7 +95,7 @@ struct PointOfSaleCollectCashView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                         .frame(maxWidth: .infinity)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                        .disabled(isLoading)
+                        .disabled(!isButtonEnabled)
                     }
                     .padding([.horizontal])
                     .padding(.bottom, max(keyboardFrame.height - geometry.safeAreaInsets.bottom,
@@ -99,7 +105,7 @@ struct PointOfSaleCollectCashView: View {
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
                 .animation(.easeInOut, value: changeDueMessage != nil)
-                .onChange(of: textFieldAmountInput) { _ in
+                .onChange(of: textFieldAmountInput) {
                     errorMessage = nil
                 }
                 .onReceive(Publishers.keyboardFrame) {
@@ -110,6 +116,9 @@ struct PointOfSaleCollectCashView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            prefillOrderTotal()
+        }
     }
 
     private func markComplete() async throws {
@@ -121,9 +130,7 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
-        guard validateAmountOnSubmit() else {
-            return
-        }
+        ServiceLocator.analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true
         do {
             try await markComplete()
@@ -140,14 +147,12 @@ private extension PointOfSaleCollectCashView {
             textFieldAmountInput: textFieldAmountInput)
     }
 
-    private func validateAmountOnSubmit() -> Bool {
-        viewHelper.validateAmountOnSubmit(
-            orderTotal: orderTotal,
-            textFieldAmountInput: textFieldAmountInput,
-            onError: { error in
-                errorMessage = error
-            })
+    private func prefillOrderTotal() {
+        if let orderDecimal = viewHelper.parseCurrency(orderTotal) {
+            textFieldViewModel.presetAmount(orderDecimal)
         }
+        isTextFieldFocused = true
+    }
 }
 
 private extension PointOfSaleCollectCashView {

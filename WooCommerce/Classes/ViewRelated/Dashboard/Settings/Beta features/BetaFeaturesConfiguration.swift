@@ -14,6 +14,7 @@ final class BetaFeaturesConfigurationViewController: UIHostingController<BetaFea
 
 struct BetaFeaturesConfiguration: View {
     @StateObject private var viewModel: BetaFeaturesConfigurationViewModel
+    @State private var destinationURL: URL?
 
     init(viewModel: BetaFeaturesConfigurationViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -22,14 +23,33 @@ struct BetaFeaturesConfiguration: View {
     var body: some View {
         List {
             ForEach(viewModel.availableFeatures) { feature in
-                Section(footer: Text(feature.description)) {
+                Section {
                     TitleAndToggleRow(title: feature.title, isOn: viewModel.isOn(feature: feature))
+                } footer: {
+                    if let link = feature.descriptionLink {
+                        Text(
+                            .withEmbeddedLink(
+                                mainContent: feature.description,
+                                linkText: link.text,
+                                link: link.url.absoluteString,
+                                font: nil,
+                                foregroundColor: nil
+                            )
+                        )
+                        .environment(\.openURL, OpenURLAction { url in
+                            destinationURL = url
+                            return .handled
+                        })
+                    } else {
+                        Text(feature.description)
+                    }
                 }
             }
         }
         .background(Color(.listForeground(modal: false)))
         .listStyle(.grouped)
         .navigationTitle(Localization.title)
+        .safariSheet(url: $destinationURL)
     }
 }
 

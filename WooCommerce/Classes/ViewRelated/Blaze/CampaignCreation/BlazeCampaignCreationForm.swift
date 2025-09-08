@@ -222,7 +222,7 @@ struct BlazeCampaignCreationForm: View {
                 isShowingCampaignObjectivePicker = false
             }
         }
-        .onChange(of: viewModel.error) { newValue in
+        .onChange(of: viewModel.error) { _, newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
         .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {

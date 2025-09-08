@@ -17,6 +17,6 @@ public struct POSCoupon: Equatable, Hashable {
         guard let dateExpires = dateExpires else {
             return false
         }
-        return dateExpires < Date()
+        return dateExpires <= Date()
     }
 }

@@ -299,6 +299,7 @@ enum WooAnalyticsStat: String {
     case settingsBetaFeaturesButtonTapped = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesProductsToggled = "settings_beta_features_products_toggled"
     case settingsBetaFeaturesOrderAddOnsToggled = "settings_beta_features_order_addons_toggled"
+    case settingsBetaFeaturesApplicationPasswordsToggled = "settings_beta_features_application_passwords_toggled"
     case settingsBetaFeatureToggled = "settings_beta_feature_toggled"
 
     case settingsPrivacySettingsTapped = "settings_privacy_settings_button_tapped"
@@ -1257,6 +1258,7 @@ enum WooAnalyticsStat: String {
     case pointOfSaleItemRemovedFromCart = "item_removed_from_cart"
     case pointOfSaleCheckoutTapped = "checkout_tapped"
     case pointOfSaleBackToCartTapped = "back_to_cart_tapped"
+    case pointOfSaleCheckoutCashPaymentTapped = "checkout_cash_payment_tapped"
     case pointOfSaleCashPaymentTapped = "cash_payment_tapped"
     case pointOfSaleCashPaymentFailed = "cash_payment_failed"
     case pointOfSaleBackToCheckoutFromCashTapped = "back_to_checkout_from_cash"

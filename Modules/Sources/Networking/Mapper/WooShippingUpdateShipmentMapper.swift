@@ -7,9 +7,9 @@ struct WooShippingUpdateShipmentMapper: Mapper {
     ///
     func map(response: Data) throws -> WooShippingShipments {
         let decoder = JSONDecoder()
-        if hasDataEnvelope(in: response) {
+        do {
             return try decoder.decode(WooShippingUpdateShipmentResponseEnvelope.self, from: response).data.shipments
-        } else {
+        } catch {
             return try decoder.decode(WooShippingUpdateShipmentResponse.self, from: response).shipments
         }
     }

@@ -226,6 +226,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.wpcomSiteSuspended] = nil
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
         defaults[.applicationPasswordUnsupportedList] = nil
+        defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

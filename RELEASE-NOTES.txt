@@ -1,11 +1,16 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+23.3
+-----
+- [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
+
 23.2
 -----
+- [*] Blaze: Fixed issue dismissing the Blaze flow from an empty campaign list. [https://github.com/woocommerce/woocommerce-ios/pull/16085]
 - [*] POS: Enhanced cash payment experience with pre-filled amounts. [https://github.com/woocommerce/woocommerce-ios/pull/16058]
 - [*] POS: Point of Sale settings are now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
-- [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
+- [*] Shipping Labels: Show correct HAZMAT category for purchased labels. [https://github.com/woocommerce/woocommerce-ios/pull/16081]
 
 23.1
 -----

@@ -18,4 +18,9 @@ public protocol POSOrdersRemoteProtocol {
     func loadPOSOrders(siteID: Int64,
                        pageNumber: Int,
                        pageSize: Int) async throws -> PagedItems<Order>
+
+    func searchPOSOrders(siteID: Int64,
+                         searchTerm: String,
+                         pageNumber: Int,
+                         pageSize: Int) async throws -> PagedItems<Order>
 }

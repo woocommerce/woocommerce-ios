@@ -916,6 +916,43 @@ final class OrdersRemoteTests: XCTestCase {
                                                   "value": cashPaymentChangeDueAmount]]
         assertEqual(received, expected)
     }
+
+    func test_searchPOSOrders_sends_correct_parameters() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let searchTerm = "test search"
+        let pageNumber = 2
+        let pageSize = 10
+
+        // When
+        _ = try? await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: searchTerm, pageNumber: pageNumber, pageSize: pageSize)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let parameters = request.parameters
+
+        XCTAssertEqual(parameters["search"] as? String, searchTerm)
+        XCTAssertEqual(parameters["page"] as? String, String(pageNumber))
+        XCTAssertEqual(parameters["per_page"] as? String, String(pageSize))
+        XCTAssertEqual(parameters["status"] as? String, "any")
+        XCTAssertEqual(parameters["created_via"] as? String, "pos-rest-api")
+        XCTAssertEqual(parameters["dates_are_gmt"] as? Bool, true)
+        XCTAssertNotNil(parameters["_fields"] as? String)
+    }
+
+    func test_searchPOSOrders_properly_relays_networking_error() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        do {
+            // When
+            _ = try await remote.searchPOSOrders(siteID: sampleSiteID, searchTerm: "test", pageNumber: 1, pageSize: 25)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, .notFound(response: nil))
+        }
+    }
 }
 
 private extension OrdersRemoteTests {

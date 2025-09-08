@@ -3,7 +3,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 
-enum OrderListState: Equatable {
+enum POSOrderListState: Equatable {
     case loading([POSOrder])
     case loaded([POSOrder], hasMoreItems: Bool)
     case inlineError([POSOrder], error: PointOfSaleErrorState, context: InlineErrorContext)
@@ -28,8 +28,8 @@ enum OrderListState: Equatable {
         switch self {
         case .loaded:
             return false
-        case .loading(let items):
-            return items.isEmpty
+        case .loading(let orders):
+            return orders.isEmpty
         default:
             return true
         }

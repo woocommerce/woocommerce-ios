@@ -541,6 +541,7 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -559,6 +560,7 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 

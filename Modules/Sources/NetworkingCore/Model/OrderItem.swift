@@ -30,6 +30,8 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
 
     public let addOns: [OrderItemProductAddOn]
 
+    public let image: OrderItemProductImage?
+
     /// Item ID of parent `OrderItem`, if any.
     ///
     /// An `OrderItem` can have a parent if, for example, it is a bundled item within a product bundle.
@@ -58,6 +60,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                 totalTax: String,
                 attributes: [OrderItemAttribute],
                 addOns: [OrderItemProductAddOn],
+                image: OrderItemProductImage?,
                 parent: Int64?,
                 bundleConfiguration: [OrderItemBundleItem]) {
         self.itemID = itemID
@@ -75,6 +78,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
         self.totalTax = totalTax
         self.attributes = attributes
         self.addOns = addOns
+        self.image = image
         self.parent = parent
         self.bundleConfiguration = bundleConfiguration
     }
@@ -123,6 +127,9 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                                                               forKey: .attributes)
             .first(where: { $0.key == "_pao_ids" })?.value ?? []
 
+        // Order item product image
+        let image = try container.decodeIfPresent(OrderItemProductImage.self, forKey: .image)
+
         // Product Bundle extension properties:
         // If the order item is part of a product bundle, `bundledBy` is the parent order item (product bundle).
         // If it's not a bundled item, the API returns an empty string for `bundledBy` and the value will be `nil`.
@@ -149,6 +156,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                   totalTax: totalTax,
                   attributes: attributes,
                   addOns: productAddOns,
+                  image: image,
                   parent: bundledBy ?? compositeParent,
                   bundleConfiguration: [])
     }
@@ -172,6 +180,10 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
 
         if !total.isEmpty {
             try container.encode(total, forKey: .total)
+        }
+
+        if let image = image {
+            try container.encode(image, forKey: .image)
         }
 
         if !bundleConfiguration.isEmpty {
@@ -204,6 +216,7 @@ extension OrderItem {
         case bundledBy      = "bundled_by"
         case compositeParent = "composite_parent"
         case bundleConfiguration = "bundle_configuration"
+        case image
     }
 }
 
@@ -221,4 +234,25 @@ extension OrderItem: Comparable {
 private struct OrderItemProductAddOnContainer: Decodable {
     let key: String
     let value: [OrderItemProductAddOn]
+}
+
+
+// MARK: - Order Item Product Image
+//
+public struct OrderItemProductImage: Codable, Equatable, Hashable, Sendable {
+    public let src: String?
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.src = try? container.decodeIfPresent(String.self, forKey: .src)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(src, forKey: .src)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case src
+    }
 }

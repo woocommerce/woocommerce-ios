@@ -3,6 +3,7 @@ import protocol Networking.POSCatalogSyncRemoteProtocol
 import class Networking.AlamofireNetwork
 import class Networking.POSCatalogSyncRemote
 import CocoaLumberjackSwift
+import Storage
 
 // TODO - remove the periphery ignore comment when the catalog is integrated with POS.
 // periphery:ignore
@@ -26,20 +27,23 @@ public struct POSCatalog {
 public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let batchSize: Int
+    private let persistenceService: POSCatalogPersistenceServiceProtocol
 
-    public convenience init?(credentials: Credentials?, batchSize: Int = 2) {
+    public convenience init?(credentials: Credentials?, batchSize: Int = 2, grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
         }
         let network = AlamofireNetwork(credentials: credentials, ensuresSessionManagerIsInitialized: true)
         let syncRemote = POSCatalogSyncRemote(network: network)
-        self.init(syncRemote: syncRemote, batchSize: batchSize)
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
-    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int) {
+    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int, persistenceService: POSCatalogPersistenceServiceProtocol) {
         self.syncRemote = syncRemote
         self.batchSize = batchSize
+        self.persistenceService = persistenceService
     }
 
     // MARK: - Protocol Conformance
@@ -48,10 +52,17 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID)")
 
         do {
+            // Sync from network
             let catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote)
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
+
+            // Persist to database
+            try await persistenceService.replaceAllCatalogData(catalog, siteID: siteID)
+            DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
+
             return catalog
         } catch {
+            DDLogError("❌ Failed to sync and persist catalog: \(error)")
             throw error
         }
     }

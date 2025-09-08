@@ -23,6 +23,9 @@ import enum Yosemite.PointOfSaleBarcodeScanError
 import Combine
 import struct Yosemite.PaymentIntent
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
+import typealias Yosemite.OrderItemAttribute
 import class Yosemite.PointOfSaleOrderListService
 import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
 
@@ -237,63 +240,149 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
         return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
     }
+
+    static func makePreviewOrder() -> POSOrder {
+        return POSOrder(
+            id: 1,
+            number: "1001",
+            dateCreated: Date(),
+            status: .completed,
+            formattedTotal: "$45.75",
+            formattedSubtotal: "$41.99",
+            customerEmail: "customer@example.com",
+            paymentMethodID: "cod",
+            paymentMethodTitle: "Cash on Delivery",
+            lineItems: [
+                POSOrderItem(itemID: 1,
+                             name: "Premium Coffee Beans",
+                             quantity: 2.0,
+                             formattedPrice: "$12.50",
+                             formattedTotal: "$25.00",
+                             imageSrc: nil,
+                             attributes: []),
+                POSOrderItem(
+                    itemID: 2,
+                    name: "Organic Tea - Earl Grey",
+                    quantity: 1.0,
+                    formattedPrice: "$15.99",
+                    formattedTotal: "$15.99",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                        OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                    ]
+                )
+            ],
+            refunds: [],
+            formattedTotalTax: "$3.76",
+            formattedDiscountTotal: "$0.00",
+            formattedPaymentTotal: "$45.75",
+            formattedNetAmount: nil
+        )
+    }
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrderListController: PointOfSaleOrderListControllerProtocol {
-    var ordersViewState: OrderListState {
-        .loaded(
-                [
-                    POSOrder(
-                        id: 1,
-                        number: "1001",
-                        dateCreated: Date(),
-                        status: .completed,
-                        total: "25.00",
-                        customerEmail: "customer1@example.com",
-                        paymentMethodID: "cod",
-                        paymentMethodTitle: "Cash",
-                        lineItems: [],
-                        refunds: [],
-                        currency: "USD",
-                        currencySymbol: "$"
-                    ),
-                    POSOrder(
-                        id: 2,
-                        number: "1002",
-                        dateCreated: Date().addingTimeInterval(-3600),
-                        status: .processing,
-                        total: "45.50",
-                        customerEmail: "a.long.customer.name@withalongdomain.com",
-                        paymentMethodID: "woocommerce_payments",
-                        paymentMethodTitle: "Credit Card",
-                        lineItems: [],
-                        refunds: [],
-                        currency: "USD",
-                        currencySymbol: "$"
-                    ),
-                    POSOrder(
-                        id: 3,
-                        number: "1003",
-                        dateCreated: Date().addingTimeInterval(-7200),
-                        status: .completed,
-                        total: "12.75",
-                        customerEmail: nil,
-                        paymentMethodID: "woocommerce_payments",
-                        paymentMethodTitle: "Credit Card",
-                        lineItems: [],
-                        refunds: [],
-                        currency: "USD",
-                        currencySymbol: "$"
+final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
+    var ordersViewState: POSOrderListState {
+        let orders = [
+            POSOrder(
+                id: 1,
+                number: "1001",
+                dateCreated: Date(),
+                status: .completed,
+                formattedTotal: "$45.75",
+                formattedSubtotal: "$40.99",
+                customerEmail: "customer@example.com",
+                paymentMethodID: "cod",
+                paymentMethodTitle: "Cash on Delivery",
+                lineItems: [
+                    POSOrderItem(itemID: 1,
+                                 name: "Premium Coffee Beans",
+                                 quantity: 2.0,
+                                 formattedPrice: "$12.50",
+                                 formattedTotal: "$25.00",
+                                 imageSrc: nil,
+                                 attributes: []),
+                    POSOrderItem(
+                        itemID: 2,
+                        name: "Organic Tea - Earl Grey",
+                        quantity: 1.0,
+                        formattedPrice: "$15.99",
+                        formattedTotal: "$15.99",
+                        imageSrc: nil,
+                        attributes: [
+                            OrderItemAttribute(metaID: 1, name: "Size", value: "Large"),
+                            OrderItemAttribute(metaID: 2, name: "Type", value: "Loose Leaf")
+                        ]
                     )
                 ],
-                hasMoreItems: false
+                refunds: [],
+                formattedTotalTax: "$4.75",
+                formattedDiscountTotal: "-$5.24",
+                formattedPaymentTotal: "$45.75",
+                formattedNetAmount: nil
+            ),
+            POSOrder(
+                id: 2,
+                number: "1002",
+                dateCreated: Date().addingTimeInterval(-3600),
+                status: .processing,
+                formattedTotal: "$89.50",
+                formattedSubtotal: "$89.96",
+                customerEmail: "very.long.customer.email@withverylongdomainname.com",
+                paymentMethodID: "woocommerce_payments",
+                paymentMethodTitle: "WooCommerce Payments",
+                lineItems: [
+                    POSOrderItem(
+                        itemID: 3,
+                        name: "Artisan Chocolate Box",
+                        quantity: 3.0,
+                        formattedPrice: "$19.99",
+                        formattedTotal: "$59.97",
+                        imageSrc: nil,
+                        attributes: []
+                    ),
+                    POSOrderItem(
+                        itemID: 4,
+                        name: "Gourmet Cookie Set - Mixed",
+                        quantity: 1.0,
+                        formattedPrice: "$29.99",
+                        formattedTotal: "$29.99",
+                        imageSrc: nil,
+                        attributes: [
+                            OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
+                            OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
+                        ]
+                    )
+                ],
+                refunds: [
+                    POSOrderRefund(
+                        refundID: 1,
+                        formattedTotal: "-$19.99",
+                        reason: "Customer requested partial refund"
+                    )
+                ],
+                formattedTotalTax: "$8.95",
+                formattedDiscountTotal: "-$15.00",
+                formattedPaymentTotal: "$89.50",
+                formattedNetAmount: "$69.51"
             )
+        ]
+
+        return .loaded(orders, hasMoreItems: false)
+    }
+
+    var selectedOrder: POSOrder? {
+        ordersViewState.orders.first
     }
 
     func loadOrders() async {}
     func loadNextOrders() async {}
-    func refreshOrders() async { }
+    func refreshOrders() async {}
+    func selectOrder(_ order: POSOrder?) {}
+    func searchOrders(searchTerm: String) async {}
+    func clearSearchOrders() {}
 }
 
 // MARK: - Barcode Scan Service

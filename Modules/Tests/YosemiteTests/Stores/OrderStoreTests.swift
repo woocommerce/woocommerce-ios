@@ -1848,6 +1848,7 @@ private extension OrderStoreTests {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -1866,6 +1867,7 @@ private extension OrderStoreTests {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -1888,6 +1890,7 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -1906,6 +1909,7 @@ private extension OrderStoreTests {
                               totalTax: "0.40",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -1924,6 +1928,7 @@ private extension OrderStoreTests {
                               totalTax: "10.40",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -1946,6 +1951,7 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 

@@ -48,6 +48,7 @@ extension WooShippingConfigMapper {
         "config.shipments",
         "config.shippingLabelData.currentOrderLabels",
         "config.shippingLabelData.storedData.selected_destination",
-        "config.shippingLabelData.storedData.selected_origin"
+        "config.shippingLabelData.storedData.selected_origin",
+        "config.shippingLabelData.storedData.selected_hazmat"
     ].joined(separator: ", ")
 }

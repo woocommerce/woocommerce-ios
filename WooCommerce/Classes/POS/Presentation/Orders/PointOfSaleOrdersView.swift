@@ -3,26 +3,34 @@ import UIKit
 
 struct PointOfSaleOrdersView: View {
     @Binding var isPresented: Bool
-    @State private var selectedOrderID: String?
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        CustomNavigationSplitView(selection: $selectedOrderID) { _ in
-            PointOfSaleOrderListView(selectedOrderID: $selectedOrderID) {
+        CustomNavigationSplitView(selection: Binding(
+            get: { orderListModel.ordersController.selectedOrder },
+            set: { orderListModel.ordersController.selectOrder($0) }
+        )) { _ in
+            PointOfSaleOrderListView() {
                 isPresented = false
             }
         } detail: { selection in
             PointOfSaleOrderDetailsView(
-                orderID: selection,
+                order: selection,
                 onBack: {
-                    $selectedOrderID.wrappedValue = nil
+                    orderListModel.ordersController.selectOrder(nil)
                 }
             )
+        } detailPlaceholderView: {
+            if orderListModel.ordersController.ordersViewState.isLoading {
+                PointOfSaleOrderDetailsLoadingView()
+            } else {
+                PointOfSaleOrderDetailsEmptyView()
+            }
         } setDefaultValue: {
-            if selectedOrderID == nil,
+            if orderListModel.ordersController.selectedOrder == nil,
                let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
-                selectedOrderID = String(firstOrder.id)
+                orderListModel.ordersController.selectOrder(firstOrder)
             }
         }
         .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
@@ -32,12 +40,13 @@ struct PointOfSaleOrdersView: View {
                 return
             }
 
-            if let selectedOrderID, newOrders.map(\.number).contains(selectedOrderID) {
+            if let selectedOrder = orderListModel.ordersController.selectedOrder, newOrders.map(\.id).contains(selectedOrder.id) {
                 return
             }
 
-            self.selectedOrderID = String(firstOrder.id)
+            orderListModel.ordersController.selectOrder(firstOrder)
         }
+        .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
     }
 }
 
@@ -46,23 +55,26 @@ struct PointOfSaleOrdersView: View {
 /// Just as NavigationSplitView, it adapts to a list -> details navigation on smaller screens
 /// It may be used as a common component in the future
 ///
-private struct CustomNavigationSplitView<Sidebar: View, Detail: View, SelectionValue: Hashable>: View {
+private struct CustomNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
     private let detail: (SelectionValue) -> Detail
+    private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue) -> Detail,
+        @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
         setDefaultValue: (() -> Void)? = nil
     ) {
         self._selection = selection
         self.sidebar = sidebar
         self.detail = detail
+        self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
     }
 
@@ -78,7 +90,8 @@ private struct CustomNavigationSplitView<Sidebar: View, Detail: View, SelectionV
                         detail(selection)
                             .frame(maxWidth: .infinity)
                     } else {
-                        EmptyView()
+                        detailPlaceholderView()
+                            .frame(maxWidth: .infinity)
                     }
                 }
             }

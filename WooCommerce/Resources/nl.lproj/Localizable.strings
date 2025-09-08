@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-14 14:54:09+0000 */
+/* Translation-Revision-Date: 2025-08-26 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1751,8 +1751,7 @@ which should be translated separately and considered part of this sentence. */
 "Create Coupon" = "Coupon aanmaken";
 
 /* Create Shipping Label form navigation title
-   Option to create new shipping label from the action sheet on Products section of Order Details screen
-   Text on the button that starts shipping label creation */
+   Option to create new shipping label from the action sheet on Products section of Order Details screen */
 "Create Shipping Label" = "Verzendlabel aanmaken";
 
 /* Button displayed on the prologue screen of the simplified login flow to create a new store */
@@ -1920,9 +1919,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "Er moeten douaneformulieren worden afgedrukt en worden bijgevoegd bij deze internationale verzendingen";
-
-/* Details text in the shipping label creation info screen */
-"Cut the post office line by printing shipping labels at home with your mobile device at discounted rates!" = "Vermijd wachttijden bij het postkantoor door verzendlabels thuis te printen vanaf je mobiele apparaat, tegen lagere tarieven!";
 
 /* Country option for a site address. */
 "Cyprus" = "Cyprus";
@@ -3572,8 +3568,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Ontdek hoe je gevaarlijke goederen via USPS® kunt verpakken, labelen en verzenden op %1$@.";
 
-/* Button title in the shipping label creation info screen
-   Button to open the legal page for AI-generated contents on the product sharing message generation screen
+/* Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -3594,9 +3589,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
 "Learn more about card readers" = "Meer informatie over kaartlezers";
-
-/* Title of button in order details > info link for creating a shipping label on the mobile device. */
-"Learn more about creating labels with your mobile device" = "Meer informatie over labels met je mobiele apparaat aanmaken";
 
 /* Link on the error modal when a user without admin role tries to install Jetpack
    Link that points the user to learn more about roles. Clicking will open a web page.Presented when the user has tries to switch to a store with incorrect permissions. */
@@ -5685,9 +5677,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the CTA view for installing WCShip extension */
 "Save time and money" = "Bespaar tijd en geld";
 
-/* Message text in the shipping label creation info screen */
-"Save time and money by fulfilling with WooCommerce Shipping" = "Bespaar tijd en geld door gebruik te maken van WooCommerce Shipping";
-
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Je product wordt opgeslagen";
 
@@ -6490,9 +6479,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The accessibility hint for the quantity button when selecting an item to refund */
 "Tap to modify the item refund quantity" = "Tik om het aantal terug te betalen artikelen aan te passen";
-
-/* VoiceOver accessibility hint for the row that shows information about creating a shipping label */
-"Tap to show information about creating a shipping label" = "Tik om informatie weer te geven over het maken van een verzendlabel";
 
 /* VoiceOver accessibility hint for the row that shows instructions on how to print a shipping label on the mobile device */
 "Tap to show instructions on how to print a shipping label on the mobile device" = "Tik om aanwijzingen weer te geven voor het printen van een verzendlabel op een mobiel apparaat";
@@ -7951,9 +7937,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "WooCommerce-installatie";
-
-/* Navigation bar title in the shipping label creation info screen */
-"WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
 "WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping ondersteunt op dit moment geen verzendingen met gevaarlijke goederen via %1$@.";
@@ -10721,12 +10704,6 @@ which should be translated separately and considered part of this sentence. */
 /* Singular item count for a shipment. Reads like: 1 item */
 "orderDetailsShipmentDetailsView.itemCountSingular" = "%1$d items";
 
-/* Button to print the customs form for a purchased shipping label. */
-"orderDetailsShipmentDetailsView.printCustomsForm" = "Douaneformulier afdrukken";
-
-/* Button to print a shipping label for a shipment. Placeholder is the shipment index. Reads like: Print Shipping Label (1/2) */
-"orderDetailsShipmentDetailsView.printShippingLabel" = "Verzendlabel afdrukken (%1$@)";
-
 /* Message for a refunded shipping label. */
 "orderDetailsShipmentDetailsView.refundMessage" = "Je aanvraag voor terugbetaling is ingediend. Je kan een nieuw label aanschaffen.";
 
@@ -11270,9 +11247,6 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon niet toegepast";
 
-/* The title of the menu button to view barcode scanner documentation, shown in a popover menu. */
-"pointOfSale.floatingButtons.barcodeScanning.button.title" = "Streepjescode scannen";
-
 /* The title of the menu button to start a barcode scanner setup flow. */
 "pointOfSale.floatingButtons.barcodeScanningSetup.button.title" = "Eerste instelling streepjescodescanner";
 
@@ -11288,6 +11262,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the menu button to get support for Point of Sale, shown in a popover menu. */
 "pointOfSale.floatingButtons.getSupport.button.title" = "Vraag om ondersteuning";
 
+/* The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.orders.button.title" = "Bestellingen";
+
 /* The title of the menu button to view product restrictions info, shown in a popover menu. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "pointOfSale.floatingButtons.productRestrictionsInfo.button.title" = "Waar zijn mijn producten?";
 
@@ -11299,6 +11276,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the floating button to indicate that reader is in the process  of disconnecting. */
 "pointOfSale.floatingButtons.readerDisconnecting.title" = "Verbinding verbreken ...";
+
+/* The title of the menu button to access Point of Sale settings. */
+"pointOfSale.floatingButtons.settings.button.title" = "Instellingen";
 
 /* The title of the menu button to read Point of Sale documentation, shown in a popover menu. */
 "pointOfSale.floatingButtons.viewDocumentation.button.title" = "Documentatie";

@@ -15,7 +15,7 @@ struct PointOfSaleEntryPointView: View {
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let ordersController: PointOfSaleOrderListControllerProtocol
+    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let settingsController: PointOfSaleSettingsControllerProtocol
@@ -28,7 +28,7 @@ struct PointOfSaleEntryPointView: View {
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
-         ordersController: PointOfSaleOrderListControllerProtocol,
+         ordersController: PointOfSaleSearchingOrderListControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -104,7 +104,7 @@ struct PointOfSaleEntryPointView: View {
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
                               couponsSearchController: PointOfSalePreviewCouponsController(),
-                              ordersController: POSPreviewHelpers.makePreviewOrdersModel().ordersController,
+                              ordersController: PointOfSalePreviewOrderListController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

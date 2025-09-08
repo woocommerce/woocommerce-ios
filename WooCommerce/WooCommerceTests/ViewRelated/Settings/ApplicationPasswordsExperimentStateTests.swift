@@ -89,7 +89,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
 private final class ApplicationPasswordsExperimentAvailabilityCheckerMock: ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
     var mockedAvailability = false
 
-    var cachedValue: Bool {
+    var isAvailable: Bool {
         mockedAvailability
     }
 

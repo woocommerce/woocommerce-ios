@@ -5,6 +5,7 @@ import Codegen
 import Foundation
 import WooFoundation
 import struct Alamofire.JSONEncoding
+import struct NetworkingCore.JetpackSite
 
 
 extension Networking.AIProduct {

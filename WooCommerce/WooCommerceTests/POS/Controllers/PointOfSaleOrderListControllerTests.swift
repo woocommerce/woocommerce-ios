@@ -245,4 +245,74 @@ final class PointOfSaleOrderListControllerTests {
         }
         #expect(finalOrders == freshOrders)
     }
+
+    @Test func clearSearchOrders_immediately_shows_cached_orders() async throws {
+        // Given
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        let searchOrders = MockPointOfSaleOrderListService.makeSearchOrders()
+        orderListService.orderPages = [initialOrders]
+        orderListService.searchOrderPages = [searchOrders]
+
+        await sut.loadOrders()
+
+        guard case .loaded(let cachedOrders, _) = sut.ordersViewState else {
+            Issue.record("Expected loaded state after first load, but got \(sut.ordersViewState)")
+            return
+        }
+        #expect(cachedOrders == initialOrders)
+
+        await sut.searchOrders(searchTerm: "test")
+
+        // Verify search changed the state to different orders
+        guard case .loaded(let searchResults, _) = sut.ordersViewState else {
+            Issue.record("Expected loaded state after search, but got \(sut.ordersViewState)")
+            return
+        }
+        #expect(searchResults == searchOrders)
+        #expect(searchResults != initialOrders, "Search should show different orders than initial cached orders")
+
+        // When
+        await sut.clearSearchOrders()
+
+        // Then
+        guard case .loaded(let restoredOrders, _) = sut.ordersViewState else {
+            Issue.record("Expected loaded state with cached orders after clearing search, but got \(sut.ordersViewState)")
+            return
+        }
+        #expect(restoredOrders == initialOrders, "Should restore original cached orders")
+        #expect(restoredOrders != searchResults, "Restored orders should be different from search results")
+    }
+
+    @Test func clearSearchOrders_when_no_cache_then_shows_loading_state() async throws {
+        // Given
+        try #require(sut.ordersViewState.isLoading)
+        await sut.searchOrders(searchTerm: "test")
+
+        // When
+        await sut.clearSearchOrders()
+
+        // Then
+        guard case .loading(let orders) = sut.ordersViewState else {
+            Issue.record("Expected loading state when no cache exists, but got \(sut.ordersViewState)")
+            return
+        }
+        #expect(orders.isEmpty, "Should show empty loading state when no cache exists")
+    }
+
+    @Test func searchOrders_uses_search_strategy() async throws {
+        // Given
+        let searchOrders = MockPointOfSaleOrderListService.makeSearchOrders()
+        orderListService.searchOrderPages = [searchOrders]
+
+        // When
+        await sut.searchOrders(searchTerm: "test")
+
+        // Then
+        guard case .loaded(let orders, _) = sut.ordersViewState else {
+            Issue.record("Expected loaded state after search, but got \(sut.ordersViewState)")
+            return
+        }
+        #expect(orders == searchOrders)
+        #expect(orderListService.lastSearchTerm == "test")
+    }
 }

@@ -5,6 +5,7 @@ import Yosemite
 import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
 import protocol Storage.GRDBManagerProtocol
+import class WooFoundationCore.CurrencyFormatter
 
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
@@ -126,8 +127,11 @@ private extension POSTabCoordinator {
                     couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                           fetchStrategyFactory: posCouponFetchStrategyFactory),
                     ordersController: PointOfSaleOrderListController(
-                        orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactory(siteID: siteID,
-                                                                                        credentials: credentials)
+                        orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactory(
+                            siteID: siteID,
+                            credentials: credentials,
+                            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
+                        )
                     ),
 
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

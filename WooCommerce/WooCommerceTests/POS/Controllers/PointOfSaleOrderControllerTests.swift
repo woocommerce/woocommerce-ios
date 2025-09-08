@@ -182,8 +182,11 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_when_there_is_no_order_then_will_not_trigger() async throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService()
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             featureFlagService: mockFeatureFlagService)
         let email = "test@example.com"
 
         // When
@@ -199,8 +202,11 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
         // Given
+        let mockFeatureFlagService = MockFeatureFlagService()
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             featureFlagService: mockFeatureFlagService)
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -220,7 +226,8 @@ struct PointOfSaleOrderControllerTests {
         do {
             // Given/When
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                                 receiptService: mockReceiptService)
+                                                 receiptService: mockReceiptService,
+                                                 celebration: MockPaymentCaptureCelebration())
             try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
             // Then
@@ -253,7 +260,8 @@ struct PointOfSaleOrderControllerTests {
     @Test func collectCashPayment_passes_changeDueAmount_to_order_service() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptService: mockReceiptService)
+                                             receiptService: mockReceiptService,
+                                             celebration: MockPaymentCaptureCelebration())
 
         let orderItem = OrderItem.fake()
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -600,7 +608,8 @@ struct PointOfSaleOrderControllerTests {
 
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: MockReceiptService(),
-                                                 analytics: mockAnalytics)
+                                                 analytics: mockAnalytics,
+                                                 celebration: MockPaymentCaptureCelebration())
 
             // In order to test the order controller failure we need to succeed first in creating a successful order:
             let orderItem = OrderItem.fake()
@@ -629,15 +638,21 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
             let order = Order.fake()
             orderService.orderToReturn = order
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+            analyticsProvider.receivedEvents.removeAll()
+            analyticsProvider.receivedProperties.removeAll()
 
             // When
             try await sut.sendReceipt(recipientEmail: "test@example.com")
@@ -649,9 +664,12 @@ struct PointOfSaleOrderControllerTests {
 
         @Test func sendReceipt_without_order_tracks_failure_without_eligible_for_pos_receipt() async throws {
             // Given
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
-                                                 analytics: analytics)
+                                                 analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService)
 
             // When
             do {
@@ -671,9 +689,12 @@ struct PointOfSaleOrderControllerTests {
                                                                                     version: "10.0.0-dev",
                                                                                     active: true))
 
+            let mockFeatureFlagService = MockFeatureFlagService()
+            mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptService: receiptService,
                                                  analytics: analytics,
+                                                 featureFlagService: mockFeatureFlagService,
                                                  pluginsService: mockPluginsService)
 
             receiptService.sendReceiptResult = .failure(DotcomError.unknown(code: "test_error", message: "Test error"))
@@ -683,6 +704,8 @@ struct PointOfSaleOrderControllerTests {
 
             // We need an existing order before we can send a receipt
             await sut.syncOrder(for: .init(purchasableItems: [makeItem()]), retryHandler: { })
+            analyticsProvider.receivedEvents.removeAll()
+            analyticsProvider.receivedProperties.removeAll()
 
             // When
             do {

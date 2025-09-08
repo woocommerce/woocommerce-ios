@@ -2,15 +2,18 @@ import Foundation
 import Testing
 @testable import Networking
 @testable import Yosemite
+@testable import Storage
 
 struct POSCatalogFullSyncServiceTests {
     private let sut: POSCatalogFullSyncService
     private let mockSyncRemote: MockPOSCatalogSyncRemote
+    private let mockPersistenceService: MockPOSCatalogPersistenceService
     private let sampleSiteID: Int64 = 134
 
     init() {
         self.mockSyncRemote = MockPOSCatalogSyncRemote()
-        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2)
+        self.mockPersistenceService = MockPOSCatalogPersistenceService()
+        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, persistenceService: mockPersistenceService)
     }
 
     // MARK: - Full Sync Tests
@@ -128,20 +131,24 @@ struct POSCatalogFullSyncServiceTests {
 
     // MARK: - Initialization Tests
 
-    @Test func init_with_valid_credentials_creates_service() {
+    @Test func init_with_valid_credentials_creates_service() throws {
         // Given
         let credentials = Credentials.wpcom(username: "test", authToken: "token", siteAddress: "site.com")
+        let grdbManager = try GRDBManager()
 
         // When
-        let service = POSCatalogFullSyncService(credentials: credentials)
+        let service = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
 
         // Then
         #expect(service != nil)
     }
 
-    @Test func init_with_nil_credentials_returns_nil() {
-        // Given/When
-        let service = POSCatalogFullSyncService(credentials: nil)
+    @Test func init_with_nil_credentials_returns_nil() throws {
+        // Given
+        let grdbManager = try GRDBManager()
+
+        // When
+        let service = POSCatalogFullSyncService(credentials: nil, grdbManager: grdbManager)
 
         // Then
         #expect(service == nil)
@@ -152,7 +159,9 @@ struct POSCatalogFullSyncServiceTests {
         let customBatchSize = 5
 
         // When
-        let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: customBatchSize)
+        let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
+                                                batchSize: customBatchSize,
+                                                persistenceService: mockPersistenceService)
         _ = try await service.startFullSync(for: sampleSiteID)
 
         // Then
@@ -229,5 +238,19 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
             }
         }
         return fallbackVariationResult
+    }
+}
+
+// MARK: - Mock POSCatalogPersistenceService
+
+final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+    private(set) var replaceAllCatalogDataCallCount = 0
+    private(set) var lastPersistedCatalog: POSCatalog?
+    private(set) var lastPersistedSiteID: Int64?
+
+    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+        replaceAllCatalogDataCallCount += 1
+        lastPersistedSiteID = siteID
+        lastPersistedCatalog = catalog
     }
 }

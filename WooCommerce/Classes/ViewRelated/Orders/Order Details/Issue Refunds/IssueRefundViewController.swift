@@ -48,9 +48,15 @@ final class IssueRefundViewController: UIViewController {
         viewModel.fetch()
         updateWithViewModelContent()
 
-        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: IssueRefundViewController, _: UITraitCollection) in
-            self?.configureHeaderStackView()
-            self?.tableView.updateHeaderHeight()
+        let traits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self
+        ]
+
+        registerForTraitChanges(traits) {(self: Self, _: UITraitCollection) in
+            self.configureHeaderStackView()
+            self.tableView.updateHeaderHeight()
         }
     }
 

@@ -52,9 +52,15 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
         applyAccessibilityChanges()
+        
+        let traits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self
+        ]
 
-        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: RefundShippingDetailsTableViewCell, _: UITraitCollection) in
-            self?.applyAccessibilityChanges()
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.applyAccessibilityChanges()
         }
     }
 

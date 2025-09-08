@@ -49,11 +49,8 @@ public class AlamofireNetwork: Network {
 
     private var subscription: AnyCancellable?
 
-    /// Keeps track of failure counts for each site when switching to direct requests
-    private var appPasswordFailures: [Int64: Int] = [:]
-
-    /// Keeps track of retried requests when direct requests fail
-    private var retriedJetpackRequests: [RetriedJetpackRequest] = []
+    /// Thread-safe error handler for failure tracking and retry logic
+    private let errorHandler: AlamofireNetworkErrorHandler
 
     /// Public Initializer
     ///
@@ -71,6 +68,7 @@ public class AlamofireNetwork: Network {
         self.credentials = credentials
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
+        self.errorHandler = AlamofireNetworkErrorHandler(credentials: credentials, userDefaults: userDefaults)
         self.requestConverter = {
             let siteAddress: String? = {
                 switch credentials {
@@ -123,7 +121,7 @@ public class AlamofireNetwork: Network {
         alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
             .responseData { [weak self] response in
-                self?.handleFailureForDirectRequestIfNeeded(
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                     originalRequest: request,
                     convertedRequest: convertedRequest,
                     failure: response.networkingError,
@@ -151,7 +149,7 @@ public class AlamofireNetwork: Network {
         alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
             .responseData { [weak self] response in
-                self?.handleFailureForDirectRequestIfNeeded(
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                     originalRequest: request,
                     convertedRequest: convertedRequest,
                     failure: response.networkingError,
@@ -176,7 +174,7 @@ public class AlamofireNetwork: Network {
         let response = await sessionRequest.serializingData().response
         let failure = response.networkingError
 
-        if shouldRetryJetpackRequest(
+        if errorHandler.shouldRetryJetpackRequest(
             originalRequest: request,
             convertedRequest: convertedRequest,
             failure: failure
@@ -184,7 +182,7 @@ public class AlamofireNetwork: Network {
             return try await responseDataAndHeaders(for: request)
         }
 
-        flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
+        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
 
         if let error = response.networkingError {
             throw error
@@ -212,7 +210,7 @@ public class AlamofireNetwork: Network {
                 .request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
-                    self?.handleFailureForDirectRequestIfNeeded(
+                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                         originalRequest: request,
                         convertedRequest: convertedRequest,
                         failure: response.networkingError,
@@ -240,7 +238,7 @@ public class AlamofireNetwork: Network {
         alamofireSession
             .upload(multipartFormData: multipartFormData, with: convertedRequest)
             .responseData { [weak self] response in
-                self?.handleFailureForDirectRequestIfNeeded(
+                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                     originalRequest: request,
                     convertedRequest: convertedRequest,
                     failure: response.networkingError,
@@ -284,7 +282,7 @@ private extension AlamofireNetwork {
                     network: self
                 ))
                 requestAuthenticator.delegate = self
-                appPasswordFailures.removeValue(forKey: site.siteID) // reset failure count
+                errorHandler.resetFailureCount(for: site.siteID) // reset failure count
             }
     }
 }
@@ -293,139 +291,22 @@ private extension AlamofireNetwork {
 //
 private extension AlamofireNetwork {
     func convertRequestIfNeeded(_ request: URLRequestConvertible) -> URLRequestConvertible {
-        let isRetried = retriedJetpackRequests.contains { retriedRequest in
-            let urlRequest = try? request.asURLRequest()
-            let currentItem = try? retriedRequest.request.asURLRequest()
-            return currentItem == urlRequest
-        }
-        if isRetried {
+        if errorHandler.isRequestRetried(request) {
             return request // do not convert
         }
         return requestConverter.convert(request)
     }
 
-    /// Checks if the specified request and error are eligible for retrying as Jetpack request.
-    /// If yes, enqueue the original request to the retried list before returning.
-    ///
-    func shouldRetryJetpackRequest(originalRequest: URLRequestConvertible,
-                                   convertedRequest: URLRequestConvertible,
-                                   failure: Error?) -> Bool {
-        guard let error = failure,
-              let request = originalRequest as? JetpackRequest,
-              convertedRequest is RESTRequest,
-              case .some(.wpcom) = credentials else {
-            return false
-        }
-
-        let isExpectedError: Bool = {
-            switch error {
-            case AFError.requestAdaptationFailed:
-                return true
-            case _ as NetworkError:
-                return true
-            default:
-                return false
-            }
-        }()
-
-        if isExpectedError {
-            let retriedRequest = RetriedJetpackRequest(request: request, error: error)
-            retriedJetpackRequests.append(retriedRequest)
-            return true
-        }
-        return false
-    }
-
-    /// Determines if the site has issue with application password based on the original request.
-    ///
-    func flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: URLRequestConvertible,
-                                                     failure: Error?) {
-        let retriedRequestIndex = retriedJetpackRequests.firstIndex { retriedRequest in
-            let urlRequest = try? originalRequest.asURLRequest()
-            let retriedRequest = try? retriedRequest.request.asURLRequest()
-            return urlRequest == retriedRequest
-        }
-        guard let index = retriedRequestIndex else { return }
-
-        if failure == nil {
-            let siteID = retriedJetpackRequests[index].request.siteID
-            let originalFailure = retriedJetpackRequests[index].error
-            switch originalFailure {
-            case NetworkError.unacceptableStatusCode(statusCode: 401, _),
-                NetworkError.unacceptableStatusCode(statusCode: 403, _),
-                NetworkError.unacceptableStatusCode(statusCode: 429, _):
-                flagSiteAsUnsupported(for: siteID)
-            default:
-                if let networkError = originalFailure as? NetworkError,
-                   let code = networkError.errorCode,
-                    AppPasswordConstants.disabledCodes.contains(code) {
-                    flagSiteAsUnsupported(for: siteID)
-                } else {
-                    incrementFailureCount(for: siteID)
-                }
-            }
-        }
-
-        // remove retried request from list
-        retriedJetpackRequests.remove(at: index)
-    }
-
-    func handleFailureForDirectRequestIfNeeded(originalRequest: URLRequestConvertible,
-                                               convertedRequest: URLRequestConvertible,
-                                               failure: Error?,
-                                               onRetry: @escaping () -> Void,
-                                               onCompletion: @escaping () -> Void) {
-        if shouldRetryJetpackRequest(originalRequest: originalRequest,
-                                     convertedRequest: convertedRequest,
-                                     failure: failure) {
-            onRetry()
-        } else {
-            flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: originalRequest, failure: failure)
-            onCompletion()
-        }
-    }
-
-    /// Helper type to keep track of retried requests with accompanied error
-    ///
-    struct RetriedJetpackRequest {
-        let request: JetpackRequest
-        let error: Error
-    }
-
-    func incrementFailureCount(for siteID: Int64) {
-        let currentFailureCount = appPasswordFailures[siteID] ?? 0
-        let updatedCount = currentFailureCount + 1
-        if updatedCount == AppPasswordConstants.requestFailureThreshold {
-            let currentList = userDefaults.applicationPasswordUnsupportedList
-            userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
-        }
-        appPasswordFailures[siteID] = updatedCount
-    }
 }
 
 // MARK: `RequestProcessorDelegate` conformance
 //
 extension AlamofireNetwork: RequestProcessorDelegate {
     func didFailToAuthenticateRequestWithAppPassword(siteID: Int64) {
-        flagSiteAsUnsupported(for: siteID)
-    }
-
-    func flagSiteAsUnsupported(for siteID: Int64) {
-        let currentList = userDefaults.applicationPasswordUnsupportedList
-        userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+        errorHandler.flagSiteAsUnsupported(for: siteID)
     }
 }
 
-// MARK: - Constants for direct request error handling
-enum AppPasswordConstants {
-    // flag site as disabled after threshold is reached
-    static let requestFailureThreshold = 10
-    static let disabledCodes = [
-        "application_passwords_disabled",
-        "application_passwords_disabled_for_user",
-        "incorrect_password"
-    ]
-}
 
 private extension DataRequest {
     /// Validates only for `RESTRequest`

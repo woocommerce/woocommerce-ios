@@ -240,17 +240,3 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         return fallbackVariationResult
     }
 }
-
-// MARK: - Mock POSCatalogPersistenceService
-
-final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
-    private(set) var replaceAllCatalogDataCallCount = 0
-    private(set) var lastPersistedCatalog: POSCatalog?
-    private(set) var lastPersistedSiteID: Int64?
-
-    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        replaceAllCatalogDataCallCount += 1
-        lastPersistedSiteID = siteID
-        lastPersistedCatalog = catalog
-    }
-}

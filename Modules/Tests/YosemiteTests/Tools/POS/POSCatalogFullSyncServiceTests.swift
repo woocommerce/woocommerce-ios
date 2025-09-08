@@ -176,13 +176,22 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // Dictionary mapping pageNumber to Result for products and variations.
     private(set) var productResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var variationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
+    private(set) var incrementalProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
+    private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
 
     private(set) var loadProductsCallCount = 0
     private(set) var loadProductVariationsCallCount = 0
+    private(set) var loadIncrementalProductsCallCount = 0
+    private(set) var loadIncrementalProductVariationsCallCount = 0
+
+    private(set) var lastIncrementalProductsModifiedAfter: Date?
+    private(set) var lastIncrementalVariationsModifiedAfter: Date?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
     private let fallbackVariationResult = PagedItems(items: [] as [POSProductVariation], hasMorePages: false, totalItems: 0)
+
+    // MARK: - Setup Methods for Full Sync
 
     func setProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
         productResults[pageNumber] = result
@@ -204,13 +213,61 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
+    // MARK: - Setup Methods for Incremental Sync
+
+    func setIncrementalProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
+        incrementalProductResults[pageNumber] = result
+    }
+
+    func setIncrementalVariationResult(pageNumber: Int, result: Result<PagedItems<POSProductVariation>, Error>) {
+        incrementalVariationResults[pageNumber] = result
+    }
+
+    func setIncrementalProductResults(_ results: [PagedItems<POSProduct>]) {
+        for (index, pagedItems) in results.enumerated() {
+            incrementalProductResults[index + 1] = .success(pagedItems)
+        }
+    }
+
+    func setIncrementalVariationResults(_ results: [PagedItems<POSProductVariation>]) {
+        for (index, pagedItems) in results.enumerated() {
+            incrementalVariationResults[index + 1] = .success(pagedItems)
+        }
+    }
+
+    // MARK: - Protocol Methods - Incremental Sync
+
     func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        try await loadProducts(siteID: siteID, pageNumber: pageNumber)
+        loadIncrementalProductsCallCount += 1
+        lastIncrementalProductsModifiedAfter = modifiedAfter
+
+        if let result = incrementalProductResults[pageNumber] {
+            switch result {
+            case .success(let pagedItems):
+                return pagedItems
+            case .failure(let error):
+                throw error
+            }
+        }
+        return fallbackResult
     }
 
     func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        try await loadProductVariations(siteID: siteID, pageNumber: pageNumber)
+        loadIncrementalProductVariationsCallCount += 1
+        lastIncrementalVariationsModifiedAfter = modifiedAfter
+
+        if let result = incrementalVariationResults[pageNumber] {
+            switch result {
+            case .success(let pagedItems):
+                return pagedItems
+            case .failure(let error):
+                throw error
+            }
+        }
+        return fallbackVariationResult
     }
+
+    // MARK: - Protocol Methods - Full Sync
 
     func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
         loadProductsCallCount += 1
@@ -239,4 +296,20 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
         return fallbackVariationResult
     }
+}
+
+// MARK: - Mock POSCatalogPersistenceService
+
+private final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
+    private(set) var replaceAllCatalogDataCallCount = 0
+    private(set) var lastPersistedCatalog: POSCatalog?
+    private(set) var lastPersistedSiteID: Int64?
+
+    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+        replaceAllCatalogDataCallCount += 1
+        lastPersistedSiteID = siteID
+        lastPersistedCatalog = catalog
+    }
+
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {}
 }

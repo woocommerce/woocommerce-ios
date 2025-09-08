@@ -221,4 +221,84 @@ struct POSCatalogPersistenceServiceTests {
             #expect(variationAttributeCount == 0) // Variation attributes should be gone
         }
     }
+
+    // MARK: - Incremental Catalog Data Tests
+
+    @Test func persistIncrementalCatalogData_inserts_new_products_when_database_is_empty() async throws {
+        // Given
+        let newProducts = [
+            POSProduct.fake().copy(siteID: sampleSiteID, productID: 6),
+            POSProduct.fake().copy(siteID: sampleSiteID, productID: 2)
+        ]
+        let catalog = POSCatalog(products: newProducts, variations: [])
+
+        // When
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        let db = grdbManager.databaseConnection
+        try await db.read { db in
+            let siteCount = try PersistedSite.fetchCount(db)
+            let productCount = try PersistedProduct.fetchCount(db)
+            #expect(siteCount == 1)
+            #expect(productCount == 2)
+
+            let products = try PersistedProduct.filter(sql: "\(PersistedProduct.Columns.siteID.name) = \(sampleSiteID)").fetchAll(db)
+            let productIDs = products.map { $0.id }.sorted()
+            #expect(productIDs == [2, 6])
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_updates_existing_products() async throws {
+        // Given
+        let existingProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Old Name")
+        let db = grdbManager.databaseConnection
+        try await db.write { db in
+            try PersistedSite(id: sampleSiteID).insert(db)
+        }
+        try existingProduct.save(to: db)
+
+        // When
+        let updatedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "New Name")
+        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [])
+        try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let productCount = try PersistedProduct.fetchCount(db)
+            #expect(productCount == 1)
+
+            let product = try PersistedProduct.fetchOne(db)
+            #expect(product?.name == "New Name")
+            #expect(product?.id == 1)
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_replaces_attributes_for_updated_products() async throws {
+        // Given
+        let attribute1 = Yosemite.ProductAttribute.fake().copy(name: "Color")
+        let attribute2 = Yosemite.ProductAttribute.fake().copy(name: "Size")
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, attributes: [attribute1, attribute2])
+        let db = grdbManager.databaseConnection
+        try await db.write { db in
+            try PersistedSite(id: sampleSiteID).insert(db)
+        }
+        try product.save(to: db)
+
+        // When
+        let newAttribute = ProductAttribute.fake().copy(name: "Material")
+        let updatedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, attributes: [newAttribute])
+        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [])
+        try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let attributeCount = try PersistedProductAttribute.fetchCount(db)
+            #expect(attributeCount == 1)
+
+            let attribute = try PersistedProductAttribute.fetchOne(db)
+            #expect(attribute?.name == "Material")
+            #expect(attribute?.productID == 1)
+        }
+    }
 }

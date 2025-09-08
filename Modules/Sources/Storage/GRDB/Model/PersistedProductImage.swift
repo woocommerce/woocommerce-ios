@@ -34,7 +34,7 @@ extension PersistedProductImage: FetchableRecord, PersistableRecord {
 
     public enum Columns {
         static let id = Column(CodingKeys.id)
-        static let productID = Column(CodingKeys.productID)
+        public static let productID = Column(CodingKeys.productID)
         static let dateCreated = Column(CodingKeys.dateCreated)
         static let dateModified = Column(CodingKeys.dateModified)
         static let src = Column(CodingKeys.src)

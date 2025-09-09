@@ -93,6 +93,21 @@ extension Yosemite.POSSimpleProduct {
     }
 }
 
+extension Yosemite.POSSite {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        lastIncrementalSyncDate: NullableCopiableProp<Date> = .copy
+    ) -> Yosemite.POSSite {
+        let siteID = siteID ?? self.siteID
+        let lastIncrementalSyncDate = lastIncrementalSyncDate ?? self.lastIncrementalSyncDate
+
+        return Yosemite.POSSite(
+            siteID: siteID,
+            lastIncrementalSyncDate: lastIncrementalSyncDate
+        )
+    }
+}
+
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
         note: CopiableProp<Note> = .copy,

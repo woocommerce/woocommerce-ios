@@ -1,20 +1,23 @@
 import Foundation
 import Testing
 @testable import Yosemite
-import Storage
+@testable import Storage
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
     private let mockSettingsStore: MockSiteSpecificAppSettingsStoreMethods
+    private let grdbManager: GRDBManager
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
 
-    init() {
+    init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
         self.mockSettingsStore = MockSiteSpecificAppSettingsStoreMethods()
+        self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
-            settingsStore: mockSettingsStore
+            settingsStore: mockSettingsStore,
+            grdbManager: grdbManager
         )
     }
 
@@ -72,9 +75,23 @@ struct POSCatalogSyncCoordinatorTests {
 
     // MARK: - Should Sync Decision Tests
 
-    @Test func shouldPerformFullSync_returns_true_when_no_previous_sync() {
-        // Given - no previous sync date stored
+    @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() {
+        // Given - site doesn't exist in database AND has no sync history
         mockSettingsStore.storedDates = [:]
+        // Note: NOT creating site in database
+
+        // When
+        let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should sync because site doesn't exist in database
+        #expect(shouldSync == true)
+    }
+
+    @Test func shouldPerformFullSync_returns_true_when_site_is_in_database_with_no_previous_sync() throws {
+        // Given - no previous sync date stored, but site exists in database
+        // This is much less likely to happen, but could help at a migration point
+        mockSettingsStore.storedDates = [:]
+        try createSiteInDatabase(siteID: sampleSiteID)
 
         // When
         let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 3600)
@@ -84,10 +101,11 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(mockSettingsStore.getPOSLastFullSyncDateCallCount == 1)
     }
 
-    @Test func shouldPerformFullSync_returns_true_when_sync_is_stale() {
-        // Given - previous sync was 2 hours ago
+    @Test func shouldPerformFullSync_returns_true_when_sync_is_stale() throws {
+        // Given - previous sync was 2 hours ago, and site exists in database
         let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
         mockSettingsStore.storedDates[sampleSiteID] = twoHoursAgo
+        try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 1 hour
         let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
@@ -96,10 +114,11 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSync == true)
     }
 
-    @Test func shouldPerformFullSync_returns_false_when_sync_is_fresh() {
-        // Given - previous sync was 30 minutes ago
+    @Test func shouldPerformFullSync_returns_false_when_sync_is_fresh() throws {
+        // Given - previous sync was 30 minutes ago, and site exists in database
         let thirtyMinutesAgo = Date().addingTimeInterval(-30 * 60)
         mockSettingsStore.storedDates[sampleSiteID] = thirtyMinutesAgo
+        try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 1 hour
         let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
@@ -108,7 +127,7 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSync == false)
     }
 
-    @Test func shouldPerformFullSync_handles_different_sites_independently() {
+    @Test func shouldPerformFullSync_handles_different_sites_independently() throws {
         // Given
         let siteA: Int64 = 123
         let siteB: Int64 = 456
@@ -116,6 +135,10 @@ struct POSCatalogSyncCoordinatorTests {
 
         mockSettingsStore.storedDates[siteA] = oneHourAgo // Has previous sync
         // siteB has no previous sync
+
+        // Create both sites in database to test timing logic
+        try createSiteInDatabase(siteID: siteA)
+        try createSiteInDatabase(siteID: siteB)
 
         // When
         let shouldSyncA = sut.shouldPerformFullSync(for: siteA, maxAge: 2 * 60 * 60) // 2 hours
@@ -126,16 +149,54 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSyncB == true)  // No previous sync
     }
 
-    @Test func shouldPerformFullSync_with_zero_maxAge_always_returns_true() {
-        // Given - previous sync was just now
+    @Test func shouldPerformFullSync_with_zero_maxAge_always_returns_true() throws {
+        // Given - previous sync was just now, and site exists in database
         let justNow = Date()
         mockSettingsStore.storedDates[sampleSiteID] = justNow
+        try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 0 (always sync)
         let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 0)
 
         // Then
         #expect(shouldSync == true)
+    }
+
+    // MARK: - Database Check Tests
+
+    @Test func shouldPerformFullSync_returns_true_when_site_not_in_database() {
+        // Given - site does not exist in database, but has recent sync date
+        let recentSyncDate = Date().addingTimeInterval(-30 * 60) // 30 minutes ago
+        mockSettingsStore.storedDates[sampleSiteID] = recentSyncDate
+        // Note: not creating site in database so it won't exist
+
+        // When - max age is 1 hour (normally wouldn't sync)
+        let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should sync because site doesn't exist in database
+        #expect(shouldSync == true)
+    }
+
+    @Test func shouldPerformFullSync_respects_time_when_site_exists_in_database() throws {
+        // Given - site exists in database with recent sync date
+        let recentSyncDate = Date().addingTimeInterval(-30 * 60) // 30 minutes ago
+        mockSettingsStore.storedDates[sampleSiteID] = recentSyncDate
+        try createSiteInDatabase(siteID: sampleSiteID)
+
+        // When - max age is 1 hour
+        let shouldSync = sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should not sync because site exists and time hasn't passed
+        #expect(shouldSync == false)
+    }
+
+    // MARK: - Helper Methods
+
+    private func createSiteInDatabase(siteID: Int64) throws {
+        try grdbManager.databaseConnection.write { db in
+            let site = PersistedSite(id: siteID)
+            try site.insert(db)
+        }
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import Storage
+import GRDB
 
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync for the specified site
@@ -17,11 +18,14 @@ public protocol POSCatalogSyncCoordinatorProtocol {
 public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol
+    private let grdbManager: GRDBManagerProtocol
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
-                settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
+                settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
+                grdbManager: GRDBManagerProtocol) {
         self.fullSyncService = fullSyncService
         self.settingsStore = settingsStore ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+        self.grdbManager = grdbManager
     }
 
     public func performFullSync(for siteID: Int64) async throws {
@@ -36,6 +40,11 @@ public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     }
 
     public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) -> Bool {
+        if !siteExistsInDatabase(siteID: siteID) {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) not found in database, sync needed")
+            return true
+        }
+
         guard let lastSyncDate = lastFullSyncDate(for: siteID) else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: No previous sync found for site \(siteID), sync needed")
             return true
@@ -57,5 +66,17 @@ public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
 
     private func lastFullSyncDate(for siteID: Int64) -> Date? {
         return settingsStore.getPOSLastFullSyncDate(for: siteID)
+    }
+
+    private func siteExistsInDatabase(siteID: Int64) -> Bool {
+        do {
+            return try grdbManager.databaseConnection.read { db in
+                return try PersistedSite.filter(key: siteID).fetchCount(db) > 0
+            }
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Error checking if site \(siteID) exists in database: \(error)")
+            // On error, assume site exists to avoid unnecessary syncs
+            return true
+        }
     }
 }

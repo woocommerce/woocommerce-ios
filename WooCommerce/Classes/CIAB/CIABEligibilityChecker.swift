@@ -22,13 +22,18 @@ final class CIABEligibilityChecker {
 
 extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     var isCurrentSiteCIAB: Bool {
-        /// Temp mocked value
-        return true
+        guard let currentSite = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return isSiteCIAB(currentSite)
     }
 
     func isSiteCIAB(_ site: Site) -> Bool {
-        /// Temp mocked value
-        return true
+        /// Temp logic
+        /// If site name contains either `garden` or `ciab` then it's considered a CIAB site
+        return isCIABSupportedForBuildEnvironment && CIABUnlockingSiteNameSubstrings.allCases.contains {
+            site.name.lowercased().contains($0.rawValue)
+        }
     }
 
     func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
@@ -40,5 +45,25 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
         for site: Site
     ) -> Bool {
         return !isSiteCIAB(site) || !CIABAffectedFeature.unsupportedFeatures.contains(feature)
+    }
+}
+
+// MARK: - Temporary constants for CIAB identifying logic
+
+fileprivate extension CIABEligibilityChecker {
+    enum CIABUnlockingSiteNameSubstrings: String, CaseIterable {
+        case garden
+        case ciab
+    }
+}
+
+// MARK: - Temporary environment checks
+
+import enum WooFoundationCore.BuildConfiguration
+
+private extension CIABEligibilityChecker {
+    var isCIABSupportedForBuildEnvironment: Bool {
+        let buildConfig = BuildConfiguration.current
+        return buildConfig == .localDeveloper || buildConfig == .alpha
     }
 }

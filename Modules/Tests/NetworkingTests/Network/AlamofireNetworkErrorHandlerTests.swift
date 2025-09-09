@@ -129,7 +129,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Given
         let existingSiteID: Int64 = 789
         let newSiteID: Int64 = 456
-        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): String(Date().timeIntervalSince1970)]
+        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): Date()]
 
         // When
         errorHandler.flagSiteAsUnsupported(for: newSiteID)
@@ -279,7 +279,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_when_site_not_in_list() {
         // Given
         let siteID: Int64 = 123
-        let unsupportedList: [String: String] = [:]
+        let unsupportedList: [String: Date] = [:]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
@@ -291,7 +291,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_when_timestamp_string_invalid() {
         // Given
         let siteID: Int64 = 123
-        let unsupportedList: [String: String] = [String(siteID): "invalid_timestamp"]
+        let unsupportedList: [String: Date] = [String(siteID): Date(timeIntervalSince1970: 0)]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
@@ -303,8 +303,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_true_when_flag_is_recent() {
         // Given
         let siteID: Int64 = 123
-        let recentTimestamp = Date().timeIntervalSince1970 - (60 * 60) // 1 hour ago
-        let unsupportedList: [String: String] = [String(siteID): String(recentTimestamp)]
+        let recentDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60)) // 1 hour ago
+        let unsupportedList: [String: Date] = [String(siteID): recentDate]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
@@ -316,8 +316,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_and_clears_flag_when_expired() {
         // Given
         let siteID: Int64 = 123
-        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 8) // 8 days ago (expired)
-        userDefaults.applicationPasswordUnsupportedList = [String(siteID): String(expiredTimestamp)]
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 8)) // 8 days ago (expired)
+        userDefaults.applicationPasswordUnsupportedList = [String(siteID): expiredDate]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
@@ -331,8 +331,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_true_for_flag_at_boundary_time() {
         // Given
         let siteID: Int64 = 123
-        let boundaryTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 - 1) // Just under 7 days ago
-        let unsupportedList: [String: String] = [String(siteID): String(boundaryTimestamp)]
+        let boundaryDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 - 1)) // Just under 7 days ago
+        let unsupportedList: [String: Date] = [String(siteID): boundaryDate]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
@@ -344,8 +344,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_for_flag_just_over_boundary() {
         // Given
         let siteID: Int64 = 123
-        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 + 1) // Just over 7 days ago
-        userDefaults.applicationPasswordUnsupportedList = [String(siteID): String(expiredTimestamp)]
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 + 1)) // Just over 7 days ago
+        userDefaults.applicationPasswordUnsupportedList = [String(siteID): expiredDate]
 
         // When
         let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
@@ -361,13 +361,13 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         let siteID1: Int64 = 123
         let siteID2: Int64 = 456
         let siteID3: Int64 = 789
-        let recentTimestamp = Date().timeIntervalSince1970 - (60 * 60) // 1 hour ago
-        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 8) // 8 days ago
+        let recentDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60)) // 1 hour ago
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 8)) // 8 days ago
         
         userDefaults.applicationPasswordUnsupportedList = [
-            String(siteID1): String(recentTimestamp),
-            String(siteID2): String(expiredTimestamp),
-            String(siteID3): String(recentTimestamp)
+            String(siteID1): recentDate,
+            String(siteID2): expiredDate,
+            String(siteID3): recentDate
         ]
 
         // When & Then

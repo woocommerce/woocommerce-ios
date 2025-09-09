@@ -194,7 +194,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let existingSiteID: Int64 = 456
         let newSiteID: Int64 = 123
-        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): String(Date().timeIntervalSince1970)]
+        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): Date()]
         let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
 
         // When

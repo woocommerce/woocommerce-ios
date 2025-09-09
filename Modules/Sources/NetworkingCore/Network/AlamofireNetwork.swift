@@ -360,8 +360,8 @@ extension Alamofire.DataResponse {
 // MARK: - Helper extension to save internal flag for app password availability
 //
 extension UserDefaults {
-    @objc dynamic var applicationPasswordUnsupportedList: [String: String] {
-        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [String: String] ?? [:] }
+    @objc dynamic var applicationPasswordUnsupportedList: [String: Date] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [String: Date] ?? [:] }
         set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
     }
 

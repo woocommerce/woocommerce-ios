@@ -136,18 +136,17 @@ final class AlamofireNetworkErrorHandler {
     func flagSiteAsUnsupported(for siteID: Int64) {
         queue.sync(flags: .barrier) {
             var currentList = userDefaults.applicationPasswordUnsupportedList
-            currentList[String(siteID)] = String(Date().timeIntervalSince1970)
+            currentList[String(siteID)] = Date()
             userDefaults.applicationPasswordUnsupportedList = currentList
         }
     }
 
-    func siteFlaggedAsUnsupported(siteID: Int64, unsupportedList: [String: String]) -> Bool {
-        guard let flagDateString = unsupportedList[String(siteID)],
-              let flagDate = TimeInterval(flagDateString) else {
+    func siteFlaggedAsUnsupported(siteID: Int64, unsupportedList: [String: Date]) -> Bool {
+        guard let flagDate = unsupportedList[String(siteID)] else {
             return false
         }
 
-        let timeElapsed = Date().timeIntervalSince1970 - flagDate
+        let timeElapsed = Date().timeIntervalSince1970 - flagDate.timeIntervalSince1970
         if timeElapsed < Constants.flagRefreshDuration {
             return true
         } else {

@@ -1041,14 +1041,19 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     // MARK: - split shipments feature visibility tests
 
-    func test_splitShipmentsRowVisible_is_false_when_split_shipments_feature_is_unavailable() {
-        let stores = MockStoresManager(sessionManager: .testingInstance)
+    private func initialConfigurationForSplitShipmentsTest(stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case .verifyDestinationAddress(_, _, let completion):
-                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: WooShippingNormalizedAddress.fake(),
-                                                                               isTrivialNormalization: nil,
-                                                                               isVerified: true)))
+                completion(
+                    .success(
+                        WooShippingVerifyDestinationAddressSuccess(
+                            normalizedAddress: WooShippingNormalizedAddress.fake(),
+                            isTrivialNormalization: nil,
+                            isVerified: true
+                        )
+                    )
+                )
             case .loadAccountSettings(_, let completion):
                 completion(.success(self.settings))
             case .loadOriginAddresses(_, let completion):
@@ -1058,17 +1063,25 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 XCTFail("Unexpected action: \(action)")
             }
         }
+    }
 
+    func test_splitShipmentsRowVisible_is_false_when_split_shipments_feature_is_unavailable() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Is CIAB site with the `.splitShipments` disabled
         let mockSiteCIABChecker = MockCIABEligibilityChecker(
             mockedIsCurrentSiteCIAB: true,
             mockedCIABDisabledFeatures: [.splitShipments]
         )
 
-        // There exist 2 shipments, one of which has been fulfilled.
-        let product1 = Product.fake().copy(productID: 1)
-        let product2 = Product.fake().copy(productID: 2)
-        insert(product: product1)
-        insert(product: product2)
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
 
         let order = Order.fake().copy(
             siteID: siteID,
@@ -1078,6 +1091,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                 OrderItem.fake().copy(productID: product2.productID, quantity: 1)
             ])
 
+        /// Single unfulfilled shipment
         let shipments = [
             WooShippingShipment.fake().copy(
                 siteID: siteID,
@@ -1108,24 +1122,405 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     }
 
     func test_splitShipmentsRowVisible_is_false_when_only_single_product_item_exists() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Single product
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1)
+            ])
+
+        /// Single unfulfilled shipment
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.splitShipmentsRowVisible)
     }
 
     func test_splitShipmentsRowVisible_is_false_when_order_has_multiple_shipments() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
+                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
+            ])
+
+        /// Multiple shipments
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID)
+                ]),
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_1",
+                items: [
+                    .fake().copy(id: product2.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.splitShipmentsRowVisible)
     }
 
     func test_splitShipmentsRowVisible_is_true_when_requirements_met() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site (feature available)
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
+                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
+            ])
+
+        /// Single unfulfilled shipment
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID),
+                    .fake().copy(id: product2.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.splitShipmentsRowVisible)
     }
 
     func test_editSplitShipmentsOptionVisible_is_false_when_split_shipments_feature_is_unavailable() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Is CIAB site with the `.splitShipments` disabled
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABDisabledFeatures: [.splitShipments]
+        )
+
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
+                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
+            ])
+
+        /// Single unfulfilled shipment
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID),
+                    .fake().copy(id: product2.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
     }
 
     func test_editSplitShipmentsOptionVisible_is_false_when_only_single_product_item_exists() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site (split shipments available)
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Single product
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1)
+            ])
+
+        /// Single unfulfilled shipment
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
     }
 
     func test_editSplitShipmentsOptionVisible_is_false_when_all_shipments_fulfilled() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site (split shipments available)
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
+                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
+            ])
+
+        /// Each shipment is fulfilled
+        let shippingLabel1 = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, shippingLabelID: 134)
+        let shippingLabel2 = ShippingLabel.fake().copy(siteID: siteID, orderID: orderID, shippingLabelID: 245)
+
+        /// 2 fulfilled shipments
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID)
+                ],
+                shippingLabel: shippingLabel1
+            ),
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_1",
+                items: [
+                    .fake().copy(id: product2.productID)
+                ],
+                shippingLabel: shippingLabel2
+            )
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
     }
 
     func test_editSplitShipmentsOptionVisible_is_true_when_all_requirements_met() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        initialConfigurationForSplitShipmentsTest(stores: stores)
+
+        /// Non-CIAB site (split shipments available)
+        let mockSiteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+            mockedCIABDisabledFeatures: []
+        )
+
+        /// Multiple products
+        let product1 = Product.fake().copy(siteID: siteID, productID: 1)
+        let product2 = Product.fake().copy(siteID: siteID, productID: 2)
+
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let order = Order.fake().copy(
+            siteID: siteID,
+            orderID: orderID,
+            items: [
+                OrderItem.fake().copy(productID: product1.productID, quantity: 1),
+                OrderItem.fake().copy(productID: product2.productID, quantity: 1)
+            ])
+
+        /// Single unfulfilled shipment
+        let shipments = [
+            WooShippingShipment.fake().copy(
+                siteID: siteID,
+                orderID: orderID,
+                index: "shipment_0",
+                items: [
+                    .fake().copy(id: product1.productID),
+                    .fake().copy(id: product2.productID)
+                ])
+        ]
+        insert(shipments: shipments, order: order)
+
+        // When
+        let viewModel = WooShippingCreateLabelsViewModel(
+            order: order,
+            stores: stores,
+            storageManager: storageManager,
+            siteCIABEligibilityChecker: mockSiteCIABChecker,
+            initialNoticeDelay: .seconds(0)
+        )
+
+        waitUntil {
+            viewModel.state == .ready
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.editSplitShipmentsOptionVisible)
     }
 }
 
@@ -1205,11 +1600,6 @@ private extension WooShippingCreateLabelsViewModelTests {
     func insert(accountSettings: ShippingLabelAccountSettings) {
         let storageSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
         storageSettings.update(with: accountSettings)
-    }
-
-    func insert(product: Product) {
-        let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
-        storageProduct.update(with: product)
     }
 }
 

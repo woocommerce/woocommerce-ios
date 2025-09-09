@@ -28,7 +28,7 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
     public func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {
         do {
             if isEligibleForPOSReceipt {
-                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: orderID)
+                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
             } else {
                 try await receiptsRemote.sendReceipt(siteID: siteID, orderID: orderID)
             }

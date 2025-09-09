@@ -40,8 +40,6 @@ final class POSReceiptController: POSReceiptControllerProtocol {
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {
         var isEligibleForPOSReceipt: Bool?
         do {
-            try await orderService.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
-
             let posReceiptEligibility: Bool
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
                 posReceiptEligibility = isPluginSupported(
@@ -53,6 +51,12 @@ final class POSReceiptController: POSReceiptControllerProtocol {
                 posReceiptEligibility = false
             }
             isEligibleForPOSReceipt = posReceiptEligibility
+
+            // Only update order email for previous POS receipt API version
+            // POS receipt now handles email update internally
+            if !posReceiptEligibility {
+                try await orderService.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
+            }
 
             try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
 

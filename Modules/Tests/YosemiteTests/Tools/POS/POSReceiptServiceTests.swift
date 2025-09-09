@@ -48,10 +48,17 @@ struct POSReceiptServiceTests {
 
     @Test
     func sendReceipt_calls_remote_when_isEligibleForPOSReceipt_is_true() async throws {
+        // Given
+        let email = "test@example.com"
+        let orderID: Int64 = 789
+
         // When
-        try await sut.sendReceipt(orderID: Order.fake().orderID, recipientEmail: "test@example.com", isEligibleForPOSReceipt: true)
+        try await sut.sendReceipt(orderID: orderID, recipientEmail: email, isEligibleForPOSReceipt: true)
 
         // Then
         #expect(receiptsRemote.sendPOSReceiptCalled)
+        #expect(receiptsRemote.spySiteID == 123)
+        #expect(receiptsRemote.spyOrderID == orderID)
+        #expect(receiptsRemote.spyEmail == email)
     }
 }

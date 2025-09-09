@@ -24,20 +24,6 @@ struct POSReceiptControllerTests {
                                        pluginsService: mockPluginsService)
     }
 
-    @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt() async throws {
-        // Given
-        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
-        let order = Order.fake()
-        let recipientEmail = "test@fake.com"
-
-        // When
-        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
-
-        // Then
-        #expect(mockOrderService.updateOrderWasCalled)
-        #expect(mockReceiptService.sendReceiptWasCalled == true)
-    }
-
     @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
         // Given
         mockPluginsService.setMockPlugin(.wooCommerce,
@@ -70,7 +56,7 @@ struct POSReceiptControllerTests {
             #expect(Bool(false), "Expected error to be thrown")
         } catch {
             // Then - error was thrown as expected
-            #expect(mockOrderService.updateOrderWasCalled)
+            #expect(!mockOrderService.updateOrderWasCalled) // Should not update order for POS receipts even on failure
         }
     }
 
@@ -195,5 +181,37 @@ struct POSReceiptControllerTests {
             static let eligibleWCPluginVersions = ["10.0.0", "10.0.0-dev", "10.0.0-beta", "10.0.1", "10.1"]
             static let ineligibleWCPluginVersions = ["9.9.0", "9.9.9", "9.9.9-beta.9", "9.9.9-dev"]
         }
+    }
+
+    @Test func sendReceipt_calls_sendReceipt_but_not_updateOrder_for_POS_receipts() async throws {
+        // Given
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
+        mockPluginsService.setMockPlugin(.wooCommerce,
+                                         systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
+                                                                                version: "10.0.0",
+                                                                                active: true))
+        let order = Order.fake()
+        let recipientEmail = "test@fake.com"
+
+        // When
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
+
+        // Then
+        #expect(!mockOrderService.updateOrderWasCalled) // Should not update order for POS receipts
+        #expect(mockReceiptService.sendReceiptWasCalled == true)
+    }
+
+    @Test func sendReceipt_calls_both_updateOrder_and_sendReceipt_for_legacy_POS_receipts() async throws {
+        // Given - feature flag disabled or plugin not eligible
+        mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = false
+        let order = Order.fake()
+        let recipientEmail = "test@fake.com"
+
+        // When
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
+
+        // Then
+        #expect(mockOrderService.updateOrderWasCalled) // Should update order for traditional receipts
+        #expect(mockReceiptService.sendReceiptWasCalled == true)
     }
 }

@@ -75,7 +75,7 @@ struct POSCatalogSyncCoordinatorTests {
 
     // MARK: - Should Sync Decision Tests
 
-    @Test func shouldPerformFullSync_site_not_in_database_with_no_sync_history() {
+    @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() {
         // Given - site doesn't exist in database AND has no sync history
         mockSettingsStore.storedDates = [:]
         // Note: NOT creating site in database
@@ -87,7 +87,7 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSync == true)
     }
 
-    @Test func shouldPerformFullSync_returns_true_when_no_previous_sync() throws {
+    @Test func shouldPerformFullSync_returns_true_when_site_is_in_database_with_no_previous_sync() throws {
         // Given - no previous sync date stored, but site exists in database
         // This is much less likely to happen, but could help at a migration point
         mockSettingsStore.storedDates = [:]

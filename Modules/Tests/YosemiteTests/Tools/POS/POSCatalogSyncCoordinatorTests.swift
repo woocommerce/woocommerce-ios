@@ -46,7 +46,7 @@ struct POSCatalogSyncCoordinatorTests {
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
-        _ = try await sut.performFullSync(for: sampleSiteID)
+        try await sut.performFullSync(for: sampleSiteID)
         let afterSync = Date()
 
         // Then
@@ -66,7 +66,7 @@ struct POSCatalogSyncCoordinatorTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.performFullSync(for: sampleSiteID)
+            try await sut.performFullSync(for: sampleSiteID)
         }
 
         // Should not store timestamp on failure

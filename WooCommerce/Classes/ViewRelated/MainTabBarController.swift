@@ -767,9 +767,8 @@ private extension MainTabBarController {
         )
 
         // Configure POS catalog sync coordinator for local catalog syncing
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
-        }
+        // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
+        posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {

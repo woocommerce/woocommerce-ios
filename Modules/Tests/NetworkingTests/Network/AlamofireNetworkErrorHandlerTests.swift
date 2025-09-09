@@ -363,7 +363,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         let siteID3: Int64 = 789
         let recentDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60)) // 1 hour ago
         let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 8)) // 8 days ago
-        
+
         userDefaults.applicationPasswordUnsupportedList = [
             String(siteID1): recentDate,
             String(siteID2): expiredDate,
@@ -375,7 +375,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID1, unsupportedList: list))
         XCTAssertFalse(errorHandler.siteFlaggedAsUnsupported(siteID: siteID2, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
         XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID3, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
-        
+
         // Verify expired flag was cleared but others remain
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID1)))
         XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID2)))

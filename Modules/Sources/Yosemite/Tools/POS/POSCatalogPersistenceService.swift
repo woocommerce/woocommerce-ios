@@ -8,6 +8,12 @@ protocol POSCatalogPersistenceServiceProtocol {
     ///   - catalog: The catalog to persist
     ///   - siteID: The site ID to associate the catalog with
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
+
+    /// Persists incremental catalog data (insert/update)
+    /// - Parameters:
+    ///   - catalog: The catalog difference to persist
+    ///   - siteID: The site ID to associate the catalog with
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
 }
 
 final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
@@ -64,6 +70,70 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
 
             DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
+                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
+                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
+        }
+    }
+
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
+
+        try await grdbManager.databaseConnection.write { db in
+            let site = PersistedSite(id: siteID)
+            try site.insert(db, onConflict: .ignore)
+
+            for product in catalog.productsToPersist {
+                try product.insert(db, onConflict: .replace)
+            }
+
+            let productIDs = catalog.products.map { $0.productID }.map { String($0) }.joined(separator: ",")
+
+            try PersistedProductImage
+                .filter(sql: "\(PersistedProductImage.Columns.productID.name) IN (\(productIDs))")
+                .deleteAll(db)
+            for image in catalog.productImagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
+            try PersistedProductAttribute
+                .filter(sql: "\(PersistedProductAttribute.Columns.productID.name) IN (\(productIDs))")
+                .deleteAll(db)
+            for var attribute in catalog.productAttributesToPersist {
+                try attribute.insert(db)
+            }
+
+            for variation in catalog.variationsToPersist {
+                try variation.insert(db, onConflict: .replace)
+            }
+
+            let variationIDs = catalog.variations.map { $0.productVariationID }.map { String($0) }.joined(separator: ",")
+
+            try PersistedProductVariationImage
+                .filter(sql: "\(PersistedProductVariationImage.Columns.productVariationID.name) IN (\(variationIDs))")
+                .deleteAll(db)
+            for image in catalog.variationImagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
+            try PersistedProductVariationAttribute
+                .filter(sql: "\(PersistedProductVariationAttribute.Columns.productVariationID.name) IN (\(variationIDs))")
+                .deleteAll(db)
+            for var attribute in catalog.variationAttributesToPersist {
+                try attribute.insert(db)
+            }
+        }
+
+        DDLogInfo("✅ Incremental catalog persistence complete")
+
+        try await grdbManager.databaseConnection.read { db in
+            let productCount = try PersistedProduct.fetchCount(db)
+            let productImageCount = try PersistedProductImage.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+
+            DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }

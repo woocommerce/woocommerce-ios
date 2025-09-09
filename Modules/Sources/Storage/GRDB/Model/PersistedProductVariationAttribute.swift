@@ -26,7 +26,7 @@ extension PersistedProductVariationAttribute: FetchableRecord, MutablePersistabl
 
     public enum Columns {
         static let id = Column(CodingKeys.id)
-        public static let productVariationID = Column(CodingKeys.productVariationID)
+        static let productVariationID = Column(CodingKeys.productVariationID)
         static let name = Column(CodingKeys.name)
         static let option = Column(CodingKeys.option)
     }

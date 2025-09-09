@@ -10,6 +10,8 @@ struct PointOfSaleOrderDetailsView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -40,6 +42,11 @@ struct PointOfSaleOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: order, email: email)
+            }
+        }
     }
 }
 
@@ -313,7 +320,12 @@ private extension PointOfSaleOrderDetailsView {
     func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
         HStack {
             ForEach(actions) { action in
-                Button(action: {}) {
+                Button(action: {
+                    switch action {
+                    case .emailReceipt:
+                        isShowingEmailReceiptView = true
+                    }
+                }) {
                     Text(action.title)
                 }
                 .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))

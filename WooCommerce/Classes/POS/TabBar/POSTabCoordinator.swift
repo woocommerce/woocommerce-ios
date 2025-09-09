@@ -106,11 +106,15 @@ private extension POSTabCoordinator {
                                                              credentials: credentials,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
+
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials),
                #available(iOS 17.0, *) {
+                let receiptController = POSReceiptController(siteID: siteID,
+                                                             orderService: orderService,
+                                                             receiptService: receiptService)
                 let posView = PointOfSaleEntryPointView(
                     itemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
@@ -139,8 +143,8 @@ private extension POSTabCoordinator {
                     },
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                receiptController: POSReceiptController(orderService: orderService,
-                                                                                                        receiptService: receiptService)),
+                                                                receiptController: receiptController),
+                    receiptController: receiptController,
                     settingsController: PointOfSaleSettingsController(siteID: siteID,
                                                                       settingsService: settingsService,
                                                                       cardPresentPaymentService: cardPresentPaymentService,

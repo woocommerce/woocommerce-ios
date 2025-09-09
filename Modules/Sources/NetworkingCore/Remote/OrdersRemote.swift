@@ -451,6 +451,24 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
+        let parameters: [String: Any] = [
+            "billing": [
+                "email": emailAddress
+            ]
+        ]
+
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .post,
+                                   siteID: siteID,
+                                   path: path,
+                                   parameters: parameters,
+                                   availableAsRESTRequest: true)
+
+        try await enqueue(request)
+    }
+
     public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
         let parameters: [String: Any] = [
             ParameterKeys.page: String(pageNumber),

@@ -238,7 +238,7 @@ struct POSPreviewHelpers {
     }
 
     static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
+        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController(), receiptController: POSReceiptControllerPreview())
     }
 
     static func makePreviewOrder() -> POSOrder {
@@ -390,6 +390,10 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return mockSimpleProductItem(id: 5, price: "35.50")
     }
+}
+
+final class POSReceiptControllerPreview: POSReceiptControllerProtocol {
+    func sendReceipt(orderID: Int64, recipientEmail: String) async throws {}
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {

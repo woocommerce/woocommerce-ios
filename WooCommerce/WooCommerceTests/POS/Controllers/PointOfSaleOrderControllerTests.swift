@@ -212,7 +212,7 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockReceiptController.sendReceiptWasCalled)
-        #expect(mockReceiptController.sendReceiptCalledWithOrder == order)
+        #expect(mockReceiptController.sendReceiptCalledWithOrderID == order.orderID)
         #expect(mockReceiptController.sendReceiptCalledWithEmail == recipientEmail)
     }
 

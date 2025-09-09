@@ -16,7 +16,8 @@ struct POSReceiptControllerTests {
     let sut: POSReceiptController
 
     init() {
-        self.sut = POSReceiptController(orderService: mockOrderService,
+        self.sut = POSReceiptController(siteID: 123,
+                                       orderService: mockOrderService,
                                        receiptService: mockReceiptService,
                                        analytics: MockAnalytics(),
                                        featureFlagService: mockFeatureFlagService,
@@ -30,7 +31,7 @@ struct POSReceiptControllerTests {
         let recipientEmail = "test@fake.com"
 
         // When
-        try await sut.sendReceipt(order: order, recipientEmail: recipientEmail)
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
 
         // Then
         #expect(mockOrderService.updateOrderWasCalled)
@@ -47,7 +48,7 @@ struct POSReceiptControllerTests {
         let order = Order.fake()
 
         // When
-        try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
 
         // Then
         #expect(mockReceiptService.sendReceiptWasCalled == true)
@@ -65,7 +66,7 @@ struct POSReceiptControllerTests {
 
         // When
         do {
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
             #expect(Bool(false), "Expected error to be thrown")
         } catch {
             // Then - error was thrown as expected
@@ -88,7 +89,8 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(orderService: mockOrderService,
+            let sut = POSReceiptController(siteID: 123,
+                                           orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
                                            featureFlagService: mockFeatureFlagService,
@@ -96,7 +98,7 @@ struct POSReceiptControllerTests {
             let order = Order.fake()
 
             // When
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
 
             // Then
             #expect(mockReceiptService.sendReceiptWasCalled == true)
@@ -118,7 +120,8 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(orderService: mockOrderService,
+            let sut = POSReceiptController(siteID: 123,
+                                           orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
                                            featureFlagService: mockFeatureFlagService,
@@ -126,7 +129,7 @@ struct POSReceiptControllerTests {
             let order = Order.fake()
 
             // When
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
 
             // Then
             #expect(mockReceiptService.sendReceiptWasCalled == true)
@@ -144,7 +147,8 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(orderService: mockOrderService,
+            let sut = POSReceiptController(siteID: 123,
+                                           orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
                                            featureFlagService: mockFeatureFlagService,
@@ -152,7 +156,7 @@ struct POSReceiptControllerTests {
             let order = Order.fake()
 
             // When
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
 
             // Then
             #expect(mockReceiptService.sendReceiptWasCalled == true)
@@ -171,7 +175,8 @@ struct POSReceiptControllerTests {
             let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
-            let sut = POSReceiptController(orderService: mockOrderService,
+            let sut = POSReceiptController(siteID: 123,
+                                           orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
                                            featureFlagService: mockFeatureFlagService,
@@ -179,7 +184,7 @@ struct POSReceiptControllerTests {
             let order = Order.fake()
 
             // When
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com")
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com")
 
             // Then
             #expect(mockReceiptService.sendReceiptWasCalled == true)

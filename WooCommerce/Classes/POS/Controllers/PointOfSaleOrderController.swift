@@ -103,7 +103,7 @@ protocol PointOfSaleOrderControllerProtocol {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        try await receiptController.sendReceipt(order: order, recipientEmail: recipientEmail)
+        try await receiptController.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
     }
 
     func clearOrder() {

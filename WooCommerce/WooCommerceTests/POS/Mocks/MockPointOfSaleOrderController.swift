@@ -9,12 +9,8 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         // no-op
     }
 
-    var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
-        $orderState.eraseToAnyPublisher()
-    }
-    @Published var orderState: PointOfSaleInternalOrderState = .idle
+    var orderState: PointOfSaleInternalOrderState = .idle
     var orderStateToReturn: PointOfSaleInternalOrderState?
-
     var syncOrderWasCalled: Bool = false
     var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?

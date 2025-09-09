@@ -5,12 +5,12 @@ import struct Yosemite.Order
 final class MockPOSReceiptController: POSReceiptControllerProtocol {
     var shouldThrowReceiptError: Bool = false
     var sendReceiptWasCalled: Bool = false
-    var sendReceiptCalledWithOrder: Order?
+    var sendReceiptCalledWithOrderID: Int64?
     var sendReceiptCalledWithEmail: String?
 
-    func sendReceipt(order: Order, recipientEmail: String) async throws {
+    func sendReceipt(orderID: Int64, recipientEmail: String) async throws {
         sendReceiptWasCalled = true
-        sendReceiptCalledWithOrder = order
+        sendReceiptCalledWithOrderID = orderID
         sendReceiptCalledWithEmail = recipientEmail
 
         if shouldThrowReceiptError {

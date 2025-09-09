@@ -27,7 +27,7 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
     var spyUpdatePOSOrderEmailOrderID: Int64?
     var spyUpdatePOSOrderEmailAddress: String?
     var updatePOSOrderEmailResult: Result<Void, Error> = .success(())
-    
+
     func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
         updatePOSOrderEmailCalled = true
         spyUpdatePOSOrderEmailSiteID = siteID

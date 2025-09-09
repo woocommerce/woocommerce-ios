@@ -1,5 +1,18 @@
 import SwiftUI
 
+// MARK: - Environment Key for Header Back Button Configuration
+
+struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
+    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        get { self[POSHeaderBackButtonConfigurationKey.self] }
+        set { self[POSHeaderBackButtonConfigurationKey.self] = newValue }
+    }
+}
+
 /// Configuration for the back button in the header.
 struct POSPageHeaderBackButtonConfiguration {
     enum State {
@@ -44,13 +57,18 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
+    @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
+
+    private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        environmentBackButtonConfiguration ?? backButtonConfiguration
+    }
 
     private var hStackAlignment: VerticalAlignment {
         items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
-        backButtonConfiguration != nil
+        effectiveBackButtonConfiguration != nil
     }
 
     init(
@@ -154,7 +172,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     @ViewBuilder
     private var backButton: some View {
-        if let configuration = backButtonConfiguration {
+        if let configuration = effectiveBackButtonConfiguration {
             POSPageHeaderBackButton(configuration: configuration)
         }
     }
@@ -163,6 +181,27 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
+}
+
+// MARK: - ViewModifier for Header Back Button Configuration
+
+struct POSHeaderBackButtonModifier: ViewModifier {
+    let configuration: POSPageHeaderBackButtonConfiguration?
+
+    func body(content: Content) -> some View {
+        content.environment(\.posHeaderBackButtonConfiguration, configuration)
+    }
+}
+
+// MARK: - View Extensions for Easy Usage
+
+extension View {
+    /// Applies a back button configuration to all POSPageHeaderView instances in the view hierarchy.
+    /// - Parameter configuration: The back button configuration to apply, or nil to disable
+    /// - Returns: A view with the environment configuration set
+    func posHeaderBackButton(_ configuration: POSPageHeaderBackButtonConfiguration?) -> some View {
+        modifier(POSHeaderBackButtonModifier(configuration: configuration))
+    }
 }
 
 // MARK: - Previews

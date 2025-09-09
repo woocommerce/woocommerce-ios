@@ -33,7 +33,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Then - should not flag site as unsupported even after more failures
         simulateFailureCount(5, for: siteID) // Would normally reach threshold
-        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.contains(siteID))
+        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_shouldRetryJetpackRequest_returns_false_for_nil_credentials() {
@@ -122,20 +122,21 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         errorHandler.flagSiteAsUnsupported(for: siteID)
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_flagSiteAsUnsupported_appends_to_existing_list() {
         // Given
         let existingSiteID: Int64 = 789
         let newSiteID: Int64 = 456
-        userDefaults.applicationPasswordUnsupportedList = [existingSiteID]
+        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): String(Date().timeIntervalSince1970)]
 
         // When
         errorHandler.flagSiteAsUnsupported(for: newSiteID)
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [existingSiteID, newSiteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(newSiteID)))
     }
 
     // MARK: - Thread Safety Tests
@@ -273,6 +274,114 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         wait(for: [expectation], timeout: 3.0)
     }
 
+    // MARK: - siteFlaggedAsUnsupported Tests
+
+    func test_siteFlaggedAsUnsupported_returns_false_when_site_not_in_list() {
+        // Given
+        let siteID: Int64 = 123
+        let unsupportedList: [String: String] = [:]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
+
+        // Then
+        XCTAssertFalse(isFlagged)
+    }
+
+    func test_siteFlaggedAsUnsupported_returns_false_when_timestamp_string_invalid() {
+        // Given
+        let siteID: Int64 = 123
+        let unsupportedList: [String: String] = [String(siteID): "invalid_timestamp"]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
+
+        // Then
+        XCTAssertFalse(isFlagged)
+    }
+
+    func test_siteFlaggedAsUnsupported_returns_true_when_flag_is_recent() {
+        // Given
+        let siteID: Int64 = 123
+        let recentTimestamp = Date().timeIntervalSince1970 - (60 * 60) // 1 hour ago
+        let unsupportedList: [String: String] = [String(siteID): String(recentTimestamp)]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
+
+        // Then
+        XCTAssertTrue(isFlagged)
+    }
+
+    func test_siteFlaggedAsUnsupported_returns_false_and_clears_flag_when_expired() {
+        // Given
+        let siteID: Int64 = 123
+        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 8) // 8 days ago (expired)
+        userDefaults.applicationPasswordUnsupportedList = [String(siteID): String(expiredTimestamp)]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
+
+        // Then
+        XCTAssertFalse(isFlagged)
+        // Verify the flag was cleared from UserDefaults
+        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
+    }
+
+    func test_siteFlaggedAsUnsupported_returns_true_for_flag_at_boundary_time() {
+        // Given
+        let siteID: Int64 = 123
+        let boundaryTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 - 1) // Just under 7 days ago
+        let unsupportedList: [String: String] = [String(siteID): String(boundaryTimestamp)]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: unsupportedList)
+
+        // Then
+        XCTAssertTrue(isFlagged)
+    }
+
+    func test_siteFlaggedAsUnsupported_returns_false_for_flag_just_over_boundary() {
+        // Given
+        let siteID: Int64 = 123
+        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 + 1) // Just over 7 days ago
+        userDefaults.applicationPasswordUnsupportedList = [String(siteID): String(expiredTimestamp)]
+
+        // When
+        let isFlagged = errorHandler.siteFlaggedAsUnsupported(siteID: siteID, unsupportedList: userDefaults.applicationPasswordUnsupportedList)
+
+        // Then
+        XCTAssertFalse(isFlagged)
+        // Verify the flag was cleared from UserDefaults
+        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
+    }
+
+    func test_siteFlaggedAsUnsupported_handles_multiple_sites_correctly() {
+        // Given
+        let siteID1: Int64 = 123
+        let siteID2: Int64 = 456
+        let siteID3: Int64 = 789
+        let recentTimestamp = Date().timeIntervalSince1970 - (60 * 60) // 1 hour ago
+        let expiredTimestamp = Date().timeIntervalSince1970 - (60 * 60 * 24 * 8) // 8 days ago
+        
+        userDefaults.applicationPasswordUnsupportedList = [
+            String(siteID1): String(recentTimestamp),
+            String(siteID2): String(expiredTimestamp),
+            String(siteID3): String(recentTimestamp)
+        ]
+
+        // When & Then
+        let list = userDefaults.applicationPasswordUnsupportedList
+        XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID1, unsupportedList: list))
+        XCTAssertFalse(errorHandler.siteFlaggedAsUnsupported(siteID: siteID2, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
+        XCTAssertTrue(errorHandler.siteFlaggedAsUnsupported(siteID: siteID3, unsupportedList: userDefaults.applicationPasswordUnsupportedList))
+        
+        // Verify expired flag was cleared but others remain
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID1)))
+        XCTAssertFalse(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID2)))
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID3)))
+    }
+
     // MARK: - Integration Tests
 
     func test_handleFailureForDirectRequestIfNeeded_calls_correct_callbacks() {
@@ -352,7 +461,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         )
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_flagSiteAsUnsupportedForAppPasswordIfNeeded_handles_disabled_error_codes() {
@@ -383,7 +492,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         )
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 }
 

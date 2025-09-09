@@ -187,21 +187,22 @@ final class AlamofireNetworkTests: XCTestCase {
         network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID)
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_didFailToAuthenticateRequestWithAppPassword_appends_to_existing_unsupported_list() {
         // Given
         let existingSiteID: Int64 = 456
         let newSiteID: Int64 = 123
-        userDefaults.applicationPasswordUnsupportedList = [existingSiteID]
+        userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): String(Date().timeIntervalSince1970)]
         let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
 
         // When
         network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID)
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [existingSiteID, newSiteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(newSiteID)))
     }
 
     // MARK: - Session Initialization Tests
@@ -328,7 +329,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Then
         XCTAssertNil(result.1)
         XCTAssertNotNil(result.0)
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_responseDataAndHeaders_retries_direct_request_when_converted_request_fails() async throws {
@@ -374,7 +375,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Then
         let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
         XCTAssertEqual(responseDict?["reports"], "data")
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_responseDataPublisher_retries_direct_request_when_converted_request_fails() {
@@ -430,7 +431,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isSuccess)
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_uploadMultipartFormData_retries_direct_request_when_converted_request_fails() {
@@ -491,7 +492,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Then
         XCTAssertNil(result.1)
         XCTAssertNotNil(result.0)
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     // MARK: - Application Password Error Code Tests
@@ -524,7 +525,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Then
         XCTAssertNil(result.1)
         XCTAssertNotNil(result.0)
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_responseData_increments_failure_count_when_jetpack_retry_succeeds_after_unknown_error() throws {
@@ -590,7 +591,7 @@ final class AlamofireNetworkTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(userDefaults.applicationPasswordUnsupportedList, [siteID])
+        XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
     func test_responseData_does_not_retry_when_jetpack_request_not_available_as_rest() throws {

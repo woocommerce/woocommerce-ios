@@ -9,7 +9,7 @@ public protocol POSOrderServiceProtocol {
     ///   - cart: Cart with different types of items and quantities.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
-    func updatePOSOrder(order: Order, recipientEmail: String) async throws
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
 }
 
@@ -46,20 +46,9 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
     }
 
-    public func updatePOSOrder(order: Order, recipientEmail: String) async throws {
-        guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
-            throw POSOrderServiceError.emailAlreadySet
-        }
-        let updatedBillingAddress = order.billingAddress?.copy(email: recipientEmail)
-        let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
-
+    public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         do {
-            let _ = try await ordersRemote.updatePOSOrder(
-                siteID: siteID,
-                order: updatedOrder,
-                cashPaymentChangeDueAmount: nil,
-                fields: [.billingAddress]
-            )
+            try await ordersRemote.updatePOSOrderEmail(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }

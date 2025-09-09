@@ -166,6 +166,37 @@ struct POSOrderServiceTests {
             return true
         })
     }
+
+    @Test
+    func updatePOSOrder_calls_remote_updatePOSOrderEmail_with_correct_parameters() async throws {
+        // Given
+        let siteID: Int64 = 123
+        let orderID: Int64 = 456
+        let recipientEmail = "test@example.com"
+
+        // When
+        try await sut.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
+
+        // Then
+        #expect(mockOrdersRemote.updatePOSOrderEmailCalled == true)
+        #expect(mockOrdersRemote.spyUpdatePOSOrderEmailSiteID == siteID)
+        #expect(mockOrdersRemote.spyUpdatePOSOrderEmailOrderID == orderID)
+        #expect(mockOrdersRemote.spyUpdatePOSOrderEmailAddress == recipientEmail)
+    }
+
+    @Test
+    func updatePOSOrder_throws_error_when_remote_call_fails() async throws {
+        // Given
+        mockOrdersRemote.updatePOSOrderEmailResult = .failure(NSError(domain: "", code: 0))
+
+        // When/Then
+        await #expect(performing: {
+            try await sut.updatePOSOrder(orderID: 456, recipientEmail: "test@example.com")
+        }, throws: { _ in
+            // The actual error `POSOrderServiceError.updateOrderFailed` is private, thus we cannot check against the exact error.
+            return true
+        })
+    }
 }
 
 private func makePOSCartItem(

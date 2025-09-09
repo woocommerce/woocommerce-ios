@@ -26,6 +26,8 @@ struct PointOfSaleOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    actionsSection()
+
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
@@ -278,6 +280,21 @@ private extension PointOfSaleOrderDetailsView {
     }
 }
 
+// MARK: - Actions
+
+private extension PointOfSaleOrderDetailsView {
+    @ViewBuilder
+    func actionsSection() -> some View {
+        HStack {
+            Button(action: {}) {
+                Text(Localization.emailReceiptActionTitle)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+        }
+        .padding(.vertical)
+    }
+}
+
 // MARK: - Localization
 
 private enum Localization {
@@ -360,6 +377,12 @@ private enum Localization {
         "pos.orderDetailsView.netPaymentLabel",
         value: "Net Payment",
         comment: "Label for net payment amount after refunds"
+    )
+
+    static let emailReceiptActionTitle = NSLocalizedString(
+        "pos.orderDetailsView.emailReceiptAction.title",
+        value: "Email receipt",
+        comment: "Label for email receipt action on order details view"
     )
 }
 

@@ -235,7 +235,6 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         )
     }()
 
-    
     /// Provides checks for CIAB
     /// Used to determine "Split Shipments" feature availability
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol

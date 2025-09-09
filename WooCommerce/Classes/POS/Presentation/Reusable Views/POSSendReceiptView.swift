@@ -4,7 +4,6 @@ import WooFoundation
 import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?

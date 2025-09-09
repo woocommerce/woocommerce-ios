@@ -94,7 +94,6 @@ private extension Order {
 
 private extension POSOrderService {
     enum POSOrderServiceError: Error {
-        case emailAlreadySet
         case updateOrderFailed
     }
 }

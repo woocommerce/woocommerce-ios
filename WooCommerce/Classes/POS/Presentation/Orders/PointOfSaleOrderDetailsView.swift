@@ -26,7 +26,9 @@ struct PointOfSaleOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    actionsSection()
+                    if actions.isNotEmpty {
+                        actionsSection(actions)
+                    }
 
                     if !order.lineItems.isEmpty {
                         productsSection(order)
@@ -283,13 +285,39 @@ private extension PointOfSaleOrderDetailsView {
 // MARK: - Actions
 
 private extension PointOfSaleOrderDetailsView {
-    @ViewBuilder
-    func actionsSection() -> some View {
-        HStack {
-            Button(action: {}) {
-                Text(Localization.emailReceiptActionTitle)
+    enum POSOrderDetailsAction: Identifiable, CaseIterable {
+        case emailReceipt
+
+        var id: String { title }
+
+        var title: String {
+            switch self {
+            case .emailReceipt:
+                Localization.emailReceiptActionTitle
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+        }
+
+        func available(for order: POSOrder) -> Bool {
+            switch self {
+            case .emailReceipt:
+                order.status == .completed
+            }
+        }
+    }
+
+    var actions: [POSOrderDetailsAction] {
+        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
+    }
+
+    @ViewBuilder
+    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
+        HStack {
+            ForEach(actions) { action in
+                Button(action: {}) {
+                    Text(action.title)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            }
         }
         .padding(.vertical)
     }

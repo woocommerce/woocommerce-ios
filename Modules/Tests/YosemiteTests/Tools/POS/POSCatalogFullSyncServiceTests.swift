@@ -184,4 +184,8 @@ private final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServi
     }
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {}
+
+    func loadSite(siteID: Int64) async throws -> POSSite? { nil }
+
+    func updateSite(_ site: POSSite) async throws {}
 }

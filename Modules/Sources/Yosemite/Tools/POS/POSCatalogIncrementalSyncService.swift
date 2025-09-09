@@ -21,7 +21,6 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let batchSize: Int
     private let persistenceService: POSCatalogPersistenceServiceProtocol
-    private var lastIncrementalSyncDates: [Int64: Date] = [:]
     private let batchedLoader: BatchedRequestLoader
 
     public convenience init?(credentials: Credentials?, batchSize: Int = 1, grdbManager: GRDBManagerProtocol) {
@@ -45,7 +44,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
     // MARK: - Protocol Conformance
 
     public func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date) async throws {
-        let modifiedAfter = lastIncrementalSyncDates[siteID] ?? lastFullSyncDate
+        let modifiedAfter = try await latestSyncDate(siteID: siteID, lastFullSyncDate: lastFullSyncDate)
 
         DDLogInfo("🔄 Starting incremental catalog sync for site ID: \(siteID), modifiedAfter: \(modifiedAfter)")
 
@@ -57,8 +56,7 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
             try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
             DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
 
-            // TODO: WOOMOB-1289 - replace with store settings persistence
-            lastIncrementalSyncDates[siteID] = syncStartDate
+            try await persistenceService.updateSite(.init(siteID: siteID, lastIncrementalSyncDate: syncStartDate))
             DDLogInfo("✅ Updated last incremental sync date to \(syncStartDate) for siteID \(siteID)")
         } catch {
             DDLogError("❌ Failed to sync and persist catalog incrementally: \(error)")
@@ -84,5 +82,13 @@ private extension POSCatalogIncrementalSyncService {
 
         let (products, variations) = try await (productsTask, variationsTask)
         return POSCatalog(products: products, variations: variations)
+    }
+}
+
+// MARK: - Sync date
+
+private extension POSCatalogIncrementalSyncService {
+    func latestSyncDate(siteID: Int64, lastFullSyncDate: Date) async throws -> Date {
+        try await persistenceService.loadSite(siteID: siteID)?.lastIncrementalSyncDate ?? lastFullSyncDate
     }
 }

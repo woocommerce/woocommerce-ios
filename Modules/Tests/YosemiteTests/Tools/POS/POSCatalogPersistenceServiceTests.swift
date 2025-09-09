@@ -8,6 +8,10 @@ struct POSCatalogPersistenceServiceTests {
     private let sut: POSCatalogPersistenceService
     private let sampleSiteID: Int64 = 134
 
+    private var db: GRDBDatabaseConnection {
+        grdbManager.databaseConnection
+    }
+
     init() throws {
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogPersistenceService(grdbManager: grdbManager)
@@ -32,7 +36,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let productCount = try PersistedProduct.fetchCount(db)
@@ -61,7 +64,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let imageCount = try PersistedProductImage.fetchCount(db)
             let attributeCount = try PersistedProductAttribute.fetchCount(db)
@@ -86,7 +88,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let imageCount = try PersistedProductVariationImage.fetchCount(db)
             let attributeCount = try PersistedProductVariationAttribute.fetchCount(db)
@@ -115,7 +116,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then - should not fail and should handle duplicates
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let imageCount = try PersistedProductImage.fetchCount(db)
@@ -143,7 +143,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(newCatalog, siteID: sampleSiteID)
 
         // Then - should have only new data
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -175,7 +174,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(emptyCatalog, siteID: sampleSiteID)
 
         // Then - all related data should be gone
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let imageCount = try PersistedProductImage.fetchCount(db)
@@ -208,7 +206,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.replaceAllCatalogData(catalogWithoutVariations, siteID: sampleSiteID)
 
         // Then - variation and its related data should be gone
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -236,7 +233,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let productCount = try PersistedProduct.fetchCount(db)
@@ -363,7 +359,6 @@ struct POSCatalogPersistenceServiceTests {
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -480,11 +475,145 @@ struct POSCatalogPersistenceServiceTests {
             #expect(variations[1].id == 2)
         }
     }
+
+    // MARK: - Site Management Tests
+
+    @Test func loadSite_returns_nil_when_site_does_not_exist() async throws {
+        // When
+        let result = try await sut.loadSite(siteID: 999)
+
+        // Then
+        #expect(result == nil)
+    }
+
+    @Test func loadSite_returns_site_when_site_exists() async throws {
+        // Given
+        let siteID: Int64 = 123
+        let lastSyncDate = Date(timeIntervalSince1970: 1000)
+        let site = POSSite(siteID: siteID, lastIncrementalSyncDate: lastSyncDate)
+        try await insertSite(site)
+
+        // When
+        let result = try await sut.loadSite(siteID: siteID)
+
+        // Then
+        let loadedSite = try #require(result)
+        #expect(loadedSite.siteID == siteID)
+        #expect(loadedSite.lastIncrementalSyncDate == lastSyncDate)
+    }
+
+    @Test func loadSite_returns_site_with_nil_sync_date_when_no_sync_date_stored() async throws {
+        // Given
+        let siteID: Int64 = 456
+        let site = POSSite(siteID: siteID, lastIncrementalSyncDate: nil)
+        try await insertSite(site)
+
+        // When
+        let result = try await sut.loadSite(siteID: siteID)
+
+        // Then
+        let loadedSite = try #require(result)
+        #expect(loadedSite.siteID == siteID)
+        #expect(loadedSite.lastIncrementalSyncDate == nil)
+    }
+
+    @Test func updateSite_throws_error_when_site_does_not_exist() async throws {
+        // Given
+        let siteID: Int64 = 789
+        let lastSyncDate = Date(timeIntervalSince1970: 2000)
+        let site = POSSite(siteID: siteID, lastIncrementalSyncDate: lastSyncDate)
+
+        // When/Then
+        await #expect(throws: POSCatalogPersistenceError.siteNotFound(siteID: siteID)) {
+            try await sut.updateSite(site)
+        }
+
+        // And verify no site was created
+        try await db.read { db in
+            let siteCount = try PersistedSite.fetchCount(db)
+            #expect(siteCount == 0)
+        }
+    }
+
+    @Test func updateSite_updates_existing_site() async throws {
+        // Given - create initial site
+        let siteID: Int64 = 101112
+        let initialSyncDate = Date(timeIntervalSince1970: 1500)
+        let initialSite = POSSite(siteID: siteID, lastIncrementalSyncDate: initialSyncDate)
+        try await insertSite(initialSite)
+
+        // When - update with new sync date
+        let updatedSyncDate = Date(timeIntervalSince1970: 3000)
+        let updatedSite = POSSite(siteID: siteID, lastIncrementalSyncDate: updatedSyncDate)
+        try await sut.updateSite(updatedSite)
+
+        // Then
+        try await db.read { db in
+            let siteCount = try PersistedSite.fetchCount(db)
+            #expect(siteCount == 1)
+
+            let persistedSite = try PersistedSite.fetchOne(db)
+            #expect(persistedSite?.id == siteID)
+            #expect(persistedSite?.posLastIncrementalSyncDate == updatedSyncDate)
+        }
+    }
+
+    @Test func updateSite_can_set_sync_date_to_nil() async throws {
+        // Given
+        let siteID: Int64 = 131415
+        let initialSyncDate = Date(timeIntervalSince1970: 4000)
+        let initialSite = POSSite(siteID: siteID, lastIncrementalSyncDate: initialSyncDate)
+        try await insertSite(initialSite)
+
+        // When
+        let updatedSite = POSSite(siteID: siteID, lastIncrementalSyncDate: nil)
+        try await sut.updateSite(updatedSite)
+
+        // Then
+        try await db.read { db in
+            let persistedSite = try PersistedSite.fetchOne(db)
+            #expect(persistedSite?.id == siteID)
+            #expect(persistedSite?.posLastIncrementalSyncDate == nil)
+        }
+    }
+
+    @Test func loadSite_and_updateSite_work_together_for_multiple_sites() async throws {
+        // Given
+        let site1ID: Int64 = 100
+        let site2ID: Int64 = 200
+        let site1Date = Date(timeIntervalSince1970: 1000)
+        let site2Date = Date(timeIntervalSince1970: 2000)
+
+        let site1 = POSSite(siteID: site1ID, lastIncrementalSyncDate: site1Date)
+        let site2 = POSSite(siteID: site2ID, lastIncrementalSyncDate: site2Date)
+
+        // When
+        try await insertSite(site1)
+        try await insertSite(site2)
+
+        // Then
+        let loadedSite1 = try await sut.loadSite(siteID: site1ID)
+        let loadedSite2 = try await sut.loadSite(siteID: site2ID)
+
+        #expect(loadedSite1?.siteID == site1ID)
+        #expect(loadedSite1?.lastIncrementalSyncDate == site1Date)
+        #expect(loadedSite2?.siteID == site2ID)
+        #expect(loadedSite2?.lastIncrementalSyncDate == site2Date)
+
+        // When loading non-existent site returns nil
+        let nonExistentSite = try await sut.loadSite(siteID: 999)
+        #expect(nonExistentSite == nil)
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {
+    func insertSite(_ site: POSSite) async throws {
+        try await db.write { db in
+            try PersistedSite(from: site).insert(db, onConflict: .replace)
+        }
+    }
+
     func insertProduct(_ product: POSProduct) async throws {
-        let db = grdbManager.databaseConnection
         try await db.write { db in
             try PersistedSite(id: sampleSiteID).insert(db, onConflict: .ignore)
         }
@@ -492,7 +621,6 @@ private extension POSCatalogPersistenceServiceTests {
     }
 
     func insertVariation(_ variation: POSProductVariation) async throws {
-        let db = grdbManager.databaseConnection
         try variation.save(to: db)
     }
 }

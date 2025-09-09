@@ -2,6 +2,10 @@
 import Foundation
 import Storage
 
+enum POSCatalogPersistenceError: Error, Equatable {
+    case siteNotFound(siteID: Int64)
+}
+
 protocol POSCatalogPersistenceServiceProtocol {
     /// Clears existing data and persists new catalog data
     /// - Parameters:
@@ -14,6 +18,15 @@ protocol POSCatalogPersistenceServiceProtocol {
     ///   - catalog: The catalog difference to persist
     ///   - siteID: The site ID to associate the catalog with
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
+
+    /// Loads the POS site for the given site ID
+    /// - Parameter siteID: The site ID to load the POSSite for
+    /// - Returns: The loaded POSSite or nil if not found in storage
+    func loadSite(siteID: Int64) async throws -> POSSite?
+
+    /// Updates the PersistedSite based on POSSite data
+    /// - Parameter site: The POSSite containing the updated data
+    func updateSite(_ site: POSSite) async throws
 }
 
 final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
@@ -136,6 +149,23 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
+        }
+    }
+
+    func loadSite(siteID: Int64) async throws -> POSSite? {
+        try await grdbManager.databaseConnection.read { db in
+            try PersistedSite.filter(key: siteID).fetchOne(db)?.toPOSSite()
+        }
+    }
+
+    func updateSite(_ site: POSSite) async throws {
+        try await grdbManager.databaseConnection.write { db in
+            guard try PersistedSite.filter(key: site.siteID).fetchOne(db) != nil else {
+                throw POSCatalogPersistenceError.siteNotFound(siteID: site.siteID)
+            }
+
+            let persistedSite = PersistedSite(from: site)
+            try persistedSite.update(db)
         }
     }
 }

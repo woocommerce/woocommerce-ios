@@ -794,12 +794,12 @@ private extension MainTabBarController {
 
     func createPOSCatalogSyncCoordinator() -> POSCatalogSyncCoordinatorProtocol? {
         guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-              let syncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
+              let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
         else {
             return nil
         }
 
-        return POSCatalogSyncCoordinator(syncService: syncService, grdbManager: ServiceLocator.grdbManager)
+        return POSCatalogSyncCoordinator(fullSyncService: fullSyncService, grdbManager: ServiceLocator.grdbManager)
     }
 
     func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {

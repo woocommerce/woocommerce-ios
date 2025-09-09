@@ -230,8 +230,6 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(retrievedCouponTerms == couponTerms)
     }
 
-
-
     // MARK: - POS Last Full Sync Date Tests
 
     @Test func getPOSLastFullSyncDate_returns_nil_when_no_date_exists() {

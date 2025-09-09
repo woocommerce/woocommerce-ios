@@ -15,7 +15,7 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockSettingsStore = MockSiteSpecificAppSettingsStoreMethods()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
-            syncService: mockSyncService,
+            fullSyncService: mockSyncService,
             settingsStore: mockSettingsStore,
             grdbManager: grdbManager
         )
@@ -29,14 +29,12 @@ struct POSCatalogSyncCoordinatorTests {
             products: [POSProduct.fake()],
             variations: [POSProductVariation.fake()]
         )
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
-        let result = try await sut.performFullSync(for: sampleSiteID)
+        try await sut.performFullSync(for: sampleSiteID)
 
         // Then
-        #expect(result.products.count == expectedCatalog.products.count)
-        #expect(result.variations.count == expectedCatalog.variations.count)
         #expect(mockSyncService.startFullSyncCallCount == 1)
         #expect(mockSyncService.lastSyncSiteID == sampleSiteID)
     }
@@ -45,7 +43,7 @@ struct POSCatalogSyncCoordinatorTests {
         // Given
         let beforeSync = Date()
         let expectedCatalog = POSCatalog(products: [], variations: [])
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
         _ = try await sut.performFullSync(for: sampleSiteID)
@@ -64,7 +62,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func performFullSync_propagates_errors() async throws {
         // Given
         let expectedError = NSError(domain: "sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Sync failed"])
-        mockSyncService.startFullSyncError = expectedError
+        mockSyncService.startFullSyncResult = .failure(expectedError)
 
         // When/Then
         await #expect(throws: expectedError) {
@@ -205,8 +203,7 @@ struct POSCatalogSyncCoordinatorTests {
 // MARK: - Mock Services
 
 final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
-    var startFullSyncResult: POSCatalog = POSCatalog(products: [], variations: [])
-    var startFullSyncError: Error?
+    var startFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: []))
 
     private(set) var startFullSyncCallCount = 0
     private(set) var lastSyncSiteID: Int64?
@@ -215,10 +212,11 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
 
-        if let error = startFullSyncError {
+        switch startFullSyncResult {
+        case .success(let catalog):
+            return catalog
+        case .failure(let error):
             throw error
         }
-
-        return startFullSyncResult
     }
 }

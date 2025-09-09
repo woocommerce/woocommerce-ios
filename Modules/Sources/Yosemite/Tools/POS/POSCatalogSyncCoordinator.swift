@@ -5,8 +5,7 @@ import GRDB
 public protocol POSCatalogSyncCoordinatorProtocol {
     /// Performs a full catalog sync for the specified site
     /// - Parameter siteID: The site ID to sync catalog for
-    /// - Returns: The synced catalog containing products and variations
-    func performFullSync(for siteID: Int64) async throws -> POSCatalog
+    func performFullSync(for siteID: Int64) async throws
 
     /// Determines if a full sync should be performed based on the age of the last sync
     /// - Parameters:
@@ -17,28 +16,27 @@ public protocol POSCatalogSyncCoordinatorProtocol {
 }
 
 public final class POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
-    private let syncService: POSCatalogFullSyncServiceProtocol
+    private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol
     private let grdbManager: GRDBManagerProtocol
 
-    public init(syncService: POSCatalogFullSyncServiceProtocol,
+    public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 grdbManager: GRDBManagerProtocol) {
-        self.syncService = syncService
+        self.fullSyncService = fullSyncService
         self.settingsStore = settingsStore ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.grdbManager = grdbManager
     }
 
-    public func performFullSync(for siteID: Int64) async throws -> POSCatalog {
+    public func performFullSync(for siteID: Int64) async throws {
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
-        let catalog = try await syncService.startFullSync(for: siteID)
+        let catalog = try await fullSyncService.startFullSync(for: siteID)
 
         // Record the sync timestamp
         settingsStore.setPOSLastFullSyncDate(Date(), for: siteID)
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
-        return catalog
     }
 
     public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) -> Bool {

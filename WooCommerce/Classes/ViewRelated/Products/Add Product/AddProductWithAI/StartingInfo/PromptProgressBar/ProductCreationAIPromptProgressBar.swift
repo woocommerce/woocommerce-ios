@@ -29,9 +29,9 @@ struct ProductCreationAIPromptProgressBar: View {
         .onAppear(perform: {
             viewModel.updateText(to: text)
         })
-        .onChange(of: text, perform: { newText in
+        .onChange(of: text) { _, newText in
             viewModel.updateText(to: newText)
-        })
+        }
     }
 
 }

@@ -4,7 +4,6 @@ import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
-import protocol Storage.GRDBManagerProtocol
 import class WooFoundationCore.CurrencyFormatter
 
 /// View controller that provides the tab bar item for the Point of Sale tab.
@@ -28,7 +27,6 @@ final class POSTabCoordinator {
     private let storesManager: StoresManager
     private let credentials: Credentials?
     private let storageManager: StorageManagerType
-    private let grdbManager: GRDBManagerProtocol?
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
@@ -80,13 +78,6 @@ final class POSTabCoordinator {
         self.eligibilityChecker = eligibilityChecker
 
         tabContainerController.wrappedController = POSTabViewController()
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            self.grdbManager = ServiceLocator.grdbManager
-            logDatabaseSchema()
-        } else {
-            self.grdbManager = nil
-        }
     }
 
     func onTabSelected() {
@@ -179,13 +170,5 @@ private extension POSTabCoordinator {
     /// Decorates track events with a different prefix when Point of Sale is active.
     func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
         TracksProvider.setPOSMode(isPointOfSaleActive)
-    }
-}
-
-private extension POSTabCoordinator {
-    func logDatabaseSchema() {
-        try? grdbManager?.databaseConnection.read { db in
-            return try db.dumpSchema()
-        }
     }
 }

@@ -115,7 +115,8 @@ extension Storage.GeneralStoreSettings {
         lastSelectedOrderStatus: NullableCopiableProp<String> = .copy,
         favoriteProductIDs: CopiableProp<[Int64]> = .copy,
         searchTermsByKey: CopiableProp<[String: [String]]> = .copy,
-        isPOSTabVisible: NullableCopiableProp<Bool> = .copy
+        isPOSTabVisible: NullableCopiableProp<Bool> = .copy,
+        posLastFullSyncDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -137,6 +138,7 @@ extension Storage.GeneralStoreSettings {
         let favoriteProductIDs = favoriteProductIDs ?? self.favoriteProductIDs
         let searchTermsByKey = searchTermsByKey ?? self.searchTermsByKey
         let isPOSTabVisible = isPOSTabVisible ?? self.isPOSTabVisible
+        let posLastFullSyncDate = posLastFullSyncDate ?? self.posLastFullSyncDate
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -158,7 +160,8 @@ extension Storage.GeneralStoreSettings {
             lastSelectedOrderStatus: lastSelectedOrderStatus,
             favoriteProductIDs: favoriteProductIDs,
             searchTermsByKey: searchTermsByKey,
-            isPOSTabVisible: isPOSTabVisible
+            isPOSTabVisible: isPOSTabVisible,
+            posLastFullSyncDate: posLastFullSyncDate
         )
     }
 }

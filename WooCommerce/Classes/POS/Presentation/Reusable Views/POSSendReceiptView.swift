@@ -4,7 +4,6 @@ import WooFoundation
 import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @State private var textFieldInput: String = ""
     @State private var isLoading: Bool = false
@@ -12,10 +11,16 @@ struct POSSendReceiptView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     @Binding private(set) var isShowingSendReceiptView: Bool
+    private let onSendReceipt: (String) async throws -> Void
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero
     @State private var shouldMinimizePadding: Bool = false
+
+    init(isShowingSendReceiptView: Binding<Bool>, onSendReceipt: @escaping (String) async throws -> Void) {
+        self._isShowingSendReceiptView = isShowingSendReceiptView
+        self.onSendReceipt = onSendReceipt
+    }
 
     private var isEmailValid: Bool {
         EmailFormatValidator.validate(string: textFieldInput)
@@ -101,7 +106,7 @@ struct POSSendReceiptView: View {
             isLoading = true
             do {
                 errorMessage = nil
-                try await posModel.sendReceipt(to: textFieldInput)
+                try await onSendReceipt(textFieldInput)
                 withAnimation {
                     isShowingSendReceiptView = false
                     isTextFieldFocused = false
@@ -154,7 +159,8 @@ private extension POSSendReceiptView {
 
 #if DEBUG
 #Preview {
-    POSSendReceiptView(isShowingSendReceiptView: .constant(true))
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+    POSSendReceiptView(isShowingSendReceiptView: .constant(true)) { email in
+        try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+    }
 }
 #endif

@@ -15,7 +15,7 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockSettingsStore = MockSiteSpecificAppSettingsStoreMethods()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
-            syncService: mockSyncService,
+            fullSyncService: mockSyncService,
             settingsStore: mockSettingsStore,
             grdbManager: grdbManager
         )
@@ -29,14 +29,12 @@ struct POSCatalogSyncCoordinatorTests {
             products: [POSProduct.fake()],
             variations: [POSProductVariation.fake()]
         )
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
-        let result = try await sut.performFullSync(for: sampleSiteID)
+        try await sut.performFullSync(for: sampleSiteID)
 
         // Then
-        #expect(result.products.count == expectedCatalog.products.count)
-        #expect(result.variations.count == expectedCatalog.variations.count)
         #expect(mockSyncService.startFullSyncCallCount == 1)
         #expect(mockSyncService.lastSyncSiteID == sampleSiteID)
     }
@@ -45,7 +43,7 @@ struct POSCatalogSyncCoordinatorTests {
         // Given
         let beforeSync = Date()
         let expectedCatalog = POSCatalog(products: [], variations: [])
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When
         _ = try await sut.performFullSync(for: sampleSiteID)
@@ -64,7 +62,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func performFullSync_propagates_errors() async throws {
         // Given
         let expectedError = NSError(domain: "sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Sync failed"])
-        mockSyncService.startFullSyncError = expectedError
+        mockSyncService.startFullSyncResult = .failure(expectedError)
 
         // When/Then
         await #expect(throws: expectedError) {
@@ -77,7 +75,7 @@ struct POSCatalogSyncCoordinatorTests {
 
     // MARK: - Should Sync Decision Tests
 
-    @Test func shouldPerformFullSync_site_not_in_database_with_no_sync_history() async {
+    @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() async {
         // Given - site doesn't exist in database AND has no sync history
         mockSettingsStore.storedDates = [:]
         // Note: NOT creating site in database
@@ -89,7 +87,7 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSync == true)
     }
 
-    @Test func shouldPerformFullSync_returns_true_when_no_previous_sync() async throws {
+    @Test func shouldPerformFullSync_returns_true_when_site_is_in_database_with_no_previous_sync() async throws {
         // Given - no previous sync date stored, but site exists in database
         // This is much less likely to happen, but could help at a migration point
         mockSettingsStore.storedDates = [:]
@@ -197,7 +195,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func performFullSync_throws_error_when_sync_already_in_progress() async throws {
         // Given - block the sync service so first sync will wait
         let expectedCatalog = POSCatalog(products: [], variations: [])
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
         mockSyncService.blockNextSync()
 
         // Start first sync in a task (it will block waiting for continuation)
@@ -227,25 +225,22 @@ struct POSCatalogSyncCoordinatorTests {
         let siteA: Int64 = 123
         let siteB: Int64 = 456
         let expectedCatalog = POSCatalog(products: [], variations: [])
-        mockSyncService.startFullSyncResult = expectedCatalog
+        mockSyncService.startFullSyncResult = .success(expectedCatalog)
 
         // When - start syncs for different sites concurrently
-        async let syncA = sut.performFullSync(for: siteA)
-        async let syncB = sut.performFullSync(for: siteB)
+        async let syncA: () = sut.performFullSync(for: siteA)
+        async let syncB: () = sut.performFullSync(for: siteB)
 
         // Then - both should complete successfully
-        let catalogA = try await syncA
-        let catalogB = try await syncB
-
-        #expect(catalogA.products.isEmpty)
-        #expect(catalogB.products.isEmpty)
+        try await syncA
+        try await syncB
         #expect(mockSyncService.startFullSyncCallCount == 2)
     }
 
     @Test func sync_tracking_cleaned_up_on_error() async throws {
         // Given
         let expectedError = NSError(domain: "test", code: 1, userInfo: nil)
-        mockSyncService.startFullSyncError = expectedError
+        mockSyncService.startFullSyncResult = .failure(expectedError)
 
         // When - sync fails
         do {
@@ -256,11 +251,9 @@ struct POSCatalogSyncCoordinatorTests {
         }
 
         // Then - subsequent sync should be allowed
-        mockSyncService.startFullSyncError = nil
-        mockSyncService.startFullSyncResult = POSCatalog(products: [], variations: [])
+        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: []))
 
-        let catalog = try await sut.performFullSync(for: sampleSiteID)
-        #expect(catalog.products.isEmpty)
+        try await sut.performFullSync(for: sampleSiteID)
     }
 
     // MARK: - Helper Methods
@@ -276,8 +269,7 @@ struct POSCatalogSyncCoordinatorTests {
 // MARK: - Mock Services
 
 final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
-    var startFullSyncResult: POSCatalog = POSCatalog(products: [], variations: [])
-    var startFullSyncError: Error?
+    var startFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: []))
     var syncDelay: UInt64 = 0 // nanoseconds to delay before returning
 
     // Controlled sync mechanism
@@ -303,11 +295,12 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
             try await Task.sleep(nanoseconds: syncDelay)
         }
 
-        if let error = startFullSyncError {
+        switch startFullSyncResult {
+        case .success(let catalog):
+            return catalog
+        case .failure(let error):
             throw error
         }
-
-        return startFullSyncResult
     }
 
     func blockNextSync() {

@@ -313,12 +313,12 @@ final class ServiceLocator {
 
         guard let coordinator = _posCatalogSyncCoordinator else {
             guard let credentials = stores.sessionManager.defaultCredentials,
-                  let syncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
+                  let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
             else {
                 fatalError("Failed to create POSCatalogSyncCoordinator due to missing credentials")
             }
 
-            let coordinator = POSCatalogSyncCoordinator(syncService: syncService, grdbManager: grdbManager)
+            let coordinator = POSCatalogSyncCoordinator(fullSyncService: fullSyncService, grdbManager: grdbManager)
             _posCatalogSyncCoordinator = coordinator
             return coordinator
         }

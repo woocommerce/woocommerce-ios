@@ -792,7 +792,6 @@ private extension MainTabBarController {
         OrdersSplitViewWrapperController(siteID: siteID)
     }
 
-
     func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
         guard let coordinator = posCatalogSyncCoordinator else {
             return

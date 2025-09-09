@@ -177,7 +177,7 @@ private extension AlamofireNetworkErrorHandler {
     }
 
     enum Constants {
-        static let flagRefreshDuration: Double = 60 * 60 * 24 * 7 // flag can be reset after 7 days.
+        static let flagRefreshDuration: Double = 60 * 60 * 24 * 14 // flag can be reset after 14 days.
     }
 }
 /// Helper type to keep track of retried requests with accompanied error

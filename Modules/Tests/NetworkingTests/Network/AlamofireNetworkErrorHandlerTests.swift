@@ -316,7 +316,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_and_clears_flag_when_expired() {
         // Given
         let siteID: Int64 = 123
-        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 8)) // 8 days ago (expired)
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 15)) // 15 days ago (expired)
         userDefaults.applicationPasswordUnsupportedList = [String(siteID): expiredDate]
 
         // When
@@ -344,7 +344,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_siteFlaggedAsUnsupported_returns_false_for_flag_just_over_boundary() {
         // Given
         let siteID: Int64 = 123
-        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 7 + 1)) // Just over 7 days ago
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 14 + 1)) // Just over 7 days ago
         userDefaults.applicationPasswordUnsupportedList = [String(siteID): expiredDate]
 
         // When
@@ -362,7 +362,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         let siteID2: Int64 = 456
         let siteID3: Int64 = 789
         let recentDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60)) // 1 hour ago
-        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 8)) // 8 days ago
+        let expiredDate = Date(timeIntervalSince1970: Date().timeIntervalSince1970 - (60 * 60 * 24 * 15)) // 15 days ago
 
         userDefaults.applicationPasswordUnsupportedList = [
             String(siteID1): recentDate,

@@ -252,6 +252,7 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
+        invalidWPCOMTokenNotificationObserver = nil
 
         if isAuthenticated {
             let resetAction = CardPresentPaymentAction.reset

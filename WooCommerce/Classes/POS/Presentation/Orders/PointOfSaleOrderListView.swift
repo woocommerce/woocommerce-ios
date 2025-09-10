@@ -64,44 +64,51 @@ struct PointOfSaleOrderListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            InfiniteScrollView(
-                triggerDeterminer: infiniteScrollTriggerDeterminer,
-                loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
-                    await orderListModel.ordersController.loadNextOrders()
-                },
-                content: {
-                    LazyVStack(spacing: 8) {
-                        headerRows
-
-                        switch ordersViewState {
-                        case .empty:
-                            // TODO: WOOMOB-1139
-                            Text("No orders")
-                        case .error(let errorState):
-                            ItemListErrorCardView(errorState: errorState) {
-                                Task { @MainActor in
-                                    await orderListModel.ordersController.loadOrders()
-                                }
-                            }
-                        default:
-                            let orders = ordersViewState.orders
-                            ForEach(orders, id: \.id) { order in
-                                Button(action: {
-                                    orderListModel.ordersController.selectOrder(order)
-                                }) {
-                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            .animation(.default, value: orders.first?.id)
+            VStack(spacing: POSSpacing.small) {
+                switch ordersViewState {
+                case .empty:
+                    PointOfSaleItemListEmptyView(
+                        viewModel: PointOfSaleOrderListEmptyViewModel(isSearching: isSearching)
+                    ) {
+                        Task { @MainActor in
+                            await orderListModel.ordersController.loadOrders()
                         }
-
-                        footerRows
                     }
-                    .padding(.horizontal)
+                case .error(let errorState):
+                    PointOfSaleItemListErrorView(error: errorState) {
+                        Task { @MainActor in
+                            await orderListModel.ordersController.loadOrders()
+                        }
+                    }
+                default:
+                    InfiniteScrollView(
+                        triggerDeterminer: infiniteScrollTriggerDeterminer,
+                        loadMore: {
+                            guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
+                            await orderListModel.ordersController.loadNextOrders()
+                        },
+                        content: {
+                            LazyVStack(spacing: POSSpacing.small) {
+                                headerRows
+
+                                let orders = ordersViewState.orders
+                                ForEach(orders, id: \.id) { order in
+                                    Button(action: {
+                                        orderListModel.ordersController.selectOrder(order)
+                                    }) {
+                                        OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                                    }
+                                    .buttonStyle(PlainButtonStyle())
+                                }
+                                .animation(.default, value: orders.first?.id)
+
+                                footerRows
+                            }
+                            .padding(.horizontal)
+                        }
+                    )
                 }
-            )
+            }
         }
         .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
         .background(Color.posSurfaceBright)

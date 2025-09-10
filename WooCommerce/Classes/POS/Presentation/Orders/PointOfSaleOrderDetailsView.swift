@@ -46,7 +46,7 @@ struct PointOfSaleOrderDetailsView: View {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
-            .posHeaderBackButton(.init(state: .enabled, action: { isShowingEmailReceiptView = false }, buttonIcon: "xmark"))
+            .posHeaderBackButtonIcon("xmark")
         }
     }
 }

@@ -1,18 +1,5 @@
 import SwiftUI
 
-// MARK: - Environment Key for Header Back Button Configuration
-
-struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
-    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
-}
-
-extension EnvironmentValues {
-    var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
-        get { self[POSHeaderBackButtonConfigurationKey.self] }
-        set { self[POSHeaderBackButtonConfigurationKey.self] = newValue }
-    }
-}
-
 /// Configuration for the back button in the header.
 struct POSPageHeaderBackButtonConfiguration {
     enum State {
@@ -183,24 +170,35 @@ private enum Constants {
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
 
-// MARK: - ViewModifier for Header Back Button Configuration
 
-struct POSHeaderBackButtonModifier: ViewModifier {
-    let configuration: POSPageHeaderBackButtonConfiguration?
+struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
+    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+}
 
-    func body(content: Content) -> some View {
-        content.environment(\.posHeaderBackButtonConfiguration, configuration)
+struct POSHeaderBackButtonIconKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        get { self[POSHeaderBackButtonConfigurationKey.self] }
+        set { self[POSHeaderBackButtonConfigurationKey.self] = newValue }
+    }
+
+    var posHeaderBackButtonIcon: String? {
+        get { self[POSHeaderBackButtonIconKey.self] }
+        set { self[POSHeaderBackButtonIconKey.self] = newValue }
     }
 }
 
 // MARK: - View Extensions for Easy Usage
 
 extension View {
-    /// Applies a back button configuration to all POSPageHeaderView instances in the view hierarchy.
-    /// - Parameter configuration: The back button configuration to apply, or nil to disable
-    /// - Returns: A view with the environment configuration set
-    func posHeaderBackButton(_ configuration: POSPageHeaderBackButtonConfiguration?) -> some View {
-        modifier(POSHeaderBackButtonModifier(configuration: configuration))
+    /// Sets the back button icon for all POSPageHeaderView instances in the view hierarchy.
+    /// - Parameter icon: The system name for the back button icon (e.g., "xmark")
+    /// - Returns: A view with the icon environment value set
+    func posHeaderBackButtonIcon(_ icon: String) -> some View {
+        environment(\.posHeaderBackButtonIcon, icon)
     }
 }
 

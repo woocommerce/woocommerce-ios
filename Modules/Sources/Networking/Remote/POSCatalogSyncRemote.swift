@@ -67,7 +67,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -92,7 +99,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .wcAnalytics,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -117,7 +131,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -140,7 +161,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .wcAnalytics,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 

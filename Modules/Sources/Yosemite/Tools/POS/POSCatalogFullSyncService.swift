@@ -28,6 +28,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let batchSize: Int
     private let persistenceService: POSCatalogPersistenceServiceProtocol
+    private let batchedLoader: BatchedRequestLoader
 
     public convenience init?(credentials: Credentials?, batchSize: Int = 2, grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
@@ -44,6 +45,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         self.syncRemote = syncRemote
         self.batchSize = batchSize
         self.persistenceService = persistenceService
+        self.batchedLoader = BatchedRequestLoader(batchSize: batchSize)
     }
 
     // MARK: - Protocol Conformance
@@ -73,95 +75,19 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 private extension POSCatalogFullSyncService {
     func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
         // Loads products and variations in batches in parallel.
-        async let productsTask = loadAllProducts(for: siteID, syncRemote: syncRemote)
-        async let variationsTask = loadAllProductVariations(for: siteID, syncRemote: syncRemote)
+        async let productsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(siteID: siteID, pageNumber: pageNumber)
+            }
+        )
+        async let variationsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProductVariations(siteID: siteID, pageNumber: pageNumber)
+            }
+        )
 
         let (products, variations) = try await (productsTask, variationsTask)
         return POSCatalog(products: products, variations: variations)
     }
 
-    func loadAllProducts(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProduct] {
-        DDLogInfo("🔄 Starting products sync for site ID: \(siteID)")
-
-        var allProducts: [POSProduct] = []
-        var currentPage = 1
-        var hasMorePages = true
-
-        while hasMorePages {
-            let pagesToFetch = Array(currentPage..<(currentPage + batchSize))
-
-            let batchResults = try await withThrowingTaskGroup(of: PageResult<POSProduct>.self) { group in
-                for pageNumber in pagesToFetch {
-                    group.addTask {
-                        let result = try await syncRemote.loadProducts(siteID: siteID, pageNumber: pageNumber)
-                        return PageResult(pageNumber: pageNumber, items: result)
-                    }
-                }
-
-                var results: [PageResult<POSProduct>] = []
-                for try await result in group {
-                    results.append(result)
-                }
-                return results.sorted(by: { $0.pageNumber < $1.pageNumber })
-            }
-
-            // Processes results in order and checks if there are more pages.
-            let newProducts = batchResults.flatMap { $0.items.items }
-            allProducts.append(contentsOf: newProducts)
-
-            let highestPageResult = batchResults.last?.items
-            hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newProducts.isEmpty
-            currentPage += batchSize
-
-            DDLogInfo("📥 Loaded batch: \(batchResults.count) pages, total products: \(allProducts.count), hasMorePages: \(hasMorePages)")
-        }
-
-        DDLogInfo("✅ Products sync complete: \(allProducts.count) products loaded")
-        return allProducts
-    }
-
-    func loadAllProductVariations(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> [POSProductVariation] {
-        DDLogInfo("🔄 Starting variations sync for site ID: \(siteID)")
-
-        var allVariations: [POSProductVariation] = []
-        var currentPage = 1
-        var hasMorePages = true
-
-        while hasMorePages {
-            let pagesToFetch = Array(currentPage..<(currentPage + batchSize))
-
-            let batchResults = try await withThrowingTaskGroup(of: PageResult<POSProductVariation>.self) { group in
-                for pageNumber in pagesToFetch {
-                    group.addTask {
-                        let result = try await syncRemote.loadProductVariations(siteID: siteID, pageNumber: pageNumber)
-                        return PageResult(pageNumber: pageNumber, items: result)
-                    }
-                }
-
-                var results: [PageResult<POSProductVariation>] = []
-                for try await result in group {
-                    results.append(result)
-                }
-                return results.sorted(by: { $0.pageNumber < $1.pageNumber })
-            }
-
-            // Processes results in order and checks if there are more pages.
-            let newVariations = batchResults.flatMap { $0.items.items }
-            allVariations.append(contentsOf: newVariations)
-
-            let highestPageResult = batchResults.last?.items
-            hasMorePages = (highestPageResult?.hasMorePages ?? false) && !newVariations.isEmpty
-            currentPage += batchSize
-
-            DDLogInfo("📥 Loaded batch: \(batchResults.count) pages, total variations: \(allVariations.count), hasMorePages: \(hasMorePages)")
-        }
-
-        DDLogInfo("✅ Variations sync complete: \(allVariations.count) variations loaded")
-        return allVariations
-    }
-}
-
-private struct PageResult<T> {
-    let pageNumber: Int
-    let items: PagedItems<T>
 }

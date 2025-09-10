@@ -69,6 +69,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isEligibleForInbox = false
 
+    @Published private(set) var isEligibleForStock = false
+
     @Published var showingCustomization = false
 
     @Published private(set) var showNewCardsNotice = false
@@ -164,6 +166,7 @@ final class DashboardViewModel: ObservableObject {
             self?.onInAppFeedbackCardAction()
         }
 
+        observeStockEligibility()
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
@@ -187,6 +190,7 @@ final class DashboardViewModel: ObservableObject {
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
+                             canSowStock: isEligibleForStock,
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
@@ -487,18 +491,20 @@ private extension DashboardViewModel {
 private extension DashboardViewModel {
     func observeValuesForDashboardCards() {
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
+                           $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
                            $hasOrders,
                            $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((canShowOnboarding, canShowBlaze), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
+                let ((canShowOnboarding, canShowBlaze, canShowStock), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
+                                     canSowStock: canShowStock,
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
@@ -529,6 +535,27 @@ private extension DashboardViewModel {
 
     func checkInboxEligibility() {
         isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
+    }
+
+    func observeStockEligibility() {
+        stores.site
+            .removeDuplicates()
+            .map { [weak self] in
+                guard
+                    let self,
+                    let site = $0
+                else {
+                    return false
+                }
+
+                return CIABEligibilityChecker(
+                    stores: stores
+                ).isFeatureSupported(
+                    .productsStockDashboardCard,
+                    for: site
+                )
+            }
+            .assign(to: &$isEligibleForStock)
     }
 
     func configureOrdersResultController() {
@@ -586,6 +613,7 @@ private extension DashboardViewModel {
                               canShowGoogle: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
+                              canSowStock: Bool,
                               canShowInbox: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
@@ -616,7 +644,14 @@ private extension DashboardViewModel {
                                    enabled: false))
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
-        cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
+
+        cards.append(
+            DashboardCard(
+                type: .stock,
+                availability: canSowStock ? .show : .hide,
+                enabled: false
+            )
+        )
 
         // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
         cards.append(DashboardCard(type: .lastOrders,
@@ -634,6 +669,7 @@ private extension DashboardViewModel {
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
                               canShowInbox: Bool,
+                              canSowStock: Bool,
                               hasOrders: Bool) {
 
         let canShowAnalytics = hasOrders
@@ -645,6 +681,7 @@ private extension DashboardViewModel {
                                                 canShowGoogle: canShowGoogle,
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
+                                                canSowStock: canSowStock,
                                                 canShowInbox: canShowInbox)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.

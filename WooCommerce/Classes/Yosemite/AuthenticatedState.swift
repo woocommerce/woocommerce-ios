@@ -3,10 +3,15 @@ import Yosemite
 import Networking
 import Storage
 import Combine
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        network.authenticationMode
+    }
 
     /// Dispatcher: Glues all of the Stores!
     ///

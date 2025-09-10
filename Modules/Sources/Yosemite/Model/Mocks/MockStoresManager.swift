@@ -1,5 +1,6 @@
 import Combine
 import Storage
+import enum NetworkingCore.RequestAuthenticationMode
 
 public class MockStoresManager: StoresManager {
 
@@ -221,6 +222,10 @@ public class MockStoresManager: StoresManager {
 
     public var isAuthenticatedWithoutWPCom: Bool {
         false
+    }
+
+    public var requestAuthenticationMode: RequestAuthenticationMode? {
+        .jetpackTunnel
     }
 
     public var needsDefaultStore: Bool {

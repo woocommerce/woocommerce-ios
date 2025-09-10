@@ -381,6 +381,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
+    func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
 }

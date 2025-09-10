@@ -19,6 +19,11 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
     var spyLastSearchTerm: String?
     var lastSearchTerm: String?
 
+    // LoadOrder properties
+    var loadOrderResult: POSOrder?
+    var loadOrderWasCalled = false
+    var lastLoadOrderID: Int64?
+
     func providePointOfSaleOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         spyLastRequestedPageNumber = pageNumber
         spyCallCount += 1
@@ -104,6 +109,31 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
             hasMorePages: false,
             totalItems: filteredOrders.count
         )
+    }
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        loadOrderWasCalled = true
+        lastLoadOrderID = orderID
+
+        if shouldThrowError {
+            throw PointOfSaleOrderListServiceError.requestFailed
+        }
+
+        if let errorToThrow {
+            throw errorToThrow
+        }
+
+        if let result = loadOrderResult {
+            return result
+        }
+
+        // Fallback - find order from existing orders
+        let allOrders = MockPointOfSaleOrderListService.makeInitialOrders() + MockPointOfSaleOrderListService.makeSecondPageOrders()
+        if let foundOrder = allOrders.first(where: { $0.id == orderID }) {
+            return foundOrder
+        }
+
+        throw PointOfSaleOrderListServiceError.requestFailed
     }
 }
 

@@ -328,7 +328,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_existing_and_new_products() async throws {
+    @Test func persistIncrementalCatalogData_replaces_products_with_existing_and_new_products() async throws {
         // Given
         let existingProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Existing")
         try await insertProduct(existingProduct)

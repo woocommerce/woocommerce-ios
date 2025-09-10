@@ -22,7 +22,7 @@ struct POSFilledButtonStyle: ButtonStyle {
         self.size = size
         self.state = isLoading ? .loading : .idle
     }
-    
+
     init(size: POSButtonSize, state: POSButtonState) {
         self.size = size
         self.state = state
@@ -212,9 +212,9 @@ struct POSButtonStyle_Previews: View {
                 LoadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
 
                 LoadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
-                
+
                 LoadingStatePreviewSection(title: "Loading State Buttons - Normal", size: .normal)
-                
+
                 LoadingStatePreviewSection(title: "Loading State Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text

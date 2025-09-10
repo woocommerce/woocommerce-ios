@@ -461,6 +461,46 @@ struct GRDBManagerTests {
             #expect(variations.allSatisfy { $0.siteID == sampleSiteID })
             #expect(variations.allSatisfy { $0.productID == 100 })
         }
+
+        @Test("Cannot insert product without valid site")
+        func test_cannot_insert_product_without_valid_site() throws {
+            // When/Then
+            #expect(throws: DatabaseError.self) {
+                try manager.databaseConnection.write { db in
+                    let product = TestProduct(
+                        siteID: 999, // Non-existent site
+                        id: 100,
+                        name: "Orphaned Product",
+                        productTypeKey: "simple",
+                        price: "10.00",
+                        downloadable: false,
+                        parentID: 0,
+                        manageStock: false,
+                        stockStatusKey: ""
+                    )
+                    try product.insert(db)
+                }
+            }
+        }
+
+        @Test("Cannot insert variation without valid product")
+        func test_cannot_insert_variation_without_valid_product() throws {
+            // When/Then
+            #expect(throws: DatabaseError.self) {
+                try manager.databaseConnection.write { db in
+                    let variation = TestProductVariation(
+                        siteID: sampleSiteID,
+                        id: 200,
+                        productID: 999, // Non-existent product
+                        price: "12.00",
+                        downloadable: false,
+                        manageStock: false,
+                        stockStatusKey: ""
+                    )
+                    try variation.insert(db)
+                }
+            }
+        }
     }
 
     struct ResetTests {
@@ -600,46 +640,6 @@ struct GRDBManagerTests {
             }
 
             #expect(productCount == 0)
-        }
-
-        @Test("Cannot insert product without valid site")
-        func test_cannot_insert_product_without_valid_site() throws {
-            // When/Then
-            #expect(throws: DatabaseError.self) {
-                try manager.databaseConnection.write { db in
-                    let product = TestProduct(
-                        siteID: 999, // Non-existent site
-                        id: 100,
-                        name: "Orphaned Product",
-                        productTypeKey: "simple",
-                        price: "10.00",
-                        downloadable: false,
-                        parentID: 0,
-                        manageStock: false,
-                        stockStatusKey: ""
-                    )
-                    try product.insert(db)
-                }
-            }
-        }
-
-        @Test("Cannot insert variation without valid product")
-        func test_cannot_insert_variation_without_valid_product() throws {
-            // When/Then
-            #expect(throws: DatabaseError.self) {
-                try manager.databaseConnection.write { db in
-                    let variation = TestProductVariation(
-                        siteID: sampleSiteID,
-                        id: 200,
-                        productID: 999, // Non-existent product
-                        price: "12.00",
-                        downloadable: false,
-                        manageStock: false,
-                        stockStatusKey: ""
-                    )
-                    try variation.insert(db)
-                }
-            }
         }
     }
 }

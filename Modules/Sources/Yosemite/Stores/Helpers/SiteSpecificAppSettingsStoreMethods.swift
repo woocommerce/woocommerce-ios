@@ -11,10 +11,6 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     // Search history methods
     func getSearchTerms(for itemType: POSItemType, siteID: Int64) -> [String]
     func setSearchTerms(_ terms: [String], for itemType: POSItemType, siteID: Int64)
-
-    // POS catalog sync timestamp methods
-    func getPOSLastFullSyncDate(for siteID: Int64) -> Date?
-    func setPOSLastFullSyncDate(_ date: Date?, for siteID: Int64)
 }
 
 /// Methods for managing site-specific app settings
@@ -98,20 +94,6 @@ extension SiteSpecificAppSettingsStoreMethods {
         var updatedSearchTermsByKey = storeSettings.searchTermsByKey
         updatedSearchTermsByKey[key] = terms
         let updatedSettings = storeSettings.copy(searchTermsByKey: updatedSearchTermsByKey)
-        setStoreSettings(settings: updatedSettings, for: siteID)
-    }
-}
-
-// MARK: - POS Catalog Sync Timestamps
-extension SiteSpecificAppSettingsStoreMethods {
-    func getPOSLastFullSyncDate(for siteID: Int64) -> Date? {
-        let storeSettings = getStoreSettings(for: siteID)
-        return storeSettings.posLastFullSyncDate
-    }
-
-    func setPOSLastFullSyncDate(_ date: Date?, for siteID: Int64) {
-        let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(posLastFullSyncDate: date)
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }

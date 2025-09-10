@@ -7,11 +7,14 @@ public struct PersistedSite: Codable {
     public let id: Int64
     // periphery:ignore - TODO: remove ignore when populating database
     public let lastCatalogIncrementalSyncDate: Date?
+    // periphery:ignore - TODO: remove ignore when populating database
+    public let lastCatalogFullSyncDate: Date?
 
     // periphery:ignore - TODO: remove ignore when populating database
-    public init(id: Int64, lastCatalogIncrementalSyncDate: Date? = nil) {
+    public init(id: Int64, lastCatalogIncrementalSyncDate: Date? = nil, lastCatalogFullSyncDate: Date? = nil) {
         self.id = id
         self.lastCatalogIncrementalSyncDate = lastCatalogIncrementalSyncDate
+        self.lastCatalogFullSyncDate = lastCatalogFullSyncDate
     }
 }
 
@@ -24,6 +27,8 @@ extension PersistedSite: FetchableRecord, PersistableRecord {
         static let id = Column(CodingKeys.id)
         // periphery:ignore - TODO: remove ignore when populating database
         static let lastCatalogIncrementalSyncDate = Column(CodingKeys.lastCatalogIncrementalSyncDate)
+        // periphery:ignore - TODO: remove ignore when populating database
+        static let lastCatalogFullSyncDate = Column(CodingKeys.lastCatalogFullSyncDate)
     }
 }
 
@@ -32,5 +37,6 @@ private extension PersistedSite {
     enum CodingKeys: String, CodingKey {
         case id
         case lastCatalogIncrementalSyncDate
+        case lastCatalogFullSyncDate
     }
 }

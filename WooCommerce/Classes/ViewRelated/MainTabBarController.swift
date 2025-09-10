@@ -130,6 +130,7 @@ final class MainTabBarController: UITabBarController {
 
     private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
+    private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private var isPOSTabVisible: Bool = false
 
@@ -685,6 +686,11 @@ private extension MainTabBarController {
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
             viewModel.loadHubMenuTabBadge()
+
+            // Trigger POS catalog sync if tab is visible and feature flag is enabled
+            if isPOSTabVisible, ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                await triggerPOSCatalogSyncIfNeeded(for: siteID)
+            }
         }
     }
 
@@ -760,6 +766,11 @@ private extension MainTabBarController {
             eligibilityChecker: posEligibilityChecker
         )
 
+        // Configure POS catalog sync coordinator for local catalog syncing
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+            posCatalogSyncCoordinator = createPOSCatalogSyncCoordinator()
+        }
+
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
             let hubTabCoordinator = createHubMenuTabCoordinator()
@@ -779,6 +790,37 @@ private extension MainTabBarController {
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
         OrdersSplitViewWrapperController(siteID: siteID)
+    }
+
+    func createPOSCatalogSyncCoordinator() -> POSCatalogSyncCoordinatorProtocol? {
+        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
+              let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
+        else {
+            return nil
+        }
+
+        return POSCatalogSyncCoordinator(fullSyncService: fullSyncService, grdbManager: ServiceLocator.grdbManager)
+    }
+
+    func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
+        guard let coordinator = posCatalogSyncCoordinator else {
+            return
+        }
+
+        // Check if sync is needed (older than 24 hours)
+        let maxAge: TimeInterval = 24 * 60 * 60
+        guard coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+            return
+        }
+
+        // Perform background sync
+        Task.detached {
+            do {
+                _ = try await coordinator.performFullSync(for: siteID)
+            } catch {
+                DDLogError("⚠️ POS catalog sync failed: \(error)")
+            }
+        }
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {

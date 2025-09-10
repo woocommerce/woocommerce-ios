@@ -86,6 +86,10 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isPOSTabVisible: Bool?
 
+    /// Last time a POS catalog full sync was completed for this store.
+    ///
+    public var posLastFullSyncDate: Date?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -105,7 +109,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 lastSelectedOrderStatus: String? = nil,
                 favoriteProductIDs: [Int64] = [],
                 searchTermsByKey: [String: [String]] = [:],
-                isPOSTabVisible: Bool? = nil) {
+                isPOSTabVisible: Bool? = nil,
+                posLastFullSyncDate: Date? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -126,6 +131,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
         self.isPOSTabVisible = isPOSTabVisible
+        self.posLastFullSyncDate = posLastFullSyncDate
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -147,7 +153,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastSelectedOrderStatus: lastSelectedOrderStatus,
                              favoriteProductIDs: favoriteProductIDs,
                              searchTermsByKey: searchTermsByKey,
-                             isPOSTabVisible: isPOSTabVisible)
+                             isPOSTabVisible: isPOSTabVisible,
+                             posLastFullSyncDate: posLastFullSyncDate)
     }
 }
 
@@ -182,6 +189,7 @@ extension GeneralStoreSettings {
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
 
         self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
+        self.posLastFullSyncDate = try container.decodeIfPresent(Date.self, forKey: .posLastFullSyncDate)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

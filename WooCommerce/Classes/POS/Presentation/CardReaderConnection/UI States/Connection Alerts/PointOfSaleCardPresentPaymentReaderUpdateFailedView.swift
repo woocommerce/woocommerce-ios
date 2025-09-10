@@ -23,13 +23,13 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)

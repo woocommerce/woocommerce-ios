@@ -229,6 +229,142 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(retrievedVariationTerms == variationTerms)
         #expect(retrievedCouponTerms == couponTerms)
     }
+
+    // MARK: - POS Last Full Sync Date Tests
+
+    @Test func getPOSLastFullSyncDate_returns_nil_when_no_date_exists() {
+        // When
+        let syncDate = sut.getPOSLastFullSyncDate(for: siteID)
+
+        // Then
+        #expect(syncDate == nil)
+    }
+
+    @Test func getPOSLastFullSyncDate_returns_saved_date() throws {
+        // Given
+        let expectedDate = Date()
+        let storeSettings = GeneralStoreSettings(posLastFullSyncDate: expectedDate)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let syncDate = sut.getPOSLastFullSyncDate(for: siteID)
+
+        // Then
+        #expect(syncDate == expectedDate)
+    }
+
+    @Test func setPOSLastFullSyncDate_saves_date_successfully() throws {
+        // Given
+        let dateToSave = Date()
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSLastFullSyncDate(dateToSave, for: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posLastFullSyncDate == dateToSave)
+    }
+
+    @Test func setPOSLastFullSyncDate_can_set_nil_date() throws {
+        // Given
+        let existingDate = Date()
+        let storeSettings = GeneralStoreSettings(posLastFullSyncDate: existingDate)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.setPOSLastFullSyncDate(nil, for: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posLastFullSyncDate == nil)
+    }
+
+    @Test func setPOSLastFullSyncDate_preserves_other_settings() throws {
+        // Given
+        let existingStoreID = "existing-store"
+        let existingTerms = ["existing", "terms"]
+        let storeSettings = GeneralStoreSettings(
+            storeID: existingStoreID,
+            searchTermsByKey: ["product_search_terms": existingTerms]
+        )
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        let dateToSave = Date()
+
+        // When
+        sut.setPOSLastFullSyncDate(dateToSave, for: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        let savedSettings = savedData.storeSettingsBySite[siteID]
+        #expect(savedSettings?.posLastFullSyncDate == dateToSave)
+        #expect(savedSettings?.storeID == existingStoreID)
+        #expect(savedSettings?.searchTermsByKey["product_search_terms"] == existingTerms)
+    }
+
+    @Test func setPOSLastFullSyncDate_preserves_dates_for_other_sites() throws {
+        // Given
+        let otherSiteID: Int64 = 456
+        let otherSiteDate = Date().addingTimeInterval(-3600)
+        let otherSiteSettings = GeneralStoreSettings(posLastFullSyncDate: otherSiteDate)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [otherSiteID: otherSiteSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        let newDate = Date()
+
+        // When
+        sut.setPOSLastFullSyncDate(newDate, for: siteID)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.posLastFullSyncDate == newDate)
+        #expect(savedData.storeSettingsBySite[otherSiteID]?.posLastFullSyncDate == otherSiteDate)
+    }
+
+    @Test func getPOSLastFullSyncDate_handles_different_sites_independently() throws {
+        // Given
+        let siteA: Int64 = 123
+        let siteB: Int64 = 456
+        let dateA = Date()
+        let dateB = Date().addingTimeInterval(-3600)
+
+        let storeSettingsA = GeneralStoreSettings(posLastFullSyncDate: dateA)
+        let storeSettingsB = GeneralStoreSettings(posLastFullSyncDate: dateB)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [
+            siteA: storeSettingsA,
+            siteB: storeSettingsB
+        ])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        let retrievedDateA = sut.getPOSLastFullSyncDate(for: siteA)
+        let retrievedDateB = sut.getPOSLastFullSyncDate(for: siteB)
+
+        // Then
+        #expect(retrievedDateA == dateA)
+        #expect(retrievedDateB == dateB)
+    }
+
+    @Test func resetStoreSettings_clears_pos_sync_date() throws {
+        // Given
+        let syncDate = Date()
+        let storeSettings = GeneralStoreSettings(posLastFullSyncDate: syncDate)
+        let existingData = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: storeSettings])
+        try fileStorage.write(existingData, to: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+
+        // When
+        sut.resetStoreSettings()
+
+        // Then
+        #expect(fileStorage.deleteIsHit == true)
+        let retrievedDate = sut.getPOSLastFullSyncDate(for: siteID)
+        #expect(retrievedDate == nil)
+    }
 }
 
 // MARK: - Mock FileStorage

@@ -73,7 +73,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
 
-    private var isSiteEligibleForBlaze = false
+    @Published private var isSiteEligibleForBlaze = false
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
     /// Blaze campaign ResultsController.
@@ -103,12 +103,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         )
     }()
 
-    private(set) var latestPublishedProduct: BlazeCampaignProduct?
+    @Published private(set) var latestPublishedProduct: BlazeCampaignProduct?
 
     private var subscriptions: Set<AnyCancellable> = []
 
     @Published private var syncingError: Error?
-
+    
+    private var cancellables = Set<AnyCancellable>()
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -122,15 +123,33 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
 
+        observeIsSiteEligibleForBlaze()
+        observeAvailability()
         observeSectionVisibility()
         configureResultsController()
     }
 
+    func observeIsSiteEligibleForBlaze() {
+        stores.site
+            .removeDuplicates()
+            .sink { site in
+                Task { [weak self] in
+                    guard
+                        let self,
+                        let site
+                    else {
+                        return
+                    }
+
+                    isSiteEligibleForBlaze = await checkSiteEligibility(site)
+                }
+            }
+            .store(in: &cancellables)
+    }
+
     @MainActor
     func checkAvailability() async {
-        isSiteEligibleForBlaze = await checkSiteEligibility()
         try? await synchronizePublishedProducts()
-        updateAvailability()
     }
 
     @MainActor
@@ -139,8 +158,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         update(state: .loading)
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
-
-        isSiteEligibleForBlaze = await checkSiteEligibility()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
@@ -221,10 +238,7 @@ private extension BlazeCampaignDashboardViewModel {
         })
     }
 
-    func checkSiteEligibility() async -> Bool {
-        guard let site = stores.sessionManager.defaultSite else {
-            return false
-        }
+    func checkSiteEligibility(_ site: Site) async -> Bool {
         return await blazeEligibilityChecker.isSiteEligible(site)
     }
 
@@ -288,8 +302,13 @@ private extension BlazeCampaignDashboardViewModel {
         onStateChange?()
     }
 
-    func updateAvailability() {
-        canShowInDashboard = isSiteEligibleForBlaze && latestPublishedProduct != nil
+    func observeAvailability() {
+        $isSiteEligibleForBlaze
+            .combineLatest($latestPublishedProduct)
+            .map { (isSiteEligibleForBlaze, latestPublishedProduct) in
+                return isSiteEligibleForBlaze && latestPublishedProduct != nil
+            }
+            .assign(to: &$canShowInDashboard)
     }
 
     func updateResults() {
@@ -321,11 +340,9 @@ private extension BlazeCampaignDashboardViewModel {
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
             latestPublishedProduct = productResultsController.fetchedObjects.first
-            updateAvailability()
             updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
-            self?.updateAvailability()
             self?.updateResults()
         }
 

@@ -58,7 +58,8 @@ extension Yosemite.POSSite {
     public static func fake() -> Yosemite.POSSite {
         .init(
             siteID: .fake(),
-            lastIncrementalSyncDate: .fake()
+            lastIncrementalSyncDate: .fake(),
+            lastFullSyncDate: .fake()
         )
     }
 }

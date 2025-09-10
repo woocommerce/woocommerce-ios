@@ -1,9 +1,17 @@
 import SwiftUI
 
+protocol POSEmptyViewModelProtocol {
+    var title: String { get }
+    var subtitle: String { get }
+    var hint: String? { get }
+    var buttonTitle: String? { get }
+    var iconName: String { get }
+}
+
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let viewModel: PointOfSaleItemListEmptyViewModel
+    private let viewModel: any POSEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
 
@@ -11,7 +19,7 @@ struct PointOfSaleItemListEmptyView: View {
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(viewModel: PointOfSaleItemListEmptyViewModel, onAction: (() -> Void)? = nil) {
+    init(viewModel: any POSEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onAction = onAction
     }
@@ -259,3 +267,7 @@ struct PointOfSaleItemListEmptyViewModel {
         )
     ) {}
 }
+
+// MARK: - Protocol Conformance
+
+extension PointOfSaleItemListEmptyViewModel: POSEmptyViewModelProtocol {}

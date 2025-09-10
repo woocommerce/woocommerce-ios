@@ -85,6 +85,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
@@ -120,6 +121,7 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
         self.siteID = siteID
@@ -149,6 +151,7 @@ final class DashboardViewModel: ObservableObject {
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
+        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
@@ -548,12 +551,11 @@ private extension DashboardViewModel {
                     return false
                 }
 
-                return CIABEligibilityChecker(
-                    stores: stores
-                ).isFeatureSupported(
-                    .productsStockDashboardCard,
-                    for: site
-                )
+                return siteIsCIABEligibilityChecker
+                    .isFeatureSupported(
+                        .productsStockDashboardCard,
+                        for: site
+                    )
             }
             .assign(to: &$isEligibleForStock)
     }

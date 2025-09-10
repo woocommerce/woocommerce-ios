@@ -5,18 +5,18 @@ import Testing
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
-    private let mockSettingsStore: MockSiteSpecificAppSettingsStoreMethods
+    private let mockPersistenceService: MockPOSCatalogPersistenceService
     private let grdbManager: GRDBManager
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
 
     init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
-        self.mockSettingsStore = MockSiteSpecificAppSettingsStoreMethods()
+        self.mockPersistenceService = MockPOSCatalogPersistenceService()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
-            settingsStore: mockSettingsStore,
+            persistenceService: mockPersistenceService,
             grdbManager: grdbManager
         )
     }
@@ -44,16 +44,17 @@ struct POSCatalogSyncCoordinatorTests {
         let beforeSync = Date()
         let expectedCatalog = POSCatalog(products: [], variations: [])
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID))
 
         // When
         try await sut.performFullSync(for: sampleSiteID)
         let afterSync = Date()
 
         // Then
-        #expect(mockSettingsStore.setPOSLastFullSyncDateCallCount == 1)
-        #expect(mockSettingsStore.lastSetSiteID == sampleSiteID)
+        #expect(mockPersistenceService.updateSiteCallCount == 1)
+        #expect(mockPersistenceService.lastUpdatedSite?.siteID == sampleSiteID)
 
-        let storedDate = mockSettingsStore.lastSetDate
+        let storedDate = mockPersistenceService.lastUpdatedSite?.lastFullSyncDate
         #expect(storedDate != nil)
         #expect(storedDate! >= beforeSync)
         #expect(storedDate! <= afterSync)
@@ -70,14 +71,14 @@ struct POSCatalogSyncCoordinatorTests {
         }
 
         // Should not store timestamp on failure
-        #expect(mockSettingsStore.setPOSLastFullSyncDateCallCount == 0)
+        #expect(mockPersistenceService.updateSiteCallCount == 0)
     }
 
     // MARK: - Should Sync Decision Tests
 
     @Test func shouldPerformFullSync_returns_true_when_site_is_not_in_database_with_no_sync_history() async {
         // Given - site doesn't exist in database AND has no sync history
-        mockSettingsStore.storedDates = [:]
+        mockPersistenceService.loadSiteResult = .success(nil)
         // Note: NOT creating site in database
 
         // When
@@ -90,7 +91,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func shouldPerformFullSync_returns_true_when_site_is_in_database_with_no_previous_sync() async throws {
         // Given - no previous sync date stored, but site exists in database
         // This is much less likely to happen, but could help at a migration point
-        mockSettingsStore.storedDates = [:]
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID, lastFullSyncDate: nil))
         try createSiteInDatabase(siteID: sampleSiteID)
 
         // When
@@ -98,13 +99,13 @@ struct POSCatalogSyncCoordinatorTests {
 
         // Then
         #expect(shouldSync == true)
-        #expect(mockSettingsStore.getPOSLastFullSyncDateCallCount == 1)
+        #expect(mockPersistenceService.loadSiteCallCount == 1)
     }
 
     @Test func shouldPerformFullSync_returns_true_when_sync_is_stale() async throws {
         // Given - previous sync was 2 hours ago, and site exists in database
         let twoHoursAgo = Date().addingTimeInterval(-2 * 60 * 60)
-        mockSettingsStore.storedDates[sampleSiteID] = twoHoursAgo
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID, lastFullSyncDate: twoHoursAgo))
         try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 1 hour
@@ -117,7 +118,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func shouldPerformFullSync_returns_false_when_sync_is_fresh() async throws {
         // Given - previous sync was 30 minutes ago, and site exists in database
         let thirtyMinutesAgo = Date().addingTimeInterval(-30 * 60)
-        mockSettingsStore.storedDates[sampleSiteID] = thirtyMinutesAgo
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo))
         try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 1 hour
@@ -133,8 +134,9 @@ struct POSCatalogSyncCoordinatorTests {
         let siteB: Int64 = 456
         let oneHourAgo = Date().addingTimeInterval(-60 * 60)
 
-        mockSettingsStore.storedDates[siteA] = oneHourAgo // Has previous sync
-        // siteB has no previous sync
+        // Setup mock to return different results for different sites
+        mockPersistenceService.siteResults[siteA] = POSSite(siteID: siteA, lastFullSyncDate: oneHourAgo)
+        mockPersistenceService.siteResults[siteB] = POSSite(siteID: siteB, lastFullSyncDate: nil)
 
         // Create both sites in database to test timing logic
         try createSiteInDatabase(siteID: siteA)
@@ -152,7 +154,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func shouldPerformFullSync_with_zero_maxAge_always_returns_true() async throws {
         // Given - previous sync was just now, and site exists in database
         let justNow = Date()
-        mockSettingsStore.storedDates[sampleSiteID] = justNow
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID, lastFullSyncDate: justNow))
         try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 0 (always sync)
@@ -166,8 +168,7 @@ struct POSCatalogSyncCoordinatorTests {
 
     @Test func shouldPerformFullSync_returns_true_when_site_not_in_database() async {
         // Given - site does not exist in database, but has recent sync date
-        let recentSyncDate = Date().addingTimeInterval(-30 * 60) // 30 minutes ago
-        mockSettingsStore.storedDates[sampleSiteID] = recentSyncDate
+        mockPersistenceService.loadSiteResult = .success(nil)
         // Note: not creating site in database so it won't exist
 
         // When - max age is 1 hour (normally wouldn't sync)
@@ -180,7 +181,7 @@ struct POSCatalogSyncCoordinatorTests {
     @Test func shouldPerformFullSync_respects_time_when_site_exists_in_database() async throws {
         // Given - site exists in database with recent sync date
         let recentSyncDate = Date().addingTimeInterval(-30 * 60) // 30 minutes ago
-        mockSettingsStore.storedDates[sampleSiteID] = recentSyncDate
+        mockPersistenceService.loadSiteResult = .success(POSSite(siteID: sampleSiteID, lastFullSyncDate: recentSyncDate))
         try createSiteInDatabase(siteID: sampleSiteID)
 
         // When - max age is 1 hour

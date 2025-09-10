@@ -34,7 +34,7 @@ extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
 
     public enum Columns {
         static let id = Column(CodingKeys.id)
-        static let productID = Column(CodingKeys.productID)
+        public static let productID = Column(CodingKeys.productID)
         static let name = Column(CodingKeys.name)
         static let position = Column(CodingKeys.position)
         static let visible = Column(CodingKeys.visible)

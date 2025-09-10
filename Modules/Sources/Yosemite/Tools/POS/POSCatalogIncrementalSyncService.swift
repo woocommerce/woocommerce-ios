@@ -20,22 +20,25 @@ public protocol POSCatalogIncrementalSyncServiceProtocol {
 public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServiceProtocol {
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let batchSize: Int
+    private let persistenceService: POSCatalogPersistenceServiceProtocol
     private var lastIncrementalSyncDates: [Int64: Date] = [:]
     private let batchedLoader: BatchedRequestLoader
 
-    public convenience init?(credentials: Credentials?, batchSize: Int = 1) {
+    public convenience init?(credentials: Credentials?, batchSize: Int = 1, grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogIncrementalSyncService due missing credentials")
             return nil
         }
         let network = AlamofireNetwork(credentials: credentials, ensuresSessionManagerIsInitialized: true)
         let syncRemote = POSCatalogSyncRemote(network: network)
-        self.init(syncRemote: syncRemote, batchSize: batchSize)
+        let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
-    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int) {
+    init(syncRemote: POSCatalogSyncRemoteProtocol, batchSize: Int, persistenceService: POSCatalogPersistenceServiceProtocol) {
         self.syncRemote = syncRemote
         self.batchSize = batchSize
+        self.persistenceService = persistenceService
         self.batchedLoader = BatchedRequestLoader(batchSize: batchSize)
     }
 
@@ -51,7 +54,8 @@ public final class POSCatalogIncrementalSyncService: POSCatalogIncrementalSyncSe
             let catalog = try await loadCatalog(for: siteID, modifiedAfter: modifiedAfter, syncRemote: syncRemote)
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
-            // TODO: WOOMOB-1298 - persist to database
+            try await persistenceService.persistIncrementalCatalogData(catalog, siteID: siteID)
+            DDLogInfo("✅ Persisted \(catalog.products.count) products and \(catalog.variations.count) variations to database for siteID \(siteID)")
 
             // TODO: WOOMOB-1289 - replace with store settings persistence
             lastIncrementalSyncDates[siteID] = syncStartDate

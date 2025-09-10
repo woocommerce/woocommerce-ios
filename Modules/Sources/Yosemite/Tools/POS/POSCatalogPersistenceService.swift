@@ -1,6 +1,7 @@
 // periphery:ignore:all
 import Foundation
 import Storage
+import GRDB
 
 protocol POSCatalogPersistenceServiceProtocol {
     /// Clears existing data and persists new catalog data
@@ -8,6 +9,12 @@ protocol POSCatalogPersistenceServiceProtocol {
     ///   - catalog: The catalog to persist
     ///   - siteID: The site ID to associate the catalog with
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
+
+    /// Persists incremental catalog data (insert/update)
+    /// - Parameters:
+    ///   - catalog: The catalog difference to persist
+    ///   - siteID: The site ID to associate the catalog with
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws
 }
 
 final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
@@ -29,11 +36,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site.insert(db)
 
             for product in catalog.productsToPersist {
-                try product.insert(db, onConflict: .ignore)
+                try product.insert(db, onConflict: .replace)
             }
 
             for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.productAttributesToPersist {
@@ -41,11 +48,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
 
             for variation in catalog.variationsToPersist {
-                try variation.insert(db, onConflict: .ignore)
+                try variation.insert(db, onConflict: .replace)
             }
 
             for image in catalog.variationImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.variationAttributesToPersist {
@@ -64,6 +71,67 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
 
             DDLogInfo("Persisted \(productCount) products, \(productImageCount) product images, " +
+                      "\(productAttributeCount) product attributes, \(variationCount) variations, " +
+                      "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
+        }
+    }
+
+    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
+        DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
+
+        try await grdbManager.databaseConnection.write { db in
+            for product in catalog.productsToPersist {
+                try product.insert(db, onConflict: .replace)
+
+                try PersistedProductImage
+                    .filter { $0.productID == product.id }
+                    .deleteAll(db)
+
+                try PersistedProductAttribute
+                    .filter { $0.productID == product.id }
+                    .deleteAll(db)
+            }
+
+            for image in catalog.productImagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
+            for var attribute in catalog.productAttributesToPersist {
+                try attribute.insert(db, onConflict: .replace)
+            }
+
+            for variation in catalog.variationsToPersist {
+                try variation.insert(db, onConflict: .replace)
+
+                try PersistedProductVariationImage
+                    .filter { $0.productVariationID == variation.id }
+                    .deleteAll(db)
+
+                try PersistedProductVariationAttribute
+                    .filter { $0.productVariationID == variation.id }
+                    .deleteAll(db)
+            }
+
+            for image in catalog.variationImagesToPersist {
+                try image.insert(db, onConflict: .replace)
+            }
+
+            for var attribute in catalog.variationAttributesToPersist {
+                try attribute.insert(db, onConflict: .replace)
+            }
+        }
+
+        DDLogInfo("✅ Incremental catalog persistence complete")
+
+        try await grdbManager.databaseConnection.read { db in
+            let productCount = try PersistedProduct.fetchCount(db)
+            let productImageCount = try PersistedProductImage.fetchCount(db)
+            let productAttributeCount = try PersistedProductAttribute.fetchCount(db)
+            let variationCount = try PersistedProductVariation.fetchCount(db)
+            let variationImageCount = try PersistedProductVariationImage.fetchCount(db)
+            let variationAttributeCount = try PersistedProductVariationAttribute.fetchCount(db)
+
+            DDLogInfo("Total after incremental update: \(productCount) products, \(productImageCount) product images, " +
                       "\(productAttributeCount) product attributes, \(variationCount) variations, " +
                       "\(variationImageCount) variation images, \(variationAttributeCount) variation attributes")
         }

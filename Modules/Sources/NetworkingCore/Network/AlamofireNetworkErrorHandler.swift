@@ -146,7 +146,7 @@ final class AlamofireNetworkErrorHandler {
             return false
         }
 
-        let timeElapsed = Date().timeIntervalSince1970 - flagDate.timeIntervalSince1970
+        let timeElapsed = Date().timeIntervalSince(flagDate)
         if timeElapsed < Constants.flagRefreshDuration {
             return true
         } else {

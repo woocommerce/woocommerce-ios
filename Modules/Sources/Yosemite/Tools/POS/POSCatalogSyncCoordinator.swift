@@ -35,6 +35,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.grdbManager = grdbManager
     }
 
+    //periphery:ignore - used for tests to inject persistence service
     init(fullSyncService: POSCatalogFullSyncServiceProtocol,
          persistenceService: POSCatalogPersistenceServiceProtocol,
          grdbManager: GRDBManagerProtocol) {
@@ -68,7 +69,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             lastIncrementalSyncDate: currentSite?.lastIncrementalSyncDate,
             lastFullSyncDate: Date()
         )
-        
+
         do {
             try await persistenceService.updateSite(updatedSite)
         } catch POSCatalogPersistenceError.siteNotFound {

@@ -10,19 +10,19 @@ final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtoc
     // MARK: - loadSite tracking
     var loadSiteResult: Result<POSSite?, Error> = .success(nil)
     private(set) var loadSiteCallCount = 0
-    
+
     // Track specific sites for multi-site tests
     var siteResults: [Int64: POSSite] = [:]
-    
+
     // MARK: - updateSite tracking
     private(set) var updateSiteCallCount = 0
     private(set) var lastUpdatedSite: POSSite?
-    
+
     // Internal storage for updated sites
     private var storedSites: [Int64: POSSite] = [:]
 
     // MARK: - Protocol Implementation
-    
+
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
         // Not used in current tests
     }

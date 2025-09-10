@@ -65,6 +65,10 @@ public protocol StoresManager {
     ///
     var site: AnyPublisher<Site?, Never> { get }
 
+    /// Provides access to the session-scoped POS catalog sync coordinator
+    ///
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? { get }
+
     /// Indicates if we need a Default StoreID, or there's one already set.
     ///
     var needsDefaultStore: Bool { get }

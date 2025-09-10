@@ -120,6 +120,12 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultSitePublisher
     }
 
+    /// Provides access to the session-scoped POS catalog sync coordinator
+    ///
+    var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        (state as? AuthenticatedState)?.posCatalogSyncCoordinator
+    }
+
     /// Designated Initializer
     ///
     init(sessionManager: SessionManagerProtocol,

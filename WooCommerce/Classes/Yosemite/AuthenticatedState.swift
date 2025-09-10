@@ -28,6 +28,10 @@ class AuthenticatedState: StoresManagerState {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// POS Catalog Sync Coordinator (session-scoped)
+    ///
+    private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
+
     /// Designated Initializer
     ///
     init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
@@ -135,6 +139,17 @@ class AuthenticatedState: StoresManagerState {
         }
 
         self.services = services
+
+        // Initialize POS catalog sync coordinator if feature flag is enabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager) {
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                grdbManager: ServiceLocator.grdbManager
+            )
+        } else {
+            posCatalogSyncCoordinator = nil
+        }
 
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 

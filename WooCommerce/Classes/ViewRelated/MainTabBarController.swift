@@ -767,9 +767,8 @@ private extension MainTabBarController {
         )
 
         // Configure POS catalog sync coordinator for local catalog syncing
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
-            posCatalogSyncCoordinator = createPOSCatalogSyncCoordinator()
-        }
+        // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
+        posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
@@ -792,16 +791,6 @@ private extension MainTabBarController {
         OrdersSplitViewWrapperController(siteID: siteID)
     }
 
-    func createPOSCatalogSyncCoordinator() -> POSCatalogSyncCoordinatorProtocol? {
-        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
-              let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager)
-        else {
-            return nil
-        }
-
-        return POSCatalogSyncCoordinator(fullSyncService: fullSyncService, grdbManager: ServiceLocator.grdbManager)
-    }
-
     func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
         guard let coordinator = posCatalogSyncCoordinator else {
             return
@@ -809,7 +798,7 @@ private extension MainTabBarController {
 
         // Check if sync is needed (older than 24 hours)
         let maxAge: TimeInterval = 24 * 60 * 60
-        guard coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+        guard await coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             return
         }
 
@@ -817,6 +806,8 @@ private extension MainTabBarController {
         Task.detached {
             do {
                 _ = try await coordinator.performFullSync(for: siteID)
+            } catch POSCatalogSyncError.syncAlreadyInProgress {
+                DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
             } catch {
                 DDLogError("⚠️ POS catalog sync failed: \(error)")
             }

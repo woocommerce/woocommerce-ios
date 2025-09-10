@@ -28,12 +28,6 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var spySetSearchTermsSiteID: Int64?
     var mockSearchTerms: [POSItemType: [String]] = [:]
 
-    // POS sync timestamp properties
-    var storedDates: [Int64: Date] = [:]
-    private(set) var getPOSLastFullSyncDateCallCount = 0
-    private(set) var setPOSLastFullSyncDateCallCount = 0
-    private(set) var lastSetSiteID: Int64?
-    private(set) var lastSetDate: Date?
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -92,15 +86,4 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         mockSearchTerms[itemType] = terms
     }
 
-    func getPOSLastFullSyncDate(for siteID: Int64) -> Date? {
-        getPOSLastFullSyncDateCallCount += 1
-        return storedDates[siteID]
-    }
-
-    func setPOSLastFullSyncDate(_ date: Date?, for siteID: Int64) {
-        setPOSLastFullSyncDateCallCount += 1
-        lastSetSiteID = siteID
-        lastSetDate = date
-        storedDates[siteID] = date
-    }
 }

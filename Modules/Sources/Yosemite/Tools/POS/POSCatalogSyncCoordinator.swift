@@ -34,6 +34,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
     private let maxIncrementalSyncAge: TimeInterval
+    private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
     private var ongoingSyncs: Set<Int64> = []
@@ -43,11 +44,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
-                maxIncrementalSyncAge: TimeInterval = 300) {
+                maxIncrementalSyncAge: TimeInterval = 300,
+                catalogSizeChecker: POSCatalogSizeCheckerProtocol) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
         self.maxIncrementalSyncAge = maxIncrementalSyncAge
+        self.catalogSizeChecker = catalogSizeChecker
     }
 
     public func performFullSync(for siteID: Int64) async throws {
@@ -72,6 +75,18 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        guard let catalogSize = try? await catalogSizeChecker.checkCatalogSize(for: siteID) else {
+            DDLogError("📋 POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
+            return false
+        }
+
+        guard catalogSize.totalCount <= 1000 else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), greater than 1000, should not sync.")
+            return false
+        }
+
+        DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), with \(catalogSize.productCount) products and \(catalogSize.variationCount) variations")
+
         if !siteExistsInDatabase(siteID: siteID) {
             DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) not found in database, sync needed")
             return true

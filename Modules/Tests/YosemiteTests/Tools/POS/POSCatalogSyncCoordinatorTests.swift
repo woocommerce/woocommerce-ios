@@ -7,6 +7,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
+    private let mockCatalogSizeChecker: MockPOSCatalogSizeChecker
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
 
@@ -14,10 +15,12 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockSyncService = MockPOSCatalogFullSyncService()
         self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.grdbManager = try GRDBManager()
+        self.mockCatalogSizeChecker = MockPOSCatalogSizeChecker()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
     }
 
@@ -246,7 +249,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When
@@ -268,7 +272,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When
@@ -304,7 +309,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When

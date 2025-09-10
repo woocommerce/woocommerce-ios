@@ -125,4 +125,15 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
         return fallbackVariationResult
     }
+
+    // MARK: - Protocol Methods - Catalog size
+    var productCount: Int = 0
+    func getProductCount(siteID: Int64) async throws -> Int {
+        return productCount
+    }
+
+    var variationCount: Int = 0
+    func getProductVariationCount(siteID: Int64) async throws -> Int {
+        return variationCount
+    }
 }

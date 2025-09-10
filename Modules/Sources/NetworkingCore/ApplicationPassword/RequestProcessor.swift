@@ -1,13 +1,8 @@
 import Alamofire
 import Foundation
 
-enum AppPasswordFailureReason {
-    case notSupported
-    case unknown
-}
-
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64)
 }
 
 /// Authenticates and retries requests
@@ -92,7 +87,7 @@ private extension RequestProcessor {
                     isAuthenticating = false
                     completeRequests(false)
                     if let currentSiteID {
-                        notifyFailure(error, for: currentSiteID)
+                        notifyFailureIfNeeded(error, for: currentSiteID)
                     }
                 }
             }
@@ -120,22 +115,24 @@ private extension RequestProcessor {
         }
     }
 
-    func notifyFailure(_ error: Error, for siteID: Int64) {
-        let reason: AppPasswordFailureReason = {
+    func notifyFailureIfNeeded(_ error: Error, for siteID: Int64) {
+        let appPasswordNotSupported: Bool = {
             switch error {
             case NetworkError.notFound:
-                return .notSupported
+                return true
             case let networkError as NetworkError:
                 if let code = networkError.errorCode,
                    AppPasswordConstants.disabledCodes.contains(code) {
-                    return .notSupported
+                    return true
                 }
-                return .unknown
+                return false
             default:
-                return .unknown
+                return false
             }
         }()
-        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
+        if appPasswordNotSupported {
+            delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID)
+        }
     }
 
     func shouldRetry(_ error: Error) -> Bool {

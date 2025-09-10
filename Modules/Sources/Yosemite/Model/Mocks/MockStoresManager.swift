@@ -253,6 +253,10 @@ public class MockStoresManager: StoresManager {
     public func shouldAuthenticateAdminPage(for site: Site) -> Bool {
         return false
     }
+
+    public var posCatalogSyncCoordinator: (any POSCatalogSyncCoordinatorProtocol)? {
+        nil
+    }
 }
 
 private extension MockStoresManager {

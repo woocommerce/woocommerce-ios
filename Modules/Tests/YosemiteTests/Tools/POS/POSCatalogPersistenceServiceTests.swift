@@ -223,6 +223,8 @@ struct POSCatalogPersistenceServiceTests {
 
     @Test func persistIncrementalCatalogData_inserts_new_products_when_database_is_empty() async throws {
         // Given
+        try await sut.replaceAllCatalogData(.init(products: [], variations: []), siteID: sampleSiteID)
+
         let newProducts = [
             POSProduct.fake().copy(siteID: sampleSiteID, productID: 6),
             POSProduct.fake().copy(siteID: sampleSiteID, productID: 2)
@@ -322,7 +324,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_existing_and_new_products() async throws {
+    @Test func persistIncrementalCatalogData_replaces_products_with_existing_and_new_products() async throws {
         // Given
         let existingProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Existing")
         try await insertProduct(existingProduct)
@@ -348,6 +350,8 @@ struct POSCatalogPersistenceServiceTests {
 
     @Test func persistIncrementalCatalogData_inserts_new_variations_when_database_is_empty() async throws {
         // Given
+        try await sut.replaceAllCatalogData(.init(products: [], variations: []), siteID: sampleSiteID)
+
         let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
         let newVariations = [
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 6),
@@ -450,7 +454,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_existing_and_new_variations() async throws {
+    @Test func persistIncrementalCatalogData_replaces_variations_with_existing_and_new_variations() async throws {
         // Given
         let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
         let existingVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, price: "10.00")

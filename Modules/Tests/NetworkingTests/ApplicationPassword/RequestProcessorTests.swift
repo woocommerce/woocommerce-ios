@@ -322,8 +322,7 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
-            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
         }
     }
 
@@ -355,8 +354,7 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
-            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
         }
     }
 
@@ -388,8 +386,7 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
-            mockDelegate.didFailToAuthenticateRequestWithReason == .notSupported
+            mockDelegate.didFailToAuthenticateRequestForSiteID == 123
         }
     }
 
@@ -419,10 +416,6 @@ final class RequestProcessorTests: XCTestCase {
         // Then
         XCTAssertFalse(shouldRetry.retryRequired)
         XCTAssertFalse(mockRequestAuthenticator.deleteApplicationPasswordCalled)
-        waitUntil {
-            mockDelegate.didFailToAuthenticateRequestForSiteID == 123 &&
-            mockDelegate.didFailToAuthenticateRequestWithReason == .unknown
-        }
     }
 
     func test_request_not_retried_when_password_deletion_fails_after_409_error_with_wpcom_authentication() throws {
@@ -531,10 +524,8 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
 
 private class MockRequestProcessorDelegate: RequestProcessorDelegate {
     private(set) var didFailToAuthenticateRequestForSiteID: Int64?
-    private(set) var didFailToAuthenticateRequestWithReason: AppPasswordFailureReason?
 
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason) {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64) {
         didFailToAuthenticateRequestForSiteID = siteID
-        didFailToAuthenticateRequestWithReason = reason
     }
 }

@@ -1,6 +1,7 @@
 // periphery:ignore:all
 import Foundation
 import Storage
+import GRDB
 
 enum POSCatalogPersistenceError: Error, Equatable {
     case siteNotFound(siteID: Int64)
@@ -48,11 +49,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site.insert(db)
 
             for product in catalog.productsToPersist {
-                try product.insert(db, onConflict: .ignore)
+                try product.insert(db, onConflict: .replace)
             }
 
             for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.productAttributesToPersist {
@@ -60,11 +61,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
 
             for variation in catalog.variationsToPersist {
-                try variation.insert(db, onConflict: .ignore)
+                try variation.insert(db, onConflict: .replace)
             }
 
             for image in catalog.variationImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.variationAttributesToPersist {
@@ -92,47 +93,44 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
         try await grdbManager.databaseConnection.write { db in
-            let site = PersistedSite(id: siteID)
-            try site.insert(db, onConflict: .ignore)
-
             for product in catalog.productsToPersist {
                 try product.insert(db, onConflict: .replace)
+
+                try PersistedProductImage
+                    .filter { $0.productID == product.id }
+                    .deleteAll(db)
+
+                try PersistedProductAttribute
+                    .filter { $0.productID == product.id }
+                    .deleteAll(db)
             }
 
-            let productIDs = catalog.products.map { $0.productID }.map { String($0) }.joined(separator: ",")
-
-            try PersistedProductImage
-                .filter(sql: "\(PersistedProductImage.Columns.productID.name) IN (\(productIDs))")
-                .deleteAll(db)
             for image in catalog.productImagesToPersist {
                 try image.insert(db, onConflict: .replace)
             }
 
-            try PersistedProductAttribute
-                .filter(sql: "\(PersistedProductAttribute.Columns.productID.name) IN (\(productIDs))")
-                .deleteAll(db)
             for var attribute in catalog.productAttributesToPersist {
-                try attribute.insert(db)
+                try attribute.insert(db, onConflict: .replace)
             }
 
             for variation in catalog.variationsToPersist {
                 try variation.insert(db, onConflict: .replace)
+
+                try PersistedProductVariationImage
+                    .filter { $0.productVariationID == variation.id }
+                    .deleteAll(db)
+
+                try PersistedProductVariationAttribute
+                    .filter { $0.productVariationID == variation.id }
+                    .deleteAll(db)
             }
 
-            let variationIDs = catalog.variations.map { $0.productVariationID }.map { String($0) }.joined(separator: ",")
-
-            try PersistedProductVariationImage
-                .filter(sql: "\(PersistedProductVariationImage.Columns.productVariationID.name) IN (\(variationIDs))")
-                .deleteAll(db)
             for image in catalog.variationImagesToPersist {
                 try image.insert(db, onConflict: .replace)
             }
 
-            try PersistedProductVariationAttribute
-                .filter(sql: "\(PersistedProductVariationAttribute.Columns.productVariationID.name) IN (\(variationIDs))")
-                .deleteAll(db)
             for var attribute in catalog.variationAttributesToPersist {
-                try attribute.insert(db)
+                try attribute.insert(db, onConflict: .replace)
             }
         }
 

@@ -24,7 +24,6 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
                 }
             }
             .frame(maxWidth: .infinity)
-            .scrollVerticallyIfNeeded()
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
@@ -37,6 +36,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.cancelSearchButton.actionHandler,
                              accessibilityLabel: viewModel.cancelSearchButton.title)
         .multilineTextAlignment(.center)

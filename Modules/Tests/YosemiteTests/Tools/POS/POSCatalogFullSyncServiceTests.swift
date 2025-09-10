@@ -169,4 +169,3 @@ struct POSCatalogFullSyncServiceTests {
         #expect(mockSyncRemote.loadProductVariationsCallCount == 5)
     }
 }
-

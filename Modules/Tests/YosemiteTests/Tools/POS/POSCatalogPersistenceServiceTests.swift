@@ -558,7 +558,7 @@ struct POSCatalogPersistenceServiceTests {
 
             let persistedSite = try PersistedSite.fetchOne(db)
             #expect(persistedSite?.id == siteID)
-            #expect(persistedSite?.posLastIncrementalSyncDate == updatedSyncDate)
+            #expect(persistedSite?.lastCatalogIncrementalSyncDate == updatedSyncDate)
         }
     }
 
@@ -577,7 +577,7 @@ struct POSCatalogPersistenceServiceTests {
         try await db.read { db in
             let persistedSite = try PersistedSite.fetchOne(db)
             #expect(persistedSite?.id == siteID)
-            #expect(persistedSite?.posLastIncrementalSyncDate == nil)
+            #expect(persistedSite?.lastCatalogIncrementalSyncDate == nil)
         }
     }
 

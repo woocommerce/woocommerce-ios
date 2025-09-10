@@ -459,7 +459,7 @@ struct POSCatalogPersistenceServiceTests {
         }
     }
 
-    @Test func persistIncrementalCatalogData_upserts_existing_and_new_variations() async throws {
+    @Test func persistIncrementalCatalogData_replaces_variations_with_existing_and_new_variations() async throws {
         // Given
         let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
         let existingVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, price: "10.00")

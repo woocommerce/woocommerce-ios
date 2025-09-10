@@ -269,7 +269,10 @@ private extension AlamofireNetwork {
             .sink { [weak self] site, unsupportedList in
                 guard let self else { return }
                 guard let site, site.applicationPasswordAvailable,
-                      unsupportedList.contains(site.siteID) == false else {
+                      errorHandler.siteFlaggedAsUnsupported(
+                        siteID: site.siteID,
+                        unsupportedList: unsupportedList
+                      ) == false else {
                     requestConverter = RequestConverter(siteAddress: nil)
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                     requestAuthenticator.delegate = nil
@@ -357,8 +360,8 @@ extension Alamofire.DataResponse {
 // MARK: - Helper extension to save internal flag for app password availability
 //
 extension UserDefaults {
-    @objc dynamic var applicationPasswordUnsupportedList: [Int64] {
-        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [Int64] ?? [] }
+    @objc dynamic var applicationPasswordUnsupportedList: [String: Date] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [String: Date] ?? [:] }
         set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
     }
 

@@ -36,11 +36,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             try site.insert(db)
 
             for product in catalog.productsToPersist {
-                try product.insert(db, onConflict: .ignore)
+                try product.insert(db, onConflict: .replace)
             }
 
             for image in catalog.productImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.productAttributesToPersist {
@@ -48,11 +48,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
             }
 
             for variation in catalog.variationsToPersist {
-                try variation.insert(db, onConflict: .ignore)
+                try variation.insert(db, onConflict: .replace)
             }
 
             for image in catalog.variationImagesToPersist {
-                try image.insert(db, onConflict: .ignore)
+                try image.insert(db, onConflict: .replace)
             }
 
             for var attribute in catalog.variationAttributesToPersist {

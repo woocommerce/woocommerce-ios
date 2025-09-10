@@ -79,9 +79,6 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
         DDLogInfo("💾 Persisting incremental catalog with \(catalog.products.count) products and \(catalog.variations.count) variations")
 
         try await grdbManager.databaseConnection.write { db in
-            let site = PersistedSite(id: siteID)
-            try site.insert(db, onConflict: .ignore)
-
             for product in catalog.productsToPersist {
                 try product.insert(db, onConflict: .replace)
             }

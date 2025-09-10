@@ -166,8 +166,10 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
+            applicationPasswordGenerationFailureObserver = nil
         } else {
             listenToApplicationPasswordGenerationFailureNotification()
+            invalidWPCOMTokenNotificationObserver = nil
         }
 
         return self

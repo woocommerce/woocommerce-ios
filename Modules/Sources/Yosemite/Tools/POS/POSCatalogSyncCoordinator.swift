@@ -62,22 +62,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let catalog = try await fullSyncService.startFullSync(for: siteID)
 
-        // Update the site with the full sync date
-        let currentSite = try await persistenceService.loadSite(siteID: siteID)
-        let updatedSite = POSSite(
-            siteID: siteID,
-            lastIncrementalSyncDate: currentSite?.lastIncrementalSyncDate,
-            lastFullSyncDate: Date()
-        )
-
-        do {
-            try await persistenceService.updateSite(updatedSite)
-        } catch POSCatalogPersistenceError.siteNotFound {
-            // Site doesn't exist yet, this could happen if sync coordinator is called before replaceAllCatalogData
-            // In this case, the full sync service should have handled the catalog persistence already
-            DDLogInfo("🟡 POSCatalogSyncCoordinator: Site \(siteID) not found during sync timestamp update - sync timestamp will be set during catalog persistence")
-        }
-
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
 
@@ -108,7 +92,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {
         do {
-            return try await persistenceService.loadSite(siteID: siteID)?.lastFullSyncDate
+            return try await grdbManager.databaseConnection.read { db in
+                return try PersistedSite.filter(key: siteID).fetchOne(db)?.lastCatalogFullSyncDate
+            }
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator: Error loading site \(siteID) for full sync date: \(error)")
             return nil

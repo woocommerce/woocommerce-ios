@@ -7,6 +7,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
+    @State private var orderListModel: PointOfSaleOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -15,8 +16,6 @@ struct PointOfSaleEntryPointView: View {
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
-    private let receiptSender: POSReceiptSending
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let settingsController: PointOfSaleSettingsControllerProtocol
@@ -48,14 +47,13 @@ struct PointOfSaleEntryPointView: View {
         self.couponsSearchController = couponsSearchController
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderController = orderController
-        self.receiptSender = receiptSender
         self.settingsController = settingsController
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
-        self.ordersController = ordersController
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self.orderListModel = PointOfSaleOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
     }
 
     var body: some View {
@@ -88,7 +86,7 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
-        .environment(PointOfSaleOrderListModel(ordersController: ordersController, receiptSender: receiptSender))
+        .environment(orderListModel)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

@@ -17,7 +17,7 @@ struct PointOfSaleOrderDetailsView: View {
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
     }
-    
+
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter.dateAndTimeFormatter
         formatter.timeZone = siteTimezone

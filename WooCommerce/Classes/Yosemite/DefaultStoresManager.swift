@@ -8,6 +8,7 @@ import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - DefaultStoresManager
 //
@@ -77,6 +78,14 @@ class DefaultStoresManager: StoresManager {
     ///
     var isAuthenticated: Bool {
         return state is AuthenticatedState
+    }
+
+    /// Authentication mode for network requests
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        guard let state = state as? AuthenticatedState else {
+            return nil
+        }
+        return state.requestAuthenticationMode
     }
 
     /// Indicates if the StoresManager is currently authenticated with site credentials only.

@@ -147,12 +147,19 @@ extension WooAnalyticsEvent {
                                  pageNumber: Int,
                                  filters: FilterOrderListViewModel.Filters?,
                                  totalCompletedOrders: Int?) -> WooAnalyticsEvent {
+        let requestAuthMode: String = {
+            guard let authState = ServiceLocator.stores.requestAuthenticationMode else {
+                return "none"
+            }
+            return authState.rawValue
+        }()
         let properties: [String: WooAnalyticsEventPropertyType?] = [
             "status": (filters?.orderStatus ?? []).map { $0.rawValue }.joined(separator: ","),
             "page_number": Int64(pageNumber),
             "total_duration": Double(totalDuration),
             "date_range": filters?.dateRange?.analyticsDescription ?? String(),
-            "total_completed_orders": totalCompletedOrders
+            "total_completed_orders": totalCompletedOrders,
+            "request_type": requestAuthMode
         ]
         return WooAnalyticsEvent(statName: .ordersListLoaded, properties: properties.compactMapValues { $0 })
     }

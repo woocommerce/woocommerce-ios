@@ -460,11 +460,11 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
 
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
-                                   method: .post,
-                                   siteID: siteID,
-                                   path: path,
-                                   parameters: parameters,
-                                   availableAsRESTRequest: true)
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
 
         try await enqueue(request)
     }

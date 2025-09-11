@@ -213,10 +213,6 @@ private struct OrderRowView: View {
     }
 }
 
-private extension OrderRowView {
-    // No additional helpers needed - using shared PointOfSaleOrderBadgeView
-}
-
 private struct GhostOrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize

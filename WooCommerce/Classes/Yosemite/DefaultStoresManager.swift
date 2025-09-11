@@ -181,8 +181,10 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
+            applicationPasswordGenerationFailureObserver = nil
         } else {
             listenToApplicationPasswordGenerationFailureNotification()
+            invalidWPCOMTokenNotificationObserver = nil
         }
 
         return self
@@ -265,6 +267,7 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
+        invalidWPCOMTokenNotificationObserver = nil
 
         if isAuthenticated {
             let resetAction = CardPresentPaymentAction.reset

@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import enum NetworkingCore.RequestAuthenticationMode
 
 /// Abstracts the Stores coordination
 ///
@@ -52,6 +53,9 @@ public protocol StoresManager {
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
     ///
     var isAuthenticatedWithoutWPCom: Bool { get }
+
+    /// Authentication mode for network requests
+    var requestAuthenticationMode: RequestAuthenticationMode? { get }
 
     /// Publishes signal that indicates if the user is currently logged in with credentials.
     ///

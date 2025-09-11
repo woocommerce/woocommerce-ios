@@ -5,7 +5,7 @@ import XCTest
 
 /// SiteAPIMapperTests Unit Tests
 ///
-class SiteAPIMapperTests: XCTestCase {
+final class SiteAPIMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
@@ -54,6 +54,18 @@ class SiteAPIMapperTests: XCTestCase {
         XCTAssertEqual(apiSettings?.namespaces, dummyBrokenNamespaces)
         XCTAssertEqual(apiSettings?.highestWooVersion, WooAPIVersion.none)
     }
+
+    /// Verifies the SiteSetting fields are parsed correctly.
+    ///
+    func test_SiteSetting_with_malformed_namespaces_fields_are_properly_parsed() {
+        let apiSettings = mapLoadSiteAPIResponseWithMalformedNamespaces()
+
+        XCTAssertNotNil(apiSettings)
+        XCTAssertEqual(apiSettings?.siteID, dummySiteID)
+        XCTAssertNotNil(apiSettings?.namespaces)
+        XCTAssertEqual(apiSettings?.namespaces.sorted(), dummyNamespaces.sorted())
+        XCTAssertEqual(apiSettings?.highestWooVersion, WooAPIVersion.mark3)
+    }
 }
 
 
@@ -87,5 +99,11 @@ private extension SiteAPIMapperTests {
     ///
     func mapLoadBrokenSiteAPIResponse() -> SiteAPI? {
         return mapSiteAPIData(from: "site-api-no-woo")
+    }
+
+    /// Returns the SiteAPIMapper output with malformed namespaces
+    ///
+    func mapLoadSiteAPIResponseWithMalformedNamespaces() -> SiteAPI? {
+        return mapSiteAPIData(from: "site-api-malformed")
     }
 }

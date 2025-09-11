@@ -668,6 +668,142 @@ final class AlamofireNetworkTests: XCTestCase {
         let networkError = result.1 as? NetworkError
         XCTAssertEqual(networkError?.errorCode, "failed")
     }
+
+    // MARK: - Authentication Mode Tests
+
+    func test_authenticationMode_is_appPasswords_for_wporg_credentials() {
+        // Given
+        let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
+
+        // When
+        let network = AlamofireNetwork(credentials: wporgCredentials, sessionManager: createSessionWithMockURLProtocol())
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should be set")
+        DispatchQueue.main.async {
+            XCTAssertEqual(network.authenticationMode, .appPasswords)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_is_appPasswords_for_applicationPassword_credentials() {
+        // Given
+        let appPasswordCredentials = Credentials.applicationPassword(username: "user", password: "pass", siteAddress: "https://example.com")
+
+        // When
+        let network = AlamofireNetwork(credentials: appPasswordCredentials, sessionManager: createSessionWithMockURLProtocol())
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should be set")
+        DispatchQueue.main.async {
+            XCTAssertEqual(network.authenticationMode, .appPasswords)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_is_jetpackTunnel_for_wpcom_credentials() {
+        // Given
+        let wpcomCredentials = createWPComCredentials()
+
+        // When
+        let network = AlamofireNetwork(credentials: wpcomCredentials, sessionManager: createSessionWithMockURLProtocol())
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should be set")
+        DispatchQueue.main.async {
+            XCTAssertEqual(network.authenticationMode, .jetpackTunnel)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_is_nil_for_no_credentials() {
+        // When
+        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should be set")
+        DispatchQueue.main.async {
+            XCTAssertNil(network.authenticationMode)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_changes_to_appPasswordsWithJetpack_when_app_password_switching_enabled() {
+        // Given
+        let siteID: Int64 = 123
+        let wpcomCredentials = createWPComCredentials()
+        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+
+        // When - Enable app password switching
+        network.updateAppPasswordSwitching(enabled: true)
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should change")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(network.authenticationMode, .appPasswordsWithJetpack)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_reverts_to_jetpackTunnel_when_app_password_switching_disabled() {
+        // Given
+        let siteID: Int64 = 456
+        let wpcomCredentials = createWPComCredentials()
+        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+
+        // When - Enable then disable app password switching
+        network.updateAppPasswordSwitching(enabled: true)
+        network.updateAppPasswordSwitching(enabled: false)
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should revert")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(network.authenticationMode, .jetpackTunnel)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_remains_jetpackTunnel_when_site_flagged_as_unsupported() {
+        // Given
+        let siteID: Int64 = 789
+        let wpcomCredentials = createWPComCredentials()
+        userDefaults.applicationPasswordUnsupportedList = [String(siteID): Date()]
+        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+
+        // When - Enable app password switching for an unsupported site
+        network.updateAppPasswordSwitching(enabled: true)
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should remain jetpackTunnel")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(network.authenticationMode, .jetpackTunnel)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_authenticationMode_does_not_change_for_non_wpcom_credentials() {
+        // Given
+        let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
+        let network = AlamofireNetwork(credentials: wporgCredentials, sessionManager: createSessionWithMockURLProtocol())
+
+        // When - Try to enable app password switching (should have no effect)
+        network.updateAppPasswordSwitching(enabled: true)
+
+        // Then
+        let expectation = XCTestExpectation(description: "Authentication mode should remain unchanged")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            XCTAssertEqual(network.authenticationMode, .appPasswords)
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1.0)
+    }
 }
 
 private extension AlamofireNetworkTests {

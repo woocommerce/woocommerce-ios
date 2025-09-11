@@ -3,6 +3,7 @@ import GRDB
 
 public protocol GRDBManagerProtocol {
     var databaseConnection: GRDBDatabaseConnection { get }
+    func reset() throws
 }
 
 public protocol GRDBDatabaseConnection: DatabaseReader & DatabaseWriter {}
@@ -26,6 +27,31 @@ public final class GRDBManager: GRDBManagerProtocol {
     init() throws {
         self.databaseConnection = try DatabaseQueue()
         try migrateIfNeeded()
+    }
+
+    /// Resets the database by deleting all data from all tables
+    /// Used when user logs out to ensure no data leaks between sessions
+    public func reset() throws {
+        try databaseConnection.write { db in
+            // Disable foreign key constraints temporarily to avoid dependency issues
+            try db.execute(sql: "PRAGMA foreign_keys = OFF")
+
+            // Get all user tables (excluding sqlite internal tables)
+            let tableNames = try String.fetchAll(db, sql: """
+                SELECT name FROM sqlite_master
+                WHERE type = 'table'
+                AND name NOT LIKE 'sqlite_%'
+                AND name NOT LIKE 'grdb_%'
+            """)
+
+            // Delete all data from each table
+            for tableName in tableNames {
+                try db.execute(sql: "DELETE FROM \(tableName)")
+            }
+
+            // Re-enable foreign key constraints
+            try db.execute(sql: "PRAGMA foreign_keys = ON")
+        }
     }
 }
 

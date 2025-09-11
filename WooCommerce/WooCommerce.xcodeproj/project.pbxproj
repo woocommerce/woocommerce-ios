@@ -970,7 +970,7 @@
 		20DB185B2CF5D9220018D3E1 /* MockPointOfSaleOrderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DB185A2CF5D9220018D3E1 /* MockPointOfSaleOrderController.swift */; };
 		20DB185D2CF5E7630018D3E1 /* PointOfSaleOrderControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20DB185C2CF5E7560018D3E1 /* PointOfSaleOrderControllerTests.swift */; };
 		20E188842AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */; };
-		20EFAEA62D35337F00D35F9C /* ItemListErrorCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */; };
+		20EFAEA62D35337F00D35F9C /* POSListInlineErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20EFAEA52D35337F00D35F9C /* POSListInlineErrorView.swift */; };
 		20F6A46C2DE5FCEF0066D8CB /* POSItemFetchAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F6A46B2DE5FCEF0066D8CB /* POSItemFetchAnalytics.swift */; };
 		20F7B12D2D12C7B900C08193 /* ItemsContainerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F7B12C2D12C7B900C08193 /* ItemsContainerState.swift */; };
 		20F7B12F2D12CBE700C08193 /* ItemsViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F7B12E2D12CBE700C08193 /* ItemsViewState.swift */; };
@@ -1612,8 +1612,8 @@
 		6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D1A5F72A36AB3704D19D /* AgeTests.swift */; };
 		685A305F2E608F2D001E667B /* POSSettingsStoreViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685A305E2E608F29001E667B /* POSSettingsStoreViewModelTests.swift */; };
 		685A30612E60908C001E667B /* POSSettingsStoreViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685A30602E60908B001E667B /* POSSettingsStoreViewModel.swift */; };
-		68600A8F2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */; };
-		68600A912C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */; };
+		68600A8F2C65BC5500252EDD /* POSListErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A8E2C65BC5500252EDD /* POSListErrorView.swift */; };
+		68600A912C65BC9C00252EDD /* POSListEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68600A902C65BC9C00252EDD /* POSListEmptyView.swift */; };
 		68625DE62D4134D70042B231 /* DynamicVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68625DE52D4134D50042B231 /* DynamicVStack.swift */; };
 		68674D312B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68674D302B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift */; };
 		686A71B62DC9E5C10006E835 /* POSItemActionHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686A71B52DC9E5C10006E835 /* POSItemActionHandlerTests.swift */; };
@@ -4194,7 +4194,7 @@
 		20DB185C2CF5E7560018D3E1 /* PointOfSaleOrderControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderControllerTests.swift; sourceTree = "<group>"; };
 		20E014E12CF63671008C823B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		20E188832AD059A50053E945 /* TapToPayEducationContactlessLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapToPayEducationContactlessLimitView.swift; sourceTree = "<group>"; };
-		20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListErrorCardView.swift; sourceTree = "<group>"; };
+		20EFAEA52D35337F00D35F9C /* POSListInlineErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSListInlineErrorView.swift; sourceTree = "<group>"; };
 		20F6A46B2DE5FCEF0066D8CB /* POSItemFetchAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemFetchAnalytics.swift; sourceTree = "<group>"; };
 		20F7B12C2D12C7B900C08193 /* ItemsContainerState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsContainerState.swift; sourceTree = "<group>"; };
 		20F7B12E2D12CBE700C08193 /* ItemsViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsViewState.swift; sourceTree = "<group>"; };
@@ -4810,8 +4810,8 @@
 		6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProviderTests.swift; sourceTree = "<group>"; };
 		685A305E2E608F29001E667B /* POSSettingsStoreViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSettingsStoreViewModelTests.swift; sourceTree = "<group>"; };
 		685A30602E60908B001E667B /* POSSettingsStoreViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSSettingsStoreViewModel.swift; sourceTree = "<group>"; };
-		68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListErrorView.swift; sourceTree = "<group>"; };
-		68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListEmptyView.swift; sourceTree = "<group>"; };
+		68600A8E2C65BC5500252EDD /* POSListErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSListErrorView.swift; sourceTree = "<group>"; };
+		68600A902C65BC9C00252EDD /* POSListEmptyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSListEmptyView.swift; sourceTree = "<group>"; };
 		68625DE52D4134D50042B231 /* DynamicVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicVStack.swift; sourceTree = "<group>"; };
 		68674D302B6C895D00E93FBD /* ReceiptEligibilityUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEligibilityUseCaseTests.swift; sourceTree = "<group>"; };
 		686A71B52DC9E5C10006E835 /* POSItemActionHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandlerTests.swift; sourceTree = "<group>"; };
@@ -6522,6 +6522,9 @@
 				2005FC9C2DC37E4D00E12021 /* POSPageHeaderBackButton.swift */,
 				0295CDBF2D6477C400865E27 /* POSNoticeView.swift */,
 				021A17202D7036AF006DF7C0 /* DynamicFrameScaler.swift */,
+				68600A902C65BC9C00252EDD /* POSListEmptyView.swift */,
+				68600A8E2C65BC5500252EDD /* POSListErrorView.swift */,
+				20EFAEA52D35337F00D35F9C /* POSListInlineErrorView.swift */,
 			);
 			path = "Reusable Views";
 			sourceTree = "<group>";
@@ -7274,11 +7277,9 @@
 				0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */,
 				2004E2E82C0DFE2B00D62521 /* PointOfSaleCardPresentPaymentAlert.swift */,
 				2023E2AD2C21D8EA00FC365A /* PointOfSaleCardPresentPaymentInLineMessage.swift */,
-				68600A8E2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift */,
 				20897C9D2D4A68C5008AD16C /* PointOfSaleUnsupportedWidthView.swift */,
 				021BCDF72D3648CD002E9F15 /* PointOfSaleItemListFullscreenErrorView.swift */,
 				20018FFF2C80AEAC002C1E4B /* PointOfSaleItemListFullscreenView.swift */,
-				68600A902C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift */,
 				68C7E5C32C69B3CD00856513 /* PointOfSaleItemListErrorLayout.swift */,
 				205E79492C204B2D001BA266 /* Reader Messages */,
 				2023E2AC2C21D8A400FC365A /* Connection Alerts */,
@@ -7558,7 +7559,6 @@
 			isa = PBXGroup;
 			children = (
 				0291497A2D2682FF00F7B3B3 /* ItemList.swift */,
-				20EFAEA52D35337F00D35F9C /* ItemListErrorCardView.swift */,
 				026826A42BF59DF60036F959 /* SimpleProductCardView.swift */,
 				204C20452D35471400E6D9CF /* PointOfSaleItemListCardConstants.swift */,
 				027ADB6D2D1BF5E3009608DB /* ParentProductCardView.swift */,
@@ -16619,7 +16619,7 @@
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */,
 				2662D90A26E16B3600E25611 /* FilterListSelector.swift in Sources */,
-				68600A8F2C65BC5500252EDD /* PointOfSaleItemListErrorView.swift in Sources */,
+				68600A8F2C65BC5500252EDD /* POSListErrorView.swift in Sources */,
 				DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */,
 				B6C78B90293BAF37008934A1 /* AnalyticsHubLastYearRangeData.swift in Sources */,
 				314265B12645A07800500598 /* CardReaderSettingsConnectedViewController.swift in Sources */,
@@ -16997,7 +16997,7 @@
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,
-				20EFAEA62D35337F00D35F9C /* ItemListErrorCardView.swift in Sources */,
+				20EFAEA62D35337F00D35F9C /* POSListInlineErrorView.swift in Sources */,
 				26132B3C2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift in Sources */,
 				6885E2CC2C32B14B004C8D70 /* TotalsViewHelper.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
@@ -17063,7 +17063,7 @@
 				B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */,
 				CC3B35DB28E5A6830036B097 /* ReviewReply.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
-				68600A912C65BC9C00252EDD /* PointOfSaleItemListEmptyView.swift in Sources */,
+				68600A912C65BC9C00252EDD /* POSListEmptyView.swift in Sources */,
 				319A626127ACAE3400BC96C3 /* InPersonPaymentsPluginChoicesView.swift in Sources */,
 				68625DE62D4134D70042B231 /* DynamicVStack.swift in Sources */,
 				0365986729AFAEFC00F297D3 /* SetUpTapToPayViewModelsOrderedList.swift in Sources */,

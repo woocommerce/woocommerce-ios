@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ItemListErrorCardView: View {
+struct POSListInlineErrorView: View {
     let errorState: PointOfSaleErrorState
     let buttonAction: () -> Void
 
@@ -91,7 +91,7 @@ struct ItemListErrorCardView: View {
 private typealias Constants = PointOfSaleItemListCardConstants
 
 #Preview {
-    ItemListErrorCardView(
+    POSListInlineErrorView(
         errorState: .errorOnLoadingVariationsNextPage(),
         buttonAction: {}
     )

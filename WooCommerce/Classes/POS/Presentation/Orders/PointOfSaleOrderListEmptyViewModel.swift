@@ -1,6 +1,6 @@
 import Foundation
 
-struct PointOfSaleOrderListEmptyViewModel: POSEmptyViewModelProtocol {
+struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
     let isSearching: Bool
 
     var title: String {

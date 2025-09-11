@@ -87,7 +87,7 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(
+            POSListEmptyView(
                 viewModel: PointOfSaleItemListEmptyViewModel(
                     itemListType: .products(search: false),
                     baseItem: node)) {
@@ -106,7 +106,7 @@ private extension ChildItemList {
                 Spacer()
             }
 
-            PointOfSaleItemListErrorView(error: error, onAction: {
+            POSListErrorView(error: error, onAction: {
                 Task {
                     await itemsController.loadItems(base: node)
                 }

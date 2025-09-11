@@ -67,15 +67,15 @@ struct PointOfSaleOrderListView: View {
             VStack(spacing: POSSpacing.small) {
                 switch ordersViewState {
                 case .empty:
-                    PointOfSaleItemListEmptyView(
-                        viewModel: PointOfSaleOrderListEmptyViewModel(isSearching: isSearching)
+                    POSListEmptyView(
+                        viewModel: POSOrderListEmptyViewModel(isSearching: isSearching)
                     ) {
                         Task { @MainActor in
                             await orderListModel.ordersController.loadOrders()
                         }
                     }
                 case .error(let errorState):
-                    PointOfSaleItemListErrorView(error: errorState) {
+                    POSListErrorView(error: errorState) {
                         Task { @MainActor in
                             await orderListModel.ordersController.loadOrders()
                         }
@@ -125,7 +125,7 @@ struct PointOfSaleOrderListView: View {
     private var headerRows: some View {
         switch ordersViewState {
         case .inlineError(_, let errorState, .refresh):
-            ItemListErrorCardView(errorState: errorState) {
+            POSListInlineErrorView(errorState: errorState) {
                 Task { @MainActor in
                     await orderListModel.ordersController.loadOrders()
                 }
@@ -149,7 +149,7 @@ struct PointOfSaleOrderListView: View {
                 GhostOrderRowView()
             }
         case .inlineError(_, let errorState, .pagination):
-            ItemListErrorCardView(errorState: errorState) {
+            POSListInlineErrorView(errorState: errorState) {
                 Task { @MainActor in
                     await orderListModel.ordersController.loadNextOrders()
                 }

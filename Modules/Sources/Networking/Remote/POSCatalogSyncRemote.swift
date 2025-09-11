@@ -195,12 +195,18 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Total number of products.
     public func getProductCount(siteID: Int64) async throws -> Int {
         let path = Path.products
+        let parameters = [
+            ParameterKey.page: String(1),
+            ParameterKey.perPage: String(1),
+            ParameterKey.fields: POSProductVariation.requestFields.first ?? ""
+        ]
 
         let request = JetpackRequest(
             wooApiVersion: .mark3,
-            method: .head,
+            method: .get,
             siteID: siteID,
             path: path,
+            parameters: parameters,
             availableAsRESTRequest: true
         )
         let responseHeaders = try await enqueueWithResponseHeaders(request)
@@ -214,12 +220,18 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     /// - Returns: Total number of variations.
     public func getProductVariationCount(siteID: Int64) async throws -> Int {
         let path = Path.variations
+        let parameters = [
+            ParameterKey.page: String(1),
+            ParameterKey.perPage: String(1),
+            ParameterKey.fields: POSProductVariation.requestFields.first ?? ""
+        ]
 
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,
-            method: .head,
+            method: .get,
             siteID: siteID,
             path: path,
+            parameters: parameters,
             availableAsRESTRequest: true
         )
         let responseHeaders = try await enqueueWithResponseHeaders(request)

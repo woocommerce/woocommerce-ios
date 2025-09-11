@@ -6,7 +6,6 @@ import Testing
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
-    private let mockPersistenceService: MockPOSCatalogPersistenceService
     private let grdbManager: GRDBManager
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
@@ -14,12 +13,10 @@ struct POSCatalogSyncCoordinatorTests {
     init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
         self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
-        self.mockPersistenceService = MockPOSCatalogPersistenceService()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            persistenceService: mockPersistenceService,
             grdbManager: grdbManager
         )
     }
@@ -248,7 +245,6 @@ struct POSCatalogSyncCoordinatorTests {
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            persistenceService: mockPersistenceService,
             grdbManager: grdbManager,
             maxIncrementalSyncAge: maxAge
         )
@@ -271,7 +267,6 @@ struct POSCatalogSyncCoordinatorTests {
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            persistenceService: mockPersistenceService,
             grdbManager: grdbManager,
             maxIncrementalSyncAge: maxAge
         )
@@ -304,11 +299,10 @@ struct POSCatalogSyncCoordinatorTests {
         let incrementalSyncDate = Date().addingTimeInterval(-(maxAge - 0.2)) // Just within max age
         let fullSyncDate = Date().addingTimeInterval(-3600)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: incrementalSyncDate)
-        
+
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            persistenceService: mockPersistenceService,
             grdbManager: grdbManager,
             maxIncrementalSyncAge: maxAge
         )

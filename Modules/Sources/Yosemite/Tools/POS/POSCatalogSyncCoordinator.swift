@@ -31,7 +31,6 @@ public enum POSCatalogSyncError: Error, Equatable {
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
-    private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let grdbManager: GRDBManagerProtocol
     private let maxIncrementalSyncAge: TimeInterval
 
@@ -46,20 +45,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 maxIncrementalSyncAge: TimeInterval = 300) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
-        self.persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
-        self.grdbManager = grdbManager
-        self.maxIncrementalSyncAge = maxIncrementalSyncAge
-    }
-
-    //periphery:ignore - used for tests to inject persistence service
-    init(fullSyncService: POSCatalogFullSyncServiceProtocol,
-         incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
-         persistenceService: POSCatalogPersistenceServiceProtocol,
-         grdbManager: GRDBManagerProtocol,
-         maxIncrementalSyncAge: TimeInterval = 300) {
-        self.fullSyncService = fullSyncService
-        self.incrementalSyncService = incrementalSyncService
-        self.persistenceService = persistenceService
         self.grdbManager = grdbManager
         self.maxIncrementalSyncAge = maxIncrementalSyncAge
     }

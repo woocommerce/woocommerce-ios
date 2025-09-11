@@ -147,9 +147,11 @@ class AuthenticatedState: StoresManagerState {
 
         // Initialize POS catalog sync coordinator if feature flag is enabled
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
-           let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager) {
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager),
+           let incrementalSyncService = POSCatalogIncrementalSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager) {
             posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
                 fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
                 grdbManager: ServiceLocator.grdbManager
             )
         } else {

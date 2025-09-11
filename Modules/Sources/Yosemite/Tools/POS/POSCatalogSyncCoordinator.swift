@@ -15,6 +15,14 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - maxAge: Maximum age before a sync is considered stale
     /// - Returns: True if a sync should be performed
     func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool
+
+    /// Performs an incremental sync if applicable based on sync conditions
+    /// - Parameters:
+    ///   - siteID: The site ID to sync catalog for
+    ///   - forceSync: Whether to bypass age checks and always sync
+    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
+    //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
+    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws
 }
 
 public enum POSCatalogSyncError: Error, Equatable {
@@ -23,26 +31,23 @@ public enum POSCatalogSyncError: Error, Equatable {
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
-    private let persistenceService: POSCatalogPersistenceServiceProtocol
+    private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
+    private let maxIncrementalSyncAge: TimeInterval
 
-    /// Tracks ongoing syncs by site ID to prevent duplicates
+    /// Tracks ongoing full syncs by site ID to prevent duplicates
     private var ongoingSyncs: Set<Int64> = []
+    /// Tracks ongoing incremental syncs by site ID to prevent duplicates
+    private var ongoingIncrementalSyncs: Set<Int64> = []
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
-                grdbManager: GRDBManagerProtocol) {
+                incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
+                grdbManager: GRDBManagerProtocol,
+                maxIncrementalSyncAge: TimeInterval = 300) {
         self.fullSyncService = fullSyncService
-        self.persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
-    }
-
-    //periphery:ignore - used for tests to inject persistence service
-    init(fullSyncService: POSCatalogFullSyncServiceProtocol,
-         persistenceService: POSCatalogPersistenceServiceProtocol,
-         grdbManager: GRDBManagerProtocol) {
-        self.fullSyncService = fullSyncService
-        self.persistenceService = persistenceService
-        self.grdbManager = grdbManager
+        self.maxIncrementalSyncAge = maxIncrementalSyncAge
     }
 
     public func performFullSync(for siteID: Int64) async throws {
@@ -61,7 +66,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
 
-        let catalog = try await fullSyncService.startFullSync(for: siteID)
+        _ = try await fullSyncService.startFullSync(for: siteID)
 
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
@@ -89,6 +94,40 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return shouldSync
     }
 
+    public func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
+        if ongoingIncrementalSyncs.contains(siteID) {
+            DDLogInfo("⚠️ POSCatalogSyncCoordinator: Incremental sync already in progress for site \(siteID)")
+            throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
+        }
+
+        guard let lastFullSyncDate = await lastFullSyncDate(for: siteID) else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
+            return
+        }
+
+        if !forceSync, let lastIncrementalSyncDate = await lastIncrementalSyncDate(for: siteID) {
+            let age = Date().timeIntervalSince(lastIncrementalSyncDate)
+
+            if age <= maxIncrementalSyncAge {
+                return DDLogInfo("📋 POSCatalogSyncCoordinator: Last incremental sync for site \(siteID) was \(Int(age))s ago, sync not needed")
+            }
+        }
+
+        ongoingIncrementalSyncs.insert(siteID)
+
+        defer {
+            ongoingIncrementalSyncs.remove(siteID)
+        }
+
+        DDLogInfo("🔄 POSCatalogSyncCoordinator starting incremental sync for site \(siteID)")
+
+        try await incrementalSyncService.startIncrementalSync(for: siteID,
+                                                              lastFullSyncDate: lastFullSyncDate,
+                                                              lastIncrementalSyncDate: lastIncrementalSyncDate(for: siteID))
+
+        DDLogInfo("✅ POSCatalogSyncCoordinator completed incremental sync for site \(siteID)")
+    }
+
     // MARK: - Private
 
     private func lastFullSyncDate(for siteID: Int64) async -> Date? {
@@ -98,6 +137,17 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator: Error loading site \(siteID) for full sync date: \(error)")
+            return nil
+        }
+    }
+
+    private func lastIncrementalSyncDate(for siteID: Int64) async -> Date? {
+        do {
+            return try await grdbManager.databaseConnection.read { db in
+                return try PersistedSite.filter(key: siteID).fetchOne(db)?.lastCatalogIncrementalSyncDate
+            }
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Error loading site \(siteID) for incremental sync date: \(error)")
             return nil
         }
     }

@@ -5,18 +5,18 @@ import Testing
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
-    private let mockPersistenceService: MockPOSCatalogPersistenceService
+    private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
 
     init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
-        self.mockPersistenceService = MockPOSCatalogPersistenceService()
+        self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
-            persistenceService: mockPersistenceService,
+            incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager
         )
     }
@@ -130,6 +130,31 @@ struct POSCatalogSyncCoordinatorTests {
         #expect(shouldSync == true)
     }
 
+    // MARK: - Database Check Tests
+
+    @Test func shouldPerformFullSync_returns_true_when_site_not_in_database() async {
+        // Given - site does not exist in database, but has recent sync date
+        // Note: not creating site in database so it won't exist
+
+        // When - max age is 1 hour (normally wouldn't sync)
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should sync because site doesn't exist in database
+        #expect(shouldSync == true)
+    }
+
+    @Test func shouldPerformFullSync_respects_time_when_site_exists_in_database() async throws {
+        // Given - site exists in database with recent sync date
+        let recentSyncDate = Date().addingTimeInterval(-30 * 60) // 30 minutes ago
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: recentSyncDate)
+
+        // When - max age is 1 hour
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should not sync because site exists and time hasn't passed
+        #expect(shouldSync == false)
+    }
+
     // MARK: - Sync Tracking Tests
 
     @Test func performFullSync_throws_error_when_sync_already_in_progress() async throws {
@@ -196,11 +221,190 @@ struct POSCatalogSyncCoordinatorTests {
         try await sut.performFullSync(for: sampleSiteID)
     }
 
+    // MARK: - Incremental Sync Tests
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_skips_sync_when_no_full_sync_performed(forceSync: Bool) async throws {
+        // Given - site exists but has no full sync date
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_skips_sync_when_incremental_sync_is_within_max_age() async throws {
+        // Given
+        let maxAge: TimeInterval = 2
+        let incrementalSyncDate = Date().addingTimeInterval(-(maxAge - 0.2)) // Just within max age
+        let fullSyncDate = Date().addingTimeInterval(-7200)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: incrementalSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            maxIncrementalSyncAge: maxAge
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_performs_sync_when_incremental_sync_is_stale(forceSync: Bool) async throws {
+        // Given
+        let maxAge: TimeInterval = 2
+        let incrementalSyncDate = Date().addingTimeInterval(-(maxAge + 0.2)) // Just above max age
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: incrementalSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            maxIncrementalSyncAge: maxAge
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.lastSyncSiteID == sampleSiteID)
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_performs_sync_when_no_incremental_sync_date(forceSync: Bool) async throws {
+        // Given
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: nil)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.lastSyncSiteID == sampleSiteID)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_forceSync_bypasses_age_check() async throws {
+        // Given
+        let maxAge: TimeInterval = 2
+        let incrementalSyncDate = Date().addingTimeInterval(-(maxAge - 0.2)) // Just within max age
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: incrementalSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            maxIncrementalSyncAge: maxAge
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: true)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+        #expect(mockIncrementalSyncService.lastSyncSiteID == sampleSiteID)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_throws_error_when_sync_already_in_progress() async throws {
+        // Given
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+        mockIncrementalSyncService.blockNextSync()
+
+        // Start first incremental sync (it will block)
+        let firstSyncTask = Task {
+            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+        }
+
+        // Give first sync a moment to start and get blocked
+        try await Task.sleep(nanoseconds: 10_000_000) // 10ms
+
+        // When - try to start second incremental sync while first is blocked
+        do {
+            _ = try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+            #expect(Bool(false), "Should have thrown syncAlreadyInProgress error")
+        } catch let error as POSCatalogSyncError {
+            // Then
+            #expect(error == POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID))
+        }
+
+        // Cleanup
+        mockIncrementalSyncService.resumeBlockedSync()
+        _ = try await firstSyncTask.value
+    }
+
+    @Test func performIncrementalSyncIfApplicable_allows_concurrent_syncs_for_different_sites() async throws {
+        // Given
+        let siteA: Int64 = 123
+        let siteB: Int64 = 456
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+
+        try createSiteInDatabase(siteID: siteA, lastFullSyncDate: fullSyncDate)
+        try createSiteInDatabase(siteID: siteB, lastFullSyncDate: fullSyncDate)
+
+        // When
+        async let syncA: () = sut.performIncrementalSyncIfApplicable(for: siteA, forceSync: false)
+        async let syncB: () = sut.performIncrementalSyncIfApplicable(for: siteB, forceSync: false)
+
+        // Then
+        try await syncA
+        try await syncB
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_propagates_errors() async throws {
+        // Given
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        let expectedError = NSError(domain: "incremental_sync", code: 500, userInfo: [NSLocalizedDescriptionKey: "Incremental sync failed"])
+        mockIncrementalSyncService.startIncrementalSyncResult = .failure(expectedError)
+
+        // When/Then
+        await #expect(throws: expectedError) {
+            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+        }
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_incremental_tracking_cleaned_up_on_error(forceSync: Bool) async throws {
+        // Given
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        let expectedError = NSError(domain: "test", code: 1, userInfo: nil)
+        mockIncrementalSyncService.startIncrementalSyncResult = .failure(expectedError)
+
+        // When - incremental sync fails
+        do {
+            _ = try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+            #expect(Bool(false), "Should have thrown error")
+        } catch {
+            // Expected error
+        }
+
+        // Then - subsequent incremental sync should be allowed
+        mockIncrementalSyncService.startIncrementalSyncResult = .success(())
+
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
+    }
+
     // MARK: - Helper Methods
 
-    private func createSiteInDatabase(siteID: Int64, lastFullSyncDate: Date? = nil) throws {
+    private func createSiteInDatabase(siteID: Int64, lastFullSyncDate: Date? = nil, lastIncrementalSyncDate: Date? = nil) throws {
         try grdbManager.databaseConnection.write { db in
-            let site = PersistedSite(id: siteID, lastCatalogFullSyncDate: lastFullSyncDate)
+            let site = PersistedSite(id: siteID, lastCatalogIncrementalSyncDate: lastIncrementalSyncDate, lastCatalogFullSyncDate: lastFullSyncDate)
             try site.insert(db)
         }
     }

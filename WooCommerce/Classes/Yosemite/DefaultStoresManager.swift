@@ -269,11 +269,15 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
-        do {
-            try ServiceLocator.grdbManager.reset()
-        } catch {
-            DDLogError("Could not reset GRDB database: \(error)")
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+            do {
+                try ServiceLocator.grdbManager.reset()
+            } catch {
+                DDLogError("Could not reset GRDB database: \(error)")
+            }
         }
+
         ServiceLocator.productImageUploader.reset()
 
         updateAndReloadWidgetInformation(with: nil)

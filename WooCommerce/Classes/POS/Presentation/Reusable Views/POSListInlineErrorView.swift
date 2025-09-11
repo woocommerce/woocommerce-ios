@@ -71,13 +71,6 @@ struct POSListInlineErrorView: View {
     }
 
     @ViewBuilder
-    private var errorImage: some View {
-        POSErrorExclamationMark(size: .small)
-            .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
-                   height: Constants.productCardSize * scale)
-    }
-
-    @ViewBuilder
     private var button: some View {
         Button {
             buttonAction()

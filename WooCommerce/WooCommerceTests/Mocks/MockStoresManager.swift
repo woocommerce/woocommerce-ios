@@ -50,6 +50,10 @@ final class MockStoresManager: DefaultStoresManager {
     func reset() {
         receivedActions = []
     }
+
+    override func deauthenticate() -> any StoresManager {
+        self
+    }
 }
 
 // MARK: - Mocking

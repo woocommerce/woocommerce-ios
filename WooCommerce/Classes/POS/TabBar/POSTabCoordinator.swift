@@ -97,6 +97,7 @@ private extension POSTabCoordinator {
                                                              credentials: credentials,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
+            let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
@@ -149,6 +150,8 @@ private extension POSTabCoordinator {
                     barcodeScanService: barcodeScanService,
                     posEligibilityChecker: eligibilityChecker
                 )
+                .environment(\.siteTimezone, siteTimezone)
+
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)

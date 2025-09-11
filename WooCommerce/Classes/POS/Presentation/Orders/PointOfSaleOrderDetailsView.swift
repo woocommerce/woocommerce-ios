@@ -10,11 +10,18 @@ struct PointOfSaleOrderDetailsView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.siteTimezone) private var siteTimezone
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
+    }
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter.dateAndTimeFormatter
+        formatter.timeZone = siteTimezone
+        return formatter
     }
 
     var body: some View {
@@ -105,7 +112,7 @@ private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
     func headerBottomContent(for order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+            Text(dateFormatter.string(from: order.dateCreated))
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)

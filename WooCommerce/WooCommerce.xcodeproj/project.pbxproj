@@ -50,6 +50,7 @@
 		015456CE2DB0341D0071C3C4 /* POSPageHeaderActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015456CD2DB033FF0071C3C4 /* POSPageHeaderActionButton.swift */; };
 		0157A9962C4FEA7200866FFD /* PointOfSaleLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */; };
 		015D99AA2C58C780001D7186 /* PointOfSaleCardPresentPaymentLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 015D99A92C58C780001D7186 /* PointOfSaleCardPresentPaymentLayout.swift */; };
+		0161EFE22E734B2B006F27B4 /* POSEnvironmentKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0161EFE12E734B2B006F27B4 /* POSEnvironmentKeys.swift */; };
 		01620C4E2C5394B200D3EA2F /* POSProgressViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */; };
 		01664F9E2C50E685007CB5DD /* POSFontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01664F9D2C50E685007CB5DD /* POSFontStyle.swift */; };
 		016910982E1D019500B731DA /* GameControllerBarcodeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016910972E1D019500B731DA /* GameControllerBarcodeObserver.swift */; };
@@ -3270,6 +3271,7 @@
 		015456CD2DB033FF0071C3C4 /* POSPageHeaderActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSPageHeaderActionButton.swift; sourceTree = "<group>"; };
 		0157A9952C4FEA7200866FFD /* PointOfSaleLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleLoadingView.swift; sourceTree = "<group>"; };
 		015D99A92C58C780001D7186 /* PointOfSaleCardPresentPaymentLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentLayout.swift; sourceTree = "<group>"; };
+		0161EFE12E734B2B006F27B4 /* POSEnvironmentKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSEnvironmentKeys.swift; sourceTree = "<group>"; };
 		01620C4D2C5394B200D3EA2F /* POSProgressViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSProgressViewStyle.swift; sourceTree = "<group>"; };
 		01664F9D2C50E685007CB5DD /* POSFontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFontStyle.swift; sourceTree = "<group>"; };
 		016910972E1D019500B731DA /* GameControllerBarcodeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerBarcodeObserver.swift; sourceTree = "<group>"; };
@@ -7209,6 +7211,7 @@
 		026826972BF59D9E0036F959 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				0161EFE12E734B2B006F27B4 /* POSEnvironmentKeys.swift */,
 				019460DD2E700DF800FCB9AB /* POSReceiptSender.swift */,
 				01806E122E2F7F400033363C /* POSBrightnessControl.swift */,
 				68E33B2D2E66AAAE00CBE921 /* POSConstants.swift */,
@@ -15791,6 +15794,7 @@
 				E1E636BB26FB467A00C9D0D7 /* Comparable+Woo.swift in Sources */,
 				CE315DC42CC91A4A00A06748 /* WooShippingServiceViewModel.swift in Sources */,
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
+				0161EFE22E734B2B006F27B4 /* POSEnvironmentKeys.swift in Sources */,
 				0139BB522D91B45800C78FDE /* CouponRowView.swift in Sources */,
 				DEB3879E2C34FE620025256E /* GoogleAdsCampaignCoordinator.swift in Sources */,
 				EE45E2BA2A409BA40085F227 /* TooltipPresenter.swift in Sources */,

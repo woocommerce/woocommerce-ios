@@ -127,13 +127,48 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     }
 
     // MARK: - Protocol Methods - Catalog size
-    var productCount: Int = 0
+
+    // MARK: - getProductCount tracking
+    private(set) var getProductCountCallCount = 0
+    private(set) var lastProductCountSiteID: Int64?
+    var getProductCountResult: Result<Int, Error> = .success(0)
+    var productCountDelay: UInt64 = 0
+
+    // MARK: - getProductVariationCount tracking
+    private(set) var getProductVariationCountCallCount = 0
+    private(set) var lastVariationCountSiteID: Int64?
+    var getProductVariationCountResult: Result<Int, Error> = .success(0)
+    var variationCountDelay: UInt64 = 0
+
     func getProductCount(siteID: Int64) async throws -> Int {
-        return productCount
+        getProductCountCallCount += 1
+        lastProductCountSiteID = siteID
+
+        if productCountDelay > 0 {
+            try await Task.sleep(nanoseconds: productCountDelay)
+        }
+
+        switch getProductCountResult {
+        case .success(let count):
+            return count
+        case .failure(let error):
+            throw error
+        }
     }
 
-    var variationCount: Int = 0
     func getProductVariationCount(siteID: Int64) async throws -> Int {
-        return variationCount
+        getProductVariationCountCallCount += 1
+        lastVariationCountSiteID = siteID
+
+        if variationCountDelay > 0 {
+            try await Task.sleep(nanoseconds: variationCountDelay)
+        }
+
+        switch getProductVariationCountResult {
+        case .success(let count):
+            return count
+        case .failure(let error):
+            throw error
+        }
     }
 }

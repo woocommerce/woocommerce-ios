@@ -115,6 +115,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
         }
 
+        guard let catalogSize = try? await catalogSizeChecker.checkCatalogSize(for: siteID) else {
+            DDLogError("📋 POSCatalogSyncCoordinator: Could not get catalog size for site \(siteID)")
+            return
+        }
+
+        guard catalogSize.totalCount <= 1000 else {
+            DDLogInfo("📋 POSCatalogSyncCoordinator: Site \(siteID) has catalog size \(catalogSize.totalCount), greater than 1000, should not perform incremental sync.")
+            return
+        }
+
         guard let lastFullSyncDate = await lastFullSyncDate(for: siteID) else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: No full sync performed yet for site \(siteID), skipping incremental sync")
             return

@@ -1,5 +1,4 @@
 import Foundation
-import Observation
 import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol

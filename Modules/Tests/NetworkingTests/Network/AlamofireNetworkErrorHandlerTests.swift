@@ -6,16 +6,19 @@ import Alamofire
 final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     private var userDefaults: UserDefaults!
     private var errorHandler: AlamofireNetworkErrorHandler!
+    private var notificationCenter: NotificationCenter!
 
     override func setUp() {
         super.setUp()
         userDefaults = UserDefaults(suiteName: UUID().uuidString)
-        errorHandler = AlamofireNetworkErrorHandler(credentials: createWPComCredentials(), userDefaults: userDefaults)
+        notificationCenter = NotificationCenter()
+        errorHandler = AlamofireNetworkErrorHandler(credentials: createWPComCredentials(), userDefaults: userDefaults, notificationCenter: notificationCenter)
     }
 
     override func tearDown() {
         userDefaults = nil
         errorHandler = nil
+        notificationCenter = nil
         super.tearDown()
     }
 
@@ -38,7 +41,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
     func test_shouldRetryJetpackRequest_returns_false_for_nil_credentials() {
         // Given
-        let errorHandlerWithNilCredentials = AlamofireNetworkErrorHandler(credentials: nil, userDefaults: userDefaults)
+        let errorHandlerWithNilCredentials = AlamofireNetworkErrorHandler(credentials: nil, userDefaults: userDefaults, notificationCenter: notificationCenter)
         let jetpackRequest = createJetpackRequest(siteID: 123)
         let restRequest = createRESTRequest()
         let error = createNetworkError()
@@ -57,7 +60,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_shouldRetryJetpackRequest_returns_false_for_non_wpcom_credentials() {
         // Given
         let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
-        let errorHandlerWithWporg = AlamofireNetworkErrorHandler(credentials: wporgCredentials, userDefaults: userDefaults)
+        let errorHandlerWithWporg = AlamofireNetworkErrorHandler(credentials: wporgCredentials, userDefaults: userDefaults, notificationCenter: notificationCenter)
         let jetpackRequest = createJetpackRequest(siteID: 123)
         let restRequest = createRESTRequest()
         let error = createNetworkError()
@@ -140,6 +143,66 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(newSiteID)))
+    }
+
+    // MARK: - Notification Tests
+
+    func test_prepareAppPasswordSupport_posts_eligible_notification() {
+        // Given
+        let siteID: Int64 = 123
+        var receivedNotifications: [Notification] = []
+
+        let observer = notificationCenter.addObserver(
+            forName: .JetpackSiteEligibleForAppPasswordSupport,
+            object: nil,
+            queue: nil
+        ) { notification in
+            receivedNotifications.append(notification)
+        }
+
+        // When
+        errorHandler.prepareAppPasswordSupport(for: siteID)
+
+        // Then
+        XCTAssertEqual(receivedNotifications.count, 1)
+        XCTAssertEqual(receivedNotifications.first?.name, .JetpackSiteEligibleForAppPasswordSupport)
+        XCTAssertNil(receivedNotifications.first?.object)
+
+        notificationCenter.removeObserver(observer)
+    }
+
+    func test_flagSiteAsUnsupported_posts_flagged_notification_with_properties() {
+        // Given
+        let siteID: Int64 = 456
+        let error = NetworkError.unacceptableStatusCode(statusCode: 401, response: Data())
+        var receivedNotifications: [Notification] = []
+
+        let observer = notificationCenter.addObserver(
+            forName: .JetpackSiteFlaggedUnsupportedForApplicationPassword,
+            object: nil,
+            queue: nil
+        ) { notification in
+            receivedNotifications.append(notification)
+        }
+
+        // When
+        errorHandler.flagSiteAsUnsupported(for: siteID, flow: .apiRequest, cause: .majorError, error: error)
+
+        // Then
+        XCTAssertEqual(receivedNotifications.count, 1)
+        XCTAssertEqual(receivedNotifications.first?.name, .JetpackSiteFlaggedUnsupportedForApplicationPassword)
+
+        guard let tracksProperties = receivedNotifications.first?.object as? [String: Any] else {
+            XCTFail("Expected tracks properties dictionary")
+            return
+        }
+
+        XCTAssertEqual(tracksProperties["flow"] as? String, "api_request")
+        XCTAssertEqual(tracksProperties["cause"] as? String, "major_error")
+        XCTAssertEqual(tracksProperties["http_status_code"] as? Int, 401)
+        XCTAssertNotNil(tracksProperties["api_error_code"])
+
+        notificationCenter.removeObserver(observer)
     }
 
     // MARK: - Thread Safety Tests

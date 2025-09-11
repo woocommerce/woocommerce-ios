@@ -322,8 +322,10 @@ struct GRDBManagerTests {
                 return (
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
                     variations: try TestProductVariation.filter(Column("siteID") == testSiteId).fetchCount(db),
-                    productAttributes: try TestProductAttribute.filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
-                    variationAttributes: try TestProductVariationAttribute.filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
+                    productAttributes: try TestProductAttribute
+                        .filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute
+                        .filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
                 )
             }
 
@@ -343,8 +345,10 @@ struct GRDBManagerTests {
                     sites: try TestSite.filter(Column("id") == testSiteId).fetchCount(db),
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
                     variations: try TestProductVariation.filter(Column("siteID") == testSiteId).fetchCount(db),
-                    productAttributes: try TestProductAttribute.filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
-                    variationAttributes: try TestProductVariationAttribute.filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
+                    productAttributes: try TestProductAttribute
+                        .filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute
+                        .filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
                 )
             }
 

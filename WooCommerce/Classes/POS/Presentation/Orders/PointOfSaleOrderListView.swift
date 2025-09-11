@@ -6,6 +6,7 @@ struct PointOfSaleOrderListView: View {
     let onClose: () -> Void
 
     @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     @State private var isSearching: Bool = false
@@ -74,12 +75,14 @@ struct PointOfSaleOrderListView: View {
                             await orderListModel.ordersController.loadOrders()
                         }
                     }
+                    .padding(.bottom, keyboardObserver.keyboardHeight)
                 case .error(let errorState):
                     POSListErrorView(error: errorState) {
                         Task { @MainActor in
                             await orderListModel.ordersController.loadOrders()
                         }
                     }
+                    .padding(.bottom, keyboardObserver.keyboardHeight)
                 default:
                     InfiniteScrollView(
                         triggerDeterminer: infiniteScrollTriggerDeterminer,
@@ -105,8 +108,10 @@ struct PointOfSaleOrderListView: View {
                                 footerRows
                             }
                             .padding(.horizontal)
+                            .padding(.bottom, POSPadding.medium)
                         }
                     )
+                    .scrollDismissesKeyboard(.immediately)
                 }
             }
         }

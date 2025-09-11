@@ -5,6 +5,7 @@ import Testing
 
 struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
+    private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let mockPersistenceService: MockPOSCatalogPersistenceService
     private let grdbManager: GRDBManager
     private let sut: POSCatalogSyncCoordinator
@@ -12,10 +13,12 @@ struct POSCatalogSyncCoordinatorTests {
 
     init() throws {
         self.mockSyncService = MockPOSCatalogFullSyncService()
+        self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.mockPersistenceService = MockPOSCatalogPersistenceService()
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
             persistenceService: mockPersistenceService,
             grdbManager: grdbManager
         )

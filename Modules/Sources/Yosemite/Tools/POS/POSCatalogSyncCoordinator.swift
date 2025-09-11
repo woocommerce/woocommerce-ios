@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 import Storage
 import GRDB

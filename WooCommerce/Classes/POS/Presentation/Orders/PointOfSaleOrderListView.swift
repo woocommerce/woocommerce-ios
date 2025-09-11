@@ -33,7 +33,7 @@ struct PointOfSaleOrderListView: View {
                 )],
                 backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
                 trailingContent: {
-                    if !isSearching {
+                    if !isSearching && !ordersViewState.orders.isEmpty {
                         POSPageHeaderActionButton(
                             systemName: "magnifyingglass",
                             backgroundColor: .posSurface,

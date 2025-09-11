@@ -8,12 +8,12 @@ import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 
 struct POSReceiptControllerTests {
-    let mockOrderService = MockPOSOrderService()
-    let mockReceiptService = MockReceiptService()
-    let mockAnalyticsProvider = MockAnalyticsProvider()
-    let mockFeatureFlagService = MockFeatureFlagService()
-    let mockPluginsService = MockPluginsService()
-    let sut: POSReceiptController
+    private let mockOrderService = MockPOSOrderService()
+    private let mockReceiptService = MockReceiptService()
+    private let mockAnalyticsProvider = MockAnalyticsProvider()
+    private let mockFeatureFlagService = MockFeatureFlagService()
+    private let mockPluginsService = MockPluginsService()
+    private let sut: POSReceiptController
 
     init() {
         self.sut = POSReceiptController(siteID: 123,

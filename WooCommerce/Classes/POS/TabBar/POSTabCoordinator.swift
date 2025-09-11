@@ -103,7 +103,7 @@ private extension POSTabCoordinator {
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials),
                #available(iOS 17.0, *) {
-                let receiptController = POSReceiptController(siteID: siteID,
+                let receiptSender = POSReceiptSender(siteID: siteID,
                                                              orderService: orderService,
                                                              receiptService: receiptService)
                 let posView = PointOfSaleEntryPointView(
@@ -134,8 +134,8 @@ private extension POSTabCoordinator {
                     },
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                receiptController: receiptController),
-                    receiptController: receiptController,
+                                                                receiptSender: receiptSender),
+                    receiptSender: receiptSender,
                     settingsController: PointOfSaleSettingsController(siteID: siteID,
                                                                       settingsService: settingsService,
                                                                       cardPresentPaymentService: cardPresentPaymentService,

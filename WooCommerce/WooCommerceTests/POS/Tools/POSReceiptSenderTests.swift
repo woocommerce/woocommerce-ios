@@ -7,16 +7,16 @@ import struct Yosemite.SystemPlugin
 import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 
-struct POSReceiptControllerTests {
+struct POSReceiptSenderTests {
     private let mockOrderService = MockPOSOrderService()
     private let mockReceiptService = MockReceiptService()
     private let mockAnalyticsProvider = MockAnalyticsProvider()
     private let mockFeatureFlagService = MockFeatureFlagService()
     private let mockPluginsService = MockPluginsService()
-    private let sut: POSReceiptController
+    private let sut: POSReceiptSender
 
     init() {
-        self.sut = POSReceiptController(siteID: 123,
+        self.sut = POSReceiptSender(siteID: 123,
                                        orderService: mockOrderService,
                                        receiptService: mockReceiptService,
                                        analytics: MockAnalytics(),
@@ -75,7 +75,7 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(siteID: 123,
+            let sut = POSReceiptSender(siteID: 123,
                                            orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
@@ -106,7 +106,7 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(siteID: 123,
+            let sut = POSReceiptSender(siteID: 123,
                                            orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
@@ -133,7 +133,7 @@ struct POSReceiptControllerTests {
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
-            let sut = POSReceiptController(siteID: 123,
+            let sut = POSReceiptSender(siteID: 123,
                                            orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),
@@ -161,7 +161,7 @@ struct POSReceiptControllerTests {
             let mockPluginsService = MockPluginsService()
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
-            let sut = POSReceiptController(siteID: 123,
+            let sut = POSReceiptSender(siteID: 123,
                                            orderService: mockOrderService,
                                            receiptService: mockReceiptService,
                                            analytics: MockAnalytics(),

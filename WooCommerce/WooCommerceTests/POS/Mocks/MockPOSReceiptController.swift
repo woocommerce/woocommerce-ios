@@ -2,7 +2,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.Order
 
-final class MockPOSReceiptController: POSReceiptControllerProtocol {
+final class MockPOSReceiptSender: POSReceiptSending {
     var sendReceiptErrorToThrow: Error?
     var sendReceiptWasCalled: Bool = false
     var sendReceiptCalledWithOrderID: Int64?

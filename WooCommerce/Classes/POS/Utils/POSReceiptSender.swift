@@ -9,11 +9,11 @@ import enum Yosemite.Plugin
 import protocol WooFoundation.Analytics
 import class Yosemite.PluginsService
 
-protocol POSReceiptControllerProtocol {
+protocol POSReceiptSending {
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws
 }
 
-final class POSReceiptController: POSReceiptControllerProtocol {
+final class POSReceiptSender: POSReceiptSending {
     init(siteID: Int64,
          orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
@@ -70,7 +70,7 @@ final class POSReceiptController: POSReceiptControllerProtocol {
     }
 }
 
-private extension POSReceiptController {
+private extension POSReceiptSender {
     @MainActor
     func isPluginSupported(_ plugin: Plugin, minimumVersion: String, siteID: Int64) -> Bool {
         // Plugin must be installed and active
@@ -87,7 +87,7 @@ private extension POSReceiptController {
     }
 }
 
-private extension POSReceiptController {
+private extension POSReceiptSender {
     enum POSReceiptEligibilityConstants {
         static let wcPluginMinimumVersion = "10.0.0"
     }

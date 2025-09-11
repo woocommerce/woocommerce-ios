@@ -36,13 +36,13 @@ protocol PointOfSaleOrderControllerProtocol {
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
-         receiptController: POSReceiptControllerProtocol,
+         receiptSender: POSReceiptSending,
          stores: StoresManager = ServiceLocator.stores,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
-        self.receiptController = receiptController
+        self.receiptSender = receiptSender
         self.stores = stores
         self.storeCurrency = currencySettings.currencyCode
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
@@ -51,7 +51,7 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     private let orderService: POSOrderServiceProtocol
-    private let receiptController: POSReceiptControllerProtocol
+    private let receiptSender: POSReceiptSending
 
     private let currencyFormatter: CurrencyFormatter
     private let celebration: PaymentCaptureCelebrationProtocol
@@ -103,7 +103,7 @@ protocol PointOfSaleOrderControllerProtocol {
             throw PointOfSaleOrderControllerError.noOrder
         }
 
-        try await receiptController.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
+        try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
     }
 
     func clearOrder() {

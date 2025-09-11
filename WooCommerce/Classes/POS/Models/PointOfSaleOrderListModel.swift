@@ -4,15 +4,15 @@ import struct Yosemite.POSOrder
 
 @Observable final class PointOfSaleOrderListModel {
     let ordersController: PointOfSaleSearchingOrderListControllerProtocol
-    let receiptController: POSReceiptControllerProtocol
+    let receiptSender: POSReceiptSending
 
     init(ordersController: PointOfSaleSearchingOrderListControllerProtocol,
-         receiptController: POSReceiptControllerProtocol) {
+         receiptSender: POSReceiptSending) {
         self.ordersController = ordersController
-        self.receiptController = receiptController
+        self.receiptSender = receiptSender
     }
 
     func sendReceipt(order: POSOrder, email: String) async throws {
-        try await receiptController.sendReceipt(orderID: order.id, recipientEmail: email)
+        try await receiptSender.sendReceipt(orderID: order.id, recipientEmail: email)
     }
 }

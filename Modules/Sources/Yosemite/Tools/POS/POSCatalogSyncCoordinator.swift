@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import Foundation
 import Storage
 import GRDB
@@ -22,17 +23,25 @@ public enum POSCatalogSyncError: Error, Equatable {
 
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
-    private let settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol
+    private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let grdbManager: GRDBManagerProtocol
 
     /// Tracks ongoing syncs by site ID to prevent duplicates
     private var ongoingSyncs: Set<Int64> = []
 
     public init(fullSyncService: POSCatalogFullSyncServiceProtocol,
-                settingsStore: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 grdbManager: GRDBManagerProtocol) {
         self.fullSyncService = fullSyncService
-        self.settingsStore = settingsStore ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
+        self.persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
+        self.grdbManager = grdbManager
+    }
+
+    //periphery:ignore - used for tests to inject persistence service
+    init(fullSyncService: POSCatalogFullSyncServiceProtocol,
+         persistenceService: POSCatalogPersistenceServiceProtocol,
+         grdbManager: GRDBManagerProtocol) {
+        self.fullSyncService = fullSyncService
+        self.persistenceService = persistenceService
         self.grdbManager = grdbManager
     }
 
@@ -54,8 +63,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let catalog = try await fullSyncService.startFullSync(for: siteID)
 
-        settingsStore.setPOSLastFullSyncDate(Date(), for: siteID)
-
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
 
@@ -65,7 +72,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             return true
         }
 
-        guard let lastSyncDate = lastFullSyncDate(for: siteID) else {
+        guard let lastSyncDate = await lastFullSyncDate(for: siteID) else {
             DDLogInfo("📋 POSCatalogSyncCoordinator: No previous sync found for site \(siteID), sync needed")
             return true
         }
@@ -84,8 +91,15 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     // MARK: - Private
 
-    private func lastFullSyncDate(for siteID: Int64) -> Date? {
-        return settingsStore.getPOSLastFullSyncDate(for: siteID)
+    private func lastFullSyncDate(for siteID: Int64) async -> Date? {
+        do {
+            return try await grdbManager.databaseConnection.read { db in
+                return try PersistedSite.filter(key: siteID).fetchOne(db)?.lastCatalogFullSyncDate
+            }
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Error loading site \(siteID) for full sync date: \(error)")
+            return nil
+        }
     }
 
     private func siteExistsInDatabase(siteID: Int64) -> Bool {

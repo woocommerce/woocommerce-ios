@@ -20,6 +20,7 @@ struct V001InitialSchema {
         try db.create(table: "site") { siteTable in
             siteTable.primaryKey("id", .integer).notNull()
             siteTable.column("lastCatalogIncrementalSyncDate", .datetime)
+            siteTable.column("lastCatalogFullSyncDate", .datetime)
         }
     }
 

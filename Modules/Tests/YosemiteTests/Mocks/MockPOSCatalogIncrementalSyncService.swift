@@ -7,14 +7,16 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
     private(set) var startIncrementalSyncCallCount = 0
     private(set) var lastSyncSiteID: Int64?
     private(set) var lastFullSyncDate: Date?
+    private(set) var lastIncrementalSyncDate: Date?
 
     private var syncContinuation: CheckedContinuation<Void, Never>?
     private var shouldBlockSync = false
 
-    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date) async throws {
+    func startIncrementalSync(for siteID: Int64, lastFullSyncDate: Date, lastIncrementalSyncDate: Date?) async throws {
         startIncrementalSyncCallCount += 1
         lastSyncSiteID = siteID
         self.lastFullSyncDate = lastFullSyncDate
+        self.lastIncrementalSyncDate = lastIncrementalSyncDate
 
         if shouldBlockSync {
             await withCheckedContinuation { continuation in

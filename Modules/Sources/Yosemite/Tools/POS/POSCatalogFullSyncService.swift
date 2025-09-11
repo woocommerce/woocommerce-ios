@@ -2,7 +2,6 @@ import Foundation
 import protocol Networking.POSCatalogSyncRemoteProtocol
 import class Networking.AlamofireNetwork
 import class Networking.POSCatalogSyncRemote
-import CocoaLumberjackSwift
 import Storage
 
 // TODO - remove the periphery ignore comment when the catalog is integrated with POS.
@@ -20,6 +19,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
 public struct POSCatalog {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
+    public let syncDate: Date
 }
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
@@ -74,6 +74,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
 private extension POSCatalogFullSyncService {
     func loadCatalog(for siteID: Int64, syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
+        let syncStartDate = Date.now
         // Loads products and variations in batches in parallel.
         async let productsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
@@ -87,7 +88,7 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations)
+        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
     }
 
 }

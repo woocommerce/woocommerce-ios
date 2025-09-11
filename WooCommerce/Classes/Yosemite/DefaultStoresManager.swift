@@ -8,6 +8,7 @@ import KeychainAccess
 import class WidgetKit.WidgetCenter
 import Experiments
 import WordPressAuthenticator
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - DefaultStoresManager
 //
@@ -77,6 +78,14 @@ class DefaultStoresManager: StoresManager {
     ///
     var isAuthenticated: Bool {
         return state is AuthenticatedState
+    }
+
+    /// Authentication mode for network requests
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        guard let state = state as? AuthenticatedState else {
+            return nil
+        }
+        return state.requestAuthenticationMode
     }
 
     /// Indicates if the StoresManager is currently authenticated with site credentials only.
@@ -172,8 +181,10 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
+            applicationPasswordGenerationFailureObserver = nil
         } else {
             listenToApplicationPasswordGenerationFailureNotification()
+            invalidWPCOMTokenNotificationObserver = nil
         }
 
         return self
@@ -256,6 +267,7 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
+        invalidWPCOMTokenNotificationObserver = nil
 
         if isAuthenticated {
             let resetAction = CardPresentPaymentAction.reset
@@ -269,6 +281,15 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.analytics.refreshUserData()
         ZendeskProvider.shared.reset()
         ServiceLocator.storageManager.reset()
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+            do {
+                try ServiceLocator.grdbManager.reset()
+            } catch {
+                DDLogError("Could not reset GRDB database: \(error)")
+            }
+        }
+
         ServiceLocator.productImageUploader.reset()
 
         updateAndReloadWidgetInformation(with: nil)

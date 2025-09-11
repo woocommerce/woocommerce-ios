@@ -45,7 +45,17 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
         }
 
         let siteAPIContainer = try decoder.container(keyedBy: SiteAPIKeys.self)
-        let namespaces = siteAPIContainer.failsafeDecodeIfPresent([String].self, forKey: .namespaces) ?? []
+
+        /// Some third-party plugins (like CoCart API) alter the response of `namespaces` field into a dictionary instead of array.
+        /// This workaround transforms the unexpected dictionary to extract the values in the dictionary.
+        let namespaces = siteAPIContainer.failsafeDecodeIfPresent(
+            targetType: [String].self,
+            forKey: .namespaces,
+            alternativeTypes: [
+                .dictionary(transform: { Array($0.values) })
+            ]
+        ) ?? []
+
         let authentication = try? siteAPIContainer.decode(Authentication.self, forKey: .authentication)
         let applicationPasswordAvailable = authentication?.applicationPasswords?.endpoints?.authorization != nil
 

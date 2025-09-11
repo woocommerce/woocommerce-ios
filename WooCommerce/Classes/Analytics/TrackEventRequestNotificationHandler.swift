@@ -46,7 +46,27 @@ private extension TrackEventRequestNotificationHandler {
             self?.trackJSONParsingFailed(note: note)
         }
 
-        trackingObservers = [newPasswordCreatedObserver, passwordGenerationFailedObserver, jsonParsingFailedObserver]
+        let networkSwitchingObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteEligibleForAppPasswordSupport,
+            object: nil,
+            queue: .main) { [weak self] _ in
+                self?.trackNetworkSwitchingStart()
+            }
+
+        let siteFlaggedObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteFlaggedUnsupportedForApplicationPassword,
+            object: nil,
+            queue: .main) { [weak self] note in
+                self?.trackSiteFlagged(note: note)
+            }
+
+        trackingObservers = [
+            newPasswordCreatedObserver,
+            passwordGenerationFailedObserver,
+            jsonParsingFailedObserver,
+            networkSwitchingObserver,
+            siteFlaggedObserver
+        ]
     }
 
     /// Tracks an event when an application password is created
@@ -73,5 +93,16 @@ private extension TrackEventRequestNotificationHandler {
         let path = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.path] as? String
         let entityName = note.userInfo?[Remote.JSONParsingErrorUserInfoKey.entityName] as? String
         analytics.track(event: .RemoteRequest.jsonParsingError(error, path: path, entityName: entityName))
+    }
+
+    func trackNetworkSwitchingStart() {
+        analytics.track(.jetpackSiteEligibleForAppPasswordSupport)
+    }
+
+    func trackSiteFlagged(note: Notification) {
+        guard let properties = note.object as? [String: Any] else {
+            return
+        }
+        analytics.track(.jetpackSiteFlaggedUnsupportedForAppPasswords, withProperties: properties)
     }
 }

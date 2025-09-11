@@ -256,7 +256,6 @@ private extension AlamofireNetworkErrorHandler {
             - Error message: \(apiErrorCode)
             """
         )
-        
     }
 
     enum Constants {

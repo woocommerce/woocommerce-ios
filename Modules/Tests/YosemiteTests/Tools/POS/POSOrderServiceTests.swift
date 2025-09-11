@@ -167,8 +167,7 @@ struct POSOrderServiceTests {
         })
     }
 
-    @Test
-    func updatePOSOrder_calls_remote_updatePOSOrderEmail_with_correct_parameters() async throws {
+    @Test func updatePOSOrder_calls_remote_updatePOSOrderEmail_with_correct_parameters() async throws {
         // Given
         let siteID: Int64 = 123
         let orderID: Int64 = 456
@@ -184,8 +183,7 @@ struct POSOrderServiceTests {
         #expect(mockOrdersRemote.spyUpdatePOSOrderEmailAddress == recipientEmail)
     }
 
-    @Test
-    func updatePOSOrder_throws_error_when_remote_call_fails() async throws {
+    @Test func updatePOSOrder_throws_error_when_remote_call_fails() async throws {
         // Given
         mockOrdersRemote.updatePOSOrderEmailResult = .failure(NSError(domain: "", code: 0))
 

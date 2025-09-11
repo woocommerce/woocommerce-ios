@@ -73,14 +73,16 @@ struct PersistedProductTests {
         )
 
         let productImages = [
-            PersistedProductImage(id: 200,
+            PersistedProductImage(siteID: siteID,
+                                  id: 200,
                                   productID: productID,
                                   dateCreated: Date(timeIntervalSince1970: 10),
                                   dateModified: nil,
                                   src: "https://example.com/p1.png",
                                   name: "p1",
                                   alt: "a1"),
-            PersistedProductImage(id: 201,
+            PersistedProductImage(siteID: siteID,
+                                  id: 201,
                                   productID: productID,
                                   dateCreated: Date(timeIntervalSince1970: 11),
                                   dateModified: Date(timeIntervalSince1970: 12),
@@ -90,8 +92,8 @@ struct PersistedProductTests {
         ]
 
         let persistedAttributes = [
-            PersistedProductAttribute(productID: productID, name: "Material", position: 0, visible: true, variation: false, options: ["Cotton"]),
-            PersistedProductAttribute(productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: ["Slim", "Regular"])
+            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Material", position: 0, visible: true, variation: false, options: ["Cotton"]),
+            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: ["Slim", "Regular"])
         ]
 
         // When
@@ -151,6 +153,7 @@ struct PersistedProductTests {
             try product.insert(db)
 
             let image1 = PersistedProductImage(
+                siteID: 1,
                 id: 200,
                 productID: 100,
                 dateCreated: Date(timeIntervalSince1970: 1000),
@@ -160,6 +163,7 @@ struct PersistedProductTests {
                 alt: "Alt text 1"
             )
             let image2 = PersistedProductImage(
+                siteID: 1,
                 id: 201,
                 productID: 100,
                 dateCreated: Date(timeIntervalSince1970: 2000),
@@ -172,6 +176,7 @@ struct PersistedProductTests {
             try image2.insert(db)
 
             var attribute1 = PersistedProductAttribute(
+                siteID: 1,
                 productID: 100,
                 name: "Color",
                 position: 0,
@@ -180,6 +185,7 @@ struct PersistedProductTests {
                 options: ["Red", "Blue", "Green"]
             )
             var attribute2 = PersistedProductAttribute(
+                siteID: 1,
                 productID: 100,
                 name: "Size",
                 position: 1,
@@ -287,7 +293,7 @@ struct PersistedProductTests {
                                          options: ["Vanilla", "Chocolate"])
 
         // When
-        let persisted = PersistedProductAttribute(from: attribute, productID: productID)
+        let persisted = PersistedProductAttribute(from: attribute, siteID: siteID, productID: productID)
         let back = persisted.toProductAttribute(siteID: siteID)
 
         // Then
@@ -318,7 +324,8 @@ struct PersistedProductTests {
                                  alt: "y")
 
         // When
-        let persisted = PersistedProductImage(from: image, productID: productID)
+        let siteID: Int64 = 4
+        let persisted = PersistedProductImage(from: image, siteID: siteID, productID: productID)
         let back = persisted.toProductImage()
 
         // Then

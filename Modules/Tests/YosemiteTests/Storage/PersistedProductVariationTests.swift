@@ -76,10 +76,11 @@ struct PersistedProductVariationTests {
         )
 
         let varAttrs = [
-            PersistedProductVariationAttribute(productVariationID: variationID, name: "Material", option: "Wool"),
-            PersistedProductVariationAttribute(productVariationID: variationID, name: "Fit", option: "Slim")
+            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Material", option: "Wool"),
+            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Fit", option: "Slim")
         ]
         let varImage = PersistedProductVariationImage(
+            siteID: siteID,
             id: 601,
             productVariationID: variationID,
             dateCreated: Date(timeIntervalSince1970: 2000),
@@ -156,6 +157,7 @@ struct PersistedProductVariationTests {
             try variation.insert(db)
 
             let variationImage = PersistedProductVariationImage(
+                siteID: 2,
                 id: 600,
                 productVariationID: 500,
                 dateCreated: Date(timeIntervalSince1970: 3000),
@@ -167,11 +169,13 @@ struct PersistedProductVariationTests {
             try variationImage.insert(db)
 
             var attr1 = PersistedProductVariationAttribute(
+                siteID: 2,
                 productVariationID: 500,
                 name: "Color",
                 option: "Purple"
             )
             var attr2 = PersistedProductVariationAttribute(
+                siteID: 2,
                 productVariationID: 500,
                 name: "Material",
                 option: "Cotton"
@@ -276,6 +280,7 @@ struct PersistedProductVariationTests {
 
             // Add attributes only, no image
             var attr = PersistedProductVariationAttribute(
+                siteID: 4,
                 productVariationID: 700,
                 name: "Style",
                 option: "Modern"
@@ -306,7 +311,8 @@ struct PersistedProductVariationTests {
         let attr = ProductVariationAttribute(id: 0, name: "Style", option: "Modern")
 
         // When
-        let persisted = PersistedProductVariationAttribute(from: attr, productVariationID: variationID)
+        let siteID: Int64 = 7
+        let persisted = PersistedProductVariationAttribute(from: attr, siteID: siteID, productVariationID: variationID)
         let back = persisted.toProductVariationAttribute()
 
         // Then
@@ -330,7 +336,8 @@ struct PersistedProductVariationTests {
                                  alt: nil)
 
         // When
-        let persisted = PersistedProductVariationImage(from: image, productVariationID: variationID)
+        let siteID: Int64 = 8
+        let persisted = PersistedProductVariationImage(from: image, siteID: siteID, productVariationID: variationID)
         let back = persisted.toProductImage()
 
         // Then

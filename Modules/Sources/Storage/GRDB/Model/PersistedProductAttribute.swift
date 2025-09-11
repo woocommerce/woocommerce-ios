@@ -4,6 +4,7 @@ import GRDB
 // periphery:ignore - TODO: remove ignore when populating database
 public struct PersistedProductAttribute: Codable {
     public private(set) var id: Int64?
+    public let siteID: Int64
     public let productID: Int64
     public let name: String
     public let position: Int64
@@ -12,6 +13,7 @@ public struct PersistedProductAttribute: Codable {
     public let options: [String]
 
     public init(id: Int64? = nil,
+                siteID: Int64,
                 productID: Int64,
                 name: String,
                 position: Int64,
@@ -19,6 +21,7 @@ public struct PersistedProductAttribute: Codable {
                 variation: Bool,
                 options: [String]) {
         self.id = id
+        self.siteID = siteID
         self.productID = productID
         self.name = name
         self.position = position
@@ -33,13 +36,14 @@ extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
     public static var databaseTableName: String { "productAttribute" }
 
     public enum Columns {
-        static let id = Column(CodingKeys.id)
+        public static let id = Column(CodingKeys.id)
+        public static let siteID = Column(CodingKeys.siteID)
         public static let productID = Column(CodingKeys.productID)
-        static let name = Column(CodingKeys.name)
-        static let position = Column(CodingKeys.position)
-        static let visible = Column(CodingKeys.visible)
-        static let variation = Column(CodingKeys.variation)
-        static let options = Column(CodingKeys.options)
+        public static let name = Column(CodingKeys.name)
+        public static let position = Column(CodingKeys.position)
+        public static let visible = Column(CodingKeys.visible)
+        public static let variation = Column(CodingKeys.variation)
+        public static let options = Column(CodingKeys.options)
     }
 
     public mutating func didInsert(_ inserted: InsertionSuccess) {
@@ -49,9 +53,10 @@ extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
 
 
 // periphery:ignore - TODO: remove ignore when populating database
-private extension PersistedProductAttribute {
+extension PersistedProductAttribute {
     enum CodingKeys: String, CodingKey {
         case id
+        case siteID
         case productID
         case name
         case position

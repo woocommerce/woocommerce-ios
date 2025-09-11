@@ -44,22 +44,29 @@ public struct PersistedProductVariation: Codable {
 extension PersistedProductVariation: FetchableRecord, PersistableRecord {
     public static var databaseTableName: String { "productVariation" }
 
+    public static var primaryKey: [String] { [CodingKeys.siteID.stringValue, CodingKeys.id.stringValue] }
+
     public enum Columns {
-        static let id = Column(CodingKeys.id)
-        static let siteID = Column(CodingKeys.siteID)
-        static let productID = Column(CodingKeys.productID)
-        static let sku = Column(CodingKeys.sku)
-        static let globalUniqueID = Column(CodingKeys.globalUniqueID)
-        static let price = Column(CodingKeys.price)
-        static let downloadable = Column(CodingKeys.downloadable)
-        static let fullDescription = Column(CodingKeys.fullDescription)
-        static let manageStock = Column(CodingKeys.manageStock)
-        static let stockQuantity = Column(CodingKeys.stockQuantity)
-        static let stockStatusKey = Column(CodingKeys.stockStatusKey)
+        public static let id = Column(CodingKeys.id)
+        public static let siteID = Column(CodingKeys.siteID)
+        public static let productID = Column(CodingKeys.productID)
+        public static let sku = Column(CodingKeys.sku)
+        public static let globalUniqueID = Column(CodingKeys.globalUniqueID)
+        public static let price = Column(CodingKeys.price)
+        public static let downloadable = Column(CodingKeys.downloadable)
+        public static let fullDescription = Column(CodingKeys.fullDescription)
+        public static let manageStock = Column(CodingKeys.manageStock)
+        public static let stockQuantity = Column(CodingKeys.stockQuantity)
+        public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
     }
 
-    public static let attributes = hasMany(PersistedProductVariationAttribute.self).forKey("attributes")
-    public static let image = hasOne(PersistedProductVariationImage.self).forKey("image")
+    public static let attributes = hasMany(PersistedProductVariationAttribute.self,
+                                           using: ForeignKey([PersistedProductVariationAttribute.CodingKeys.siteID.stringValue,
+                                                              PersistedProductVariationAttribute.CodingKeys.productVariationID.stringValue],
+                                                             to: primaryKey))
+    public static let image = hasOne(PersistedProductVariationImage.self,
+                                     using: ForeignKey(PersistedProductVariationImage.primaryKey,
+                                                       to: primaryKey))
 }
 
 

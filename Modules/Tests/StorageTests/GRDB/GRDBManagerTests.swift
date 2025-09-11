@@ -191,6 +191,7 @@ struct GRDBManagerTests {
             // When
             try manager.databaseConnection.write { db in
                 let attribute = TestProductAttribute(
+                    siteID: 1,
                     productID: 100,
                     name: "Color",
                     position: 0,
@@ -244,6 +245,7 @@ struct GRDBManagerTests {
             // When
             try manager.databaseConnection.write { db in
                 let variationAttribute = TestProductVariationAttribute(
+                    siteID: 1,
                     productVariationID: 200,
                     name: "Color",
                     option: "Red"
@@ -296,6 +298,7 @@ struct GRDBManagerTests {
                 try variation.insert(db)
 
                 let productAttribute = TestProductAttribute(
+                    siteID: testSiteId,
                     productID: 100,
                     name: "Color",
                     position: 0,
@@ -306,6 +309,7 @@ struct GRDBManagerTests {
                 try productAttribute.insert(db)
 
                 let variationAttribute = TestProductVariationAttribute(
+                    siteID: testSiteId,
                     productVariationID: 200,
                     name: "Size",
                     option: "Large"
@@ -318,8 +322,8 @@ struct GRDBManagerTests {
                 return (
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
                     variations: try TestProductVariation.filter(Column("siteID") == testSiteId).fetchCount(db),
-                    productAttributes: try TestProductAttribute.filter(Column("productID") == 100).fetchCount(db),
-                    variationAttributes: try TestProductVariationAttribute.filter(Column("productVariationID") == 200).fetchCount(db)
+                    productAttributes: try TestProductAttribute.filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute.filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
                 )
             }
 
@@ -339,8 +343,8 @@ struct GRDBManagerTests {
                     sites: try TestSite.filter(Column("id") == testSiteId).fetchCount(db),
                     products: try TestProduct.filter(Column("siteID") == testSiteId).fetchCount(db),
                     variations: try TestProductVariation.filter(Column("siteID") == testSiteId).fetchCount(db),
-                    productAttributes: try TestProductAttribute.filter(Column("productID") == 100).fetchCount(db),
-                    variationAttributes: try TestProductVariationAttribute.filter(Column("productVariationID") == 200).fetchCount(db)
+                    productAttributes: try TestProductAttribute.filter(Column("siteID") == testSiteId && Column("productID") == 100).fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute.filter(Column("siteID") == testSiteId && Column("productVariationID") == 200).fetchCount(db)
                 )
             }
 
@@ -553,6 +557,7 @@ struct GRDBManagerTests {
 
                         // Insert product attributes
                         let productAttribute = TestProductAttribute(
+                            siteID: siteID,
                             productID: product.id,
                             name: "Color \(i)",
                             position: i,
@@ -564,6 +569,7 @@ struct GRDBManagerTests {
 
                         // Insert variation attributes
                         let variationAttribute = TestProductVariationAttribute(
+                            siteID: siteID,
                             productVariationID: variation.id,
                             name: "Size \(i)",
                             option: "Large"
@@ -732,6 +738,7 @@ extension TestProductVariation: FetchableRecord, PersistableRecord {
 }
 
 struct TestProductAttribute: Codable {
+    let siteID: Int64
     let productID: Int64
     let name: String
     let position: Int
@@ -745,6 +752,7 @@ extension TestProductAttribute: FetchableRecord, PersistableRecord {
 }
 
 struct TestProductVariationAttribute: Codable {
+    let siteID: Int64
     let productVariationID: Int64
     let name: String
     let option: String

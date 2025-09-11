@@ -175,7 +175,10 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
+        )
 
         // When
         let viewModel = HubMenuViewModel(
@@ -201,7 +204,10 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
+        )
 
         // When
         let viewModel = HubMenuViewModel(

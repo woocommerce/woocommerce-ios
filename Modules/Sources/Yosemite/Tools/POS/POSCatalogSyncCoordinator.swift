@@ -20,6 +20,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - siteID: The site ID to sync catalog for
     ///   - forceSync: Whether to bypass age checks and always sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
+    //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
     func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws
 }
 

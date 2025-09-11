@@ -195,10 +195,10 @@ extension EnvironmentValues {
 
 extension View {
     /// Sets the back button icon for all POSPageHeaderView instances in the view hierarchy.
-    /// - Parameter icon: The system name for the back button icon (e.g., "xmark")
+    /// - Parameter systemName: The system name for the back button icon (e.g., "xmark")
     /// - Returns: A view with the icon environment value set
-    func posHeaderBackButtonIcon(_ icon: String) -> some View {
-        environment(\.posHeaderBackButtonIcon, icon)
+    func posHeaderBackButtonIcon(systemName: String) -> some View {
+        environment(\.posHeaderBackButtonIcon, systemName)
     }
 }
 

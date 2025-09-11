@@ -52,6 +52,16 @@ extension Yosemite.POSSimpleProduct {
         )
     }
 }
+extension Yosemite.POSSite {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.POSSite {
+        .init(
+            siteID: .fake(),
+            lastIncrementalSyncDate: .fake()
+        )
+    }
+}
 extension Yosemite.ProductReviewFromNoteParcel {
     /// Returns a "ready to use" type filled with fake values.
     ///

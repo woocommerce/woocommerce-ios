@@ -19,6 +19,7 @@ struct V001InitialSchema {
     static func createSiteTable(_ db: Database) throws {
         try db.create(table: "site") { siteTable in
             siteTable.primaryKey("id", .integer).notNull()
+            siteTable.column("lastCatalogIncrementalSyncDate", .datetime)
         }
     }
 

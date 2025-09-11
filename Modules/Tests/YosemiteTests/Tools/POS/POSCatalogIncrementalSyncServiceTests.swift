@@ -183,6 +183,8 @@ private final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServi
     private(set) var persistIncrementalCatalogDataLastPersistedSiteID: Int64?
     var persistIncrementalCatalogDataError: Error?
 
+    private var storedSites: [Int64: POSSite] = [:]
+
     func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {}
 
     func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
@@ -192,5 +194,13 @@ private final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServi
         if let error = persistIncrementalCatalogDataError {
             throw error
         }
+    }
+
+    func loadSite(siteID: Int64) async throws -> POSSite? {
+        storedSites[siteID]
+    }
+
+    func updateSite(_ site: POSSite) async throws {
+        storedSites[site.siteID] = site
     }
 }

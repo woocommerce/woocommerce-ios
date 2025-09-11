@@ -3,7 +3,7 @@ import Foundation
 import struct Yosemite.Order
 
 final class MockPOSReceiptController: POSReceiptControllerProtocol {
-    var shouldThrowReceiptError: Bool = false
+    var sendReceiptErrorToThrow: Error?
     var sendReceiptWasCalled: Bool = false
     var sendReceiptCalledWithOrderID: Int64?
     var sendReceiptCalledWithEmail: String?
@@ -13,8 +13,8 @@ final class MockPOSReceiptController: POSReceiptControllerProtocol {
         sendReceiptCalledWithOrderID = orderID
         sendReceiptCalledWithEmail = recipientEmail
 
-        if shouldThrowReceiptError {
-            throw PointOfSaleOrderController.PointOfSaleOrderControllerError.noOrder
+        if let sendReceiptErrorToThrow {
+            throw sendReceiptErrorToThrow
         }
     }
 }

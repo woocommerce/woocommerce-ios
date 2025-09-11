@@ -385,12 +385,82 @@ private enum Localization {
 
 #if DEBUG
 #Preview("List") {
-    NavigationSplitView {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
         PointOfSaleOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel())
     } detail: {
         Text("Detail View")
     }
+    .navigationSplitViewStyle(.balanced)
 }
+
+#Preview("Empty State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Error State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .error(.errorOnLoadingOrders())))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Loading State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loading([])))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Inline Error - Refresh") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(
+                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                                   error: .errorOnLoadingOrders(),
+                                   context: .refresh)
+            ))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Inline Error - Pagination") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(
+                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                                   error: .errorOnLoadingOrdersNextPage(),
+                                   context: .pagination)
+            ))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Search Empty State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        PointOfSaleOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
 #endif

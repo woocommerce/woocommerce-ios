@@ -33,7 +33,7 @@ private enum Localization {
 
     static let emptyOrdersSubtitle = NSLocalizedString(
         "pos.orderListView.emptyOrdersSubtitle",
-        value: "Orders will appear here once you start processing sales.",
+        value: "Orders will appear here once you start processing sales on the POS.",
         comment: "Subtitle appearing when there are no orders to display."
     )
 

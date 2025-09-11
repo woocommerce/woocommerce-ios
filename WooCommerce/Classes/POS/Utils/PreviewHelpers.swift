@@ -240,6 +240,10 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
         return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController())
     }
+    
+    static func makePreviewOrdersModel(state: POSOrderListState) -> PointOfSaleOrderListModel {
+        return PointOfSaleOrderListModel(ordersController: PointOfSaleConfigurablePreviewOrderListController(state: state))
+    }
 
     static func makePreviewOrder() -> POSOrder {
         return POSOrder(
@@ -377,6 +381,23 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
         ordersViewState.orders.first
     }
 
+    func loadOrders() async {}
+    func loadNextOrders() async {}
+    func refreshOrders() async {}
+    func selectOrder(_ order: POSOrder?) {}
+    func searchOrders(searchTerm: String) async {}
+    func clearSearchOrders() {}
+}
+
+final class PointOfSaleConfigurablePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
+    private let state: POSOrderListState
+    
+    init(state: POSOrderListState) {
+        self.state = state
+    }
+    
+    var ordersViewState: POSOrderListState { state }
+    var selectedOrder: POSOrder? { ordersViewState.orders.first }
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}

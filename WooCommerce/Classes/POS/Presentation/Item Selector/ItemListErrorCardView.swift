@@ -22,10 +22,22 @@ struct ItemListErrorCardView: View {
             POSErrorExclamationMark(size: .small)
                 .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                        height: Constants.productCardSize * scale)
-            errorLabels
-                .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-                .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                Text(errorState.title)
+                    .lineLimit(2)
+                    .foregroundStyle(Color.posOnSurface)
+                    .multilineTextAlignment(.leading)
+                    .font(Constants.itemTitleFont)
+
+                Text(errorState.subtitle)
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .font(Constants.itemDetailFont)
+            }
+            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
+            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+
             Spacer()
+
             button
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 .fixedSize(horizontal: true, vertical: false)
@@ -35,12 +47,25 @@ struct ItemListErrorCardView: View {
 
     @ViewBuilder
     private var compactView: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        HStack(spacing: POSSpacing.small) {
             POSErrorExclamationMark(size: .small)
-            errorLabels
-            button
-                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            HStack(spacing: 0) {
+                VStack(alignment: .leading, spacing: Constants.textSpacing) {
+                    Text(errorState.title)
+                        .lineLimit(2)
+                        .foregroundStyle(Color.posOnSurface)
+                        .multilineTextAlignment(.leading)
+                        .font(POSFontStyle.posBodyMediumBold)
+                    Text(errorState.subtitle)
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .font(POSFontStyle.posBodyMediumRegular())
+                }
+                Spacer()
+                button
+                    .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, POSSpacing.medium * (1 / scale))
         .padding(.vertical, POSSpacing.medium * (1 / scale))
     }
@@ -50,21 +75,6 @@ struct ItemListErrorCardView: View {
         POSErrorExclamationMark(size: .small)
             .frame(width: min(Constants.productCardSize * scale, Constants.maximumProductCardSize),
                    height: Constants.productCardSize * scale)
-    }
-
-    @ViewBuilder
-    private var errorLabels: some View {
-        VStack(alignment: .leading, spacing: Constants.textSpacing) {
-            Text(errorState.title)
-                .lineLimit(2)
-                .foregroundStyle(Color.posOnSurface)
-                .multilineTextAlignment(.leading)
-                .font(Constants.itemTitleFont)
-
-            Text(errorState.subtitle)
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .font(Constants.itemDetailFont)
-        }
     }
 
     @ViewBuilder

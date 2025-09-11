@@ -502,6 +502,146 @@ struct GRDBManagerTests {
             }
         }
     }
+
+    struct ResetTests {
+        let manager: GRDBManager
+        let sampleSiteID: Int64 = 1
+
+        init() throws {
+            self.manager = try GRDBManager()
+            try manager.databaseConnection.write { db in
+                let record = TestSite(id: sampleSiteID)
+                try record.insert(db)
+            }
+        }
+
+        @Test("Reset clears all data from database")
+        func test_reset_clears_all_data_from_database() throws {
+            // Given - Insert comprehensive test data
+            try manager.databaseConnection.write { db in
+                // Insert second site for more comprehensive test
+                let site2 = TestSite(id: 2)
+                try site2.insert(db)
+
+                // Insert products for both sites
+                for siteID in [sampleSiteID, Int64(2)] {
+                    for i in 1...2 {
+                        let product = TestProduct(
+                            siteID: siteID,
+                            id: Int64(i + (siteID == 1 ? 0 : 10)),
+                            name: "Product \(i) Site \(siteID)",
+                            productTypeKey: "variable",
+                            price: "\(i * 10).00",
+                            downloadable: false,
+                            parentID: 0,
+                            manageStock: false,
+                            stockStatusKey: ""
+                        )
+                        try product.insert(db)
+
+                        // Insert variations
+                        let variation = TestProductVariation(
+                            siteID: siteID,
+                            id: Int64(200 + i + (siteID == 1 ? 0 : 10)),
+                            productID: product.id,
+                            price: "\(i * 12).00",
+                            downloadable: false,
+                            manageStock: false,
+                            stockStatusKey: ""
+                        )
+                        try variation.insert(db)
+
+                        // Insert product attributes
+                        let productAttribute = TestProductAttribute(
+                            productID: product.id,
+                            name: "Color \(i)",
+                            position: i,
+                            visible: true,
+                            variation: true,
+                            options: ["Red", "Blue", "Green"]
+                        )
+                        try productAttribute.insert(db)
+
+                        // Insert variation attributes
+                        let variationAttribute = TestProductVariationAttribute(
+                            productVariationID: variation.id,
+                            name: "Size \(i)",
+                            option: "Large"
+                        )
+                        try variationAttribute.insert(db)
+                    }
+                }
+            }
+
+            // Verify data exists before reset
+            let countsBefore = try manager.databaseConnection.read { db in
+                return (
+                    sites: try TestSite.fetchCount(db),
+                    products: try TestProduct.fetchCount(db),
+                    variations: try TestProductVariation.fetchCount(db),
+                    productAttributes: try TestProductAttribute.fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute.fetchCount(db)
+                )
+            }
+
+            #expect(countsBefore.sites == 2) // Original site + new site
+            #expect(countsBefore.products == 4)
+            #expect(countsBefore.variations == 4)
+            #expect(countsBefore.productAttributes == 4)
+            #expect(countsBefore.variationAttributes == 4)
+
+            // When - Reset database
+            try manager.reset()
+
+            // Then - All data should be cleared
+            let countsAfter = try manager.databaseConnection.read { db in
+                return (
+                    sites: try TestSite.fetchCount(db),
+                    products: try TestProduct.fetchCount(db),
+                    variations: try TestProductVariation.fetchCount(db),
+                    productAttributes: try TestProductAttribute.fetchCount(db),
+                    variationAttributes: try TestProductVariationAttribute.fetchCount(db)
+                )
+            }
+
+            #expect(countsAfter.sites == 0)
+            #expect(countsAfter.products == 0)
+            #expect(countsAfter.variations == 0)
+            #expect(countsAfter.productAttributes == 0)
+            #expect(countsAfter.variationAttributes == 0)
+        }
+
+        @Test("Reset can be called multiple times without error")
+        func test_reset_can_be_called_multiple_times() throws {
+            // Given - Some test data
+            try manager.databaseConnection.write { db in
+                let product = TestProduct(
+                    siteID: sampleSiteID,
+                    id: 100,
+                    name: "Test Product",
+                    productTypeKey: "simple",
+                    price: "10.00",
+                    downloadable: false,
+                    parentID: 0,
+                    manageStock: false,
+                    stockStatusKey: ""
+                )
+                try product.insert(db)
+            }
+
+            // When - Reset multiple times
+            try manager.reset()
+            try manager.reset()
+            try manager.reset()
+
+            // Then - Should not throw and database should be empty
+            let productCount = try manager.databaseConnection.read { db in
+                try TestProduct.fetchCount(db)
+            }
+
+            #expect(productCount == 0)
+        }
+    }
 }
 
 // MARK: - Test Models

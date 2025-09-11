@@ -135,14 +135,30 @@ final class AlamofireNetworkErrorHandler {
 
     func flagSiteAsUnsupported(for siteID: Int64) {
         queue.sync(flags: .barrier) {
-            let currentList = userDefaults.applicationPasswordUnsupportedList
-            userDefaults.applicationPasswordUnsupportedList = currentList + [siteID]
+            var currentList = userDefaults.applicationPasswordUnsupportedList
+            currentList[String(siteID)] = Date()
+            userDefaults.applicationPasswordUnsupportedList = currentList
         }
     }
 
-    // MARK: - Private methods
+    func siteFlaggedAsUnsupported(siteID: Int64, unsupportedList: [String: Date]) -> Bool {
+        guard let flagDate = unsupportedList[String(siteID)] else {
+            return false
+        }
 
-    private func incrementFailureCount(for siteID: Int64) {
+        let timeElapsed = Date().timeIntervalSince(flagDate)
+        if timeElapsed < Constants.flagRefreshDuration {
+            return true
+        } else {
+            clearUnsupportedFlag(for: siteID)
+            return false
+        }
+    }
+}
+
+// MARK: Private helpers
+private extension AlamofireNetworkErrorHandler {
+    func incrementFailureCount(for siteID: Int64) {
         let currentFailureCount = appPasswordFailures[siteID] ?? 0
         let updatedCount = currentFailureCount + 1
         if updatedCount == AppPasswordConstants.requestFailureThreshold {
@@ -150,8 +166,20 @@ final class AlamofireNetworkErrorHandler {
         }
         appPasswordFailures[siteID] = updatedCount
     }
-}
 
+    func clearUnsupportedFlag(for siteID: Int64) {
+        queue.sync(flags: .barrier) {
+            let currentList = userDefaults.applicationPasswordUnsupportedList
+            userDefaults.applicationPasswordUnsupportedList = currentList.filter { flag in
+                flag.key != String(siteID)
+            }
+        }
+    }
+
+    enum Constants {
+        static let flagRefreshDuration: Double = 60 * 60 * 24 * 14 // flag can be reset after 14 days.
+    }
+}
 /// Helper type to keep track of retried requests with accompanied error
 struct RetriedJetpackRequest {
     let request: JetpackRequest

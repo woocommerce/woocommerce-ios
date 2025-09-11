@@ -299,6 +299,17 @@ final class ServiceLocator {
     static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
         _startupWaitingTimeTracker
     }
+
+    /// Provides access point to the `POSCatalogSyncCoordinator`.
+    /// Returns nil if feature flag is disabled or user is not authenticated.
+    ///
+    static var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            return nil
+        }
+
+        return stores.posCatalogSyncCoordinator
+    }
 }
 
 

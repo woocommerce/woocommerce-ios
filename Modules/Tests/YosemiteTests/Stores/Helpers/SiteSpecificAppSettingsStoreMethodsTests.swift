@@ -229,6 +229,7 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(retrievedVariationTerms == variationTerms)
         #expect(retrievedCouponTerms == couponTerms)
     }
+
 }
 
 // MARK: - Mock FileStorage

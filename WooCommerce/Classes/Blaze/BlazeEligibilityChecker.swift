@@ -13,9 +13,14 @@ protocol BlazeEligibilityCheckerProtocol {
 /// Checks for Blaze eligibility for a site and its products.
 final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(
+        stores: StoresManager = ServiceLocator.stores,
+        siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+    ) {
         self.stores = stores
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks if the site is eligible for Blaze.
@@ -39,7 +44,11 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 private extension BlazeEligibilityChecker {
     @MainActor
     func checkSiteEligibility(_ site: Site) async -> Bool {
-        guard site.isAdmin && site.canBlaze else {
+        guard
+            site.isAdmin,
+            site.canBlaze,
+            siteCIABEligibilityChecker.isFeatureSupported(.blaze, for: site)
+        else {
             return false
         }
 

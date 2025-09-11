@@ -15,6 +15,12 @@ public struct JetpackSite: Equatable {
     }
 }
 
+public enum RequestAuthenticationMode: String {
+    case appPasswords = "app_passwords"
+    case appPasswordsWithJetpack = "app_passwords_with_jetpack" // switching to app password for Jetpack sites
+    case jetpackTunnel = "jetpack_tunnel"
+}
+
 extension Alamofire.MultipartFormData: MultipartFormData {
     public func append(_ data: Data, withName name: String) {
         self.append(data, withName: name, fileName: nil, mimeType: nil)
@@ -24,6 +30,10 @@ extension Alamofire.MultipartFormData: MultipartFormData {
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+
+    /// authentication mode for requests
+    public private(set) var authenticationMode: RequestAuthenticationMode?
+
     /// Lazy-initialized session manager. Use ensuresSessionManagerIsInitialized=true to avoid race conditions with concurrent requests.
     private lazy var alamofireSession: Alamofire.Session = {
         let sessionConfiguration = URLSessionConfiguration.default
@@ -88,6 +98,18 @@ public class AlamofireNetwork: Network {
         } else if ensuresSessionManagerIsInitialized {
             self.alamofireSession = makeSession(configuration: URLSessionConfiguration.default)
         }
+
+        let authenticationMode: RequestAuthenticationMode? = {
+            switch credentials {
+            case .wporg, .applicationPassword:
+                return .appPasswords
+            case .wpcom:
+                return .jetpackTunnel
+            case .none:
+                return nil
+            }
+        }()
+        updateAuthenticationMode(authenticationMode)
     }
 
     public func updateAppPasswordSwitching(enabled: Bool) {
@@ -98,6 +120,7 @@ public class AlamofireNetwork: Network {
             requestConverter = RequestConverter(siteAddress: nil)
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
             requestAuthenticator.delegate = nil
+            updateAuthenticationMode(.jetpackTunnel)
         }
     }
 
@@ -269,10 +292,14 @@ private extension AlamofireNetwork {
             .sink { [weak self] site, unsupportedList in
                 guard let self else { return }
                 guard let site, site.applicationPasswordAvailable,
-                      unsupportedList.contains(site.siteID) == false else {
+                      errorHandler.siteFlaggedAsUnsupported(
+                        siteID: site.siteID,
+                        unsupportedList: unsupportedList
+                      ) == false else {
                     requestConverter = RequestConverter(siteAddress: nil)
                     requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
                     requestAuthenticator.delegate = nil
+                    updateAuthenticationMode(.jetpackTunnel)
                     return
                 }
                 requestConverter = RequestConverter(siteAddress: site.siteAddress)
@@ -283,7 +310,14 @@ private extension AlamofireNetwork {
                 ))
                 requestAuthenticator.delegate = self
                 errorHandler.resetFailureCount(for: site.siteID) // reset failure count
+                updateAuthenticationMode(.appPasswordsWithJetpack)
             }
+    }
+
+    func updateAuthenticationMode(_ mode: RequestAuthenticationMode?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.authenticationMode = mode
+        }
     }
 }
 
@@ -357,8 +391,8 @@ extension Alamofire.DataResponse {
 // MARK: - Helper extension to save internal flag for app password availability
 //
 extension UserDefaults {
-    @objc dynamic var applicationPasswordUnsupportedList: [Int64] {
-        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [Int64] ?? [] }
+    @objc dynamic var applicationPasswordUnsupportedList: [String: Date] {
+        get { value(forKey: Key.applicationPasswordUnsupportedList.rawValue) as? [String: Date] ?? [:] }
         set { setValue(newValue, forKey: Key.applicationPasswordUnsupportedList.rawValue) }
     }
 

@@ -3,10 +3,15 @@ import Yosemite
 import Networking
 import Storage
 import Combine
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        network.authenticationMode
+    }
 
     /// Dispatcher: Glues all of the Stores!
     ///
@@ -27,6 +32,10 @@ class AuthenticatedState: StoresManagerState {
     private let network: AlamofireNetwork
 
     private var cancellables: Set<AnyCancellable> = []
+
+    /// POS Catalog Sync Coordinator (session-scoped)
+    ///
+    private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
 
     /// Designated Initializer
     ///
@@ -135,6 +144,19 @@ class AuthenticatedState: StoresManagerState {
         }
 
         self.services = services
+
+        // Initialize POS catalog sync coordinator if feature flag is enabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager),
+           let incrementalSyncService = POSCatalogIncrementalSyncService(credentials: credentials, grdbManager: ServiceLocator.grdbManager) {
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
+                grdbManager: ServiceLocator.grdbManager
+            )
+        } else {
+            posCatalogSyncCoordinator = nil
+        }
 
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 

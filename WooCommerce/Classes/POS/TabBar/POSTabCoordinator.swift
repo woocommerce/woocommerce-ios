@@ -148,9 +148,9 @@ private extension POSTabCoordinator {
                         itemFetchStrategyFactory: posPopularItemFetchStrategyFactory
                     ),
                     barcodeScanService: barcodeScanService,
-                    posEligibilityChecker: eligibilityChecker
+                    posEligibilityChecker: eligibilityChecker,
+                    siteTimezone: siteTimezone
                 )
-                .environment(\.siteTimezone, siteTimezone)
 
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen

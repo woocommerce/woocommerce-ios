@@ -23,6 +23,7 @@ struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let siteTimezone: TimeZone
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -38,7 +39,8 @@ struct PointOfSaleEntryPointView: View {
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
-         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         siteTimezone: TimeZone = .current) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -54,6 +56,7 @@ struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         self.orderListModel = PointOfSaleOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+        self.siteTimezone = siteTimezone
     }
 
     var body: some View {
@@ -87,6 +90,7 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
+        .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

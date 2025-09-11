@@ -50,7 +50,8 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
         /// This workaround transforms the unexpected dictionary to extract the values in the dictionary.
         let namespaces = siteAPIContainer.failsafeDecodeIfPresent(
             targetType: [String].self,
-            forKey: .namespaces, alternativeTypes: [
+            forKey: .namespaces,
+            alternativeTypes: [
                 .dictionary(transform: { Array($0.values) })
             ]
         ) ?? []

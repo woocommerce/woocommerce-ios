@@ -33,7 +33,7 @@ private extension POSSettingsLocalCatalogDetailView {
             sectionHeaderView(title: Localization.catalogStatus)
 
             VStack(spacing: POSSpacing.medium) {
-                // TODO: replace with catalog data
+                // TODO: WOOMOB-1100 - replace with catalog data
                 fieldRowView(label: Localization.catalogSize, value: "1,250 products, 3,420 variations (1.8 GB)")
                 fieldRowView(label: Localization.lastIncrementalUpdate, value: "5 minutes ago")
                 fieldRowView(label: Localization.lastFullSync, value: "Today at 2:34 PM")

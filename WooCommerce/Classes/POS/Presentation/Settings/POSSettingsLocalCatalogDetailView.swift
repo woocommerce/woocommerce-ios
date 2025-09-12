@@ -9,19 +9,21 @@ struct POSSettingsLocalCatalogDetailView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(title: Localization.localCatalogTitle)
-                .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
+        NavigationStack {
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(title: Localization.localCatalogTitle)
+                    .foregroundColor(.posSurface)
+                    .accessibilityAddTraits(.isHeader)
 
-            ScrollView {
-                VStack(spacing: POSSpacing.medium) {
-                    catalogStatusView
-                    managingDataUsageView
-                    manualCatalogUpdateView
+                ScrollView {
+                    VStack(spacing: POSSpacing.medium) {
+                        catalogStatusView
+                        managingDataUsageView
+                        manualCatalogUpdateView
+                    }
                 }
+                .background(backgroundColor)
             }
-            .background(backgroundColor)
         }
     }
 }

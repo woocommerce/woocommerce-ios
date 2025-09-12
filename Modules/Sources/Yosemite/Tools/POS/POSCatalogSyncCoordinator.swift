@@ -16,14 +16,6 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Returns: True if a sync should be performed
     func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool
 
-    /// Determines if a full sync should be performed based on the age of the last sync
-    /// - Parameters:
-    ///   - siteID: The site ID to check
-    ///   - maxAge: Maximum age before a sync is considered stale
-    ///   - maxCatalogSize: Maximum allowed catalog size for syncing (default: 1000)
-    /// - Returns: True if a sync should be performed
-    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool
-
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
@@ -31,15 +23,6 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
     //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
     func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws
-
-    /// Performs an incremental sync if applicable based on sync conditions
-    /// - Parameters:
-    ///   - siteID: The site ID to sync catalog for
-    ///   - forceSync: Whether to bypass age checks and always sync
-    ///   - maxCatalogSize: Maximum allowed catalog size for syncing (default: 1000)
-    /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    //periphery:ignore - remove ignore comment when incremental sync is integrated with POS
-    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool, maxCatalogSize: Int) async throws
 }
 
 public enum POSCatalogSyncError: Error, Equatable {
@@ -51,6 +34,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
     private let grdbManager: GRDBManagerProtocol
     private let maxIncrementalSyncAge: TimeInterval
+    private let catalogSizeLimit: Int
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
 
     /// Tracks ongoing full syncs by site ID to prevent duplicates
@@ -62,11 +46,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol,
                 grdbManager: GRDBManagerProtocol,
                 maxIncrementalSyncAge: TimeInterval = 300,
+                catalogSizeLimit: Int? = nil,
                 catalogSizeChecker: POSCatalogSizeCheckerProtocol) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
         self.maxIncrementalSyncAge = maxIncrementalSyncAge
+        self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultSizeLimitForPOSCatalog
         self.catalogSizeChecker = catalogSizeChecker
     }
 
@@ -91,17 +77,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ POSCatalogSyncCoordinator completed full sync for site \(siteID)")
     }
 
-    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
-        return await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: 1000)
-    }
-
     /// Determines if a full sync should be performed based on the age of the last sync
     /// - Parameters:
     ///   - siteID: The site ID to check
     ///   - maxAge: Maximum age before a sync is considered stale
-    ///   - maxCatalogSize: Maximum allowed catalog size for syncing
     /// - Returns: True if a sync should be performed
-    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
+    public func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        return await shouldPerformFullSync(for: siteID, maxAge: maxAge, maxCatalogSize: catalogSizeLimit)
+    }
+
+    private func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval, maxCatalogSize: Int) async -> Bool {
         guard await isCatalogSizeWithinLimit(for: siteID, maxCatalogSize: maxCatalogSize) else {
             return false
         }
@@ -130,17 +115,16 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         return shouldSync
     }
 
-    public func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
-        try await performIncrementalSyncIfApplicable(for: siteID, forceSync: forceSync, maxCatalogSize: 1000)
-    }
-
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
     ///   - siteID: The site ID to sync catalog for
     ///   - forceSync: Whether to bypass age checks and always sync
-    ///   - maxCatalogSize: Maximum allowed catalog size for syncing
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    public func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool, maxCatalogSize: Int) async throws {
+    public func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
+        try await performIncrementalSyncIfApplicable(for: siteID, forceSync: forceSync, maxCatalogSize: catalogSizeLimit)
+    }
+
+    private func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool, maxCatalogSize: Int) async throws {
         if ongoingIncrementalSyncs.contains(siteID) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Incremental sync already in progress for site \(siteID)")
             throw POSCatalogSyncError.syncAlreadyInProgress(siteID: siteID)
@@ -234,5 +218,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // On error, assume site exists to avoid unnecessary syncs
             return true
         }
+    }
+}
+
+private extension POSCatalogSyncCoordinator {
+    enum Constants {
+        static let defaultSizeLimitForPOSCatalog = 1000
     }
 }

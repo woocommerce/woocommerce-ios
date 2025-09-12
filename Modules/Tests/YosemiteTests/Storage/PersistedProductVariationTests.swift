@@ -76,8 +76,16 @@ struct PersistedProductVariationTests {
         )
 
         let varAttrs = [
-            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Material", option: "Wool"),
-            PersistedProductVariationAttribute(siteID: siteID, productVariationID: variationID, name: "Fit", option: "Slim")
+            PersistedProductVariationAttribute(siteID: siteID,
+                                               productVariationID: variationID,
+                                               remoteAttributeID: 100,
+                                               name: "Material",
+                                               option: "Wool"),
+            PersistedProductVariationAttribute(siteID: siteID,
+                                               productVariationID: variationID,
+                                               remoteAttributeID: 101,
+                                               name: "Fit",
+                                               option: "Slim")
         ]
         let varImage = PersistedProductVariationImage(
             siteID: siteID,
@@ -171,12 +179,14 @@ struct PersistedProductVariationTests {
             var attr1 = PersistedProductVariationAttribute(
                 siteID: 2,
                 productVariationID: 500,
+                remoteAttributeID: 502,
                 name: "Color",
                 option: "Purple"
             )
             var attr2 = PersistedProductVariationAttribute(
                 siteID: 2,
                 productVariationID: 500,
+                remoteAttributeID: 503,
                 name: "Material",
                 option: "Cotton"
             )
@@ -282,6 +292,7 @@ struct PersistedProductVariationTests {
             var attr = PersistedProductVariationAttribute(
                 siteID: 4,
                 productVariationID: 700,
+                remoteAttributeID: 105,
                 name: "Style",
                 option: "Modern"
             )

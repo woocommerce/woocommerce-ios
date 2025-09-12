@@ -92,8 +92,22 @@ struct PersistedProductTests {
         ]
 
         let persistedAttributes = [
-            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Material", position: 0, visible: true, variation: false, options: ["Cotton"]),
-            PersistedProductAttribute(siteID: siteID, productID: productID, name: "Fit", position: 1, visible: true, variation: true, options: ["Slim", "Regular"])
+            PersistedProductAttribute(siteID: siteID,
+                                      productID: productID,
+                                      remoteAttributeID: 501,
+                                      name: "Material",
+                                      position: 0,
+                                      visible: true,
+                                      variation: false,
+                                      options: ["Cotton"]),
+            PersistedProductAttribute(siteID: siteID,
+                                      productID: productID,
+                                      remoteAttributeID: 502,
+                                      name: "Fit",
+                                      position: 1,
+                                      visible: true,
+                                      variation: true,
+                                      options: ["Slim", "Regular"])
         ]
 
         // When
@@ -178,6 +192,7 @@ struct PersistedProductTests {
             var attribute1 = PersistedProductAttribute(
                 siteID: 1,
                 productID: 100,
+                remoteAttributeID: 501,
                 name: "Color",
                 position: 0,
                 visible: true,
@@ -187,6 +202,7 @@ struct PersistedProductTests {
             var attribute2 = PersistedProductAttribute(
                 siteID: 1,
                 productID: 100,
+                remoteAttributeID: 502,
                 name: "Size",
                 position: 1,
                 visible: false,

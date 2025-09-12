@@ -6,6 +6,7 @@ public struct PersistedProductAttribute: Codable {
     public private(set) var id: Int64?
     public let siteID: Int64
     public let productID: Int64
+    public let remoteAttributeID: Int64
     public let name: String
     public let position: Int64
     public let visible: Bool
@@ -15,6 +16,7 @@ public struct PersistedProductAttribute: Codable {
     public init(id: Int64? = nil,
                 siteID: Int64,
                 productID: Int64,
+                remoteAttributeID: Int64,
                 name: String,
                 position: Int64,
                 visible: Bool,
@@ -23,6 +25,7 @@ public struct PersistedProductAttribute: Codable {
         self.id = id
         self.siteID = siteID
         self.productID = productID
+        self.remoteAttributeID = remoteAttributeID
         self.name = name
         self.position = position
         self.visible = visible
@@ -41,6 +44,7 @@ extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
         public static let id = Column(CodingKeys.id)
         public static let siteID = Column(CodingKeys.siteID)
         public static let productID = Column(CodingKeys.productID)
+        public static let remoteAttributeID = Column(CodingKeys.remoteAttributeID)
         public static let name = Column(CodingKeys.name)
         public static let position = Column(CodingKeys.position)
         public static let visible = Column(CodingKeys.visible)
@@ -62,6 +66,7 @@ extension PersistedProductAttribute {
         case id
         case siteID
         case productID
+        case remoteAttributeID
         case name
         case position
         case visible

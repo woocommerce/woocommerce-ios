@@ -89,6 +89,7 @@ extension PersistedProductAttribute {
         self.init(
             siteID: siteID,
             productID: productID,
+            remoteAttributeID: productAttribute.attributeID,
             name: productAttribute.name,
             position: Int64(productAttribute.position),
             visible: productAttribute.visible,
@@ -100,7 +101,7 @@ extension PersistedProductAttribute {
     func toProductAttribute(siteID: Int64) -> ProductAttribute {
         return ProductAttribute(
             siteID: siteID,
-            attributeID: id ?? 0,
+            attributeID: remoteAttributeID,
             name: name,
             position: Int(position),
             visible: visible,

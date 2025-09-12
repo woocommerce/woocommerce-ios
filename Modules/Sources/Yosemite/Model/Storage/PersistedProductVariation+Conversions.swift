@@ -83,6 +83,7 @@ extension PersistedProductVariationAttribute {
         self.init(
             siteID: siteID,
             productVariationID: productVariationID,
+            remoteAttributeID: productVariationAttribute.id,
             name: productVariationAttribute.name,
             option: productVariationAttribute.option
         )
@@ -90,7 +91,7 @@ extension PersistedProductVariationAttribute {
 
     func toProductVariationAttribute() -> ProductVariationAttribute {
         return ProductVariationAttribute(
-            id: id ?? 0,
+            id: remoteAttributeID,
             name: name,
             option: option
         )

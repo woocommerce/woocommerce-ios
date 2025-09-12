@@ -108,7 +108,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     @Published private var syncingError: Error?
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     init(siteID: Int64,
@@ -124,7 +124,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.state = .loading
 
         observeIsSiteEligibleForBlaze()
-        observeAvailability()
         observeSectionVisibility()
         configureResultsController()
     }
@@ -141,14 +140,24 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
                         return
                     }
 
-                    isSiteEligibleForBlaze = await checkSiteEligibility(site)
+                    await updateIsSiteEligibleForBlaze(site)
+                    updateAvailability()
                 }
             }
             .store(in: &cancellables)
     }
 
+    func updateIsSiteEligibleForBlaze() async {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+
+        await updateIsSiteEligibleForBlaze(site)
+    }
+
     @MainActor
     func checkAvailability() async {
+        await updateIsSiteEligibleForBlaze()
         try? await synchronizePublishedProducts()
     }
 
@@ -158,6 +167,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         update(state: .loading)
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .blaze))
+
+        await updateIsSiteEligibleForBlaze()
 
         guard isSiteEligibleForBlaze else {
             update(state: .empty)
@@ -242,6 +253,10 @@ private extension BlazeCampaignDashboardViewModel {
         return await blazeEligibilityChecker.isSiteEligible(site)
     }
 
+    func updateIsSiteEligibleForBlaze(_ site: Site) async {
+        isSiteEligibleForBlaze = await checkSiteEligibility(site)
+    }
+
     @MainActor
     func synchronizeBlazeCampaigns() async throws {
         try await withCheckedThrowingContinuation({ continuation in
@@ -302,13 +317,8 @@ private extension BlazeCampaignDashboardViewModel {
         onStateChange?()
     }
 
-    func observeAvailability() {
-        $isSiteEligibleForBlaze
-            .combineLatest($latestPublishedProduct)
-            .map { (isSiteEligibleForBlaze, latestPublishedProduct) in
-                return isSiteEligibleForBlaze && latestPublishedProduct != nil
-            }
-            .assign(to: &$canShowInDashboard)
+    func updateAvailability() {
+        canShowInDashboard = isSiteEligibleForBlaze && latestPublishedProduct != nil
     }
 
     func updateResults() {
@@ -340,9 +350,11 @@ private extension BlazeCampaignDashboardViewModel {
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
             latestPublishedProduct = productResultsController.fetchedObjects.first
+            updateAvailability()
             updateResults()
         }
         productResultsController.onDidResetContent = { [weak self] in
+            self?.updateAvailability()
             self?.updateResults()
         }
 

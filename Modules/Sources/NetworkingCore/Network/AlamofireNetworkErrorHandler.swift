@@ -6,13 +6,17 @@ final class AlamofireNetworkErrorHandler {
     private let queue = DispatchQueue(label: "com.networkingcore.errorhandler", attributes: .concurrent)
     private let userDefaults: UserDefaults
     private let credentials: Credentials?
+    private let notificationCenter: NotificationCenter
 
     private var _appPasswordFailures: [Int64: Int] = [:]
     private var _retriedJetpackRequests: [RetriedJetpackRequest] = []
 
-    init(credentials: Credentials?, userDefaults: UserDefaults = .standard) {
+    init(credentials: Credentials?,
+         userDefaults: UserDefaults = .standard,
+         notificationCenter: NotificationCenter = .default) {
         self.credentials = credentials
         self.userDefaults = userDefaults
+        self.notificationCenter = notificationCenter
     }
 
     // MARK: - Thread-safe property access
@@ -41,8 +45,9 @@ final class AlamofireNetworkErrorHandler {
 
     // MARK: - Public interface
 
-    func resetFailureCount(for siteID: Int64) {
+    func prepareAppPasswordSupport(for siteID: Int64) {
         appPasswordFailures.removeValue(forKey: siteID)
+        notificationCenter.post(name: .JetpackSiteEligibleForAppPasswordSupport, object: siteID)
     }
 
     func shouldRetryJetpackRequest(originalRequest: URLRequestConvertible,
@@ -51,13 +56,14 @@ final class AlamofireNetworkErrorHandler {
         guard let error = failure,
               let request = originalRequest as? JetpackRequest,
               convertedRequest is RESTRequest,
+              let convertedURLRequest = try? convertedRequest.asURLRequest(),
               case .some(.wpcom) = self.credentials else {
             return false
         }
 
         let isExpectedError: Bool = {
             switch error {
-            case AFError.requestAdaptationFailed:
+            case AFError.requestRetryFailed:
                 return true
             case _ as NetworkError:
                 return true
@@ -69,6 +75,7 @@ final class AlamofireNetworkErrorHandler {
         if isExpectedError {
             let retriedRequest = RetriedJetpackRequest(request: request, error: error)
             retriedJetpackRequests.append(retriedRequest)
+            logRequestFailure(request: convertedURLRequest, error: error)
             return true
         }
         return false
@@ -86,7 +93,7 @@ final class AlamofireNetworkErrorHandler {
 
         guard let index = retriedRequestIndex else { return }
 
-        let retriedRequest = retriedJetpackRequests[index]
+        let retriedRequest = retriedJetpackRequests.remove(at: index)
 
         if failure == nil {
             let siteID = retriedRequest.request.siteID
@@ -95,19 +102,27 @@ final class AlamofireNetworkErrorHandler {
             case NetworkError.unacceptableStatusCode(statusCode: 401, _),
                 NetworkError.unacceptableStatusCode(statusCode: 403, _),
                 NetworkError.unacceptableStatusCode(statusCode: 429, _):
-                flagSiteAsUnsupported(for: siteID)
+                flagSiteAsUnsupported(
+                    for: siteID,
+                    flow: .apiRequest,
+                    cause: .majorError,
+                    error: originalFailure
+                )
             default:
                 if let networkError = originalFailure as? NetworkError,
                    let code = networkError.errorCode,
                     AppPasswordConstants.disabledCodes.contains(code) {
-                    flagSiteAsUnsupported(for: siteID)
+                    flagSiteAsUnsupported(
+                        for: siteID,
+                        flow: .apiRequest,
+                        cause: .majorError,
+                        error: originalFailure
+                    )
                 } else {
-                    incrementFailureCount(for: siteID)
+                    incrementFailureCount(for: siteID, originalFailure: originalFailure)
                 }
             }
         }
-
-        retriedJetpackRequests.remove(at: index)
     }
 
     func handleFailureForDirectRequestIfNeeded(originalRequest: URLRequestConvertible,
@@ -133,12 +148,24 @@ final class AlamofireNetworkErrorHandler {
         }
     }
 
-    func flagSiteAsUnsupported(for siteID: Int64) {
+    func flagSiteAsUnsupported(for siteID: Int64, flow: RequestFlow, cause: AppPasswordFlagCause, error: Error) {
         queue.sync(flags: .barrier) {
             var currentList = userDefaults.applicationPasswordUnsupportedList
             currentList[String(siteID)] = Date()
             userDefaults.applicationPasswordUnsupportedList = currentList
         }
+
+        /// Tracks error
+        let apiErrorCode = (error as? NetworkError)?.errorCode ?? error.localizedDescription
+        let httpStatusCode = (error as? NetworkError)?.responseCode  ?? (error as NSError).code
+
+        let tracksProperties: [String: Any] = [
+            TracksProperty.flow.rawValue: flow.rawValue,
+            TracksProperty.cause.rawValue: cause.rawValue,
+            TracksProperty.apiErrorCode.rawValue: apiErrorCode,
+            TracksProperty.httpStatusCode.rawValue: httpStatusCode
+        ]
+        notificationCenter.post(name: .JetpackSiteFlaggedUnsupportedForApplicationPassword, object: tracksProperties)
     }
 
     func siteFlaggedAsUnsupported(siteID: Int64, unsupportedList: [String: Date]) -> Bool {
@@ -156,13 +183,38 @@ final class AlamofireNetworkErrorHandler {
     }
 }
 
+enum RequestFlow: String {
+    case appPasswordGeneration = "app_password_generation"
+    case apiRequest = "api_request"
+}
+
+enum AppPasswordFlagCause: String {
+    case majorError = "major_error"
+    case generalFailuresThresholdReached = "general_failures_threshold_reached"
+}
+
 // MARK: Private helpers
 private extension AlamofireNetworkErrorHandler {
-    func incrementFailureCount(for siteID: Int64) {
+    func incrementFailureCount(for siteID: Int64, originalFailure: Error) {
         let currentFailureCount = appPasswordFailures[siteID] ?? 0
         let updatedCount = currentFailureCount + 1
         if updatedCount == AppPasswordConstants.requestFailureThreshold {
-            flagSiteAsUnsupported(for: siteID)
+            let flow: RequestFlow
+            let failure: Error
+            switch originalFailure {
+            case AFError.requestRetryFailed(let error, _):
+                flow = .appPasswordGeneration
+                failure = error
+            default:
+                flow = .apiRequest
+                failure = originalFailure
+            }
+            flagSiteAsUnsupported(
+                for: siteID,
+                flow: flow,
+                cause: .generalFailuresThresholdReached,
+                error: failure
+            )
         }
         appPasswordFailures[siteID] = updatedCount
     }
@@ -176,8 +228,45 @@ private extension AlamofireNetworkErrorHandler {
         }
     }
 
+    func logRequestFailure(request: URLRequest, error: Error) {
+        let networkError: NetworkError? = {
+            switch error {
+            case AFError.requestRetryFailed(let retryError, _):
+                return (retryError as? NetworkError)
+            case let networkError as NetworkError:
+                return networkError
+            default:
+                return nil
+            }
+        }()
+
+        let siteURL = request.url?.host() ?? ""
+        let path = request.url?.path(percentEncoded: false) ?? ""
+        let method = request.httpMethod ?? ""
+        let apiErrorCode = networkError?.errorCode ?? error.localizedDescription
+        let httpCode = networkError?.responseCode ?? (error as NSError).code
+
+        DDLogError(
+            """
+            ⛔️ Request failed using Application Passwords for Jetpack Site:
+            - Site URL: \(siteURL)
+            - Path: \(path)
+            - Method: \(method)
+            - Error: HTTP status code \(httpCode)
+            - Error message: \(apiErrorCode)
+            """
+        )
+    }
+
     enum Constants {
         static let flagRefreshDuration: Double = 60 * 60 * 24 * 14 // flag can be reset after 14 days.
+    }
+
+    enum TracksProperty: String {
+        case flow
+        case cause
+        case apiErrorCode = "api_error_code"
+        case httpStatusCode = "http_status_code"
     }
 }
 /// Helper type to keep track of retried requests with accompanied error

@@ -332,7 +332,7 @@ final class StoresManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordInvoked)
-        XCTAssertFalse(mockSessionManager.deleteApplicationPasswordLocally)
+        XCTAssertTrue(mockSessionManager.deleteApplicationPasswordLocally)
     }
 
     func test_updating_default_storeID_sets_storePhoneNumber_to_nil() throws {

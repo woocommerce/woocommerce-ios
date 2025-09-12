@@ -63,13 +63,13 @@ extension POSProductVariation {
 
             // Save related image if present
             if let image = self.image {
-                let persistedImage = PersistedProductVariationImage(from: image, productVariationID: self.productVariationID)
+                let persistedImage = PersistedProductVariationImage(from: image, siteID: self.siteID, productVariationID: self.productVariationID)
                 try persistedImage.insert(db)
             }
 
             // Save related attributes
             for attribute in self.attributes {
-                var persistedAttribute = PersistedProductVariationAttribute(from: attribute, productVariationID: self.productVariationID)
+                var persistedAttribute = PersistedProductVariationAttribute(from: attribute, siteID: self.siteID, productVariationID: self.productVariationID)
                 try persistedAttribute.insert(db)
             }
         }
@@ -79,8 +79,9 @@ extension POSProductVariation {
 // MARK: - PersistedProductVariationAttribute Conversions
 // periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariationAttribute {
-    init(from productVariationAttribute: ProductVariationAttribute, productVariationID: Int64) {
+    init(from productVariationAttribute: ProductVariationAttribute, siteID: Int64, productVariationID: Int64) {
         self.init(
+            siteID: siteID,
             productVariationID: productVariationID,
             name: productVariationAttribute.name,
             option: productVariationAttribute.option
@@ -99,8 +100,9 @@ extension PersistedProductVariationAttribute {
 // MARK: - PersistedProductVariationImage Conversions
 // periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariationImage {
-    public init(from productImage: ProductImage, productVariationID: Int64) {
+    public init(from productImage: ProductImage, siteID: Int64, productVariationID: Int64) {
         self.init(
+            siteID: siteID,
             id: productImage.imageID,
             productVariationID: productVariationID,
             dateCreated: productImage.dateCreated,

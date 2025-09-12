@@ -166,7 +166,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Then
         XCTAssertEqual(receivedNotifications.count, 1)
         XCTAssertEqual(receivedNotifications.first?.name, .JetpackSiteEligibleForAppPasswordSupport)
-        XCTAssertNil(receivedNotifications.first?.object)
+        XCTAssertEqual(receivedNotifications.first?.object as? Int64, siteID)
 
         notificationCenter.removeObserver(observer)
     }

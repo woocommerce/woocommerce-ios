@@ -61,11 +61,14 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
     }
 
     public static let attributes = hasMany(PersistedProductVariationAttribute.self,
+                                           key: "attributes",
                                            using: ForeignKey([PersistedProductVariationAttribute.CodingKeys.siteID.stringValue,
                                                               PersistedProductVariationAttribute.CodingKeys.productVariationID.stringValue],
                                                              to: primaryKey))
     public static let image = hasOne(PersistedProductVariationImage.self,
-                                     using: ForeignKey(PersistedProductVariationImage.primaryKey,
+                                     key: "image",
+                                     using: ForeignKey([PersistedProductVariationImage.CodingKeys.siteID.stringValue,
+                                                        PersistedProductVariationImage.CodingKeys.productVariationID.stringValue],
                                                        to: primaryKey))
 }
 

@@ -35,6 +35,8 @@ public struct PersistedProductAttribute: Codable {
 extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
     public static var databaseTableName: String { "productAttribute" }
 
+    public static var primaryKey: [String] { [CodingKeys.id.stringValue] }
+
     public enum Columns {
         public static let id = Column(CodingKeys.id)
         public static let siteID = Column(CodingKeys.siteID)
@@ -49,6 +51,8 @@ extension PersistedProductAttribute: FetchableRecord, MutablePersistableRecord {
     public mutating func didInsert(_ inserted: InsertionSuccess) {
         id = inserted.rowID
     }
+
+    public static let product = belongsTo(PersistedProduct.self)
 }
 
 

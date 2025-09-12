@@ -73,7 +73,8 @@ extension PersistedProduct: FetchableRecord, PersistableRecord {
     }
 
     public static let images = hasMany(PersistedProductImage.self,
-                                       using: ForeignKey(PersistedProductImage.primaryKey,
+                                       using: ForeignKey([PersistedProductImage.CodingKeys.siteID.stringValue,
+                                                          PersistedProductImage.CodingKeys.productID.stringValue],
                                                          to: primaryKey))
     public static let attributes = hasMany(PersistedProductAttribute.self,
                                            using: ForeignKey([PersistedProductAttribute.CodingKeys.siteID.stringValue,

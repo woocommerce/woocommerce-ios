@@ -51,7 +51,7 @@ extension PersistedProductVariationImage: FetchableRecord, PersistableRecord {
 
 
 // periphery:ignore - TODO: remove ignore when populating database
-private extension PersistedProductVariationImage {
+extension PersistedProductVariationImage {
     enum CodingKeys: String, CodingKey {
         case siteID
         case id

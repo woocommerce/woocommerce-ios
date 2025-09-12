@@ -5,6 +5,8 @@ import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
 import Storage
 import enum Alamofire.AFError
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol PointOfSaleCouponServiceProtocol {
     func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [POSItem]
@@ -30,8 +32,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
                             credentials: Credentials?,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
                             storage: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),

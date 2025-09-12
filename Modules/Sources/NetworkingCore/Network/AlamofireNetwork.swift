@@ -67,11 +67,12 @@ public class AlamofireNetwork: Network {
     /// - Parameters:
     ///   - credentials: Authentication credentials for requests.
     ///   - selectedSite: Publisher for site selection changes.
+    ///   This is necessary if you wish to enable network switching to direct requests while authenticated with WPCOM for better performance.
     ///   - sessionManager: Optional pre-configured session manager.
     ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
     ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
     public required init(credentials: Credentials?,
-                         selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>?,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil,
                          ensuresSessionManagerIsInitialized: Bool = false) {
@@ -121,6 +122,7 @@ public class AlamofireNetwork: Network {
             requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
             requestAuthenticator.delegate = nil
             updateAuthenticationMode(.jetpackTunnel)
+            subscription = nil
         }
     }
 

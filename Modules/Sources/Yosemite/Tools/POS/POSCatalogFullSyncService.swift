@@ -3,6 +3,8 @@ import protocol Networking.POSCatalogSyncRemoteProtocol
 import class Networking.AlamofireNetwork
 import class Networking.POSCatalogSyncRemote
 import Storage
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 // TODO - remove the periphery ignore comment when the catalog is integrated with POS.
 // periphery:ignore
@@ -30,12 +32,17 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let batchedLoader: BatchedRequestLoader
 
-    public convenience init?(credentials: Credentials?, batchSize: Int = 2, grdbManager: GRDBManagerProtocol) {
+    public convenience init?(credentials: Credentials?,
+                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             batchSize: Int = 2,
+                             grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
         }
-        let network = AlamofireNetwork(credentials: credentials, ensuresSessionManagerIsInitialized: true)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       ensuresSessionManagerIsInitialized: true)
         let syncRemote = POSCatalogSyncRemote(network: network)
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
         self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)

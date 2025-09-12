@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import struct Combine.AnyPublisher
 
 /// Protocol for POS site setting service that manages WooCommerce feature flags.
 public protocol POSSiteSettingServiceProtocol {
@@ -17,8 +18,8 @@ public protocol POSSiteSettingServiceProtocol {
 public final class POSSiteSettingService: POSSiteSettingServiceProtocol {
     private let remote: SiteSettingsRemoteProtocol
 
-    public init(credentials: Credentials?) {
-        let network = AlamofireNetwork(credentials: credentials)
+    public init(credentials: Credentials?, selectedSite: AnyPublisher<JetpackSite?, Never>) {
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
         self.remote = SiteSettingsRemote(network: network)
     }
 

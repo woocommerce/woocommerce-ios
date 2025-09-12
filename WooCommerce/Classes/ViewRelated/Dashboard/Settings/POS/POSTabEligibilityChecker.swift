@@ -61,17 +61,26 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
-                                                                                      storageManager: ServiceLocator.storageManager),
-         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
+         systemStatusService: POSSystemStatusServiceProtocol? = nil,
+         siteSettingService: POSSiteSettingServiceProtocol? = nil) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.systemStatusService = systemStatusService
-        self.siteSettingService = siteSettingService
+
+        let credentials = stores.sessionManager.defaultCredentials
+        let selectedSite = stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher()
+        self.systemStatusService = systemStatusService ?? POSSystemStatusService(
+            credentials: credentials,
+            selectedSite: selectedSite,
+            storageManager: ServiceLocator.storageManager
+        )
+        self.siteSettingService = siteSettingService ?? POSSiteSettingService(
+            credentials: credentials,
+            selectedSite: selectedSite
+        )
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.

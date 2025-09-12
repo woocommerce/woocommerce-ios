@@ -28,7 +28,7 @@ final class ConnectivityToolViewModel {
 
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager) {
 
-        let network = AlamofireNetwork(credentials: session.defaultCredentials)
+        let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil)
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
         self.orderRemote = OrdersRemote(network: network)

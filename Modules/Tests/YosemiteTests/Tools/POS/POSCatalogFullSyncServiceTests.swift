@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import Combine
 @testable import Networking
 @testable import Yosemite
 @testable import Storage
@@ -137,7 +138,11 @@ struct POSCatalogFullSyncServiceTests {
         let grdbManager = try GRDBManager()
 
         // When
-        let service = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
+        let service = POSCatalogFullSyncService(
+            credentials: credentials,
+            selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            grdbManager: grdbManager
+        )
 
         // Then
         #expect(service != nil)
@@ -148,7 +153,11 @@ struct POSCatalogFullSyncServiceTests {
         let grdbManager = try GRDBManager()
 
         // When
-        let service = POSCatalogFullSyncService(credentials: nil, grdbManager: grdbManager)
+        let service = POSCatalogFullSyncService(
+            credentials: nil,
+            selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            grdbManager: grdbManager
+        )
 
         // Then
         #expect(service == nil)

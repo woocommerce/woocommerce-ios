@@ -4,6 +4,8 @@ import class Networking.ProductsRemote
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
 import enum Networking.NetworkError
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol PointOfSaleBarcodeScanServiceProtocol {
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem
@@ -40,8 +42,9 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
 
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
                             currencySettings: CurrencySettings) {
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
         self.init(siteID: siteID,
                   productsRemote: ProductsRemote(network: network),
                   currencySettings: currencySettings)

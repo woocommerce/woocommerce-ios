@@ -111,8 +111,15 @@ final class HubMenuViewModel: ObservableObject {
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
-                wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: siteID,
-                                                                     credentials: credentials)))
+                wooPaymentsPayoutService: WooPaymentsPayoutService(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: stores.sessionManager.defaultSitePublisher
+                        .map { $0?.toJetpackSite() }
+                        .eraseToAnyPublisher()
+                )
+            )
+        )
     }()
 
     private(set) var cardPresentPaymentService: CardPresentPaymentFacade?

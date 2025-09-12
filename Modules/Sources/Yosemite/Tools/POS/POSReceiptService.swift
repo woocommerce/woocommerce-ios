@@ -1,5 +1,6 @@
 import SwiftUI
 import Networking
+import struct Combine.AnyPublisher
 
 public protocol POSReceiptServiceProtocol {
     func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws
@@ -9,12 +10,12 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
     private let siteID: Int64
     private let receiptsRemote: POSReceiptsRemoteProtocol
 
-    public convenience init?(siteID: Int64, credentials: Credentials?) {
+    public convenience init?(siteID: Int64, credentials: Credentials?, selectedSite: AnyPublisher<JetpackSite?, Never>) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSReceiptService due to not finding credentials")
             return nil
         }
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
         self.init(siteID: siteID,
                   receiptsRemote: ReceiptRemote(network: network))
     }

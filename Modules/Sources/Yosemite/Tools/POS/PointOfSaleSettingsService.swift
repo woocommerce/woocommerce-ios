@@ -1,6 +1,8 @@
 import Foundation
 import Networking
 import Storage
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation
@@ -18,8 +20,9 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
 
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
                             storage: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
         self.init(siteID: siteID, settingStoreMethods: SettingStoreMethods(storageManager: storage,
                                                                            network: network))
     }

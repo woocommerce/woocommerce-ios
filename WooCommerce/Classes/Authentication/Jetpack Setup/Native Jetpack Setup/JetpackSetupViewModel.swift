@@ -431,7 +431,7 @@ private extension JetpackSetupViewModel {
     }
 
     func finalizeSiteConnection(blogID: Int64, provisionResponse: JetpackConnectionProvisionResponse) {
-        let network = AlamofireNetwork(credentials: wpcomCredentials)
+        let network = AlamofireNetwork(credentials: wpcomCredentials, selectedSite: nil)
         stores.dispatch(JetpackConnectionAction.finalizeConnection(
             siteID: blogID,
             siteURL: siteURL,

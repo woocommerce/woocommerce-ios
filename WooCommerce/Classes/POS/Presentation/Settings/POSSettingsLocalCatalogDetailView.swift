@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct POSSettingsLocalCatalogDetailView: View {
-    @State private var isLoading: Bool = false
     // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
     @State private var allowFullSyncOnCellular: Bool = true
 

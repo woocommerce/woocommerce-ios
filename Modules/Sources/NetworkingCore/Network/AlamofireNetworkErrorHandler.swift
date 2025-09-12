@@ -47,7 +47,7 @@ final class AlamofireNetworkErrorHandler {
 
     func prepareAppPasswordSupport(for siteID: Int64) {
         appPasswordFailures.removeValue(forKey: siteID)
-        notificationCenter.post(name: .JetpackSiteEligibleForAppPasswordSupport, object: nil)
+        notificationCenter.post(name: .JetpackSiteEligibleForAppPasswordSupport, object: siteID)
     }
 
     func shouldRetryJetpackRequest(originalRequest: URLRequestConvertible,

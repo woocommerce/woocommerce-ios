@@ -46,6 +46,14 @@ class DefaultStoresManager: StoresManager {
     ///
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
 
+    /// Tracks site IDs that are eligible for app password support to prevent duplicate analytics events
+    ///
+    private var trackedEligibleSites: Set<Int64> = []
+
+    /// Network switching notification observers
+    ///
+    private var networkNotificationObservers: [NSObjectProtocol]?
+
     /// SessionManager: Persistent Storage for Session-Y Properties.
     /// This property is thread safe
     private(set) var sessionManager: SessionManagerProtocol {
@@ -148,6 +156,9 @@ class DefaultStoresManager: StoresManager {
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
 
         isLoggedIn = isAuthenticated
+        if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
+            startObservingNetworkNotifications()
+        }
     }
 
     /// This should only be invoked after all the ServiceLocator dependencies in this function are initialized to avoid circular reference.
@@ -182,9 +193,11 @@ class DefaultStoresManager: StoresManager {
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
             applicationPasswordGenerationFailureObserver = nil
+            startObservingNetworkNotifications()
         } else {
             listenToApplicationPasswordGenerationFailureNotification()
             invalidWPCOMTokenNotificationObserver = nil
+            stopObservingNetworkNotifications()
         }
 
         return self
@@ -265,6 +278,8 @@ class DefaultStoresManager: StoresManager {
     func deauthenticate() -> StoresManager {
         applicationPasswordGenerationFailureObserver = nil
         invalidWPCOMTokenNotificationObserver = nil
+        stopObservingNetworkNotifications()
+        trackedEligibleSites.removeAll()
 
         if isAuthenticated {
             let resetAction = CardPresentPaymentAction.reset
@@ -822,6 +837,62 @@ private extension DefaultStoresManager {
                                           numberOfProducts: numberOfProducts,
                                           systemPlugins: systemPlugins)
         }
+    }
+
+    /// Sets up network switching notification observers
+    ///
+    func startObservingNetworkNotifications() {
+        let eligibleSiteObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteEligibleForAppPasswordSupport,
+            object: nil,
+            queue: .main) { [weak self] note in
+                self?.trackJetpackSiteEligible(note: note)
+            }
+
+        let siteFlaggedObserver = notificationCenter.addObserver(
+            forName: .JetpackSiteFlaggedUnsupportedForApplicationPassword,
+            object: nil,
+            queue: .main) { [weak self] note in
+                self?.trackJetpackSiteFlagged(note: note)
+            }
+
+        networkNotificationObservers = [eligibleSiteObserver, siteFlaggedObserver]
+    }
+
+    /// Removes network switching notification observers
+    ///
+    func stopObservingNetworkNotifications() {
+        networkNotificationObservers?.forEach { observer in
+            notificationCenter.removeObserver(observer)
+        }
+        networkNotificationObservers = nil
+    }
+
+    /// Tracks Jetpack site eligible for app password support with deduplication
+    ///
+    func trackJetpackSiteEligible(note: Notification) {
+        guard let siteID = note.object as? Int64,
+              sessionManager.defaultSite?.siteID == siteID else {
+            return
+        }
+        // Only track if we haven't already tracked this site
+        if !trackedEligibleSites.contains(siteID) {
+            trackedEligibleSites.insert(siteID)
+            ServiceLocator.analytics.track(.jetpackSiteEligibleForAppPasswordSupport)
+        }
+    }
+
+    /// Tracks Jetpack site flagged as unsupported and removes from eligible tracking
+    ///
+    private func trackJetpackSiteFlagged(note: Notification) {
+        guard let properties = note.object as? [String: Any] else {
+            return
+        }
+        // Get the current site ID and remove from tracked sites
+        if let siteID = sessionManager.defaultStoreID {
+            trackedEligibleSites.remove(siteID)
+        }
+        ServiceLocator.analytics.track(.jetpackSiteFlaggedUnsupportedForAppPasswords, withProperties: properties)
     }
 }
 

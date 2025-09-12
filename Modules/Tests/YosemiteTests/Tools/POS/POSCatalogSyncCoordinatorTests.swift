@@ -7,6 +7,7 @@ struct POSCatalogSyncCoordinatorTests {
     private let mockSyncService: MockPOSCatalogFullSyncService
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
+    private let mockCatalogSizeChecker: MockPOSCatalogSizeChecker
     private let sut: POSCatalogSyncCoordinator
     private let sampleSiteID: Int64 = 134
 
@@ -14,10 +15,12 @@ struct POSCatalogSyncCoordinatorTests {
         self.mockSyncService = MockPOSCatalogFullSyncService()
         self.mockIncrementalSyncService = MockPOSCatalogIncrementalSyncService()
         self.grdbManager = try GRDBManager()
+        self.mockCatalogSizeChecker = MockPOSCatalogSizeChecker()
         self.sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
     }
 
@@ -128,6 +131,79 @@ struct POSCatalogSyncCoordinatorTests {
 
         // Then
         #expect(shouldSync == true)
+    }
+
+    // MARK: - Catalog Size Check Tests
+
+    @Test func shouldPerformFullSync_returns_false_when_catalog_size_exceeds_limit() async throws {
+        // Given - catalog size is above the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 800, variationCount: 300)) // 1100 total
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then
+        #expect(shouldSync == false)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test func shouldPerformFullSync_returns_true_when_catalog_size_is_at_limit() async throws {
+        // Given - catalog size is exactly at the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 600, variationCount: 400)) // 1000 total
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then
+        #expect(shouldSync == true)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test func shouldPerformFullSync_returns_true_when_catalog_size_is_under_limit() async throws {
+        // Given - catalog size is below the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 300, variationCount: 200)) // 500 total
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then
+        #expect(shouldSync == true)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test func shouldPerformFullSync_returns_false_when_catalog_size_check_fails() async throws {
+        // Given - catalog size check throws an error
+        let sizeCheckError = NSError(domain: "size_check", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
+        mockCatalogSizeChecker.checkCatalogSizeResult = .failure(sizeCheckError)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: nil)
+
+        // When
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then
+        #expect(shouldSync == false)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test func shouldPerformFullSync_respects_time_only_when_catalog_size_is_acceptable() async throws {
+        // Given - catalog size is acceptable but sync is recent
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 200, variationCount: 100)) // 300 total
+        let thirtyMinutesAgo = Date().addingTimeInterval(-30 * 60)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: thirtyMinutesAgo)
+
+        // When - max age is 1 hour
+        let shouldSync = await sut.shouldPerformFullSync(for: sampleSiteID, maxAge: 60 * 60)
+
+        // Then - should not sync because time hasn't passed yet
+        #expect(shouldSync == false)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
     }
 
     // MARK: - Database Check Tests
@@ -246,7 +322,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When
@@ -268,7 +345,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When
@@ -304,7 +382,8 @@ struct POSCatalogSyncCoordinatorTests {
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
             grdbManager: grdbManager,
-            maxIncrementalSyncAge: maxAge
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
         )
 
         // When
@@ -398,6 +477,98 @@ struct POSCatalogSyncCoordinatorTests {
 
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
+    }
+
+    // MARK: - Incremental Sync Catalog Size Tests
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_skips_sync_when_catalog_size_exceeds_limit(forceSync: Bool) async throws {
+        // Given - catalog size is above the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 700, variationCount: 400)) // 1100 total
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_performs_sync_when_catalog_size_is_at_limit(forceSync: Bool) async throws {
+        // Given - catalog size is exactly at the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 500, variationCount: 500)) // 1000 total
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_performs_sync_when_catalog_size_is_under_limit(forceSync: Bool) async throws {
+        // Given - catalog size is below the 1000 item limit
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 200, variationCount: 150)) // 350 total
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test(arguments: [true, false])
+    func performIncrementalSyncIfApplicable_skips_sync_when_catalog_size_check_fails(forceSync: Bool) async throws {
+        // Given - catalog size check throws an error
+        let sizeCheckError = NSError(domain: "size_check", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
+        mockCatalogSizeChecker.checkCatalogSizeResult = .failure(sizeCheckError)
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: forceSync)
+
+        // Then - should skip sync when size check fails
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_checks_size_before_age_check() async throws {
+        // Given - catalog is over limit but would otherwise sync due to age
+        mockCatalogSizeChecker.checkCatalogSizeResult = .success(POSCatalogSize(productCount: 800, variationCount: 300)) // 1100 total
+        let maxAge: TimeInterval = 2
+        let staleIncrementalSyncDate = Date().addingTimeInterval(-(maxAge + 1)) // Older than max age
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate, lastIncrementalSyncDate: staleIncrementalSyncDate)
+
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            maxIncrementalSyncAge: maxAge,
+            catalogSizeChecker: mockCatalogSizeChecker
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, forceSync: false)
+
+        // Then - should skip sync due to size limit, regardless of age
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 0)
+        #expect(mockCatalogSizeChecker.checkCatalogSizeCallCount == 1)
+        #expect(mockCatalogSizeChecker.lastCheckedSiteID == sampleSiteID)
     }
 
     // MARK: - Helper Methods

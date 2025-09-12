@@ -1016,6 +1016,92 @@ final class RemoteTests: XCTestCase {
             XCTAssertTrue(result.1 as? NetworkError == error)
         }
     }
+
+    // MARK: - Tests for enqueueWithResponseHeaders
+
+    /// Verifies that `enqueueWithResponseHeaders` properly wraps up the received request and returns headers
+    ///
+    func test_enqueueWithResponseHeaders_wraps_up_request_and_returns_headers() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        let expectedHeaders = ["Content-Type": "application/json", "X-Total-Count": "150"]
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+        network.responseHeaders = expectedHeaders
+
+        // When
+        let headers = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        let receivedRequest = try XCTUnwrap(network.requestsForResponseData.first as? JetpackRequest)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
+        XCTAssertEqual(receivedRequest.method, request.method)
+        XCTAssertEqual(receivedRequest.path, request.path)
+        XCTAssertEqual(headers, expectedHeaders)
+    }
+
+    /// Verifies that `enqueueWithResponseHeaders` returns empty dictionary when no headers are provided
+    ///
+    func test_enqueueWithResponseHeaders_returns_empty_dictionary_when_no_headers() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+
+        // When
+        let headers = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertEqual(headers, [:])
+    }
+
+    /// Verifies that `enqueueWithResponseHeaders` propagates NetworkError properly
+    ///
+    func test_enqueueWithResponseHeaders_propagates_NetworkError() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        let expectedError = NetworkError.notFound()
+
+        network.simulateError(requestUrlSuffix: "something", error: expectedError)
+
+        // When/Then
+        do {
+            _ = try await remote.enqueueWithResponseHeaders(request)
+            XCTFail("Expected error to be thrown")
+        } catch {
+            XCTAssertTrue(error as? NetworkError == expectedError)
+        }
+    }
+
+    /// Verifies that `enqueueWithResponseHeaders` handles various header types correctly
+    ///
+    func test_enqueueWithResponseHeaders_handles_various_header_types() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        let expectedHeaders = [
+            "Content-Type": "application/json",
+            "X-Total-Count": "500",
+            "X-WC-Total": "250",
+            "Cache-Control": "no-cache",
+            "Set-Cookie": "session=abc123"
+        ]
+
+        network.simulateResponse(requestUrlSuffix: "something", filename: "order")
+        network.responseHeaders = expectedHeaders
+
+        // When
+        let headers = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertEqual(headers.count, expectedHeaders.count)
+        for (key, value) in expectedHeaders {
+            XCTAssertEqual(headers[key], value, "Header \(key) should match expected value")
+        }
+    }
 }
 
 

@@ -44,13 +44,18 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
+    @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
+
+    private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        environmentBackButtonConfiguration ?? backButtonConfiguration
+    }
 
     private var hStackAlignment: VerticalAlignment {
         items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
-        backButtonConfiguration != nil
+        effectiveBackButtonConfiguration != nil
     }
 
     init(
@@ -154,7 +159,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     @ViewBuilder
     private var backButton: some View {
-        if let configuration = backButtonConfiguration {
+        if let configuration = effectiveBackButtonConfiguration {
             POSPageHeaderBackButton(configuration: configuration)
         }
     }
@@ -163,6 +168,38 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
+}
+
+
+struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
+    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+}
+
+struct POSHeaderBackButtonIconKey: EnvironmentKey {
+    static let defaultValue: String? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        get { self[POSHeaderBackButtonConfigurationKey.self] }
+        set { self[POSHeaderBackButtonConfigurationKey.self] = newValue }
+    }
+
+    var posHeaderBackButtonIcon: String? {
+        get { self[POSHeaderBackButtonIconKey.self] }
+        set { self[POSHeaderBackButtonIconKey.self] = newValue }
+    }
+}
+
+// MARK: - View Extensions for Easy Usage
+
+extension View {
+    /// Sets the back button icon for all POSPageHeaderView instances in the view hierarchy.
+    /// - Parameter systemName: The system name for the back button icon (e.g., "xmark")
+    /// - Returns: A view with the icon environment value set
+    func posHeaderBackButtonIcon(systemName: String) -> some View {
+        environment(\.posHeaderBackButtonIcon, systemName)
+    }
 }
 
 // MARK: - Previews

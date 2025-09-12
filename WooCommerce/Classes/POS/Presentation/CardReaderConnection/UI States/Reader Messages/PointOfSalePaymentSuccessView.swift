@@ -12,10 +12,12 @@ struct PointOfSalePaymentSuccessView: View {
     var body: some View {
         VStack {
             if isShowingSendReceiptView {
-                POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView)
-                    .transition(.asymmetric(
-                        insertion: .move(edge: .trailing).combined(with: .opacity),
-                        removal: .move(edge: .trailing).combined(with: .opacity)))
+                POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView) { email in
+                    try await posModel.sendReceipt(to: email)
+                }
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .trailing).combined(with: .opacity)))
             } else {
                 HStack(alignment: .center) {
                     Spacer()

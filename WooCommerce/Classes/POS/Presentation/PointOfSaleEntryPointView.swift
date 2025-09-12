@@ -7,6 +7,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
+    @State private var orderListModel: PointOfSaleOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -15,7 +16,6 @@ struct PointOfSaleEntryPointView: View {
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
     private let couponsSearchController: PointOfSaleSearchingItemsControllerProtocol
-    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
     private let settingsController: PointOfSaleSettingsControllerProtocol
@@ -23,6 +23,7 @@ struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let siteTimezone: TimeZone
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -32,12 +33,14 @@ struct PointOfSaleEntryPointView: View {
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
+         receiptSender: POSReceiptSending,
          settingsController: PointOfSaleSettingsControllerProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
-         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         siteTimezone: TimeZone = .current) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -50,9 +53,10 @@ struct PointOfSaleEntryPointView: View {
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
-        self.ordersController = ordersController
         self.barcodeScanService = barcodeScanService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        self.orderListModel = PointOfSaleOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+        self.siteTimezone = siteTimezone
     }
 
     var body: some View {
@@ -85,7 +89,8 @@ struct PointOfSaleEntryPointView: View {
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
-        .environment(PointOfSaleOrderListModel(ordersController: ordersController))
+        .environment(orderListModel)
+        .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)
@@ -108,6 +113,7 @@ struct PointOfSaleEntryPointView: View {
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
+                              receiptSender: POSReceiptSenderPreview(),
                               settingsController: PointOfSaleSettingsPreviewController(),
                               collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
                               searchHistoryService: PointOfSalePreviewHistoryService(),

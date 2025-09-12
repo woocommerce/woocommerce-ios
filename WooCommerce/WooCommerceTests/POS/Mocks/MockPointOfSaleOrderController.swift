@@ -9,12 +9,8 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         // no-op
     }
 
-    var orderStatePublisher: AnyPublisher<PointOfSaleInternalOrderState, Never> {
-        $orderState.eraseToAnyPublisher()
-    }
-    @Published var orderState: PointOfSaleInternalOrderState = .idle
+    var orderState: PointOfSaleInternalOrderState = .idle
     var orderStateToReturn: PointOfSaleInternalOrderState?
-
     var syncOrderWasCalled: Bool = false
     var spyCartProducts: [Cart.PurchasableItem]?
     var spyRetryHandler: (() async -> Void)?
@@ -41,12 +37,12 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         clearOrderWasCalled = true
     }
 
-    var shouldThrowReceiptError: Bool = false
+    var sendReceiptErrorToThrow: Error?
     var sendReceiptWasCalled: Bool = false
     func sendReceipt(recipientEmail: String) async throws {
         sendReceiptWasCalled = true
-        if shouldThrowReceiptError {
-            throw NSError(domain: "some error", code: -1)
+        if let sendReceiptErrorToThrow {
+            throw sendReceiptErrorToThrow
         }
     }
 }

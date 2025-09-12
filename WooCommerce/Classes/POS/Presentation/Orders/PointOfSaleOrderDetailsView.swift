@@ -10,9 +10,18 @@ struct PointOfSaleOrderDetailsView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.siteTimezone) private var siteTimezone
+    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
+    }
+
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter.dateAndTimeFormatter
+        formatter.timeZone = siteTimezone
+        return formatter
     }
 
     var body: some View {
@@ -26,6 +35,10 @@ struct PointOfSaleOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    if actions.isNotEmpty {
+                        actionsSection(actions)
+                    }
+
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
@@ -36,6 +49,12 @@ struct PointOfSaleOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: order, email: email)
+            }
+            .posHeaderBackButtonIcon(systemName: "xmark")
+        }
     }
 }
 
@@ -93,7 +112,7 @@ private extension PointOfSaleOrderDetailsView {
     @ViewBuilder
     func headerBottomContent(for order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+            Text(dateFormatter.string(from: order.dateCreated))
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)
@@ -278,6 +297,52 @@ private extension PointOfSaleOrderDetailsView {
     }
 }
 
+// MARK: - Actions
+
+private extension PointOfSaleOrderDetailsView {
+    enum POSOrderDetailsAction: Identifiable, CaseIterable {
+        case emailReceipt
+
+        var id: String { title }
+
+        var title: String {
+            switch self {
+            case .emailReceipt:
+                Localization.emailReceiptActionTitle
+            }
+        }
+
+        func available(for order: POSOrder) -> Bool {
+            switch self {
+            case .emailReceipt:
+                order.status == .completed
+            }
+        }
+    }
+
+    var actions: [POSOrderDetailsAction] {
+        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
+    }
+
+    @ViewBuilder
+    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
+        HStack {
+            ForEach(actions) { action in
+                Button(action: {
+                    switch action {
+                    case .emailReceipt:
+                        isShowingEmailReceiptView = true
+                    }
+                }) {
+                    Text(action.title)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+            }
+        }
+        .padding(.vertical)
+    }
+}
+
 // MARK: - Localization
 
 private enum Localization {
@@ -360,6 +425,12 @@ private enum Localization {
         "pos.orderDetailsView.netPaymentLabel",
         value: "Net Payment",
         comment: "Label for net payment amount after refunds"
+    )
+
+    static let emailReceiptActionTitle = NSLocalizedString(
+        "pos.orderDetailsView.emailReceiptAction.title",
+        value: "Email receipt",
+        comment: "Label for email receipt action on order details view"
     )
 }
 

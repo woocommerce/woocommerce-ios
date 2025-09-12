@@ -129,6 +129,7 @@ final class ReceiptRemoteTests: XCTestCase {
         // Given
         let remote = ReceiptRemote(network: network)
         let posReceiptTemplateID = "customer_pos_completed_order"
+        let testEmail = "test@example.com"
 
         network.simulateResponse(
             requestUrlSuffix: "orders/\(sampleOrderID)/actions/send_email",
@@ -136,22 +137,25 @@ final class ReceiptRemoteTests: XCTestCase {
         )
 
         // When
-        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID)
+        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail)
 
         // Then the send email request was made with correct parameters.
         let sendEmailRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertEqual(sendEmailRequest.method, .post)
         XCTAssertEqual(sendEmailRequest.path, "orders/\(sampleOrderID)/actions/send_email")
         XCTAssertEqual(sendEmailRequest.parameters["template_id"] as? String, posReceiptTemplateID)
+        XCTAssertEqual(sendEmailRequest.parameters["email"] as? String, testEmail)
+        XCTAssertEqual(sendEmailRequest.parameters["force_email_update"] as? Bool, true)
     }
 
     func test_sendPOSReceipt_when_no_reponse_exist_throws_error() async {
         // Given
         let remote = ReceiptRemote(network: network)
+        let testEmail = "test@example.com"
 
         await assertThrowsError({
             // When
-            try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID)
+            try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail)
         }, errorAssert: { error in
             // Then
             return error is NetworkError

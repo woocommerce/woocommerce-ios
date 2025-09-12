@@ -26,6 +26,6 @@ final class MockCIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 
     func isFeatureSupported(_ feature: CIABAffectedFeature, for site: Site) -> Bool {
-        return !mockedCIABDisabledFeatures.contains(feature) && mockedCIABSites.contains(site)
+        return !mockedCIABDisabledFeatures.contains(feature) || !mockedCIABSites.contains(site)
     }
 }

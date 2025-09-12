@@ -97,11 +97,16 @@ private extension POSTabCoordinator {
                                                              credentials: credentials,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
+            let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
+
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials),
                #available(iOS 17.0, *) {
+                let receiptSender = POSReceiptSender(siteID: siteID,
+                                                             orderService: orderService,
+                                                             receiptService: receiptService)
                 let posView = PointOfSaleEntryPointView(
                     itemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
@@ -130,7 +135,8 @@ private extension POSTabCoordinator {
                     },
                     cardPresentPaymentService: cardPresentPaymentService,
                     orderController: PointOfSaleOrderController(orderService: orderService,
-                                                                receiptService: receiptService),
+                                                                receiptSender: receiptSender),
+                    receiptSender: receiptSender,
                     settingsController: PointOfSaleSettingsController(siteID: siteID,
                                                                       settingsService: settingsService,
                                                                       cardPresentPaymentService: cardPresentPaymentService,
@@ -142,8 +148,10 @@ private extension POSTabCoordinator {
                         itemFetchStrategyFactory: posPopularItemFetchStrategyFactory
                     ),
                     barcodeScanService: barcodeScanService,
-                    posEligibilityChecker: eligibilityChecker
+                    posEligibilityChecker: eligibilityChecker,
+                    siteTimezone: siteTimezone
                 )
+
                 let hostingController = UIHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)

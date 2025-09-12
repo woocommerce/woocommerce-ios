@@ -2,13 +2,14 @@ import SwiftUI
 
 struct POSPageHeaderBackButton: View {
     private let configuration: POSPageHeaderBackButtonConfiguration
+    @Environment(\.posHeaderBackButtonIcon) private var environmentIcon
 
     init(configuration: POSPageHeaderBackButtonConfiguration) {
         self.configuration = configuration
     }
 
     private var buttonIcon: String {
-        configuration.buttonIcon ?? Constants.defaultBackButtonIcon
+        environmentIcon ?? configuration.buttonIcon ?? Constants.defaultBackButtonIcon
     }
 
     var body: some View {

@@ -29,8 +29,7 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
 
         try await grdbManager.databaseConnection.write { db in
             DDLogInfo("🗑️ Clearing catalog data for site \(siteID)")
-            // currently, we can't save for more than one site as entity IDs are not namespaced.
-            try PersistedSite.deleteAll(db)
+            try PersistedSite.deleteOne(db, key: siteID)
 
             let site = PersistedSite(id: siteID, lastCatalogFullSyncDate: catalog.syncDate)
             try site.insert(db)
@@ -84,11 +83,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 try product.insert(db, onConflict: .replace)
 
                 try PersistedProductImage
-                    .filter { $0.productID == product.id }
+                    .filter { $0.siteID == siteID && $0.productID == product.id }
                     .deleteAll(db)
 
                 try PersistedProductAttribute
-                    .filter { $0.productID == product.id }
+                    .filter { $0.siteID == siteID && $0.productID == product.id }
                     .deleteAll(db)
             }
 
@@ -104,11 +103,11 @@ final class POSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
                 try variation.insert(db, onConflict: .replace)
 
                 try PersistedProductVariationImage
-                    .filter { $0.productVariationID == variation.id }
+                    .filter { $0.siteID == siteID && $0.productVariationID == variation.id }
                     .deleteAll(db)
 
                 try PersistedProductVariationAttribute
-                    .filter { $0.productVariationID == variation.id }
+                    .filter { $0.siteID == siteID && $0.productVariationID == variation.id }
                     .deleteAll(db)
             }
 
@@ -148,13 +147,17 @@ private extension POSCatalog {
 
     var productImagesToPersist: [PersistedProductImage] {
         products.flatMap { product in
-            product.images.map { PersistedProductImage(from: $0, productID: product.productID) }
+            product.images.map { PersistedProductImage(from: $0,
+                                                       siteID: product.siteID,
+                                                       productID: product.productID) }
         }
     }
 
     var productAttributesToPersist: [PersistedProductAttribute] {
         products.flatMap { product in
-            product.attributes.map { PersistedProductAttribute(from: $0, productID: product.productID) }
+            product.attributes.map { PersistedProductAttribute(from: $0,
+                                                               siteID: product.siteID,
+                                                               productID: product.productID) }
         }
     }
 
@@ -164,13 +167,17 @@ private extension POSCatalog {
 
     var variationImagesToPersist: [PersistedProductVariationImage] {
         variations.compactMap { variation in
-            variation.image.map { PersistedProductVariationImage(from: $0, productVariationID: variation.productVariationID) }
+            variation.image.map { PersistedProductVariationImage(from: $0,
+                                                                 siteID: variation.siteID,
+                                                                 productVariationID: variation.productVariationID) }
         }
     }
 
     var variationAttributesToPersist: [PersistedProductVariationAttribute] {
         variations.flatMap { variation in
-            variation.attributes.map { PersistedProductVariationAttribute(from: $0, productVariationID: variation.productVariationID) }
+            variation.attributes.map { PersistedProductVariationAttribute(from: $0,
+                                                                          siteID: variation.siteID,
+                                                                          productVariationID: variation.productVariationID) }
         }
     }
 }

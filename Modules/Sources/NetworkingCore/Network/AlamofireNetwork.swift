@@ -311,7 +311,7 @@ private extension AlamofireNetwork {
                     network: self
                 ))
                 requestAuthenticator.delegate = self
-                errorHandler.resetFailureCount(for: site.siteID) // reset failure count
+                errorHandler.prepareAppPasswordSupport(for: site.siteID) // reset failure count
                 updateAuthenticationMode(.appPasswordsWithJetpack)
             }
     }
@@ -338,8 +338,13 @@ private extension AlamofireNetwork {
 // MARK: `RequestProcessorDelegate` conformance
 //
 extension AlamofireNetwork: RequestProcessorDelegate {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64) {
-        errorHandler.flagSiteAsUnsupported(for: siteID)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error) {
+        errorHandler.flagSiteAsUnsupported(
+            for: siteID,
+            flow: .appPasswordGeneration,
+            cause: .majorError,
+            error: error
+        )
     }
 }
 
@@ -379,8 +384,8 @@ extension Alamofire.DataResponse {
             return error
         }
 
-        if case .some(AFError.requestAdaptationFailed) = error?.asAFError {
-            return error
+        if case .some(AFError.requestRetryFailed) = error?.asAFError {
+            return error?.asAFError
         }
 
         return response.flatMap { response in

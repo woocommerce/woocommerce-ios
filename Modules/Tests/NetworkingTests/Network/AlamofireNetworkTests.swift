@@ -184,7 +184,7 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
 
         // When
-        network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID)
+        network.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, error: NetworkError.notFound(response: nil))
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
@@ -198,7 +198,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, userDefaults: userDefaults)
 
         // When
-        network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID)
+        network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID, error: NetworkError.notFound(response: nil))
 
         // Then
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(existingSiteID)))

@@ -525,7 +525,7 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
 private class MockRequestProcessorDelegate: RequestProcessorDelegate {
     private(set) var didFailToAuthenticateRequestForSiteID: Int64?
 
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64) {
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error) {
         didFailToAuthenticateRequestForSiteID = siteID
     }
 }

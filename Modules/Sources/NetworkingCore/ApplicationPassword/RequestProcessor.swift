@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error)
 }
 
 /// Authenticates and retries requests
@@ -85,7 +85,7 @@ private extension RequestProcessor {
                     generateApplicationPassword()
                 } else {
                     isAuthenticating = false
-                    completeRequests(false)
+                    completeRequests(false, error: error)
                     if let currentSiteID {
                         notifyFailureIfNeeded(error, for: currentSiteID)
                     }
@@ -131,7 +131,7 @@ private extension RequestProcessor {
             }
         }()
         if appPasswordNotSupported {
-            delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID)
+            delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, error: error)
         }
     }
 
@@ -146,8 +146,16 @@ private extension RequestProcessor {
         }
     }
 
-    func completeRequests(_ shouldRetry: Bool) {
-        let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
+    func completeRequests(_ shouldRetry: Bool, error: Error? = nil) {
+        let result: RetryResult = {
+            if shouldRetry {
+                .retryWithDelay(0)
+            } else if let error {
+                .doNotRetryWithError(error)
+            } else {
+                .doNotRetry
+            }
+        }()
         requestsToRetry.forEach { (completion) in
             completion(result)
         }
@@ -165,4 +173,12 @@ public extension NSNotification.Name {
     /// Posted when generating an application password fails
     ///
     static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
+
+    /// Posted when site is flagged as unsupported for app password
+    ///
+    static let JetpackSiteFlaggedUnsupportedForApplicationPassword = NSNotification.Name(rawValue: "JetpackSiteFlaggedUnsupportedForApplicationPassword")
+
+    /// Posted when site is detected as eligible for app password authentication
+    ///
+    static let JetpackSiteEligibleForAppPasswordSupport = NSNotification.Name(rawValue: "JetpackSiteEligibleForAppPasswordSupport")
 }

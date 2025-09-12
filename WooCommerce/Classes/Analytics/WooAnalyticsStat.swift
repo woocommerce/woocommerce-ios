@@ -1163,6 +1163,10 @@ enum WooAnalyticsStat: String {
     case applicationPasswordsNewPasswordCreated = "application_passwords_new_password_created"
     case applicationPasswordsGenerationFailed = "application_passwords_generation_failed"
 
+    // MARK: Jetpack site performance improvements
+    case jetpackSiteEligibleForAppPasswordSupport = "jetpack_site_eligible_for_app_password_support"
+    case jetpackSiteFlaggedUnsupportedForAppPasswords = "jetpack_site_flagged_unsupported_for_app_passwords"
+
     // MARK: Free Trial
     case freeTrialUpgradeNowTapped = "free_trial_upgrade_now_tapped"
     case planUpgradeSuccess = "plan_upgrade_success"

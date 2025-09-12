@@ -151,10 +151,13 @@ class AuthenticatedState: StoresManagerState {
                                                            selectedSite: site,
                                                            grdbManager: ServiceLocator.grdbManager),
            let incrementalSyncService = POSCatalogIncrementalSyncService(credentials: credentials, selectedSite: site, grdbManager: ServiceLocator.grdbManager) {
+            let syncRemote = POSCatalogSyncRemote(network: network)
+            let catalogSizeChecker = POSCatalogSizeChecker(syncRemote: syncRemote)
             posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
                 fullSyncService: fullSyncService,
                 incrementalSyncService: incrementalSyncService,
-                grdbManager: ServiceLocator.grdbManager
+                grdbManager: ServiceLocator.grdbManager,
+                catalogSizeChecker: catalogSizeChecker
             )
         } else {
             posCatalogSyncCoordinator = nil

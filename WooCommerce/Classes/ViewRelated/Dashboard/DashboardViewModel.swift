@@ -193,7 +193,7 @@ final class DashboardViewModel: ObservableObject {
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
-                             canSowStock: isEligibleForStock,
+                             canShowStock: isEligibleForStock,
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
@@ -507,7 +507,7 @@ private extension DashboardViewModel {
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
-                                     canSowStock: canShowStock,
+                                     canShowStock: canShowStock,
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
@@ -615,7 +615,7 @@ private extension DashboardViewModel {
                               canShowGoogle: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
-                              canSowStock: Bool,
+                              canShowStock: Bool,
                               canShowInbox: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
@@ -650,7 +650,7 @@ private extension DashboardViewModel {
         cards.append(
             DashboardCard(
                 type: .stock,
-                availability: canSowStock ? .show : .hide,
+                availability: canShowStock ? .show : .hide,
                 enabled: false
             )
         )
@@ -671,7 +671,7 @@ private extension DashboardViewModel {
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
                               canShowInbox: Bool,
-                              canSowStock: Bool,
+                              canShowStock: Bool,
                               hasOrders: Bool) {
 
         let canShowAnalytics = hasOrders
@@ -683,7 +683,7 @@ private extension DashboardViewModel {
                                                 canShowGoogle: canShowGoogle,
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
-                                                canSowStock: canSowStock,
+                                                canShowStock: canShowStock,
                                                 canShowInbox: canShowInbox)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.

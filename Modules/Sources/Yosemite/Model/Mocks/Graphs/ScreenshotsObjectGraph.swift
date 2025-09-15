@@ -56,7 +56,10 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         isAdmin: false,
         wasEcommerceTrial: false,
         hasSSOEnabled: false,
-        applicationPasswordAvailable: false
+        applicationPasswordAvailable: false,
+        isGarden: false,
+        gardenName: nil,
+        gardenPartner: nil
     )
 
     /// May not be needed anymore if we're not mocking the API

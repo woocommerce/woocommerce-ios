@@ -104,7 +104,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     /// The site Garden name is present
     ///
     public let gardenName: String?
-    
+
     /// The site Garden partner if present
     ///
     public let gardenPartner: String?

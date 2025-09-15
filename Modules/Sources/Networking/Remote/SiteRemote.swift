@@ -338,12 +338,34 @@ extension SiteRemote {
     enum SiteParameter {
         enum Fields {
             static let key = "fields"
-            static let value = "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities,was_ecommerce_trial,plan,jetpack_modules"
+            static let value = [
+                "ID",
+                "name",
+                "description",
+                "URL",
+                "options",
+                "jetpack",
+                "jetpack_connection",
+                "capabilities",
+                "was_ecommerce_trial",
+                "plan",
+                "jetpack_modules"
+            ].joined(separator: ",")
         }
         enum Options {
             static let key = "options"
-            static let value =
-            "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public,can_blaze"
+            static let value = [
+                "timezone",
+                "is_wpcom_store",
+                "woocommerce_is_active",
+                "gmt_offset",
+                "jetpack_connection_active_plugins",
+                "admin_url",
+                "login_url",
+                "frame_nonce",
+                "blog_public",
+                "can_blaze"
+            ].joined(separator: ",")
         }
     }
 }

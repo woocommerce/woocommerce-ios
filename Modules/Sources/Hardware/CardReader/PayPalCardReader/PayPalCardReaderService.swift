@@ -35,8 +35,8 @@ public final class PayPalCardReaderService: NSObject {
 
         do {
             // Create authentication provider with OAuth 2.0 client ID and redirect URI
-            // For POC: Use sandbox credentials - replace with real values from PayPal Developer Portal
-            let clientID = "YOUR_PAYPAL_CLIENT_ID" // Get from https://developer.paypal.com/
+            // For POC: Use sandbox credentials - replace with real values from Zettle Developer Portal
+            let clientID = "YOUR_PAYPAL_CLIENT_ID" // Get from https://developer.zettle.com/
             let callbackURL = URL(string: "woocommerce://paypal-auth")! // Your app's custom URL scheme
 
             let authenticationProvider = try iZettleSDKAuthorization(

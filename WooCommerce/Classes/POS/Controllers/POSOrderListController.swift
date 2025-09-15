@@ -1,15 +1,15 @@
 import Foundation
 import Observation
-import enum Yosemite.PointOfSaleOrderListServiceError
-import protocol Yosemite.PointOfSaleOrderListServiceProtocol
-import protocol Yosemite.PointOfSaleOrderListFetchStrategyFactoryProtocol
-import protocol Yosemite.PointOfSaleOrderListFetchStrategy
+import enum Yosemite.POSOrderListServiceError
+import protocol Yosemite.POSOrderListServiceProtocol
+import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSOrderListFetchStrategy
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 
-protocol PointOfSaleOrderListControllerProtocol {
+protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     func loadOrders() async
@@ -19,18 +19,18 @@ protocol PointOfSaleOrderListControllerProtocol {
     func updateOrder(orderID: Int64) async throws
 }
 
-protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListControllerProtocol {
+protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()
 }
 
-@Observable final class PointOfSaleOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
+@Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
-    private var fetchStrategy: PointOfSaleOrderListFetchStrategy
+    private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
-    private let orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol
+    private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -40,7 +40,7 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
          return tracker
     }
 
-    init(orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactoryProtocol,
+    init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
@@ -133,7 +133,7 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
             }
 
             return pagedOrders.hasMorePages
-        } catch PointOfSaleOrderListServiceError.requestCancelled {
+        } catch POSOrderListServiceError.requestCancelled {
             return true
         }
     }

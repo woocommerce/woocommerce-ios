@@ -1,9 +1,9 @@
 import SwiftUI
 import UIKit
 
-struct PointOfSaleOrdersView: View {
+struct POSOrdersView: View {
     @Binding var isPresented: Bool
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
@@ -15,11 +15,11 @@ struct PointOfSaleOrdersView: View {
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { orderListModel.ordersController.selectOrder($0) }
             )) { _ in
-                PointOfSaleOrderListView() {
+                POSOrderListView() {
                     isPresented = false
                 }
             } detail: { selection in
-                PointOfSaleOrderDetailsView(
+                POSOrderDetailsView(
                     order: selection,
                     onBack: {
                         orderListModel.ordersController.selectOrder(nil)
@@ -27,9 +27,9 @@ struct PointOfSaleOrdersView: View {
                 )
             } detailPlaceholderView: {
                 if orderListModel.ordersController.ordersViewState.isLoading {
-                    PointOfSaleOrderDetailsLoadingView()
+                    POSOrderDetailsLoadingView()
                 } else {
-                    PointOfSaleOrderDetailsEmptyView()
+                    POSOrderDetailsEmptyView()
                 }
             } setDefaultValue: {
                 if orderListModel.ordersController.selectedOrder == nil,
@@ -58,7 +58,7 @@ struct PointOfSaleOrdersView: View {
     private func errorView(_ error: PointOfSaleErrorState) -> some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
-                title: PointOfSaleOrderListView.Localization.ordersTitle,
+                title: POSOrderListView.Localization.ordersTitle,
                 backButtonConfiguration: .init(state: .enabled, action: {
                     isPresented = false
                 }))
@@ -145,7 +145,7 @@ private enum Constants {
 
 #if DEBUG
 #Preview("Orders View") {
-    PointOfSaleOrdersView(isPresented: .constant(true))
-        .environment(POSPreviewHelpers.makePreviewOrdersModel())
+    POSOrdersView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
 #endif

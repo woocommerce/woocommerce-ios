@@ -2,10 +2,10 @@ import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
 
-struct PointOfSaleOrderListView: View {
+struct POSOrderListView: View {
     let onClose: () -> Void
 
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.keyboardObserver) private var keyboardObserver
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
@@ -328,7 +328,7 @@ struct PointOfSaleOrderBadgeView: View {
 
 // MARK: - Search
 
-private extension PointOfSaleOrderListView {
+private extension POSOrderListView {
     func setSearch(_ isSearchingValue: Bool) {
         if isSearchingValue {
             isSearching = true
@@ -342,9 +342,9 @@ private extension PointOfSaleOrderListView {
 }
 
 final class POSOrderSearchable: POSSearchable {
-    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
+    private let ordersController: POSSearchingOrderListControllerProtocol
 
-    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
+    init(ordersController: POSSearchingOrderListControllerProtocol) {
         self.ordersController = ordersController
     }
 
@@ -374,7 +374,7 @@ private enum Constants {
     static let searchControlID = "searchControl"
 }
 
-extension PointOfSaleOrderListView {
+extension POSOrderListView {
     enum Localization {
         static let ordersTitle = NSLocalizedString(
             "pos.orderListView.ordersTitle",
@@ -394,9 +394,9 @@ private enum Localization {
 #if DEBUG
 #Preview("List") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
-            .environment(POSPreviewHelpers.makePreviewOrdersModel())
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loaded([POSPreviewHelpers.makePreviewOrder()], hasMoreItems: false)))
     } detail: {
         Text("Detail View")
     }
@@ -405,7 +405,7 @@ private enum Localization {
 
 #Preview("Empty State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
     } detail: {
@@ -415,7 +415,7 @@ private enum Localization {
 
 #Preview("Error State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .error(.errorOnLoadingOrders())))
     } detail: {
@@ -425,7 +425,7 @@ private enum Localization {
 
 #Preview("Loading State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loading([])))
     } detail: {
@@ -435,7 +435,7 @@ private enum Localization {
 
 #Preview("Inline Error - Refresh") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
                 state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
@@ -449,7 +449,7 @@ private enum Localization {
 
 #Preview("Inline Error - Pagination") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(
                 state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
@@ -463,7 +463,7 @@ private enum Localization {
 
 #Preview("Search Empty State") {
     NavigationSplitView(columnVisibility: .constant(.all)) {
-        PointOfSaleOrderListView(onClose: {})
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
             .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
     } detail: {

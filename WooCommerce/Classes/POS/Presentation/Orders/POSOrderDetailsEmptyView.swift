@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleOrderDetailsEmptyView: View {
+struct POSOrderDetailsEmptyView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
@@ -40,6 +40,6 @@ private enum Localization {
 
 #if DEBUG
 #Preview {
-    PointOfSaleOrderDetailsEmptyView()
+    POSOrderDetailsEmptyView()
 }
 #endif

@@ -26,8 +26,8 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
-import class Yosemite.PointOfSaleOrderListService
-import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
+import class Yosemite.POSOrderListService
+import class Yosemite.POSOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -237,13 +237,9 @@ struct POSPreviewHelpers {
         )
     }
 
-    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController(), receiptSender: POSReceiptSenderPreview())
-    }
-
-    static func makePreviewOrdersModel(state: POSOrderListState) -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(
-            ordersController: PointOfSaleConfigurablePreviewOrderListController(state: state),
+    static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
+        return POSOrderListModel(
+            ordersController: POSConfigurablePreviewOrderListController(state: state),
             receiptSender: POSReceiptSenderPreview())
     }
 
@@ -289,7 +285,13 @@ struct POSPreviewHelpers {
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
+    private let state: POSOrderListState
+
+    init(state: POSOrderListState) {
+        self.state = state
+    }
+
     var ordersViewState: POSOrderListState {
         let orders = [
             POSOrder(
@@ -388,23 +390,6 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
-    func searchOrders(searchTerm: String) async {}
-    func clearSearchOrders() {}
-}
-
-final class PointOfSaleConfigurablePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
-    private let state: POSOrderListState
-
-    init(state: POSOrderListState) {
-        self.state = state
-    }
-
-    var ordersViewState: POSOrderListState { state }
-    var selectedOrder: POSOrder? { ordersViewState.orders.first }
-    func loadOrders() async {}
-    func loadNextOrders() async {}
-    func refreshOrders() async {}
-    func selectOrder(_ order: POSOrder?) {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
 }

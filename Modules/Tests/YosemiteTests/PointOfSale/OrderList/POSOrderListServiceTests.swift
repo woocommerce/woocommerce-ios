@@ -5,15 +5,15 @@ import struct NetworkingCore.Order
 import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
-final class PointOfSaleOrderServiceTests: XCTestCase {
+final class POSOrderListServiceTests: XCTestCase {
     private let siteID: Int64 = 13092
-    private var orderProvider: PointOfSaleOrderListServiceProtocol!
+    private var orderProvider: POSOrderListServiceProtocol!
     private var mockOrdersRemote: MockPOSOrdersRemote!
 
     override func setUp() {
         super.setUp()
         mockOrdersRemote = MockPOSOrdersRemote()
-        orderProvider = PointOfSaleOrderListService(
+        orderProvider = POSOrderListService(
             siteID: siteID,
             ordersRemote: mockOrdersRemote,
             currencyFormatter: CurrencyFormatter(currencySettings: CurrencySettings())
@@ -27,14 +27,14 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
     }
 
     func test_PointOfSaleOrderServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
-        let expectedError = PointOfSaleOrderListServiceError.requestFailed
+        let expectedError = POSOrderListServiceError.requestFailed
         mockOrdersRemote.mockPagedOrdersResult = .failure(expectedError)
 
         do {
             _ = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
             XCTFail("Expected an error, but got success.")
         } catch {
-            XCTAssertEqual(error as? PointOfSaleOrderListServiceError, expectedError)
+            XCTAssertEqual(error as? POSOrderListServiceError, expectedError)
         }
     }
 
@@ -111,7 +111,7 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
         do {
             _ = try await orderProvider.providePointOfSaleOrders(pageNumber: 1)
             XCTFail("Expected error to be thrown")
-        } catch PointOfSaleOrderListServiceError.requestFailed {
+        } catch POSOrderListServiceError.requestFailed {
             // Expected
         } catch {
             XCTFail("Unexpected error occurred: \(error)")
@@ -144,7 +144,7 @@ final class PointOfSaleOrderServiceTests: XCTestCase {
     }
 }
 
-private extension PointOfSaleOrderServiceTests {
+private extension POSOrderListServiceTests {
     enum TestError: Error {
         case expectedError
     }

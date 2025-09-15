@@ -13,7 +13,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
-            Image(decorative: PointOfSaleAssets.readerDisconnected.imageName)
+            POSCardPresentPaymentMessageViewImage(imageName: PointOfSaleAssets.readerDisconnected.imageName)
 
             Spacer()
                 .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
@@ -41,6 +41,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .frame(width: width * 0.5)
         }
+        .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in
             width = containerWidth
         })

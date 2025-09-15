@@ -63,19 +63,17 @@ final class ApplicationPasswordsExperimentAvailabilityChecker: ApplicationPasswo
         }
     }
 
+    @MainActor
     func fetchAvailability() async -> Bool {
-        await withCheckedContinuation { continuation in
-            //TODO: - put the remote FF checking here
-            //For now rely on local FF for mocked value to avoid unwanted exposure
-            let mockResultValue = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-                .applicationPasswordExperiment
-            )
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                continuation.resume(returning: mockResultValue)
-            }
-
-            cachedRemoteFFValue = mockResultValue
+        let isEnabled = await withCheckedContinuation { continuation in
+            stores.dispatch(FeatureFlagAction.isRemoteFeatureFlagEnabled(
+                .appPasswordsForJetpackSites,
+                defaultValue: false
+            ) { isEnabled in
+                continuation.resume(returning: isEnabled)
+            })
         }
+        cachedRemoteFFValue = isEnabled
+        return isEnabled
     }
 }

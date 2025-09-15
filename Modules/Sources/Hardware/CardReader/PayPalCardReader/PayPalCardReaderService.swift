@@ -220,8 +220,7 @@ extension PayPalCardReaderService: CardReaderService {
             DDLogInfo("💳💰 [PayPalCardReaderService] Starting payment capture for amount: \(parameters.amount)")
 
             // Convert amount for iZettle (uses NSDecimalNumber)
-            let amountInSmallestUnit = parameters.amount * parameters.stripeSmallestCurrencyUnitMultiplier
-            let amount = NSDecimalNumber(decimal: amountInSmallestUnit)
+            let amount = NSDecimalNumber(decimal: parameters.amount)
             let reference = "WooOrder_\(parameters.metadata?["order_id"] ?? UUID().uuidString)"
 
             let sdk = iZettleSDK.shared()

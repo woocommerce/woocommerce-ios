@@ -83,34 +83,7 @@ struct PointOfSaleOrderListView: View {
                 }
                 .padding(.bottom, keyboardObserver.keyboardHeight)
             default:
-                InfiniteScrollView(
-                    triggerDeterminer: infiniteScrollTriggerDeterminer,
-                    loadMore: {
-                        guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
-                        await orderListModel.ordersController.loadNextOrders()
-                    },
-                    content: {
-                        LazyVStack(spacing: POSSpacing.small) {
-                            headerRows
-
-                            let orders = ordersViewState.orders
-                            ForEach(orders, id: \.id) { order in
-                                Button(action: {
-                                    orderListModel.ordersController.selectOrder(order)
-                                }) {
-                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            .animation(.default, value: orders.first?.id)
-
-                            footerRows
-                        }
-                        .padding(.horizontal)
-                        .padding(.bottom, POSPadding.medium)
-                    }
-                )
-                .scrollDismissesKeyboard(.immediately)
+                listView
             }
         }
         .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
@@ -136,6 +109,38 @@ struct PointOfSaleOrderListView: View {
         default:
             EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private var listView: some View {
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
+                await orderListModel.ordersController.loadNextOrders()
+            },
+            content: {
+                LazyVStack(spacing: POSSpacing.small) {
+                    headerRows
+
+                    let orders = ordersViewState.orders
+                    ForEach(orders, id: \.id) { order in
+                        Button(action: {
+                            orderListModel.ordersController.selectOrder(order)
+                        }) {
+                            OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .animation(.default, value: orders.first?.id)
+
+                    footerRows
+                }
+                .padding(.horizontal)
+                .padding(.bottom, POSPadding.medium)
+            }
+        )
+        .scrollDismissesKeyboard(.immediately)
     }
 
     @ViewBuilder

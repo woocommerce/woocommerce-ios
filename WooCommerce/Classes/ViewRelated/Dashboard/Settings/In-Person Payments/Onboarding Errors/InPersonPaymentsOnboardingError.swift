@@ -53,6 +53,8 @@ extension CardPresentPaymentsPlugin {
             return .wcPayPlugin
         case .stripe:
             return .stripePlugin
+        case .paypal:
+            fatalError("Not implemented yet")
         }
     }
 }

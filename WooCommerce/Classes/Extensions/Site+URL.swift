@@ -8,6 +8,8 @@ private extension CardPresentPaymentsPlugin {
             return "woocommerce_payments"
         case .stripe:
             return "stripe"
+        case .paypal:
+                    fatalError("Not implemented yet")
         }
     }
 }
@@ -35,6 +37,8 @@ extension Site {
             return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"
         case .stripe:
             return pluginSettingsSectionURL(from: .stripe) + "&panel=settings"
+        case .paypal:
+                    fatalError("Not implemented yet")
         }
     }
 

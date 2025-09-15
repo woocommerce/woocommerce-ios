@@ -165,6 +165,8 @@ private extension CardPresentPaymentStore {
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.remote)
         case .stripe:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
+        case .paypal:
+            fatalError("Not implemented yet")
         }
     }
 
@@ -531,6 +533,8 @@ private extension CardPresentPaymentStore {
             captureOrderPaymentPublisher = remote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         case .stripe:
             captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
+        case .paypal:
+            fatalError("Not implemented yet")
         }
         return captureOrderPaymentPublisher
             .map { result in
@@ -570,6 +574,8 @@ private extension CardPresentPaymentStore {
             }
         case .stripe:
             break /// not implemented
+        case .paypal:
+            fatalError("Not implemented yet")
         }
     }
 }

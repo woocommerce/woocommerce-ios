@@ -60,6 +60,8 @@ struct CardPresentPaymentsOnboardingView: View {
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
                     InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onInstall: viewModel.installPlugin)
+                case .paypal:
+                            fatalError("Not implemented yet")
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
                 InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:

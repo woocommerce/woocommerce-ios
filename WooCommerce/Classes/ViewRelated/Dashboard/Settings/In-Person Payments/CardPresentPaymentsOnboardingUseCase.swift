@@ -338,6 +338,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         case .stripe:
             return stripeGatewayOnlyOnboardingState(plugin: stripe)
+        case .paypal:
+            fatalError("Not implemented yet")
         }
     }
 

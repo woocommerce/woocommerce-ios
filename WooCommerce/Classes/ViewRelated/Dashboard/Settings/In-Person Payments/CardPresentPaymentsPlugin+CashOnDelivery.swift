@@ -8,6 +8,8 @@ extension CardPresentPaymentsPlugin {
             return WooConstants.URLs.wcPayCashOnDeliveryLearnMore.asURL()
         case .stripe:
             return WooConstants.URLs.stripeCashOnDeliveryLearnMore.asURL()
+        case .paypal:
+            fatalError("Not implemented yet")
         }
     }
 }

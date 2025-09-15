@@ -3,6 +3,7 @@ import Foundation
 public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
     case wcPay
     case stripe
+    case paypal
 
     public var pluginName: String {
         switch self {
@@ -10,6 +11,8 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
             return "WooPayments"
         case .stripe:
             return "WooCommerce Stripe Gateway"
+        case .paypal:
+            return "WooCommerce PayPal Payments"
         }
     }
 
@@ -19,6 +22,8 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
             return .wooPayments
         case .stripe:
             return .stripe
+        case .paypal:
+            return .wooPayPal
         }
     }
 
@@ -28,6 +33,8 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
             return "woocommerce-payments/woocommerce-payments"
         case .stripe:
             return "woocommerce-gateway-stripe/woocommerce-gateway-stripe"
+        case .paypal:
+            return "woocommerce-paypal-payments/woocommerce-paypal-payments"
         }
     }
 
@@ -37,6 +44,8 @@ public enum CardPresentPaymentsPlugin: Equatable, CaseIterable {
             return WCPayAccount.gatewayID
         case .stripe:
             return StripeAccount.gatewayID
+        case .paypal:
+            return "paypal"
         }
     }
 

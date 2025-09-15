@@ -8,6 +8,8 @@ extension CardPresentPaymentsPlugin {
             return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
         case .stripe:
             return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+        case .paypal:
+                    fatalError("Not implemented yet")
         }
     }
 
@@ -17,6 +19,8 @@ extension CardPresentPaymentsPlugin {
             return WooConstants.URLs.inPersonPaymentsLearnMoreWCPayTapToPay.asURL()
         case .stripe:
             return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+        case .paypal:
+                    fatalError("Not implemented yet")
         }
     }
 }

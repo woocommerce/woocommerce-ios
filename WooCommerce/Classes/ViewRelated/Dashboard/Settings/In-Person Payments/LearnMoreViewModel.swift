@@ -121,6 +121,8 @@ extension LearnMoreViewModel {
             return WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
         case .stripe:
             return WooConstants.URLs.inPersonPaymentsLearnMoreStripe.asURL()
+        case .paypal:
+                    fatalError("Not implemented yet")
         }
     }
 }

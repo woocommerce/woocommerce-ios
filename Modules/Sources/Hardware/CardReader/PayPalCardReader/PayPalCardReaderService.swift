@@ -65,24 +65,6 @@ public final class PayPalCardReaderService: NSObject {
         }
     }
 
-    /// PayPal OAuth authentication for getting API access tokens
-    private func authenticateWithPayPal(completion: @escaping (Result<String, Error>) -> Void) {
-        print("💳🔐 [PayPalCardReaderService] Starting PayPal OAuth authentication")
-
-        // For POC, simulate OAuth flow
-        // In production, this would:
-        // 1. Open PayPal OAuth URL in web view
-        // 2. Handle OAuth callback with authorization code
-        // 3. Exchange code for access token
-        // 4. Store token securely in keychain
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            // Simulate successful OAuth
-            let mockAccessToken = "sandbox_oauth_token_\(UUID().uuidString)"
-            completion(.success(mockAccessToken))
-        }
-    }
-
     /// Gets the current view controller for presenting payment UI
     /// Works with both UIKit and SwiftUI contexts
     private func getCurrentViewController() -> UIViewController? {

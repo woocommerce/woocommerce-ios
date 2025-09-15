@@ -144,10 +144,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
-    /// Store plan banner presentation handler.
-    ///
-    private var storePlanBannerPresenter: StorePlanBannerPresenter?
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -190,8 +186,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        configureStorePlanBannerPresenter()
     }
 
     private func createDataSource() {
@@ -366,14 +360,6 @@ private extension OrderListViewController {
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-    }
-
-    func configureStorePlanBannerPresenter() {
-        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
-                                                                  containerView: view,
-                                                                  siteID: siteID) { [weak self] bannerHeight in
-            self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
-        }
     }
 }
 
@@ -729,9 +715,6 @@ private extension OrderListViewController {
             childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
         childController.didMove(toParent: self)
-
-        // Make sure the banner is on top of the empty state view
-        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func removeEmptyViewController() {

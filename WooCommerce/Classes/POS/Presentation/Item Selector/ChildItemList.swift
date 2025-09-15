@@ -88,7 +88,7 @@ private extension ChildItemList {
         VStack {
             headerView
             POSListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+                viewModel: POSListEmptyViewModel(
                     itemListType: .products(search: false),
                     baseItem: node)) {
                 Task {

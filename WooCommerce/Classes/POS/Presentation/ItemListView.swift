@@ -294,7 +294,7 @@ private extension ItemListView {
         switch selectedItemListType {
         case .products:
             POSListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 Task {
@@ -303,7 +303,7 @@ private extension ItemListView {
             }
         case .coupons:
             POSListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true

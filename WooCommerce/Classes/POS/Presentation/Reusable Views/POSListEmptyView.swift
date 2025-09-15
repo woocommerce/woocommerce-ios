@@ -98,7 +98,7 @@ private extension POSListEmptyView {
     }
 }
 
-struct PointOfSaleItemListEmptyViewModel: POSListEmptyViewModelProtocol {
+struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
     let itemListType: ItemListType
     let baseItem: ItemListBaseItem
 
@@ -252,7 +252,7 @@ struct PointOfSaleItemListEmptyViewModel: POSListEmptyViewModelProtocol {
 
 #Preview {
     POSListEmptyView(
-        viewModel: PointOfSaleItemListEmptyViewModel(
+        viewModel: POSListEmptyViewModel(
             itemListType: .coupons(search: false),
             baseItem: .root
         )
@@ -261,7 +261,7 @@ struct PointOfSaleItemListEmptyViewModel: POSListEmptyViewModelProtocol {
 
 #Preview {
     POSListEmptyView(
-        viewModel: PointOfSaleItemListEmptyViewModel(
+        viewModel: POSListEmptyViewModel(
             itemListType: .products(search: true),
             baseItem: .root
         )

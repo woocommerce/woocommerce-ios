@@ -315,9 +315,14 @@ final class ServiceLocator {
     /// For POC, we'll use a simple feature flag to switch between Stripe and PayPal
     private static func createCardReaderService() -> CardReaderService {
         // For POC, use a simple check - in production this would be based on store configuration
-        if shouldUsePayPalCardReader() {
+        let usePayPal = shouldUsePayPalCardReader()
+        print("🔧 [ServiceLocator] Creating CardReaderService - UsePayPal: \(usePayPal)")
+        
+        if usePayPal {
+            print("🔧 [ServiceLocator] *** CREATING PAYPAL SERVICE ***")
             return PayPalCardReaderService()
         } else {
+            print("🔧 [ServiceLocator] Creating Stripe service")
             return StripeCardReaderService()
         }
     }
@@ -331,17 +336,21 @@ final class ServiceLocator {
     
     /// Switches to PayPal card reader for demo purposes
     static func switchToPayPalCardReader() {
+        print("🔄 [ServiceLocator] Switching to PayPal card reader")
         UserDefaults.standard.set(true, forKey: "UsePayPalCardReader")
         #if !targetEnvironment(macCatalyst)
         _cardReader = PayPalCardReaderService()
+        print("🔄 [ServiceLocator] PayPal service created and assigned")
         #endif
     }
     
     /// Switches to Stripe card reader (default)
     static func switchToStripeCardReader() {
+        print("🔄 [ServiceLocator] Switching to Stripe card reader")
         UserDefaults.standard.set(false, forKey: "UsePayPalCardReader")
         #if !targetEnvironment(macCatalyst)
         _cardReader = StripeCardReaderService()
+        print("🔄 [ServiceLocator] Stripe service created and assigned")
         #endif
     }
 }

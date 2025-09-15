@@ -32,7 +32,8 @@ public final class PayPalCardReaderService: NSObject {
         // Initialize PayPal iZettle SDK
         // For POC, we'll implement the basic setup later
         // once we have the actual SDK API details
-        DDLogInfo("💳 [PayPalCardReaderService] Initializing with API key: \(paypalApiKey)")
+        DDLogInfo("💳🟢 [PayPalCardReaderService] *** PAYPAL SERVICE CREATED *** API key: \(paypalApiKey)")
+        print("💳🟢 [PayPalCardReaderService] *** PAYPAL SERVICE CREATED *** API key: \(paypalApiKey)")
     }
 }
 
@@ -75,11 +76,17 @@ extension PayPalCardReaderService: CardReaderService {
     public func start(_ configProvider: CardReaderConfigProvider,
                       discoveryMethod: CardReaderDiscoveryMethod) throws {
         
+        print("💳🟢 [PayPalCardReaderService] *** START DISCOVERY CALLED ***")
+        DDLogInfo("💳🟢 [PayPalCardReaderService] *** START DISCOVERY CALLED ***")
+        
         // For POC, simulate reader discovery
         // In real implementation, start PayPal reader discovery
         switchStatusToDiscovering()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+            print("💳🟢 [PayPalCardReaderService] *** MOCK PAYPAL READER DISCOVERED ***")
+            DDLogInfo("💳🟢 [PayPalCardReaderService] *** MOCK PAYPAL READER DISCOVERED ***")
+            
             // Simulate finding a PayPal reader
             let mockReader = CardReader(
                 serial: "PAYPAL_READER_001",
@@ -94,6 +101,7 @@ extension PayPalCardReaderService: CardReaderService {
             
             self?.discoveredReadersSubject.send([mockReader])
             self?.switchStatusToIdle()
+            print("💳🟢 [PayPal] Sent mock reader to discoveredReadersSubject")
         }
     }
     

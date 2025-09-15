@@ -28,7 +28,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: expectedVariations, hasMorePages: false, totalItems: 0)))
 
         // When
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
         #expect(mockSyncRemote.loadIncrementalProductsCallCount == 2)
@@ -46,10 +46,10 @@ struct POSCatalogIncrementalSyncServiceTests {
         // First sync to establish incremental date.
         mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
         mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastIncrementalDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastIncrementalDate, lastIncrementalSyncDate: lastIncrementalDate)
 
         // When
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: lastIncrementalDate)
 
         // Then
         #expect(mockSyncRemote.lastIncrementalProductsModifiedAfter != lastFullSyncDate)
@@ -73,7 +73,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
         #expect(mockSyncRemote.loadIncrementalProductsCallCount == 4)
@@ -94,7 +94,7 @@ struct POSCatalogIncrementalSyncServiceTests {
         ])
 
         // When
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then
         #expect(mockSyncRemote.loadIncrementalProductVariationsCallCount == 2)
@@ -114,13 +114,13 @@ struct POSCatalogIncrementalSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+            try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
         }
         #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 0)
 
         // When attempting a second sync
         mockSyncRemote.setIncrementalProductResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then it uses lastFullSyncDate since no incremental date was stored due to previous failure
         #expect(mockSyncRemote.lastIncrementalProductsModifiedAfter == lastFullSyncDate)
@@ -138,13 +138,13 @@ struct POSCatalogIncrementalSyncServiceTests {
 
         // When/Then
         await #expect(throws: Error.self) {
-            try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+            try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
         }
         #expect(mockPersistenceService.persistIncrementalCatalogDataCallCount == 1)
 
         // When attempting a second sync
         mockPersistenceService.persistIncrementalCatalogDataError = nil  // Clear the error
-        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: sampleSiteID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
 
         // Then it uses lastFullSyncDate since no incremental date was stored due to previous persistence failure
         #expect(mockSyncRemote.lastIncrementalProductsModifiedAfter == lastFullSyncDate)
@@ -163,34 +163,14 @@ struct POSCatalogIncrementalSyncServiceTests {
         mockSyncRemote.setIncrementalVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When - Sync site 1
-        try await sut.startIncrementalSync(for: site1ID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: site1ID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
         let site1ModifiedAfter = try #require(mockSyncRemote.lastIncrementalProductsModifiedAfter)
 
         // When - Sync site 2
-        try await sut.startIncrementalSync(for: site2ID, lastFullSyncDate: lastFullSyncDate)
+        try await sut.startIncrementalSync(for: site2ID, lastFullSyncDate: lastFullSyncDate, lastIncrementalSyncDate: nil)
         let site2ModifiedAfter = try #require(mockSyncRemote.lastIncrementalProductsModifiedAfter)
 
         #expect(site1ModifiedAfter == lastFullSyncDate)
         #expect(site2ModifiedAfter == lastFullSyncDate)
-    }
-}
-
-// MARK: - Mock Classes
-
-private final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
-    private(set) var persistIncrementalCatalogDataCallCount = 0
-    private(set) var persistIncrementalCatalogDataLastPersistedCatalog: POSCatalog?
-    private(set) var persistIncrementalCatalogDataLastPersistedSiteID: Int64?
-    var persistIncrementalCatalogDataError: Error?
-
-    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {}
-
-    func persistIncrementalCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        persistIncrementalCatalogDataCallCount += 1
-        persistIncrementalCatalogDataLastPersistedSiteID = siteID
-        persistIncrementalCatalogDataLastPersistedCatalog = catalog
-        if let error = persistIncrementalCatalogDataError {
-            throw error
-        }
     }
 }

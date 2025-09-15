@@ -33,7 +33,7 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         return order
     }
 
-    func updatePOSOrder(order: Order, recipientEmail: String) async throws {
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         updateOrderWasCalled = true
 
         let orderWithUpdatedEmail = MockOrders().sampleOrder().copy(billingAddress: .init(firstName: "",

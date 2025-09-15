@@ -301,8 +301,8 @@ struct PointOfSaleAggregateModelTests {
         @Test func sendReceipt_when_invoked_with_error_then_returns_error() async throws {
             // Given
             let orderController = MockPointOfSaleOrderController()
-            orderController.shouldThrowReceiptError = true
             let expectedError = NSError(domain: "some error", code: -1)
+            orderController.sendReceiptErrorToThrow = expectedError
 
             let sut = makePointOfSaleAggregateModel(orderController: orderController)
 

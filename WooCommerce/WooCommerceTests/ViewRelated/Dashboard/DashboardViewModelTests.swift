@@ -27,12 +27,19 @@ final class DashboardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private lazy var site = Site.fake().copy(
+        siteID: sampleSiteID
+    )
+
     override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
         storageManager = MockStorageManager()
+
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(site)
     }
 
     @MainActor
@@ -536,6 +543,57 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual([.onboarding, .topPerformers, .newCardsNotice],
                     viewModel.showOnDashboardFirstColumn.map(\.type))
         assertEqual([.performance, .googleAds], viewModel.showOnDashboardSecondColumn.map(\.type))
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_stock_card_when_store_is_eligible_and_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData()
+
+        // Stock card need to be set with availability: .show and enabled: true by default if available.
+        let expectedStockCard = DashboardCard(type: .stock, availability: .show, enabled: false)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedStockCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_stock_card_when_store_is_eligible_and_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData()
+
+        // Stock card need to be set with availability: .show and enabled: true by default if available.
+        let expectedStockCard = DashboardCard(type: .stock, availability: .show, enabled: false)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
     }
 
     // MARK: Show New Cards Notice

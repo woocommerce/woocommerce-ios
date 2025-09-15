@@ -8,6 +8,10 @@ struct POSCatalogPersistenceServiceTests {
     private let sut: POSCatalogPersistenceService
     private let sampleSiteID: Int64 = 134
 
+    private var db: GRDBDatabaseConnection {
+        grdbManager.databaseConnection
+    }
+
     init() throws {
         self.grdbManager = try GRDBManager()
         self.sut = POSCatalogPersistenceService(grdbManager: grdbManager)
@@ -25,14 +29,14 @@ struct POSCatalogPersistenceServiceTests {
             variations: [
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 1),
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 2)
-            ]
+            ],
+            syncDate: .now
         )
 
         // When
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let productCount = try PersistedProduct.fetchCount(db)
@@ -55,13 +59,12 @@ struct POSCatalogPersistenceServiceTests {
             images: [ProductImage.fake().copy(imageID: 100), ProductImage.fake().copy(imageID: 101)],
             attributes: [ProductAttribute.fake(), ProductAttribute.fake()]
         )
-        let catalog = POSCatalog(products: [productWithRelations], variations: [])
+        let catalog = POSCatalog(products: [productWithRelations], variations: [], syncDate: .now)
 
         // When
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let imageCount = try PersistedProductImage.fetchCount(db)
             let attributeCount = try PersistedProductAttribute.fetchCount(db)
@@ -80,13 +83,13 @@ struct POSCatalogPersistenceServiceTests {
             attributes: [ProductVariationAttribute.fake(), ProductVariationAttribute.fake()], image: ProductImage.fake().copy(imageID: 200)
         )
         let catalog = POSCatalog(products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 15)],
-                                 variations: [variationWithRelations])
+                                 variations: [variationWithRelations],
+                                 syncDate: .now)
 
         // When
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let imageCount = try PersistedProductVariationImage.fetchCount(db)
             let attributeCount = try PersistedProductVariationAttribute.fetchCount(db)
@@ -109,13 +112,12 @@ struct POSCatalogPersistenceServiceTests {
             productID: 2,
             images: [ProductImage.fake().copy(imageID: sharedImageID)]
         )
-        let catalog = POSCatalog(products: [product1, product2], variations: [])
+        let catalog = POSCatalog(products: [product1, product2], variations: [], syncDate: .now)
 
         // When
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Then - should not fail and should handle duplicates
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let imageCount = try PersistedProductImage.fetchCount(db)
@@ -131,19 +133,20 @@ struct POSCatalogPersistenceServiceTests {
         // Given - existing data
         let existingCatalog = POSCatalog(
             products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 80)],
-            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 80, productVariationID: 100)]
+            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 80, productVariationID: 100)],
+            syncDate: .now
         )
         try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with new data
         let newCatalog = POSCatalog(
             products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 180)],
-            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 180, productVariationID: 200)]
+            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 180, productVariationID: 200)],
+            syncDate: .now
         )
         try await sut.replaceAllCatalogData(newCatalog, siteID: sampleSiteID)
 
         // Then - should have only new data
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -167,15 +170,14 @@ struct POSCatalogPersistenceServiceTests {
             images: [ProductImage.fake()],
             attributes: [ProductAttribute.fake()]
         )
-        let existingCatalog = POSCatalog(products: [existingProduct], variations: [])
+        let existingCatalog = POSCatalog(products: [existingProduct], variations: [], syncDate: .now)
         try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with empty catalog
-        let emptyCatalog = POSCatalog(products: [], variations: [])
+        let emptyCatalog = POSCatalog(products: [], variations: [], syncDate: .now)
         try await sut.replaceAllCatalogData(emptyCatalog, siteID: sampleSiteID)
 
         // Then - all related data should be gone
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let imageCount = try PersistedProductImage.fetchCount(db)
@@ -200,15 +202,14 @@ struct POSCatalogPersistenceServiceTests {
             attributes: [ProductVariationAttribute.fake()],
             image: ProductImage.fake().copy(imageID: 500)
         )
-        let existingCatalog = POSCatalog(products: [parentProduct], variations: [existingVariation])
+        let existingCatalog = POSCatalog(products: [parentProduct], variations: [existingVariation], syncDate: .now)
         try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with catalog containing only parent product (no variations)
-        let catalogWithoutVariations = POSCatalog(products: [parentProduct], variations: [])
+        let catalogWithoutVariations = POSCatalog(products: [parentProduct], variations: [], syncDate: .now)
         try await sut.replaceAllCatalogData(catalogWithoutVariations, siteID: sampleSiteID)
 
         // Then - variation and its related data should be gone
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let productCount = try PersistedProduct.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -226,19 +227,18 @@ struct POSCatalogPersistenceServiceTests {
 
     @Test func persistIncrementalCatalogData_inserts_new_products_when_database_is_empty() async throws {
         // Given
-        try await sut.replaceAllCatalogData(.init(products: [], variations: []), siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(.init(products: [], variations: [], syncDate: .now), siteID: sampleSiteID)
 
         let newProducts = [
             POSProduct.fake().copy(siteID: sampleSiteID, productID: 6),
             POSProduct.fake().copy(siteID: sampleSiteID, productID: 2)
         ]
-        let catalog = POSCatalog(products: newProducts, variations: [])
+        let catalog = POSCatalog(products: newProducts, variations: [], syncDate: .now)
 
         // When
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let productCount = try PersistedProduct.fetchCount(db)
@@ -258,7 +258,7 @@ struct POSCatalogPersistenceServiceTests {
 
         // When
         let updatedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "New Name")
-        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [])
+        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -283,7 +283,7 @@ struct POSCatalogPersistenceServiceTests {
         let updatedAttribute1 = attribute1.copy(options: ["Cardinal", "Blue"])
         let newAttribute = ProductAttribute.fake().copy(name: "Material")
         let updatedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, attributes: [newAttribute, updatedAttribute1])
-        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [])
+        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -312,7 +312,7 @@ struct POSCatalogPersistenceServiceTests {
         let updatedImage1 = image1.copy(src: "https://example.com/image1-1.jpg")
         let newImage = ProductImage.fake().copy(imageID: 3, src: "https://example.com/image3.jpg")
         let updatedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, images: [newImage, updatedImage1])
-        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [])
+        let updateCatalog = POSCatalog(products: [updatedProduct], variations: [], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -336,7 +336,7 @@ struct POSCatalogPersistenceServiceTests {
         // When
         let updatedExistingProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Updated Existing")
         let newProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 2, name: "New Product")
-        let mixedCatalog = POSCatalog(products: [updatedExistingProduct, newProduct], variations: [])
+        let mixedCatalog = POSCatalog(products: [updatedExistingProduct, newProduct], variations: [], syncDate: .now)
         try await sut.persistIncrementalCatalogData(mixedCatalog, siteID: sampleSiteID)
 
         // Then
@@ -354,20 +354,19 @@ struct POSCatalogPersistenceServiceTests {
 
     @Test func persistIncrementalCatalogData_inserts_new_variations_when_database_is_empty() async throws {
         // Given
-        try await sut.replaceAllCatalogData(.init(products: [], variations: []), siteID: sampleSiteID)
+        try await sut.replaceAllCatalogData(.init(products: [], variations: [], syncDate: .now), siteID: sampleSiteID)
 
         let parentProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 10)
         let newVariations = [
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 6),
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 2)
         ]
-        let catalog = POSCatalog(products: [parentProduct], variations: newVariations)
+        let catalog = POSCatalog(products: [parentProduct], variations: newVariations, syncDate: .now)
 
         // When
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
 
         // Then
-        let db = grdbManager.databaseConnection
         try await db.read { db in
             let siteCount = try PersistedSite.fetchCount(db)
             let variationCount = try PersistedProductVariation.fetchCount(db)
@@ -389,7 +388,7 @@ struct POSCatalogPersistenceServiceTests {
 
         // When
         let updatedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, price: "15.00")
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation])
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -416,7 +415,7 @@ struct POSCatalogPersistenceServiceTests {
         let updatedAttribute1 = attribute1.copy(option: "Cardinal")
         let newAttribute = ProductVariationAttribute.fake().copy(name: "Material", option: "Cotton")
         let updatedVariation = variation.copy(attributes: [newAttribute, updatedAttribute1])
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation])
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -445,7 +444,7 @@ struct POSCatalogPersistenceServiceTests {
         // When
         let updatedImage = image.copy(src: "https://example.com/variation1-updated.jpg")
         let updatedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, image: updatedImage)
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation])
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -469,7 +468,7 @@ struct POSCatalogPersistenceServiceTests {
         // When
         let updatedExistingVariation = existingVariation.copy(price: "12.00")
         let newVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 2, price: "8.00")
-        let mixedCatalog = POSCatalog(products: [parentProduct], variations: [updatedExistingVariation, newVariation])
+        let mixedCatalog = POSCatalog(products: [parentProduct], variations: [updatedExistingVariation, newVariation], syncDate: .now)
         try await sut.persistIncrementalCatalogData(mixedCatalog, siteID: sampleSiteID)
 
         // Then
@@ -484,11 +483,73 @@ struct POSCatalogPersistenceServiceTests {
             #expect(variations[1].id == 2)
         }
     }
+
+    // MARK: - Sync Date Tracking Tests
+
+    @Test func replaceAllCatalogData_stores_full_sync_date() async throws {
+        // Given
+        let syncDate = Date()
+        let catalog = POSCatalog(products: [], variations: [], syncDate: syncDate)
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        try await db.read { db in
+            let site = try PersistedSite.fetchOne(db, key: sampleSiteID)
+            let storedDate = site?.lastCatalogFullSyncDate
+            #expect(storedDate != nil)
+            #expect(abs(storedDate!.timeIntervalSince(syncDate)) < 1.0) // Within 1 second tolerance
+            #expect(site?.id == sampleSiteID)
+        }
+    }
+
+    @Test func persistIncrementalCatalogData_stores_incremental_sync_date() async throws {
+        // Given - site with existing full sync date
+        let fullSyncDate = Date().addingTimeInterval(-3600) // 1 hour ago
+        try await sut.replaceAllCatalogData(POSCatalog(products: [], variations: [], syncDate: fullSyncDate), siteID: sampleSiteID)
+
+        // When - perform incremental sync
+        let incrementalSyncDate = Date()
+        let catalog = POSCatalog(products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)], variations: [], syncDate: incrementalSyncDate)
+        try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - both dates should be stored
+        try await db.read { db in
+            let site = try PersistedSite.fetchOne(db, key: sampleSiteID)
+            let storedFullSyncDate = site?.lastCatalogFullSyncDate
+            let storedIncrementalSyncDate = site?.lastCatalogIncrementalSyncDate
+            #expect(storedFullSyncDate != nil)
+            #expect(storedIncrementalSyncDate != nil)
+            #expect(abs(storedFullSyncDate!.timeIntervalSince(fullSyncDate)) < 1.0) // Within 1 second tolerance
+            #expect(abs(storedIncrementalSyncDate!.timeIntervalSince(incrementalSyncDate)) < 1.0) // Within 1 second tolerance
+            #expect(site?.id == sampleSiteID)
+        }
+    }
+
+    @Test func replaceAllCatalogData_updates_existing_site_sync_date() async throws {
+        // Given - existing site with old sync date
+        let oldSyncDate = Date().addingTimeInterval(-7200) // 2 hours ago
+        try await sut.replaceAllCatalogData(POSCatalog(products: [], variations: [], syncDate: oldSyncDate), siteID: sampleSiteID)
+
+        // When - new full sync with updated date
+        let newSyncDate = Date()
+        let catalog = POSCatalog(products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)], variations: [], syncDate: newSyncDate)
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then - sync date should be updated
+        try await db.read { db in
+            let site = try PersistedSite.fetchOne(db, key: sampleSiteID)
+            let storedDate = site?.lastCatalogFullSyncDate
+            #expect(storedDate != nil)
+            #expect(abs(storedDate!.timeIntervalSince(newSyncDate)) < 1.0) // Within 1 second tolerance
+            #expect(site?.id == sampleSiteID)
+        }
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {
     func insertProduct(_ product: POSProduct) async throws {
-        let db = grdbManager.databaseConnection
         try await db.write { db in
             try PersistedSite(id: sampleSiteID).insert(db, onConflict: .ignore)
         }
@@ -496,7 +557,6 @@ private extension POSCatalogPersistenceServiceTests {
     }
 
     func insertVariation(_ variation: POSProductVariation) async throws {
-        let db = grdbManager.databaseConnection
         try variation.save(to: db)
     }
 }

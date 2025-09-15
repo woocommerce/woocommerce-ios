@@ -69,13 +69,13 @@ extension POSProduct {
 
             // Save related images
             for image in self.images {
-                let persistedImage = PersistedProductImage(from: image, productID: self.productID)
+                let persistedImage = PersistedProductImage(from: image, siteID: self.siteID, productID: self.productID)
                 try persistedImage.insert(db)
             }
 
             // Save related attributes
             for attribute in self.attributes {
-                var persistedAttribute = PersistedProductAttribute(from: attribute, productID: self.productID)
+                var persistedAttribute = PersistedProductAttribute(from: attribute, siteID: self.siteID, productID: self.productID)
                 try persistedAttribute.insert(db)
             }
         }
@@ -85,8 +85,9 @@ extension POSProduct {
 // MARK: - PersistedProductAttribute Conversions
 // periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductAttribute {
-    init(from productAttribute: ProductAttribute, productID: Int64) {
+    init(from productAttribute: ProductAttribute, siteID: Int64, productID: Int64) {
         self.init(
+            siteID: siteID,
             productID: productID,
             name: productAttribute.name,
             position: Int64(productAttribute.position),
@@ -112,8 +113,9 @@ extension PersistedProductAttribute {
 // MARK: - PersistedProductImage Conversions
 // periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductImage {
-    init(from productImage: ProductImage, productID: Int64) {
+    init(from productImage: ProductImage, siteID: Int64, productID: Int64) {
         self.init(
+            siteID: siteID,
             id: productImage.imageID,
             productID: productID,
             dateCreated: productImage.dateCreated,

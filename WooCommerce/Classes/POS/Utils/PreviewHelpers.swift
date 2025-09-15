@@ -286,13 +286,9 @@ struct POSPreviewHelpers {
 
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
-    private let state: POSOrderListState
+    let ordersViewState: POSOrderListState
 
-    init(state: POSOrderListState) {
-        self.state = state
-    }
-
-    var ordersViewState: POSOrderListState {
+    init(state: POSOrderListState? = nil) {
         let orders = [
             POSOrder(
                 id: 1,
@@ -377,8 +373,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
                 formattedNetAmount: "$69.51"
             )
         ]
-
-        return .loaded(orders, hasMoreItems: false)
+        self.ordersViewState = state ?? .loaded(orders, hasMoreItems: false)
     }
 
     var selectedOrder: POSOrder? {

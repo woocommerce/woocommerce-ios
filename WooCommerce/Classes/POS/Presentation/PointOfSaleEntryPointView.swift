@@ -109,7 +109,7 @@ struct PointOfSaleEntryPointView: View {
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
                               couponsSearchController: PointOfSalePreviewCouponsController(),
-                              ordersController: POSConfigurablePreviewOrderListController(state: .empty),
+                              ordersController: POSConfigurablePreviewOrderListController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),

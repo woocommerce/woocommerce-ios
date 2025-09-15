@@ -274,8 +274,8 @@ struct POSPreviewHelpers {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$3.76",
             formattedDiscountTotal: "$0.00",
+            formattedTotalTax: "$3.76",
             formattedPaymentTotal: "$45.75",
             formattedNetAmount: nil
         )
@@ -318,8 +318,8 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
                     )
                 ],
                 refunds: [],
-                formattedTotalTax: "$4.75",
                 formattedDiscountTotal: "-$5.24",
+                formattedTotalTax: "$4.75",
                 formattedPaymentTotal: "$45.75",
                 formattedNetAmount: nil
             ),
@@ -363,8 +363,8 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
                         reason: "Customer requested partial refund"
                     )
                 ],
-                formattedTotalTax: "$8.95",
                 formattedDiscountTotal: "-$15.00",
+                formattedTotalTax: "$8.95",
                 formattedPaymentTotal: "$89.50",
                 formattedNetAmount: "$69.51"
             )

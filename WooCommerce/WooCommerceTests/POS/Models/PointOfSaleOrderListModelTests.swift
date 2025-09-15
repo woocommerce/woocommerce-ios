@@ -6,10 +6,10 @@ import enum NetworkingCore.OrderStatusEnum
 
 final class PointOfSaleOrderListModelTests {
     private let mockOrdersController = MockPointOfSaleOrderListController()
-    private let mockReceiptController = MockPOSReceiptController()
+    private let mockReceiptSender = MockPOSReceiptSender()
     private lazy var sut = PointOfSaleOrderListModel(
         ordersController: mockOrdersController,
-        receiptController: mockReceiptController
+        receiptSender: mockReceiptSender
     )
 
     @Test func sendReceipt_when_successful_then_calls_receipt_controller_and_updates_order() async throws {
@@ -21,9 +21,9 @@ final class PointOfSaleOrderListModelTests {
         try await sut.sendReceipt(order: testOrder, email: testEmail)
 
         // Then
-        #expect(mockReceiptController.sendReceiptWasCalled == true)
-        #expect(mockReceiptController.sendReceiptCalledWithOrderID == 123)
-        #expect(mockReceiptController.sendReceiptCalledWithEmail == testEmail)
+        #expect(mockReceiptSender.sendReceiptWasCalled == true)
+        #expect(mockReceiptSender.sendReceiptCalledWithOrderID == 123)
+        #expect(mockReceiptSender.sendReceiptCalledWithEmail == testEmail)
         #expect(mockOrdersController.updateOrderCalled == true)
         #expect(mockOrdersController.spyUpdateOrderID == 123)
     }
@@ -32,15 +32,15 @@ final class PointOfSaleOrderListModelTests {
         // Given
         let testOrder = makeTestOrder(id: 789, email: "fail@example.com")
         let testEmail = "error@example.com"
-        mockReceiptController.shouldThrowReceiptError = true
+        mockReceiptSender.sendReceiptErrorToThrow = MockPOSReceiptSender.TestError.sendReceiptFailed
 
         // When & Then
-        await #expect(throws: MockPOSReceiptController.TestError.sendReceiptFailed) {
+        await #expect(throws: MockPOSReceiptSender.TestError.sendReceiptFailed) {
             try await sut.sendReceipt(order: testOrder, email: testEmail)
         }
 
         // Receipt controller should have been called
-        #expect(mockReceiptController.sendReceiptWasCalled == true)
+        #expect(mockReceiptSender.sendReceiptWasCalled == true)
 
         // But order update should NOT have been called since receipt failed
         #expect(mockOrdersController.updateOrderCalled == false)
@@ -58,9 +58,9 @@ final class PointOfSaleOrderListModelTests {
         }
 
         // Receipt should have succeeded before update failed
-        #expect(mockReceiptController.sendReceiptWasCalled == true)
-        #expect(mockReceiptController.sendReceiptCalledWithOrderID == 999)
-        #expect(mockReceiptController.sendReceiptCalledWithEmail == testEmail)
+        #expect(mockReceiptSender.sendReceiptWasCalled == true)
+        #expect(mockReceiptSender.sendReceiptCalledWithOrderID == 999)
+        #expect(mockReceiptSender.sendReceiptCalledWithEmail == testEmail)
         #expect(mockOrdersController.updateOrderCalled == true)
         #expect(mockOrdersController.spyUpdateOrderID == 999)
     }
@@ -78,8 +78,8 @@ final class PointOfSaleOrderListModelTests {
             paymentMethodTitle: "Test Payment",
             lineItems: [],
             refunds: [],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$10.00",
             formattedNetAmount: nil
         )

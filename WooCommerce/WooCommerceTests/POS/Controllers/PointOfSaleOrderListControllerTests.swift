@@ -325,23 +325,7 @@ final class PointOfSaleOrderListControllerTests {
 
         // Setup updated order
         let orderToUpdate = initialOrders[0]
-        let updatedOrder = POSOrder(
-            id: orderToUpdate.id,
-            number: orderToUpdate.number,
-            dateCreated: orderToUpdate.dateCreated,
-            status: orderToUpdate.status,
-            formattedTotal: orderToUpdate.formattedTotal,
-            formattedSubtotal: orderToUpdate.formattedSubtotal,
-            customerEmail: "updated@example.com", // Updated email
-            paymentMethodID: orderToUpdate.paymentMethodID,
-            paymentMethodTitle: orderToUpdate.paymentMethodTitle,
-            lineItems: orderToUpdate.lineItems,
-            refunds: orderToUpdate.refunds,
-            formattedTotalTax: orderToUpdate.formattedTotalTax,
-            formattedDiscountTotal: orderToUpdate.formattedDiscountTotal,
-            formattedPaymentTotal: orderToUpdate.formattedPaymentTotal,
-            formattedNetAmount: orderToUpdate.formattedNetAmount
-        )
+        let updatedOrder = orderToUpdate.copy(customerEmail: .some("updated@example.com"))
         orderListService.loadOrderResult = updatedOrder
 
         // When
@@ -371,23 +355,7 @@ final class PointOfSaleOrderListControllerTests {
         #expect(sut.selectedOrder?.id == orderToUpdate.id)
 
         // Setup updated order
-        let updatedOrder = POSOrder(
-            id: orderToUpdate.id,
-            number: orderToUpdate.number,
-            dateCreated: orderToUpdate.dateCreated,
-            status: orderToUpdate.status,
-            formattedTotal: orderToUpdate.formattedTotal,
-            formattedSubtotal: orderToUpdate.formattedSubtotal,
-            customerEmail: "selected-updated@example.com",
-            paymentMethodID: orderToUpdate.paymentMethodID,
-            paymentMethodTitle: orderToUpdate.paymentMethodTitle,
-            lineItems: orderToUpdate.lineItems,
-            refunds: orderToUpdate.refunds,
-            formattedTotalTax: orderToUpdate.formattedTotalTax,
-            formattedDiscountTotal: orderToUpdate.formattedDiscountTotal,
-            formattedPaymentTotal: orderToUpdate.formattedPaymentTotal,
-            formattedNetAmount: orderToUpdate.formattedNetAmount
-        )
+        let updatedOrder = orderToUpdate.copy(customerEmail: .some("selected-updated@example.com"))
         orderListService.loadOrderResult = updatedOrder
 
         // When

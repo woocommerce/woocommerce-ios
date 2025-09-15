@@ -172,8 +172,8 @@ extension MockPointOfSaleOrderListService {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
             formattedNetAmount: nil
         )
@@ -200,8 +200,8 @@ extension MockPointOfSaleOrderListService {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$15.50",
             formattedNetAmount: nil
         )
@@ -243,8 +243,8 @@ extension MockPointOfSaleOrderListService {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$42.75",
             formattedNetAmount: nil
         )
@@ -273,8 +273,8 @@ extension MockPointOfSaleOrderListService {
             refunds: [
                 POSOrderRefund(refundID: 1001, formattedTotal: "-$12.00", reason: "Customer request")
             ],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$12.00",
             formattedNetAmount: "$0.00"
         )
@@ -307,8 +307,8 @@ extension MockPointOfSaleOrderListService {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$0.00",
             formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$18.50",
             formattedNetAmount: nil
         )

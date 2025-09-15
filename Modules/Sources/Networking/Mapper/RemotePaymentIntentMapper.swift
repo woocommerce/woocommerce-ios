@@ -2,11 +2,13 @@ import Foundation
 
 /// Mapper: WCPay Payment Intent
 ///
-struct RemotePaymentIntentMapper: Mapper {
+public struct RemotePaymentIntentMapper: Mapper {
+    
+    public init() {}
 
     /// (Attempts) to convert a dictionary into an payment intent.
     ///
-    func map(response: Data) throws -> RemotePaymentIntent {
+    public func map(response: Data) throws -> RemotePaymentIntent {
         let decoder = JSONDecoder()
 
         if hasDataEnvelope(in: response) {

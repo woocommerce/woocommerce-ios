@@ -32,11 +32,18 @@ public final class CardPresentPaymentStore: Store {
             return .wcPay
         }
 
-        return paymentGatewayAccount.isWCPay ? .wcPay : .stripe
+        if paymentGatewayAccount.isWCPay {
+            return .wcPay
+        } else if paymentGatewayAccount.gatewayID == PayPalAccount.gatewayID {
+            return .paypal
+        } else {
+            return .stripe
+        }
     }
 
     private let remote: WCPayRemote
     private let stripeRemote: StripeRemote
+    private let paypalRemote: PayPalRemote
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -57,6 +64,7 @@ public final class CardPresentPaymentStore: Store {
         self.commonReaderConfigProvider = cardReaderConfigProvider
         self.remote = WCPayRemote(network: network)
         self.stripeRemote = StripeRemote(network: network)
+        self.paypalRemote = PayPalRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -535,7 +543,7 @@ private extension CardPresentPaymentStore {
         case .stripe:
             captureOrderPaymentPublisher = stripeRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         case .paypal:
-            fatalError("Not implemented yet")
+            captureOrderPaymentPublisher = paypalRemote.captureOrderPayment(for: siteID, orderID: orderID, paymentIntentID: paymentIntent.id)
         }
         return captureOrderPaymentPublisher
             .map { result in

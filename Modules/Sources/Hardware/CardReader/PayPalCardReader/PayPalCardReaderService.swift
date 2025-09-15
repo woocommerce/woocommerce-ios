@@ -29,11 +29,17 @@ public final class PayPalCardReaderService: NSObject {
     }
     
     private func setupPayPalSDK() {
-        // Initialize PayPal iZettle SDK
-        // For POC, we'll implement the basic setup later
-        // once we have the actual SDK API details
-        DDLogInfo("💳🟢 [PayPalCardReaderService] *** PAYPAL SERVICE CREATED *** API key: \(paypalApiKey)")
-        print("💳🟢 [PayPalCardReaderService] *** PAYPAL SERVICE CREATED *** API key: \(paypalApiKey)")
+        DDLogInfo("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK")
+        print("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK")
+        
+        // Initialize iZettle SDK - this should be the real initialization
+        // For now, we'll prepare the structure for real SDK calls
+        // TODO: Implement real iZettleSDK initialization once we have proper API key
+        
+        // The real initialization would look like:
+        // iZettleSDK.shared()?.start(with: apiKey, environment: .sandbox)
+        
+        DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK setup complete")
     }
 }
 

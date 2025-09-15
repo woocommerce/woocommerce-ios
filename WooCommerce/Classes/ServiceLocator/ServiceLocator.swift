@@ -341,7 +341,35 @@ final class ServiceLocator {
         #if !targetEnvironment(macCatalyst)
         _cardReader = PayPalCardReaderService()
         print("🔄 [ServiceLocator] PayPal service created and assigned")
+        
+        // For POC: Set mock PayPal account
+        setupMockPayPalAccount()
         #endif
+    }
+    
+    /// Sets up a mock PayPal account for POC testing
+    private static func setupMockPayPalAccount() {
+        // For POC, we'll dispatch an action to use a mock PayPal account
+        let mockAccount = PayPalAccount.mockAccount()
+        let paymentGatewayAccount = PaymentGatewayAccount(
+            siteID: stores.sessionManager.defaultStoreID ?? 0,
+            gatewayID: PayPalAccount.gatewayID,
+            status: mockAccount.status.rawValue,
+            hasPendingRequirements: mockAccount.hasPendingRequirements,
+            hasOverdueRequirements: mockAccount.hasOverdueRequirements,
+            currentDeadline: mockAccount.currentDeadline,
+            statementDescriptor: mockAccount.statementDescriptor,
+            defaultCurrency: mockAccount.defaultCurrency,
+            supportedCurrencies: mockAccount.supportedCurrencies,
+            country: mockAccount.country,
+            isCardPresentEligible: mockAccount.isCardPresentEligible,
+            isLive: mockAccount.isLiveAccount,
+            isInTestMode: mockAccount.isInTestMode
+        )
+        
+        let setAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
+        stores.dispatch(setAccountAction)
+        print("🔄 [ServiceLocator] Mock PayPal account set")
     }
     
     /// Switches to Stripe card reader (default)

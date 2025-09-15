@@ -254,6 +254,7 @@ public typealias MetaData = Networking.MetaData
 public typealias ProductImageStatus = Networking.ProductImageStatus
 public typealias ProductImageAssetType = Networking.ProductImageAssetType
 public typealias ProductOrVariationID = Networking.ProductOrVariationID
+public typealias PayPalAccount = Networking.PayPalAccount
 
 // MARK: - Exported Storage Symbols
 

@@ -45,7 +45,12 @@ public final class PayPalCardReaderService: NSObject {
             )
 
             // Start the SDK with the authentication provider
-            iZettleSDK.shared().start(with: authenticationProvider)
+            var isDebug = false
+            #if DEBUG
+            isDebug = true
+            #endif
+
+            iZettleSDK.shared().start(with: authenticationProvider, enableDeveloperMode: isDebug)
 
             DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK initialized successfully")
             print("💳🟢 [PayPalCardReaderService] iZettle SDK initialized successfully")

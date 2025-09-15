@@ -64,6 +64,7 @@ struct TotalsView: View {
                     )
                 }
                 .animation(.default, value: isShowingPaymentView)
+                .scrollVerticallyIfNeeded()
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)

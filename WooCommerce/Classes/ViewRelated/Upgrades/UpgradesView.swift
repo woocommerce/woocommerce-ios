@@ -3,29 +3,6 @@ import SwiftUI
 import Yosemite
 import Experiments
 
-final class UpgradesViewPresentationCoordinator {
-    private let featureFlagService: FeatureFlagService
-    private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
-
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
-        self.featureFlagService = featureFlagService
-        self.inAppPurchaseManager = inAppPurchaseManager
-    }
-
-    func presentUpgrades(for siteID: Int64, from viewController: UIViewController) {
-        Task { @MainActor in
-            if await inAppPurchaseManager.inAppPurchasesAreSupported() {
-                let upgradesController = UpgradesHostingController(siteID: siteID)
-                viewController.present(upgradesController, animated: true)
-            } else {
-                let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
-                viewController.present(subscriptionsController, animated: true)
-            }
-        }
-    }
-}
-
 /// Hosting controller for `UpgradesView`
 /// To be used to display available current plan Subscriptions, available plan Upgrades,
 /// and the CTA to upgrade

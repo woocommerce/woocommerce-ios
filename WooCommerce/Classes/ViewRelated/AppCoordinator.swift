@@ -20,7 +20,6 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -41,7 +40,6 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
@@ -61,7 +59,6 @@ final class AppCoordinator {
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
 

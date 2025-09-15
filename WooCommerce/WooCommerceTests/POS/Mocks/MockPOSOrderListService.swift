@@ -5,7 +5,7 @@ import struct NetworkingCore.Order
 import enum NetworkingCore.OrderStatusEnum
 import WooFoundation
 
-final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
+final class MockPOSOrderListService: POSOrderListServiceProtocol {
     var orderPages: [[POSOrder]] = []
     var searchOrderPages: [[POSOrder]] = []
     var errorToThrow: Error?
@@ -29,7 +29,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         spyCallCount += 1
 
         if shouldThrowError {
-            throw PointOfSaleOrderListServiceError.requestFailed
+            throw POSOrderListServiceError.requestFailed
         }
 
         if let errorToThrow {
@@ -43,19 +43,19 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         if shouldSimulateTwoPages {
             if shouldSimulateThreePages && pageNumber > 1 {
                 return .init(
-                    items: MockPointOfSaleOrderListService.makeSecondPageOrders(),
+                    items: MockPOSOrderListService.makeSecondPageOrders(),
                     hasMorePages: true,
                     totalItems: 6
                 )
             } else if pageNumber > 1 {
                 return .init(
-                    items: MockPointOfSaleOrderListService.makeSecondPageOrders(),
+                    items: MockPOSOrderListService.makeSecondPageOrders(),
                     hasMorePages: false,
                     totalItems: 4
                 )
             } else {
                 return .init(
-                    items: MockPointOfSaleOrderListService.makeInitialOrders(),
+                    items: MockPOSOrderListService.makeInitialOrders(),
                     hasMorePages: shouldSimulateTwoPages,
                     totalItems: 4
                 )
@@ -76,7 +76,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         spyCallCount += 1
 
         if shouldThrowError {
-            throw PointOfSaleOrderListServiceError.requestFailed
+            throw POSOrderListServiceError.requestFailed
         }
 
         if let errorToThrow {
@@ -97,7 +97,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         }
 
         // For testing purposes, return filtered results based on search term
-        let allOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        let allOrders = MockPOSOrderListService.makeInitialOrders()
         let filteredOrders = allOrders.filter { order in
             order.number.contains(searchTerm) ||
             order.customerEmail?.contains(searchTerm) == true ||
@@ -116,7 +116,7 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         lastLoadOrderID = orderID
 
         if shouldThrowError {
-            throw PointOfSaleOrderListServiceError.requestFailed
+            throw POSOrderListServiceError.requestFailed
         }
 
         if let errorToThrow {
@@ -128,16 +128,16 @@ final class MockPointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol
         }
 
         // Fallback - find order from existing orders
-        let allOrders = MockPointOfSaleOrderListService.makeInitialOrders() + MockPointOfSaleOrderListService.makeSecondPageOrders()
+        let allOrders = MockPOSOrderListService.makeInitialOrders() + MockPOSOrderListService.makeSecondPageOrders()
         if let foundOrder = allOrders.first(where: { $0.id == orderID }) {
             return foundOrder
         }
 
-        throw PointOfSaleOrderListServiceError.requestFailed
+        throw POSOrderListServiceError.requestFailed
     }
 }
 
-extension MockPointOfSaleOrderListService {
+extension MockPOSOrderListService {
     static func makeInitialOrders() -> [POSOrder] {
         let baseDate = Date(timeIntervalSince1970: 1672531200) // Fixed date: Jan 1, 2023
 

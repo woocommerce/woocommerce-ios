@@ -2,7 +2,7 @@ import Foundation
 @testable import WooCommerce
 import struct Yosemite.POSOrder
 
-final class MockPointOfSaleOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
+final class MockPOSOrderListController: POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
     var updateOrderCalled = false

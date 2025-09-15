@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PointOfSaleOrderDetailsLoadingView: View {
+struct POSOrderDetailsLoadingView: View {
     var body: some View {
         VStack(spacing: 0) {
             POSPageHeaderView(
@@ -177,6 +177,6 @@ private enum Localization {
 
 #if DEBUG
 #Preview {
-    PointOfSaleOrderDetailsLoadingView()
+    POSOrderDetailsLoadingView()
 }
 #endif

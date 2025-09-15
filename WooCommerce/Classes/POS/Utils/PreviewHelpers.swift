@@ -26,8 +26,8 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
-import class Yosemite.PointOfSaleOrderListService
-import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
+import class Yosemite.POSOrderListService
+import class Yosemite.POSOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -237,8 +237,10 @@ struct POSPreviewHelpers {
         )
     }
 
-    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController(), receiptSender: POSReceiptSenderPreview())
+    static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
+        return POSOrderListModel(
+            ordersController: POSConfigurablePreviewOrderListController(state: state),
+            receiptSender: POSReceiptSenderPreview())
     }
 
     static func makePreviewOrder() -> POSOrder {
@@ -283,8 +285,10 @@ struct POSPreviewHelpers {
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
-    var ordersViewState: POSOrderListState {
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
+    let ordersViewState: POSOrderListState
+
+    init(state: POSOrderListState? = nil) {
         let orders = [
             POSOrder(
                 id: 1,
@@ -369,8 +373,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
                 formattedNetAmount: "$69.51"
             )
         ]
-
-        return .loaded(orders, hasMoreItems: false)
+        self.ordersViewState = state ?? .loaded(orders, hasMoreItems: false)
     }
 
     var selectedOrder: POSOrder? {

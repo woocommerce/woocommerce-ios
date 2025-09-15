@@ -2,10 +2,11 @@ import SwiftUI
 import struct Yosemite.POSOrder
 import enum Yosemite.OrderPaymentMethod
 
-struct PointOfSaleOrderListView: View {
+struct POSOrderListView: View {
     let onClose: () -> Void
 
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     @State private var isSearching: Bool = false
@@ -32,7 +33,7 @@ struct PointOfSaleOrderListView: View {
                 )],
                 backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
                 trailingContent: {
-                    if !isSearching {
+                    if !isSearching && !ordersViewState.orders.isEmpty {
                         POSPageHeaderActionButton(
                             systemName: "magnifyingglass",
                             backgroundColor: .posSurface,
@@ -64,44 +65,26 @@ struct PointOfSaleOrderListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            InfiniteScrollView(
-                triggerDeterminer: infiniteScrollTriggerDeterminer,
-                loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
-                    await orderListModel.ordersController.loadNextOrders()
-                },
-                content: {
-                    LazyVStack(spacing: 8) {
-                        headerRows
-
-                        switch ordersViewState {
-                        case .empty:
-                            // TODO: WOOMOB-1139
-                            Text("No orders")
-                        case .error(let errorState):
-                            ItemListErrorCardView(errorState: errorState) {
-                                Task { @MainActor in
-                                    await orderListModel.ordersController.loadOrders()
-                                }
-                            }
-                        default:
-                            let orders = ordersViewState.orders
-                            ForEach(orders, id: \.id) { order in
-                                Button(action: {
-                                    orderListModel.ordersController.selectOrder(order)
-                                }) {
-                                    OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            .animation(.default, value: orders.first?.id)
-                        }
-
-                        footerRows
+            switch ordersViewState {
+            case .empty:
+                POSListEmptyView(
+                    viewModel: POSOrderListEmptyViewModel(isSearching: isSearching)
+                ) {
+                    Task { @MainActor in
+                        await orderListModel.ordersController.loadOrders()
                     }
-                    .padding(.horizontal)
                 }
-            )
+                .padding(.bottom, keyboardObserver.keyboardHeight)
+            case .error(let errorState):
+                POSListErrorView(error: errorState) {
+                    Task { @MainActor in
+                        await orderListModel.ordersController.loadOrders()
+                    }
+                }
+                .padding(.bottom, keyboardObserver.keyboardHeight)
+            default:
+                listView
+            }
         }
         .animation(.default, value: orderListModel.ordersController.ordersViewState.isEmpty)
         .background(Color.posSurfaceBright)
@@ -118,7 +101,7 @@ struct PointOfSaleOrderListView: View {
     private var headerRows: some View {
         switch ordersViewState {
         case .inlineError(_, let errorState, .refresh):
-            ItemListErrorCardView(errorState: errorState) {
+            POSListInlineErrorView(errorState: errorState) {
                 Task { @MainActor in
                     await orderListModel.ordersController.loadOrders()
                 }
@@ -126,6 +109,38 @@ struct PointOfSaleOrderListView: View {
         default:
             EmptyView()
         }
+    }
+
+    @ViewBuilder
+    private var listView: some View {
+        InfiniteScrollView(
+            triggerDeterminer: infiniteScrollTriggerDeterminer,
+            loadMore: {
+                guard case .loaded(_, let hasMoreItems) = ordersViewState, hasMoreItems else { return }
+                await orderListModel.ordersController.loadNextOrders()
+            },
+            content: {
+                LazyVStack(spacing: POSSpacing.small) {
+                    headerRows
+
+                    let orders = ordersViewState.orders
+                    ForEach(orders, id: \.id) { order in
+                        Button(action: {
+                            orderListModel.ordersController.selectOrder(order)
+                        }) {
+                            OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .animation(.default, value: orders.first?.id)
+
+                    footerRows
+                }
+                .padding(.horizontal)
+                .padding(.bottom, POSPadding.medium)
+            }
+        )
+        .scrollDismissesKeyboard(.immediately)
     }
 
     @ViewBuilder
@@ -142,7 +157,7 @@ struct PointOfSaleOrderListView: View {
                 GhostOrderRowView()
             }
         case .inlineError(_, let errorState, .pagination):
-            ItemListErrorCardView(errorState: errorState) {
+            POSListInlineErrorView(errorState: errorState) {
                 Task { @MainActor in
                     await orderListModel.ordersController.loadNextOrders()
                 }
@@ -204,10 +219,6 @@ private struct OrderRowView: View {
         .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
     }
-}
-
-private extension OrderRowView {
-    // No additional helpers needed - using shared PointOfSaleOrderBadgeView
 }
 
 private struct GhostOrderRowView: View {
@@ -317,7 +328,7 @@ struct PointOfSaleOrderBadgeView: View {
 
 // MARK: - Search
 
-private extension PointOfSaleOrderListView {
+private extension POSOrderListView {
     func setSearch(_ isSearchingValue: Bool) {
         if isSearchingValue {
             isSearching = true
@@ -331,9 +342,9 @@ private extension PointOfSaleOrderListView {
 }
 
 final class POSOrderSearchable: POSSearchable {
-    private let ordersController: PointOfSaleSearchingOrderListControllerProtocol
+    private let ordersController: POSSearchingOrderListControllerProtocol
 
-    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol) {
+    init(ordersController: POSSearchingOrderListControllerProtocol) {
         self.ordersController = ordersController
     }
 
@@ -363,12 +374,16 @@ private enum Constants {
     static let searchControlID = "searchControl"
 }
 
-private enum Localization {
-    static let ordersTitle = NSLocalizedString(
-        "pos.orderListView.ordersTitle",
-        value: "Orders",
-        comment: "Title at the header for the Orders view.")
+extension POSOrderListView {
+    enum Localization {
+        static let ordersTitle = NSLocalizedString(
+            "pos.orderListView.ordersTitle",
+            value: "Orders",
+            comment: "Title at the header for the Orders view.")
+    }
+}
 
+private enum Localization {
     static let searchFieldPlaceholder = NSLocalizedString(
         "pos.orderListView.searchFieldPlaceholder",
         value: "Search orders",
@@ -378,12 +393,82 @@ private enum Localization {
 
 #if DEBUG
 #Preview("List") {
-    NavigationSplitView {
-        PointOfSaleOrderListView(onClose: {})
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
             .navigationSplitViewColumnWidth(450)
-            .environment(POSPreviewHelpers.makePreviewOrdersModel())
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loaded([POSPreviewHelpers.makePreviewOrder()], hasMoreItems: false)))
+    } detail: {
+        Text("Detail View")
+    }
+    .navigationSplitViewStyle(.balanced)
+}
+
+#Preview("Empty State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
     } detail: {
         Text("Detail View")
     }
 }
+
+#Preview("Error State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .error(.errorOnLoadingOrders())))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Loading State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .loading([])))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Inline Error - Refresh") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(
+                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                                   error: .errorOnLoadingOrders(),
+                                   context: .refresh)
+            ))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Inline Error - Pagination") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(
+                state: .inlineError([POSPreviewHelpers.makePreviewOrder()],
+                                   error: .errorOnLoadingOrdersNextPage(),
+                                   context: .pagination)
+            ))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
+#Preview("Search Empty State") {
+    NavigationSplitView(columnVisibility: .constant(.all)) {
+        POSOrderListView(onClose: {})
+            .navigationSplitViewColumnWidth(450)
+            .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
+    } detail: {
+        Text("Detail View")
+    }
+}
+
 #endif

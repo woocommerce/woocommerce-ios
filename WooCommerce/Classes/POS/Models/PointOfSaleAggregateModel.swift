@@ -629,3 +629,12 @@ private extension PointOfSaleAggregateModel {
         static let initialPage: Int = 1
     }
 }
+
+#if DEBUG
+extension PointOfSaleAggregateModel {
+    func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
+        self.paymentState = paymentState
+        self.cardPresentPaymentInlineMessage = inlineMessage
+    }
+}
+#endif

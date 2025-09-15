@@ -25,7 +25,7 @@ struct POSOrderListStateTests {
     }
 
     @Test
-    func updatingOrders_whenLoading_preservesLoadingState() {
+    func updatingOrders_when_loading_then_preserves_loading_state() {
         // Given
         let state = POSOrderListState.loading(sampleOrders)
         let updatedOrders = [sampleOrders[1]]
@@ -43,7 +43,7 @@ struct POSOrderListStateTests {
     }
 
     @Test
-    func updatingOrders_whenInlineError_preservesErrorAndContext() {
+    func updatingOrders_when_inline_error_then_preserves_error_and_context() {
         // Given
         let errorState = PointOfSaleErrorState.errorOnLoadingOrders(error: NSError(domain: "test", code: 0))
         let state = POSOrderListState.inlineError(sampleOrders, error: errorState, context: .refresh)
@@ -64,7 +64,7 @@ struct POSOrderListStateTests {
     }
 
     @Test
-    func updatingOrders_whenEmpty_returnsUnchanged() {
+    func updatingOrders_when_empty_then_returns_unchanged() {
         // Given
         let state = POSOrderListState.empty
         let updatedOrders = sampleOrders
@@ -81,7 +81,7 @@ struct POSOrderListStateTests {
     }
 
     @Test
-    func updatingOrders_whenError_returnsUnchanged() {
+    func updatingOrders_when_error_then_returns_unchanged() {
         // Given
         let errorState = PointOfSaleErrorState.errorOnLoadingOrders(error: NSError(domain: "test", code: 0))
         let state = POSOrderListState.error(errorState)
@@ -99,7 +99,7 @@ struct POSOrderListStateTests {
     }
 
     @Test
-    func orders_returnsCorrectOrdersForEachState() {
+    func orders_when_various_states_then_returns_correct_orders() {
         // Given & When & Then
         let loadedState = POSOrderListState.loaded(sampleOrders, hasMoreItems: false)
         #expect(loadedState.orders.count == 2)

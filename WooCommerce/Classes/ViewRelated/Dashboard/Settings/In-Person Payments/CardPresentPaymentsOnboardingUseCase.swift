@@ -273,6 +273,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
+        guard !UserDefaults.standard.bool(forKey: "UsePayPalCardReader") else {
+            guard let account = getPaymentGatewayAccount(plugin: CardPresentPaymentsPlugin.paypal) else {
+                return .pluginNotInstalled
+            }
+            let action = CardPresentPaymentAction.use(paymentGatewayAccount: account)
+            ServiceLocator.stores.dispatch(action)
+
+            return .completed(plugin: .init(plugin: .paypal))
+        }
         guard storeCountryCode != .unknown else {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError

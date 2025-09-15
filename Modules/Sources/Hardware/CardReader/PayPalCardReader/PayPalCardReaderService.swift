@@ -38,7 +38,6 @@ public final class PayPalCardReaderService: NSObject {
         
         // The real initialization would look like:
         // iZettleSDK.shared()?.start(with: apiKey, environment: .sandbox)
-        
         DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK setup complete")
     }
 }

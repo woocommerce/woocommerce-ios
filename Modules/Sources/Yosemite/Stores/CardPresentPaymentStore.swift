@@ -174,7 +174,7 @@ private extension CardPresentPaymentStore {
         case .stripe:
             commonReaderConfigProvider.setContext(siteID: siteID, remote: self.stripeRemote)
         case .paypal:
-            fatalError("Not implemented yet")
+            break // Not required?
         }
     }
 
@@ -481,12 +481,51 @@ private extension CardPresentPaymentStore {
             group.leave()
         })
 
+        group.enter()
+        loadPaypalAccount(siteID: siteID) { result in
+            switch result {
+            case .failure(let loadError):
+                DDLogError("⛔️ Error synchronizing Paypal Account: \(loadError)")
+                error = loadError
+            case .success:
+                break
+            }
+            group.leave()
+        }
+
         group.notify(queue: .main) {
             guard let error = error else {
                 onCompletion(.success(()))
                 return
             }
             onCompletion(.failure(error))
+        }
+    }
+
+    private func loadPaypalAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        // For POC, we'll use a mock PayPal account
+        let mockAccount = PayPalAccount.mockAccount()
+        print("💰 [CardPresentPaymentStore] Setting up mock PayPal account")
+
+        let account = PaymentGatewayAccount(
+            siteID: siteID,
+            gatewayID: PayPalAccount.gatewayID,
+            status: mockAccount.status.rawValue,
+            hasPendingRequirements: mockAccount.hasPendingRequirements,
+            hasOverdueRequirements: mockAccount.hasOverdueRequirements,
+            currentDeadline: mockAccount.currentDeadline,
+            statementDescriptor: mockAccount.statementDescriptor,
+            defaultCurrency: mockAccount.defaultCurrency,
+            supportedCurrencies: mockAccount.supportedCurrencies,
+            country: mockAccount.country,
+            isCardPresentEligible: mockAccount.isCardPresentEligible,
+            isLive: mockAccount.isLiveAccount,
+            isInTestMode: mockAccount.isInTestMode
+        )
+
+        print("🔄 [CardPresentPaymentStore] Mock PayPal account set")
+        self.upsertStoredAccountInBackground(readonlyAccount: account) {
+            onCompletion(.success(()))
         }
     }
 

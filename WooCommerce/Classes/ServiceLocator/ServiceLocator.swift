@@ -310,14 +310,14 @@ final class ServiceLocator {
 
         return stores.posCatalogSyncCoordinator
     }
-    
+
     /// Creates the appropriate CardReaderService based on configuration
     /// For POC, we'll use a simple feature flag to switch between Stripe and PayPal
     private static func createCardReaderService() -> CardReaderService {
         // For POC, use a simple check - in production this would be based on store configuration
         let usePayPal = shouldUsePayPalCardReader()
         print("🔧 [ServiceLocator] Creating CardReaderService - UsePayPal: \(usePayPal)")
-        
+
         if usePayPal {
             print("🔧 [ServiceLocator] *** CREATING PAYPAL SERVICE ***")
             return PayPalCardReaderService()
@@ -326,14 +326,14 @@ final class ServiceLocator {
             return StripeCardReaderService()
         }
     }
-    
+
     /// Determines whether to use PayPal card reader
     /// For POC, this is a simple feature flag or user default
     private static func shouldUsePayPalCardReader() -> Bool {
         // For POC, check a user default to easily switch between providers
         return UserDefaults.standard.bool(forKey: "UsePayPalCardReader")
     }
-    
+
     /// Switches to PayPal card reader for demo purposes
     static func switchToPayPalCardReader() {
         print("🔄 [ServiceLocator] Switching to PayPal card reader")
@@ -341,37 +341,9 @@ final class ServiceLocator {
         #if !targetEnvironment(macCatalyst)
         _cardReader = PayPalCardReaderService()
         print("🔄 [ServiceLocator] PayPal service created and assigned")
-        
-        // For POC: Set mock PayPal account
-        setupMockPayPalAccount()
         #endif
     }
-    
-    /// Sets up a mock PayPal account for POC testing
-    private static func setupMockPayPalAccount() {
-        // For POC, we'll dispatch an action to use a mock PayPal account
-        let mockAccount = PayPalAccount.mockAccount()
-        let paymentGatewayAccount = PaymentGatewayAccount(
-            siteID: stores.sessionManager.defaultStoreID ?? 0,
-            gatewayID: PayPalAccount.gatewayID,
-            status: mockAccount.status.rawValue,
-            hasPendingRequirements: mockAccount.hasPendingRequirements,
-            hasOverdueRequirements: mockAccount.hasOverdueRequirements,
-            currentDeadline: mockAccount.currentDeadline,
-            statementDescriptor: mockAccount.statementDescriptor,
-            defaultCurrency: mockAccount.defaultCurrency,
-            supportedCurrencies: mockAccount.supportedCurrencies,
-            country: mockAccount.country,
-            isCardPresentEligible: mockAccount.isCardPresentEligible,
-            isLive: mockAccount.isLiveAccount,
-            isInTestMode: mockAccount.isInTestMode
-        )
-        
-        let setAccountAction = CardPresentPaymentAction.use(paymentGatewayAccount: paymentGatewayAccount)
-        stores.dispatch(setAccountAction)
-        print("🔄 [ServiceLocator] Mock PayPal account set")
-    }
-    
+
     /// Switches to Stripe card reader (default)
     static func switchToStripeCardReader() {
         print("🔄 [ServiceLocator] Switching to Stripe card reader")

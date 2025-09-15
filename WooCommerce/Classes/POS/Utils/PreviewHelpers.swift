@@ -242,7 +242,9 @@ struct POSPreviewHelpers {
     }
 
     static func makePreviewOrdersModel(state: POSOrderListState) -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(ordersController: PointOfSaleConfigurablePreviewOrderListController(state: state))
+        return PointOfSaleOrderListModel(
+            ordersController: PointOfSaleConfigurablePreviewOrderListController(state: state),
+            receiptSender: POSReceiptSenderPreview())
     }
 
     static func makePreviewOrder() -> POSOrder {

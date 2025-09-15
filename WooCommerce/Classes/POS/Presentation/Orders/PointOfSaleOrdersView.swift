@@ -7,46 +7,69 @@ struct PointOfSaleOrdersView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        CustomNavigationSplitView(selection: Binding(
-            get: { orderListModel.ordersController.selectedOrder },
-            set: { orderListModel.ordersController.selectOrder($0) }
-        )) { _ in
-            PointOfSaleOrderListView() {
-                isPresented = false
-            }
-        } detail: { selection in
-            PointOfSaleOrderDetailsView(
-                order: selection,
-                onBack: {
-                    orderListModel.ordersController.selectOrder(nil)
+        switch orderListModel.ordersController.ordersViewState {
+        case .error(let error):
+            errorView(error)
+        default:
+            CustomNavigationSplitView(selection: Binding(
+                get: { orderListModel.ordersController.selectedOrder },
+                set: { orderListModel.ordersController.selectOrder($0) }
+            )) { _ in
+                PointOfSaleOrderListView() {
+                    isPresented = false
                 }
-            )
-        } detailPlaceholderView: {
-            if orderListModel.ordersController.ordersViewState.isLoading {
-                PointOfSaleOrderDetailsLoadingView()
-            } else {
-                PointOfSaleOrderDetailsEmptyView()
+            } detail: { selection in
+                PointOfSaleOrderDetailsView(
+                    order: selection,
+                    onBack: {
+                        orderListModel.ordersController.selectOrder(nil)
+                    }
+                )
+            } detailPlaceholderView: {
+                if orderListModel.ordersController.ordersViewState.isLoading {
+                    PointOfSaleOrderDetailsLoadingView()
+                } else {
+                    PointOfSaleOrderDetailsEmptyView()
+                }
+            } setDefaultValue: {
+                if orderListModel.ordersController.selectedOrder == nil,
+                   let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
+                    orderListModel.ordersController.selectOrder(firstOrder)
+                }
             }
-        } setDefaultValue: {
-            if orderListModel.ordersController.selectedOrder == nil,
-               let firstOrder = orderListModel.ordersController.ordersViewState.orders.first {
+            .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
+                guard horizontalSizeClass == .regular else { return }
+
+                guard let firstOrder = newOrders.first else {
+                    return
+                }
+
+                if let selectedOrder = orderListModel.ordersController.selectedOrder, newOrders.map(\.id).contains(selectedOrder.id) {
+                    return
+                }
+
                 orderListModel.ordersController.selectOrder(firstOrder)
             }
+            .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
         }
-        .onChange(of: orderListModel.ordersController.ordersViewState.orders) { oldOrders, newOrders in
-            guard horizontalSizeClass == .regular else { return }
+    }
 
-            guard let firstOrder = newOrders.first else {
-                return
+    @ViewBuilder
+    private func errorView(_ error: PointOfSaleErrorState) -> some View {
+        VStack(spacing: 0) {
+            POSPageHeaderView(
+                title: PointOfSaleOrderListView.Localization.ordersTitle,
+                backButtonConfiguration: .init(state: .enabled, action: {
+                    isPresented = false
+                }))
+            .posHeaderBackButtonIcon(systemName: "xmark")
+
+            POSListErrorView(error: error) {
+                Task { @MainActor in
+                    await orderListModel.ordersController.loadOrders()
+                }
             }
-
-            if let selectedOrder = orderListModel.ordersController.selectedOrder, newOrders.map(\.id).contains(selectedOrder.id) {
-                return
-            }
-
-            orderListModel.ordersController.selectOrder(firstOrder)
         }
-        .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
     }
 }
 

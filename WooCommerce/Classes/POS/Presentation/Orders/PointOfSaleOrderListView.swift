@@ -371,12 +371,16 @@ private enum Constants {
     static let searchControlID = "searchControl"
 }
 
-private enum Localization {
-    static let ordersTitle = NSLocalizedString(
-        "pos.orderListView.ordersTitle",
-        value: "Orders",
-        comment: "Title at the header for the Orders view.")
+extension PointOfSaleOrderListView {
+    enum Localization {
+        static let ordersTitle = NSLocalizedString(
+            "pos.orderListView.ordersTitle",
+            value: "Orders",
+            comment: "Title at the header for the Orders view.")
+    }
+}
 
+private enum Localization {
     static let searchFieldPlaceholder = NSLocalizedString(
         "pos.orderListView.searchFieldPlaceholder",
         value: "Search orders",

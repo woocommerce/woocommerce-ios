@@ -123,6 +123,11 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
 
             ordersViewState = allOrders.isEmpty ? .empty : .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
 
+            if let selectedOrderID = selectedOrder?.id,
+               let updatedSelectedOrder = allOrders.first(where: { $0.id == selectedOrderID }) {
+                selectedOrder = updatedSelectedOrder
+            }
+
             if fetchStrategy.supportsCaching {
                 cachedOrders = allOrders
             }

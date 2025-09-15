@@ -16,7 +16,7 @@ final class MockPOSReceiptSender: POSReceiptSending {
         sendReceiptWasCalled = true
         sendReceiptCalledWithOrderID = orderID
         sendReceiptCalledWithEmail = recipientEmail
-        
+
         if let sendReceiptErrorToThrow {
             throw sendReceiptErrorToThrow
         }

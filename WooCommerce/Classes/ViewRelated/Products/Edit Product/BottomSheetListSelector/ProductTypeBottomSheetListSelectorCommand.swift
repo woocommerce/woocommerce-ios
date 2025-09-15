@@ -39,7 +39,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
 
     init(source: Source,
          subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          onSelection: @escaping (BottomSheetProductType) -> Void) {
         self.source = source
         self.onSelection = onSelection

@@ -9,6 +9,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
+    @State private var usePayPalCardReader: Bool = UserDefaults.standard.bool(forKey: "UsePayPalCardReader")
 
     private var cardReaderName: String {
         if let cardReaderName = settingsController.connectedCardReader?.name {
@@ -119,6 +120,23 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                         Text(formattedBatteryLevel)
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(.secondary)
+                    }
+                    .padding()
+                    
+                    // Debug toggle for POC - PayPal vs Stripe
+                    HStack {
+                        Text("Use PayPal (Debug)")
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Toggle("", isOn: $usePayPalCardReader)
+                            .onChange(of: usePayPalCardReader) { _, newValue in
+                                if newValue {
+                                    ServiceLocator.switchToPayPalCardReader()
+                                } else {
+                                    ServiceLocator.switchToStripeCardReader()
+                                }
+                            }
                     }
                     .padding()
                 }

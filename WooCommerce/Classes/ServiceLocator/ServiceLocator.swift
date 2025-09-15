@@ -78,7 +78,7 @@ final class ServiceLocator {
     /// Support for external Card Readers
     ///
     #if !targetEnvironment(macCatalyst)
-    private static var _cardReader: CardReaderService = StripeCardReaderService()
+    private static var _cardReader: CardReaderService = createCardReaderService()
     #else
     private static var _cardReader: CardReaderService = NoOpCardReaderService()
     #endif
@@ -309,6 +309,40 @@ final class ServiceLocator {
         }
 
         return stores.posCatalogSyncCoordinator
+    }
+    
+    /// Creates the appropriate CardReaderService based on configuration
+    /// For POC, we'll use a simple feature flag to switch between Stripe and PayPal
+    private static func createCardReaderService() -> CardReaderService {
+        // For POC, use a simple check - in production this would be based on store configuration
+        if shouldUsePayPalCardReader() {
+            return PayPalCardReaderService()
+        } else {
+            return StripeCardReaderService()
+        }
+    }
+    
+    /// Determines whether to use PayPal card reader
+    /// For POC, this is a simple feature flag or user default
+    private static func shouldUsePayPalCardReader() -> Bool {
+        // For POC, check a user default to easily switch between providers
+        return UserDefaults.standard.bool(forKey: "UsePayPalCardReader")
+    }
+    
+    /// Switches to PayPal card reader for demo purposes
+    static func switchToPayPalCardReader() {
+        UserDefaults.standard.set(true, forKey: "UsePayPalCardReader")
+        #if !targetEnvironment(macCatalyst)
+        _cardReader = PayPalCardReaderService()
+        #endif
+    }
+    
+    /// Switches to Stripe card reader (default)
+    static func switchToStripeCardReader() {
+        UserDefaults.standard.set(false, forKey: "UsePayPalCardReader")
+        #if !targetEnvironment(macCatalyst)
+        _cardReader = StripeCardReaderService()
+        #endif
     }
 }
 

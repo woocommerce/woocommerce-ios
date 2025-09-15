@@ -14,5 +14,6 @@ import struct Yosemite.POSOrder
 
     func sendReceipt(order: POSOrder, email: String) async throws {
         try await receiptSender.sendReceipt(orderID: order.id, recipientEmail: email)
+        try await ordersController.updateOrder(orderID: order.id)
     }
 }

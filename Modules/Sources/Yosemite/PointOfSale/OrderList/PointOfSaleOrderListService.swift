@@ -70,4 +70,15 @@ public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProto
             throw PointOfSaleOrderListServiceError.requestFailed
         }
     }
+
+    public func loadOrder(orderID: Int64) async throws -> POSOrder {
+        do {
+            let order = try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
+            return mapper.map(order: order)
+        } catch AFError.explicitlyCancelled {
+            throw PointOfSaleOrderListServiceError.requestCancelled
+        } catch {
+            throw PointOfSaleOrderListServiceError.requestFailed
+        }
+    }
 }

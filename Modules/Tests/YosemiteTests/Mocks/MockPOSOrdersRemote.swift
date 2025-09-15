@@ -91,4 +91,21 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
             throw error
         }
     }
+
+    var loadPOSOrderCalled = false
+    var spyLoadPOSOrderID: Int64?
+    var loadPOSOrderResult: Result<Order, Error> = .success(Order.fake())
+
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        loadPOSOrderCalled = true
+        spySiteID = siteID
+        spyLoadPOSOrderID = orderID
+
+        switch loadPOSOrderResult {
+        case .success(let order):
+            return order
+        case .failure(let error):
+            throw error
+        }
+    }
 }

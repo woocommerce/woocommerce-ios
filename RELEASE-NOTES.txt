@@ -4,6 +4,7 @@
 23.3
 -----
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
+- [***] Performance improvements for users logging in with WordPress.com accounts [https://github.com/woocommerce/woocommerce-ios/pull/16126]
 
 23.2
 -----

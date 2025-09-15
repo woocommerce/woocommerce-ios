@@ -141,8 +141,6 @@ private extension HubMenu {
                     .navigationTitle(Localization.reviews)
             case .coupons:
                 couponListView
-            case .subscriptions:
-                SubscriptionsView(viewModel: .init())
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
             case .reviewDetails(let parcel):

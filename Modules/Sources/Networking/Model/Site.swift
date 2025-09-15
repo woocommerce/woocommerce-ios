@@ -237,14 +237,9 @@ public extension Site {
 
     /// Whether the site has been reverted to a simple site
     ///
+    ///
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
-    }
-
-    /// Whether the site is running a free trial WooExpress plan
-    ///
-    var isFreeTrialSite: Bool {
-        plan == WooConstants.freeTrialPlanSlug
     }
 }
 

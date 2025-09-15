@@ -26,7 +26,6 @@ enum HubMenuNavigationDestination: Hashable {
     case inbox
     case reviews
     case coupons
-    case subscriptions
     case customers
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
@@ -243,15 +242,6 @@ private extension HubMenuViewModel {
 
     func setupSettingsElements() {
         settingsElements = [Settings()]
-
-        guard let site = stores.sessionManager.defaultSite,
-              // Only show the upgrades menu on WPCom sites and non free trial sites
-              site.isWordPressComStore,
-              !site.isFreeTrialSite else {
-            return
-        }
-
-        settingsElements.append(Subscriptions())
     }
 
     func setupGeneralElements() {
@@ -632,19 +622,6 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .reviews
     }
 
-    struct Subscriptions: HubMenuItem {
-        static var id = "subscriptions"
-
-        let title: String = Localization.subscriptions
-        let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartFilled
-        let iconColor: UIColor = .primary
-        let accessibilityIdentifier: String = "menu-subscriptions"
-        let trackingOption: String = "upgrades"
-        let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .subscriptions
-    }
-
     struct Customers: HubMenuItem {
         static var id = "customers"
 
@@ -747,14 +724,6 @@ extension HubMenuViewModel {
 
         static let reviewsDescription = NSLocalizedString(
             "Capture reviews for your store",
-            comment: "Description of one of the hub menu options")
-
-        static let subscriptions = NSLocalizedString(
-            "Subscriptions",
-            comment: "Title of one of the hub menu options")
-
-        static let subscriptionsDescription = NSLocalizedString(
-            "Manage your subscription",
             comment: "Description of one of the hub menu options")
 
         static let customers = NSLocalizedString(

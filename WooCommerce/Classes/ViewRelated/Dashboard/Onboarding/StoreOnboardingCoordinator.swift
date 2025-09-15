@@ -159,8 +159,9 @@ private extension StoreOnboardingCoordinator {
     /// Navigates the user to the plan subscription details view.
     ///
     func showPlanView() {
-        let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
-        navigationController.show(subscriptionController, sender: self)
+        // Q: Confirming with Kiwi if this is still needed?
+        //let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
+        //navigationController.show(subscriptionController, sender: self)
     }
 }
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import Hardware
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -90,6 +91,16 @@ struct PointOfSaleSettingsHardwareDetailView: View {
             showBarcodeScanningDocumentationModal = true
         }
     }
+    
+    /// Opens PayPal/Zettle settings view for account management
+    private func openPayPalSettings() {
+        guard let paypalService = ServiceLocator.cardReaderService as? PayPalCardReaderService else {
+            print("⚠️ PayPal service not available")
+            return
+        }
+        
+        paypalService.presentSettings()
+    }
 
     private var cardReadersView: some View {
         VStack(spacing: POSSpacing.none) {
@@ -122,7 +133,8 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding()
-                    
+                }
+
                     // Debug toggle for POC - PayPal vs Stripe
                     HStack {
                         Text("Use PayPal (Debug)")
@@ -137,6 +149,23 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                                     ServiceLocator.switchToStripeCardReader()
                                 }
                             }
+                    }
+                    .padding()
+
+                // PayPal Settings (only show when PayPal is enabled)
+                if usePayPalCardReader {
+                    Button {
+                        openPayPalSettings()
+                    } label: {
+                        HStack {
+                            Text("PayPal Settings")
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .padding()
                 }

@@ -46,9 +46,10 @@ public final class PayPalCardReaderService: NSObject {
 
             // Start the SDK with the authentication provider
             var isDebug = false
-            #if DEBUG
+#if DEBUG
             isDebug = true
-            #endif
+#endif
+            
 
             iZettleSDK.shared().start(with: authenticationProvider, enableDeveloperMode: isDebug)
 
@@ -326,6 +327,28 @@ extension PayPalCardReaderService: CardReaderService {
 
     public func installUpdate() -> Void {
         // For POC, no-op
+    }
+
+    /// Presents the PayPal/Zettle settings view for account management
+    public func presentSettings(from viewController: UIViewController? = nil) {
+        let sdk = iZettleSDK.shared()
+
+        // Get the current view controller if none provided
+        let presentingViewController = viewController ?? getCurrentViewController()
+
+        guard let presentingViewController = presentingViewController else {
+            print("💳❌ [PayPalCardReaderService] No view controller available for settings")
+            return
+        }
+
+        // Configure settings - enable tipping settings for PayPal readers
+        let configuration = IZSDKSettingsConfiguration(paypalReaderTippingSettingsEnabled: true)
+
+        print("💳⚙️ [PayPalCardReaderService] Presenting PayPal settings")
+        DDLogInfo("💳⚙️ [PayPalCardReaderService] Presenting PayPal settings")
+
+        // Present the settings view
+        sdk.presentSettings(from: presentingViewController, configuration: configuration)
     }
 }
 

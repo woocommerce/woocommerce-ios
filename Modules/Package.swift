@@ -97,6 +97,7 @@ let package = Package(
         .package(url: "https://github.com/simibac/ConfettiSwiftUI.git", from: "1.0.0"),
         .package(url: "https://github.com/squarefrog/UIDeviceIdentifier", from: "2.3.0"),
         .package(url: "https://github.com/stripe/stripe-terminal-ios", from: "4.2.0"),
+        .package(url: "https://github.com/iZettle/sdk-ios", from: "3.1.0"),
         .package(url: "https://github.com/SVProgressHUD/SVProgressHUD", from: "2.2.5"),
         .package(url: "https://github.com/wordpress-mobile/AztecEditor-iOS", revision: "d741e3cfaa74c99ef092e5fddb87d4314b63e3ed"),
         .package(url: "https://github.com/wordpress-mobile/NSObject-SafeExpectations", from: "0.0.6"),
@@ -129,7 +130,8 @@ let package = Package(
             dependencies: [
                 "Codegen",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                .product(name: "StripeTerminal", package: "stripe-terminal-ios")
+                .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
+                .product(name: "sdk-ios", package: "sdk-ios")
             ],
             resources: [.process("Resources")]
         ),

@@ -1,5 +1,5 @@
 {
-  "originHash" : "298b0576b8fba2136af19221385c7ff56047cb08dc2f781a9e3976c3952d7918",
+  "originHash" : "89168c9ac10b6f68821f067ff0dd7abc701a61dc88219882f6ac8218e86d5608",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -222,6 +222,15 @@
       "state" : {
         "revision" : "44a0db25e86206bdb96fb7b93507417cfc36f016",
         "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/iZettle/sdk-ios",
+      "state" : {
+        "revision" : "4cbe6dc6e423084c4a4a30889d4ffbf22641a8f8",
+        "version" : "3.22.0"
       }
     },
     {

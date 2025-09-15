@@ -3,6 +3,7 @@ import struct NetworkingCore.PagedItems
 
 public protocol PointOfSaleOrderListFetchStrategy {
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder>
+    func loadOrder(orderID: Int64) async throws -> POSOrder
     var supportsCaching: Bool { get }
     var showsLoadingWithItems: Bool { get }
     var id: String { get }
@@ -26,6 +27,10 @@ struct PointOfSaleDefaultOrderListFetchStrategy: PointOfSaleOrderListFetchStrate
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderListService.providePointOfSaleOrders(pageNumber: pageNumber)
     }
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        try await orderListService.loadOrder(orderID: orderID)
+    }
 }
 
 struct PointOfSaleSearchOrderListFetchStrategy: PointOfSaleOrderListFetchStrategy {
@@ -42,5 +47,9 @@ struct PointOfSaleSearchOrderListFetchStrategy: PointOfSaleOrderListFetchStrateg
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderListService.searchPointOfSaleOrders(searchTerm: searchTerm, pageNumber: pageNumber)
+    }
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        try await orderListService.loadOrder(orderID: orderID)
     }
 }

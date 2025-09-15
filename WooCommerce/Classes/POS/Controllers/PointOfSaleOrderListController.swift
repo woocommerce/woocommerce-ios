@@ -16,6 +16,7 @@ protocol PointOfSaleOrderListControllerProtocol {
     func refreshOrders() async
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
+    func updateOrder(orderID: Int64) async throws
 }
 
 protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListControllerProtocol {
@@ -122,6 +123,11 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
 
             ordersViewState = allOrders.isEmpty ? .empty : .loaded(allOrders, hasMoreItems: pagedOrders.hasMorePages)
 
+            if let selectedOrderID = selectedOrder?.id,
+               let updatedSelectedOrder = allOrders.first(where: { $0.id == selectedOrderID }) {
+                selectedOrder = updatedSelectedOrder
+            }
+
             if fetchStrategy.supportsCaching {
                 cachedOrders = allOrders
             }
@@ -167,6 +173,23 @@ protocol PointOfSaleSearchingOrderListControllerProtocol: PointOfSaleOrderListCo
             Task {
                 await loadFirstPage()
             }
+        }
+    }
+
+    @MainActor
+    func updateOrder(orderID: Int64) async throws {
+        let updatedOrder = try await fetchStrategy.loadOrder(orderID: orderID)
+        let updatedOrders = ordersViewState.orders.map { order in
+            order.id == orderID ? updatedOrder : order
+        }
+
+        ordersViewState = ordersViewState.updatingOrders(with: updatedOrders)
+        cachedOrders = cachedOrders.map { order in
+            order.id == orderID ? updatedOrder : order
+        }
+
+        if selectedOrder?.id == orderID {
+            selectedOrder = updatedOrder
         }
     }
 }

@@ -19,6 +19,8 @@ public protocol POSOrdersRemoteProtocol {
                         order: Order,
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order
 
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order
+
     func loadPOSOrders(siteID: Int64,
                        pageNumber: Int,
                        pageSize: Int) async throws -> PagedItems<Order>

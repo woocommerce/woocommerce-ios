@@ -4,6 +4,12 @@ import Codegen
 import Foundation
 import Networking
 import WooFoundation
+import enum NetworkingCore.OrderStatusEnum
+import struct NetworkingCore.Address
+import struct NetworkingCore.MetaData
+import struct NetworkingCore.Order
+import struct NetworkingCore.OrderItem
+import struct NetworkingCore.OrderRefundCondensed
 
 
 extension Yosemite.JustInTimeMessage {
@@ -47,6 +53,60 @@ extension Yosemite.JustInTimeMessage {
             badgeImageUrl: badgeImageUrl,
             badgeImageDarkUrl: badgeImageDarkUrl,
             template: template
+        )
+    }
+}
+
+extension Yosemite.POSOrder {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        number: CopiableProp<String> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        status: CopiableProp<OrderStatusEnum> = .copy,
+        formattedTotal: CopiableProp<String> = .copy,
+        formattedSubtotal: CopiableProp<String> = .copy,
+        customerEmail: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
+        paymentMethodTitle: CopiableProp<String> = .copy,
+        lineItems: CopiableProp<[POSOrderItem]> = .copy,
+        refunds: CopiableProp<[POSOrderRefund]> = .copy,
+        formattedDiscountTotal: NullableCopiableProp<String> = .copy,
+        formattedTotalTax: CopiableProp<String> = .copy,
+        formattedPaymentTotal: CopiableProp<String> = .copy,
+        formattedNetAmount: NullableCopiableProp<String> = .copy
+    ) -> Yosemite.POSOrder {
+        let id = id ?? self.id
+        let number = number ?? self.number
+        let dateCreated = dateCreated ?? self.dateCreated
+        let status = status ?? self.status
+        let formattedTotal = formattedTotal ?? self.formattedTotal
+        let formattedSubtotal = formattedSubtotal ?? self.formattedSubtotal
+        let customerEmail = customerEmail ?? self.customerEmail
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
+        let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
+        let lineItems = lineItems ?? self.lineItems
+        let refunds = refunds ?? self.refunds
+        let formattedDiscountTotal = formattedDiscountTotal ?? self.formattedDiscountTotal
+        let formattedTotalTax = formattedTotalTax ?? self.formattedTotalTax
+        let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
+        let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
+
+        return Yosemite.POSOrder(
+            id: id,
+            number: number,
+            dateCreated: dateCreated,
+            status: status,
+            formattedTotal: formattedTotal,
+            formattedSubtotal: formattedSubtotal,
+            customerEmail: customerEmail,
+            paymentMethodID: paymentMethodID,
+            paymentMethodTitle: paymentMethodTitle,
+            lineItems: lineItems,
+            refunds: refunds,
+            formattedDiscountTotal: formattedDiscountTotal,
+            formattedTotalTax: formattedTotalTax,
+            formattedPaymentTotal: formattedPaymentTotal,
+            formattedNetAmount: formattedNetAmount
         )
     }
 }

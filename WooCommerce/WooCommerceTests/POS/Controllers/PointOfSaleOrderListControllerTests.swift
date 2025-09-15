@@ -4,6 +4,7 @@ import Foundation
 import enum Yosemite.PointOfSaleOrderListServiceError
 import struct NetworkingCore.Order
 import Observation
+import struct Yosemite.POSOrder
 
 final class PointOfSaleOrderListControllerTests {
     private let orderListService = MockPointOfSaleOrderListService()
@@ -314,5 +315,53 @@ final class PointOfSaleOrderListControllerTests {
         }
         #expect(orders == searchOrders)
         #expect(orderListService.lastSearchTerm == "test")
+    }
+
+    @Test func updateOrder_when_order_loaded_from_API_then_order_list_updates() async throws {
+        // Given - load initial orders
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
+        await sut.loadOrders()
+
+        // Setup updated order
+        let orderToUpdate = initialOrders[0]
+        let updatedOrder = orderToUpdate.copy(customerEmail: .some("updated@example.com"))
+        orderListService.loadOrderResult = updatedOrder
+
+        // When
+        try await sut.updateOrder(orderID: orderToUpdate.id)
+
+        // Then
+        guard case .loaded(let orders, _) = sut.ordersViewState else {
+            Issue.record("Expected loaded state after update, but got \(sut.ordersViewState)")
+            return
+        }
+
+        let foundOrder = orders.first { $0.id == orderToUpdate.id }
+        #expect(foundOrder != nil)
+        #expect(foundOrder?.customerEmail == "updated@example.com")
+        #expect(orderListService.loadOrderWasCalled)
+        #expect(orderListService.lastLoadOrderID == orderToUpdate.id)
+    }
+
+    @Test func updateOrder_when_order_loaded_from_API_then_selected_order_updates() async throws {
+        // Given
+        let initialOrders = MockPointOfSaleOrderListService.makeInitialOrders()
+        orderListService.orderPages = [initialOrders]
+        await sut.loadOrders()
+
+        let orderToUpdate = initialOrders[0]
+        await sut.selectOrder(orderToUpdate)
+        #expect(sut.selectedOrder?.id == orderToUpdate.id)
+
+        // Setup updated order
+        let updatedOrder = orderToUpdate.copy(customerEmail: .some("selected-updated@example.com"))
+        orderListService.loadOrderResult = updatedOrder
+
+        // When
+        try await sut.updateOrder(orderID: orderToUpdate.id)
+
+        // Then
+        #expect(sut.selectedOrder?.customerEmail == "selected-updated@example.com")
     }
 }

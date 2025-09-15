@@ -199,7 +199,8 @@ private extension CardPresentPaymentStore {
                         $0.readerType == .chipper ||
                         $0.readerType == .stripeM2 ||
                         $0.readerType == .wisepad3 ||
-                        $0.readerType == .tapToPay
+                        $0.readerType == .tapToPay ||
+                        $0.readerType == .paypalReaderPPR
                     })
                     onReaderDiscovered(supportedReaders)
                 }

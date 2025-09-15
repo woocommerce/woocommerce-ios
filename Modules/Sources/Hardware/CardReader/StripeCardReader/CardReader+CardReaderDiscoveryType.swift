@@ -5,7 +5,7 @@ public extension CardReader {
         switch readerType {
         case .tapToPay:
             return .tapToPay
-        case .chipper, .stripeM2, .wisepad3:
+        case .chipper, .stripeM2, .wisepad3, .paypalReaderPPR:
             return .bluetoothScan
         case .other:
             return nil

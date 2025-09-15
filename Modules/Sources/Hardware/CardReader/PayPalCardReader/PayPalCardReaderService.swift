@@ -95,7 +95,7 @@ extension PayPalCardReaderService: CardReaderService {
                 status: .init(connected: true, remembered: false),
                 softwareVersion: "1.0.0",
                 batteryLevel: 0.85,
-                readerType: .other,
+                readerType: .paypalReaderPPR,
                 locationId: "loc_test"
             )
             

@@ -30,7 +30,7 @@ extension CardReaderType {
             return .wisePad3
         case .tapToPay:
             return .tapToPay
-        case .other:
+        case .other, .paypalReaderPPR:
             return nil
         }
     }

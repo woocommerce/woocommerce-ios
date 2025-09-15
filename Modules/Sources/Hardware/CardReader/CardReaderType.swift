@@ -9,6 +9,8 @@ public enum CardReaderType: String, CaseIterable {
     case wisepad3
     /// Tap on Mobile: Apple built in reader
     case tapToPay
+    /// PayPal Reader PPR
+    case paypalReaderPPR
     /// Other
     case other
 }
@@ -30,6 +32,8 @@ extension CardReaderType {
             return "WISEPAD_3"
         case .tapToPay:
             return "TAP_TO_PAY_DEVICE"
+        case .paypalReaderPPR:
+            return "PAYPAL_READER_PPR"
         default:
             return "UNKNOWN"
         }

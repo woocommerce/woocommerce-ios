@@ -18,6 +18,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             self = .wisepad3
         case .tapToPay:
             self = .tapToPay
+        case .paypalReaderPPR:
+            self = .paypalReaderPPR
         case .other:
             self = .other
         }
@@ -35,6 +37,8 @@ extension StorageCardReaderType: ReadOnlyConvertible {
             return .wisepad3
         case .tapToPay:
             return .tapToPay
+        case .paypalReaderPPR:
+            return .paypalReaderPPR
         case .other:
             return .other
         }

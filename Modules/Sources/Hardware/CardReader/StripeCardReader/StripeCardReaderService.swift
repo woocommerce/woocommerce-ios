@@ -716,7 +716,7 @@ private extension StripeCardReaderService {
             // Don't add a timeout to Tap to Pay, because Apple handle it in their UI.
             return collectPaymentMethodFuture
                 .eraseToAnyPublisher()
-        case .chipper, .stripeM2, .wisepad3, .other, .none:
+        case .chipper, .stripeM2, .wisepad3, .paypalReaderPPR, .other, .none:
             return collectPaymentMethodFuture
                 .timeout(120, scheduler: DispatchQueue.main, customError: { [weak self] in
                     // Cancel the payment if a card isn't provided to an external reader within two minutes

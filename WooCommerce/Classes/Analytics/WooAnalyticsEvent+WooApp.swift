@@ -3,54 +3,108 @@ import UIKit
 import Yosemite
 import WooFoundation
 
-/// This struct represents an analytics event. It is a combination of `WooAnalyticsStat` and
-/// its properties.
-///
-/// This was mostly created to promote static-typing via constructors.
-///
-/// ## Adding New Events
-///
-/// 1. Add the event name (`String`) to `WooAnalyticsStat`.
-/// 2. Create an `extension` of `WooAnalyticsStat` if necessary for grouping.
-/// 3. Add a `static func` constructor.
-///
-/// Here is an example:
-///
-/// ~~~
-/// extension WooAnalyticsEvent {
-///     enum LoginStep: String {
-///         case start
-///         case success
-///     }
-///
-///     static func login(step: LoginStep) -> WooAnalyticsEvent {
-///         let properties = [
-///             "step": step.rawValue
-///         ]
-///
-///         return WooAnalyticsEvent(name: "login", properties: properties)
-///     }
-/// }
-/// ~~~
-///
-/// Examples of tracking calls (in the client App or Pod):
-///
-/// ~~~
-/// Analytics.track(event: .login(step: .start))
-/// Analytics.track(event: .loginStart)
-/// ~~~
-///
-struct WooAnalyticsEvent {
-    init(statName: WooAnalyticsStat, properties: [String: WooAnalyticsEventPropertyType], error: Error? = nil) {
-        self.statName = statName
-        self.properties = properties
-        self.error = error
-    }
+typealias WooAnalyticsEvent = WooFoundationCore.WooAnalyticsEvent
+typealias WooAnalyticsStat = WooFoundationCore.WooAnalyticsStat
 
-    let statName: WooAnalyticsStat
-    let properties: [String: WooAnalyticsEventPropertyType]
-    let error: Error?
+#if canImport(WordPressShared)
+import WordPressShared
+
+extension WooAnalyticsStat {
+    /// Converts the provided WPAnalyticsStat into a WooAnalyticsStat.
+    /// This whole process kinda stinks, but we need this for the `WordPressAuthenticatorDelegate`
+    /// implementation. ☹️ Feel free to refactor later on!
+    ///
+    /// - Parameter stat: The WPAnalyticsStat to convert
+    /// - Returns: The corresponding WooAnalyticsStat or nil if it cannot be converted
+    ///
+    static func valueOf(stat: WPAnalyticsStat) -> WooAnalyticsStat? {
+        var wooEvent: WooAnalyticsStat? = nil
+
+        switch stat {
+        case .signedIn:
+            wooEvent = WooAnalyticsStat.signedIn
+        case .signedInToJetpack:
+            wooEvent = WooAnalyticsStat.signedIn
+        case .logout:
+            wooEvent = WooAnalyticsStat.logout
+        case .openedLogin:
+            wooEvent = WooAnalyticsStat.openedLogin
+        case .loginFailed:
+            wooEvent = WooAnalyticsStat.loginFailed
+        case .loginAutoFillCredentialsFilled:
+            wooEvent = WooAnalyticsStat.loginAutoFillCredentialsFilled
+        case .loginAutoFillCredentialsUpdated:
+            wooEvent = WooAnalyticsStat.loginAutoFillCredentialsUpdated
+        case .loginProloguePaged:
+            wooEvent = WooAnalyticsStat.loginProloguePaged
+        case .loginPrologueViewed:
+            wooEvent = WooAnalyticsStat.loginPrologueViewed
+        case .loginEmailFormViewed:
+            wooEvent = WooAnalyticsStat.loginEmailFormViewed
+        case .loginMagicLinkOpenEmailClientViewed:
+            wooEvent = WooAnalyticsStat.loginMagicLinkOpenEmailClientViewed
+        case .loginMagicLinkRequestFormViewed:
+            wooEvent = WooAnalyticsStat.loginMagicLinkRequestFormViewed
+        case .loginMagicLinkExited:
+            wooEvent = WooAnalyticsStat.loginMagicLinkExited
+        case .loginMagicLinkFailed:
+            wooEvent = WooAnalyticsStat.loginMagicLinkFailed
+        case .loginMagicLinkOpened:
+            wooEvent = WooAnalyticsStat.loginMagicLinkOpened
+        case .loginMagicLinkRequested:
+            wooEvent = WooAnalyticsStat.loginMagicLinkRequested
+        case .loginMagicLinkSucceeded:
+            wooEvent = WooAnalyticsStat.loginMagicLinkSucceeded
+        case .loginPasswordFormViewed:
+             wooEvent = WooAnalyticsStat.loginPasswordFormViewed
+        case .loginURLFormViewed:
+            wooEvent = WooAnalyticsStat.loginURLFormViewed
+        case .loginURLHelpScreenViewed:
+            wooEvent = WooAnalyticsStat.loginURLHelpScreenViewed
+        case .loginUsernamePasswordFormViewed:
+            wooEvent = WooAnalyticsStat.loginUsernamePasswordFormViewed
+        case .loginTwoFactorFormViewed:
+            wooEvent = WooAnalyticsStat.loginTwoFactorFormViewed
+        case .loginEpilogueViewed:
+            wooEvent = WooAnalyticsStat.loginEpilogueViewed
+        case .loginForgotPasswordClicked:
+            wooEvent = WooAnalyticsStat.loginForgotPasswordClicked
+        case .loginSocialButtonClick:
+            wooEvent = WooAnalyticsStat.loginSocialButtonClick
+        case .loginSocialButtonFailure:
+            wooEvent = WooAnalyticsStat.loginSocialButtonFailure
+        case .loginSocialConnectSuccess:
+            wooEvent = WooAnalyticsStat.loginSocialConnectSuccess
+        case .loginSocialConnectFailure:
+            wooEvent = WooAnalyticsStat.loginSocialConnectFailure
+        case .loginSocialSuccess:
+            wooEvent = WooAnalyticsStat.loginSocialSuccess
+        case .loginSocialFailure:
+            wooEvent = WooAnalyticsStat.loginSocialFailure
+        case .loginSocial2faNeeded:
+            wooEvent = WooAnalyticsStat.loginSocial2faNeeded
+        case .loginSocialAccountsNeedConnecting:
+            wooEvent = WooAnalyticsStat.loginSocialAccountsNeedConnecting
+        case .loginSocialErrorUnknownUser:
+            wooEvent = WooAnalyticsStat.loginSocialErrorUnknownUser
+        case .onePasswordFailed:
+            wooEvent = WooAnalyticsStat.onePasswordFailed
+        case .onePasswordLogin:
+            wooEvent = WooAnalyticsStat.onePasswordLogin
+        case .onePasswordSignup:
+            wooEvent = WooAnalyticsStat.onePasswordSignup
+        case .twoFactorCodeRequested:
+            wooEvent = WooAnalyticsStat.twoFactorCodeRequested
+        case .twoFactorSentSMS:
+            wooEvent = WooAnalyticsStat.twoFactorSentSMS
+        default:
+            wooEvent = nil
+        }
+
+        return wooEvent
+    }
 }
+#endif
 
 // MARK: - In-app Feedback and Survey
 

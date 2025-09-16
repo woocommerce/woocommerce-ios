@@ -1,10 +1,12 @@
 import SwiftUI
 import WooFoundationCore
 import WooFoundation
-import protocol Experiments.FeatureFlag
+import enum Experiments.FeatureFlag
+
+/// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
 /// Protocol that provides analytics tracking capabilities for POS
-public protocol POSAnalyticsProviding {
+protocol POSAnalyticsProviding {
     func track(event: WooAnalyticsEvent)
     func track(_ stat: WooAnalyticsStat)
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType])
@@ -12,33 +14,33 @@ public protocol POSAnalyticsProviding {
 }
 
 /// Protocol that provides currency settings access for POS
-public protocol POSCurrencySettingsProviding {
+protocol POSCurrencySettingsProviding {
     var currencySettings: CurrencySettings { get }
 }
 
 /// Protocol that provides feature flag checking capabilities for POS
-public protocol POSFeatureFlagProviding {
+protocol POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool
 }
 
 /// Protocol that provides connectivity monitoring for POS
-public protocol POSConnectivityProviding {
+protocol POSConnectivityProviding {
     var connectivityObserver: ConnectivityObserver { get }
 }
 
 /// Protocol that provides main app navigation capabilities for POS
-public protocol POSExternalNavigationProviding {
+protocol POSExternalNavigationProviding {
     func navigateToCreateOrder()
 }
 
 /// Protocol that provides external view creation capabilities for POS
-public protocol POSExternalViewProviding {
+protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers
 /// This enables dependency injection for POS code while maintaining clean separation from ServiceLocator
-public protocol POSDependencyProviding {
+protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
     var currency: POSCurrencySettingsProviding { get }
     var featureFlags: POSFeatureFlagProviding { get }

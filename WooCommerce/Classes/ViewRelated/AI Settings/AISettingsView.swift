@@ -7,7 +7,22 @@ import SwiftUI
     var selectedProvider: String = "OpenAI"
     var selectedModel: String = "gpt-4"
 
+    func toggleEditing() {
+        if isEditingApiKey {
+            saveSettings()
+        }
+        isEditingApiKey.toggle()
+    }
+
     func updateProvider(_ provider: String) {
+        // TODO
+    }
+
+    func clearAPIKey() {
+        // TODO
+    }
+
+    private func saveSettings() {
         // TODO
     }
 }
@@ -31,18 +46,34 @@ struct AISettingsView: View {
             if aiSettingsDisabled {
                 JetpackAsAIDefaultSourceBannerView()
             }
-            TextField(
-                Localization.enterAPIKey,
-                text: Binding(
-                    get: { viewModel.isEditingApiKey ? viewModel.apiKey : "**********" },
-                    set: { newValue in
-                        if viewModel.isEditingApiKey { viewModel.apiKey = newValue }
-                    }
+
+            HStack {
+                TextField(
+                    Localization.enterAPIKey,
+                    text: Binding(
+                        get: { viewModel.isEditingApiKey ? viewModel.apiKey : "**********" },
+                        set: { newValue in
+                            if viewModel.isEditingApiKey { viewModel.apiKey = newValue }
+                        }
+                    )
                 )
-            )
-            .textFieldStyle(RoundedBorderTextFieldStyle())
-            .foregroundColor(.primary)
-            .privacySensitive()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .foregroundColor(.primary)
+                .privacySensitive()
+
+                if viewModel.isEditingApiKey, !viewModel.apiKey.isEmpty {
+                    Button(action: viewModel.clearAPIKey) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.gray)
+                    }
+                }
+
+                Button(action: viewModel.toggleEditing) {
+                    Text(viewModel.isEditingApiKey ? Localization.save : Localization.edit)
+                }
+                .disabled(aiSettingsDisabled)
+                .opacity(aiSettingsDisabled ? 0.5 : 1.0)
+            }
 
             Text(Localization.apiKeyDescription)
                 .font(.caption)
@@ -172,6 +203,18 @@ private extension AISettingsView {
             "aiSettings.selectModel",
             value: "Select Model",
             comment: "Accessibility label for the AI model picker"
+        )
+
+        static let edit = NSLocalizedString(
+            "aiSettings.edit",
+            value: "Edit",
+            comment: "Button title to edit API key"
+        )
+
+        static let save = NSLocalizedString(
+            "aiSettings.save",
+            value: "Save",
+            comment: "Button title to save API key"
         )
     }
 }

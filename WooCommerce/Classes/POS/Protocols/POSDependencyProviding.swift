@@ -35,7 +35,7 @@ protocol POSExternalNavigationProviding {
 
 /// Protocol that provides external view creation capabilities for POS
 protocol POSExternalViewProviding {
-    func createSupportFormView(isPresented: Binding<Bool>) -> AnyView
+    func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

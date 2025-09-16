@@ -121,6 +121,6 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 }
 
 struct EmptyPOSExternalView: POSExternalViewProviding {
-    func createSupportFormView(isPresented: Binding<Bool>) -> AnyView { AnyView(EmptyView()) }
+    func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     init() {}
 }

@@ -152,7 +152,9 @@ private extension POSTabCoordinator {
                     settingsController: PointOfSaleSettingsController(siteID: siteID,
                                                                       settingsService: settingsService,
                                                                       cardPresentPaymentService: cardPresentPaymentService,
-                                                                      pluginsService: pluginsService),
+                                                                      pluginsService: pluginsService,
+                                                                      defaultSiteName: storesManager.sessionManager.defaultSite?.name,
+                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings),
                     collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

@@ -4,6 +4,7 @@ import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posAnalytics) var analytics
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
@@ -136,7 +137,7 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
-        ServiceLocator.analytics.track(.pointOfSaleCashPaymentTapped)
+        analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true
         do {
             try await markComplete()

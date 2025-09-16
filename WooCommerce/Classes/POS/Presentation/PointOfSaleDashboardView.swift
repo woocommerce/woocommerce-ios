@@ -191,9 +191,9 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            externalViews.createSupportFormView(isPresented: $showSupport)
+            externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
                 .toolbar {
-                    ToolbarItem(placement: .confirmationAction) {
+                    ToolbarItem(placement: .cancellationAction) {
                         Button(Localization.supportCancel) {
                             showSupport = false
                         }
@@ -256,6 +256,7 @@ private extension PointOfSaleDashboardView {
         static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
+        static let supportTag = "origin:point-of-sale"
     }
 
     enum Localization {

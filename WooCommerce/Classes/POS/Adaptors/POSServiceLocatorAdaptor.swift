@@ -77,10 +77,10 @@ private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
 }
 
 private struct POSExternalViewAdaptor: POSExternalViewProviding {
-    func createSupportFormView(isPresented: Binding<Bool>) -> AnyView {
+    func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(
             SupportForm(isPresented: isPresented,
-                        viewModel: SupportFormViewModel(sourceTag: "pos",
+                        viewModel: SupportFormViewModel(sourceTag: sourceTag,
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
         )
     }

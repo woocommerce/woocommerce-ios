@@ -113,7 +113,6 @@ private extension POSTabCoordinator {
                                                      featureFlagService: serviceAdaptor.featureFlags,
                                                      pluginsService: pluginsService
                 )
-                let posDependencies = POSServiceLocatorAdaptor()
                 let posView = PointOfSaleEntryPointView(
                     itemsController: PointOfSaleItemsController(
                         itemProvider: PointOfSaleItemService(
@@ -133,8 +132,8 @@ private extension POSTabCoordinator {
                     couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                           fetchStrategyFactory: posCouponFetchStrategyFactory,
                                                                           analyticsProvider: serviceAdaptor.analytics),
-                    ordersController: PointOfSaleOrderListController(
-                        orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactory(
+                    ordersController: POSOrderListController(
+                        orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
                             siteID: siteID,
                             credentials: credentials,
                             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)

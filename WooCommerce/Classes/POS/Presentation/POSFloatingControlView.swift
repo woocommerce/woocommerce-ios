@@ -65,7 +65,7 @@ struct POSFloatingControlView: View {
             PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showOrders) {
-            PointOfSaleOrdersView(isPresented: $showOrders)
+            POSOrdersView(isPresented: $showOrders)
         }
         .frame(height: Constants.size)
         .background(Color.clear)

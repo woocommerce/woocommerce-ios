@@ -116,7 +116,7 @@ struct ItemList<HeaderView: View>: View {
                 GhostItemCardView()
             }
         case .inlineError(_, let errorState, .pagination):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadNextItems(base: node)
@@ -130,7 +130,7 @@ struct ItemList<HeaderView: View>: View {
     @ViewBuilder var headerRows: some View {
         switch state {
         case .inlineError(_, let errorState, .refresh):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadItems(base: .root)

@@ -301,8 +301,8 @@ private extension ItemListView {
     var emptyView: some View {
         switch selectedItemListType {
         case .products:
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 Task {
@@ -310,8 +310,8 @@ private extension ItemListView {
                 }
             }
         case .coupons:
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
                 showCouponCreationModal = true
@@ -323,14 +323,14 @@ private extension ItemListView {
     func errorView(_ errorState: PointOfSaleErrorState) -> some View {
         switch errorState.errorType {
         case .couponsDisabled:
-            PointOfSaleItemListErrorView(error: errorState, onAction: {
+            POSListErrorView(error: errorState, onAction: {
                 Task {
                     await posModel.couponsController.enableCoupons()
                     analytics.track(.couponSettingEnabled)
                 }
             })
         default:
-            PointOfSaleItemListErrorView(error: errorState, onAction: {
+            POSListErrorView(error: errorState, onAction: {
                 Task {
                     await itemsController(selectedItemListType).loadItems(base: .root)
                 }

@@ -2,11 +2,11 @@ import Foundation
 import Observation
 import struct Yosemite.POSOrder
 
-@Observable final class PointOfSaleOrderListModel {
-    let ordersController: PointOfSaleSearchingOrderListControllerProtocol
+@Observable final class POSOrderListModel {
+    let ordersController: POSSearchingOrderListControllerProtocol
     let receiptSender: POSReceiptSending
 
-    init(ordersController: PointOfSaleSearchingOrderListControllerProtocol,
+    init(ordersController: POSSearchingOrderListControllerProtocol,
          receiptSender: POSReceiptSending) {
         self.ordersController = ordersController
         self.receiptSender = receiptSender

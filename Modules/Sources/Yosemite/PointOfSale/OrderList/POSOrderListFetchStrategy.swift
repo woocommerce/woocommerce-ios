@@ -1,7 +1,7 @@
 import Foundation
 import struct NetworkingCore.PagedItems
 
-public protocol PointOfSaleOrderListFetchStrategy {
+public protocol POSOrderListFetchStrategy {
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder>
     func loadOrder(orderID: Int64) async throws -> POSOrder
     var supportsCaching: Bool { get }
@@ -9,18 +9,18 @@ public protocol PointOfSaleOrderListFetchStrategy {
     var id: String { get }
 }
 
-extension PointOfSaleOrderListFetchStrategy {
+extension POSOrderListFetchStrategy {
     var id: String {
         String(describing: type(of: self))
     }
 }
 
-struct PointOfSaleDefaultOrderListFetchStrategy: PointOfSaleOrderListFetchStrategy {
-    private let orderListService: PointOfSaleOrderListServiceProtocol
+struct POSDefaultOrderListFetchStrategy: POSOrderListFetchStrategy {
+    private let orderListService: POSOrderListServiceProtocol
     let supportsCaching: Bool = true
     var showsLoadingWithItems: Bool = true
 
-    init(orderListService: PointOfSaleOrderListServiceProtocol) {
+    init(orderListService: POSOrderListServiceProtocol) {
         self.orderListService = orderListService
     }
 
@@ -33,14 +33,14 @@ struct PointOfSaleDefaultOrderListFetchStrategy: PointOfSaleOrderListFetchStrate
     }
 }
 
-struct PointOfSaleSearchOrderListFetchStrategy: PointOfSaleOrderListFetchStrategy {
-    private let orderListService: PointOfSaleOrderListServiceProtocol
+struct POSSearchOrderListFetchStrategy: POSOrderListFetchStrategy {
+    private let orderListService: POSOrderListServiceProtocol
     private let searchTerm: String
 
     var supportsCaching: Bool = false
     var showsLoadingWithItems = false
 
-    init(orderListService: PointOfSaleOrderListServiceProtocol, searchTerm: String) {
+    init(orderListService: POSOrderListServiceProtocol, searchTerm: String) {
         self.orderListService = orderListService
         self.searchTerm = searchTerm
     }

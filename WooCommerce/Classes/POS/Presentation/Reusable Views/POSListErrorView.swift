@@ -2,9 +2,9 @@ import SwiftUI
 import struct WooFoundation.ScrollableVStack
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
-struct PointOfSaleItemListErrorView: View {
+struct POSListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let viewModel: PointOfSaleItemListErrorViewModel
+    private let viewModel: POSListErrorViewModell
     private let onAction: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
@@ -12,7 +12,7 @@ struct PointOfSaleItemListErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
-        self.viewModel = PointOfSaleItemListErrorViewModel(error: error)
+        self.viewModel = POSListErrorViewModell(error: error)
         self.onAction = onAction
     }
 
@@ -68,7 +68,7 @@ struct PointOfSaleItemListErrorView: View {
     }
 }
 
-struct PointOfSaleItemListErrorViewModel {
+struct POSListErrorViewModell {
     let title: String
     let subtitle: String
     let buttonText: String
@@ -88,9 +88,9 @@ struct PointOfSaleItemListErrorViewModel {
 }
 
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorCouponsDisabled, onAction: {})
+    POSListErrorView(error: .errorCouponsDisabled, onAction: {})
 }
 
 #Preview {
-    PointOfSaleItemListErrorView(error: .errorOnLoadingCoupons(), onAction: {})
+    POSListErrorView(error: .errorOnLoadingCoupons(), onAction: {})
 }

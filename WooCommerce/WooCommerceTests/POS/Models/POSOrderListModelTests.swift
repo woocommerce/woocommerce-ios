@@ -4,10 +4,10 @@ import Foundation
 import struct Yosemite.POSOrder
 import enum NetworkingCore.OrderStatusEnum
 
-final class PointOfSaleOrderListModelTests {
-    private let mockOrdersController = MockPointOfSaleOrderListController()
+final class POSOrderListModelTests {
+    private let mockOrdersController = MockPOSOrderListController()
     private let mockReceiptSender = MockPOSReceiptSender()
-    private lazy var sut = PointOfSaleOrderListModel(
+    private lazy var sut = POSOrderListModel(
         ordersController: mockOrdersController,
         receiptSender: mockReceiptSender
     )
@@ -53,7 +53,7 @@ final class PointOfSaleOrderListModelTests {
         mockOrdersController.shouldThrowError = true
 
         // When & Then
-        await #expect(throws: MockPointOfSaleOrderListController.TestError.updateOrderFailed) {
+        await #expect(throws: MockPOSOrderListController.TestError.updateOrderFailed) {
             try await sut.sendReceipt(order: testOrder, email: testEmail)
         }
 

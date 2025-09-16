@@ -56,7 +56,8 @@ class SupportFormMetadataProvider {
             Constants.platformTag,
             site.isWordPressComStore ? Constants.wpComTag : nil,
             site.plan.isNotEmpty ? site.plan : nil,
-            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil
+            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
+            stores.requestAuthenticationMode == .appPasswordsWithJetpack ? Constants.jetpackSiteUsingAppPasswords : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -219,6 +220,7 @@ private extension SupportFormMetadataProvider {
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let sourcePlatform = "mobile_-_woo_ios"
+        static let jetpackSiteUsingAppPasswords = "jetpack_site_using_app_passwords"
     }
 
     /// Payments extensions Slugs

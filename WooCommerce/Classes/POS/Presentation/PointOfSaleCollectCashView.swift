@@ -5,6 +5,7 @@ import WooFoundation
 struct PointOfSaleCollectCashView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.posAnalytics) var analytics
+    @Environment(\.posExternalViews) var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
@@ -32,13 +33,7 @@ struct PointOfSaleCollectCashView: View {
                                           isLoading: isLoading)
     }
 
-    @StateObject private var textFieldViewModel: FormattableAmountTextFieldViewModel
-
     init(orderTotal: String, currencySettings: CurrencySettings) {
-        self._textFieldViewModel = StateObject(wrappedValue: FormattableAmountTextFieldViewModel(size: .extraLarge,
-                                                                                                 locale: Locale.autoupdatingCurrent,
-                                                                                                 storeCurrencySettings: currencySettings,
-                                                                                                 allowNegativeNumber: false))
         self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
         self.orderTotal = orderTotal
     }
@@ -61,18 +56,19 @@ struct PointOfSaleCollectCashView: View {
                         Spacer()
 
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
-                            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                                .focused($isTextFieldFocused)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                                .onSubmit {
+                            externalViews.createFormattableAmountTextField(
+                                preset: viewHelper.parseCurrency(orderTotal),
+                                onSubmit: {
                                     Task { @MainActor in
                                         await submitCashAmount()
                                     }
-                                }
-                                .onChange(of: textFieldViewModel.amount) { _, newValue in
+                                },
+                                onChange: { newValue in
                                     textFieldAmountInput = newValue
                                     updateChangeDueMessage()
                                 }
+                            )
+                            .focused($isTextFieldFocused)
 
                             if let changeDue = changeDueMessage {
                                 Text(changeDue)
@@ -124,7 +120,7 @@ struct PointOfSaleCollectCashView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            prefillOrderTotal()
+            isTextFieldFocused = true
         }
     }
 
@@ -152,13 +148,6 @@ private extension PointOfSaleCollectCashView {
         changeDueMessage = viewHelper.updatechangeDueMessage(
             orderTotal: orderTotal,
             textFieldAmountInput: textFieldAmountInput)
-    }
-
-    private func prefillOrderTotal() {
-        if let orderDecimal = viewHelper.parseCurrency(orderTotal) {
-            textFieldViewModel.presetAmount(orderDecimal)
-        }
-        isTextFieldFocused = true
     }
 }
 

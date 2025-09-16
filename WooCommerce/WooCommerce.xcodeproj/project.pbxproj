@@ -25,6 +25,7 @@
 		0105865E2E426FDC002FADD1 /* UIKitBarcodeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0105865D2E426FDB002FADD1 /* UIKitBarcodeObserver.swift */; };
 		01058DD02E42716A002FADD1 /* BarcodeScannerContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01058DCF2E42716A002FADD1 /* BarcodeScannerContainerTests.swift */; };
 		01058DD22E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01058DD12E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift */; };
+		010F7D872E79B39E002B02EA /* POSFormattableAmountTextFieldAdaptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010F7D862E79B39E002B02EA /* POSFormattableAmountTextFieldAdaptor.swift */; };
 		011D396F2D09FCD200DB1445 /* CardPresentModalLocationRequired.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */; };
 		011D39712D0A324200DB1445 /* LocationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D39702D0A324100DB1445 /* LocationServiceTests.swift */; };
 		011D7A332CEC877A0007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */; };
@@ -3234,6 +3235,7 @@
 		0105865D2E426FDB002FADD1 /* UIKitBarcodeObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitBarcodeObserver.swift; sourceTree = "<group>"; };
 		01058DCF2E42716A002FADD1 /* BarcodeScannerContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerContainerTests.swift; sourceTree = "<group>"; };
 		01058DD12E4273F2002FADD1 /* UIKitBarcodeObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitBarcodeObserverTests.swift; sourceTree = "<group>"; };
+		010F7D862E79B39E002B02EA /* POSFormattableAmountTextFieldAdaptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSFormattableAmountTextFieldAdaptor.swift; sourceTree = "<group>"; };
 		011D396E2D09FCCB00DB1445 /* CardPresentModalLocationRequired.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalLocationRequired.swift; sourceTree = "<group>"; };
 		011D39702D0A324100DB1445 /* LocationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceTests.swift; sourceTree = "<group>"; };
 		011D7A322CEC87770007C187 /* CardPresentModalNonRetryableErrorEmailSent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentModalNonRetryableErrorEmailSent.swift; sourceTree = "<group>"; };
@@ -6475,6 +6477,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		010F7D852E79B39A002B02EA /* View Adaptors */ = {
+			isa = PBXGroup;
+			children = (
+				010F7D862E79B39E002B02EA /* POSFormattableAmountTextFieldAdaptor.swift */,
+			);
+			path = "View Adaptors";
+			sourceTree = "<group>";
+		};
 		014BD4B62C64E26B0011A66E /* Order Messages */ = {
 			isa = PBXGroup;
 			children = (
@@ -6522,6 +6532,7 @@
 		01654EB02E786223001DBB6F /* Adaptors */ = {
 			isa = PBXGroup;
 			children = (
+				010F7D852E79B39A002B02EA /* View Adaptors */,
 				016582D42E78715B001DBB6F /* Card Present Payments */,
 				016582D52E78715B001DBB6F /* POSCollectOrderPaymentAnalyticsAdaptor.swift */,
 				01654EAF2E786223001DBB6F /* POSServiceLocatorAdaptor.swift */,
@@ -16880,6 +16891,7 @@
 				DA41043A2C247B6900E8456A /* PointOfSalePreviewOrderController.swift in Sources */,
 				20F6A46C2DE5FCEF0066D8CB /* POSItemFetchAnalytics.swift in Sources */,
 				B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */,
+				010F7D872E79B39E002B02EA /* POSFormattableAmountTextFieldAdaptor.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
 				DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */,
 				0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */,

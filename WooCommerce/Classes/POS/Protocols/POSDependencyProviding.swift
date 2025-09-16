@@ -39,9 +39,15 @@ protocol POSExternalNavigationProviding {
     func navigateToCreateOrder()
 }
 
-/// Protocol that provides external view creation capabilities for POS
+/// Protocol that provides access to complex Woo application views that depend on a lot of Woo app target dependencies
+/// and cannot be easily moved and reused in a shared module
+/// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
+///
 protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
+    func createFormattableAmountTextField(preset: Decimal?,
+                                          onSubmit: @escaping () -> Void,
+                                          onChange: @escaping (String) -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

@@ -84,4 +84,10 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
         )
     }
+
+    func createFormattableAmountTextField(preset: Decimal?,
+                                          onSubmit: @escaping () -> Void,
+                                          onChange: @escaping (String) -> Void) -> AnyView {
+        AnyView(POSFormattableAmountTextFieldAdaptor(preset: preset, onSubmit: onSubmit, onChange: onChange))
+    }
 }

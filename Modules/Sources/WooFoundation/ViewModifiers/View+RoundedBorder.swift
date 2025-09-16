@@ -1,13 +1,20 @@
 import SwiftUI
 
 /// Custom view modifier for applying a rounded border to a view.
-struct RoundedBorder: ViewModifier {
+public struct RoundedBorder: ViewModifier {
     let cornerRadius: CGFloat
     let lineColor: Color
     let lineWidth: CGFloat
     let dashed: Bool
 
-    func body(content: Content) -> some View {
+    public init(cornerRadius: CGFloat, lineColor: Color, lineWidth: CGFloat, dashed: Bool) {
+        self.cornerRadius = cornerRadius
+        self.lineColor = lineColor
+        self.lineWidth = lineWidth
+        self.dashed = dashed
+    }
+
+    public func body(content: Content) -> some View {
         content
             .overlay {
                 RoundedRectangle(cornerRadius: cornerRadius)
@@ -24,7 +31,7 @@ private extension RoundedBorder {
     }
 }
 
-extension View {
+public extension View {
     /// Applies a rounded border to a view.
     func roundedBorder(cornerRadius: CGFloat, lineColor: Color, lineWidth: CGFloat, dashed: Bool = false) -> some View {
         self.modifier(RoundedBorder(cornerRadius: cornerRadius, lineColor: lineColor, lineWidth: lineWidth, dashed: dashed))

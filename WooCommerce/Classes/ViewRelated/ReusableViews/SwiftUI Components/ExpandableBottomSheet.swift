@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View where AlwaysVisibleContent: View, ExpandableContent: View {
     @State private var isExpanded: Bool = false
@@ -206,28 +207,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
             Text("Can be hidden")
         }
 
-    }
-}
-
-struct SizeTracker: ViewModifier {
-    @Binding var size: CGSize
-
-    func body(content: Content) -> some View {
-        content
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        self.size = proxy.size
-                    }
-                    .onChange(of: proxy.size) { _, newSize in
-                        self.size = newSize
-                    }
-            })
-    }
-}
-
-extension View {
-    func trackSize(size: Binding<CGSize>) -> some View {
-        modifier(SizeTracker(size: size))
     }
 }

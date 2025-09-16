@@ -1,6 +1,6 @@
 import SwiftUI
 
-extension View {
+public extension View {
     /// Measures the height of a view and calls the provided callback with the height value.
     /// The callback is called both when the view first appears and whenever its height changes.
     /// If the view contains a list, consider wrapping it in a VStack to ensure the height updates are emitted as a group

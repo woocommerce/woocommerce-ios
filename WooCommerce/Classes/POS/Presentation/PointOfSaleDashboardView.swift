@@ -256,7 +256,6 @@ private extension PointOfSaleDashboardView {
         static let floatingControlHorizontalOffset: CGFloat = POSPadding.medium
         static let floatingControlVerticalOffset: CGFloat = 0
         static let exitPOSSheetMaxWidth: CGFloat = 900.0
-        static let supportTag = "origin:point-of-sale"
     }
 
     enum Localization {

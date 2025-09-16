@@ -45,15 +45,11 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
-         featureFlagService: POSFeatureFlagProviding,
-         pluginsService: PluginsServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
-        self.pluginsService = pluginsService
         self.celebration = celebration
     }
 
@@ -62,8 +58,6 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
     private let analytics: POSAnalyticsProviding
-    private let featureFlagService: POSFeatureFlagProviding
-    private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil

@@ -1,5 +1,4 @@
 import Foundation
-import WooFoundation
 import enum Yosemite.POSItemType
 
 struct PointOfSaleItemListAnalyticsTracker {

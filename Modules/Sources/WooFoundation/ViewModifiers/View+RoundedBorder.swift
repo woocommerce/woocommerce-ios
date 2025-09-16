@@ -26,7 +26,6 @@ public struct RoundedBorder: ViewModifier {
 
 private extension RoundedBorder {
     enum Layout {
-        static let height: CGFloat = 1
         static let dashLength: CGFloat = 5
     }
 }

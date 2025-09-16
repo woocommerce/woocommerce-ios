@@ -7,7 +7,6 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     public var circleColor: Color = Color(.primaryButtonBackground).opacity(Constants.backgroundOpacity)
     public var fillColor: Color = Color(.primaryButtonBackground)
 
-    private let arcStart: Double = Constants.initialArcStart
     private let animationDuration: Double = 1.6
 
     @State private var arcEnd: Double = Constants.initialArcEnd

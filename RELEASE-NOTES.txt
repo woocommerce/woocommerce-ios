@@ -5,6 +5,7 @@
 -----
 - [*] Order details: Display only physical items in the Shipping Labels section. [https://github.com/woocommerce/woocommerce-ios/pull/16127]
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
+- [internal] Fix back swipe gesture detection compatibility for iOS26 [https://github.com/woocommerce/woocommerce-ios/pull/16133]
 
 23.2
 -----

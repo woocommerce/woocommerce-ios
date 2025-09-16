@@ -1241,13 +1241,18 @@ extension OrderDetailsDataSource {
                 siteID: order.siteID,
                 orderID: order.orderID,
                 index: "0",
-                items: order.items.map { item in
-                    var subItems: [String] = []
-                    for index in 0..<item.quantity.intValue {
-                        subItems.append("\(item.itemID)-sub-\(index)")
+                items: order.items
+                    .filter { item in
+                        let matchingProduct = products.first(where: { $0.productID == item.productOrVariationID })
+                        return matchingProduct?.virtual == false
                     }
-                    return WooShippingShipmentItem(id: item.itemID, subItems: subItems)
-                },
+                    .map { item in
+                        var subItems: [String] = []
+                        for index in 0..<item.quantity.intValue {
+                            subItems.append("\(item.itemID)-sub-\(index)")
+                        }
+                        return WooShippingShipmentItem(id: item.itemID, subItems: subItems)
+                    },
                 shippingLabel: nil
             )]
         }()

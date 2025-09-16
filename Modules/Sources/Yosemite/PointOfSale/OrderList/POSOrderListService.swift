@@ -5,7 +5,7 @@ import struct NetworkingCore.Order
 import protocol NetworkingCore.POSOrdersRemoteProtocol
 import class WooFoundationCore.CurrencyFormatter
 
-public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProtocol {
+public final class POSOrderListService: POSOrderListServiceProtocol {
     private let ordersRemote: POSOrdersRemoteProtocol
     private let siteID: Int64
     private let mapper: POSOrderMapper
@@ -39,9 +39,9 @@ public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProto
                         hasMorePages: pagedOrders.hasMorePages,
                         totalItems: pagedOrders.totalItems)
         } catch AFError.explicitlyCancelled {
-            throw PointOfSaleOrderListServiceError.requestCancelled
+            throw POSOrderListServiceError.requestCancelled
         } catch {
-            throw PointOfSaleOrderListServiceError.requestFailed
+            throw POSOrderListServiceError.requestFailed
         }
     }
 
@@ -65,9 +65,20 @@ public final class PointOfSaleOrderListService: PointOfSaleOrderListServiceProto
                         hasMorePages: pagedOrders.hasMorePages,
                         totalItems: pagedOrders.totalItems)
         } catch AFError.explicitlyCancelled {
-            throw PointOfSaleOrderListServiceError.requestCancelled
+            throw POSOrderListServiceError.requestCancelled
         } catch {
-            throw PointOfSaleOrderListServiceError.requestFailed
+            throw POSOrderListServiceError.requestFailed
+        }
+    }
+
+    public func loadOrder(orderID: Int64) async throws -> POSOrder {
+        do {
+            let order = try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
+            return mapper.map(order: order)
+        } catch AFError.explicitlyCancelled {
+            throw POSOrderListServiceError.requestCancelled
+        } catch {
+            throw POSOrderListServiceError.requestFailed
         }
     }
 }

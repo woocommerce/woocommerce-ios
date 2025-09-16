@@ -151,8 +151,8 @@ private extension POSTabCoordinator {
                                                                     fetchStrategyFactory: posCouponFetchStrategyFactory),
                     couponsSearchController: PointOfSaleCouponsController(itemProvider: posCouponProvider,
                                                                           fetchStrategyFactory: posCouponFetchStrategyFactory),
-                    ordersController: PointOfSaleOrderListController(
-                        orderListFetchStrategyFactory: PointOfSaleOrderListFetchStrategyFactory(
+                    ordersController: POSOrderListController(
+                        orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
                             siteID: siteID,
                             credentials: credentials,
                             selectedSite: defaultSitePublisher,

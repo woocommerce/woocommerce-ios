@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 import struct NetworkingCore.Address
 import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderRefundCondensed
@@ -6,7 +7,7 @@ import struct NetworkingCore.MetaData
 import enum NetworkingCore.OrderStatusEnum
 import struct NetworkingCore.Order
 
-public struct POSOrder: Equatable, Hashable {
+public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
     public let id: Int64
     public let number: String
     public let dateCreated: Date
@@ -34,8 +35,8 @@ public struct POSOrder: Equatable, Hashable {
                 paymentMethodTitle: String,
                 lineItems: [POSOrderItem] = [],
                 refunds: [POSOrderRefund] = [],
-                formattedTotalTax: String,
                 formattedDiscountTotal: String?,
+                formattedTotalTax: String,
                 formattedPaymentTotal: String,
                 formattedNetAmount: String? = nil) {
         self.id = id
@@ -49,8 +50,8 @@ public struct POSOrder: Equatable, Hashable {
         self.paymentMethodTitle = paymentMethodTitle
         self.lineItems = lineItems
         self.refunds = refunds
-        self.formattedTotalTax = formattedTotalTax
         self.formattedDiscountTotal = formattedDiscountTotal
+        self.formattedTotalTax = formattedTotalTax
         self.formattedPaymentTotal = formattedPaymentTotal
         self.formattedNetAmount = formattedNetAmount
     }

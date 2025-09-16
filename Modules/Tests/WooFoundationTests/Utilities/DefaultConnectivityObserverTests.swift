@@ -1,7 +1,7 @@
 import Combine
 import Network
 import XCTest
-@testable import WooCommerce
+@testable import WooFoundation
 
 final class DefaultConnectivityObserverTests: XCTestCase {
     private var subscriptions: Set<AnyCancellable> = []

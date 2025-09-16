@@ -219,10 +219,13 @@ struct POSPreviewHelpers {
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService()
+        barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
+        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0)),
+            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0),
+                                                          featureFlagService: featureFlags),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -230,6 +233,7 @@ struct POSPreviewHelpers {
             cardPresentPaymentService: cardPresentPaymentService,
             orderController: orderController,
             settingsController: settingsController,
+            analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
@@ -433,6 +437,15 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackReceiptPrintCanceled() {}
 
     func trackReceiptPrintFailed(error: any Error) {}
+}
+
+final class POSPreviewServices: POSDependencyProviding {
+    var analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
+    var currency: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
+    var featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+    var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
+    var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
+    var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
 }
 
 #endif

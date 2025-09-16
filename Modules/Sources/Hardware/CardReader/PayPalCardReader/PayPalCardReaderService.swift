@@ -30,9 +30,78 @@ public final class PayPalCardReaderService: NSObject {
     }
 
     private func setupPayPalSDK() {
-        DDLogInfo("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK")
-        print("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK")
+        DDLogInfo("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK with plugin credentials")
+        print("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK with plugin credentials")
 
+        // First attempt: Try to use existing WooCommerce PayPal plugin credentials
+        if let pluginAuthProvider = loadPluginCredentials() {
+            print("💳🔐 [PayPalCardReaderService] Using WooCommerce PayPal plugin credentials - seamless auth!")
+            startSDKWithAuthProvider(pluginAuthProvider)
+            return
+        }
+
+        // Fallback: Use basic OAuth flow if plugin credentials not available
+        print("💳⚠️ [PayPalCardReaderService] Plugin credentials not found, falling back to OAuth flow")
+        setupBasicOAuthSDK()
+    }
+
+    /// Attempt to load credentials from WooCommerce PayPal Payments plugin
+    private func loadPluginCredentials() -> PayPalPluginAuthProvider? {
+        // TODO: Implement real API call to fetch plugin credentials
+        // This would call: GET /wp-json/wc/v3/paypal/credentials
+        // For POC, we'll use placeholder values that can be updated for testing
+
+        // Real implementation would look like:
+        // 1. Get WooCommerce site URL from app settings
+        // 2. Make authenticated request to /wp-json/wc/v3/paypal/credentials
+        // 3. Parse response and create PayPalPluginAuthProvider
+
+        // For POC testing, you can replace these with real values:
+        let pluginSettings: [String: Any] = [
+            "client_id": "YOUR_REAL_PAYPAL_CLIENT_ID",        // Replace with real client ID
+            "client_secret": "YOUR_REAL_PAYPAL_CLIENT_SECRET", // Replace with real client secret
+            "merchant_id": "YOUR_REAL_MERCHANT_ID",           // Replace with real merchant ID
+            "sandbox_merchant": true                          // Set to false for production
+        ]
+
+        // Check if we have valid plugin credentials (not placeholder values)
+        guard let clientId = pluginSettings["client_id"] as? String,
+              let clientSecret = pluginSettings["client_secret"] as? String,
+              clientId.hasPrefix("A") || clientId.hasPrefix("S"), // PayPal client IDs start with A or S
+              clientSecret.count > 10, // Client secrets are longer
+              !clientId.contains("YOUR_REAL") else { // Not placeholder values
+            print("💳⚠️ [PayPalCardReaderService] No valid plugin credentials found - update with real values")
+            print("💳ℹ️ [PayPalCardReaderService] To use plugin auth, set real PayPal credentials in loadPluginCredentials()")
+            return nil
+        }
+
+        print("💳✅ [PayPalCardReaderService] Found valid plugin credentials")
+        return PayPalPluginAuthProvider.fromPluginSettings(pluginSettings)
+    }
+
+    /// Start SDK with custom auth provider (plugin credentials)
+    private func startSDKWithAuthProvider(_ authProvider: PayPalPluginAuthProvider) {
+        do {
+            var isDebug = false
+#if DEBUG
+            isDebug = true
+#endif
+
+            iZettleSDK.shared().start(with: authProvider, enableDeveloperMode: isDebug)
+
+            DDLogInfo("💳✅ [PayPalCardReaderService] iZettle SDK initialized with plugin credentials successfully")
+            print("💳✅ [PayPalCardReaderService] iZettle SDK ready with seamless authentication!")
+
+        } catch {
+            DDLogError("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK with plugin auth: \(error)")
+            print("💳❌ [PayPalCardReaderService] Plugin auth failed: \(error)")
+            print("💳🔄 [PayPalCardReaderService] Falling back to basic OAuth...")
+            setupBasicOAuthSDK()
+        }
+    }
+
+    /// Fallback: Basic OAuth flow if plugin credentials aren't available
+    private func setupBasicOAuthSDK() {
         do {
             // Create authentication provider with OAuth 2.0 client ID and redirect URI
             // For POC: Use sandbox credentials - replace with real values from Zettle Developer Portal
@@ -49,12 +118,11 @@ public final class PayPalCardReaderService: NSObject {
 #if DEBUG
             isDebug = true
 #endif
-            
 
             iZettleSDK.shared().start(with: authenticationProvider, enableDeveloperMode: isDebug)
 
-            DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK initialized successfully")
-            print("💳🟢 [PayPalCardReaderService] iZettle SDK initialized successfully")
+            DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
+            print("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
 
             print("💳✅ [PayPalCardReaderService] iZettle SDK ready - login will be handled automatically during payment")
 
@@ -262,7 +330,24 @@ extension PayPalCardReaderService: CardReaderService {
                     amount: paymentInfo.amount.uintValue,
                     currency: parameters.currency,
                     metadata: parameters.metadata,
-                    charges: []
+                    charges: [Charge(id: paymentInfo.transactionId,
+                                     amount: paymentInfo.amount.uintValue,
+                                     currency: parameters.currency,
+                                     status: .succeeded,
+                                     description: paymentInfo.description,
+                                     metadata: nil,
+                                     paymentMethod: .cardPresent(
+                                        details: CardPresentTransactionDetails(
+                                            last4: String(paymentInfo.obfuscatedPan.suffix(4)),
+                                            expMonth: 1,
+                                            expYear: 1,
+                                            cardholderName: nil,
+                                            brand: CardBrand(rawValue: paymentInfo.cardBrand) ?? .unknown,
+                                            generatedCard: nil,
+                                            receipt: nil,
+                                            emvAuthData: paymentInfo.entryMode,
+                                            wallet: nil,
+                                            network: nil)))]
                 )
 
                 print("💳✅ [PayPalCardReaderService] Payment succeeded: \(paymentIntent.id)")
@@ -353,7 +438,7 @@ private extension PayPalCardReaderService {
     func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {
         discoveryStatusSubject.send(newStatus)
     }
-
+    
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
             let underlyingError = UnderlyingError(with: error)

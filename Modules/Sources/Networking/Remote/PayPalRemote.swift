@@ -14,8 +14,7 @@ public class PayPalRemote: Remote {
                                     orderID: Int64,
                                     paymentIntentID: String) -> AnyPublisher<Result<RemotePaymentIntent, Error>, Never> {
         
-        // TODO: For real implementation, this would call the PayPal payment gateway plugin
-        // For now, let's make the actual REST call but expect it to fail gracefully
+        // Use same pattern as StripeRemote - call a specific REST endpoint
         let path = "\(Path.orders)/\(orderID)/\(Path.capturePayPalPayment)"
 
         let parameters = [
@@ -32,8 +31,9 @@ public class PayPalRemote: Remote {
 
         let mapper = RemotePaymentIntentMapper()
 
-        print("💰 [PayPalRemote] Attempting real API call for payment intent: \(paymentIntentID)")
+        print("💰 [PayPalRemote] Capturing PayPal payment via REST endpoint")
         print("💰 [PayPalRemote] Endpoint: \(path)")
+        print("💰 [PayPalRemote] Payment Intent: \(paymentIntentID)")
         
         return enqueue(request, mapper: mapper)
     }

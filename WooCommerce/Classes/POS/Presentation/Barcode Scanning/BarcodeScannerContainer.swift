@@ -6,7 +6,6 @@ import SwiftUI
 ///
 /// The container works by capturing keyboard input events and interpreting them as barcode scans
 /// when a terminating character is detected.
-@available(iOS 17.0, *)
 struct BarcodeScannerContainer: View {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration

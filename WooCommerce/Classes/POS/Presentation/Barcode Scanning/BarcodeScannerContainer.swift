@@ -6,11 +6,14 @@ import SwiftUI
 ///
 /// The container works by capturing keyboard input events and interpreting them as barcode scans
 /// when a terminating character is detected.
+@available(iOS 17.0, *)
 struct BarcodeScannerContainer: View {
     /// Configuration for the barcode scanner
     let configuration: HIDBarcodeParserConfiguration
     /// Callback that is triggered when a barcode scan completes (success or failure)
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
+
+    @Environment(\.posAnalytics) private var analytics
 
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
@@ -23,6 +26,7 @@ struct BarcodeScannerContainer: View {
     var body: some View {
         BarcodeScannerContainerRepresentable(
             configuration: configuration,
+            analytics: analytics,
             onScan: onScan
         )
         .frame(width: 0, height: 0)
@@ -36,11 +40,13 @@ struct BarcodeScannerContainer: View {
 /// keyboard input for barcode scanning.
 struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let configuration: HIDBarcodeParserConfiguration
+    let analytics: POSAnalyticsProviding
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
     func makeUIViewController(context: Context) -> UIViewController {
         return GameControllerBarcodeScannerHostingController(
             configuration: configuration,
+            analytics: analytics,
             onScan: onScan
         )
     }
@@ -60,16 +66,19 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     private let configuration: HIDBarcodeParserConfiguration
     private let onScan: (Result<String, HIDBarcodeParserError>) -> Void
     private let voiceOverStateProvider: VoiceOverStateProvider
+    private let analytics: POSAnalyticsProviding
 
     // Public initializer for production use
     init(
         configuration: HIDBarcodeParserConfiguration,
+        analytics: POSAnalyticsProviding,
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
         voiceOverStateProvider: VoiceOverStateProvider = SystemVoiceOverStateProvider()
     ) {
         self.configuration = configuration
         self.onScan = onScan
         self.voiceOverStateProvider = voiceOverStateProvider
+        self.analytics = analytics
         super.init(rootView: EmptyView())
 
         setupInitialObserver()
@@ -112,11 +121,13 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
         if voiceOverStateProvider.isVoiceOverRunning {
             uiKitObserver = UIKitBarcodeObserver(
                 configuration: configuration,
+                analytics: analytics,
                 onScan: onScan
             )
         } else {
             gameControllerObserver = GameControllerBarcodeObserver(
                 configuration: configuration,
+                analytics: analytics,
                 onScan: onScan
             )
         }

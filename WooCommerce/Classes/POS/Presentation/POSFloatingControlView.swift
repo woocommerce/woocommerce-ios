@@ -2,6 +2,8 @@ import SwiftUI
 
 struct POSFloatingControlView: View {
     @Environment(\.posBackgroundAppearance) var backgroundAppearance
+    @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var showExitPOSModal: Bool
@@ -23,7 +25,7 @@ struct POSFloatingControlView: View {
     }
 
     private var isPOSSettingsEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
     }
 
     var body: some View {
@@ -60,7 +62,7 @@ struct POSFloatingControlView: View {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
         }
         .posModal(isPresented: $showBarcodeScanningModal) {
-            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+            PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
         .posFullScreenCover(isPresented: $showOrders) {
             PointOfSaleOrdersView(isPresented: $showOrders)
@@ -75,7 +77,7 @@ struct POSFloatingControlView: View {
 private extension POSFloatingControlView {
     @ViewBuilder private func compactOptions() -> some View {
         Button {
-            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            analytics.track(.pointOfSaleExitMenuItemTapped)
             showExitPOSModal = true
         } label: {
             Label(
@@ -83,9 +85,9 @@ private extension POSFloatingControlView {
                 icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
             )
         }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
             Button {
-                ServiceLocator.analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
                 showSettings = true
             } label: {
                 Label(
@@ -95,7 +97,7 @@ private extension POSFloatingControlView {
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
                 showOrders = true
             } label: {
@@ -109,7 +111,7 @@ private extension POSFloatingControlView {
 
     @ViewBuilder private func completeOptions() -> some View {
         Button {
-            ServiceLocator.analytics.track(.pointOfSaleExitMenuItemTapped)
+            analytics.track(.pointOfSaleExitMenuItemTapped)
             showExitPOSModal = true
         } label: {
             Label(
@@ -118,7 +120,7 @@ private extension POSFloatingControlView {
             )
         }
         Button {
-            ServiceLocator.analytics.track(.pointOfSaleGetSupportTapped)
+            analytics.track(.pointOfSaleGetSupportTapped)
             showSupport = true
         } label: {
             Label(
@@ -128,7 +130,7 @@ private extension POSFloatingControlView {
         }
         Button {
             showDocumentation = true
-            ServiceLocator.analytics.track(.pointOfSaleViewDocsTapped)
+            analytics.track(.pointOfSaleViewDocsTapped)
         } label: {
             Label(
                 title: { Text(Localization.viewDocumentation) },
@@ -137,7 +139,7 @@ private extension POSFloatingControlView {
         }
         Button {
             showProductRestrictionsModal = true
-            ServiceLocator.analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
+            analytics.track(.pointOfSaleSimpleProductsExplanationDialogShown)
         } label: {
             Label(
                 title: { Text(Localization.productRestrictionsInfo) },
@@ -145,7 +147,7 @@ private extension POSFloatingControlView {
         }
         Button {
             showBarcodeScanningModal = true
-            ServiceLocator.analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
+            analytics.track(.pointOfSaleBarcodeScanningMenuItemTapped)
         } label: {
             Label(
                 title: {
@@ -153,7 +155,7 @@ private extension POSFloatingControlView {
                 },
                 icon: { Image(systemName: "barcode.viewfinder") })
         }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1) {
             Button {
                 showSettings = true
             } label: {
@@ -164,7 +166,7 @@ private extension POSFloatingControlView {
             }
         }
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
                 showOrders = true
             } label: {

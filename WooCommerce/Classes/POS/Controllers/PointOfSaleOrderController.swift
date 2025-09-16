@@ -1,7 +1,10 @@
 import Foundation
 import Observation
-import protocol Yosemite.StoresManager
+import protocol Experiments.FeatureFlagService
+import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
+import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
@@ -9,11 +12,14 @@ import struct Yosemite.POSCoupon
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
+import enum Yosemite.Plugin
 import class WooFoundation.CurrencyFormatter
 import class WooFoundation.CurrencySettings
+import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
+import class Yosemite.OrderTotalsCalculator
 
 enum SyncOrderState {
     case newOrder
@@ -37,30 +43,38 @@ protocol PointOfSaleOrderControllerProtocol {
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptSender: POSReceiptSending,
-         stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
+         currencySettingsProvider: POSCurrencySettingsProviding,
+         analytics: POSAnalyticsProviding,
+         featureFlagService: POSFeatureFlagProviding,
+         pluginsService: PluginsServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptSender = receiptSender
-        self.stores = stores
-        self.storeCurrency = currencySettings.currencyCode
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
+        self.pluginsService = pluginsService
         self.celebration = celebration
     }
 
     private let orderService: POSOrderServiceProtocol
     private let receiptSender: POSReceiptSending
-
-    private let currencyFormatter: CurrencyFormatter
+    private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
-    private let storeCurrency: CurrencyCode
-    private let analytics: Analytics
-    private let stores: StoresManager
+    private let analytics: POSAnalyticsProviding
+    private let featureFlagService: POSFeatureFlagProviding
+    private let pluginsService: PluginsServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+
+    private var currencyFormatter: CurrencyFormatter {
+        CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
+    }
+
+    private var storeCurrency: CurrencyCode {
+        currencySettingsProvider.currencySettings.currencyCode
+    }
 
     @MainActor @discardableResult
     func syncOrder(for cart: Cart,
@@ -171,8 +185,6 @@ private extension PointOfSaleOrderController {
         return formattedDiscount
     }
 }
-
-
 
 // MARK: - Error Handling
 

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PaymentsActionButtons: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     @Binding var isShowingSendReceiptView: Bool
     @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
 
@@ -21,7 +22,7 @@ private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
             Task { @MainActor in
-                ServiceLocator.analytics.track(.receiptEmailTapped)
+                analytics.track(.receiptEmailTapped)
                 await handleSendReceiptAction()
             }
         }, label: {
@@ -34,7 +35,7 @@ private extension PaymentsActionButtons {
 
     var newOrderButton: some View {
         Button(action: {
-            ServiceLocator.analytics.track(.pointOfSaleCreateNewOrderTapped)
+            analytics.track(.pointOfSaleCreateNewOrderTapped)
             posModel.startNewCart()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {

@@ -1,8 +1,10 @@
 import SwiftUI
+import WooFoundation
 
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posExternalViews) private var externalViews
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -107,10 +109,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading)
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
-        .posModal(item: $posModel.cardPresentPaymentOnboardingViewModel, onDismiss: {
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewFactory, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
-        }) { viewModel in
-            paymentsOnboardingView(from: viewModel)
+        }) { factory in
+            paymentsOnboardingView(from: factory)
         }
         .posModal(item: $posModel.cardPresentPaymentAlertViewModel,
                   onDismiss: {
@@ -189,30 +191,29 @@ struct PointOfSaleDashboardView: View {
 private extension PointOfSaleDashboardView {
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.supportCancel) {
-                        showSupport = false
+            externalViews.createSupportFormView(isPresented: $showSupport)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button(Localization.supportCancel) {
+                            showSupport = false
+                        }
                     }
                 }
-            }
+                .navigationViewStyle(.stack)
         }
-        .navigationViewStyle(.stack)
     }
 
     var documentationView: some View {
         SafariView(url: POSConstants.URLs.pointOfSaleDocumentation.asURL())
     }
 
-    func paymentsOnboardingView(from onboardingViewModel: CardPresentPaymentsOnboardingViewModel) -> some View {
-        onboardingViewModel.showSupport = { [weak posModel] in
+    func paymentsOnboardingView(from factory: CardPresentPaymentOnboardingViewFactory) -> some View {
+        factory.configuration.showSupport = { [weak posModel] in
             posModel?.cancelCardPaymentsOnboarding()
             showSupport = true
         }
-        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewModel: onboardingViewModel,
+
+        return PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(onboardingViewFactory: factory,
                                                                             onDismissTap: {
             posModel.cancelCardPaymentsOnboarding()
         }))

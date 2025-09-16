@@ -23,7 +23,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var paymentState: PointOfSalePaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel? { get set }
+    var cardPresentPaymentOnboardingViewFactory: CardPresentPaymentOnboardingViewFactory? { get set }
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
@@ -56,7 +56,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    var cardPresentPaymentOnboardingViewModel: CardPresentPaymentsOnboardingViewModel?
+    var cardPresentPaymentOnboardingViewFactory: CardPresentPaymentOnboardingViewFactory?
     private var onOnboardingCancellation: (() -> Void)?
 
     private(set) var cart: Cart = .init()
@@ -74,7 +74,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
     private let cardPresentPaymentService: CardPresentPaymentFacade
     private let orderController: PointOfSaleOrderControllerProtocol
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     let searchHistoryService: POSSearchHistoryProviding
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
@@ -107,7 +107,7 @@ protocol PointOfSaleAggregateModelProtocol {
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
          settingsController: PointOfSaleSettingsControllerProtocol,
-         analytics: Analytics = ServiceLocator.analytics,
+         analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
@@ -323,7 +323,6 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-
     /// Starts a payment immediately if a reader is connected.
     /// Otherwise, schedules a payment to start the next time a reader connects.
     /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
@@ -368,7 +367,7 @@ extension PointOfSaleAggregateModel {
     // Once we get the callback from the card service, we switch to cash collection state
     @MainActor
     func startCashPayment() async {
-        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
+        analytics.track(.pointOfSaleCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
         paymentState.cash = .collectingCash
     }
@@ -455,15 +454,15 @@ extension PointOfSaleAggregateModel {
 
     /// Called when the onboarding UI is dismissed.
     /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
-    /// by setting `cardPresentPaymentOnboardingViewModel` to nil, the second time triggered by internal dismissal.
+    /// by setting `cardPresentPaymentOnboardingViewFactory` to nil, the second time triggered by internal dismissal.
     /// For internal dismissal (tapping outside the modal), this method is called once.
     /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
     func cancelCardPaymentsOnboarding() {
-        guard let onboardingViewModel = cardPresentPaymentOnboardingViewModel else {
+        guard let onboardingViewFactory = cardPresentPaymentOnboardingViewFactory else {
             return
         }
-        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewModel.state))
-        cardPresentPaymentOnboardingViewModel = nil
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewFactory.configuration.state))
+        cardPresentPaymentOnboardingViewFactory = nil
         onOnboardingCancellation?()
     }
 
@@ -529,16 +528,16 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentsOnboardingViewModel? in
+            .map { [weak self] event -> CardPresentPaymentOnboardingViewFactory? in
                 guard let self else { return nil }
-                guard case let .showOnboarding(viewModel, onCancel) = event else {
+                guard case let .showOnboarding(factory, onCancel) = event else {
                     return nil
                 }
                 onOnboardingCancellation = onCancel
-                return viewModel
+                return factory
             }
-            .sink(receiveValue: { [weak self] onboardingViewModel in
-                self?.cardPresentPaymentOnboardingViewModel = onboardingViewModel
+            .sink(receiveValue: { [weak self] factory in
+                self?.cardPresentPaymentOnboardingViewFactory = factory
             })
             .store(in: &cancellables)
     }

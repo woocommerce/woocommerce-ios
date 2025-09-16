@@ -1,12 +1,3 @@
-//
-//  HIDBarcodeParserError.swift
-//  WooCommerce
-//
-//  Created by Povilas Staskus on 15/09/2025.
-//  Copyright © 2025 Automattic. All rights reserved.
-//
-
-
 enum HIDBarcodeParserError: Error {
     case scanTooShort(barcode: String)
     case timedOut(barcode: String)

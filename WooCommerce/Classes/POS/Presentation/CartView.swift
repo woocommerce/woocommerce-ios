@@ -1,7 +1,10 @@
 import SwiftUI
+import WooFoundation
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
 
     @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
@@ -26,7 +29,7 @@ struct CartView: View {
     }
 
     private var isPOSSettingsEnabled: Bool {
-        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleSettingsi1)
     }
 
     @State private var showBarcodeScanningModal: Bool = false
@@ -76,7 +79,7 @@ struct CartView: View {
                 }
             }
             .posModal(isPresented: $showBarcodeScanningModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal)
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
             .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
             .frame(maxWidth: .infinity)
@@ -196,7 +199,7 @@ private extension CartView {
         case .finalizing:
             let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
             return .init(state: state, action: {
-                ServiceLocator.analytics.track(.pointOfSaleBackToCartTapped)
+                analytics.track(.pointOfSaleBackToCartTapped)
                 posModel.addMoreToCart()
             })
         }
@@ -222,7 +225,7 @@ private extension CartView {
                 }
             if isPOSSettingsEnabled {
                 Button(action: {
-                    ServiceLocator.analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
+                    analytics.track(.pointOfSaleEmptyCartSetupScannerTapped)
                     showBarcodeScanningModal = true
                 }, label: {
                     HStack {
@@ -241,6 +244,7 @@ private extension CartView {
 }
 
 private struct CartClearMenuButton: View {
+    @Environment(\.posAnalytics) private var analytics
     let removeAllItemsFromCart: () -> Void
 
     var body: some View {
@@ -248,7 +252,7 @@ private struct CartClearMenuButton: View {
             Button(role: .destructive,
                    action: {
                 removeAllItemsFromCart()
-                ServiceLocator.analytics.track(.pointOfSaleClearCartTapped)
+                analytics.track(.pointOfSaleClearCartTapped)
             }) {
                 Text(Localization.clearButtonTitle)
             }
@@ -378,6 +382,8 @@ private struct CartScrollViewContent: View {
 
 private struct CouponsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
+
     @Binding var shouldShowItemImages: Bool
 
     private let viewHelper = CartViewHelper()
@@ -394,7 +400,7 @@ private struct CouponsCartSection: View {
                     ),
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: posModel.orderStage == .building ? {
-                        ServiceLocator.analytics.track(
+                        analytics.track(
                             event: .PointOfSale.itemRemovedFromCart(
                                 sourceView: .cart,
                                 itemType: .coupon
@@ -412,6 +418,7 @@ private struct CouponsCartSection: View {
 
 private struct PurchasableItemsCartSection: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
     @Binding var shouldShowItemImages: Bool
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
@@ -442,7 +449,7 @@ private struct PurchasableItemsCartSection: View {
         guard posModel.orderStage == .building else { return nil }
 
         return {
-            ServiceLocator.analytics.track(
+            analytics.track(
                 event: .PointOfSale.itemRemovedFromCart(
                     sourceView: .cart,
                     itemType: .init(cartItem: cartItem),
@@ -455,7 +462,7 @@ private struct PurchasableItemsCartSection: View {
 
     private func cancelLoadingCallback(for cartItem: Cart.PurchasableItem) -> () -> Void {
         return {
-            ServiceLocator.analytics.track(
+            analytics.track(
                 event: .PointOfSale.itemRemovedFromCart(
                     sourceView: .cart,
                     itemType: .loading
@@ -470,7 +477,7 @@ private extension CartView {
     func trackCheckoutTapped() {
         let purchasableItems = posModel.cart.purchasableItems.count
         let coupons = posModel.cart.coupons.count
-        ServiceLocator.analytics.track(
+        analytics.track(
             event: .PointOfSale.checkoutTapped(
                 purchasableItemsInCart: purchasableItems,
                 couponsInCart: coupons

@@ -8,7 +8,7 @@ struct PointOfSaleCollectCashView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
-    private let viewHelper = CollectCashViewHelper()
+    private let viewHelper: CollectCashViewHelper
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
@@ -31,10 +31,16 @@ struct PointOfSaleCollectCashView: View {
                                           isLoading: isLoading)
     }
 
-    @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
-                                                                                      locale: Locale.autoupdatingCurrent,
-                                                                                      storeCurrencySettings: ServiceLocator.currencySettings,
-                                                                                      allowNegativeNumber: false)
+    @StateObject private var textFieldViewModel: FormattableAmountTextFieldViewModel
+
+    init(orderTotal: String, currencySettings: CurrencySettings) {
+        self._textFieldViewModel = StateObject(wrappedValue: FormattableAmountTextFieldViewModel(size: .extraLarge,
+                                                                                                 locale: Locale.autoupdatingCurrent,
+                                                                                                 storeCurrencySettings: currencySettings,
+                                                                                                 allowNegativeNumber: false))
+        self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
+        self.orderTotal = orderTotal
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -200,7 +206,7 @@ private extension PointOfSaleCollectCashView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleCollectCashView(orderTotal: "$1.23")
+    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

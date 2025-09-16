@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 struct PointOfSaleItemListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize

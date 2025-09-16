@@ -1,16 +1,6 @@
-//
-//  PointOfSaleBarcodeScannerButtonCustomization.swift
-//  WooCommerce
-//
-//  Created by Povilas Staskus on 15/09/2025.
-//  Copyright © 2025 Automattic. All rights reserved.
-//
-
-
 import SwiftUI
 
 // MARK: - Button Customization Protocol
-@available(iOS 17.0, *)
 protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
@@ -23,7 +13,6 @@ public enum PointOfSaleBarcodeScannerTransitionType: Hashable {
 }
 
 // MARK: - Setup Step
-@available(iOS 17.0, *)
 struct PointOfSaleBarcodeScannerSetupStep {
     let title: String
     let content: any View

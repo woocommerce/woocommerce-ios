@@ -5,7 +5,7 @@ struct POSReceiptEligibilityBanner: View {
 
     var body: some View {
         HStack(spacing: Constants.elementSpacing) {
-            Image(uiImage: .appIconDefault)
+            Image(uiImage: .posAppIconDefault)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.imagesize, height: Constants.imagesize)

@@ -64,12 +64,10 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct CartTests {
-        private let analytics: WooAnalytics!
-        private let analyticsProvider: MockAnalyticsProvider!
+        private let analytics: MockPOSAnalytics
 
         init() {
-            analyticsProvider = MockAnalyticsProvider()
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
         }
 
         @Test func addLoadingItem_adds_loading_item_to_cart() async throws {
@@ -709,25 +707,24 @@ struct PointOfSaleAggregateModelTests {
         }
 
         // MARK: Onboarding
-        @Test func cardPresentPaymentOnboardingViewModel_is_non_nil_when_onboarding_is_required() async throws {
+        @Test func cardPresentPaymentOnboardingViewFactory_is_non_nil_when_onboarding_is_required() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .pluginNotActivated(plugin: .stripe),
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotActivated(plugin: .stripe))
-            )
+            let configuration = MockOnboardingViewFactoryConfiguration()
+            configuration.state = .pluginNotActivated(plugin: .stripe)
+            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
-            try #require(sut.cardPresentPaymentOnboardingViewModel == nil)
+            try #require(sut.cardPresentPaymentOnboardingViewFactory == nil)
 
             // When
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // Then
-            #expect(sut.cardPresentPaymentOnboardingViewModel?.state == .pluginNotActivated(plugin: .stripe))
+            #expect(sut.cardPresentPaymentOnboardingViewFactory?.configuration.state == .pluginNotActivated(plugin: .stripe))
         }
 
         @Test func connectionSuccessAlert_is_filtered_when_waiting_to_start_payment_on_card_reader_connection() async throws {
@@ -781,13 +778,12 @@ struct PointOfSaleAggregateModelTests {
     }
 
     struct AnalyticsTests {
-        private let analyticsProvider = MockAnalyticsProvider()
-        private let analytics: WooAnalytics
+        private let analytics: MockPOSAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
         init() {
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+            analytics = MockPOSAnalytics()
             orderController.orderState = makeLoadedOrderState()
         }
 
@@ -802,18 +798,18 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(makePurchasableItem())
 
-            let onboardingViewModel = CardPresentPaymentsOnboardingViewModel(
-                fixedState: .noConnectionError,
-                useCase: MockCardPresentPaymentsOnboardingUseCase(initial: .noConnectionError)
-            )
-            cardPresentPaymentService.paymentEvent = .showOnboarding(onboardingViewModel: onboardingViewModel, onCancel: {})
+            let configuration = MockOnboardingViewFactoryConfiguration()
+            configuration.state = .noConnectionError
+            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
+
+            cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // When
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_dismissed" }) != nil)
-            let eventProperties = try #require(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("onboarding_state")
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
         }
@@ -833,7 +829,7 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
         }
 
         @Test func connectCardReader_when_tapped_then_tracks_event() {
@@ -849,7 +845,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
@@ -865,7 +861,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
         }
 
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
@@ -893,33 +889,18 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
         }
 
         @Test func startCashPayment_when_invoked_tracks_expected_event() async throws {
             // Given
-            let mockAnalyticsProvider = MockAnalyticsProvider()
-            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-            let sut = makePointOfSaleAggregateModel(analytics: mockAnalytics)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
             // When
             await sut.startCashPayment()
 
             // Then
-            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "checkout_cash_payment_tapped" }) != nil)
-        }
-
-        @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {
-            // Given
-            let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
-            let sut = makePointOfSaleAggregateModel(orderController: orderController,
-                                                    collectOrderPaymentAnalyticsTracker: analyticsTracker)
-
-            // When
-            try await sut.collectCashPayment(changeDueAmount: "0.00")
-
-            // Then
-            #expect(analyticsTracker.didCallTrackSuccessfulCashPayment == true)
+            #expect(analytics.events.first(where: { $0.eventName == "cash_payment_tapped" }) != nil)
         }
     }
 
@@ -972,8 +953,10 @@ private func makeLoadedOrderState(cartTotal: String = "",
     )
 }
 
+@available(iOS 17.0, *)
 private func makePointOfSaleAggregateModel(
-    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker(),
+                                                                            featureFlagService: MockFeatureFlagService()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
@@ -981,7 +964,7 @@ private func makePointOfSaleAggregateModel(
     cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
     settingsController: PointOfSaleSettingsControllerProtocol = MockPointOfSaleSettingsController(),
-    analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
+    analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

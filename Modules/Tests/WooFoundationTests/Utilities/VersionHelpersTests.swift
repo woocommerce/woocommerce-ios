@@ -1,4 +1,5 @@
 import Testing
+import WooFoundationCore
 @testable import WooCommerce
 
 /// VersionHelpers Unit Tests

@@ -2,21 +2,21 @@ import Foundation
 
 /// Helpers for working with versions (e.g. comparing two version strings)
 ///
-final class VersionHelpers {
+public final class VersionHelpers {
     /// Compares two strings as versions using the same approach as PHP `version_compare`.
     /// https://www.php.net/manual/en/function.version-compare.php
     ///
     /// - Notable parameters:
     ///   - includesDevAndBetaVersions: If true, the version string is considered supported if it contains the minimumRequired version
     ///     e.g. "5.0.0-beta1" >= "5.0.0".
-    static func isVersionSupported(version: String, minimumRequired: String, includesDevAndBetaVersions: Bool = false) -> Bool {
+    public static func isVersionSupported(version: String, minimumRequired: String, includesDevAndBetaVersions: Bool = false) -> Bool {
         if includesDevAndBetaVersions && version.contains(minimumRequired) {
             return true
         }
         return VersionHelpers.compare(version, minimumRequired) != .orderedAscending
     }
 
-    static func isVersionSupported(version: String, minimumRequired: String, maximumPermitted: String) -> Bool {
+    public static func isVersionSupported(version: String, minimumRequired: String, maximumPermitted: String) -> Bool {
         VersionHelpers.compare(version, minimumRequired) != .orderedAscending &&
         VersionHelpers.compare(version, maximumPermitted) != .orderedDescending
     }
@@ -28,7 +28,7 @@ final class VersionHelpers {
     /// Returns `orderedSame` if the lhs version is the same as the rhs
     /// Returns `orderedDescending` if the lhs version is newer than the rhs
     ///
-    static func compare(_ lhs: String, _ rhs: String) -> ComparisonResult {
+    public static func compare(_ lhs: String, _ rhs: String) -> ComparisonResult {
         let leftComponents = versionComponents(of: lhs)
         let rightComponents = versionComponents(of: rhs)
         let maxComponents = max(leftComponents.count, rightComponents.count)

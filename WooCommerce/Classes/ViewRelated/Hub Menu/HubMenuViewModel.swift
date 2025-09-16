@@ -116,6 +116,9 @@ final class HubMenuViewModel: ObservableObject {
                     credentials: credentials,
                     selectedSite: stores.sessionManager.defaultSitePublisher
                         .map { $0?.toJetpackSite() }
+                        .eraseToAnyPublisher(),
+                    appPasswordSupportState: ApplicationPasswordsExperimentState()
+                        .$isAvailableAndEnabled
                         .eraseToAnyPublisher()
                 )
             )

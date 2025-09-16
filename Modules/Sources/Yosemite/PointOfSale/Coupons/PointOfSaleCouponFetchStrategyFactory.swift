@@ -16,8 +16,11 @@ public struct PointOfSaleCouponFetchStrategyFactory {
                 currencySettings: CurrencySettings,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
                 storage: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         let remote = CouponsRemote(network: network)
         self.siteID = siteID
         self.currencySettings = currencySettings

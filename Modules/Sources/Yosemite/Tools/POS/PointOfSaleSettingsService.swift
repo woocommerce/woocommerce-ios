@@ -21,8 +21,11 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
                             storage: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID, settingStoreMethods: SettingStoreMethods(storageManager: storage,
                                                                            network: network))
     }

@@ -11,15 +11,10 @@ final class ApplicationPasswordsExperimentState {
     ) {
         self.stores = stores
         self.availabilityChecker = availabilityChecker
+        updateAvailability()
     }
 
-    var isAvailableAndEnabled: Bool {
-        get async {
-            let isAvailable = await availabilityChecker.fetchAvailability()
-            let isEnabled = await isEnabled
-            return isAvailable && isEnabled
-        }
-    }
+    @Published private(set) var isAvailableAndEnabled: Bool = true
 
     @MainActor
     private var isEnabled: Bool {
@@ -31,6 +26,14 @@ final class ApplicationPasswordsExperimentState {
                     }
                 )
             }
+        }
+    }
+
+    private func updateAvailability() {
+        Task { @MainActor in
+            let isAvailable = await availabilityChecker.fetchAvailability()
+            let isEnabled = await isEnabled
+            isAvailableAndEnabled = isAvailable && isEnabled
         }
     }
 }

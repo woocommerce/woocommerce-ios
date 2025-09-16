@@ -29,13 +29,15 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
-    let network: AlamofireNetwork
+    private let network: AlamofireNetwork
 
     private var cancellables: Set<AnyCancellable> = []
 
     /// POS Catalog Sync Coordinator (session-scoped)
     ///
     private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
+
+    private var appPasswordSupportState: PassthroughSubject<Bool, Never>
 
     /// Designated Initializer
     ///
@@ -46,7 +48,12 @@ class AuthenticatedState: StoresManagerState {
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
-        self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
+        self.appPasswordSupportState = .init()
+        self.network = AlamofireNetwork(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        )
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -149,8 +156,14 @@ class AuthenticatedState: StoresManagerState {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
            let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
+                                                           appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                                                            grdbManager: ServiceLocator.grdbManager),
-           let incrementalSyncService = POSCatalogIncrementalSyncService(credentials: credentials, selectedSite: site, grdbManager: ServiceLocator.grdbManager) {
+           let incrementalSyncService = POSCatalogIncrementalSyncService(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+            grdbManager: ServiceLocator.grdbManager
+           ) {
             let syncRemote = POSCatalogSyncRemote(network: network)
             let catalogSizeChecker = POSCatalogSizeChecker(syncRemote: syncRemote)
             posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
@@ -166,11 +179,7 @@ class AuthenticatedState: StoresManagerState {
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
-        observeExperimentFeatureSettings()
-
-        DispatchQueue.main.async {
-            self.checkApplicationPasswordExperimentFeatureState()
-        }
+        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer
@@ -224,16 +233,6 @@ private extension AuthenticatedState {
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
-
-    func checkApplicationPasswordExperimentFeatureState() {
-        Task {
-            let isAvailableAndEnabled = await ApplicationPasswordsExperimentState().isAvailableAndEnabled
-
-            await MainActor.run {
-                network.updateAppPasswordSwitching(enabled: isAvailableAndEnabled)
-            }
-        }
-    }
 }
 
 
@@ -250,19 +249,18 @@ private extension AuthenticatedState {
     }
 }
 
-/// Observe beta experiment settings
 private extension AuthenticatedState {
-    func observeExperimentFeatureSettings() {
-        ServiceLocator
-            .generalAppSettings
-            .betaFeatureEnabledPublisher(
-                .applicationPasswords
-            )
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.checkApplicationPasswordExperimentFeatureState()
-            }
-            .store(in: &cancellables)
+    func observeAppPasswordSupportState() {
+        DispatchQueue.main.async { [self] in
+            /// The state needs to be created on the main thread to avoid creating a new ServiceLocator.stores in a different thread.
+            /// Without this, race condition can happen.
+            ApplicationPasswordsExperimentState()
+                .$isAvailableAndEnabled
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] enabled in
+                    self?.appPasswordSupportState.send(enabled)
+                }
+                .store(in: &cancellables)
+        }
     }
 }

@@ -339,6 +339,9 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
                 credentials: .init(authToken: ""),
                 selectedSite: ServiceLocator.stores.sessionManager.defaultSitePublisher
                     .map { $0?.toJetpackSite() }
+                    .eraseToAnyPublisher(),
+                appPasswordSupportState: ApplicationPasswordsExperimentState()
+                    .$isAvailableAndEnabled
                     .eraseToAnyPublisher()
             )
         )

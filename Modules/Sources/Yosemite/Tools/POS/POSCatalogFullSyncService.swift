@@ -34,6 +34,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
     public convenience init?(credentials: Credentials?,
                              selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             appPasswordSupportState: AnyPublisher<Bool, Never>,
                              batchSize: Int = 2,
                              grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
@@ -42,6 +43,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         }
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState,
                                        ensuresSessionManagerIsInitialized: true)
         let syncRemote = POSCatalogSyncRemote(network: network)
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)

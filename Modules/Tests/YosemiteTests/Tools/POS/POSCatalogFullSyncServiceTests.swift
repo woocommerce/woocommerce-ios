@@ -141,6 +141,7 @@ struct POSCatalogFullSyncServiceTests {
         let service = POSCatalogFullSyncService(
             credentials: credentials,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
             grdbManager: grdbManager
         )
 
@@ -156,6 +157,7 @@ struct POSCatalogFullSyncServiceTests {
         let service = POSCatalogFullSyncService(
             credentials: nil,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
             grdbManager: grdbManager
         )
 

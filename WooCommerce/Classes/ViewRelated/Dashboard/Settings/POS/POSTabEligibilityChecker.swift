@@ -72,14 +72,17 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
         let credentials = stores.sessionManager.defaultCredentials
         let selectedSite = stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher()
+        let appPasswordSupportState = ApplicationPasswordsExperimentState().$isAvailableAndEnabled.eraseToAnyPublisher()
         self.systemStatusService = systemStatusService ?? POSSystemStatusService(
             credentials: credentials,
             selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupportState,
             storageManager: ServiceLocator.storageManager
         )
         self.siteSettingService = siteSettingService ?? POSSiteSettingService(
             credentials: credentials,
-            selectedSite: selectedSite
+            selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupportState
         )
     }
 

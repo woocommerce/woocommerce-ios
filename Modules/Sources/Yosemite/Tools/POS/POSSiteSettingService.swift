@@ -18,8 +18,12 @@ public protocol POSSiteSettingServiceProtocol {
 public final class POSSiteSettingService: POSSiteSettingServiceProtocol {
     private let remote: SiteSettingsRemoteProtocol
 
-    public init(credentials: Credentials?, selectedSite: AnyPublisher<JetpackSite?, Never>) {
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+    public init(credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>) {
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.remote = SiteSettingsRemote(network: network)
     }
 

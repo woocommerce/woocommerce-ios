@@ -43,8 +43,11 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
                             currencySettings: CurrencySettings) {
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   productsRemote: ProductsRemote(network: network),
                   currencySettings: currencySettings)

@@ -38,7 +38,7 @@ final class StoreInfoDataService {
     private let isAuthenticatedWithoutWPCom: Bool
 
     init(credentials: Credentials) {
-        network = AlamofireNetwork(credentials: credentials, selectedSite: nil) // opt out from network switching
+        network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteStatsRemote = SiteStatsRemote(network: network)
         if case .wpcom = credentials {

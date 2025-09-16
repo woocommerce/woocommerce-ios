@@ -13,7 +13,7 @@ final class OrdersDataService {
     private let network: AlamofireNetwork
 
     init(credentials: Credentials) {
-        network = AlamofireNetwork(credentials: credentials, selectedSite: nil) // opt out from network switching
+        network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         ordersRemote = OrdersRemote(network: network)
     }
 

@@ -15,6 +15,7 @@ struct PointOfSaleCouponsControllerTests {
             currencySettings: CurrencySettings(),
             credentials: nil,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
             storage: MockStorageManager()
         )
     }

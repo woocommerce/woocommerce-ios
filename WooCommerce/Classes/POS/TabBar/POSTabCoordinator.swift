@@ -34,7 +34,10 @@ final class POSTabCoordinator {
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
-        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials, selectedSite: defaultSitePublisher)
+        PointOfSaleItemFetchStrategyFactory(siteID: siteID,
+                                            credentials: credentials,
+                                            selectedSite: defaultSitePublisher,
+                                            appPasswordSupportState: appPasswordSupportState)
     }()
 
     private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
@@ -46,6 +49,7 @@ final class POSTabCoordinator {
                                               currencySettings: currencySettings,
                                               credentials: credentials,
                                               selectedSite: defaultSitePublisher,
+                                              appPasswordSupportState: appPasswordSupportState,
                                               storage: storageManager)
     }()
 
@@ -54,6 +58,7 @@ final class POSTabCoordinator {
                                         currencySettings: currencySettings,
                                         credentials: credentials,
                                         selectedSite: defaultSitePublisher,
+                                        appPasswordSupportState: appPasswordSupportState,
                                         storage: storageManager)
     }()
 
@@ -61,11 +66,15 @@ final class POSTabCoordinator {
         PointOfSaleBarcodeScanService(siteID: siteID,
                                       credentials: credentials,
                                       selectedSite: defaultSitePublisher,
+                                      appPasswordSupportState: appPasswordSupportState,
                                       currencySettings: currencySettings)
     }()
 
     /// Publisher to send to `AlamofireNetwork` for request authentication mode switching.
     private let defaultSitePublisher: AnyPublisher<JetpackSite?, Never>
+
+    /// Publisher to send to `AlamofireNetwork` the state of app password support for JP sites
+    private let appPasswordSupportState: AnyPublisher<Bool, Never>
 
     init(siteID: Int64,
          tabContainerController: TabContainerController,
@@ -79,6 +88,9 @@ final class POSTabCoordinator {
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
             .map { $0?.toJetpackSite() }
+            .eraseToAnyPublisher()
+        self.appPasswordSupportState = ApplicationPasswordsExperimentState()
+            .$isAvailableAndEnabled
             .eraseToAnyPublisher()
         self.tabContainerController = tabContainerController
         self.viewControllerToPresent = viewControllerToPresent
@@ -107,16 +119,19 @@ private extension POSTabCoordinator {
             let settingsService = PointOfSaleSettingsService(siteID: siteID,
                                                              credentials: credentials,
                                                              selectedSite: defaultSitePublisher,
+                                                             appPasswordSupportState: appPasswordSupportState,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
-                                                      selectedSite: defaultSitePublisher),
+                                                      selectedSite: defaultSitePublisher,
+                                                      appPasswordSupportState: appPasswordSupportState),
                let orderService = POSOrderService(siteID: siteID,
                                                   credentials: credentials,
-                                                  selectedSite: defaultSitePublisher),
+                                                  selectedSite: defaultSitePublisher,
+                                                  appPasswordSupportState: appPasswordSupportState),
                #available(iOS 17.0, *) {
                 let receiptSender = POSReceiptSender(siteID: siteID,
                                                              orderService: orderService,
@@ -141,6 +156,7 @@ private extension POSTabCoordinator {
                             siteID: siteID,
                             credentials: credentials,
                             selectedSite: defaultSitePublisher,
+                            appPasswordSupportState: appPasswordSupportState,
                             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
                         )
                     ),

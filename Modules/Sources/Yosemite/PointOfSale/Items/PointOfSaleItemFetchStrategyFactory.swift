@@ -21,9 +21,12 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
 
     public init(siteID: Int64,
                 credentials: Credentials?,
-                selectedSite: AnyPublisher<JetpackSite?, Never>? = nil) {
+                selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                appPasswordSupportState: AnyPublisher<Bool, Never>? = nil) {
         self.siteID = siteID
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.productsRemote = ProductsRemote(network: network)
         self.variationsRemote = ProductVariationsRemote(network: network)
     }

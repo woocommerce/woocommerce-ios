@@ -1,11 +1,13 @@
 import XCTest
 import Yosemite
+import Combine
 @testable import WooCommerce
 
 final class ApplicationPasswordsExperimentStateTests: XCTestCase {
     private var sut: ApplicationPasswordsExperimentState!
     private var availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerMock!
     private var stores: MockStoresManager!
+    private var cancellables: AnyCancellable?
 
     override func setUp() {
         super.setUp()
@@ -18,10 +20,11 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         sut = nil
         availabilityChecker = nil
         stores = nil
+        cancellables = nil
         super.tearDown()
     }
 
-    func test_when_available_and_enabled_then_isAvailableAndEnabled_returns_true() async {
+    func test_when_available_and_enabled_then_isAvailableAndEnabled_stream_returns_true() {
         // Given
         availabilityChecker.mockedAvailability = true
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -31,13 +34,19 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
 
         // When
-        let result = await sut.isAvailableAndEnabled
+        var values: [Bool] = []
+        cancellables = sut.$isAvailableAndEnabled
+            .sink { result in
+                values.append(result)
+            }
 
         // Then
-        XCTAssertTrue(result)
+        waitUntil {
+            values == [true, true]
+        }
     }
 
-    func test_when_available_and_disabled_then_isAvailableAndEnabled_returns_false() async {
+    func test_when_available_and_disabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = true
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -47,13 +56,19 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
 
         // When
-        let result = await sut.isAvailableAndEnabled
+        var values: [Bool] = []
+        cancellables = sut.$isAvailableAndEnabled
+            .sink { result in
+                values.append(result)
+            }
 
         // Then
-        XCTAssertFalse(result)
+        waitUntil {
+            values == [true, false]
+        }
     }
 
-    func test_when_unavailable_and_enabled_then_isAvailableAndEnabled_returns_false() async {
+    func test_when_unavailable_and_enabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = false
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -63,13 +78,19 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
 
         // When
-        let result = await sut.isAvailableAndEnabled
+        var values: [Bool] = []
+        cancellables = sut.$isAvailableAndEnabled
+            .sink { result in
+                values.append(result)
+            }
 
         // Then
-        XCTAssertFalse(result)
+        waitUntil {
+            values == [true, false]
+        }
     }
 
-    func test_when_unavailable_and_disabled_then_isAvailableAndEnabled_returns_false() async {
+    func test_when_unavailable_and_disabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = false
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -79,10 +100,16 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
 
         // When
-        let result = await sut.isAvailableAndEnabled
+        var values: [Bool] = []
+        cancellables = sut.$isAvailableAndEnabled
+            .sink { result in
+                values.append(result)
+            }
 
         // Then
-        XCTAssertFalse(result)
+        waitUntil {
+            values == [true, false]
+        }
     }
 }
 

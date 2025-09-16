@@ -18,9 +18,12 @@ public final class PointOfSaleOrderListFetchStrategyFactory: PointOfSaleOrderLis
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
                 currencyFormatter: CurrencyFormatter) {
         self.siteID = siteID
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.ordersRemote = OrdersRemote(network: network)
         self.currencyFormatter = currencyFormatter
     }

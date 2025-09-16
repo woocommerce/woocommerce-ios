@@ -30,8 +30,11 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
 
     public init(credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
                 storageManager: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials, selectedSite: selectedSite)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
         self.pluginsService = PluginsService(storageManager: storageManager)

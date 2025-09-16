@@ -2,22 +2,22 @@ import SwiftUI
 import Combine
 
 @Observable
-final class KeyboardObserver {
-    private(set) var isKeyboardVisible: Bool = false
-    private(set) var keyboardHeight: CGFloat = 0
+public final class KeyboardObserver {
+    public private(set) var isKeyboardVisible: Bool = false
+    public private(set) var keyboardHeight: CGFloat = 0
 
     /// When an external keyboard is in use, iPadOS shows a quicktype bar at the bottom of the screen.
     /// This is reported as a keyboard with height, so `isKeyboardVisible` will be true and
     /// keyboard height will be > 0.
     /// However, it's much less of an impingement on the view, so there may be no modification to the view required.
     /// `isFullSizeKeyboardVisible` is true when the full software keyboard is shown.
-    var isFullSizeKeyboardVisible: Bool {
+    public var isFullSizeKeyboardVisible: Bool {
         return keyboardHeight > Constants.hardwareKeyboardHelperBarHeightThreshold
     }
 
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    public init() {
         NotificationCenter.Publisher(center: .default, name: UIResponder.keyboardWillShowNotification)
             .merge(with: NotificationCenter.Publisher(center: .default, name: UIResponder.keyboardDidShowNotification))
             .receive(on: DispatchQueue.main)
@@ -47,9 +47,9 @@ final class KeyboardObserver {
     }
 }
 
-private extension KeyboardObserver {
+public extension KeyboardObserver {
     enum Constants {
-        static let hardwareKeyboardHelperBarHeightThreshold: CGFloat = 90
+        public static let hardwareKeyboardHelperBarHeightThreshold: CGFloat = 90
     }
 }
 
@@ -60,22 +60,22 @@ private struct KeyboardObserverKey: EnvironmentKey {
     }
 }
 
-extension EnvironmentValues {
+public extension EnvironmentValues {
     var keyboardObserver: KeyboardObserver {
         get { self[KeyboardObserverKey.self] }
         set { self[KeyboardObserverKey.self] = newValue }
     }
 }
 
-struct KeyboardObserverProvider: ViewModifier {
+public struct KeyboardObserverProvider: ViewModifier {
     @State private var observer = KeyboardObserver()
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         content.environment(\.keyboardObserver, observer)
     }
 }
 
-extension View {
+public extension View {
     func injectKeyboardObserver() -> some View {
         modifier(KeyboardObserverProvider())
     }

@@ -3,6 +3,7 @@ import CoreTelephony
 import Yosemite
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.ConnectivityObserver
 
 /// Helper that provides general device & site zendesk metadata.
 ///

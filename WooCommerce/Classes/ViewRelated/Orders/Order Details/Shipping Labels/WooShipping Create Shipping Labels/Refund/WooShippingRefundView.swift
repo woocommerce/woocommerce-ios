@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 /// View for requesting refund for a shipping label.
 ///

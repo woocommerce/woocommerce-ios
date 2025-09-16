@@ -1774,7 +1774,10 @@ extension Networking.Site {
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
             hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            isGarden: false,
+            gardenName: nil,
+            gardenPartner: nil
         )
     }
 }

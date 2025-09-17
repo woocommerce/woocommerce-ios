@@ -168,6 +168,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
         observeUpdateBlazeEligibility()
+        observeTraitChanges()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
@@ -201,12 +202,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override var shouldShowOfflineBanner: Bool {
         return true
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        updateNavigationBarTitle()
     }
 
     // MARK: - Navigation actions handling
@@ -948,6 +943,16 @@ private extension ProductFormViewController {
         }, onFailedImageUpload: { [weak self] (asset, error) in
             self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
+    }
+
+    func observeTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitHorizontalSizeClass.self,
+            UITraitVerticalSizeClass.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _) in
+            self.updateNavigationBarTitle()
+        }
     }
 }
 

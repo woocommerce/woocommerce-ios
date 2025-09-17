@@ -189,11 +189,7 @@ private extension GenerativeContentRemote {
                           string: String,
                           feature: GenerativeContentRemoteFeature,
                           token: JWToken) async throws -> String {
-        let prompt = [
-            "What is the ISO language code of the language used in the below text?" +
-            "Do not include any explanations and only provide the ISO language code in your response.",
-            "Text: ```\(string)```"
-        ].joined(separator: "\n")
+        let prompt = String(format: AIRequestPrompts.identifyLanguage, string)
         let parameters: [String: Any] = [ParameterKey.token: token.token,
                                          ParameterKey.question: prompt,
                                          ParameterKey.stream: ParameterValue.stream,
@@ -219,17 +215,12 @@ private extension GenerativeContentRemote {
                            categories: [ProductCategory],
                            tags: [ProductTag],
                            token: JWToken) async throws -> AIProduct {
-        var inputComponents = [
-            "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone, and give your response in the below JSON format.",
-            "keywords: ```\(keywords)```",
-            "tone: ```\(tone)```",
-        ]
+        var inputComponents = [String(format: AIRequestPrompts.inputComponents, keywords, tone)]
 
         // Name will be added only if `productName` is available.
         // TODO: this code related to `productName` can be removed after releasing the new product creation with AI flow. Github issue: 13108
         if let productName = productName, !productName.isEmpty {
-            inputComponents.insert("name: ```\(productName)```", at: 1)
+            inputComponents.insert(String(format: AIRequestPrompts.productNameTemplate, productName), at: 1)
         }
 
         let input = inputComponents.joined(separator: "\n")
@@ -237,55 +228,47 @@ private extension GenerativeContentRemote {
         let jsonResponseFormatDict: [String: Any] = {
             let tagsPrompt: String = {
                 guard !tags.isEmpty else {
-                    return "Suggest an array of the best matching tags for this product."
+                    return AIRequestPrompts.defaultTagsPrompt
                 }
 
-                return "Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                        "suggest an array of the best matching tags for this product. You can suggest new tags as well."
+                return String(format: AIRequestPrompts.existingTagsPrompt, tags.map { $0.name }.joined(separator: ", "))
             }()
 
             let categoriesPrompt: String = {
                 guard !categories.isEmpty else {
-                    return "Suggest an array of the best matching categories for this product."
+                    return AIRequestPrompts.defaultCategoriesPrompt
                 }
 
-                return "Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                        "suggest an array of the best matching categories for this product. You can suggest new categories as well."
+                return String(format: AIRequestPrompts.existingCategoriesPrompt, categories.map { $0.name }.joined(separator: ", "))
             }()
 
             let shippingPrompt = {
                 var dict = [String: String]()
                 if let weightUnit {
-                    dict["weight"] = "Guess and provide only the number in \(weightUnit)"
+                    dict["weight"] = String(format: AIRequestPrompts.weightPrompt, weightUnit)
                 }
 
                 if let dimensionUnit {
-                    dict["length"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["width"] = "Guess and provide only the number in \(dimensionUnit)"
-                    dict["height"] = "Guess and provide only the number in \(dimensionUnit)"
+                    dict["length"] = String(format: AIRequestPrompts.lengthPrompt, dimensionUnit)
+                    dict["width"] = String(format: AIRequestPrompts.widthPrompt, dimensionUnit)
+                    dict["height"] = String(format: AIRequestPrompts.heightPrompt, dimensionUnit)
                 }
                 return dict
             }()
 
             // swiftlint:disable line_length
-            return ["names": "An array of strings, containing three different names of the product, written in the language with ISO code ```\(language)```",
-                    "descriptions": "An array of strings, each containing three different product descriptions of around 100 words long each in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "short_descriptions": "An array of strings, each containing three different short descriptions of the product in a ```\(tone)``` tone, "
-                    + "written in the language with ISO code ```\(language)```",
-                    "virtual": "A boolean value that shows whether the product is virtual or physical",
+            return ["names": String(format: AIRequestPrompts.namesFormat, language),
+                    "descriptions": String(format: AIRequestPrompts.descriptionsFormat, tone, language),
+                    "short_descriptions": String(format: AIRequestPrompts.shortDescriptionsFormat, tone, language),
+                    "virtual": AIRequestPrompts.virtualFormat,
                     "shipping": shippingPrompt,
-                    "price": "Guess the price in \(currencySymbol), do not include the currency symbol, "
-                    + "only provide the price as a number",
+                    "price": String(format: AIRequestPrompts.priceFormat, currencySymbol),
                     "tags": tagsPrompt,
                     "categories": categoriesPrompt]
         }()
 
-        let expectedJsonFormat =
-        "Your response should be in JSON format and don't send anything extra. " +
-        "Don't include the word JSON in your response:" +
-        "\n" +
-        (jsonResponseFormatDict.toJSONEncoded() ?? "")
+        let expectedJsonFormat = String(format: AIRequestPrompts.jsonFormatInstructions,
+                                        jsonResponseFormatDict.toJSONEncoded() ?? "")
 
         let prompt = input + "\n" + expectedJsonFormat
 

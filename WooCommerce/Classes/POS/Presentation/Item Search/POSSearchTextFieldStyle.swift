@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Text field style for search fields that includes a magnifier icon and clear button
 struct POSSearchTextFieldStyle: TextFieldStyle {

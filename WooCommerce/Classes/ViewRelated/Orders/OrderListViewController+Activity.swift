@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 // MARK: - SearchableActivity Conformance
 extension OrderListViewController: SearchableActivityConvertible {

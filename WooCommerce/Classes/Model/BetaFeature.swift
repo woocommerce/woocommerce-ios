@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Storage
 import protocol WooFoundation.WooAnalyticsEventPropertyType
+import WooFoundationCore
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns

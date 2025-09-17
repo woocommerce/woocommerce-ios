@@ -23,8 +23,8 @@ protocol PointOfSaleSettingsControllerProtocol {
          settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          pluginsService: PluginsServiceProtocol,
-         defaultSiteName: String? = ServiceLocator.stores.sessionManager.defaultSite?.name,
-         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
+         defaultSiteName: String?,
+         siteSettings: [SiteSetting]) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,

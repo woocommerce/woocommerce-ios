@@ -27,16 +27,14 @@ final class GameControllerBarcodeObserver {
     /// Initializes a new barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
+    ///   - analytics: The analytics service for tracking events.
     ///   - onScan: The closure to be called when a scan is completed.
-    ///   - analyticsTracker: The analytics tracker to use. Defaults to a new instance.
-    init(
-        configuration: HIDBarcodeParserConfiguration = .default,
-        onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
-        analyticsTracker: BarcodeAnalyticsTracker = BarcodeAnalyticsTracker()
-    ) {
+    init(configuration: HIDBarcodeParserConfiguration = .default,
+         analytics: POSAnalyticsProviding,
+         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
         self.onScan = onScan
         self.configuration = configuration
-        self.analyticsTracker = analyticsTracker
+        self.analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
         addObservers()
         setupCoalescedKeyboard()
     }

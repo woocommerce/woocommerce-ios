@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleExitPosAlertView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.posAnalytics) private var analytics
     @Binding private var isPresented: Bool
 
     init(isPresented: Binding<Bool>) {
@@ -27,7 +28,7 @@ struct PointOfSaleExitPosAlertView: View {
                 .font(.posBodyLargeRegular())
                 .foregroundColor(Color.posOnSurface)
             Button {
-                ServiceLocator.analytics.track(.pointOfSaleExitConfirmed)
+                analytics.track(.pointOfSaleExitConfirmed)
                 dismiss()
             } label: {
                 Text(Localization.exitButton)

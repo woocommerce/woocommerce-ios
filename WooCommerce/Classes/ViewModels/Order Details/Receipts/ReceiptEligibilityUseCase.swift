@@ -1,5 +1,6 @@
 import Yosemite
 import Experiments
+import class WooFoundation.VersionHelpers
 
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
@@ -29,17 +30,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         Task { @MainActor in
             let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
                                                                  minimumVersion: Constants.BackendReceipt.wcPluginMinimumVersion)
-            onCompletion(isWooCommerceSupported)
-        }
-    }
-
-    /// Returns true if Point of Sale allows sending successful payment email receipts via the API.
-    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
-    ///
-    func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
-        Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
-                                                                 minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
             onCompletion(isWooCommerceSupported)
         }
     }

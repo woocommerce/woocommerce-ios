@@ -19,7 +19,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
                 )
                 .animation(.easeOut(duration: 0.2), value: progress)
 
-            Image(uiImage: isComplete ? .cardReaderUpdateProgressCheckmark : .cardReaderUpdateProgressArrow)
+            Image(uiImage: isComplete ? .posCardReaderUpdateProgressCheckmark : .posCardReaderUpdateProgressArrow)
                 .renderingMode(.template)
                 .foregroundColor(Color(.posOnPrimary))
         }

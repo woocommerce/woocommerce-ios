@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsHelpDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posExternalViews) private var externalViews
 
     @State private var showProductRestrictions = false
     @State private var showDocumentation = false
@@ -174,9 +175,7 @@ private extension PointOfSaleSettingsHelpDetailView {
 
     var supportForm: some View {
         NavigationView {
-            SupportForm(isPresented: $showSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
-                                                        defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
+            externalViews.createSupportFormView(isPresented: $showSupport, sourceTag: Constants.supportTag)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.supportCancel) {

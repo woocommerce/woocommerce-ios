@@ -251,7 +251,7 @@ extension EnvironmentValues {
         }
     }
     .posModal(isPresented: $showModal) {
-        PointOfSaleBarcodeScannerSetup(isPresented: $showModal)
+        PointOfSaleBarcodeScannerSetup(isPresented: $showModal, analytics: EmptyPOSAnalytics())
     }
     .posRootModal()
     .environmentObject(modalManager)

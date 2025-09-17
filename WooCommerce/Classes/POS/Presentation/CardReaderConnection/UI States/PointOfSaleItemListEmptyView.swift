@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 protocol POSEmptyViewModelProtocol {
     var title: String { get }

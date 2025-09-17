@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooRoundedBorderTextFieldStyle
 
 /// Necessary data for the account creation / authentication form field.
 struct AuthenticationFormFieldViewModel {

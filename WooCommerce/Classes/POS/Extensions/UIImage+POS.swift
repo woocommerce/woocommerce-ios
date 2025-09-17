@@ -1,0 +1,18 @@
+import UIKit
+
+/// Point of Sale specific UIImage extensions
+/// Contains only the UIImage extensions needed by the POS module to minimize external dependencies
+extension UIImage {
+
+    /// Card Reader Update arrow - used in reader update progress
+    ///
+    static var posCardReaderUpdateProgressArrow: UIImage {
+        return UIImage(named: "card-reader-update-progress-arrow", in: .main, compatibleWith: nil)!
+    }
+
+    /// Card Reader Update checkmark - used in reader update progress completion
+    ///
+    static var posCardReaderUpdateProgressCheckmark: UIImage {
+        return UIImage(named: "card-reader-update-progress-checkmark", in: .main, compatibleWith: nil)!
+    }
+}

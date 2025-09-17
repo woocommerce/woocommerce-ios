@@ -4,9 +4,6 @@ struct PaymentsActionButtons: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
     @Binding var isShowingSendReceiptView: Bool
-    @Binding private(set) var isShowingReceiptNotEligibleBanner: Bool
-
-    private let receiptEligibilityUseCase = ReceiptEligibilityUseCase()
 
     var body: some View {
         ZStack {
@@ -21,10 +18,8 @@ struct PaymentsActionButtons: View {
 private extension PaymentsActionButtons {
     var sendReceiptButton: some View {
         Button(action: {
-            Task { @MainActor in
-                analytics.track(.receiptEmailTapped)
-                await handleSendReceiptAction()
-            }
+            analytics.track(.receiptEmailTapped)
+            isShowingSendReceiptView = true
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
                 Text(Localization.sendReceipt)
@@ -46,24 +41,6 @@ private extension PaymentsActionButtons {
     }
 }
 
-private extension PaymentsActionButtons {
-    func handleSendReceiptAction() async {
-        let isEligible = await checkReceiptEligibility()
-        if isEligible {
-            isShowingSendReceiptView = true
-        } else {
-            isShowingReceiptNotEligibleBanner = true
-        }
-    }
-
-    func checkReceiptEligibility() async -> Bool {
-        await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForPointOfSaleReceipts { isEligible in
-                continuation.resume(returning: isEligible)
-            }
-        }
-    }
-}
 
 private extension PaymentsActionButtons {
     enum Constants {
@@ -84,7 +61,7 @@ private extension PaymentsActionButtons {
 
 #if DEBUG
 #Preview {
-    PaymentsActionButtons(isShowingSendReceiptView: .constant(false), isShowingReceiptNotEligibleBanner: .constant(true))
+    PaymentsActionButtons(isShowingSendReceiptView: .constant(false))
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

@@ -60,7 +60,7 @@ private struct POSCurrencySettingsAdaptor: POSCurrencySettingsProviding {
 
 private struct POSFeatureFlagAdaptor: POSFeatureFlagProviding {
     func isFeatureFlagEnabled(_ flag: FeatureFlag) -> Bool {
-        return ServiceLocator.featureFlagService.isFeatureFlagEnabled(flag)
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(flag)
     }
 }
 

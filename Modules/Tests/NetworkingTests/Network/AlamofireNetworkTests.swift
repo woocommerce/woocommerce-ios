@@ -209,7 +209,8 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_concurrent_requests_do_not_fail_with_sessionDeinitialized_error_when_ensuresSessionManagerIsInitialized_is_true() async throws {
         // Given
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: -1, path: "test")
+        let url = try XCTUnwrap(URL(string: "http://localhost:991929281"))
+        let request = URLRequest(url: url, timeoutInterval: 0.001)
         let network = AlamofireNetwork(credentials: nil, ensuresSessionManagerIsInitialized: true)
 
         // When

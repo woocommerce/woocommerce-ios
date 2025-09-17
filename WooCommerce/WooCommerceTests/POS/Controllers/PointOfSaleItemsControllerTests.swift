@@ -497,9 +497,9 @@ final class PointOfSaleItemsControllerTests {
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
+                                                                                name: "Parent product",
+                                                                                productImageSource: nil,
+                                                                                productID: 125))
         itemProvider.itemPages = [[parentItem]]
         await sut.loadItems(base: .root)
         await sut.loadItems(base: .parent(parentItem))
@@ -523,9 +523,9 @@ final class PointOfSaleItemsControllerTests {
         )
 
         let parentItem = POSItem.variableParentProduct(POSVariableParentProduct(id: UUID(),
-                                                                              name: "Parent product",
-                                                                              productImageSource: nil,
-                                                                              productID: 125))
+                                                                                name: "Parent product",
+                                                                                productImageSource: nil,
+                                                                                productID: 125))
         let baseItem = ItemListBaseItem.parent(parentItem)
         itemProvider.itemPages = [[parentItem]]
 

@@ -1,4 +1,4 @@
-// periphery:ignore:all Will be used for showing Bookings tab
+// periphery:ignore:all
 import Foundation
 import Yosemite
 import Experiments

@@ -3,7 +3,7 @@ import SwiftUI
 @Observable final class AISettingsViewModel {
     var usesJetpackAsDefaultAIProviderSource: Bool = false
     var isEditingApiKey: Bool = false
-    var apiKey: String = "foo"
+    var apiKey: String = ""
     var selectedProvider: String = "OpenAI"
     var selectedModel: String = "gpt-4"
 
@@ -16,6 +16,7 @@ import SwiftUI
 
     func updateProvider(_ provider: String) {
         // TODO
+        // Switches between AI providers
     }
 
     func clearAPIKey() {
@@ -39,9 +40,13 @@ struct AISettingsView: View {
         viewModel.usesJetpackAsDefaultAIProviderSource
     }
 
+    private var fieldOpacity: Double {
+        aiSettingsDisabled ? 0.5 : 1.0
+    }
+
     var body: some View {
-        // Enables VM $ Bindables
         @Bindable var viewModel = viewModel
+
         VStack(alignment: .leading) {
             if aiSettingsDisabled {
                 JetpackAsAIDefaultSourceBannerView()
@@ -72,7 +77,7 @@ struct AISettingsView: View {
                     Text(viewModel.isEditingApiKey ? Localization.save : Localization.edit)
                 }
                 .disabled(aiSettingsDisabled)
-                .opacity(aiSettingsDisabled ? 0.5 : 1.0)
+                .opacity(fieldOpacity)
             }
 
             Text(Localization.apiKeyDescription)
@@ -83,6 +88,7 @@ struct AISettingsView: View {
                 Text(Localization.aiProvider)
                     .foregroundColor(.secondary)
                 Picker(Localization.selectProvider, selection: $viewModel.selectedProvider) {
+                    // TODO
                     Text(Localization.openAI).tag(Localization.openAI)
                 }
                 .pickerStyle(MenuPickerStyle())
@@ -90,7 +96,7 @@ struct AISettingsView: View {
                     viewModel.updateProvider(newValue)
                 }
                 .disabled(aiSettingsDisabled)
-                .opacity(aiSettingsDisabled ? 0.5 : 1.0)
+                .opacity(fieldOpacity)
 
                 if viewModel.usesJetpackAsDefaultAIProviderSource {
                     Image(systemName: "lock.fill")
@@ -102,11 +108,11 @@ struct AISettingsView: View {
                     .foregroundColor(.secondary)
                 Picker(Localization.selectModel, selection: $viewModel.selectedModel) {
                     // TODO
-                    Text("Default model").tag("model")
+                    Text(viewModel.selectedModel).tag(viewModel.selectedModel)
                 }
                 .pickerStyle(MenuPickerStyle())
                 .disabled(aiSettingsDisabled)
-                .opacity(aiSettingsDisabled ? 0.5 : 1.0)
+                .opacity(fieldOpacity)
 
                 if aiSettingsDisabled {
                     Image(systemName: "lock.fill")
@@ -133,17 +139,21 @@ private extension AISettingsView {
             .foregroundColor(.secondary)
             .padding()
             .background(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
                     .fill(Color(.systemGray6))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 8)
+                RoundedRectangle(cornerRadius: Layout.cornerRadius)
                     .stroke(Color(.gray), lineWidth: 1)
             )
     }
 }
 
 private extension AISettingsView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 8
+    }
+
     enum Localization {
         static let navigationTitle = NSLocalizedString(
             "aiSettings.navigationTitle",

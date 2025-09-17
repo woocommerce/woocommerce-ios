@@ -16,7 +16,7 @@ struct PointOfSaleCollectCashView: View {
     @State private var errorMessage: String?
     @State private var changeDueMessage: String?
 
-    let orderTotal: String
+    private let orderTotal: String
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero

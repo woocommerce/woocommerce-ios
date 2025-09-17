@@ -1,6 +1,9 @@
 import SwiftUI
+import KeychainAccess
 
 @Observable final class AISettingsViewModel {
+    var keychain = Keychain(service: WooConstants.keychainServiceName)
+
     var usesJetpackAsDefaultAIProviderSource: Bool = false
     var isEditingApiKey: Bool = false
     var apiKey: String = ""
@@ -20,11 +23,12 @@ import SwiftUI
     }
 
     func clearAPIKey() {
-        // TODO
+        apiKey = ""
+        keychain.merchantAIProviderKey = nil
     }
 
     private func saveSettings() {
-        // TODO
+        keychain.merchantAIProviderKey = apiKey
     }
 }
 

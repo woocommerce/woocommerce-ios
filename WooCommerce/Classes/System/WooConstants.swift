@@ -45,6 +45,10 @@ public enum WooConstants {
     ///
     static let sharedUserDefaultsSuiteName = "group.com.automattic.woocommerce"
 
+    /// Keychain Access's Key for the AI key entered by the merchant in AI settings
+    ///
+    static let merchantAIProviderKey = "merchantAIProviderKey"
+
     /// Push Notifications ApplicationID
     ///
 #if DEBUG

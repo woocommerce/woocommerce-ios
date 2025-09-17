@@ -340,7 +340,16 @@ final class ServiceLocator {
         UserDefaults.standard.set(true, forKey: "UsePayPalCardReader")
         #if !targetEnvironment(macCatalyst)
         _cardReader = PayPalCardReaderService()
-        print("🔄 [ServiceLocator] PayPal service created and assigned")
+        
+        // Create PayPal-specific config provider
+        guard let siteID = stores.sessionManager.defaultStoreID else {
+            print("🔄 [ServiceLocator] Warning: No default site ID available for PayPal config provider")
+            return
+        }
+        
+        let credentials = stores.sessionManager.defaultCredentials
+        _cardReaderConfigProvider = PayPalReaderConfigProvider()
+        print("🔄 [ServiceLocator] PayPal service and config provider created and assigned")
         #endif
     }
 
@@ -350,7 +359,10 @@ final class ServiceLocator {
         UserDefaults.standard.set(false, forKey: "UsePayPalCardReader")
         #if !targetEnvironment(macCatalyst)
         _cardReader = StripeCardReaderService()
-        print("🔄 [ServiceLocator] Stripe service created and assigned")
+        
+        // Restore common config provider for Stripe
+        _cardReaderConfigProvider = CommonReaderConfigProvider()
+        print("🔄 [ServiceLocator] Stripe service and common config provider created and assigned")
         #endif
     }
 }

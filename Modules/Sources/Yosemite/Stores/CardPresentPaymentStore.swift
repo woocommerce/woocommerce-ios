@@ -14,7 +14,7 @@ public final class CardPresentPaymentStore: Store {
 
     /// Card reader config provider
     ///
-    private let commonReaderConfigProvider: CommonReaderConfigProviding
+    private var commonReaderConfigProvider: CommonReaderConfigProviding
 
     private var paymentGatewayAccount: PaymentGatewayAccount? {
         didSet {
@@ -177,14 +177,29 @@ private extension CardPresentPaymentStore {
             break // Not required?
         }
     }
+    
+    /// Updates the config provider - used when switching between card reader types
+    func updateConfigProvider(_ newProvider: CommonReaderConfigProviding) {
+        self.commonReaderConfigProvider = newProvider
+    }
 
     func startCardReaderDiscovery(siteID: Int64,
                                   discoveryMethod: CardReaderDiscoveryMethod,
                                   onReaderDiscovered: @escaping (_ readers: [CardReader]) -> Void,
                                   onError: @escaping (Error) -> Void) {
         prepareConfigProvider(siteID: siteID)
+        
+        // HACK: For PayPal, create a PayPal-specific config provider on the fly
+        let configProvider: CommonReaderConfigProviding
+        if usingBackend == .paypal {
+            print("🔧 [CardPresentPaymentStore] Using PayPal backend - creating PayPal config provider")
+            configProvider = PayPalReaderConfigProvider(siteID: siteID, network: network)
+        } else {
+            configProvider = commonReaderConfigProvider
+        }
+        
         do {
-            try cardReaderService.start(commonReaderConfigProvider, discoveryMethod: discoveryMethod)
+            try cardReaderService.start(configProvider, discoveryMethod: discoveryMethod)
         } catch {
             return onError(error)
         }

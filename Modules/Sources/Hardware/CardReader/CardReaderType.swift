@@ -38,4 +38,14 @@ extension CardReaderType {
             return "UNKNOWN"
         }
     }
+    
+    /// Indicates if this is a PayPal card reader type
+    public var isPayPal: Bool {
+        switch self {
+        case .paypalReaderPPR:
+            return true
+        default:
+            return false
+        }
+    }
 }

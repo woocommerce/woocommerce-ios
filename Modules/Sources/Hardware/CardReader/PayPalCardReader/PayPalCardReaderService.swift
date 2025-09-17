@@ -2,6 +2,51 @@ import Combine
 import Foundation
 import iZettleSDK
 
+/// Bridge between CardReaderConfigProvider and iZettleSDKAuthorizationProvider
+private class PayPalConfigAuthProvider: NSObject, iZettleSDKAuthorizationProvider {
+    private let configProvider: CardReaderConfigProvider
+    
+    init(configProvider: CardReaderConfigProvider) {
+        self.configProvider = configProvider
+        super.init()
+    }
+    
+    func authorizeAccount(completion: @escaping iZettleAuthorizationCompletion) {
+        print("💳🔐 [PayPalConfigAuthProvider] authorizeAccount called")
+        
+        configProvider.fetchToken { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let accessToken):
+                    do {
+                        // Create iZettle token with the access token from config provider
+                        let token = try iZettleSDKOAuthToken(
+                            accessToken: accessToken,
+                            expiresIn: 7200, // 2 hours default
+                            refreshToken: "no-refresh"
+                        )
+                        print("💳✅ [PayPalConfigAuthProvider] Authorization successful")
+                        completion(token, nil)
+                    } catch {
+                        print("💳❌ [PayPalConfigAuthProvider] Failed to create token: \(error)")
+                        completion(nil, error)
+                    }
+                    
+                case .failure(let error):
+                    print("💳❌ [PayPalConfigAuthProvider] Failed to fetch token: \(error)")
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+    
+    func verifyAccount(uuid: UUID, completion: @escaping iZettleAuthorizationCompletion) {
+        print("💳🔐 [PayPalConfigAuthProvider] verifyAccount called for UUID: \(uuid)")
+        // For verification, reuse the same authorization flow
+        authorizeAccount(completion: completion)
+    }
+}
+
 /// The adapter wrapping the PayPal iZettle SDK
 public final class PayPalCardReaderService: NSObject {
 
@@ -16,83 +61,48 @@ public final class PayPalCardReaderService: NSObject {
     private let softwareUpdateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
     private let tapToPayCardReaderAcceptToSSubject = PassthroughSubject<Void, Never>()
 
-    // PayPal-specific properties
-    private let paypalApiKey: String
+    // PayPal/Zettle SDK state
+    private var isSDKStarted: Bool = false
+    private var configProvider: CardReaderConfigProvider?
 
-    /// Initialize with PayPal credentials
-    /// For POC, we'll use hardcoded sandbox credentials
-    public init(apiKey: String = "HARDCODED_SANDBOX_KEY") {
-        self.paypalApiKey = apiKey
+    public override init() {
         super.init()
-
-        // Initialize the iZettle SDK immediately
-        setupPayPalSDK()
+        print("💳🔧 [PayPalCardReaderService] Initialized - waiting for configuration")
     }
 
-    private func setupPayPalSDK() {
-        DDLogInfo("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK with plugin credentials")
-        print("💳🟢 [PayPalCardReaderService] Initializing iZettle SDK with plugin credentials")
-
-        // First attempt: Try to use existing WooCommerce PayPal plugin credentials
-        if let pluginAuthProvider = loadPluginCredentials() {
-            print("💳🔐 [PayPalCardReaderService] Using WooCommerce PayPal plugin credentials - seamless auth!")
-            startSDKWithAuthProvider(pluginAuthProvider)
+    // MARK: - PayPal SDK Configuration
+    
+    private func startPayPalSDK(with configProvider: CardReaderConfigProvider) throws {
+        guard !isSDKStarted else {
+            print("💳✅ [PayPalCardReaderService] SDK already started")
             return
         }
-
-        // Fallback: Use basic OAuth flow if plugin credentials not available
-        print("💳⚠️ [PayPalCardReaderService] Plugin credentials not found, falling back to OAuth flow")
-        setupBasicOAuthSDK()
-    }
-
-    /// Attempt to load credentials from WooCommerce PayPal Payments plugin
-    private func loadPluginCredentials() -> PayPalPluginAuthProvider? {
-        // TODO: Implement real API call to fetch plugin credentials
-        // This would call: GET /wp-json/wc/v3/paypal/credentials
         
-        // Real implementation would look like:
-        // 1. Get WooCommerce site URL from app settings
-        // 2. Make authenticated request to /wp-json/wc/v3/paypal/credentials
-        // 3. Parse response and create PayPalPluginAuthProvider
+        print("💳🟢 [PayPalCardReaderService] Starting iZettle SDK with config provider")
         
-        // Try to load from app storage (UserDefaults/Keychain) 
-        // The WooCommerce target should populate these when the site is configured
-        if let credentials = loadCredentialsFromAppStorage() {
-            print("💳✅ [PayPalCardReaderService] Loaded credentials from app storage")
-            return credentials
-        }
-
-        // No hardcoded credentials - all auth should come from the server
-        print("💳⚠️ [PayPalCardReaderService] No plugin credentials available")
-        print("💳ℹ️ [PayPalCardReaderService] Server should provide tokens via site-managed OAuth")
-        return nil
-    }
-    
-    /// Create auth provider that fetches tokens from WooCommerce site
-    private func loadCredentialsFromAppStorage() -> PayPalPluginAuthProvider? {
-        // Site-managed OAuth: no credentials stored in app, all managed by server
-        print("💳🔐 [PayPalCardReaderService] Creating site-managed auth provider")
-        return PayPalPluginAuthProvider()
-    }
-
-    /// Start SDK with custom auth provider (plugin credentials)
-    private func startSDKWithAuthProvider(_ authProvider: PayPalPluginAuthProvider) {
+        // Store config provider for token fetching
+        self.configProvider = configProvider
+        
+        // Create custom auth provider that uses the config provider to fetch tokens
+        let authProvider = PayPalConfigAuthProvider(configProvider: configProvider)
+        
         do {
             var isDebug = false
-#if DEBUG
-            isDebug = true
-#endif
+//#if DEBUG
+//            isDebug = true
+//#endif
 
             iZettleSDK.shared().start(with: authProvider, enableDeveloperMode: isDebug)
 
-            DDLogInfo("💳✅ [PayPalCardReaderService] iZettle SDK initialized with plugin credentials successfully")
-            print("💳✅ [PayPalCardReaderService] iZettle SDK ready with seamless authentication!")
+            DDLogInfo("💳✅ [PayPalCardReaderService] iZettle SDK initialized with config provider successfully")
+            print("💳✅ [PayPalCardReaderService] iZettle SDK ready with site-managed authentication!")
+            isSDKStarted = true
 
         } catch {
-            DDLogError("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK with plugin auth: \(error)")
-            print("💳❌ [PayPalCardReaderService] Plugin auth failed: \(error)")
-            print("💳🔄 [PayPalCardReaderService] Falling back to basic OAuth...")
-            setupBasicOAuthSDK()
+            DDLogError("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK: \(error)")
+            print("💳❌ [PayPalCardReaderService] SDK initialization failed: \(error)")
+            isSDKStarted = false
+            throw CardReaderServiceError.discovery(underlyingError: UnderlyingError(with: error))
         }
     }
 
@@ -196,21 +206,23 @@ extension PayPalCardReaderService: CardReaderService {
                              discoveryMethod: CardReaderDiscoveryMethod,
                              minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
 
-        // For POC, assume PayPal readers are supported
-        // In real implementation, check PayPal SDK capabilities
-        return true
+        // PayPal readers are supported on iOS
+        return cardReaderType.isPayPal
     }
 
     public func start(_ configProvider: CardReaderConfigProvider,
                       discoveryMethod: CardReaderDiscoveryMethod) throws {
 
-        print("💳🟢 [PayPalCardReaderService] *** START DISCOVERY CALLED ***")
-        DDLogInfo("💳🟢 [PayPalCardReaderService] *** START DISCOVERY CALLED ***")
+        print("💳🚀 [PayPalCardReaderService] Starting with config provider")
+        DDLogInfo("💳🚀 [PayPalCardReaderService] Starting with config provider")
 
-        // Real iZettle reader discovery
+        // Start the PayPal SDK with config provider
+        try startPayPalSDK(with: configProvider)
+        
+        // Start reader discovery
         switchStatusToDiscovering()
 
-        // For POC, simulate finding iZettle readers
+        // For POC, simulate finding iZettle readers after SDK startup
         // In production, iZettle SDK handles reader discovery automatically during payment
         // There's no explicit "discover readers" API - readers are found when payment starts
 
@@ -259,9 +271,13 @@ extension PayPalCardReaderService: CardReaderService {
 
     public func clear() {
         // Reset PayPal SDK state
+        print("💳🧹 [PayPalCardReaderService] Clearing service state")
+        isSDKStarted = false
+        configProvider = nil
         connectedReadersSubject.send([])
         switchStatusToIdle()
     }
+    
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
         return Future<PaymentIntent, Error> { [weak self] promise in

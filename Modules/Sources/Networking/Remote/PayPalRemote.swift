@@ -57,6 +57,26 @@ public class PayPalRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+    
+    /// Fetch Zettle access token from the PayPal plugin backend
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the token.
+    ///   - completion: Closure to be executed upon completion.
+    public func fetchZettleAccessToken(for siteID: Int64,
+                                       completion: @escaping (Result<ZettleTokenResponse, Error>) -> Void) {
+        
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: Path.zettleAccessToken,
+                                     availableAsRESTRequest: true)
+
+        let mapper = SingleItemMapper<ZettleTokenResponse>(siteID: siteID)
+
+        print("💳🌐 [PayPalRemote] Fetching Zettle access token from backend")
+        
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 // MARK: - PayPal Constants
@@ -65,6 +85,7 @@ private extension PayPalRemote {
         static let orders = "payments/orders"
         static let capturePayPalPayment = "capture_paypal_payment"
         static let paypalAccounts = "payments/paypal_accounts"
+        static let zettleAccessToken = "zettle/access-token"
     }
     
     enum AccountParameterKeys {
@@ -82,5 +103,22 @@ private extension PayPalRemote {
     
     enum CaptureOrderPaymentValues {
         static let fieldValues = "id,status,created,amount,currency,payment_method,charges"
+    }
+}
+
+// MARK: - Zettle Token Response Model
+public struct ZettleTokenResponse: Codable {
+    public let accessToken: String
+    public let tokenType: String
+    public let expiresIn: Int
+    public let refreshToken: String?
+    public let scope: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case accessToken = "access_token"
+        case tokenType = "token_type"
+        case expiresIn = "expires_in"
+        case refreshToken = "refresh_token"
+        case scope
     }
 }

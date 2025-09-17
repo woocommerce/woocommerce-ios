@@ -69,8 +69,9 @@ struct AISettingsView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .foregroundColor(.primary)
                 .privacySensitive()
+                .disabled(!viewModel.isEditingApiKey)
 
-                if viewModel.isEditingApiKey, !viewModel.apiKey.isEmpty {
+                if viewModel.isEditingApiKey && !viewModel.apiKey.isEmpty {
                     Button(action: viewModel.clearAPIKey) {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundColor(.gray)

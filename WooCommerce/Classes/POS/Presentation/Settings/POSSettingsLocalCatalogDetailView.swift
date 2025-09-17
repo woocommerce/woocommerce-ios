@@ -17,9 +17,9 @@ struct POSSettingsLocalCatalogDetailView: View {
 
                 ScrollView {
                     VStack(spacing: POSSpacing.medium) {
-                        catalogStatusView
-                        managingDataUsageView
-                        manualCatalogUpdateView
+                        catalogStatus
+                        managingDataUsage
+                        manualCatalogUpdate
                     }
                 }
                 .background(backgroundColor)
@@ -30,7 +30,7 @@ struct POSSettingsLocalCatalogDetailView: View {
 
 private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
-    var catalogStatusView: some View {
+    var catalogStatus: some View {
         VStack(spacing: POSSpacing.none) {
             sectionHeaderView(title: Localization.catalogStatus)
 
@@ -45,7 +45,7 @@ private extension POSSettingsLocalCatalogDetailView {
     }
 
     @ViewBuilder
-    var managingDataUsageView: some View {
+    var managingDataUsage: some View {
         VStack(spacing: POSSpacing.none) {
             sectionHeaderView(title: Localization.managingDataUsage)
 
@@ -57,7 +57,7 @@ private extension POSSettingsLocalCatalogDetailView {
     }
 
     @ViewBuilder
-    var manualCatalogUpdateView: some View {
+    var manualCatalogUpdate: some View {
         VStack(spacing: POSSpacing.none) {
             sectionHeaderView(title: Localization.manualCatalogUpdate)
 

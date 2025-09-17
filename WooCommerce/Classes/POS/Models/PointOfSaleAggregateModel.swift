@@ -367,7 +367,7 @@ extension PointOfSaleAggregateModel {
     // Once we get the callback from the card service, we switch to cash collection state
     @MainActor
     func startCashPayment() async {
-        analytics.track(.pointOfSaleCashPaymentTapped)
+        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
         try? await cardPresentPaymentService.cancelPayment()
         paymentState.cash = .collectingCash
     }

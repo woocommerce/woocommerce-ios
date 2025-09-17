@@ -30,6 +30,12 @@ internal struct ProductMetadataExtractor: Decodable {
     ///
     private let metadata: [MetaData]
 
+    /// Initialize with already-decoded metadata array
+    ///
+    init(metadata: [MetaData]) {
+        self.metadata = metadata
+    }
+
     /// Decode main metadata supporting both array and object formats.
     /// This expects to decode the raw metadata array/object, not a JSON object with a meta_data field.
     ///
@@ -80,7 +86,17 @@ internal struct ProductMetadataExtractor: Decodable {
     ///
     private func getKeyValueDictionary(from metadata: [MetaData]) -> AnyDictionary {
         metadata.reduce(into: AnyDictionary()) { dict, object in
-            dict[object.key] = object.value
+            // For JSON values, decode them to get the actual object
+            if object.value.isJson {
+                if let data = object.value.stringValue.data(using: .utf8),
+                   let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) {
+                    dict[object.key] = jsonObject
+                } else {
+                    dict[object.key] = object.value.stringValue
+                }
+            } else {
+                dict[object.key] = object.value.stringValue
+            }
         }
     }
 

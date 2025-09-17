@@ -201,8 +201,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         // "payment_url" is only available on stores with version >= 6.4
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
-        let flexibleOrderMetaData = try container.decodeIfPresent(FlexibleMetaDataArray.self, forKey: .metadata)
-        let allOrderMetaData = flexibleOrderMetaData?.metadata
+        let allOrderMetaData: [MetaData]? = {
+            let metadata = Self.decodeFlexibleMetaData(from: container, forKey: .metadata)
+            return metadata.isEmpty ? nil : metadata
+        }()
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value.stringValue
 
@@ -441,6 +443,23 @@ extension Order: Equatable {
             lhs.customerNote == rhs.customerNote &&
             lhs.attributionInfo == rhs.attributionInfo &&
             lhs.shippingLabels == rhs.shippingLabels
+    }
+
+    /// Helper method for flexible metadata decoding
+    private static func decodeFlexibleMetaData<K>(from container: KeyedDecodingContainer<K>,
+                                                  forKey key: KeyedDecodingContainer<K>.Key) -> [MetaData] {
+        // Try to decode as array first (standard format)
+        if let metaDataArray = try? container.decode([MetaData].self, forKey: key) {
+            return metaDataArray
+        }
+
+        // Try to decode as object keyed by index strings
+        if let metaDataDict = try? container.decode([String: MetaData].self, forKey: key) {
+            return Array(metaDataDict.values)
+        }
+
+        // Fallback to empty array
+        return []
     }
 }
 

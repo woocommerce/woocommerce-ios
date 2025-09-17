@@ -224,12 +224,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let price = container.failsafeDecodeIfPresent(targetType: String.self,
                                                       forKey: .price,
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-            ?? ""
+        ?? ""
 
         let regularPrice = container.failsafeDecodeIfPresent(targetType: String.self,
                                                              forKey: .regularPrice,
                                                              alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-            ?? ""
+        ?? ""
 
         // Even though WooCommerce Core returns Bool values,
         // some plugins alter the field value from Bool to String.
@@ -245,7 +245,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                           alternativeTypes: [
                                                             .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
                                                             .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-            ?? ""
+        ?? ""
 
         // Even though WooCommerce Core returns Bool values,
         // some plugins alter the field value from Bool to Int (1 or 0)
@@ -279,7 +279,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                                     }
                                                                     return false
                                                                 })
-        ]) ?? false
+                                                            ]) ?? false
 
         // Even though WooCommerce Core returns Int or null values,
         // some plugins alter the field value from Int to Decimal or String.
@@ -309,7 +309,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let menuOrder = try container.decode(Int64.self, forKey: .menuOrder)
 
         // Subscription settings for subscription variations
-        let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
+        let allMetaData = Self.decodeFlexibleMetaData(from: container, forKey: .metadata)
+        let metaDataExtractor = ProductMetadataExtractor(metadata: allMetaData)
+        let subscription = try? metaDataExtractor.extractProductSubscription()
 
         // Min/Max Quantities properties
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)
@@ -508,6 +510,23 @@ private extension ProductVariation {
     enum Values {
         static let manageStockParent = "parent"
         static let overrideProductQuantitiesTrueValue = "yes"
+    }
+
+    /// Helper method for flexible metadata decoding
+    private static func decodeFlexibleMetaData<K>(from container: KeyedDecodingContainer<K>,
+                                                  forKey key: KeyedDecodingContainer<K>.Key) -> [MetaData] {
+        // Try to decode as array first (standard format)
+        if let metaDataArray = try? container.decode([MetaData].self, forKey: key) {
+            return metaDataArray
+        }
+
+        // Try to decode as object keyed by index strings
+        if let metaDataDict = try? container.decode([String: MetaData].self, forKey: key) {
+            return Array(metaDataDict.values)
+        }
+
+        // Fallback to empty array
+        return []
     }
 }
 

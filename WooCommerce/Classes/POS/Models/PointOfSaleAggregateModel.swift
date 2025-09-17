@@ -23,7 +23,6 @@ protocol PointOfSaleAggregateModelProtocol {
     var paymentState: PointOfSalePaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? { get set }
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 

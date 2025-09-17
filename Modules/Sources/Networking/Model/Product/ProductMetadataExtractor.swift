@@ -23,18 +23,21 @@ import WordPressShared
 ///
 internal struct ProductMetadataExtractor: Decodable {
 
-    private typealias DecodableDictionary = [String: AnyDecodable]
     private typealias AnyDictionary = [String: Any?]
 
     /// Internal metadata representation
     ///
-    private let metadata: [DecodableDictionary]
+    private let metadata: [MetaData]
 
-    /// Decode main metadata array as an untyped dictionary.
+    /// Decode main metadata supporting both array and object formats.
     ///
     init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.metadata = try container.decode([DecodableDictionary].self)
+        let container = try decoder.container(keyedBy: MetaDataKeys.self)
+        self.metadata = MetaDataMapper.decodeMetaData(from: container, forKey: .metadata, filterInternalKeys: false)
+    }
+
+    private enum MetaDataKeys: String, CodingKey {
+        case metadata = "meta_data"
     }
 
     /// Searches product metadata for subscription data and converts it to a `ProductSubscription` if possible.
@@ -62,22 +65,15 @@ internal struct ProductMetadataExtractor: Decodable {
 
     /// Filters product metadata using the provided prefix.
     ///
-    private func filterMetadata(with prefix: String) -> [DecodableDictionary] {
-        metadata.filter { object in
-            let objectKey = object["key"]?.value as? String ?? ""
-            return objectKey.hasPrefix(prefix)
-        }
+    private func filterMetadata(with prefix: String) -> [MetaData] {
+        metadata.filter { $0.key.hasPrefix(prefix) }
     }
 
     /// Parses provided metadata to return a dictionary with each metadata object's key and value.
     ///
-    private func getKeyValueDictionary(from metadata: [DecodableDictionary]) -> AnyDictionary {
-        metadata.reduce(AnyDictionary()) { (dict, object) in
-            var newDict = dict
-            let objectKey = object["key"]?.value as? String ?? ""
-            let objectValue = object["value"]?.value
-            newDict.updateValue(objectValue, forKey: objectKey)
-            return newDict
+    private func getKeyValueDictionary(from metadata: [MetaData]) -> AnyDictionary {
+        metadata.reduce(into: AnyDictionary()) { dict, object in
+            dict[object.key] = object.value
         }
     }
 

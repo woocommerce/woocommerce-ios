@@ -535,7 +535,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
         // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
-        let customFields = (try? container.decode([MetaData].self, forKey: .metadata).filter({ !$0.key.hasPrefix("_")})) ?? []
+        // Support both array format and object keyed by index strings via MetaDataMapper
+        let customFields = MetaDataMapper.decodeMetaData(from: container, forKey: .metadata)
 
         // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.

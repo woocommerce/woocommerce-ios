@@ -2,6 +2,8 @@ import SwiftUI
 import WooFoundationCore
 import WooFoundation
 import enum Experiments.FeatureFlag
+import struct Yosemite.Coupon
+import enum Yosemite.POSItem
 
 /// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
@@ -48,6 +50,15 @@ protocol POSExternalViewProviding {
     func createFormattableAmountTextField(preset: Decimal?,
                                           onSubmit: @escaping () -> Void,
                                           onChange: @escaping (String) -> Void) -> AnyView
+    func createCouponCreationView(discountType: Coupon.DiscountType,
+                                  showTypeSelection: Binding<Bool>,
+                                  onSuccess: @escaping (Coupon) -> Void,
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView
+    func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
+                                          title: String,
+                                          cancelButtonTitle: String,
+                                          onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

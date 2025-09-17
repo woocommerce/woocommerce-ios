@@ -5,13 +5,13 @@ import struct Yosemite.POSOrderRefund
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
-struct PointOfSaleOrderDetailsView: View {
+struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
-    @Environment(PointOfSaleOrderListModel.self) private var orderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -60,7 +60,7 @@ struct PointOfSaleOrderDetailsView: View {
 
 // MARK: - Main Sections
 
-private extension PointOfSaleOrderDetailsView {
+private extension POSOrderDetailsView {
     @ViewBuilder
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -108,7 +108,7 @@ private extension PointOfSaleOrderDetailsView {
 
 // MARK: - Header Components
 
-private extension PointOfSaleOrderDetailsView {
+private extension POSOrderDetailsView {
     @ViewBuilder
     func headerBottomContent(for order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -131,7 +131,7 @@ private extension PointOfSaleOrderDetailsView {
 
 // MARK: - Product Components
 
-private extension PointOfSaleOrderDetailsView {
+private extension POSOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
@@ -188,7 +188,7 @@ private extension PointOfSaleOrderDetailsView {
 
 // MARK: - Totals Components
 
-private extension PointOfSaleOrderDetailsView {
+private extension POSOrderDetailsView {
     @ViewBuilder
     func productsSubtotalRow(_ order: POSOrder) -> some View {
         totalsRow(
@@ -299,7 +299,7 @@ private extension PointOfSaleOrderDetailsView {
 
 // MARK: - Actions
 
-private extension PointOfSaleOrderDetailsView {
+private extension POSOrderDetailsView {
     enum POSOrderDetailsAction: Identifiable, CaseIterable {
         case emailReceipt
 
@@ -436,7 +436,7 @@ private enum Localization {
 
 #if DEBUG
 #Preview("Order Details") {
-    PointOfSaleOrderDetailsView(
+    POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrder(),
         onBack: {}
     )

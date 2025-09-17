@@ -26,8 +26,8 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
-import class Yosemite.PointOfSaleOrderListService
-import class Yosemite.PointOfSaleOrderListFetchStrategyFactory
+import class Yosemite.POSOrderListService
+import class Yosemite.POSOrderListFetchStrategyFactory
 
 // MARK: - PreviewProvider helpers
 //
@@ -237,8 +237,10 @@ struct POSPreviewHelpers {
         )
     }
 
-    static func makePreviewOrdersModel() -> PointOfSaleOrderListModel {
-        return PointOfSaleOrderListModel(ordersController: PointOfSalePreviewOrderListController(), receiptSender: POSReceiptSenderPreview())
+    static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
+        return POSOrderListModel(
+            ordersController: POSConfigurablePreviewOrderListController(state: state),
+            receiptSender: POSReceiptSenderPreview())
     }
 
     static func makePreviewOrder() -> POSOrder {
@@ -274,8 +276,8 @@ struct POSPreviewHelpers {
                 )
             ],
             refunds: [],
-            formattedTotalTax: "$3.76",
             formattedDiscountTotal: "$0.00",
+            formattedTotalTax: "$3.76",
             formattedPaymentTotal: "$45.75",
             formattedNetAmount: nil
         )
@@ -283,8 +285,10 @@ struct POSPreviewHelpers {
 }
 
 // MARK: - Preview Orders Controller
-final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderListControllerProtocol {
-    var ordersViewState: POSOrderListState {
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
+    let ordersViewState: POSOrderListState
+
+    init(state: POSOrderListState? = nil) {
         let orders = [
             POSOrder(
                 id: 1,
@@ -318,8 +322,8 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
                     )
                 ],
                 refunds: [],
-                formattedTotalTax: "$4.75",
                 formattedDiscountTotal: "-$5.24",
+                formattedTotalTax: "$4.75",
                 formattedPaymentTotal: "$45.75",
                 formattedNetAmount: nil
             ),
@@ -363,14 +367,13 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
                         reason: "Customer requested partial refund"
                     )
                 ],
-                formattedTotalTax: "$8.95",
                 formattedDiscountTotal: "-$15.00",
+                formattedTotalTax: "$8.95",
                 formattedPaymentTotal: "$89.50",
                 formattedNetAmount: "$69.51"
             )
         ]
-
-        return .loaded(orders, hasMoreItems: false)
+        self.ordersViewState = state ?? .loaded(orders, hasMoreItems: false)
     }
 
     var selectedOrder: POSOrder? {
@@ -381,6 +384,7 @@ final class PointOfSalePreviewOrderListController: PointOfSaleSearchingOrderList
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
+    func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
 }

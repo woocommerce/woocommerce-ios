@@ -8,6 +8,10 @@ final class MockPOSReceiptSender: POSReceiptSending {
     var sendReceiptCalledWithOrderID: Int64?
     var sendReceiptCalledWithEmail: String?
 
+    enum TestError: Error {
+        case sendReceiptFailed
+    }
+
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {
         sendReceiptWasCalled = true
         sendReceiptCalledWithOrderID = orderID

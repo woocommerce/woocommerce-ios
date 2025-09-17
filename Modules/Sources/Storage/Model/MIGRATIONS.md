@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 126 (Release 23.3.0.0)
+- @rafaelkayumov 2025-09-15
+  - Added `isGarden` attribute to `Site` entity.
+  - Added `gardenName` attribute to `Site` entity.
+  - Added `gardenPartner` attribute to `Site` entity.
+
 ## Model 125 (Release 23.2.0.0)
 - @itsmeichigo 2025-09-04
   - Added `hazmatCategory` attribute to `ShippingLabel` entity.

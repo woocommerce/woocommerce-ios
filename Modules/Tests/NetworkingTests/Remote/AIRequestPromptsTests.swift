@@ -31,14 +31,13 @@ final class AIRequestPromptsTests: XCTestCase {
         let formattedPrompt = String(format: AIRequestPrompts.inputComponents, keywords, tone)
 
         // Then
-        // swiftlint:disable:next line_length
+        // swiftlint:disable line_length
         let expectedPrompt = """
-        You are a WooCommerce SEO and marketing expert,
-        perform in-depth research about the product using the provided name, keywords, and tone,
-        and give your response in the below JSON format.
+        You are a WooCommerce SEO and marketing expert, perform in-depth research about the product using the provided name, keywords, and tone, and give your response in the below JSON format.
         keywords: ```\(keywords)```
         tone: ```\(tone)```
         """
+        // swiftlint:enable line_length
 
         XCTAssertEqual(formattedPrompt, expectedPrompt)
     }

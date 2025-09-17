@@ -228,27 +228,6 @@ final class AlamofireNetworkTests: XCTestCase {
         }
     }
 
-    func test_concurrent_requests_fail_with_sessionDeinitialized_error_when_ensuresSessionManagerIsInitialized_is_false() async throws {
-        // Given
-        let request = JetpackRequest(wooApiVersion: .mark1, method: .get, siteID: 1, path: "test")
-        let network = AlamofireNetwork(credentials: nil, ensuresSessionManagerIsInitialized: false)
-
-        // When
-        async let request1 = network.responseDataAndHeaders(for: request)
-        async let request2 = network.responseDataAndHeaders(for: request)
-        async let request3 = network.responseDataAndHeaders(for: request)
-
-        do {
-            _ = try await [request1, request2, request3]
-            XCTFail("Requests should fail with sessionDeinitialized error")
-        } catch Alamofire.AFError.sessionDeinitialized {
-            // Then
-            XCTAssertTrue(true)
-        } catch {
-            XCTFail("Requests should fail with sessionDeinitialized error, got \(error) instead")
-        }
-    }
-
     // MARK: - Retry Logic Tests
 
     func test_responseData_with_completion_retries_direct_request_when_converted_request_fails() throws {

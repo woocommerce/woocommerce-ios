@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentOnboardingView: View {
 
     var body: some View {
         VStack(spacing: Constants.verticalSpacing) {
-            AnyView(viewModel.onboardingViewFactory.view)
+            AnyView(viewModel.onboardingViewContainer.view)
                 // Hides the navigation bar title `navigationTitle` in `CardPresentPaymentsOnboardingView`.
                 .toolbar(.hidden)
         }
@@ -36,7 +36,7 @@ private extension PointOfSaleCardPresentPaymentOnboardingView {
 
 import enum Yosemite.CardPresentPaymentOnboardingState
 
-final class PreviewOnboardingViewFactoryConfiguration: CardPresentPaymentsOnboardingViewConfiguration {
+final class PreviewOnboardingViewContainerConfiguration: CardPresentPaymentsOnboardingViewConfiguration {
     var showSupport: (() -> Void)?
     var showURL: ((URL) -> Void)?
     var state: CardPresentPaymentOnboardingState = .loading
@@ -44,7 +44,7 @@ final class PreviewOnboardingViewFactoryConfiguration: CardPresentPaymentsOnboar
 
 #Preview {
     PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
-        onboardingViewFactory: .init(configuration: PreviewOnboardingViewFactoryConfiguration()), onDismissTap: nil)
+        onboardingViewContainer: .init(configuration: PreviewOnboardingViewContainerConfiguration()), onDismissTap: nil)
     )
 }
 #endif

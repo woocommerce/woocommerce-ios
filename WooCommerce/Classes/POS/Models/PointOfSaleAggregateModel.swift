@@ -23,7 +23,7 @@ protocol PointOfSaleAggregateModelProtocol {
     var paymentState: PointOfSalePaymentState { get }
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? { get set }
     var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { get }
-    var cardPresentPaymentOnboardingViewFactory: CardPresentPaymentOnboardingViewFactory? { get set }
+    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? { get set }
     func cancelCardPaymentsOnboarding()
     func trackCardPaymentsOnboardingShown()
 
@@ -56,7 +56,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private(set) var paymentState: PointOfSalePaymentState
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    var cardPresentPaymentOnboardingViewFactory: CardPresentPaymentOnboardingViewFactory?
+    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
     private var onOnboardingCancellation: (() -> Void)?
 
     private(set) var cart: Cart = .init()
@@ -454,15 +454,15 @@ extension PointOfSaleAggregateModel {
 
     /// Called when the onboarding UI is dismissed.
     /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
-    /// by setting `cardPresentPaymentOnboardingViewFactory` to nil, the second time triggered by internal dismissal.
+    /// by setting `cardPresentPaymentOnboardingViewContainer` to nil, the second time triggered by internal dismissal.
     /// For internal dismissal (tapping outside the modal), this method is called once.
     /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
     func cancelCardPaymentsOnboarding() {
-        guard let onboardingViewFactory = cardPresentPaymentOnboardingViewFactory else {
+        guard let onboardingViewContainer = cardPresentPaymentOnboardingViewContainer else {
             return
         }
-        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewFactory.configuration.state))
-        cardPresentPaymentOnboardingViewFactory = nil
+        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewContainer.configuration.state))
+        cardPresentPaymentOnboardingViewContainer = nil
         onOnboardingCancellation?()
     }
 
@@ -528,7 +528,7 @@ private extension PointOfSaleAggregateModel {
             .store(in: &cancellables)
 
         cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentOnboardingViewFactory? in
+            .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
                 guard let self else { return nil }
                 guard case let .showOnboarding(factory, onCancel) = event else {
                     return nil
@@ -537,7 +537,7 @@ private extension PointOfSaleAggregateModel {
                 return factory
             }
             .sink(receiveValue: { [weak self] factory in
-                self?.cardPresentPaymentOnboardingViewFactory = factory
+                self?.cardPresentPaymentOnboardingViewContainer = factory
             })
             .store(in: &cancellables)
     }

@@ -17,7 +17,7 @@ final class MockPointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
 
     var cardPresentPaymentInlineMessage: WooCommerce.PointOfSaleCardPresentPaymentMessageType?
 
-    var cardPresentPaymentOnboardingViewFactory: WooCommerce.CardPresentPaymentOnboardingViewFactory?
+    var cardPresentPaymentOnboardingViewContainer: WooCommerce.CardPresentPaymentOnboardingViewContainer?
 
     func cancelCardPaymentsOnboarding() { }
 

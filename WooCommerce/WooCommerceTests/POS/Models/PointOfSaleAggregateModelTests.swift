@@ -707,24 +707,24 @@ struct PointOfSaleAggregateModelTests {
         }
 
         // MARK: Onboarding
-        @Test func cardPresentPaymentOnboardingViewFactory_is_non_nil_when_onboarding_is_required() async throws {
+        @Test func cardPresentPaymentOnboardingViewContainer_is_non_nil_when_onboarding_is_required() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            let configuration = MockOnboardingViewFactoryConfiguration()
+            let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .pluginNotActivated(plugin: .stripe)
-            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
-            try #require(sut.cardPresentPaymentOnboardingViewFactory == nil)
+            try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
             // When
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
             // Then
-            #expect(sut.cardPresentPaymentOnboardingViewFactory?.configuration.state == .pluginNotActivated(plugin: .stripe))
+            #expect(sut.cardPresentPaymentOnboardingViewContainer?.configuration.state == .pluginNotActivated(plugin: .stripe))
         }
 
         @Test func connectionSuccessAlert_is_filtered_when_waiting_to_start_payment_on_card_reader_connection() async throws {
@@ -798,9 +798,9 @@ struct PointOfSaleAggregateModelTests {
 
             sut.addToCart(makePurchasableItem())
 
-            let configuration = MockOnboardingViewFactoryConfiguration()
+            let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .noConnectionError
-            let factory = CardPresentPaymentOnboardingViewFactory.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
 
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 

@@ -8,7 +8,7 @@ protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
     var state: CardPresentPaymentOnboardingState { get }
 }
 
-final class CardPresentPaymentOnboardingViewFactory: ObservableObject, Equatable, Identifiable {
+final class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equatable, Identifiable {
     @Published var configuration: any CardPresentPaymentsOnboardingViewConfiguration
     @Published var view: any View
 
@@ -17,22 +17,22 @@ final class CardPresentPaymentOnboardingViewFactory: ObservableObject, Equatable
         self.view = view
     }
 
-    static func == (lhs: CardPresentPaymentOnboardingViewFactory, rhs: CardPresentPaymentOnboardingViewFactory) -> Bool {
+    static func == (lhs: CardPresentPaymentOnboardingViewContainer, rhs: CardPresentPaymentOnboardingViewContainer) -> Bool {
         lhs.configuration.state == rhs.configuration.state
     }
 }
 
 final class PointOfSaleCardPresentPaymentOnboardingViewModel: ObservableObject {
     @Published var onboardingURL: URL?
-    @Published var onboardingViewFactory: CardPresentPaymentOnboardingViewFactory
+    @Published var onboardingViewContainer: CardPresentPaymentOnboardingViewContainer
 
     private let onDismissTap: (() -> Void)?
 
-    init(onboardingViewFactory: CardPresentPaymentOnboardingViewFactory,
+    init(onboardingViewContainer: CardPresentPaymentOnboardingViewContainer,
          onDismissTap: (() -> Void)?) {
-        self.onboardingViewFactory = onboardingViewFactory
+        self.onboardingViewContainer = onboardingViewContainer
         self.onDismissTap = onDismissTap
-        self.onboardingViewFactory.configuration.showURL = { [weak self] url in
+        self.onboardingViewContainer.configuration.showURL = { [weak self] url in
             self?.onboardingURL = url
         }
     }

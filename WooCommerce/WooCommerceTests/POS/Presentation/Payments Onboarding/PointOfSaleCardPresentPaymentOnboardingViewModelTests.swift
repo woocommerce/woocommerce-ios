@@ -6,9 +6,9 @@ final class PointOfSaleCardPresentPaymentOnboardingViewModelTests: XCTestCase {
     func test_onDismissTap_is_invoked_when_cancelOnboarding_is_called() throws {
         // Given
         var isDismissTapInvoked = false
-        let configuration = MockOnboardingViewFactoryConfiguration()
+        let configuration = MockOnboardingViewContainerConfiguration()
         let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(
-            onboardingViewFactory: .init(configuration: configuration),
+            onboardingViewContainer: .init(configuration: configuration),
             onDismissTap: {
                 isDismissTapInvoked = true
             })
@@ -22,9 +22,9 @@ final class PointOfSaleCardPresentPaymentOnboardingViewModelTests: XCTestCase {
 
     func test_onboardingURL_is_set_when_onboarding_vm_showURL_is_invoked() throws {
         // Given
-        let configuration = MockOnboardingViewFactoryConfiguration()
+        let configuration = MockOnboardingViewContainerConfiguration()
         let sut = PointOfSaleCardPresentPaymentOnboardingViewModel(
-            onboardingViewFactory: .init(configuration: configuration),
+            onboardingViewContainer: .init(configuration: configuration),
             onDismissTap: nil)
         XCTAssertNil(sut.onboardingURL)
 

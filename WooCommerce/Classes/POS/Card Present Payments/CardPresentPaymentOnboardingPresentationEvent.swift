@@ -1,6 +1,6 @@
 import Foundation
 
 enum CardPresentPaymentOnboardingPresentationEvent {
-    case showOnboarding(factory: CardPresentPaymentOnboardingViewFactory, onCancel: () -> Void)
+    case showOnboarding(factory: CardPresentPaymentOnboardingViewContainer, onCancel: () -> Void)
     case onboardingComplete
 }

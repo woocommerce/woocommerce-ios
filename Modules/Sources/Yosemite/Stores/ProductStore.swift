@@ -573,7 +573,7 @@ private extension ProductStore {
                 return onCompletion(.success(true))
             } else if let productType, products.contains(where: { $0.productTypeKey == productType.rawValue}) {
                 return onCompletion(.success(true))
-            } else if status == nil {
+            } else if status == nil && productType == nil {
                 return onCompletion(.success(true))
             }
         }

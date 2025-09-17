@@ -2862,6 +2862,7 @@
 		DEDA8DBE2B19952B0076BF0F /* ThemeSettingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */; };
 		DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
+		DEDB5D392E7AC0670022E5A1 /* BookingsTabEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB5D372E7AC0670022E5A1 /* BookingsTabEligibilityCheckerTests.swift */; };
 		DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */; };
 		DEDC5F5E2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDC5F5D2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift */; };
 		DEDC5F602D9E7CEA005E38BD /* WooShippingShipmentDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDC5F5F2D9E7CDD005E38BD /* WooShippingShipmentDetailsViewModel.swift */; };
@@ -6099,6 +6100,7 @@
 		DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModel.swift; sourceTree = "<group>"; };
 		DEDA8DBF2B19CDC50076BF0F /* ThemeSettingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingViewModelTests.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
+		DEDB5D372E7AC0670022E5A1 /* BookingsTabEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingsTabEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		DEDB886A26E8531E00981595 /* ShippingLabelPackageAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageAttributes.swift; sourceTree = "<group>"; };
 		DEDC5F5D2D9E7CD5005E38BD /* WooShippingShipmentDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingShipmentDetailsView.swift; sourceTree = "<group>"; };
 		DEDC5F5F2D9E7CDD005E38BD /* WooShippingShipmentDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingShipmentDetailsViewModel.swift; sourceTree = "<group>"; };
@@ -10846,6 +10848,7 @@
 				B958A7CF28B527FB00823EEF /* Universal Links */,
 				D8F01DD125DEDC0100CE70BE /* Stripe Integration Tests */,
 				5791FB4024EC833200117FD6 /* ViewModels */,
+				DEDB5D382E7AC0670022E5A1 /* Bookings */,
 				57C2F6E324C27B0C00131012 /* Authentication */,
 				CCDC49F1240060F3003166BA /* UnitTests.xctestplan */,
 				D816DDBA22265D8000903E59 /* ViewRelated */,
@@ -13755,6 +13758,14 @@
 				DEDA8DBD2B19952B0076BF0F /* ThemeSettingViewModel.swift */,
 			);
 			path = Themes;
+			sourceTree = "<group>";
+		};
+		DEDB5D382E7AC0670022E5A1 /* Bookings */ = {
+			isa = PBXGroup;
+			children = (
+				DEDB5D372E7AC0670022E5A1 /* BookingsTabEligibilityCheckerTests.swift */,
+			);
+			path = Bookings;
 			sourceTree = "<group>";
 		};
 		DEDC5F5C2D9E7CB8005E38BD /* ShipmentDetails */ = {
@@ -17738,6 +17749,7 @@
 				EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */,
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,
 				269B46642A16D6ED00ADA872 /* UpdateAnalyticsSettingsUseCaseTests.swift in Sources */,
+				DEDB5D392E7AC0670022E5A1 /* BookingsTabEligibilityCheckerTests.swift in Sources */,
 				AEFF77A829786A2900667F7A /* PriceInputViewControllerTests.swift in Sources */,
 				02C2756F24F5F5EE00286C04 /* ProductShippingSettingsViewModel+ProductVariationTests.swift in Sources */,
 				EEBB9B402D8FE5B6008D6CE5 /* WooShippingSplitShipmentsViewModelTests.swift in Sources */,

@@ -25,6 +25,7 @@ final class MockFeatureFlagService: FeatureFlagService {
     var allowMerchantAIAPIKey: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
+    var isCIABBookingsEnabled: Bool
 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
@@ -47,7 +48,8 @@ final class MockFeatureFlagService: FeatureFlagService {
          backgroundProductImageUpload: Bool = false,
          notificationSettings: Bool = false,
          allowMerchantAIAPIKey: Bool = false,
-         isProductImageOptimizedHandlingEnabled: Bool = false) {
+         isProductImageOptimizedHandlingEnabled: Bool = false,
+         isCIABBookingsEnabled: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -70,6 +72,7 @@ final class MockFeatureFlagService: FeatureFlagService {
         self.notificationSettings = notificationSettings
         self.allowMerchantAIAPIKey = allowMerchantAIAPIKey
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
+        self.isCIABBookingsEnabled = isCIABBookingsEnabled
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -124,6 +127,8 @@ final class MockFeatureFlagService: FeatureFlagService {
             return allowMerchantAIAPIKey
         case .productImageOptimizedHandling:
             return isProductImageOptimizedHandlingEnabled
+        case .ciabBookings:
+            return isCIABBookingsEnabled
         default:
             return false
         }

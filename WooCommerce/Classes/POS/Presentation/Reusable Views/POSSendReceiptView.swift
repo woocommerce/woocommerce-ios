@@ -5,7 +5,7 @@ import class WordPressShared.EmailFormatValidator
 
 struct POSSendReceiptView: View {
     @State private var textFieldInput: String = ""
-    @State private var isLoading: Bool = false
+    @State private var buttonState: POSButtonState = .idle
     @State private var errorMessage: String?
     @FocusState private var isTextFieldFocused: Bool
 
@@ -29,7 +29,7 @@ struct POSSendReceiptView: View {
         ScrollView {
             VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
                 POSPageHeaderView(title: Localization.emailReceiptNavigationText,
-                                  backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
+                                  backButtonConfiguration: .init(state: buttonState != .idle ? .disabled: .enabled,
                                                                  action: {
                     withAnimation {
                         isShowingSendReceiptView = false
@@ -74,10 +74,10 @@ struct POSSendReceiptView: View {
                     .measureFrame {
                         buttonFrame = $0
                     }
-                    .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
+                    .buttonStyle(POSFilledButtonStyle(size: .normal, state: buttonState))
                     .dynamicTypeSize(...DynamicTypeSize.accessibility3)
                     .frame(maxWidth: .infinity)
-                    .disabled(isLoading)
+                    .disabled(buttonState != .idle)
                 }
                 .padding([.horizontal])
                 .padding(.bottom, keyboardFrame.height)
@@ -102,18 +102,21 @@ struct POSSendReceiptView: View {
                 errorMessage = Localization.emailValidationErrorText
                 return
             }
-            isLoading = true
+            buttonState = .loading
             do {
                 errorMessage = nil
                 try await onSendReceipt(textFieldInput)
+
                 withAnimation {
+                    buttonState = .success
+                } completion: {
                     isShowingSendReceiptView = false
                     isTextFieldFocused = false
                 }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText
+                buttonState = .idle
             }
-            isLoading = false
         }
     }
 }

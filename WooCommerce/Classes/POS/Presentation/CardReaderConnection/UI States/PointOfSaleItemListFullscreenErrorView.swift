@@ -12,7 +12,7 @@ struct PointOfSaleItemListFullscreenErrorView: View {
 
     var body: some View {
         PointOfSaleItemListFullscreenView {
-            PointOfSaleItemListErrorView(error: error, onAction: onAction)
+            POSListErrorView(error: error, onAction: onAction)
         }
     }
 }

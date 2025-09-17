@@ -20,11 +20,7 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 
     func isSiteCIAB(_ site: Site) -> Bool {
-        /// Temp logic
-        /// If site name contains either `garden` or `ciab` then it's considered a CIAB site
-        return isCIABSupportedForBuildEnvironment && CIABUnlockingSiteNameSubstrings.allCases.contains {
-            site.name.lowercased().contains($0.rawValue)
-        }
+        return site.isCIAB
     }
 
     func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
@@ -39,22 +35,15 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 }
 
-// MARK: - Temporary constants for CIAB identifying logic
+// MARK: - Site checks
 
-fileprivate extension CIABEligibilityChecker {
-    enum CIABUnlockingSiteNameSubstrings: String, CaseIterable {
-        case garden
-        case ciab
+private extension Site {
+    var isCIAB: Bool {
+        return isGarden && gardenName == GardenName.commerce.rawValue
     }
 }
 
-// MARK: - Temporary environment checks
-
-import enum WooFoundationCore.BuildConfiguration
-
-private extension CIABEligibilityChecker {
-    var isCIABSupportedForBuildEnvironment: Bool {
-        let buildConfig = BuildConfiguration.current
-        return buildConfig == .localDeveloper || buildConfig == .alpha
-    }
+private enum GardenName: String {
+    /// Garden name for CIAB sites
+    case commerce
 }

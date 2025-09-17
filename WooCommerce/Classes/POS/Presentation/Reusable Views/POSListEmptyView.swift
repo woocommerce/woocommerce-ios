@@ -1,6 +1,6 @@
 import SwiftUI
 
-protocol POSEmptyViewModelProtocol {
+protocol POSListEmptyViewModelProtocol {
     var title: String { get }
     var subtitle: String { get }
     var hint: String? { get }
@@ -11,7 +11,7 @@ protocol POSEmptyViewModelProtocol {
 struct POSListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let viewModel: any POSEmptyViewModelProtocol
+    private let viewModel: any POSListEmptyViewModelProtocol
 
     private let onAction: (() -> Void)?
 
@@ -19,7 +19,7 @@ struct POSListEmptyView: View {
 
     @Environment(\.keyboardObserver) private var keyboard
 
-    init(viewModel: any POSEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
+    init(viewModel: any POSListEmptyViewModelProtocol, onAction: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.onAction = onAction
     }
@@ -98,7 +98,7 @@ private extension POSListEmptyView {
     }
 }
 
-struct PointOfSaleItemListEmptyViewModel {
+struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
     let itemListType: ItemListType
     let baseItem: ItemListBaseItem
 
@@ -252,7 +252,7 @@ struct PointOfSaleItemListEmptyViewModel {
 
 #Preview {
     POSListEmptyView(
-        viewModel: PointOfSaleItemListEmptyViewModel(
+        viewModel: POSListEmptyViewModel(
             itemListType: .coupons(search: false),
             baseItem: .root
         )
@@ -261,13 +261,9 @@ struct PointOfSaleItemListEmptyViewModel {
 
 #Preview {
     POSListEmptyView(
-        viewModel: PointOfSaleItemListEmptyViewModel(
+        viewModel: POSListEmptyViewModel(
             itemListType: .products(search: true),
             baseItem: .root
         )
     ) {}
 }
-
-// MARK: - Protocol Conformance
-
-extension PointOfSaleItemListEmptyViewModel: POSEmptyViewModelProtocol {}

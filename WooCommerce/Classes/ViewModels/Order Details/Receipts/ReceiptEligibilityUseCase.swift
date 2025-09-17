@@ -34,17 +34,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
     }
 
-    /// Returns true if Point of Sale allows sending successful payment email receipts via the API.
-    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
-    ///
-    func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
-        Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
-                                                                 minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
-            onCompletion(isWooCommerceSupported)
-        }
-    }
-
     /// Returns true if In Person Payments allows sending successful payment email receipts via the API.
     /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
     ///

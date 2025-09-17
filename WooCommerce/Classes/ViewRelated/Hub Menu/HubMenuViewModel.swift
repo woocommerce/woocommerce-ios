@@ -86,6 +86,7 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
@@ -117,7 +118,7 @@ final class HubMenuViewModel: ObservableObject {
                     selectedSite: stores.sessionManager.defaultSitePublisher
                         .map { $0?.toJetpackSite() }
                         .eraseToAnyPublisher(),
-                    appPasswordSupportState: ApplicationPasswordsExperimentState()
+                    appPasswordSupportState: appPasswordSupportState
                         .$isAvailableAndEnabled
                         .eraseToAnyPublisher()
                 )

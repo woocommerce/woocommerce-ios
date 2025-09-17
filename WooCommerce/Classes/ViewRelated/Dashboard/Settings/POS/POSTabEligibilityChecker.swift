@@ -54,6 +54,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
+    private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -69,10 +70,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
         let selectedSite = stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher()
-        let appPasswordSupportState = ApplicationPasswordsExperimentState().$isAvailableAndEnabled.eraseToAnyPublisher()
+        let appPasswordSupportState = appPasswordSupportState.$isAvailableAndEnabled.eraseToAnyPublisher()
         self.systemStatusService = systemStatusService ?? POSSystemStatusService(
             credentials: credentials,
             selectedSite: selectedSite,

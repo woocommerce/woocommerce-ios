@@ -1,17 +1,24 @@
+import Combine
 import Foundation
 import Yosemite
+import struct Storage.GeneralAppSettingsStorage
 
 final class ApplicationPasswordsExperimentState {
     private let stores: StoresManager
     private let availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol
+    private let generalAppSettings: GeneralAppSettingsStorage
+
+    private var experimentalFlagSubscription: AnyCancellable?
 
     init(
         stores: StoresManager = ServiceLocator.stores,
-        availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker()
+        availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker(),
+        generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings
     ) {
         self.stores = stores
         self.availabilityChecker = availabilityChecker
-        updateAvailability()
+        self.generalAppSettings = generalAppSettings
+        observeExperimentalFlag()
     }
 
     @Published private(set) var isAvailableAndEnabled: Bool = true
@@ -35,6 +42,17 @@ final class ApplicationPasswordsExperimentState {
             let isEnabled = await isEnabled
             isAvailableAndEnabled = isAvailable && isEnabled
         }
+    }
+
+    private func observeExperimentalFlag() {
+        experimentalFlagSubscription = generalAppSettings
+            .betaFeatureEnabledPublisher(
+                .applicationPasswords
+            )
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.updateAvailability()
+            }
     }
 }
 

@@ -37,6 +37,7 @@ class AuthenticatedState: StoresManagerState {
     ///
     private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
 
+    private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
     private var appPasswordSupportState: PassthroughSubject<Bool, Never>
 
     /// Designated Initializer
@@ -254,7 +255,9 @@ private extension AuthenticatedState {
         DispatchQueue.main.async { [self] in
             /// The state needs to be created on the main thread to avoid creating a new ServiceLocator.stores in a different thread.
             /// Without this, race condition can happen.
-            ApplicationPasswordsExperimentState()
+            let appPasswordSupportStateHandler = ApplicationPasswordsExperimentState()
+            self.appPasswordSupportStateHandler = appPasswordSupportStateHandler // strong ref to keep the stream alive
+            appPasswordSupportStateHandler
                 .$isAvailableAndEnabled
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] enabled in

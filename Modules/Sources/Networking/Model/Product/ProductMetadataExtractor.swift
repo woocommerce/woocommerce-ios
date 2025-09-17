@@ -31,10 +31,20 @@ internal struct ProductMetadataExtractor: Decodable {
     private let metadata: [MetaData]
 
     /// Decode main metadata supporting both array and object formats.
+    /// This expects to decode the raw metadata array/object, not a JSON object with a meta_data field.
     ///
     init(from decoder: Decoder) throws {
-        let flexibleMetaData = try FlexibleMetaDataArray(from: decoder)
-        self.metadata = flexibleMetaData.metadata
+        let container = try decoder.singleValueContainer()
+
+        // Try to decode as array first (standard format)
+        if let metaDataArray = try? container.decode([MetaData].self) {
+            self.metadata = metaDataArray
+        } else if let metaDataDict = try? container.decode([String: MetaData].self) {
+            // Try to decode as object keyed by index strings
+            self.metadata = Array(metaDataDict.values)
+        } else {
+            self.metadata = []
+        }
     }
 
     /// Searches product metadata for subscription data and converts it to a `ProductSubscription` if possible.

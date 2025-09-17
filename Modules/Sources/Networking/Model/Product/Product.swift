@@ -537,8 +537,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
         // Support both array format and object keyed by index strings
-        let flexibleMetaData = try container.decodeIfPresent(FlexibleMetaDataArray.self, forKey: .metadata)
-        let customFields = flexibleMetaData?.metadata.filter { !$0.key.hasPrefix("_") } ?? []
+        let allMetaData = FlexibleMetaDataDecoder.decode(from: container, forKey: .metadata)
+        let customFields = allMetaData.filter { !$0.key.hasPrefix("_") }
 
         // In some isolated cases, it appears to be some malformed meta-data that causes this line to throw hence the whole product decoding to throw.
         // Since add-ons are optional, `try?` will be used to prevent the whole decoding to stop.

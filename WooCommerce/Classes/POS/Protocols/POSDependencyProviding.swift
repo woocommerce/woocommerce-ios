@@ -13,6 +13,12 @@ protocol POSAnalyticsProviding {
     func track(_ stat: WooAnalyticsStat, parameters: [String: WooAnalyticsEventPropertyType], error: Error)
 }
 
+extension POSAnalyticsProviding {
+    func track(_ stat: WooAnalyticsStat) {
+        track(stat, parameters: [:])
+    }
+}
+
 /// Protocol that provides currency settings access for POS
 protocol POSCurrencySettingsProviding {
     var currencySettings: CurrencySettings { get }

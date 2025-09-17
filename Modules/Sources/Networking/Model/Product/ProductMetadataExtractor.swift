@@ -1,5 +1,6 @@
 import Foundation
 import WordPressShared
+import NetworkingCore
 
 /// Helper to extract specific data from inside `Product` metadata.
 /// Sample Json:
@@ -32,12 +33,8 @@ internal struct ProductMetadataExtractor: Decodable {
     /// Decode main metadata supporting both array and object formats.
     ///
     init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: MetaDataKeys.self)
-        self.metadata = MetaDataMapper.decodeMetaData(from: container, forKey: .metadata, filterInternalKeys: false)
-    }
-
-    private enum MetaDataKeys: String, CodingKey {
-        case metadata = "meta_data"
+        let flexibleMetaData = try FlexibleMetaDataArray(from: decoder)
+        self.metadata = flexibleMetaData.metadata
     }
 
     /// Searches product metadata for subscription data and converts it to a `ProductSubscription` if possible.

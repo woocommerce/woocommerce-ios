@@ -641,4 +641,146 @@ private extension OrderMapperTests {
     func mapLoadOrderWithAttributionInfo() -> Order? {
         return mapOrder(from: "order-with-attribution-info")
     }
+
+    /// Tests that Order can decode metadata from array format
+    ///
+    func test_Order_decodes_metadata_from_array_format() throws {
+        // Given - JSON with metadata as array
+        let jsonString = """
+        {
+            "id": 12345,
+            "parent_id": 0,
+            "number": "12345",
+            "order_key": "wc_order_abc123",
+            "created_via": "rest-api",
+            "version": "5.0.0",
+            "status": "processing",
+            "currency": "USD",
+            "currency_symbol": "$",
+            "date_created": "2023-01-01T00:00:00",
+            "date_modified": "2023-01-01T00:00:00",
+            "discount_total": "0.00",
+            "discount_tax": "0.00",
+            "shipping_total": "0.00",
+            "shipping_tax": "0.00",
+            "cart_tax": "0.00",
+            "total": "10.00",
+            "total_tax": "0.00",
+            "customer_id": 0,
+            "billing": {},
+            "shipping": {},
+            "payment_method": "",
+            "payment_method_title": "",
+            "line_items": [],
+            "tax_lines": [],
+            "shipping_lines": [],
+            "fee_lines": [],
+            "coupon_lines": [],
+            "refunds": [],
+            "meta_data": [
+                {
+                    "id": 1001,
+                    "key": "custom_field_1",
+                    "value": "value1"
+                },
+                {
+                    "id": 1002,
+                    "key": "_internal_field",
+                    "value": "internal_value"
+                },
+                {
+                    "id": 1003,
+                    "key": "custom_field_2",
+                    "value": "value2"
+                }
+            ]
+        }
+        """
+
+        let data = jsonString.data(using: .utf8)!
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+
+        // When
+        let order = try decoder.decode(Order.self, from: data)
+
+        // Then
+        XCTAssertEqual(order.customFields.count, 2) // Internal field should be filtered out
+        XCTAssertEqual(order.customFields[0].metadataID, 1001)
+        XCTAssertEqual(order.customFields[0].key, "custom_field_1")
+        XCTAssertEqual(order.customFields[0].value.stringValue, "value1")
+        XCTAssertEqual(order.customFields[1].metadataID, 1003)
+        XCTAssertEqual(order.customFields[1].key, "custom_field_2")
+        XCTAssertEqual(order.customFields[1].value.stringValue, "value2")
+    }
+
+    /// Tests that Order can decode metadata from dictionary format
+    ///
+    func test_Order_decodes_metadata_from_dictionary_format() throws {
+        // Given - JSON with metadata as object keyed by index strings
+        let jsonString = """
+        {
+            "id": 12345,
+            "parent_id": 0,
+            "number": "12345",
+            "order_key": "wc_order_abc123",
+            "created_via": "rest-api",
+            "version": "5.0.0",
+            "status": "processing",
+            "currency": "USD",
+            "currency_symbol": "$",
+            "date_created": "2023-01-01T00:00:00",
+            "date_modified": "2023-01-01T00:00:00",
+            "discount_total": "0.00",
+            "discount_tax": "0.00",
+            "shipping_total": "0.00",
+            "shipping_tax": "0.00",
+            "cart_tax": "0.00",
+            "total": "10.00",
+            "total_tax": "0.00",
+            "customer_id": 0,
+            "billing": {},
+            "shipping": {},
+            "payment_method": "",
+            "payment_method_title": "",
+            "line_items": [],
+            "tax_lines": [],
+            "shipping_lines": [],
+            "fee_lines": [],
+            "coupon_lines": [],
+            "refunds": [],
+            "meta_data": {
+                "0": {
+                    "id": 2001,
+                    "key": "dict_field_1",
+                    "value": "dict_value1"
+                },
+                "1": {
+                    "id": 2002,
+                    "key": "_internal_dict_field",
+                    "value": "internal_dict_value"
+                },
+                "2": {
+                    "id": 2003,
+                    "key": "dict_field_2",
+                    "value": "dict_value2"
+                }
+            }
+        }
+        """
+
+        let data = jsonString.data(using: .utf8)!
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+
+        // When
+        let order = try decoder.decode(Order.self, from: data)
+
+        // Then
+        XCTAssertEqual(order.customFields.count, 2) // Internal field should be filtered out
+        let fieldNames = Set(order.customFields.map { $0.key })
+        XCTAssertTrue(fieldNames.contains("dict_field_1"))
+        XCTAssertTrue(fieldNames.contains("dict_field_2"))
+        XCTAssertFalse(fieldNames.contains("_internal_dict_field"))
+    }
 }

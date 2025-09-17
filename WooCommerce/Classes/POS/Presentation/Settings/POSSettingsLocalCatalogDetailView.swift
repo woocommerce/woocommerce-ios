@@ -4,10 +4,6 @@ struct POSSettingsLocalCatalogDetailView: View {
     // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
     @State private var allowFullSyncOnCellular: Bool = true
 
-    private var backgroundColor: Color {
-        Color.posOnSecondaryContainer
-    }
-
     var body: some View {
         NavigationStack {
             VStack(spacing: POSSpacing.none) {
@@ -22,7 +18,7 @@ struct POSSettingsLocalCatalogDetailView: View {
                         manualCatalogUpdate
                     }
                 }
-                .background(backgroundColor)
+                .background(Style.backgroundColor)
             }
         }
     }
@@ -82,7 +78,7 @@ private extension POSSettingsLocalCatalogDetailView {
     @ViewBuilder
     func sectionHeaderView(title: String) -> some View {
         ZStack {
-            backgroundColor
+            Style.backgroundColor
             Text(title)
                 .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
@@ -120,6 +116,10 @@ private extension POSSettingsLocalCatalogDetailView {
 }
 
 private extension POSSettingsLocalCatalogDetailView {
+    enum Style {
+        static let backgroundColor = Color.posOnSecondaryContainer
+    }
+
     enum Localization {
         static let localCatalogTitle = NSLocalizedString(
             "posSettingsLocalCatalogDetailView.title",

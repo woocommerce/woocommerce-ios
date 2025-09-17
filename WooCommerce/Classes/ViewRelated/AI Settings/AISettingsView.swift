@@ -27,6 +27,10 @@ import KeychainAccess
         keychain.merchantAIProviderKey = nil
     }
 
+    func loadSettings() {
+        apiKey = keychain.merchantAIProviderKey ?? ""
+    }
+
     private func saveSettings() {
         keychain.merchantAIProviderKey = apiKey
     }
@@ -131,6 +135,9 @@ struct AISettingsView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .center)
+        }
+        .onAppear {
+            viewModel.loadSettings()
         }
         .padding()
         .navigationTitle(Localization.navigationTitle)

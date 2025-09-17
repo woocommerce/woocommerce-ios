@@ -309,7 +309,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let menuOrder = try container.decode(Int64.self, forKey: .menuOrder)
 
         // Subscription settings for subscription variations
-        let allMetaData = Self.decodeFlexibleMetaData(from: container, forKey: .metadata)
+        let allMetaData = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
         let metaDataExtractor = ProductMetadataExtractor(metadata: allMetaData)
         let subscription = try? metaDataExtractor.extractProductSubscription()
 

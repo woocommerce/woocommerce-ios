@@ -202,7 +202,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
         let allOrderMetaData: [MetaData]? = {
-            let metadata = Self.decodeFlexibleMetaData(from: container, forKey: .metadata)
+            let metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
             return metadata.isEmpty ? nil : metadata
         }()
         var chargeID: String? = nil

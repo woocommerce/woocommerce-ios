@@ -94,7 +94,7 @@ final class MetaDataMapperTests: XCTestCase {
                 self.name = try container.decode(String.self, forKey: .name)
 
                 // Flexible decoding logic using helper
-                self.metadata = FlexibleMetaDataDecoder.decode(from: container, forKey: .metadata)
+                self.metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
             }
         }
 
@@ -161,7 +161,7 @@ final class MetaDataMapperTests: XCTestCase {
                 self.name = try container.decode(String.self, forKey: .name)
 
                 // Flexible decoding logic using helper
-                self.metadata = FlexibleMetaDataDecoder.decode(from: container, forKey: .metadata)
+                self.metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
             }
         }
 

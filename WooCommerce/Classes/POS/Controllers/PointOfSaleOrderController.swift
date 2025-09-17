@@ -5,6 +5,8 @@ import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
+import protocol Yosemite.PaymentCaptureCelebrationProtocol
+import class Yosemite.PaymentCaptureCelebration
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem

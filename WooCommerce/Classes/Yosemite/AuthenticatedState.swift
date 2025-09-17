@@ -37,6 +37,7 @@ class AuthenticatedState: StoresManagerState {
     ///
     private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
 
+    // periphery:ignore - keep strong reference to keep the state publisher alive
     private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
     private var appPasswordSupportState: PassthroughSubject<Bool, Never>
 

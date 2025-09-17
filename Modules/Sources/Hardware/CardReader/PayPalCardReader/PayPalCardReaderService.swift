@@ -49,34 +49,30 @@ public final class PayPalCardReaderService: NSObject {
     private func loadPluginCredentials() -> PayPalPluginAuthProvider? {
         // TODO: Implement real API call to fetch plugin credentials
         // This would call: GET /wp-json/wc/v3/paypal/credentials
-        // For POC, we'll use placeholder values that can be updated for testing
-
+        
         // Real implementation would look like:
         // 1. Get WooCommerce site URL from app settings
         // 2. Make authenticated request to /wp-json/wc/v3/paypal/credentials
         // 3. Parse response and create PayPalPluginAuthProvider
-
-        // For POC testing, you can replace these with real values:
-        let pluginSettings: [String: Any] = [
-            "client_id": "YOUR_REAL_PAYPAL_CLIENT_ID",        // Replace with real client ID
-            "client_secret": "YOUR_REAL_PAYPAL_CLIENT_SECRET", // Replace with real client secret
-            "merchant_id": "YOUR_REAL_MERCHANT_ID",           // Replace with real merchant ID
-            "sandbox_merchant": true                          // Set to false for production
-        ]
-
-        // Check if we have valid plugin credentials (not placeholder values)
-        guard let clientId = pluginSettings["client_id"] as? String,
-              let clientSecret = pluginSettings["client_secret"] as? String,
-              clientId.hasPrefix("A") || clientId.hasPrefix("S"), // PayPal client IDs start with A or S
-              clientSecret.count > 10, // Client secrets are longer
-              !clientId.contains("YOUR_REAL") else { // Not placeholder values
-            print("💳⚠️ [PayPalCardReaderService] No valid plugin credentials found - update with real values")
-            print("💳ℹ️ [PayPalCardReaderService] To use plugin auth, set real PayPal credentials in loadPluginCredentials()")
-            return nil
+        
+        // Try to load from app storage (UserDefaults/Keychain) 
+        // The WooCommerce target should populate these when the site is configured
+        if let credentials = loadCredentialsFromAppStorage() {
+            print("💳✅ [PayPalCardReaderService] Loaded credentials from app storage")
+            return credentials
         }
 
-        print("💳✅ [PayPalCardReaderService] Found valid plugin credentials")
-        return PayPalPluginAuthProvider.fromPluginSettings(pluginSettings)
+        // No hardcoded credentials - all auth should come from the server
+        print("💳⚠️ [PayPalCardReaderService] No plugin credentials available")
+        print("💳ℹ️ [PayPalCardReaderService] Server should provide tokens via site-managed OAuth")
+        return nil
+    }
+    
+    /// Create auth provider that fetches tokens from WooCommerce site
+    private func loadCredentialsFromAppStorage() -> PayPalPluginAuthProvider? {
+        // Site-managed OAuth: no credentials stored in app, all managed by server
+        print("💳🔐 [PayPalCardReaderService] Creating site-managed auth provider")
+        return PayPalPluginAuthProvider()
     }
 
     /// Start SDK with custom auth provider (plugin credentials)
@@ -100,11 +96,13 @@ public final class PayPalCardReaderService: NSObject {
         }
     }
 
-    /// Fallback: Basic OAuth flow if plugin credentials aren't available
+    /// Fallback: Basic OAuth flow - use this to capture a real JWT token for analysis
     private func setupBasicOAuthSDK() {
+        print("💳⚠️ [PayPalCardReaderService] Plugin authentication not available, falling back to basic OAuth")
+        print("💳ℹ️ [PayPalCardReaderService] This will show PayPal login screen during payment")
+        
         do {
-            // Create authentication provider with OAuth 2.0 client ID and redirect URI
-            // For POC: Use sandbox credentials - replace with real values from Zettle Developer Portal
+            // Use real Zettle client ID for testing - get this from Zettle Developer Portal
             let clientID = "YOUR_PAYPAL_CLIENT_ID" // Get from https://developer.zettle.com/
             let callbackURL = URL(string: "woocommerce://paypal-auth")! // Your app's custom URL scheme
 
@@ -115,9 +113,9 @@ public final class PayPalCardReaderService: NSObject {
 
             // Start the SDK with the authentication provider
             var isDebug = false
-#if DEBUG
-            isDebug = true
-#endif
+//#if DEBUG
+//            isDebug = true
+//#endif
 
             iZettleSDK.shared().start(with: authenticationProvider, enableDeveloperMode: isDebug)
 
@@ -129,7 +127,7 @@ public final class PayPalCardReaderService: NSObject {
         } catch {
             DDLogError("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK: \(error)")
             print("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK: \(error)")
-            print("💳⚠️ [PayPalCardReaderService] Make sure to set real client ID and callback URL")
+            print("💳⚠️ [PayPalCardReaderService] Configure WooCommerce site URL and PayPal plugin for seamless auth")
         }
     }
 
@@ -438,7 +436,7 @@ private extension PayPalCardReaderService {
     func updateDiscoveryStatus(to newStatus: CardReaderServiceDiscoveryStatus) {
         discoveryStatusSubject.send(newStatus)
     }
-    
+
     func resetDiscoveredReadersSubject(error: Error? = nil) {
         if let error = error {
             let underlyingError = UnderlyingError(with: error)

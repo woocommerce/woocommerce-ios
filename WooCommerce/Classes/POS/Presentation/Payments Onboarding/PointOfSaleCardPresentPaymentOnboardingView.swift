@@ -36,7 +36,7 @@ private extension PointOfSaleCardPresentPaymentOnboardingView {
 
 import enum Yosemite.CardPresentPaymentOnboardingState
 
-class PreviewOnboardingViewFactoryConfiguration: CardPresentPaymentsOnboardingViewConfiguration {
+final class PreviewOnboardingViewFactoryConfiguration: CardPresentPaymentsOnboardingViewConfiguration {
     var showSupport: (() -> Void)?
     var showURL: ((URL) -> Void)?
     var state: CardPresentPaymentOnboardingState = .loading

@@ -20,8 +20,6 @@ struct MetaDataMapper: Mapper {
         // Filter out metadata if the key is prefixed with an underscore (internal meta keys)
         return metadata.filter { !$0.key.hasPrefix("_") }
     }
-
-
 }
 
 /// DataEnvelope Entity:

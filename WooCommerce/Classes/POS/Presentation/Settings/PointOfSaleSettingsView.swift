@@ -226,7 +226,7 @@ extension PointOfSaleSettingsView {
 
         static let sidebarNavigationLocalCatalogTitle = NSLocalizedString(
             "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle",
-            value: "Local catalog",
+            value: "Catalog",
             comment: "Title of the Local catalog section within Point of Sale settings."
         )
 

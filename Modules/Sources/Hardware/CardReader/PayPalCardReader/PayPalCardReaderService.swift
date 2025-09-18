@@ -106,10 +106,15 @@ public final class PayPalCardReaderService: NSObject {
         }
     }
 
-    /// Fallback: Basic OAuth flow - use this to capture a real JWT token for analysis
+    /// Basic OAuth flow - direct PayPal login in app
     private func setupBasicOAuthSDK() {
-        print("💳⚠️ [PayPalCardReaderService] Plugin authentication not available, falling back to basic OAuth")
-        print("💳ℹ️ [PayPalCardReaderService] This will show PayPal login screen during payment")
+        print("💳🔧 [PayPalCardReaderService] Using basic OAuth - direct PayPal login")
+        print("💳ℹ️ [PayPalCardReaderService] This will show PayPal login screen when needed")
+        
+        guard !isSDKStarted else {
+            print("💳✅ [PayPalCardReaderService] SDK already started")
+            return
+        }
         
         do {
             // Use real Zettle client ID for testing - get this from Zettle Developer Portal
@@ -131,13 +136,15 @@ public final class PayPalCardReaderService: NSObject {
 
             DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
             print("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
-
-            print("💳✅ [PayPalCardReaderService] iZettle SDK ready - login will be handled automatically during payment")
+            print("💳✅ [PayPalCardReaderService] Basic auth ready - login will be handled during payment/connection")
+            
+            isSDKStarted = true
 
         } catch {
             DDLogError("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK: \(error)")
             print("💳❌ [PayPalCardReaderService] Failed to initialize iZettle SDK: \(error)")
-            print("💳⚠️ [PayPalCardReaderService] Configure WooCommerce site URL and PayPal plugin for seamless auth")
+            print("💳⚠️ [PayPalCardReaderService] To use basic auth, add real Zettle client ID to setupBasicOAuthSDK()")
+            isSDKStarted = false
         }
     }
 
@@ -216,8 +223,17 @@ extension PayPalCardReaderService: CardReaderService {
         print("💳🚀 [PayPalCardReaderService] Starting with config provider")
         DDLogInfo("💳🚀 [PayPalCardReaderService] Starting with config provider")
 
-        // Start the PayPal SDK with config provider
-        try startPayPalSDK(with: configProvider)
+        // Check if user wants to use remote auth (site-managed) or basic auth
+        let useRemoteAuth = UserDefaults.standard.bool(forKey: "UsePayPalRemoteAuth")
+        print("💳🔧 [PayPalCardReaderService] Auth method: \(useRemoteAuth ? "Remote (site-managed)" : "Basic (direct login)")")
+        
+        if useRemoteAuth {
+            // Use site-managed authentication via plugin
+            try startPayPalSDK(with: configProvider)
+        } else {
+            // Use basic OAuth with direct PayPal login
+            setupBasicOAuthSDK()
+        }
         
         // Start reader discovery
         switchStatusToDiscovering()
@@ -319,7 +335,7 @@ extension PayPalCardReaderService: CardReaderService {
                                 parameters: PaymentIntentParameters) {
         // Use the real iZettle SDK payment flow
         sdk.charge(amount: amount,
-                   tippingStyle: .none,
+                   tippingConfiguration: .disabled(),
                    reference: reference,
                    presentFrom: currentViewController) { paymentInfo, error in
             DispatchQueue.main.async {
@@ -398,11 +414,65 @@ extension PayPalCardReaderService: CardReaderService {
 
     public func connect(_ reader: CardReader, options: CardReaderConnectionOptions?) -> AnyPublisher<CardReader, Error> {
         return Future<CardReader, Error> { [weak self] promise in
-            // Simulate connection
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self?.connectedReadersSubject.send([reader])
-                promise(.success(reader))
+            guard let self = self else {
+                promise(.failure(CardReaderServiceError.discovery(underlyingError: .unexpectedSDKError)))
+                return
             }
+            
+            print("💳🔌 [PayPalCardReaderService] Attempting to connect to PayPal reader: \(reader.name)")
+            
+            // For PayPal/iZettle, "connection" is really authentication
+            // The SDK doesn't have separate reader discovery/connection - it handles this automatically during payments
+            // We'll trigger the authentication flow by attempting to verify account status
+            
+            let sdk = iZettleSDK.shared()
+            print(type(of: sdk))
+            print(sdk)
+
+            // Get current view controller for presenting login UI
+            guard let currentViewController = self.getCurrentViewController() else {
+                print("💳❌ [PayPalCardReaderService] No view controller available for login UI")
+                promise(.failure(CardReaderServiceError.discovery(underlyingError: .unexpectedSDKError)))
+                return
+            }
+            
+            // Use the proper login method to trigger authentication
+            print("💳🔐 [PayPalCardReaderService] Performing PayPal login")
+            Bundle.allFrameworks
+                .filter { $0.bundlePath.contains("ettle") }
+                .forEach { bundle in
+                    print("Zettle candidate bundle:", bundle.bundleIdentifier ?? "nil",
+                          "at", bundle.bundlePath)
+                }
+
+            if let bundle = Bundle(identifier: "com.zettle.SDK") {
+                print("Zettle SDK version:", bundle.infoDictionary?["CFBundleShortVersionString"] ?? "unknown")
+                print("Zettle SDK build:", bundle.infoDictionary?["CFBundleVersion"] ?? "unknown")
+            } else {
+                print("No Zettle bundle")
+            }
+
+            self.connectedReadersSubject.send([reader])
+            promise(.success(reader))
+
+
+            /// The four `performLogin` functions crash 100% of the time here. They are optional, and only added in the latest release.
+            /// I've filed a bug with Zettle: `https://github.com/iZettle/sdk-ios/issues/490`
+            /// If this worked, it would enable us to connect the reader properly ahead of a sale.
+            /// As it is, the two lines above fake it, and connection happens during the first payment.
+
+//            DispatchQueue.main.async {
+//                sdk.performLogin { error in
+//                    if let error = error {
+//                        print("💳❌ [PayPalCardReaderService] Login failed: \(error)")
+//                        promise(.failure(CardReaderServiceError.discovery(underlyingError: UnderlyingError(with: error))))
+//                    } else {
+//                        print("💳✅ [PayPalCardReaderService] Login successful, reader 'connected'")
+//                        self.connectedReadersSubject.send([reader])
+//                        promise(.success(reader))
+//                    }
+//                }
+//            }
         }.eraseToAnyPublisher()
     }
 

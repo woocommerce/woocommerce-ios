@@ -11,6 +11,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
     @State private var usePayPalCardReader: Bool = UserDefaults.standard.bool(forKey: "UsePayPalCardReader")
+    @State private var useRemoteAuth: Bool = UserDefaults.standard.bool(forKey: "UsePayPalRemoteAuth")
 
     private var cardReaderName: String {
         if let cardReaderName = settingsController.connectedCardReader?.name {
@@ -166,6 +167,25 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                                 .font(.posBodyMediumRegular())
                                 .foregroundStyle(.secondary)
                         }
+                    }
+                    .padding()
+                    
+                    // PayPal Auth Method Toggle
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Site-Managed Auth")
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.primary)
+                            Text(useRemoteAuth ? "Uses server OAuth (secure)" : "Direct PayPal login (simple)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Toggle("", isOn: $useRemoteAuth)
+                            .onChange(of: useRemoteAuth) { _, newValue in
+                                UserDefaults.standard.set(newValue, forKey: "UsePayPalRemoteAuth")
+                                print("🔄 [Settings] PayPal auth method changed to: \(newValue ? "Remote" : "Basic")")
+                            }
                     }
                     .padding()
                 }

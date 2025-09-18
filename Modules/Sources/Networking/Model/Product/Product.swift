@@ -1,5 +1,4 @@
 import Foundation
-import NetworkingCore
 import CocoaLumberjackSwift
 import Codegen
 

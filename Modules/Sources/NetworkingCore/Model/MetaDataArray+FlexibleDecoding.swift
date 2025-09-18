@@ -18,6 +18,7 @@ extension Array where Element == MetaData {
         }
 
         // Fallback to empty array
+        DDLogWarn("⚠️ Could not decode metadata as either an array or object keyed by index strings. Falling back to empty array.")
         return []
     }
 }

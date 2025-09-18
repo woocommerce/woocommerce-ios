@@ -568,14 +568,8 @@ private extension ProductStore {
                                  onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
-        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            if let status, (products.filter { $0.statusKey == status.rawValue }.isEmpty) == false {
-                return onCompletion(.success(true))
-            } else if let productType, products.contains(where: { $0.productTypeKey == productType.rawValue}) {
-                return onCompletion(.success(true))
-            } else if status == nil && productType == nil {
-                return onCompletion(.success(true))
-            }
+        if storage.hasProducts(siteID: siteID, status: status?.rawValue, type: productType?.rawValue) {
+            return onCompletion(.success(true))
         }
 
         // If there are no locally stored products, then check remote.

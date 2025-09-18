@@ -271,6 +271,20 @@ public extension StorageType {
         return allObjects(ofType: Product.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    /// Has stored Products for the provided siteID and optional requirements.
+    ///
+    func hasProducts(siteID: Int64, status: String?, type: String?) -> Bool {
+        var predicates: [NSPredicate] = [\Product.siteID == siteID]
+        if let status {
+            predicates.append(\Product.statusKey == status)
+        }
+        if let type {
+            predicates.append(\Product.productTypeKey == type)
+        }
+        let combinedPredicate = NSCompoundPredicate(type: .and, subpredicates: predicates)
+        return firstObject(ofType: Product.self, matching: combinedPredicate) != nil
+    }
+
     /// Retrieves all of the stored Products matching the provided array products ids from the provided SiteID
     ///
     func loadProducts(siteID: Int64, productsIDs: [Int64]) -> [Product] {

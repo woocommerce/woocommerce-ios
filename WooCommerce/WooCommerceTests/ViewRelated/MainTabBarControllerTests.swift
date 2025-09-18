@@ -51,14 +51,18 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // Action
-        stores.updateDefaultStore(storeID: 134)
+        let siteIDBefore: Int64 = 134
+        stores.updateDefaultStore(storeID: siteIDBefore)
+        stores.updateDefaultStore(.fake().copy(siteID: siteIDBefore))
         waitFor { promise in
             tabBarController.navigateTo(.products) {
                 promise(())
             }
         }
         let selectedTabIndexBeforeSiteChange = tabBarController.selectedIndex
-        stores.updateDefaultStore(storeID: 630)
+        let siteIDAfter: Int64 = 630
+        stores.updateDefaultStore(storeID: siteIDAfter)
+        stores.updateDefaultStore(.fake().copy(siteID: siteIDAfter))
         let selectedTabIndexAfterSiteChange = tabBarController.selectedIndex
 
         // Assert
@@ -90,7 +94,9 @@ final class MainTabBarControllerTests: XCTestCase {
 
         // Trigger `viewDidLoad`
         XCTAssertNotNil(tabBarController.view)
-        storesManager.updateDefaultStore(storeID: 782)
+        let siteID: Int64 = 782
+        storesManager.updateDefaultStore(storeID: siteID)
+        storesManager.updateDefaultStore(.fake().copy(siteID: siteID))
 
         // Simulate successful state resetting after logging out from push notification store switching
         storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -349,7 +355,9 @@ final class MainTabBarControllerTests: XCTestCase {
 
     func test_navigateToTabWithNavigationController_returns_UIViewController_of_the_newly_selected_tab() throws {
         // Given
-        stores.updateDefaultStore(storeID: 134)
+        let siteID: Int64 = 134
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
 
@@ -372,6 +380,7 @@ final class MainTabBarControllerTests: XCTestCase {
         // Given
         let siteID: Int64 = 256
         stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         let mockFeatureFlagService = MockFeatureFlagService()
         ServiceLocator.setFeatureFlagService(mockFeatureFlagService)
@@ -410,6 +419,7 @@ final class MainTabBarControllerTests: XCTestCase {
 
         let siteID: Int64 = 256
         stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             guard case let .synchronizeNotification(_, completion) = action else {
@@ -476,7 +486,9 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // When POS tab initial visibility is set to true
-        stores.updateDefaultStore(storeID: 1126)
+        let siteID: Int64 = 1126
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
 
         // Then POS tab is visible before eligibility check is returned
         waitUntil {
@@ -537,7 +549,9 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // When POS tab initial visibility is set to true
-        stores.updateDefaultStore(storeID: 1216)
+        let siteID: Int64 = 1216
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
         mockPOSEligibilityChecker.setVisibilityResult(true)
 
         waitUntil {
@@ -545,7 +559,7 @@ final class MainTabBarControllerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: 1216), true)
+        XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: siteID), true)
     }
 
     func test_event_is_tracked_after_eligibility_check() throws {
@@ -568,7 +582,9 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertNotNil(tabBarController.view)
 
         // When
-        storesManager.updateDefaultStore(storeID: 322)
+        let siteID: Int64 = 322
+        storesManager.updateDefaultStore(storeID: siteID)
+        storesManager.updateDefaultStore(.fake().copy(siteID: siteID))
 
         // Then
         waitUntil {

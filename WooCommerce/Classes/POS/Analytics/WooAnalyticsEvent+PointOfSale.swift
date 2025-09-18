@@ -125,13 +125,24 @@ extension WooAnalyticsEvent {
                 Key.cardReaderModel: readerModel(for: cardReaderModel),
                 Key.countryCode: countryCode.rawValue,
                 Key.gatewayID: safeGatewayID(for: forGatewayID),
-                Key.paymentMethodType: paymentMethod.analyticsValue,
+                Key.paymentMethodType: analyticsValue(for: paymentMethod),
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
                 Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
                 Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
                 Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
                 Key.checkoutTapCount: "\(checkoutTapCount)"
             ])
+        }
+
+        static func analyticsValue(for paymentMethod: PaymentMethod) -> String {
+            switch paymentMethod {
+            case .card, .cardPresent:
+                return "card"
+            case .interacPresent:
+                return "card_interac"
+            case .unknown:
+                return "unknown"
+            }
         }
 
         static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {

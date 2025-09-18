@@ -13,8 +13,8 @@ public final class AsyncPaginationTracker {
     }
 
     /// Default pagination settings.
-    enum Defaults {
-        static let pageFirstIndex = Store.Default.firstPageNumber
+    public enum Defaults {
+        public static let pageFirstIndex = Store.Default.firstPageNumber
     }
 
     /// The index of the first page in the API. So far, both Woo and WP.com API have the first page index at 1.

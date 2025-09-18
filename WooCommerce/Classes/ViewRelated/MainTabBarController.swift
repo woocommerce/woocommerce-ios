@@ -123,7 +123,7 @@ final class MainTabBarController: UITabBarController {
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager
     private let analytics: Analytics
-    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
+    private let posEligibilityCheckerFactory: ((_ site: Site) -> POSEntryPointEligibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
@@ -142,18 +142,18 @@ final class MainTabBarController: UITabBarController {
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
-          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
+          posEligibilityCheckerFactory: ((Site) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.stores = stores
-        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
+        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = posEligibilityService
@@ -167,11 +167,11 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
-        self.posEligibilityCheckerFactory = { siteID in
+        self.posEligibilityCheckerFactory = { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = POSEligibilityService()
@@ -725,18 +725,19 @@ private extension MainTabBarController {
     }
 
     func observeSiteIDForViewControllers() {
-        cancellableSiteID = stores.siteID.sink { [weak self] siteID in
+        cancellableSiteID = stores.site.sink { [weak self] site in
             guard let self = self else {
                 return
             }
-            self.updateViewControllers(siteID: siteID)
+            self.updateViewControllers(site: site)
         }
     }
 
-    func updateViewControllers(siteID: Int64?) {
-        guard let siteID = siteID else {
+    func updateViewControllers(site: Site?) {
+        guard let site else {
             return
         }
+        let siteID = site.siteID
 
         // Update view model with `siteID` to query correct Orders Status
         viewModel.configureOrdersStatusesListener(for: siteID)
@@ -756,7 +757,7 @@ private extension MainTabBarController {
         }
 
         // Configures POS tab coordinator once per logged in site session.
-        let posEligibilityChecker = posEligibilityCheckerFactory(siteID)
+        let posEligibilityChecker = posEligibilityCheckerFactory(site)
         self.posEligibilityChecker = posEligibilityChecker
         posTabCoordinator = POSTabCoordinator(
             siteID: siteID,

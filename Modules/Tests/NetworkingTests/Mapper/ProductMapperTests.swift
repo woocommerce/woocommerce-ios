@@ -598,85 +598,10 @@ final class ProductMapperTests: XCTestCase {
     ///
     func test_metadata_flexible_decoding_array_format() throws {
         // Given - JSON with metadata as array (current format)
-        let jsonString = """
-        {
-            "id": 282,
-            "name": "Test Product",
-            "slug": "test-product",
-            "permalink": "https://example.com/product/test-product/",
-            "date_created_gmt": "2019-02-19T17:33:31",
-            "date_modified_gmt": "2019-02-19T17:48:01",
-            "type": "simple",
-            "status": "publish",
-            "featured": false,
-            "catalog_visibility": "visible",
-            "description": "",
-            "short_description": "",
-            "sku": "",
-            "price": "10.00",
-            "regular_price": "10.00",
-            "sale_price": "",
-            "on_sale": false,
-            "purchasable": true,
-            "total_sales": 0,
-            "virtual": false,
-            "downloadable": false,
-            "downloads": [],
-            "download_limit": -1,
-            "download_expiry": -1,
-            "button_text": "",
-            "external_url": "",
-            "tax_status": "taxable",
-            "tax_class": "",
-            "manage_stock": false,
-            "stock_quantity": null,
-            "stock_status": "instock",
-            "backorders": "no",
-            "backorders_allowed": false,
-            "backordered": false,
-            "sold_individually": false,
-            "weight": "",
-            "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
-            },
-            "shipping_required": false,
-            "shipping_taxable": false,
-            "shipping_class": "",
-            "shipping_class_id": 0,
-            "reviews_allowed": true,
-            "average_rating": "0.00",
-            "rating_count": 0,
-            "related_ids": [],
-            "upsell_ids": [],
-            "cross_sell_ids": [],
-            "parent_id": 0,
-            "purchase_note": "",
-            "categories": [],
-            "tags": [],
-            "images": [],
-            "attributes": [],
-            "default_attributes": [],
-            "variations": [],
-            "grouped_products": [],
-            "menu_order": 0,
-            "meta_data": [
-                {
-                    "id": 1001,
-                    "key": "custom_field_1",
-                    "value": "value1"
-                },
-                {
-                    "id": 1002,
-                    "key": "custom_field_2",
-                    "value": "value2"
-                }
-            ]
+        guard let data = Loader.contentsOf("minimal-product-array-metadata") else {
+            XCTFail("Unable to load test data")
+            return
         }
-        """
-
-        let data = jsonString.data(using: .utf8)!
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo[.siteID] = dummySiteID
@@ -698,85 +623,10 @@ final class ProductMapperTests: XCTestCase {
     ///
     func test_metadata_flexible_decoding_dictionary_format() throws {
         // Given - JSON with metadata as object keyed by index strings (new format)
-        let jsonString = """
-        {
-            "id": 282,
-            "name": "Test Product",
-            "slug": "test-product",
-            "permalink": "https://example.com/product/test-product/",
-            "date_created_gmt": "2019-02-19T17:33:31",
-            "date_modified_gmt": "2019-02-19T17:48:01",
-            "type": "simple",
-            "status": "publish",
-            "featured": false,
-            "catalog_visibility": "visible",
-            "description": "",
-            "short_description": "",
-            "sku": "",
-            "price": "10.00",
-            "regular_price": "10.00",
-            "sale_price": "",
-            "on_sale": false,
-            "purchasable": true,
-            "total_sales": 0,
-            "virtual": false,
-            "downloadable": false,
-            "downloads": [],
-            "download_limit": -1,
-            "download_expiry": -1,
-            "button_text": "",
-            "external_url": "",
-            "tax_status": "taxable",
-            "tax_class": "",
-            "manage_stock": false,
-            "stock_quantity": null,
-            "stock_status": "instock",
-            "backorders": "no",
-            "backorders_allowed": false,
-            "backordered": false,
-            "sold_individually": false,
-            "weight": "",
-            "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
-            },
-            "shipping_required": false,
-            "shipping_taxable": false,
-            "shipping_class": "",
-            "shipping_class_id": 0,
-            "reviews_allowed": true,
-            "average_rating": "0.00",
-            "rating_count": 0,
-            "related_ids": [],
-            "upsell_ids": [],
-            "cross_sell_ids": [],
-            "parent_id": 0,
-            "purchase_note": "",
-            "categories": [],
-            "tags": [],
-            "images": [],
-            "attributes": [],
-            "default_attributes": [],
-            "variations": [],
-            "grouped_products": [],
-            "menu_order": 0,
-            "meta_data": {
-                "0": {
-                    "id": 2001,
-                    "key": "custom_field_a",
-                    "value": "valueA"
-                },
-                "1": {
-                    "id": 2002,
-                    "key": "custom_field_b",
-                    "value": "valueB"
-                }
-            }
+        guard let data = Loader.contentsOf("minimal-product-dictionary-metadata") else {
+            XCTFail("Unable to load test data")
+            return
         }
-        """
-
-        let data = jsonString.data(using: .utf8)!
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo[.siteID] = dummySiteID
@@ -787,15 +637,15 @@ final class ProductMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(product.customFields.count, 2)
         // Since dictionary values don't have a guaranteed order, we need to check by key
-        let fieldA = product.customFields.first { $0.key == "custom_field_a" }
-        let fieldB = product.customFields.first { $0.key == "custom_field_b" }
+        let field1 = product.customFields.first { $0.key == "custom_field_1" }
+        let field2 = product.customFields.first { $0.key == "custom_field_2" }
 
-        XCTAssertNotNil(fieldA)
-        XCTAssertNotNil(fieldB)
-        XCTAssertEqual(fieldA?.metadataID, 2001)
-        XCTAssertEqual(fieldA?.value.stringValue, "valueA")
-        XCTAssertEqual(fieldB?.metadataID, 2002)
-        XCTAssertEqual(fieldB?.value.stringValue, "valueB")
+        XCTAssertNotNil(field1)
+        XCTAssertNotNil(field2)
+        XCTAssertEqual(field1?.metadataID, 1001)
+        XCTAssertEqual(field1?.value.stringValue, "value1")
+        XCTAssertEqual(field2?.metadataID, 1002)
+        XCTAssertEqual(field2?.value.stringValue, "value2")
     }
 }
 

@@ -113,68 +113,10 @@ final class ProductVariationMapperTests: XCTestCase {
     ///
     func test_product_variation_metadata_flexible_decoding_array_format() throws {
         // Given - JSON with metadata as array (current format) containing subscription data
-        let jsonString = """
-        {
-            "id": 2783,
-            "date_created_gmt": "2019-11-14T12:35:23",
-            "date_modified_gmt": "2019-11-14T12:35:23",
-            "description": "Test variation",
-            "permalink": "https://example.com/product/test-product/?attribute_darkness=87%25&attribute_flavor=strawberry&attribute_shape=marble",
-            "sku": "test-sku",
-            "price": "25.00",
-            "regular_price": "25.00",
-            "sale_price": "",
-            "date_on_sale_from_gmt": null,
-            "date_on_sale_to_gmt": null,
-            "on_sale": false,
-            "status": "publish",
-            "purchasable": true,
-            "virtual": false,
-            "downloadable": false,
-            "downloads": [],
-            "download_limit": -1,
-            "download_expiry": -1,
-            "tax_status": "taxable",
-            "tax_class": "",
-            "manage_stock": false,
-            "stock_quantity": null,
-            "stock_status": "instock",
-            "backorders": "no",
-            "backorders_allowed": false,
-            "backordered": false,
-            "weight": "",
-            "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
-            },
-            "shipping_class": "",
-            "shipping_class_id": 0,
-            "image": null,
-            "attributes": [
-                {
-                    "id": 0,
-                    "name": "Darkness",
-                    "option": "87%"
-                }
-            ],
-            "menu_order": 1,
-            "meta_data": [
-                {
-                    "id": 3001,
-                    "key": "_subscription_price",
-                    "value": "15.00"
-                },
-                {
-                    "id": 3002,
-                    "key": "_subscription_period",
-                    "value": "month"
-                }
-            ]
+        guard let data = Loader.contentsOf("minimal-product-variation-array-metadata") else {
+            XCTFail("Unable to load test data")
+            return
         }
-        """
-
-        let data = jsonString.data(using: .utf8)!
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo[.siteID] = dummySiteID
@@ -193,68 +135,10 @@ final class ProductVariationMapperTests: XCTestCase {
     ///
     func test_product_variation_metadata_flexible_decoding_dictionary_format() throws {
         // Given - JSON with metadata as object keyed by index strings (new format)
-        let jsonString = """
-        {
-            "id": 2783,
-            "date_created_gmt": "2019-11-14T12:35:23",
-            "date_modified_gmt": "2019-11-14T12:35:23",
-            "description": "Test variation",
-            "permalink": "https://example.com/product/test-product/?attribute_darkness=87%25&attribute_flavor=strawberry&attribute_shape=marble",
-            "sku": "test-sku",
-            "price": "25.00",
-            "regular_price": "25.00",
-            "sale_price": "",
-            "date_on_sale_from_gmt": null,
-            "date_on_sale_to_gmt": null,
-            "on_sale": false,
-            "status": "publish",
-            "purchasable": true,
-            "virtual": false,
-            "downloadable": false,
-            "downloads": [],
-            "download_limit": -1,
-            "download_expiry": -1,
-            "tax_status": "taxable",
-            "tax_class": "",
-            "manage_stock": false,
-            "stock_quantity": null,
-            "stock_status": "instock",
-            "backorders": "no",
-            "backorders_allowed": false,
-            "backordered": false,
-            "weight": "",
-            "dimensions": {
-                "length": "",
-                "width": "",
-                "height": ""
-            },
-            "shipping_class": "",
-            "shipping_class_id": 0,
-            "image": null,
-            "attributes": [
-                {
-                    "id": 0,
-                    "name": "Darkness",
-                    "option": "87%"
-                }
-            ],
-            "menu_order": 1,
-            "meta_data": {
-                "0": {
-                    "id": 4001,
-                    "key": "_subscription_price",
-                    "value": "20.00"
-                },
-                "1": {
-                    "id": 4002,
-                    "key": "_subscription_period",
-                    "value": "week"
-                }
-            }
+        guard let data = Loader.contentsOf("minimal-product-variation-dictionary-metadata") else {
+            XCTFail("Unable to load test data")
+            return
         }
-        """
-
-        let data = jsonString.data(using: .utf8)!
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo[.siteID] = dummySiteID
@@ -265,8 +149,8 @@ final class ProductVariationMapperTests: XCTestCase {
 
         // Then - verify the subscription data was extracted from metadata
         XCTAssertNotNil(productVariation.subscription)
-        XCTAssertEqual(productVariation.subscription?.price, "20.00")
-        XCTAssertEqual(productVariation.subscription?.period, .week)
+        XCTAssertEqual(productVariation.subscription?.price, "15.00")
+        XCTAssertEqual(productVariation.subscription?.period, .month)
     }
 }
 

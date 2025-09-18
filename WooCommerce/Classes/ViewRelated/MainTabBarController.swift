@@ -136,6 +136,7 @@ final class MainTabBarController: UITabBarController {
 
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
+    /// periphery: ignore - used in tests
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,

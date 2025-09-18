@@ -69,10 +69,15 @@ private extension POSSettingsLocalCatalogViewModel {
     }
 
     func loadSyncDates() async -> (full: String, incremental: String) {
-        let syncDates = await catalogSettingsService.loadSyncDates(for: siteID)
-        let full = formatSyncDate(syncDates.lastFullSyncDate)
-        let incremental = formatSyncDate(syncDates.lastIncrementalSyncDate)
-        return (full, incremental)
+        do {
+            let syncDates = try await catalogSettingsService.loadSyncDates(for: siteID)
+            let full = formatSyncDate(syncDates.lastFullSyncDate)
+            let incremental = formatSyncDate(syncDates.lastIncrementalSyncDate)
+            return (full, incremental)
+        } catch {
+            DDLogError("⛔️ POSSettingsLocalCatalog: Error loading sync dates: \(error)")
+            return (Localization.syncDateUnavailable, Localization.syncDateUnavailable)
+        }
     }
 
     func formatSyncDate(_ date: Date?) -> String {
@@ -100,6 +105,12 @@ private extension POSSettingsLocalCatalogViewModel {
             "posSettingsLocalCatalogViewModel.neverSynced",
             value: "Not synced",
             comment: "Text shown when no sync has been performed yet."
+        )
+
+        static let syncDateUnavailable = NSLocalizedString(
+            "posSettingsLocalCatalogViewModel.syncDateUnavailable",
+            value: "Sync date unavailable",
+            comment: "Text shown when sync date cannot be determined."
         )
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Yosemite.AISource
 
 /// Hosting controller for `AddProductWithAIActionSheet`.
 ///
@@ -38,6 +39,10 @@ struct AddProductWithAIActionSheet: View {
         self.onAIOption = onAIOption
         self.onProductTypeOption = onProductTypeOption
     }
+    
+    private var aiSource: AISource {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
+    }
 
     var body: some View {
         ScrollView {
@@ -70,8 +75,16 @@ struct AddProductWithAIActionSheet: View {
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.CreateProductWithAI.aiTitle)
                             .bodyStyle()
-                        Text(Localization.CreateProductWithAI.aiDescription)
-                            .subheadlineStyle()
+
+                        switch aiSource {
+                        case .merchant:
+                            Text(Localization.CreateProductWithAI.merchantAIDescription)
+                                .subheadlineStyle()
+                        case .jetpack:
+                            Text(Localization.CreateProductWithAI.aiDescription)
+                                .subheadlineStyle()
+                        }
+
                         AdaptiveStack(horizontalAlignment: .leading) {
                             Text(Localization.CreateProductWithAI.legalText)
                             Text(.init(Localization.CreateProductWithAI.learnMore))
@@ -159,6 +172,11 @@ private extension AddProductWithAIActionSheet {
             static let aiDescription = NSLocalizedString(
                 "addProductWithAIActionSheet.createProductWithAI.aiDescription",
                 value: "Let us generate product details for you",
+                comment: "Description of the option to add new product with AI assistance"
+            )
+            static let merchantAIDescription = NSLocalizedString(
+                "addProductWithAIActionSheet.createProductWithAI.merchantAiDescription",
+                value: "Generate product details using AI. Enter your API key under Settings > AI Settings",
                 comment: "Description of the option to add new product with AI assistance"
             )
             static let legalText = NSLocalizedString(

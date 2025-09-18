@@ -200,6 +200,7 @@ public enum ProductAction: Action {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
+                           AISource: AISource,
                            completion: (Result<AIProduct, Error>) -> Void)
 
     /// Fetches stock based on the given status for a site

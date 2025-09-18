@@ -39,7 +39,7 @@ struct AddProductWithAIActionSheet: View {
         self.onAIOption = onAIOption
         self.onProductTypeOption = onProductTypeOption
     }
-    
+
     private var aiSource: AISource {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
     }

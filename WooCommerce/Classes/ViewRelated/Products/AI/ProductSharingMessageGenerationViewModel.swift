@@ -51,7 +51,7 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     /// Language used in product identified by AI
     ///
     private var languageIdentifiedUsingAI: String?
-    
+
     private var aiSource: AISource {
         ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
     }

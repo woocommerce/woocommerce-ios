@@ -554,6 +554,7 @@ private extension ProductDetailPreviewViewModel {
 
         return try await generateAIProduct(language: language,
                                            tone: tone,
+                                           aiSource: aiSource,
                                            existingCategories: existingCategories,
                                            existingTags: existingTags)
     }
@@ -561,6 +562,7 @@ private extension ProductDetailPreviewViewModel {
     @MainActor
     func generateAIProduct(language: String,
                            tone: AIToneVoice,
+                           aiSource: AISource,
                            existingCategories: [ProductCategory],
                            existingTags: [ProductTag]) async throws -> AIProduct {
         try await withCheckedThrowingContinuation { continuation in
@@ -574,6 +576,7 @@ private extension ProductDetailPreviewViewModel {
                                                             weightUnit: weightUnit,
                                                             categories: existingCategories,
                                                             tags: existingTags,
+                                                            AISource: aiSource,
                                                             completion: { result in
                 continuation.resume(with: result)
             }))

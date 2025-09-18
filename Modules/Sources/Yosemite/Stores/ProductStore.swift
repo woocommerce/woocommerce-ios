@@ -148,6 +148,7 @@ public class ProductStore: Store {
                                     weightUnit,
                                     categories,
                                     tags,
+                                    aiSource,
                                     completion):
             generateAIProduct(siteID: siteID,
                               productName: productName,
@@ -159,6 +160,7 @@ public class ProductStore: Store {
                               weightUnit: weightUnit,
                               categories: categories,
                               tags: tags,
+                              aiSource: aiSource,
                               completion: completion)
         case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
             fetchStockReport(siteID: siteID,
@@ -745,22 +747,41 @@ private extension ProductStore {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
+                           aiSource: AISource,
                            completion: @escaping (Result<AIProduct, Error>) -> Void) {
         Task { @MainActor in
-            let result = await Result {
-                let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
-                                                                                  productName: productName,
-                                                                                  keywords: keywords,
-                                                                                  language: language,
-                                                                                  tone: tone,
-                                                                                  currencySymbol: currencySymbol,
-                                                                                  dimensionUnit: dimensionUnit,
-                                                                                  weightUnit: weightUnit,
-                                                                                  categories: categories,
-                                                                                  tags: tags)
-                return product
+            switch aiSource {
+            case .jetpack:
+                let result = await Result {
+                    let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
+                                                                                      productName: productName,
+                                                                                      keywords: keywords,
+                                                                                      language: language,
+                                                                                      tone: tone,
+                                                                                      currencySymbol: currencySymbol,
+                                                                                      dimensionUnit: dimensionUnit,
+                                                                                      weightUnit: weightUnit,
+                                                                                      categories: categories,
+                                                                                      tags: tags)
+                    return product
+                }
+                completion(result)
+            case .merchant:
+                let result = await Result {
+                    let key = ProcessInfo.processInfo.environment["openai-hack-key"] ?? "api key not found"
+                    return try await MerchantGenerativeContentRemote(apiKey: key).generateAIProduct(siteID: siteID,
+                                                                                                    productName: productName,
+                                                                                                    keywords: keywords,
+                                                                                                    language: language,
+                                                                                                    tone: tone,
+                                                                                                    currencySymbol: currencySymbol,
+                                                                                                    dimensionUnit: dimensionUnit,
+                                                                                                    weightUnit: weightUnit,
+                                                                                                    categories: categories,
+                                                                                                    tags: tags)
+                }
+                completion(result)
             }
-            completion(result)
         }
     }
 

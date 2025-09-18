@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///

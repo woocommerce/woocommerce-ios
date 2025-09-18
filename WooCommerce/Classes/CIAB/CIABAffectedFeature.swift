@@ -10,6 +10,7 @@ enum CIABAffectedFeature: CaseIterable {
     case variableProducts
     case giftCardEditing
     case productsStockDashboardCard
+    case pointOfSale
 }
 
 extension CIABAffectedFeature {

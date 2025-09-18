@@ -69,7 +69,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
             return .ineligible(reason: .unsupportedInCIABSites)
         }
 
@@ -97,7 +97,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
             return false
         }
 

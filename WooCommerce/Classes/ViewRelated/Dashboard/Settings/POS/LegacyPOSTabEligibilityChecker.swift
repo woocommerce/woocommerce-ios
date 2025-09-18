@@ -78,7 +78,7 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
     }
 
     private func checkI1Eligibility() async -> LegacyPOSEligibilityState {
-        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
             return .ineligible(reason: .unsupportedInCIABSites)
         }
 

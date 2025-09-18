@@ -30,14 +30,14 @@ protocol PointOfSaleSettingsControllerProtocol {
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
-         grdbManager: GRDBManagerProtocol,
+         grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
-        if let catalogSyncCoordinator {
+        if let catalogSyncCoordinator, let grdbManager {
             self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
                 siteID: siteID,
                 catalogSettingsService: POSCatalogSettingsService(grdbManager: grdbManager),

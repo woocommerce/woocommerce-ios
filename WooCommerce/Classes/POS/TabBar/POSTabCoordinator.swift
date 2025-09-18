@@ -31,8 +31,6 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
-    private let grdbManager: GRDBManagerProtocol
-    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
@@ -69,9 +67,7 @@ final class POSTabCoordinator {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         grdbManager: GRDBManagerProtocol = ServiceLocator.grdbManager,
-         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = ServiceLocator.posCatalogSyncCoordinator) {
+         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.tabContainerController = tabContainerController
@@ -81,8 +77,6 @@ final class POSTabCoordinator {
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
-        self.grdbManager = grdbManager
-        self.catalogSyncCoordinator = catalogSyncCoordinator
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -107,6 +101,8 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
+            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials),

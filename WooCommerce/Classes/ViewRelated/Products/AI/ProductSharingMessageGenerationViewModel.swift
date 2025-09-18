@@ -51,6 +51,10 @@ final class ProductSharingMessageGenerationViewModel: ObservableObject {
     /// Language used in product identified by AI
     ///
     private var languageIdentifiedUsingAI: String?
+    
+    private var aiSource: AISource {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
+    }
 
     init(siteID: Int64,
          url: String,
@@ -152,6 +156,7 @@ private extension ProductSharingMessageGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productName + " " + productDescription,
+                                                               aiSource: aiSource,
                                                                feature: .productSharing,
                                                                completion: { result in
                     continuation.resume(with: result)

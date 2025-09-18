@@ -122,9 +122,11 @@ public class ProductStore: Store {
             replaceProductLocally(product: product, onCompletion: onCompletion)
         case let .checkIfStoreHasProducts(siteID, status, onCompletion):
             checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
-        case let .identifyLanguage(siteID, string, feature, completion):
+        case let .identifyLanguage(siteID, string, aiSource, feature, completion):
             identifyLanguage(siteID: siteID,
-                             string: string, feature: feature,
+                             string: string,
+                             aisource: aiSource,
+                             feature: feature,
                              completion: completion)
         case let .generateProductDescription(siteID, name, features, language, completion):
             generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
@@ -586,15 +588,28 @@ private extension ProductStore {
 
     func identifyLanguage(siteID: Int64,
                           string: String,
+                          aisource: AISource,
                           feature: GenerativeContentRemoteFeature,
                           completion: @escaping (Result<String, Error>) -> Void) {
         Task { @MainActor in
-            let result = await Result {
-                try await generativeContentRemote.identifyLanguage(siteID: siteID,
-                                                                   string: string,
-                                                                   feature: feature)
+            switch aisource {
+            case .jetpack:
+                let result = await Result {
+                    try await generativeContentRemote.identifyLanguage(siteID: siteID,
+                                                                       string: string,
+                                                                       feature: feature)
+                }
+                completion(result)
+            case .merchant:
+                let result = await Result {
+                    // Temporary. This will come from the KeyChain rather than the environment
+                    let key = ProcessInfo.processInfo.environment["openai-hack-key"] ?? "api key not found"
+                    return try await MerchantGenerativeContentRemote(apiKey: key).identifyLanguage(siteID: siteID,
+                                                                                                   string: string,
+                                                                                                   feature: feature)
+                }
+                completion(result)
             }
-            completion(result)
         }
     }
 

@@ -20,6 +20,11 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
-        return site.isWordPressComStore || site.isAIAssistantFeatureActive
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) {
+            // Temporary: Always allow for AI usage if the flag is enabled, bypassing eligibility criteria
+            return true
+        } else {
+            return site.isWordPressComStore || site.isAIAssistantFeatureActive
+        }
     }
 }

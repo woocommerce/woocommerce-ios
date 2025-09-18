@@ -49,6 +49,10 @@ final class ProductDescriptionGenerationViewModel: ObservableObject {
     /// Language used in product identified by AI
     ///
     private var languageIdentifiedUsingAI: String?
+    
+    private var aiSource: AISource {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
+    }
 
     init(siteID: Int64,
          name: String,
@@ -139,6 +143,7 @@ private extension ProductDescriptionGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: name + " " + features,
+                                                               aiSource: aiSource,
                                                                feature: .productDescription,
                                                                completion: { result in
                     continuation.resume(with: result)

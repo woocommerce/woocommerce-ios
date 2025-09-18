@@ -1,6 +1,11 @@
 import Foundation
 import Networking
 
+public enum AISource {
+    case jetpack
+    case merchant
+}
+
 public enum ItemIdentifierSearchResult {
     case product(Product)
     case variation(ProductVariation)
@@ -130,6 +135,7 @@ public enum ProductAction: Action {
     ///
     case identifyLanguage(siteID: Int64,
                           string: String,
+                          aiSource: AISource,
                           feature: GenerativeContentRemoteFeature,
                           completion: (Result<String, Error>) -> Void)
 

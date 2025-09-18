@@ -153,6 +153,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return productImageUploader.actionHandler(key: key, originalStatuses: [])
     }()
 
+    private var aiSource: AISource {
+        ServiceLocator.featureFlagService.isFeatureFlagEnabled(.allowMerchantAIAPIKey) ? .merchant : .jetpack
+    }
+
     init(siteID: Int64,
          productFeatures: String,
          imageState: ImageState,
@@ -529,6 +533,7 @@ private extension ProductDetailPreviewViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: productInfo,
+                                                               aiSource: aiSource,
                                                                feature: .productCreation,
                                                                completion: { result in
                     continuation.resume(with: result)

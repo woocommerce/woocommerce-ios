@@ -154,6 +154,12 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
                                      value: "Try relaunching the app to resolve this issue.",
                                      comment: "Suggestion for self deallocated: relaunch")
+        case .unsupportedInCIABSites:
+            return NSLocalizedString(
+                "pos.ineligible.suggestion.notSupportedForCIAB",
+                value: "The POS system is not supported for your store.",
+                comment: "Suggestion for CIAB sites: feature is not supported"
+            )
         }
     }
 }
@@ -177,7 +183,8 @@ private extension POSIneligibleView {
 private extension POSIneligibleReason {
     var shouldShowRetryButton: Bool {
         switch self {
-        case .unsupportedIOSVersion:
+        case .unsupportedIOSVersion,
+                .unsupportedInCIABSites:
             return false
         case .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
@@ -208,6 +215,9 @@ private extension POSIneligibleReason {
                 value: "Retry",
                 comment: "Button title to refresh POS eligibility check"
             )
+        case .unsupportedInCIABSites:
+            assertionFailure("Retry button should not be shown for `unsupportedInCIABSites`")
+            return String()
         }
     }
 }

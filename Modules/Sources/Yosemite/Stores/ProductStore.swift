@@ -605,7 +605,7 @@ private extension ProductStore {
             case .merchant:
                 let result = await Result {
                     // Temporary. This will come from the KeyChain rather than the environment
-                    let key = ProcessInfo.processInfo.environment["openai-hack-key"] ?? "api key not found"
+                    let key = ProcessInfo.processInfo.environment["openai-debug-api-key"] ?? "api key not found"
                     return try await MerchantGenerativeContentRemote(apiKey: key).identifyLanguage(siteID: siteID,
                                                                                                    string: string,
                                                                                                    feature: feature)
@@ -768,7 +768,7 @@ private extension ProductStore {
                 completion(result)
             case .merchant:
                 let result = await Result {
-                    let key = ProcessInfo.processInfo.environment["openai-hack-key"] ?? "api key not found"
+                    let key = ProcessInfo.processInfo.environment["openai-debug-api-key"] ?? "api key not found"
                     return try await MerchantGenerativeContentRemote(apiKey: key).generateAIProduct(siteID: siteID,
                                                                                                     productName: productName,
                                                                                                     keywords: keywords,

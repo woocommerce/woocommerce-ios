@@ -644,7 +644,7 @@ private extension OrderMapperTests {
 
     /// Tests that Order can decode metadata from array format
     ///
-    func test_Order_decodes_metadata_from_array_format() throws {
+    func test_order_decodes_metadata_from_array_format() throws {
         // Given - JSON with metadata as array
         let jsonString = """
         {

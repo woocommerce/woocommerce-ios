@@ -1,4 +1,5 @@
 import Foundation
+import enum Yosemite.CollectOrderPaymentUseCaseError
 
 enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     case message(PointOfSaleCardPresentPaymentMessageType)

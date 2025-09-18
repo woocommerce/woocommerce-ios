@@ -115,4 +115,8 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
             onSelection: onSelection
         ))
     }
+
+    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView {
+        AnyView(WCSettingsWebView(adminUrl: adminUrl, completion: completion))
+    }
 }

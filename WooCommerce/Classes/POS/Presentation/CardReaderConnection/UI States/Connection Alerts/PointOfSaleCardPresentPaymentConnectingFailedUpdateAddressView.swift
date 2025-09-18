@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @StateObject var viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
+    @Environment(\.posExternalViews) private var externalViews
 
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
@@ -29,8 +30,8 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
-            WCSettingsWebView(adminUrl: viewModel.settingsAdminUrl,
-                              completion: viewModel.settingsWebViewWasDismissed)
+            externalViews.createWCWebView(adminUrl: viewModel.settingsAdminUrl,
+                                          completion: viewModel.settingsWebViewWasDismissed)
         }
     }
 }

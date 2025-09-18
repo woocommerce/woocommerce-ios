@@ -5,6 +5,7 @@ import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
 import enum Yosemite.PaymentMethod
+import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
     enum PointOfSale {

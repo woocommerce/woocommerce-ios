@@ -1,5 +1,6 @@
 import Foundation
 import enum Networking.DotcomError
+import enum Yosemite.CollectOrderPaymentUseCaseNotValidAmountError
 
 struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel: Equatable {
     let title: String

@@ -400,6 +400,13 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 }
 
+final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    func checkInitialVisibility() -> Bool { true }
+    func checkVisibility() async -> Bool { true }
+    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
+}
+
 final class POSReceiptSenderPreview: POSReceiptSending {
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {}
 }

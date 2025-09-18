@@ -51,3 +51,30 @@ public enum CollectOrderPaymentUseCaseError: LocalizedError {
             "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
     }
 }
+
+
+public enum CollectOrderPaymentUseCaseNotValidAmountError: Error, LocalizedError, Equatable {
+    case belowMinimumAmount(amount: String)
+    case other
+
+    public var errorDescription: String? {
+        switch self {
+        case .belowMinimumAmount(let amount):
+            return String.localizedStringWithFormat(Localization.belowMinimumAmount, amount)
+        case .other:
+            return Localization.defaultMessage
+        }
+    }
+
+    private enum Localization {
+        static let defaultMessage = NSLocalizedString(
+            "Unable to process payment. Order total amount is not valid.",
+            comment: "Error message when the order amount is not valid."
+        )
+
+        static let belowMinimumAmount = NSLocalizedString(
+            "Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@",
+            comment: "Error message when the order amount is below the minimum amount allowed."
+        )
+    }
+}

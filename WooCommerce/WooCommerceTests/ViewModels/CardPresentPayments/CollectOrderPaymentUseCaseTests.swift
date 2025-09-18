@@ -4,6 +4,7 @@ import TestKit
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import enum Yosemite.CollectOrderPaymentUseCaseNotValidAmountError
 
 @MainActor
 final class CollectOrderPaymentUseCaseTests: XCTestCase {

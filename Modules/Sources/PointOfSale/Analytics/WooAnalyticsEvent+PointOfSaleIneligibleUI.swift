@@ -1,3 +1,5 @@
+import struct WooFoundation.WooAnalyticsEvent
+
 extension WooAnalyticsEvent {
     enum PointOfSaleIneligibleUI {
         /// Event property key.

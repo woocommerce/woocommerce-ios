@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.POSItemType
+import struct WooFoundation.WooAnalyticsEvent
 
 struct PointOfSaleItemListAnalyticsTracker {
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView

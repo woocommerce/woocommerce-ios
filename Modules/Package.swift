@@ -67,6 +67,10 @@ let package = Package(
             name: "Yosemite",
             targets: ["Yosemite"]
         ),
+        .library(
+            name: "PointOfSale",
+            targets: ["PointOfSale"]
+        ),
     ],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire", from: "5.2.0"),
@@ -230,6 +234,17 @@ let package = Package(
                 .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
             ]
         ),
+        .target(
+            name: "PointOfSale",
+            dependencies: [
+                "Experiments",
+                "WooFoundation",
+                "Yosemite",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
+            ]
+        ),
         .testTarget(
             name: "ExperimentsTests",
             dependencies: [
@@ -295,7 +310,13 @@ let package = Package(
                 .process("Resources"),
                 .process("../NetworkingTests/Responses")
             ]
-        )
+        ),
+        .testTarget(
+            name: "PointOfSaleTests",
+            dependencies: [
+                "PointOfSale"
+            ]
+        ),
     ]
 )
 
@@ -374,6 +395,7 @@ enum XcodeSupport {
                     "WordPressUI",
                     "WPMediaPicker",
                     "Yosemite",
+                    "PointOfSale",
                     .product(name: "Alamofire", package: "Alamofire"),
                     .product(name: "Algorithms", package: "swift-algorithms"),
                     .product(name: "AutomatticAbout", package: "AutomatticAbout-swift"),

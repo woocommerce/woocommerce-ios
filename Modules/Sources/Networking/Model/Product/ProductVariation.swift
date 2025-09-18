@@ -224,12 +224,12 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let price = container.failsafeDecodeIfPresent(targetType: String.self,
                                                       forKey: .price,
                                                       alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-        ?? ""
+            ?? ""
 
         let regularPrice = container.failsafeDecodeIfPresent(targetType: String.self,
                                                              forKey: .regularPrice,
                                                              alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-        ?? ""
+            ?? ""
 
         // Even though WooCommerce Core returns Bool values,
         // some plugins alter the field value from Bool to String.
@@ -245,7 +245,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                           alternativeTypes: [
                                                             .string(transform: { (onSale && $0.isEmpty) ? "0" : $0 }),
                                                             .decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })])
-        ?? ""
+            ?? ""
 
         // Even though WooCommerce Core returns Bool values,
         // some plugins alter the field value from Bool to Int (1 or 0)

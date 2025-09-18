@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
+import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 
@@ -30,6 +31,8 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let grdbManager: GRDBManagerProtocol
+    private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
         PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
@@ -66,7 +69,9 @@ final class POSTabCoordinator {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
+         eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
+         grdbManager: GRDBManagerProtocol = ServiceLocator.grdbManager,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = ServiceLocator.posCatalogSyncCoordinator) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.tabContainerController = tabContainerController
@@ -76,6 +81,8 @@ final class POSTabCoordinator {
         self.currencySettings = currencySettings
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
+        self.grdbManager = grdbManager
+        self.catalogSyncCoordinator = catalogSyncCoordinator
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -154,7 +161,9 @@ private extension POSTabCoordinator {
                                                                       cardPresentPaymentService: cardPresentPaymentService,
                                                                       pluginsService: pluginsService,
                                                                       defaultSiteName: storesManager.sessionManager.defaultSite?.name,
-                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings),
+                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                                                                      grdbManager: grdbManager,
+                                                                      catalogSyncCoordinator: catalogSyncCoordinator),
                     collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

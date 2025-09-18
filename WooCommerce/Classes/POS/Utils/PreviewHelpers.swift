@@ -28,6 +28,10 @@ import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCatalogSettingsServiceProtocol
+import struct Yosemite.POSCatalogStatistics
+import struct Yosemite.POSSyncDates
 
 // MARK: - PreviewProvider helpers
 //
@@ -449,6 +453,44 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+}
+
+// MARK: - Preview Catalog Services
+
+final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol {
+    func loadCatalogStatistics(for siteID: Int64) async throws -> POSCatalogStatistics {
+        // Simulate realistic catalog data
+        return POSCatalogStatistics(
+            productCount: 247,
+            variationCount: 89
+        )
+    }
+
+    func loadSyncDates(for siteID: Int64) async -> POSSyncDates {
+        let now = Date()
+        let lastFullSync = now.addingTimeInterval(-2 * 60 * 60) // 2 hours ago
+        let lastIncrementalSync = now.addingTimeInterval(-15 * 60) // 15 minutes ago
+        return POSSyncDates(
+            lastFullSyncDate: lastFullSync,
+            lastIncrementalSyncDate: lastIncrementalSync
+        )
+    }
+}
+
+final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
+    func performFullSync(for siteID: Int64) async throws {
+        // Simulates a full sync operation with a 1 second delay.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+
+    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        true
+    }
+
+    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
+        // Simulates an incremental sync operation with a 0.5 second delay.
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }
 
 #endif

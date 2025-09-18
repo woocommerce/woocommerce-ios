@@ -3,6 +3,11 @@ import SwiftUI
 struct POSSettingsLocalCatalogDetailView: View {
     // TODO: WOOMOB-1335 - implement full sync cellular data setting functionality
     @State private var allowFullSyncOnCellular: Bool = true
+    private let viewModel: POSSettingsLocalCatalogViewModel
+
+    init(viewModel: POSSettingsLocalCatalogViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         NavigationStack {
@@ -21,6 +26,9 @@ struct POSSettingsLocalCatalogDetailView: View {
                 .background(Style.backgroundColor)
             }
         }
+        .task {
+            await viewModel.loadCatalogData()
+        }
     }
 }
 
@@ -31,10 +39,9 @@ private extension POSSettingsLocalCatalogDetailView {
             sectionHeaderView(title: Localization.catalogStatus)
 
             VStack(spacing: POSSpacing.medium) {
-                // TODO: WOOMOB-1100 - replace with catalog data
-                fieldRowView(label: Localization.catalogSize, value: "1,250 products, 3,420 variations")
-                fieldRowView(label: Localization.lastIncrementalUpdate, value: "5 minutes ago")
-                fieldRowView(label: Localization.lastFullSync, value: "Today at 2:34 PM")
+                fieldRowView(label: Localization.catalogSize, value: viewModel.catalogSize)
+                fieldRowView(label: Localization.lastIncrementalUpdate, value: viewModel.lastIncrementalSyncDate)
+                fieldRowView(label: Localization.lastFullSync, value: viewModel.lastFullSyncDate)
             }
             .padding(.bottom, POSPadding.medium)
         }
@@ -64,11 +71,13 @@ private extension POSSettingsLocalCatalogDetailView {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button(action: {
-                    // Handle refresh catalog action
+                    Task {
+                        await viewModel.refreshCatalog()
+                    }
                 }) {
                     Text(Localization.refreshCatalog)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: viewModel.isRefreshingCatalog))
             }
             .padding(.horizontal, POSPadding.medium)
             .padding(.bottom, POSPadding.medium)
@@ -187,6 +196,11 @@ private extension POSSettingsLocalCatalogDetailView {
 
 #if DEBUG
 #Preview {
-    POSSettingsLocalCatalogDetailView()
+    let viewModel = POSSettingsLocalCatalogViewModel(
+        siteID: 123,
+        catalogSettingsService: POSPreviewCatalogSettingsService(),
+        catalogSyncCoordinator: POSPreviewCatalogSyncCoordinator()
+    )
+    POSSettingsLocalCatalogDetailView(viewModel: viewModel)
 }
 #endif

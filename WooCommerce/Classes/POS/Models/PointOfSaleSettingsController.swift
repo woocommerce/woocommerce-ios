@@ -7,10 +7,14 @@ import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.POSReceiptInformation
 import Observation
+import protocol Storage.GRDBManagerProtocol
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import class Yosemite.POSCatalogSettingsService
 
 protocol PointOfSaleSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
+    var localCatalogViewModel: POSSettingsLocalCatalogViewModel? { get }
 }
 
 @Observable final class PointOfSaleSettingsController: PointOfSaleSettingsControllerProtocol {
@@ -18,18 +22,30 @@ protocol PointOfSaleSettingsControllerProtocol {
     private var cancellables: AnyCancellable?
 
     let storeViewModel: POSSettingsStoreViewModel
+    let localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String?,
-         siteSettings: [SiteSetting]) {
+         siteSettings: [SiteSetting],
+         grdbManager: GRDBManagerProtocol,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
                                                         siteSettings: siteSettings)
+        if let catalogSyncCoordinator {
+            self.localCatalogViewModel = POSSettingsLocalCatalogViewModel(
+                siteID: siteID,
+                catalogSettingsService: POSCatalogSettingsService(grdbManager: grdbManager),
+                catalogSyncCoordinator: catalogSyncCoordinator
+            )
+        } else {
+            self.localCatalogViewModel = nil
+        }
 
         observeCardReader(from: cardPresentPaymentService)
     }
@@ -62,6 +78,8 @@ final class PointOfSaleSettingsPreviewController: PointOfSaleSettingsControllerP
                                                                               pluginsService: PluginsServicePreview(),
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [])
+
+    var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 }
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

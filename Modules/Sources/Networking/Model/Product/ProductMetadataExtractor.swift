@@ -22,7 +22,7 @@ import NetworkingCore
 /// }
 /// ]
 ///
-internal struct ProductMetadataExtractor {
+struct ProductMetadataExtractor {
 
     private typealias AnyDictionary = [String: Any?]
 
@@ -38,7 +38,7 @@ internal struct ProductMetadataExtractor {
 
     /// Searches product metadata for subscription data and converts it to a `ProductSubscription` if possible.
     ///
-    internal func extractProductSubscription() throws -> ProductSubscription? {
+    func extractProductSubscription() throws -> ProductSubscription? {
         let subscriptionMetadata = filterMetadata(with: Constants.subscriptionPrefix)
 
         guard !subscriptionMetadata.isEmpty else {
@@ -53,7 +53,7 @@ internal struct ProductMetadataExtractor {
 
     /// Extracts a `String` metadata value for the provided key.
     ///
-    internal func extractStringValue(forKey key: String) -> String? {
+    func extractStringValue(forKey key: String) -> String? {
         let metaData = filterMetadata(with: key)
         let keyValueMetadata = getKeyValueDictionary(from: metaData)
         return keyValueMetadata.valueAsString(forKey: key)

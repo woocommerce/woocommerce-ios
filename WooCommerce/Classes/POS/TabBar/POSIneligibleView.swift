@@ -7,6 +7,7 @@ struct POSIneligibleView: View {
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
     @Environment(\.sizeCategory) private var sizeCategory
+    @Environment(\.posAnalytics) private var analytics
     @State private var isLoading: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
@@ -59,7 +60,7 @@ struct POSIneligibleView: View {
                             Task { @MainActor in
                                 do {
                                     isLoading = true
-                                    ServiceLocator.analytics.track(
+                                    analytics.track(
                                         event: .PointOfSaleIneligibleUI.ineligibleUIRetryTapped(reason: reason)
                                     )
                                     try await onRefresh()
@@ -95,10 +96,10 @@ struct POSIneligibleView: View {
                 contentHeight = height
             }
             .onAppear {
-                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
+                analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: reason))
             }
             .onChange(of: reason) { _, newReason in
-                ServiceLocator.analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
+                analytics.track(event: .PointOfSaleIneligibleUI.ineligibleUIShown(reason: newReason))
             }
         }
         .scrollDisabled(shouldDisableScrolling)

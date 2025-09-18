@@ -6,6 +6,7 @@ import MessageUI
 import Combine
 import Experiments
 import WooFoundation
+import WooFoundationCore
 import SwiftUI
 import enum Networking.DotcomError
 import protocol Storage.StorageManagerType

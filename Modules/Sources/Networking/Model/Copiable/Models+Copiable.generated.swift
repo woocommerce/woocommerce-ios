@@ -2747,7 +2747,10 @@ extension Networking.Site {
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
         hasSSOEnabled: CopiableProp<Bool> = .copy,
-        applicationPasswordAvailable: CopiableProp<Bool> = .copy
+        applicationPasswordAvailable: CopiableProp<Bool> = .copy,
+        isGarden: CopiableProp<Bool> = .copy,
+        gardenName: CopiableProp<String?> = .copy,
+        gardenPartner: CopiableProp<String?> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2772,6 +2775,9 @@ extension Networking.Site {
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
         let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
+        let isGarden = isGarden ?? self.isGarden
+        let gardenName = gardenName ?? self.gardenName
+        let gardenPartner = gardenPartner ?? self.gardenPartner
 
         return Networking.Site(
             siteID: siteID,
@@ -2796,7 +2802,10 @@ extension Networking.Site {
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial,
             hasSSOEnabled: hasSSOEnabled,
-            applicationPasswordAvailable: applicationPasswordAvailable
+            applicationPasswordAvailable: applicationPasswordAvailable,
+            isGarden: isGarden,
+            gardenName: gardenName,
+            gardenPartner: gardenPartner
         )
     }
 }

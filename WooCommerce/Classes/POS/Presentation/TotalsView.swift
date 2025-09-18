@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -484,12 +485,13 @@ private struct PaymentViewContent: View {
 private struct CashPaymentView: View {
     let cashPaymentState: PointOfSaleCashPaymentState
     let orderState: PointOfSaleOrderState
+    @Environment(\.posCurrencyProvider) private var currencyProvider
 
     var body: some View {
         switch cashPaymentState {
         case .collectingCash:
             if case .loaded(let total) = orderState {
-                PointOfSaleCollectCashView(orderTotal: total.orderTotal)
+                PointOfSaleCollectCashView(orderTotal: total.orderTotal, currencySettings: currencyProvider.currencySettings)
                     .transition(.move(edge: .trailing))
             }
         case .paymentSuccess:

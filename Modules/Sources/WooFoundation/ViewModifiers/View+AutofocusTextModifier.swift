@@ -1,0 +1,33 @@
+import SwiftUI
+
+/// Autofocus for `TextField` and `TextEditor` in iOS 15 and later
+///
+public struct AutofocusTextModifier: ViewModifier {
+
+    @FocusState private var textFieldIsFocused: Bool
+
+    public init() {}
+
+    public func body(content: Content) -> some View {
+        content
+            .focused($textFieldIsFocused)
+            .onAppear {
+                // Without delay '.focused' will not work. This might fix in later releases.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    textFieldIsFocused = true
+                }
+            }
+    }
+}
+
+
+// MARK: View extension
+
+public extension View {
+
+    /// Autofocus in `TextField` and `TextEditor` is available only for iOS15+
+    ///
+    func focused() -> some View {
+        modifier(AutofocusTextModifier())
+    }
+}

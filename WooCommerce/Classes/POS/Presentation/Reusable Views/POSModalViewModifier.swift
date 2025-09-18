@@ -43,7 +43,6 @@ struct POSRootModalViewModifier: ViewModifier {
                 }
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
-            .ignoresSafeArea()
     }
 
     private func updateModalParentSize(with size: CGSize) {
@@ -212,3 +211,50 @@ extension EnvironmentValues {
         set { self[POSModalParentSizeKey.self] = newValue }
     }
 }
+
+// MARK: - Previews for testing popular modals
+
+#if DEBUG
+#Preview("Card Present Alert") {
+    @Previewable @StateObject var modalManager = POSModalManager()
+    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
+    @Previewable @State var showModal = false
+
+    return VStack {
+        Color.blue
+            .ignoresSafeArea(.all)
+        .onAppear {
+            showModal = true
+        }
+    }
+    .posModal(isPresented: $showModal) {
+        PointOfSaleCardPresentPaymentAlert(alertType: .connectionSuccess(
+            viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {
+            })
+        ))
+    }
+    .posRootModal()
+    .environmentObject(modalManager)
+    .environmentObject(coverManager)
+}
+
+#Preview("Barcode Scanner Setup") {
+    @Previewable @StateObject var modalManager = POSModalManager()
+    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
+    @Previewable @State var showModal = false
+
+    return VStack {
+        Color.blue
+            .ignoresSafeArea(.all)
+        .onAppear {
+            showModal = true
+        }
+    }
+    .posModal(isPresented: $showModal) {
+        PointOfSaleBarcodeScannerSetup(isPresented: $showModal, analytics: EmptyPOSAnalytics())
+    }
+    .posRootModal()
+    .environmentObject(modalManager)
+    .environmentObject(coverManager)
+}
+#endif

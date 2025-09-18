@@ -1,5 +1,5 @@
 import SwiftUI
-import WooFoundation
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// A view that displays an animated progress indicator with a circular shape.
 struct POSButtonProgressViewStyle: ProgressViewStyle {

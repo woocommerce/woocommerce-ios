@@ -3,6 +3,7 @@ import Yosemite
 import AutomatticTracks
 import WordPressShared
 import protocol WooFoundation.AnalyticsProvider
+import WooFoundationCore
 
 public class TracksProvider: NSObject, AnalyticsProvider {
     private static let contextManager: TracksContextManager = TracksContextManager()

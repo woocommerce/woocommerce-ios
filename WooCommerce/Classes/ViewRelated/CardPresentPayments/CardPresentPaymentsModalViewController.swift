@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import SafariServices
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// UI containing modals presented in the Card Present Payments flows.
 final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {

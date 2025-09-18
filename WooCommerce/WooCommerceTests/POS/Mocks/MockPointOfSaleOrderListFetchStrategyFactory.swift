@@ -32,6 +32,10 @@ private struct MockPointOfSaleOrderListFetchStrategy: PointOfSaleOrderListFetchS
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.providePointOfSaleOrders(pageNumber: pageNumber)
     }
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        try await orderService.loadOrder(orderID: orderID)
+    }
 }
 
 private struct MockPointOfSaleOrderListSearchFetchStrategy: PointOfSaleOrderListFetchStrategy {
@@ -44,5 +48,9 @@ private struct MockPointOfSaleOrderListSearchFetchStrategy: PointOfSaleOrderList
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         try await orderService.searchPointOfSaleOrders(searchTerm: searchTerm, pageNumber: pageNumber)
+    }
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        try await orderService.loadOrder(orderID: orderID)
     }
 }

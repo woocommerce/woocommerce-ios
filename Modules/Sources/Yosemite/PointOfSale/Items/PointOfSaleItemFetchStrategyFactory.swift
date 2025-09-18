@@ -2,6 +2,8 @@ import Foundation
 import class Networking.ProductsRemote
 import class Networking.ProductVariationsRemote
 import class Networking.AlamofireNetwork
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
     func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
@@ -18,9 +20,13 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let variationsRemote: ProductVariationsRemote
 
     public init(siteID: Int64,
-                credentials: Credentials?) {
+                credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                appPasswordSupportState: AnyPublisher<Bool, Never>? = nil) {
         self.siteID = siteID
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.productsRemote = ProductsRemote(network: network)
         self.variationsRemote = ProductVariationsRemote(network: network)
     }

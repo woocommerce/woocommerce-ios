@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 struct TapToPayEducationStepView: View {
     private let viewModel: TapToPayEducationStepViewModel

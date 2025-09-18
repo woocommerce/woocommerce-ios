@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooRoundedBorderTextFieldStyle
 
 /// Allows the user to enter a gift card code.
 struct GiftCardInputView: View {

@@ -21,13 +21,16 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
     private let couponProvider: PointOfSaleCouponServiceProtocol
     private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory
     private var fetchStrategy: PointOfSaleCouponFetchStrategy
+    private let analyticsProvider: POSAnalyticsProviding
 
     init(itemProvider: PointOfSaleCouponServiceProtocol,
-         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory) {
+         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory,
+         analyticsProvider: POSAnalyticsProviding) {
         self.couponProvider = itemProvider
         self.fetchStrategyFactory = fetchStrategyFactory
         self.fetchStrategy = fetchStrategyFactory.defaultStrategy
         self.paginationTracker = .init()
+        self.analyticsProvider = analyticsProvider
     }
 
     @MainActor
@@ -42,7 +45,8 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
 
     @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
-        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm, analytics: POSItemFetchAnalytics(itemType: .coupon))
+        fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
+                                                            analytics: POSItemFetchAnalytics(itemType: .coupon, analytics: analyticsProvider))
         setSearchingState()
         await loadFirstPage()
     }

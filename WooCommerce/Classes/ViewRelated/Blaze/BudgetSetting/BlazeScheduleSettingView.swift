@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View to set the schedule for a Blaze campaign.
 ///

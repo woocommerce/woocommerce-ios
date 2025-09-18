@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Yosemite
+import WooFoundation
 
 private extension ProductStatus {
     var descriptionColor: UIColor {

@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 struct TotalsViewHelper {
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {

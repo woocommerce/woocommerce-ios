@@ -45,8 +45,8 @@ struct POSOrderMapper {
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,
-            formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedDiscountTotal: formattedDiscountTotal,
+            formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
             formattedNetAmount: formattedNetAmount
         )

@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 struct WooShippingSplitShipmentsView: View {
     @Environment(\.dismiss) private var dismiss

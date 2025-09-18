@@ -1,13 +1,12 @@
 import Foundation
-import Yosemite
 
 /// Async/await version of `PaginationTracker`, consider renaming `PaginationTracker` as deprecated and this class to `PaginationTracker`.
 /// Keeps track of the pagination for API syncing to support infinite scroll and pull-to-refresh.
-final class AsyncPaginationTracker {
-    typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool
+public final class AsyncPaginationTracker {
+    public typealias SyncFunction = (_ pageNumber: Int) async throws -> Bool
 
     /// State of loading the next page in `ensureNextPageIsSynced`.
-    enum NextPageSyncState {
+    public enum NextPageSyncState {
         case syncing
         case synced
         case noNextPage
@@ -28,7 +27,7 @@ final class AsyncPaginationTracker {
     private var pagesBeingSynced = IndexSet()
 
     /// Whether there might be more pages to fetch from the API, set by the sync function.
-    private(set) var hasNextPage: Bool = true
+    private(set) public var hasNextPage: Bool = true
 
     /// Returns the highest page number that has been successfully synced, if any.
     private var highestPageSynced: Int? {
@@ -41,7 +40,7 @@ final class AsyncPaginationTracker {
     }
 
     /// Designated Initializer
-    init(pageFirstIndex: Int = Defaults.pageFirstIndex) {
+    public init(pageFirstIndex: Int = Defaults.pageFirstIndex) {
         self.pageFirstIndex = pageFirstIndex
     }
 
@@ -50,7 +49,7 @@ final class AsyncPaginationTracker {
     ///     1.  Proceed only if there is next page to sync.
     ///     2.  Verify if the next page isn't currently being synced.
     ///     3.  Proceed syncing the next page.
-    func ensureNextPageIsSynced(syncFunction: @escaping SyncFunction) async throws -> NextPageSyncState {
+    public func ensureNextPageIsSynced(syncFunction: @escaping SyncFunction) async throws -> NextPageSyncState {
         guard hasNextPage else {
             return .noNextPage
         }
@@ -69,14 +68,14 @@ final class AsyncPaginationTracker {
 
     /// Resets internal states and resyncs the first page of results.
     ///
-    func resync(syncFunction: @escaping SyncFunction) async throws {
+    public func resync(syncFunction: @escaping SyncFunction) async throws {
         resetInternalState()
         try await syncFirstPage(syncFunction: syncFunction)
     }
 
     /// Syncs the first page of results.
     ///
-    func syncFirstPage(syncFunction: @escaping SyncFunction) async throws {
+    public func syncFirstPage(syncFunction: @escaping SyncFunction) async throws {
         try await sync(pageNumber: pageFirstIndex, syncFunction: syncFunction)
     }
 }

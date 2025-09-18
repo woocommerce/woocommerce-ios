@@ -9,6 +9,7 @@ import enum Yosemite.PointOfSaleItemServiceError
 import struct Yosemite.POSVariableParentProduct
 import class Yosemite.Store
 import enum Yosemite.POSItemType
+import class Yosemite.AsyncPaginationTracker
 
 protocol PointOfSaleItemsControllerProtocol {
     ///

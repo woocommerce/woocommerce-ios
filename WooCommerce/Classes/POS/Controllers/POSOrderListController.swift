@@ -8,6 +8,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
+import class Yosemite.AsyncPaginationTracker
 
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }

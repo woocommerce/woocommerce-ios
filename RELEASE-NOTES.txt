@@ -6,6 +6,7 @@
 - [*] Order details: Display only physical items in the Shipping Labels section. [https://github.com/woocommerce/woocommerce-ios/pull/16127]
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
 - [internal] POS Modularization: Removed direct ServiceLocator usage within POS by requiring complex Woo app target dependencies to be injected via POS dependency protocols, and moved reusable dependencies to WooFoundation and Yosemite [https://github.com/woocommerce/woocommerce-ios/pull/16132]
+- [internal] Replace deprecated code on performance chart [https://github.com/woocommerce/woocommerce-ios/pull/16145]
 
 23.2
 -----

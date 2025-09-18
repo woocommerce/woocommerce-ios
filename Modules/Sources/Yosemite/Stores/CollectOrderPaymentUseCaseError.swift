@@ -51,4 +51,3 @@ public enum CollectOrderPaymentUseCaseError: LocalizedError {
             "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
     }
 }
-

@@ -7,6 +7,7 @@
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
 - [internal] Fix back swipe gesture detection compatibility for iOS26 [https://github.com/woocommerce/woocommerce-ios/pull/16133]
 - [internal] POS Modularization: Removed direct ServiceLocator usage within POS by requiring complex Woo app target dependencies to be injected via POS dependency protocols, and moved reusable dependencies to WooFoundation and Yosemite [https://github.com/woocommerce/woocommerce-ios/pull/16132]
+- [*] Workaround to make custom field decoding more reliable with sites which return incorrectly formatted meta_data for products, variations, and orders. [https://github.com/woocommerce/woocommerce-ios/pull/16141]
 
 23.2
 -----

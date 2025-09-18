@@ -227,6 +227,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
         defaults[.applicationPasswordUnsupportedList] = nil
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
+        defaults[.ciabBookingsTabAvailable] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }

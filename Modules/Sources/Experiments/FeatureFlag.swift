@@ -215,4 +215,8 @@ public enum FeatureFlag: Int {
     /// It syncs products and variations to local storage and display them in POS for quick access.
     ///
     case pointOfSaleLocalCatalogi1
+
+    /// Enables a new Bookings tab for CIAB sites
+    ///
+    case ciabBookings
 }

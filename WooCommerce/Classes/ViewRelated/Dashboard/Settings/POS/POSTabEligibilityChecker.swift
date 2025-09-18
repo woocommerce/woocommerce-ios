@@ -38,6 +38,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -47,7 +48,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
                                                                                       storageManager: ServiceLocator.storageManager),
-         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
+         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials),
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -56,6 +58,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.featureFlagService = featureFlagService
         self.systemStatusService = systemStatusService
         self.siteSettingService = siteSettingService
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -65,6 +68,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
+        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+            return .ineligible(reason: .unsupportedInCIABSites)
+        }
+
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
         }
@@ -89,6 +96,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+            return false
+        }
+
         guard userInterfaceIdiom == .pad else {
             return false
         }
@@ -126,6 +137,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
+            return await checkEligibility()
+        case .unsupportedInCIABSites:
             return await checkEligibility()
         }
     }

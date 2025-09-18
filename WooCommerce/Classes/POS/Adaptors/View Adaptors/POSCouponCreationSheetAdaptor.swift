@@ -8,9 +8,9 @@ import struct Yosemite.Coupon
 
 struct POSCouponCreationViewAdaptor: View {
     @StateObject private var viewModel: AddEditCouponViewModel
-    @Binding var showTypeSelection: Bool
-    let dismissHandler: () -> Void
-    let onDisappear: () -> Void
+    @Binding private var showTypeSelection: Bool
+    private let dismissHandler: () -> Void
+    private let onDisappear: () -> Void
 
     init(discountType: Coupon.DiscountType,
          showTypeSelection: Binding<Bool>,

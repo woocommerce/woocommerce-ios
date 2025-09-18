@@ -86,6 +86,29 @@ struct LegacyPOSTabEligibilityCheckerTests {
         #expect(result == false)
     }
 
+    @Test func is_invisible_when_site_is_CIAB() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: false)
+        setupCountry(country: .us)
+        accountWhitelistedInBackend(true)
+        let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true,
+                                                                mockedCIABSites: [site],
+                                                                mockedCIABDisabledFeatures: [.pointOfSale])
+        let checker = LegacyPOSTabEligibilityChecker(site: site,
+                                                     userInterfaceIdiom: .pad,
+                                                     siteSettings: siteSettings,
+                                                     pluginsService: pluginsService,
+                                                     stores: stores,
+                                                     featureFlagService: featureFlagService,
+                                                     siteCIABEligibilityChecker: ciabEligibilityChecker)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
     @Test(arguments: [
         (country: Country.ca, currency: CurrencyCode.CAD),
         (country: Country.es, currency: CurrencyCode.EUR)

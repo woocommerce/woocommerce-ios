@@ -307,6 +307,28 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == false)
     }
 
+    @Test func is_invisible_when_site_is_CIAB() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        setupCountry(country: .us, currency: .USD)
+        accountWhitelistedInBackend(true)
+        let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true,
+                                                                mockedCIABSites: [site],
+                                                                mockedCIABDisabledFeatures: [.pointOfSale])
+        let checker = POSTabEligibilityChecker(site: site,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService,
+                                               siteCIABEligibilityChecker: ciabEligibilityChecker)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
     @Test func checkVisibility_and_checkEligibility_return_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
@@ -342,6 +364,29 @@ struct POSTabEligibilityCheckerTests {
         // Then - both methods should wait for site settings and return expected results.
         #expect(visibilityResult == true)
         #expect(eligibilityResult == .eligible)
+    }
+
+    @Test func is_ineligible_when_site_is_CIAB() async throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
+        setupCountry(country: .us, currency: .USD)
+        accountWhitelistedInBackend(true)
+        let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true,
+                                                                mockedCIABSites: [site],
+                                                                mockedCIABDisabledFeatures: [.pointOfSale])
+        let checker = POSTabEligibilityChecker(site: site,
+                                               userInterfaceIdiom: .pad,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               featureFlagService: featureFlagService,
+                                               systemStatusService: mockSystemStatusService,
+                                               siteCIABEligibilityChecker: ciabEligibilityChecker)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedInCIABSites))
     }
 
     // MARK: - `checkInitialVisibility Tests

@@ -1,15 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
-23.4
------
-- [*] Workaround to make custom field decoding more reliable with sites which return incorrectly formatted meta_data for products, variations, and orders. [https://github.com/woocommerce/woocommerce-ios/pull/16141]
-
 23.3
 -----
 - [*] Order details: Display only physical items in the Shipping Labels section. [https://github.com/woocommerce/woocommerce-ios/pull/16127]
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
 - [internal] POS Modularization: Removed direct ServiceLocator usage within POS by requiring complex Woo app target dependencies to be injected via POS dependency protocols, and moved reusable dependencies to WooFoundation and Yosemite [https://github.com/woocommerce/woocommerce-ios/pull/16132]
+- [*] Workaround to make custom field decoding more reliable with sites which return incorrectly formatted meta_data for products, variations, and orders. [https://github.com/woocommerce/woocommerce-ios/pull/16141]
 
 23.2
 -----

@@ -3,7 +3,6 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize

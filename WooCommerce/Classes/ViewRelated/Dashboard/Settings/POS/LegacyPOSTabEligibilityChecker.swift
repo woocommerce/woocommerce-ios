@@ -28,6 +28,7 @@ private enum LegacyPOSIneligibleReason: Equatable {
     case unsupportedCountry(supportedCountries: [CountryCode])
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
+    case unsupportedInCIABSites
 }
 
 /// Legacy POS eligibility state for i1.
@@ -45,6 +46,7 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(siteID: Int64,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -52,7 +54,8 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.siteID = siteID
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
@@ -60,6 +63,7 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
@@ -73,6 +77,10 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
     }
 
     private func checkI1Eligibility() async -> LegacyPOSEligibilityState {
+        guard siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.pointOfSale) else {
+            return .ineligible(reason: .unsupportedInCIABSites)
+        }
+
         switch checkDeviceEligibility() {
         case .eligible:
             break

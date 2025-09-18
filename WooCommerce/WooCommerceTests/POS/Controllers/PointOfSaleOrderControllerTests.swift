@@ -21,7 +21,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_without_items_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
 
         // When
         await sut.syncOrder(for: Cart(), retryHandler: {})
@@ -33,7 +35,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_cart_matching_order_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -52,7 +56,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_already_syncing_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         mockOrderService.simulateSyncing = true
         Task {
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
@@ -78,7 +84,8 @@ struct PointOfSaleOrderControllerTests {
                                                 numberOfDecimals: 2)
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
-                                             currencySettings: currencySettings)
+                                             currencySettingsProvider: MockCurrencySettingsProvider(currencySettings: currencySettings),
+                                             analytics: MockPOSAnalytics())
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
@@ -90,7 +97,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_changes_from_previous_order_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let cartItem = makeItem(quantity: 1)
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
@@ -110,7 +119,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_no_previous_order_sets_orderState_syncing_then_loaded() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -147,7 +158,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
         var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
@@ -183,7 +196,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func sendReceipt_when_there_is_no_order_then_throws_noOrder_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let email = "test@example.com"
 
         // When
@@ -199,7 +214,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func sendReceipt_with_order_delegates_to_receiptSender() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let order = Order.fake()
         let recipientEmail = "test@fake.com"
         mockOrderService.orderToReturn = order
@@ -221,6 +238,8 @@ struct PointOfSaleOrderControllerTests {
             // Given/When
             let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                                  receiptSender: mockReceiptSender,
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
+                                                 analytics: MockPOSAnalytics(),
                                                  celebration: MockPaymentCaptureCelebration())
             try await sut.collectCashPayment(changeDueAmount: nil)
         } catch let error as PointOfSaleOrderController.PointOfSaleOrderControllerError {
@@ -235,6 +254,8 @@ struct PointOfSaleOrderControllerTests {
         let mockPaymentCelebration = MockPaymentCaptureCelebration()
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics(),
                                              celebration: mockPaymentCelebration)
 
         let orderItem = OrderItem.fake()
@@ -255,6 +276,8 @@ struct PointOfSaleOrderControllerTests {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics(),
                                              celebration: MockPaymentCaptureCelebration())
 
         let orderItem = OrderItem.fake()
@@ -274,7 +297,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_successful_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake()
         let fakeCartItem = makeItem(orderItemsToMatch: [fakeOrderItem])
@@ -294,7 +319,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_updating_existing_order_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
 
@@ -316,7 +343,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_cart_matching_order_then_returns_orderNotChanged_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let fakeOrder = Order.fake().copy(items: [orderItem])
         let cartItem = makeItem(orderItemsToMatch: [orderItem])
@@ -339,7 +368,9 @@ struct PointOfSaleOrderControllerTests {
 
     @Test func syncOrder_when_orderService_fails_then_returns_syncOrderState_failure() async throws {
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let cartItem = makeItem(quantity: 1)
 
         // When
@@ -357,7 +388,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_cart_matching_order_and_coupons_doesnt_call_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -380,7 +413,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let initialCouponCode = "SAVE10"
         let initialCoupon = OrderCouponLine.fake().copy(code: initialCouponCode)
@@ -403,7 +438,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_with_matching_items_but_removed_coupon_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let orderItem = OrderItem.fake().copy(quantity: 1)
         let couponCode = "SAVE10"
         let coupon = OrderCouponLine.fake().copy(code: couponCode)
@@ -426,7 +463,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_orderService_fails_with_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage)
 
@@ -465,7 +504,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
         let errorMessage = "Coupon INVALID does not exist"
         let errorJSON = """
         {
@@ -511,7 +552,9 @@ struct PointOfSaleOrderControllerTests {
     @Test func syncOrder_when_fails_sets_order_to_nil() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
-                                             receiptSender: mockReceiptSender)
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
 
         // First create a successful order
         let orderItem = OrderItem.fake().copy(quantity: 1)
@@ -554,20 +597,16 @@ struct PointOfSaleOrderControllerTests {
 
     @MainActor
     struct AnalyticsTests {
-        private let analytics: WooAnalytics
-        private let analyticsProvider = MockAnalyticsProvider()
+        private let analytics = MockPOSAnalytics()
         private let orderService = MockPOSOrderService()
         private let receiptSender = MockReceiptService()
         private let mockReceiptSender = MockPOSReceiptSender()
-
-        init() {
-            analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        }
 
         @Test func syncOrder_when_create_order_then_tracks_order_creation_success_event() async throws {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptSender: mockReceiptSender,
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics)
             let fakeOrderItem = OrderItem.fake().copy(quantity: 1)
             let fakeOrder = Order.fake()
@@ -578,13 +617,14 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [fakeCartItem]), retryHandler: { })
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_success" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "order_creation_success" }) != nil)
         }
 
         @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
             // Given
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptSender: mockReceiptSender,
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
                                                  analytics: analytics)
             orderService.orderToReturn = nil
 
@@ -592,18 +632,16 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
             // Then
-            #expect(analyticsProvider.receivedEvents.first(where: { $0 == "order_creation_failed" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "order_creation_failed" }) != nil)
         }
 
         @MainActor
         @Test func collectCashPayment_when_failure_tracks_correct_event() async throws {
             // Given
-            let mockAnalyticsProvider = MockAnalyticsProvider()
-            let mockAnalytics = WooAnalytics(analyticsProvider: mockAnalyticsProvider)
-
             let sut = PointOfSaleOrderController(orderService: orderService,
                                                  receiptSender: mockReceiptSender,
-                                                 analytics: mockAnalytics,
+                                                 currencySettingsProvider: MockCurrencySettingsProvider(),
+                                                 analytics: analytics,
                                                  celebration: MockPaymentCaptureCelebration())
 
             // In order to test the order controller failure we need to succeed first in creating a successful order:
@@ -616,17 +654,14 @@ struct PointOfSaleOrderControllerTests {
 
             // When
             await #expect(performing: {
-                try await sut.collectCashPayment(changeDueAmount: nil as String?)
+                try await sut.collectCashPayment(changeDueAmount: nil)
             }, throws: { _ in
                 return true
             })
 
             // Then
-            #expect(mockAnalyticsProvider.receivedEvents.first(where: { $0 == "cash_payment_failed" }) != nil)
+            #expect(analytics.events.first(where: { $0.eventName == "cash_payment_failed" }) != nil)
         }
-
-
-
     }
 }
 
@@ -641,4 +676,18 @@ private func makeItem(name: String = "",
                  title: name,
                  subtitle: nil,
                  quantity: quantity)
+}
+
+// MARK: - Mock Currency Settings Provider
+
+final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
+    let currencySettings: CurrencySettings
+
+    init(currencySettings: CurrencySettings = CurrencySettings(currencyCode: .USD,
+                                                                 currencyPosition: .left,
+                                                                 thousandSeparator: ",",
+                                                                 decimalSeparator: ".",
+                                                                 numberOfDecimals: 2)) {
+        self.currencySettings = currencySettings
+    }
 }

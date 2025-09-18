@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.ShippingLabelPaymentMethod
 import struct Yosemite.ShippingLabelAccountSettings
+import struct WooFoundation.ScrollableVStack
 
 struct WooShippingPaymentMethodsView: View {
 

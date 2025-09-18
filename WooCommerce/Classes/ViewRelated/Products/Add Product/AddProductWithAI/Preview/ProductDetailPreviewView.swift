@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View for previewing product details generated with AI.
 ///

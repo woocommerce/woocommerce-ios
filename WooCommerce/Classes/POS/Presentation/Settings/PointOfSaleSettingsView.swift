@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
 
     let settingsController: PointOfSaleSettingsControllerProtocol
@@ -27,7 +28,7 @@ extension PointOfSaleSettingsView {
                 title: Localization.navigationTitle,
                 backButtonConfiguration: .init(state: .enabled,
                                                action: {
-                                                   ServiceLocator.analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                   analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                    dismiss()
                                                },
                                                buttonIcon: "xmark"))
@@ -39,7 +40,7 @@ extension PointOfSaleSettingsView {
                     item: .store,
                     isSelected: selection == .store,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                         selection = .store
                     }
                 )
@@ -48,10 +49,21 @@ extension PointOfSaleSettingsView {
                     item: .hardware,
                     isSelected: selection == .hardware,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        analytics.track(.pointOfSaleSettingsHardwareTapped)
                         selection = .hardware
                     }
                 )
+
+                // TODO: WOOMOB-1287 - integrate with local catalog feature eligibility
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                    PointOfSaleSettingsCard(
+                        item: .localCatalog,
+                        isSelected: selection == .localCatalog,
+                        onTap: {
+                            selection = .localCatalog
+                        }
+                    )
+                }
 
                 Spacer()
 
@@ -59,7 +71,7 @@ extension PointOfSaleSettingsView {
                     item: .help,
                     isSelected: selection == .help,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsHelpTapped)
+                        analytics.track(.pointOfSaleSettingsHelpTapped)
                         selection = .help
                     }
                 )
@@ -76,6 +88,8 @@ extension PointOfSaleSettingsView {
             PointOfSaleSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
+        case .localCatalog:
+            POSSettingsLocalCatalogDetailView()
         case .help:
             PointOfSaleSettingsHelpDetailView()
         default:
@@ -141,6 +155,7 @@ extension PointOfSaleSettingsView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case store
         case hardware
+        case localCatalog
         case help
 
         var id: Self { self }
@@ -149,6 +164,7 @@ extension PointOfSaleSettingsView {
             switch self {
             case .store: return Localization.sidebarNavigationStoreTitle
             case .hardware: return Localization.sidebarNavigationHardwareTitle
+            case .localCatalog: return Localization.sidebarNavigationLocalCatalogTitle
             case .help: return Localization.sidebarNavigationHelpTitle
             }
         }
@@ -157,6 +173,7 @@ extension PointOfSaleSettingsView {
             switch self {
             case .store: return Localization.sidebarNavigationStoreSubtitle
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
+            case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
             }
         }
@@ -165,6 +182,7 @@ extension PointOfSaleSettingsView {
             switch self {
             case .store: return "bag"
             case .hardware: return "wrench.and.screwdriver"
+            case .localCatalog: return "internaldrive"
             case .help: return "questionmark.circle"
             }
         }
@@ -205,6 +223,18 @@ extension PointOfSaleSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle",
             value: "Manage hardware connections",
             comment: "Description of the settings to be found within the Hardware section."
+        )
+
+        static let sidebarNavigationLocalCatalogTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationLocalCatalogTitle",
+            value: "Catalog",
+            comment: "Title of the Local catalog section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationLocalCatalogSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationLocalCatalogSubtitle",
+            value: "Manage catalog settings",
+            comment: "Description of the settings to be found within the Local catalog section."
         )
 
         static let sidebarNavigationHelpSubtitle = NSLocalizedString(

@@ -16,23 +16,7 @@ import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
 import class Yosemite.POSSiteSettingService
 import enum Networking.SiteSettingsFeature
-
-/// Represents the reasons why a site may be ineligible for POS.
-enum POSIneligibleReason: Equatable {
-    case unsupportedIOSVersion
-    case unsupportedWooCommerceVersion(minimumVersion: String)
-    case siteSettingsNotAvailable
-    case wooCommercePluginNotFound
-    case featureSwitchDisabled
-    case unsupportedCurrency(countryCode: CountryCode, supportedCurrencies: [CurrencyCode])
-    case selfDeallocated
-}
-
-/// Represents the eligibility state for POS.
-enum POSEligibilityState: Equatable {
-    case eligible
-    case ineligible(reason: POSIneligibleReason)
-}
+import class WooFoundation.VersionHelpers
 
 protocol POSEntryPointEligibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.

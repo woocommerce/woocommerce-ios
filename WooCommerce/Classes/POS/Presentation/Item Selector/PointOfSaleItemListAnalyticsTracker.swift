@@ -1,16 +1,15 @@
 import Foundation
-import WooFoundation
 import enum Yosemite.POSItemType
 
 struct PointOfSaleItemListAnalyticsTracker {
     private let sourceView: WooAnalyticsEvent.PointOfSale.SourceView
     private let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType
-    private let analytics: Analytics
+    private let analytics: POSAnalyticsProviding
 
     init(
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) {
         self.sourceView = sourceView
         self.sourceViewType = sourceViewType
@@ -20,7 +19,7 @@ struct PointOfSaleItemListAnalyticsTracker {
     init(
         selectedItemListType: ItemListType,
         searchTerm: String,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: POSAnalyticsProviding
     ) {
         switch selectedItemListType {
         case .products(search: false):

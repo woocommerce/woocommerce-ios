@@ -4,6 +4,7 @@ import Storage
 import class Networking.UserAgent
 import Experiments
 import protocol WooFoundation.Analytics
+import class WooFoundation.VersionHelpers
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section

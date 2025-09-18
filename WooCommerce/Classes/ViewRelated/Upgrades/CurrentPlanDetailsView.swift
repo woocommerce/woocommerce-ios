@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct CurrentPlanDetailsView: View {
     @State var expirationDate: String?

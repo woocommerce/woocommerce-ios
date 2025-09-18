@@ -115,8 +115,6 @@ final class HubMenuViewModel: ObservableObject {
                                                                      credentials: credentials)))
     }()
 
-    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
-    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -146,7 +144,6 @@ final class HubMenuViewModel: ObservableObject {
         observePlanName()
         observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
-        createCardPresentPaymentService()
     }
 
     func viewDidAppear() async {
@@ -233,14 +230,6 @@ final class HubMenuViewModel: ObservableObject {
 // MARK: - Helper methods
 //
 private extension HubMenuViewModel {
-    func createCardPresentPaymentService() {
-        Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                             stores: stores,
-                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        }
-    }
-
     func setupSettingsElements() {
         settingsElements = [Settings()]
 

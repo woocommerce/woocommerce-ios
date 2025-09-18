@@ -5,7 +5,6 @@ import Yosemite
 import protocol Experiments.FeatureFlagService
 import enum Experiments.FeatureFlag
 import protocol Storage.StorageManagerType
-
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()
@@ -83,5 +82,37 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
                         viewModel: SupportFormViewModel(sourceTag: sourceTag,
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
         )
+    }
+
+    func createFormattableAmountTextField(preset: Decimal?,
+                                          onSubmit: @escaping () -> Void,
+                                          onChange: @escaping (String) -> Void) -> AnyView {
+        AnyView(POSFormattableAmountTextFieldAdaptor(preset: preset, onSubmit: onSubmit, onChange: onChange))
+    }
+
+    func createCouponCreationView(discountType: Coupon.DiscountType,
+                                  showTypeSelection: Binding<Bool>,
+                                  onSuccess: @escaping (Coupon) -> Void,
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView {
+        AnyView(POSCouponCreationViewAdaptor(
+            discountType: discountType,
+            showTypeSelection: showTypeSelection,
+            onSuccess: onSuccess,
+            dismissHandler: dismissHandler,
+            onDisappear: onDisappear
+        ))
+    }
+
+    func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
+                                          title: String,
+                                          cancelButtonTitle: String,
+                                          onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
+        AnyView(POSDiscountTypeSelectionSheetAdaptor(
+            isPresented: isPresented,
+            title: title,
+            cancelButtonTitle: cancelButtonTitle,
+            onSelection: onSelection
+        ))
     }
 }

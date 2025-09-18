@@ -2,6 +2,8 @@ import Foundation
 import Networking
 import class WooFoundation.CurrencyFormatter
 import enum WooFoundation.CurrencyCode
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
@@ -17,12 +19,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
 
-    public convenience init?(siteID: Int64, credentials: Credentials?) {
+    public convenience init?(siteID: Int64,
+                             credentials: Credentials?,
+                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             appPasswordSupportState: AnyPublisher<Bool, Never>) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   ordersRemote: OrdersRemote(network: network))
     }

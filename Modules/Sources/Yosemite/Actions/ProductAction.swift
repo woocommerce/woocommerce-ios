@@ -124,6 +124,7 @@ public enum ProductAction: Action {
     ///
     case checkIfStoreHasProducts(siteID: Int64,
                                  status: ProductStatus? = nil,
+                                 type: ProductType? = nil,
                                  onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Identifies the language from the given string

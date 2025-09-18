@@ -201,7 +201,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         // "payment_url" is only available on stores with version >= 6.4
         let paymentURL = try container.decodeIfPresent(URL.self, forKey: .paymentURL)
 
-        let allOrderMetaData = try? container.decode([MetaData].self, forKey: .metadata)
+        let allOrderMetaData: [MetaData]? = {
+            let metadata = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
+            return metadata.isEmpty ? nil : metadata
+        }()
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value.stringValue
 

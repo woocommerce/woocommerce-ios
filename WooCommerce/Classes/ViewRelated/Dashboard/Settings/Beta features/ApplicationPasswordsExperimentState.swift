@@ -1,25 +1,27 @@
+import Combine
 import Foundation
 import Yosemite
+import struct Storage.GeneralAppSettingsStorage
 
 final class ApplicationPasswordsExperimentState {
     private let stores: StoresManager
     private let availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol
+    private let generalAppSettings: GeneralAppSettingsStorage
+
+    private var experimentalFlagSubscription: AnyCancellable?
 
     init(
         stores: StoresManager = ServiceLocator.stores,
-        availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker()
+        availabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol = ApplicationPasswordsExperimentAvailabilityChecker(),
+        generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings
     ) {
         self.stores = stores
         self.availabilityChecker = availabilityChecker
+        self.generalAppSettings = generalAppSettings
+        observeExperimentalFlag()
     }
 
-    var isAvailableAndEnabled: Bool {
-        get async {
-            let isAvailable = await availabilityChecker.fetchAvailability()
-            let isEnabled = await isEnabled
-            return isAvailable && isEnabled
-        }
-    }
+    @Published private(set) var isAvailableAndEnabled: Bool = true
 
     @MainActor
     private var isEnabled: Bool {
@@ -32,6 +34,25 @@ final class ApplicationPasswordsExperimentState {
                 )
             }
         }
+    }
+
+    private func updateAvailability() {
+        Task { @MainActor in
+            let isAvailable = await availabilityChecker.fetchAvailability()
+            let isEnabled = await isEnabled
+            isAvailableAndEnabled = isAvailable && isEnabled
+        }
+    }
+
+    private func observeExperimentalFlag() {
+        experimentalFlagSubscription = generalAppSettings
+            .betaFeatureEnabledPublisher(
+                .applicationPasswords
+            )
+            .removeDuplicates()
+            .sink { [weak self] _ in
+                self?.updateAvailability()
+            }
     }
 }
 

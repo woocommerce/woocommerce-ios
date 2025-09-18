@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ProductImageThumbnail
 
 struct ProductDiscountView: View {
     private let viewModel: ProductDiscountViewModel

@@ -13,7 +13,8 @@ struct POSTabEligibilityCheckerTests {
     private var eligibilityService: MockPOSEligibilityService!
     private var mockSystemStatusService: MockPOSSystemStatusService!
     private var mockSiteSettingService: MockPOSSiteSettingService!
-    private let siteID: Int64 = 2
+    private let site = Site.fake().copy(siteID: 2)
+    private var siteID: Int64 { site.siteID }
 
     init() async throws {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -37,7 +38,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -59,7 +60,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -84,7 +85,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -104,7 +105,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.5.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -123,7 +124,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -143,7 +144,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -163,7 +164,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: nil)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -182,7 +183,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -221,7 +222,7 @@ struct POSTabEligibilityCheckerTests {
 
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -240,7 +241,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -275,7 +276,7 @@ struct POSTabEligibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
 
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -293,7 +294,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .phone, // Not iPad
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -318,7 +319,7 @@ struct POSTabEligibilityCheckerTests {
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
         setupWooCommerceVersion("9.6.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -347,7 +348,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_true_when_cached_tab_visibility_is_enabled() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabEligibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: true)
 
         // When
@@ -359,7 +360,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_disabled() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabEligibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: false)
 
         // When
@@ -371,7 +372,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test func checkInitialVisibility_returns_false_when_cached_tab_visibility_is_unavailable() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID, eligibilityService: eligibilityService, stores: stores)
+        let checker = POSTabEligibilityChecker(site: site, eligibilityService: eligibilityService, stores: stores)
         setupPOSTabVisibility(siteID: siteID, isVisible: nil)
 
         // When
@@ -392,7 +393,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -415,7 +416,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -441,7 +442,7 @@ struct POSTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isPointOfSaleAsATabi2Enabled: true)
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -460,7 +461,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.5.0")
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -480,7 +481,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -500,7 +501,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -520,7 +521,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         setupWooCommerceVersion("9.9.9", featureSwitchEnabled: false)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                userInterfaceIdiom: .pad,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -538,7 +539,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test func refreshEligibility_returns_ineligible_for_unsupportedIOSVersion() async throws {
         // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores)
 
@@ -571,7 +572,7 @@ struct POSTabEligibilityCheckerTests {
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -604,7 +605,7 @@ struct POSTabEligibilityCheckerTests {
             }
         }
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores)
 
@@ -621,7 +622,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("10.0.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService,
@@ -639,7 +640,7 @@ struct POSTabEligibilityCheckerTests {
         setupCountry(country: .us, currency: .USD)
         setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
 
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -663,7 +664,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -685,7 +686,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: true))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -706,7 +707,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -728,7 +729,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -750,7 +751,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .success(POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: nil))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
@@ -771,7 +772,7 @@ struct POSTabEligibilityCheckerTests {
         mockSystemStatusService.resultToReturn = .failure(NSError(domain: "test", code: 500))
 
         setupCountry(country: .us, currency: .USD)
-        let checker = POSTabEligibilityChecker(siteID: siteID,
+        let checker = POSTabEligibilityChecker(site: site,
                                                siteSettings: siteSettings,
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)

@@ -1368,6 +1368,7 @@ public enum ProductUpdateError: Error, Equatable {
     case duplicatedSKU
     case invalidSKU
     case invalidGlobalUniqueIdentifier
+    case invalidOrDuplicatedGlobalUniqueID
     case passwordCannotBeUpdated
     case notFoundInStorage
     case variationInvalidImageId
@@ -1394,6 +1395,7 @@ public enum ProductUpdateError: Error, Equatable {
 
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
+        case invalidOrDuplicatedGlobalUniqueID = "product_invalid_global_unique_id"
         case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
         case invalidMaxQuantity = "woocommerce_rest_invalid_max_quantity"
         case invalidMinQuantity = "woocommerce_rest_invalid_min_quantity"
@@ -1408,6 +1410,8 @@ public enum ProductUpdateError: Error, Equatable {
                 return .variationInvalidImageId
             case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
                 return .generic(message: message ?? "")
+            case .invalidOrDuplicatedGlobalUniqueID:
+                return .invalidOrDuplicatedGlobalUniqueID
             }
         }
     }
@@ -1426,6 +1430,10 @@ extension ProductUpdateError: LocalizedError {
             return NSLocalizedString("productInventorySettings.invalidGlobalUniqueIdentifier.error",
                                      value: "Please enter only numbers and hyphens (-).",
                                      comment: "The message of the alert when there is an error updating the product global unique identifier")
+        case .invalidOrDuplicatedGlobalUniqueID:
+            return NSLocalizedString("productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID",
+                                     value: "Invalid or duplicated GTIN, UPC, EAN or ISBN.",
+                                     comment: "Error message when saving an invalid or duplicated product global unique ID")
         case .generic(let message):
             return message
         case .unknown(let error):

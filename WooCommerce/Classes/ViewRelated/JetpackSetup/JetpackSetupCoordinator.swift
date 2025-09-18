@@ -310,7 +310,7 @@ private extension JetpackSetupCoordinator {
     @MainActor
     func loadWPComAccountUsername(authToken: String) async -> String? {
         await withCheckedContinuation { continuation in
-            let network = AlamofireNetwork(credentials: Credentials(authToken: authToken))
+            let network = AlamofireNetwork(credentials: Credentials(authToken: authToken), selectedSite: nil, appPasswordSupportState: nil)
             let accountAction = JetpackConnectionAction.loadWPComAccount(network: network) { account in
                 continuation.resume(returning: account?.username)
             }

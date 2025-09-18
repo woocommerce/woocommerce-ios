@@ -5,6 +5,8 @@ import Yosemite
 import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
+import struct NetworkingCore.JetpackSite
+import struct Combine.AnyPublisher
 
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
@@ -32,7 +34,10 @@ final class POSTabCoordinator {
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
 
     private lazy var posItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory = {
-        PointOfSaleItemFetchStrategyFactory(siteID: siteID, credentials: credentials)
+        PointOfSaleItemFetchStrategyFactory(siteID: siteID,
+                                            credentials: credentials,
+                                            selectedSite: defaultSitePublisher,
+                                            appPasswordSupportState: isAppPasswordSupported)
     }()
 
     private lazy var posPopularItemFetchStrategyFactory: PointOfSaleFixedItemFetchStrategyFactory = {
@@ -43,6 +48,8 @@ final class POSTabCoordinator {
         PointOfSaleCouponFetchStrategyFactory(siteID: siteID,
                                               currencySettings: currencySettings,
                                               credentials: credentials,
+                                              selectedSite: defaultSitePublisher,
+                                              appPasswordSupportState: isAppPasswordSupported,
                                               storage: storageManager)
     }()
 
@@ -50,14 +57,26 @@ final class POSTabCoordinator {
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,
+                                        selectedSite: defaultSitePublisher,
+                                        appPasswordSupportState: isAppPasswordSupported,
                                         storage: storageManager)
     }()
 
     private lazy var barcodeScanService: PointOfSaleBarcodeScanService = {
         PointOfSaleBarcodeScanService(siteID: siteID,
                                       credentials: credentials,
+                                      selectedSite: defaultSitePublisher,
+                                      appPasswordSupportState: isAppPasswordSupported,
                                       currencySettings: currencySettings)
     }()
+
+    /// Publisher to send to `AlamofireNetwork` for request authentication mode switching.
+    private let defaultSitePublisher: AnyPublisher<JetpackSite?, Never>
+
+    private let appPasswordSupportState: ApplicationPasswordsExperimentState
+
+    /// Publisher to send to `AlamofireNetwork` the state of app password support for JP sites
+    private let isAppPasswordSupported: AnyPublisher<Bool, Never>
 
     init(siteID: Int64,
          tabContainerController: TabContainerController,
@@ -69,6 +88,13 @@ final class POSTabCoordinator {
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol) {
         self.siteID = siteID
         self.storesManager = storesManager
+        self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
+            .map { $0?.toJetpackSite() }
+            .eraseToAnyPublisher()
+        self.appPasswordSupportState = ApplicationPasswordsExperimentState()
+        self.isAppPasswordSupported = appPasswordSupportState
+            .$isAvailableAndEnabled
+            .eraseToAnyPublisher()
         self.tabContainerController = tabContainerController
         self.viewControllerToPresent = viewControllerToPresent
         self.credentials = storesManager.sessionManager.defaultCredentials
@@ -96,15 +122,21 @@ private extension POSTabCoordinator {
                                                                             collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor)
             let settingsService = PointOfSaleSettingsService(siteID: siteID,
                                                              credentials: credentials,
+                                                             selectedSite: defaultSitePublisher,
+                                                             appPasswordSupportState: isAppPasswordSupported,
                                                              storage: storageManager)
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
 
             if let receiptService = POSReceiptService(siteID: siteID,
-                                                      credentials: credentials),
+                                                      credentials: credentials,
+                                                      selectedSite: defaultSitePublisher,
+                                                      appPasswordSupportState: isAppPasswordSupported),
                let orderService = POSOrderService(siteID: siteID,
-                                                  credentials: credentials),
+                                                  credentials: credentials,
+                                                  selectedSite: defaultSitePublisher,
+                                                  appPasswordSupportState: isAppPasswordSupported),
                #available(iOS 17.0, *) {
                 let receiptSender = POSReceiptSender(siteID: siteID,
                                                      orderService: orderService,
@@ -136,6 +168,8 @@ private extension POSTabCoordinator {
                         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
                             siteID: siteID,
                             credentials: credentials,
+                            selectedSite: defaultSitePublisher,
+                            appPasswordSupportState: isAppPasswordSupported,
                             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
                         )
                     ),

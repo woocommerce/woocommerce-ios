@@ -35,12 +35,7 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         configureImageView()
         configureCellAppearance()
         configureCoverTagView()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        // Border color is not automatically updated on trait collection changes and thus manually updated here.
-        contentView.layer.borderColor = Colors.borderColor.cgColor
+        observeInterfaceStyleChange()
     }
 
     override func prepareForReuse() {
@@ -85,6 +80,13 @@ private extension ProductImageCollectionViewCell {
             contentView.leadingAnchor.constraint(equalTo: coverTagView.leadingAnchor, constant: -Constants.tagPadding),
             contentView.topAnchor.constraint(equalTo: coverTagView.topAnchor, constant: -Constants.tagPadding),
         ])
+    }
+
+    func observeInterfaceStyleChange() {
+        /// Border color is not automatically updated on trait collection changes and thus manually updated here.
+        applyContentBorderColorOnInterfaceStyleChange {
+            return Colors.borderColor
+        }
     }
 }
 

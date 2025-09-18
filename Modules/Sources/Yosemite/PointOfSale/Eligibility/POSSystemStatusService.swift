@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 import Storage
+import struct Combine.AnyPublisher
 
 public protocol POSSystemStatusServiceProtocol {
     /// Loads WooCommerce plugin and POS feature switch value remotely for eligibility checks.
@@ -27,8 +28,13 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
     private let storageManager: StorageManagerType
     private let pluginsService: PluginsServiceProtocol
 
-    public init(credentials: Credentials?, storageManager: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials)
+    public init(credentials: Credentials?,
+                selectedSite: AnyPublisher<JetpackSite?, Never>,
+                appPasswordSupportState: AnyPublisher<Bool, Never>,
+                storageManager: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
         self.pluginsService = PluginsService(storageManager: storageManager)

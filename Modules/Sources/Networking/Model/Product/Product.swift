@@ -911,23 +911,6 @@ private extension Product {
         static let headStartValue = "_hs_extra"
         static let combineVariationQuantitiesTrueValue = "yes"
     }
-
-    /// Helper method for flexible metadata decoding
-    private static func decodeFlexibleMetaData<K>(from container: KeyedDecodingContainer<K>,
-                                                  forKey key: KeyedDecodingContainer<K>.Key) -> [MetaData] {
-        // Try to decode as array first (standard format)
-        if let metaDataArray = try? container.decode([MetaData].self, forKey: key) {
-            return metaDataArray
-        }
-
-        // Try to decode as object keyed by index strings
-        if let metaDataDict = try? container.decode([String: MetaData].self, forKey: key) {
-            return Array(metaDataDict.values)
-        }
-
-        // Fallback to empty array
-        return []
-    }
 }
 
 // MARK: - Decoding Errors

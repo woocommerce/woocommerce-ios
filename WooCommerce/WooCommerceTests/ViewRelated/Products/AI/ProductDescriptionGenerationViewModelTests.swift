@@ -211,7 +211,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
             switch action {
             case let .generateProductDescription(_, _, _, _, completion):
                 completion(.success("Must buy"))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
@@ -253,7 +253,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
             switch action {
             case let .generateProductDescription(_, _, _, _, completion):
                 completion(.success("Must buy"))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 completion(.success("en"))
                 identifyLanguageRequestCounter += 1
             default:
@@ -450,7 +450,7 @@ private extension ProductDescriptionGenerationViewModelTests {
             switch action {
             case let .generateProductDescription(_, _, _, _, completion):
                 completion(generatedDescription)
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 completion(identifyLaunguage)
             default:
                 return XCTFail("Unexpected action: \(action)")

@@ -184,9 +184,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, _, completion):
                 completion(.success(.fake()))
-            case let .identifyLanguage(_, string, _, completion):
+            case let .identifyLanguage(_, string, _, _, completion):
                 // Then
                 XCTAssertEqual(string, productFeatures)
                 completion(.success("en"))
@@ -219,10 +219,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, language, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, language, _, _, _, _, _, _, _, completion):
                 XCTAssertEqual(language, expectedLanguage)
                 completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 identifyingLanguageRequestCount += 1
                 completion(.success(expectedLanguage))
             default:
@@ -364,6 +364,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                          weightUnit,
                                          categories,
                                          tags,
+                                         _,
                                          completion):
                 // Then
                 XCTAssertEqual(siteID, sampleSiteID)
@@ -376,7 +377,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 XCTAssertEqual(categories, sampleCategories)
                 XCTAssertEqual(tags, sampleTags)
                 completion(.success(.fake()))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 completion(.success(sampleLanguage))
             default:
                 break
@@ -405,10 +406,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, _, completion):
                 XCTAssertTrue(viewModel.isGeneratingDetails)
                 completion(.success(self.sampleAIProduct))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 XCTAssertTrue(viewModel.isGeneratingDetails)
                 completion(.success("en"))
             default:
@@ -444,10 +445,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, _, completion):
                 XCTAssertEqual(viewModel.errorState, .none)
                 completion(.failure(expectedError))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 XCTAssertEqual(viewModel.errorState, .none)
                 completion(.success("en"))
             default:
@@ -1080,10 +1081,10 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, _, completion):
                 XCTAssertFalse(viewModel.isSavingProduct)
                 completion(.success(aiProduct))
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 XCTAssertFalse(viewModel.isSavingProduct)
                 completion(.success("en"))
             case let .addProduct(_, onCompletion):
@@ -1457,13 +1458,13 @@ private extension ProductDetailPreviewViewModelTests {
                             addedProductResult: (Result<Product, ProductUpdateError>)? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, _, completion):
                 if let aiGeneratedProductResult {
                     completion(aiGeneratedProductResult)
                 } else {
                     completion(.success(self.sampleAIProduct))
                 }
-            case let .identifyLanguage(_, _, _, completion):
+            case let .identifyLanguage(_, _, _, _, completion):
                 completion(.success(identifiedLanguage))
             case let .addProduct(product, onCompletion):
                 if let addedProductResult {

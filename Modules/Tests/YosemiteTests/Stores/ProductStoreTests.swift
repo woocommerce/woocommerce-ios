@@ -2226,6 +2226,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
                                                                  string: "Woo is awesome",
+                                                                 aiSource: .jetpack,
                                                                  feature: .productSharing) { result in
                 promise(result)
             })
@@ -2251,6 +2252,7 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.identifyLanguage(siteID: self.sampleSiteID,
                                                                  string: "Woo is awesome",
+                                                                 aiSource: .jetpack,
                                                                  feature: .productSharing) { result in
                 promise(result)
             })
@@ -2942,7 +2944,8 @@ final class ProductStoreTests: XCTestCase {
                                                                   dimensionUnit: "cm",
                                                                   weightUnit: "kg",
                                                                   categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()],
+                                                                  AISource: .jetpack) { result in
                 promise(result)
             })
         }
@@ -2973,7 +2976,8 @@ final class ProductStoreTests: XCTestCase {
                                                                   dimensionUnit: "cm",
                                                                   weightUnit: "kg",
                                                                   categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()],
+                                                                  AISource: .jetpack) { result in
                 promise(result)
             })
         }

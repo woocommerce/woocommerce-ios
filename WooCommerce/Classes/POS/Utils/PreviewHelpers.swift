@@ -28,6 +28,7 @@ import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
+import struct Yosemite.Site
 
 // MARK: - PreviewProvider helpers
 //
@@ -224,8 +225,9 @@ struct POSPreviewHelpers {
         featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0),
-                                                          featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(
+                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
+                featureFlagService: featureFlags),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,

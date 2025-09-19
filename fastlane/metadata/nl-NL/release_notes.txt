@@ -1,0 +1,1 @@
+Deze update zorgt voor een soepelere WooCommerce-ervaring met verbeterde contante betalingen, eenvoudigere toegang tot POS-instellingen en nauwkeurige informatie over gevaarlijke stoffen op verzendlabels. Bovendien hebben we een Blaze-flowprobleem opgelost, waardoor campagnes zich gedragen zoals verwacht. Sneller, duidelijker en betrouwbaarder: precies zoals u het nodig hebt!

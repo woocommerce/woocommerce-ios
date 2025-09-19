@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-09-05 09:55:09+0000 */
+/* Translation-Revision-Date: 2025-09-10 13:54:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -4954,6 +4954,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* The subtitle of the menu button to contact support, shown in settings.
    The title of the menu button to contact support, shown in settings. */
 "PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "Skaffa support";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "Läs om vilka produkter som stöds i POS";
 
 /* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
 "PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "Var är mina produkter?";
@@ -10016,6 +10019,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "Visa detaljer";
 
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "Aktivera %@ för att låta appen hämta data direkt från din WooCommerce-webbplats istället för via Jetpack-anslutningar";
+
 /* Link text to open Application Passwords documentation page */
 "experimentalFeatures.applicationPasswords.description.linkText" = "Applikationslösenord";
 
@@ -11375,6 +11381,15 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for card readers settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "Kortläsare";
 
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "Konfigurera streckkodsskannerinställningar";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "Streckkodsskanners";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "Hantera kortläsaranslutningar";
+
 /* Navigation title of Card reader settings. */
 "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "Kortläsare";
 
@@ -11387,8 +11402,17 @@ which should be translated separately and considered part of this sentence. */
 /* Text displayed on Point of Sale settings pointing to the card reader model. */
 "pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "Modell";
 
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "Läs mer om streckkodsskanning i POS";
+
 /* Title for barcode scanner documentation option in Point of Sale settings. */
 "pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "Dokumentation";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "Konfigurera och testa din streckkodsskanner";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "Skannerkonfiguration";
 
 /* Navigation title for barcode scanners settings in Point of Sale. */
 "pointOfSaleSettingsHardwareDetailView.scannersTitle" = "Streckkodsläsare";
@@ -11446,6 +11470,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the settings to be found within the Store section. */
 "pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "Butikskonfiguration och inställningar";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "Butik";
 
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "Streckkodsskanning";
@@ -11618,6 +11645,9 @@ which should be translated separately and considered part of this sentence. */
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "Klicka på en produkt för att \n lägga till den i varukorgen";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "Klicka på en produkt för att \n lägga till den i varukorgen, eller ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "Varukorg";
 
@@ -11759,6 +11789,21 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the products list */
 "pos.orderDetailsLoadingView.productsTitle" = "Produkter";
 
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "Beställning";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "Totalt";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "Total rabatt";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "Nettobetalning";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "Beställning %1$@";
+
 /* Label for the paid amount */
 "pos.orderDetailsView.paidLabel" = "Betald";
 
@@ -11767,6 +11812,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the products list */
 "pos.orderDetailsView.productsTitle" = "Produkter";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "Anledning: %1$@";
 
 /* Label for a refund entry. %1$lld is the refund ID. */
 "pos.orderDetailsView.refundLabel" = "Återbetald";

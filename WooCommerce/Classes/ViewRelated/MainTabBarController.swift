@@ -143,6 +143,7 @@ final class MainTabBarController: UITabBarController {
     private let analytics: Analytics
     private let posEligibilityCheckerFactory: ((_ site: Site) -> POSEntryPointEligibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
+    private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -166,7 +167,8 @@ final class MainTabBarController: UITabBarController {
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
           posEligibilityCheckerFactory: ((Site) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
-          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
+          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+          bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -180,6 +182,9 @@ final class MainTabBarController: UITabBarController {
             }
         }
         self.posEligibilityService = posEligibilityService
+        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory ?? { site in
+            BookingsTabEligibilityChecker(site: site)
+        }
         super.init(coder: coder)
     }
 
@@ -198,6 +203,9 @@ final class MainTabBarController: UITabBarController {
             }
         }
         self.posEligibilityService = POSEligibilityService()
+        self.bookingsEligibilityCheckerFactory = { site in
+            BookingsTabEligibilityChecker(site: site)
+        }
         super.init(coder: coder)
     }
 
@@ -790,7 +798,7 @@ private extension MainTabBarController {
         }
 
         // Configures Booking tab.
-        let bookingsEligibilityChecker = BookingsTabEligibilityChecker(site: site)
+        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
         self.bookingsEligibilityChecker = bookingsEligibilityChecker
         let bookingsViewController = createBookingsViewController(siteID: site.siteID)
         bookingsContainerController.wrappedController = bookingsViewController

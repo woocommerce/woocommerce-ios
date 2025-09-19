@@ -120,6 +120,12 @@ struct AddressMapPickerView: View {
                 .autocorrectionDisabled()
                 .textInputAutocapitalization(.never)
                 .focused($isSearchFocused)
+                .onChange(of: isSearchFocused) { _, newValue in
+                    viewModel.isSearchFocused = newValue
+                }
+                .onChange(of: viewModel.isSearchFocused) { _, newValue in
+                    isSearchFocused = newValue
+                }
 
             if !viewModel.searchQuery.isEmpty {
                 Button(action: {

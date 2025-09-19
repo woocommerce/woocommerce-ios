@@ -32,6 +32,8 @@ final class AddressMapPickerViewModel: NSObject {
             searchQueryContinuation.yield(newValue)
         }
     }
+    // Syncs with the focused state of the search text field in `AddressMapPickerView`.
+    var isSearchFocused: Bool = false
     private(set) var searchResults: [MKLocalSearchCompletion] = []
     var mapPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.3361, longitude: -122.0380),
@@ -78,7 +80,12 @@ final class AddressMapPickerViewModel: NSObject {
         for await query in searchQueryStream.debounce(for: .seconds(0.3)) {
             if query.isEmpty {
                 searchResults = []
-            } else {
+            } else if isSearchFocused {
+                if let region = mapPosition.region {
+                    // ~11km centered in the map region.
+                    searchCompleter.region = .init(center: .init(latitude: region.center.latitude, longitude: region.center.longitude),
+                                                   span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1))
+                }
                 searchCompleter.queryFragment = query
             }
         }
@@ -171,20 +178,13 @@ private extension AddressMapPickerViewModel {
 
     @MainActor
     func onSelectedPlacemark(_ placemark: MKPlacemark) async {
-        await withCheckedContinuation { continuation in
-            withAnimation { [weak self] in
-                guard let self else { return }
-                searchResults = []
-                mapPosition = .region(MKCoordinateRegion(
-                    center: placemark.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                ))
-                annotations = [MapAnnotation(coordinate: placemark.coordinate)]
-                selectedPlace = placemark
-            } completion: {
-                continuation.resume()
-            }
-        }
+        searchResults = []
+        mapPosition = .region(MKCoordinateRegion(
+            center: placemark.coordinate,
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        ))
+        annotations = [MapAnnotation(coordinate: placemark.coordinate)]
+        selectedPlace = placemark
     }
 
     func formatAddressString(fields: AddressFormFields) -> String {

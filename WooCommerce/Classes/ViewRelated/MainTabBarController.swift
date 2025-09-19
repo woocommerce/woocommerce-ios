@@ -798,8 +798,6 @@ private extension MainTabBarController {
         }
 
         // Configures Booking tab.
-        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
-        self.bookingsEligibilityChecker = bookingsEligibilityChecker
         let bookingsViewController = createBookingsViewController(siteID: site.siteID)
         bookingsContainerController.wrappedController = bookingsViewController
 
@@ -881,10 +879,8 @@ private extension MainTabBarController {
     }
 
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
-        guard let bookingsEligibilityChecker else {
-            updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: false)
-            return
-        }
+        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
+        self.bookingsEligibilityChecker = bookingsEligibilityChecker
 
         // Sets Bookings tab initial visibility based on cached value if available.
         let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
@@ -895,7 +891,7 @@ private extension MainTabBarController {
 
         // Starts observing the Bookings eligibility state.
         bookingsEligibilityCheckTask = Task { @MainActor [weak self] in
-            guard let self, let bookingsEligibilityChecker = self.bookingsEligibilityChecker else { return }
+            guard let self else { return }
             let isBookingsTabVisible = await bookingsEligibilityChecker.checkVisibility()
             // TODO: Add analytics tracking for bookings tab visibility
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)

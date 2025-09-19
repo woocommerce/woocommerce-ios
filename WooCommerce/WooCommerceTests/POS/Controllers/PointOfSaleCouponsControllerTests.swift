@@ -3,15 +3,21 @@ import Testing
 import Foundation
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import class WooFoundation.CurrencySettings
+import struct Yosemite.Site
+import Combine
 
 struct PointOfSaleCouponsControllerTests {
     private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory
 
     init() {
-        fetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(siteID: 123,
-                                                                     currencySettings: CurrencySettings(),
-                                                                     credentials: nil,
-                                                                     storage: MockStorageManager())
+        fetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(
+            siteID: 123,
+            currencySettings: CurrencySettings(),
+            credentials: nil,
+            selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
+            storage: MockStorageManager()
+        )
     }
 
     @Test func loadItems_when_empty_coupons_then_results_in_empty_state() async throws {

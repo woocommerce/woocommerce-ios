@@ -40,6 +40,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
     init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
@@ -47,9 +48,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
-                                                                                      storageManager: ServiceLocator.storageManager),
-         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials),
+         systemStatusService: POSSystemStatusServiceProtocol? = nil,
+         siteSettingService: POSSiteSettingServiceProtocol? = nil,
          siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
@@ -57,8 +57,22 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.systemStatusService = systemStatusService
-        self.siteSettingService = siteSettingService
+        self.appPasswordSupportState = ApplicationPasswordsExperimentState()
+
+        let credentials = stores.sessionManager.defaultCredentials
+        let selectedSite = stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher()
+        let appPasswordSupport = appPasswordSupportState.$isAvailableAndEnabled.eraseToAnyPublisher()
+        self.systemStatusService = systemStatusService ?? POSSystemStatusService(
+            credentials: credentials,
+            selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupport,
+            storageManager: ServiceLocator.storageManager
+        )
+        self.siteSettingService = siteSettingService ?? POSSiteSettingService(
+            credentials: credentials,
+            selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupport
+        )
         self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 

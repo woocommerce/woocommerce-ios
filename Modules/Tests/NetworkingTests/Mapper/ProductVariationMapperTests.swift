@@ -108,6 +108,50 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(productVariation.groupOfQuantity, "3")
         XCTAssertEqual(productVariation.overrideProductQuantities, true)
     }
+
+    /// Test that ProductVariation metadata can be decoded from both array and dictionary formats for subscription data
+    ///
+    func test_product_variation_metadata_flexible_decoding_array_format() throws {
+        // Given - JSON with metadata as array (current format) containing subscription data
+        guard let data = Loader.contentsOf("minimal-product-variation-array-metadata") else {
+            XCTFail("Unable to load test data")
+            return
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo[.siteID] = dummySiteID
+        decoder.userInfo[.productID] = dummyProductID
+
+        // When
+        let productVariation = try decoder.decode(ProductVariation.self, from: data)
+
+        // Then - verify the subscription data was extracted from metadata
+        XCTAssertNotNil(productVariation.subscription)
+        XCTAssertEqual(productVariation.subscription?.price, "15.00")
+        XCTAssertEqual(productVariation.subscription?.period, .month)
+    }
+
+    /// Test that ProductVariation metadata can be decoded from object format keyed by index strings
+    ///
+    func test_product_variation_metadata_flexible_decoding_dictionary_format() throws {
+        // Given - JSON with metadata as object keyed by index strings (new format)
+        guard let data = Loader.contentsOf("minimal-product-variation-dictionary-metadata") else {
+            XCTFail("Unable to load test data")
+            return
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo[.siteID] = dummySiteID
+        decoder.userInfo[.productID] = dummyProductID
+
+        // When
+        let productVariation = try decoder.decode(ProductVariation.self, from: data)
+
+        // Then - verify the subscription data was extracted from metadata
+        XCTAssertNotNil(productVariation.subscription)
+        XCTAssertEqual(productVariation.subscription?.price, "15.00")
+        XCTAssertEqual(productVariation.subscription?.period, .month)
+    }
 }
 
 /// Private Helpers

@@ -1,5 +1,6 @@
 import Yosemite
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Row for a selectable shipment item to ship with the Woo Shipping extension.
 struct SelectableShipmentItemRow: View {

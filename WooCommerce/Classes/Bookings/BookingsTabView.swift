@@ -3,6 +3,7 @@ import SwiftUI
 /// Hosting view for `BookingsTabView`
 ///
 final class BookingsTabViewHostingController: UIHostingController<BookingsTabView> {
+    // periphery: ignore
     init(siteID: Int64) {
         super.init(rootView: BookingsTabView())
         configureTabBarItem()
@@ -28,12 +29,14 @@ private extension BookingsTabViewHostingController {
 /// Main content of the Bookings tab
 ///
 struct BookingsTabView: View {
+    @State private var visibility: NavigationSplitViewVisibility = .all
+
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: $visibility) {
             Text("Booking List")
         } detail: {
             Text("Booking Detail Screen")
         }
-
+        .navigationSplitViewStyle(.balanced)
     }
 }

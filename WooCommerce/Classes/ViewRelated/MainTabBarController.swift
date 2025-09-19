@@ -890,7 +890,6 @@ private extension MainTabBarController {
             guard let self, let bookingsEligibilityChecker = self.bookingsEligibilityChecker else { return }
             let isBookingsTabVisible = await bookingsEligibilityChecker.checkVisibility()
             // TODO: Add analytics tracking for bookings tab visibility
-            cacheBookingsTabVisibility(siteID: site.siteID, isBookingsTabVisible: isBookingsTabVisible)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         }
     }
@@ -1048,10 +1047,6 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func cachePOSTabVisibility(siteID: Int64, isPOSTabVisible: Bool) {
         posEligibilityService.cachePOSTabVisibility(siteID: siteID, isVisible: isPOSTabVisible)
-    }
-
-    func cacheBookingsTabVisibility(siteID: Int64, isBookingsTabVisible: Bool) {
-        UserDefaults.standard.cacheBookingsTabVisibility(siteID: siteID, isVisible: isBookingsTabVisible)
     }
 }
 

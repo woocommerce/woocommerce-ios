@@ -1,5 +1,7 @@
 import Foundation
+import KeychainAccess
 import Networking
+import NetworkingCore
 import Storage
 
 // MARK: - ProductStore
@@ -604,8 +606,8 @@ private extension ProductStore {
                 completion(result)
             case .merchant:
                 let result = await Result {
-                    // Temporary. This will come from the KeyChain rather than the environment
-                    let key = ProcessInfo.processInfo.environment["openai-debug-api-key"] ?? "api key not found"
+                    let keychain = Keychain(service: WooConstants.keychainServiceName)
+                    let key = keychain.merchantAIProviderKey ?? ""
                     return try await MerchantGenerativeContentRemote(apiKey: key).identifyLanguage(siteID: siteID,
                                                                                                    string: string,
                                                                                                    feature: feature)
@@ -768,7 +770,8 @@ private extension ProductStore {
                 completion(result)
             case .merchant:
                 let result = await Result {
-                    let key = ProcessInfo.processInfo.environment["openai-debug-api-key"] ?? "api key not found"
+                    let keychain = Keychain(service: WooConstants.keychainServiceName)
+                    let key = keychain.merchantAIProviderKey ?? ""
                     return try await MerchantGenerativeContentRemote(apiKey: key).generateAIProduct(siteID: siteID,
                                                                                                     productName: productName,
                                                                                                     keywords: keywords,

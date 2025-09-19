@@ -15,4 +15,7 @@ public enum WooConstants {
 
     /// Slug of the free trial WooExpress plan
     public static let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
+
+    /// Keychain Access's Key for merchant AI provider API key
+    public static let merchantAIProviderKey = "merchantAIProviderKey"
 }

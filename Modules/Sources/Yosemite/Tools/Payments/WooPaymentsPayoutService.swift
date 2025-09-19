@@ -1,6 +1,8 @@
 import Foundation
 import Networking
 import WooFoundation
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol WooPaymentsPayoutServiceProtocol {
     func fetchPayoutsOverview() async throws -> [WooPaymentsPayoutsOverviewByCurrency]
@@ -14,12 +16,17 @@ public final class WooPaymentsPayoutService: WooPaymentsPayoutServiceProtocol {
 
     // MARK: - Initialization
 
-    public convenience init?(siteID: Int64, credentials: Credentials?) {
+    public convenience init?(siteID: Int64,
+                             credentials: Credentials?,
+                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             appPasswordSupportState: AnyPublisher<Bool, Never>) {
         guard let credentials else {
             DDLogError("⛔️ Could not create payouts service due to not finding credentials")
             return nil
         }
-        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
+        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials,
+                                                            selectedSite: selectedSite,
+                                                            appPasswordSupportState: appPasswordSupportState))
     }
 
     public init(siteID: Int64, network: Network) {

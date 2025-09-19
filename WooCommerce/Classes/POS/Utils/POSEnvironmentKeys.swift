@@ -4,6 +4,8 @@ import WooFoundation
 import Experiments
 import protocol Yosemite.Action
 import struct Yosemite.Site
+import enum Yosemite.POSItem
+import struct Yosemite.Coupon
 
 struct SiteTimezoneKey: EnvironmentKey {
     static let defaultValue: TimeZone = .current
@@ -122,5 +124,23 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 
 struct EmptyPOSExternalView: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
+    func createFormattableAmountTextField(preset: Decimal?,
+                                          onSubmit: @escaping () -> Void,
+                                          onChange: @escaping (String) -> Void) -> AnyView {
+        AnyView(EmptyView())
+    }
+    func createCouponCreationView(discountType: Coupon.DiscountType,
+                                  showTypeSelection: Binding<Bool>,
+                                  onSuccess: @escaping (Coupon) -> Void,
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView {
+        AnyView(EmptyView())
+    }
+    func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
+                                          title: String,
+                                          cancelButtonTitle: String,
+                                          onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
+        AnyView(EmptyView())
+    }
     init() {}
 }

@@ -4,6 +4,7 @@
 23.3
 -----
 - [*] Order details: Display only physical items in the Shipping Labels section. [https://github.com/woocommerce/woocommerce-ios/pull/16127]
+- [*] Product form: Display user-friendly error message when saving duplicated GTIN/UPC/EAN/ISBN. [https://github.com/woocommerce/woocommerce-ios/pull/16146]
 - [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
 - [***] Performance improvements for users logging in with WordPress.com accounts [https://github.com/woocommerce/woocommerce-ios/pull/16126]
 - [internal] Fix back swipe gesture detection compatibility for iOS26 [https://github.com/woocommerce/woocommerce-ios/pull/16133]

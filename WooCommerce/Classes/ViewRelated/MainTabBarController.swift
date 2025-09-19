@@ -151,6 +151,7 @@ final class MainTabBarController: UITabBarController {
     private var posEligibilityCheckTask: Task<Void, Never>?
     private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
+    /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
     private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
     private var bookingsEligibilityCheckTask: Task<Void, Never>?
 

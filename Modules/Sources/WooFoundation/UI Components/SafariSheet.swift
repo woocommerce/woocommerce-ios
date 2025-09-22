@@ -3,14 +3,18 @@ import SwiftUI
 import SafariServices
 import UIKit
 
-struct SafariSheetView: UIViewControllerRepresentable {
-    let url: URL
+public struct SafariSheetView: UIViewControllerRepresentable {
+    private let url: URL
 
-    func makeUIViewController(context: Context) -> UIViewController {
+    public init(url: URL) {
+        self.url = url
+    }
+
+    public func makeUIViewController(context: Context) -> UIViewController {
         SFSafariViewController(url: url)
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
         // nothing to do here
     }
 }
@@ -20,7 +24,7 @@ extension View {
     /// Does nothing if the input URL is nil.
     ///
     @ViewBuilder
-    func safariSheet(isPresented: Binding<Bool>, url: URL?, onDismiss: (() -> Void)? = nil) -> some View {
+    public func safariSheet(isPresented: Binding<Bool>, url: URL?, onDismiss: (() -> Void)? = nil) -> some View {
         if let url = url {
             sheet(isPresented: isPresented, onDismiss: onDismiss) {
                 SafariSheetView(url: url)
@@ -33,7 +37,7 @@ extension View {
     ///
     /// When the sheet is dismissed, the binding's value will be set to nil.
     ///
-    func safariSheet(url: Binding<URL?>, onDismiss: (() -> Void)? = nil) -> some View {
+    public func safariSheet(url: Binding<URL?>, onDismiss: (() -> Void)? = nil) -> some View {
         sheet(isPresented: url.notNil(), onDismiss: onDismiss) {
             if let url = url.wrappedValue {
                 SafariSheetView(url: url)

@@ -6,11 +6,12 @@ import SwiftUI
 ///
 struct POSFormattableAmountTextFieldAdaptor: View {
     @StateObject private var textFieldViewModel: FormattableAmountTextFieldViewModel
-    let preset: Decimal?
-    let onSubmit: () -> Void
-    let onChange: (String) -> Void
+    private let preset: Decimal?
+    private let style: FormattableAmountTextField.Style
+    private let onSubmit: () -> Void
+    private let onChange: (String) -> Void
 
-    init(preset: Decimal?, onSubmit: @escaping () -> Void, onChange: @escaping (String) -> Void) {
+    init(preset: Decimal?, font: Font, onSubmit: @escaping () -> Void, onChange: @escaping (String) -> Void) {
         self._textFieldViewModel = StateObject(wrappedValue: FormattableAmountTextFieldViewModel(
             size: .extraLarge,
             locale: Locale.autoupdatingCurrent,
@@ -18,12 +19,13 @@ struct POSFormattableAmountTextFieldAdaptor: View {
             allowNegativeNumber: false)
         )
         self.preset = preset
+        self.style = .init(showsBorder: false, textAlignment: .center, font: font)
         self.onSubmit = onSubmit
         self.onChange = onChange
     }
 
     var body: some View {
-        FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
+        FormattableAmountTextField(viewModel: textFieldViewModel, style: style)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .onSubmit {
                 onSubmit()

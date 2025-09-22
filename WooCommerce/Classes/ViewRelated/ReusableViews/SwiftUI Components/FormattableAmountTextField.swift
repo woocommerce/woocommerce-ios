@@ -27,10 +27,7 @@ struct FormattableAmountTextField: View {
                 .opacity(0)
 
             Text(viewModel.formattedAmount)
-                .if(style == .pos) {
-                    $0.font(.posHeadingRegular)
-                }
-                .font(.system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
+                .font(style.font ?? .system(size: Layout.amountFontSize(size: viewModel.amountTextSize.fontSize, scale: scale), weight: .bold))
                 .foregroundColor(Color(viewModel.amountTextColor))
                 .minimumScaleFactor(0.1)
                 .lineLimit(1)
@@ -48,27 +45,17 @@ struct FormattableAmountTextField: View {
 }
 
 extension FormattableAmountTextField {
-    enum Style {
-        case `default`
-        case pos
+    struct Style: Equatable {
+        let showsBorder: Bool
+        let textAlignment: Alignment
+        /// Optional font to use for the amount text. If nil, a default system font will be used.
+        let font: Font?
 
-        var showsBorder: Bool {
-            switch self {
-            case .default:
-                return true
-            case .pos:
-                return false
-            }
-        }
-
-        var textAlignment: Alignment {
-            switch self {
-            case .default:
-                return .leading
-            case .pos:
-                return .center
-            }
-        }
+        static let `default` = Style(
+            showsBorder: true,
+            textAlignment: .leading,
+            font: nil
+        )
     }
 }
 
@@ -90,7 +77,7 @@ private extension FormattableAmountTextField {
         FormattableAmountTextField(viewModel: viewModel, style: .default)
     }
     VStack {
-        Text("POS style")
-        FormattableAmountTextField(viewModel: viewModel, style: .pos)
+        Text("Other style")
+        FormattableAmountTextField(viewModel: viewModel, style: .init(showsBorder: false, textAlignment: .center, font: .title2))
     }
 }

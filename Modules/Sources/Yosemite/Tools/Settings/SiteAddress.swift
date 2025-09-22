@@ -1,30 +1,29 @@
 import Foundation
-import Yosemite
 import WooFoundation
 
 /// Represent and parse the Address of the store, returned in the SiteSettings API `/settings/general/`
 ///
-final class SiteAddress {
+public class SiteAddress {
 
     private let siteSettings: [SiteSetting]
 
-    var address: String {
+    public var address: String {
         return getValueFromSiteSettings(Constants.address) ?? ""
     }
 
-    var address2: String {
+    public var address2: String {
         return getValueFromSiteSettings(Constants.address2) ?? ""
     }
 
-    var city: String {
+    public var city: String {
         return getValueFromSiteSettings(Constants.city) ?? ""
     }
 
-    var postalCode: String {
+    public var postalCode: String {
         return getValueFromSiteSettings(Constants.postalCode) ?? ""
     }
 
-    var countryCode: CountryCode {
+    public var countryCode: CountryCode {
         guard let countryComponent = getCountryAndStateComponents().first else {
             DDLogError("⛔️ Could not determine country code for site address: no country component found.")
             return .unknown
@@ -40,7 +39,7 @@ final class SiteAddress {
     /// The default store country is provided in a format like `HK:KOWLOON`
     /// This method will transform `HK:KOWLOON` into `Hong Kong`
     /// Will return nil if it can not figure out a valid country name
-    var countryName: String? {
+    public var countryName: String? {
         guard countryCode != .unknown else {
             return nil
         }
@@ -48,11 +47,11 @@ final class SiteAddress {
         return countryCode.readableCountry
     }
 
-    var state: String {
+    public var state: String {
         return getCountryAndStateComponents().last ?? ""
     }
 
-    init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
+    public init(siteSettings: [SiteSetting]) {
         self.siteSettings = siteSettings
     }
 

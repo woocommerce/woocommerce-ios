@@ -865,6 +865,12 @@ private extension MainTabBarController {
         let tab = WooTab.hubMenu
         let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
 
+        guard featureFlagService.isFeatureFlagEnabled(.replacingTabDotWithNativeTabBadge) else {
+            let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: tabBar, tabIndex: tabIndex)
+            notificationsBadge.updateBadge(with: input)
+            return
+        }
+
         switch action {
         case .show:
             tabBar.items?[tabIndex].badgeValue = "•"

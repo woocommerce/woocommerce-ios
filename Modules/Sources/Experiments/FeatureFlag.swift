@@ -215,4 +215,8 @@ public enum FeatureFlag: Int {
     /// Enables a new Bookings tab for CIAB sites
     ///
     case ciabBookings
+
+    /// Enables replacing the Menu tab custom "dot" badge with the native tab bar badge, while design confirmation is still in progress.
+    ///
+    case replacingTabDotWithNativeTabBadge
 }

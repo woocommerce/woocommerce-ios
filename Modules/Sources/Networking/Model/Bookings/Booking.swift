@@ -1,0 +1,200 @@
+// periphery:ignore:all
+import Codegen
+import Foundation
+
+/// Represents a Booking Entity.
+///
+public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable {
+    public let siteID: Int64
+    public let bookingID: Int64
+    public let allDay: Bool
+    public let cost: String
+    public let customerID: Int64
+    public let dateCreated: Date
+    public let dateModified: Date
+    public let endDate: Date
+    public let googleCalendarEventID: String?
+    public let orderID: Int64
+    public let orderItemID: Int64
+    public let parentID: Int64
+    public let productID: Int64
+    public let resourceID: Int64
+    public let startDate: Date
+    public let statusKey: String
+    public let localTimezone: String
+
+    /// Computed Properties
+    ///
+    public var bookingStatus: BookingStatus {
+        return BookingStatus(rawValue: statusKey)
+    }
+
+    /// Booking struct initializer.
+    ///
+    public init(siteID: Int64,
+                bookingID: Int64,
+                allDay: Bool,
+                cost: String,
+                customerID: Int64,
+                dateCreated: Date,
+                dateModified: Date,
+                endDate: Date,
+                googleCalendarEventID: String?,
+                orderID: Int64,
+                orderItemID: Int64,
+                parentID: Int64,
+                productID: Int64,
+                resourceID: Int64,
+                startDate: Date,
+                statusKey: String,
+                localTimezone: String) {
+        self.siteID = siteID
+        self.bookingID = bookingID
+        self.allDay = allDay
+        self.cost = cost
+        self.customerID = customerID
+        self.dateCreated = dateCreated
+        self.dateModified = dateModified
+        self.endDate = endDate
+        self.googleCalendarEventID = googleCalendarEventID
+        self.orderID = orderID
+        self.orderItemID = orderItemID
+        self.parentID = parentID
+        self.productID = productID
+        self.resourceID = resourceID
+        self.startDate = startDate
+        self.statusKey = statusKey
+        self.localTimezone = localTimezone
+    }
+
+    /// The public initializer for Booking.
+    ///
+    public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw BookingDecodingError.missingSiteID
+        }
+
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let bookingID = try container.decode(Int64.self, forKey: .bookingID)
+        let allDay = try container.decode(Bool.self, forKey: .allDay)
+
+        // Cost may come as string or number
+        let cost = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                     forKey: .cost,
+                                                     alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
+
+        let customerID = try container.decode(Int64.self, forKey: .customerID)
+        let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+        let dateModified = try container.decode(Date.self, forKey: .dateModified)
+        let endDate = try container.decode(Date.self, forKey: .endDate)
+        let googleCalendarEventID = try container.decodeIfPresent(String.self, forKey: .googleCalendarEventID)
+        let orderID = try container.decode(Int64.self, forKey: .orderID)
+        let orderItemID = try container.decode(Int64.self, forKey: .orderItemID)
+        let parentID = try container.decode(Int64.self, forKey: .parentID)
+        let productID = try container.decode(Int64.self, forKey: .productID)
+        let resourceID = try container.decode(Int64.self, forKey: .resourceID)
+        let startDate = try container.decode(Date.self, forKey: .startDate)
+        let statusKey = try container.decode(String.self, forKey: .statusKey)
+        let localTimezone = try container.decode(String.self, forKey: .localTimezone)
+
+        self.init(siteID: siteID,
+                  bookingID: bookingID,
+                  allDay: allDay,
+                  cost: cost,
+                  customerID: customerID,
+                  dateCreated: dateCreated,
+                  dateModified: dateModified,
+                  endDate: endDate,
+                  googleCalendarEventID: googleCalendarEventID,
+                  orderID: orderID,
+                  orderItemID: orderItemID,
+                  parentID: parentID,
+                  personCounts: personCounts,
+                  productID: productID,
+                  resourceID: resourceID,
+                  startDate: startDate,
+                  statusKey: statusKey,
+                  localTimezone: localTimezone)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(bookingID, forKey: .bookingID)
+        try container.encode(allDay, forKey: .allDay)
+        try container.encode(cost, forKey: .cost)
+        try container.encode(customerID, forKey: .customerID)
+        try container.encode(dateCreated, forKey: .dateCreated)
+        try container.encode(dateModified, forKey: .dateModified)
+        try container.encode(endDate, forKey: .endDate)
+        try container.encode(googleCalendarEventID, forKey: .googleCalendarEventID)
+        try container.encode(orderID, forKey: .orderID)
+        try container.encode(orderItemID, forKey: .orderItemID)
+        try container.encode(parentID, forKey: .parentID)
+        try container.encode(personCounts, forKey: .personCounts)
+        try container.encode(productID, forKey: .productID)
+        try container.encode(resourceID, forKey: .resourceID)
+        try container.encode(startDate, forKey: .startDate)
+        try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(localTimezone, forKey: .localTimezone)
+    }
+}
+
+/// Defines all of the Booking CodingKeys
+///
+private extension Booking {
+
+    enum CodingKeys: String, CodingKey {
+        case bookingID = "id"
+        case allDay = "all_day"
+        case cost
+        case customerID = "customer_id"
+        case dateCreated = "date_created"
+        case dateModified = "date_modified"
+        case endDate = "end"
+        case googleCalendarEventID = "google_calendar_event_id"
+        case orderID = "order_id"
+        case orderItemID = "order_item_id"
+        case parentID = "parent_id"
+        case personCounts = "person_counts"
+        case productID = "product_id"
+        case resourceID = "resource_id"
+        case startDate = "start"
+        case statusKey = "status"
+        case localTimezone = "local_timezone"
+    }
+}
+
+// MARK: - Decoding Errors
+//
+enum BookingDecodingError: Error {
+    case missingSiteID
+}
+
+// MARK: - Supporting Types
+//
+
+/// Represents a Booking Status.
+///
+public enum BookingStatus: String, CaseIterable {
+    case complete = "complete"
+    case paid = "paid"
+    case unpaid = "unpaid"
+    case cancelled = "cancelled"
+
+    public init(rawValue: String) {
+        switch rawValue {
+        case "complete":
+            self = .complete
+        case "paid":
+            self = .paid
+        case "unpaid":
+            self = .unpaid
+        case "cancelled":
+            self = .cancelled
+        default:
+            self = .unpaid
+        }
+    }
+}

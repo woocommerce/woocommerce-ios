@@ -1300,7 +1300,6 @@
 		45DB704A26121F3C0064A6CF /* TitleAndValueRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */; };
 		45DB705A26124C710064A6CF /* TitleAndTextFieldRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB705926124C710064A6CF /* TitleAndTextFieldRow.swift */; };
 		45DB70602614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */; };
-		45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB70652614CE3F0064A6CF /* Decimal+Helpers.swift */; };
 		45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45DB706B26161F970064A6CF /* DecimalWooTests.swift */; };
 		45E3C8F325E7D30300102E84 /* ShippingLabelAddress+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */; };
 		45E9A6E424DAE1EA00A600E8 /* ProductReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */; };
@@ -4249,7 +4248,6 @@
 		45DB704926121F3C0064A6CF /* TitleAndValueRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndValueRow.swift; sourceTree = "<group>"; };
 		45DB705926124C710064A6CF /* TitleAndTextFieldRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldRow.swift; sourceTree = "<group>"; };
 		45DB705F2614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackageDetailsResultsControllers.swift; sourceTree = "<group>"; };
-		45DB70652614CE3F0064A6CF /* Decimal+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Decimal+Helpers.swift"; sourceTree = "<group>"; };
 		45DB706B26161F970064A6CF /* DecimalWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecimalWooTests.swift; sourceTree = "<group>"; };
 		45E3C8F225E7D30300102E84 /* ShippingLabelAddress+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+Woo.swift"; sourceTree = "<group>"; };
 		45E9A6E224DAE1EA00A600E8 /* ProductReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsViewController.swift; sourceTree = "<group>"; };
@@ -11167,7 +11165,6 @@
 				B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */,
 				740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */,
 				B509FED021C041DF000076A9 /* Locale+Woo.swift */,
-				45DB70652614CE3F0064A6CF /* Decimal+Helpers.swift */,
 				B5A56BF4219F5AB20065A902 /* NSNotificationName+Woo.swift */,
 				B57C744420F55BA600EEFC87 /* NSObject+Helpers.swift */,
 				B541B2162189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift */,
@@ -14944,7 +14941,6 @@
 				26B119BB24D0B62E00FED5C7 /* SurveyViewController.swift in Sources */,
 				CCD2F51A26D67BB50010E679 /* ShippingLabelServicePackageList.swift in Sources */,
 				45FDDD65267784AD00ADACE8 /* ShippingLabelSummaryTableViewCell.swift in Sources */,
-				45DB70662614CE3F0064A6CF /* Decimal+Helpers.swift in Sources */,
 				0379C51727BFCE9800A7E284 /* WCPayCardBrand+icons.swift in Sources */,
 				0210D8692A7BEEF700846F8C /* WooAnalyticsEvent+ProductListFilter.swift in Sources */,
 				B958A7C728B3D44A00823EEF /* UniversalLinkRouter.swift in Sources */,

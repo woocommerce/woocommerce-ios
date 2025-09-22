@@ -136,6 +136,7 @@ final class MainTabBarController: UITabBarController {
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
+    private var cancellableSite: AnyCancellable?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
@@ -227,6 +228,7 @@ final class MainTabBarController: UITabBarController {
         // POS and Bookings tabs are hidden by default.
         updateTabViewControllers(isPOSTabVisible: false, isBookingsTabVisible: false)
         observeSiteIDForViewControllers()
+        observeSiteForConditionalTabs()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -766,20 +768,51 @@ private extension MainTabBarController {
         }
     }
 
+    func observeSiteForConditionalTabs() {
+        cancellableSite = stores.site
+            .compactMap { $0 }
+            .sink { [weak self] site in
+                guard let self else {
+                    return
+                }
+
+                observeConditionalTabsAvailabilityWith(site)
+            }
+    }
+
     func observeSiteIDForViewControllers() {
-        cancellableSiteID = stores.site.sink { [weak self] site in
+        cancellableSiteID = stores.siteID.sink { [weak self] siteID in
             guard let self = self else {
                 return
             }
-            self.updateViewControllers(site: site)
+            self.updateViewControllers(siteID: siteID)
         }
     }
 
-    func updateViewControllers(site: Site?) {
-        guard let site else {
+    func observeConditionalTabsAvailabilityWith(_ site: Site) {
+        // Configures POS tab coordinator once per logged in site session.
+        let posEligibilityChecker = posEligibilityCheckerFactory(site)
+        self.posEligibilityChecker = posEligibilityChecker
+        posTabCoordinator = POSTabCoordinator(
+            siteID: site.siteID,
+            tabContainerController: posContainerController,
+            viewControllerToPresent: self,
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
+        )
+
+        observePOSEligibilityForPOSTabVisibility(siteID: site.siteID)
+
+        // Configures Booking tab.
+        let bookingsViewController = createBookingsViewController(siteID: site.siteID)
+        bookingsContainerController.wrappedController = bookingsViewController
+        observeBookingsEligibilityForBookingsTabVisibility(site: site)
+    }
+
+    func updateViewControllers(siteID: Int64?) {
+        guard let siteID else {
             return
         }
-        let siteID = site.siteID
 
         // Update view model with `siteID` to query correct Orders Status
         viewModel.configureOrdersStatusesListener(for: siteID)
@@ -798,21 +831,6 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configures Booking tab.
-        let bookingsViewController = createBookingsViewController(siteID: site.siteID)
-        bookingsContainerController.wrappedController = bookingsViewController
-
-        // Configures POS tab coordinator once per logged in site session.
-        let posEligibilityChecker = posEligibilityCheckerFactory(site)
-        self.posEligibilityChecker = posEligibilityChecker
-        posTabCoordinator = POSTabCoordinator(
-            siteID: siteID,
-            tabContainerController: posContainerController,
-            viewControllerToPresent: self,
-            storesManager: stores,
-            eligibilityChecker: posEligibilityChecker
-        )
-
         // Configure POS catalog sync coordinator for local catalog syncing
         // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
         posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
@@ -826,9 +844,6 @@ private extension MainTabBarController {
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
-
-        observePOSEligibilityForPOSTabVisibility(siteID: siteID)
-        observeBookingsEligibilityForBookingsTabVisibility(site: site)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

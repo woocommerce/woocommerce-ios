@@ -26,7 +26,7 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Computed Properties
     ///
     public var bookingStatus: BookingStatus {
-        return BookingStatus(rawValue: statusKey)
+        return BookingStatus(rawValue: statusKey) ?? .unknown
     }
 
     /// Booking struct initializer.
@@ -110,7 +110,6 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   orderID: orderID,
                   orderItemID: orderItemID,
                   parentID: parentID,
-                  personCounts: personCounts,
                   productID: productID,
                   resourceID: resourceID,
                   startDate: startDate,
@@ -132,7 +131,6 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         try container.encode(orderID, forKey: .orderID)
         try container.encode(orderItemID, forKey: .orderItemID)
         try container.encode(parentID, forKey: .parentID)
-        try container.encode(personCounts, forKey: .personCounts)
         try container.encode(productID, forKey: .productID)
         try container.encode(resourceID, forKey: .resourceID)
         try container.encode(startDate, forKey: .startDate)
@@ -178,23 +176,11 @@ enum BookingDecodingError: Error {
 /// Represents a Booking Status.
 ///
 public enum BookingStatus: String, CaseIterable {
-    case complete = "complete"
-    case paid = "paid"
-    case unpaid = "unpaid"
-    case cancelled = "cancelled"
-
-    public init(rawValue: String) {
-        switch rawValue {
-        case "complete":
-            self = .complete
-        case "paid":
-            self = .paid
-        case "unpaid":
-            self = .unpaid
-        case "cancelled":
-            self = .cancelled
-        default:
-            self = .unpaid
-        }
-    }
+    case complete
+    case paid
+    case unpaid
+    case cancelled
+    case pendingConfirmation = "pending-confirmation"
+    case inCart = "in-cart"
+    case unknown
 }

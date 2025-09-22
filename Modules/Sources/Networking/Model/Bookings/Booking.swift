@@ -85,16 +85,16 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
-        let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
-        let dateModified = try container.decode(Date.self, forKey: .dateModified)
-        let endDate = try container.decode(Date.self, forKey: .endDate)
+        let dateCreated = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .dateCreated))
+        let dateModified = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .dateModified))
+        let endDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .endDate))
         let googleCalendarEventID = try container.decodeIfPresent(String.self, forKey: .googleCalendarEventID)
         let orderID = try container.decode(Int64.self, forKey: .orderID)
         let orderItemID = try container.decode(Int64.self, forKey: .orderItemID)
         let parentID = try container.decode(Int64.self, forKey: .parentID)
         let productID = try container.decode(Int64.self, forKey: .productID)
         let resourceID = try container.decode(Int64.self, forKey: .resourceID)
-        let startDate = try container.decode(Date.self, forKey: .startDate)
+        let startDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .startDate))
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
 

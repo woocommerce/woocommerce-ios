@@ -15,6 +15,7 @@ import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
 import class Yosemite.POSSiteSettingService
+import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
 

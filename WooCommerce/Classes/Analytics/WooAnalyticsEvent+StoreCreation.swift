@@ -21,6 +21,43 @@ extension WooAnalyticsEvent {
             static let initialDomain = "initial_domain"
         }
 
+        enum StorePickerSource: String {
+            /// From switching stores.
+            case switchStores = "switching_stores"
+            /// From the login flow.
+            case login
+            /// The store creation flow is originally initiated from login prologue and dismissed,
+            /// which lands on the store picker.
+            case loginPrologue = "prologue"
+            /// Other sources like from any error screens during the login flow.
+            case other
+        }
+
+        enum Source: String {
+            case loginPrologue = "prologue"
+            case storePicker = "store_picker"
+            case loginEmailError = "login_email_error"
+        }
+
+        /// The implementation of store creation flow - native (M2) or web (M1).
+        enum Flow: String {
+            case native = "native"
+            case web = "web"
+        }
+
+        /// Steps of the native store creation flow.
+        enum Step: String {
+            case profilerCategoryQuestion = "store_profiler_industries"
+            case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
+            case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
+            case profilerCountryQuestion = "store_profiler_country"
+            case domainPicker = "domain_picker"
+            case storeSummary = "store_summary"
+            case planPurchase = "plan_purchase"
+            case webCheckout = "web_checkout"
+            case storeInstallation = "store_installation"
+        }
+
         static func siteCreationFlowStarted(source: Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationFlowStarted,
                               properties: [Key.source: source.rawValue])
@@ -160,45 +197,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeReadyAlertSwitchStoreTapped,
                               properties: [:])
         }
-    }
-}
-
-extension WooAnalyticsEvent.StoreCreation {
-    enum StorePickerSource: String {
-        /// From switching stores.
-        case switchStores = "switching_stores"
-        /// From the login flow.
-        case login
-        /// The store creation flow is originally initiated from login prologue and dismissed,
-        /// which lands on the store picker.
-        case loginPrologue = "prologue"
-        /// Other sources like from any error screens during the login flow.
-        case other
-    }
-
-    enum Source: String {
-        case loginPrologue = "prologue"
-        case storePicker = "store_picker"
-        case loginEmailError = "login_email_error"
-    }
-
-    /// The implementation of store creation flow - native (M2) or web (M1).
-    enum Flow: String {
-        case native = "native"
-        case web = "web"
-    }
-
-    /// Steps of the native store creation flow.
-    enum Step: String {
-        case profilerCategoryQuestion = "store_profiler_industries"
-        case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
-        case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
-        case profilerCountryQuestion = "store_profiler_country"
-        case domainPicker = "domain_picker"
-        case storeSummary = "store_summary"
-        case planPurchase = "plan_purchase"
-        case webCheckout = "web_checkout"
-        case storeInstallation = "store_installation"
     }
 }
 

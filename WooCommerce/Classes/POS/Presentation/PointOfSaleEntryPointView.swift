@@ -129,7 +129,7 @@ struct PointOfSaleEntryPointView: View {
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0),
+                              posEligibilityChecker: POSTabEligibilityChecker(site: .defaultMock()),
                               services: POSPreviewServices())
 }
 

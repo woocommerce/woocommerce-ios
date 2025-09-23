@@ -8,6 +8,7 @@ struct POSSendReceiptView: View {
     @State private var buttonState: POSButtonState = .idle
     @State private var errorMessage: String?
     @FocusState private var isTextFieldFocused: Bool
+    @Environment(\.posAnalytics) private var analytics
 
     @Binding private(set) var isShowingSendReceiptView: Bool
     private let onSendReceipt: (String) async throws -> Void
@@ -96,7 +97,7 @@ struct POSSendReceiptView: View {
     }
 
     private func sendReceipt() {
-        ServiceLocator.analytics.track(.pointOfSaleReceiptEmailSendTapped)
+        analytics.track(.pointOfSaleReceiptEmailSendTapped)
         Task { @MainActor in
             guard isEmailValid else {
                 errorMessage = Localization.emailValidationErrorText

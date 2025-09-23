@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View for reviewing UPS Terms and Conditions.
 struct UPSTermsView: View {

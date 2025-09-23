@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     let settingsController: PointOfSaleSettingsControllerProtocol
 
@@ -73,7 +74,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
                 }
             }
             .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal)
+                PointOfSaleBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
             }
             .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
                 SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())

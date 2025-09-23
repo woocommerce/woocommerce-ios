@@ -10,6 +10,7 @@ struct BarcodeScannerContainerTests {
         let mockProvider = MockVoiceOverStateProvider(isRunning: false)
         let container = GameControllerBarcodeScannerHostingController(
             configuration: .default,
+            analytics: MockPOSAnalytics(),
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
@@ -25,6 +26,7 @@ struct BarcodeScannerContainerTests {
         let mockProvider = MockVoiceOverStateProvider(isRunning: true)
         let container = GameControllerBarcodeScannerHostingController(
             configuration: .default,
+            analytics: MockPOSAnalytics(),
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
@@ -40,6 +42,7 @@ struct BarcodeScannerContainerTests {
         let mockProvider = MockVoiceOverStateProvider(isRunning: false)
         let container = GameControllerBarcodeScannerHostingController(
             configuration: .default,
+            analytics: MockPOSAnalytics(),
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
@@ -74,6 +77,7 @@ struct BarcodeScannerContainerTests {
         let mockProvider = MockVoiceOverStateProvider(isRunning: false)
         let container = GameControllerBarcodeScannerHostingController(
             configuration: .default,
+            analytics: MockPOSAnalytics(),
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )

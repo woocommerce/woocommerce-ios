@@ -17,11 +17,11 @@ struct POSReceiptSenderTests {
 
     init() {
         self.sut = POSReceiptSender(siteID: 123,
-                                       orderService: mockOrderService,
-                                       receiptService: mockReceiptService,
-                                       analytics: MockAnalytics(),
-                                       featureFlagService: mockFeatureFlagService,
-                                       pluginsService: mockPluginsService)
+                                    orderService: mockOrderService,
+                                    receiptService: mockReceiptService,
+                                    analytics: MockPOSAnalytics(),
+                                    featureFlagService: mockFeatureFlagService,
+                                    pluginsService: mockPluginsService)
     }
 
     @Test func sendReceipt_tracks_success_with_eligible_for_pos_receipt() async throws {
@@ -76,11 +76,11 @@ struct POSReceiptSenderTests {
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
             let sut = POSReceiptSender(siteID: 123,
-                                           orderService: mockOrderService,
-                                           receiptService: mockReceiptService,
-                                           analytics: MockAnalytics(),
-                                           featureFlagService: mockFeatureFlagService,
-                                           pluginsService: mockPluginsService)
+                                       orderService: mockOrderService,
+                                       receiptService: mockReceiptService,
+                                       analytics: MockPOSAnalytics(),
+                                       featureFlagService: mockFeatureFlagService,
+                                       pluginsService: mockPluginsService)
             let order = Order.fake()
 
             // When
@@ -107,11 +107,11 @@ struct POSReceiptSenderTests {
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
             let sut = POSReceiptSender(siteID: 123,
-                                           orderService: mockOrderService,
-                                           receiptService: mockReceiptService,
-                                           analytics: MockAnalytics(),
-                                           featureFlagService: mockFeatureFlagService,
-                                           pluginsService: mockPluginsService)
+                                       orderService: mockOrderService,
+                                       receiptService: mockReceiptService,
+                                       analytics: MockPOSAnalytics(),
+                                       featureFlagService: mockFeatureFlagService,
+                                       pluginsService: mockPluginsService)
             let order = Order.fake()
 
             // When
@@ -134,11 +134,11 @@ struct POSReceiptSenderTests {
                                                                                     version: wcPluginVersion,
                                                                                     active: true))
             let sut = POSReceiptSender(siteID: 123,
-                                           orderService: mockOrderService,
-                                           receiptService: mockReceiptService,
-                                           analytics: MockAnalytics(),
-                                           featureFlagService: mockFeatureFlagService,
-                                           pluginsService: mockPluginsService)
+                                       orderService: mockOrderService,
+                                       receiptService: mockReceiptService,
+                                       analytics: MockPOSAnalytics(),
+                                       featureFlagService: mockFeatureFlagService,
+                                       pluginsService: mockPluginsService)
             let order = Order.fake()
 
             // When
@@ -162,11 +162,11 @@ struct POSReceiptSenderTests {
             mockFeatureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleReceipts] = true
             mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
             let sut = POSReceiptSender(siteID: 123,
-                                           orderService: mockOrderService,
-                                           receiptService: mockReceiptService,
-                                           analytics: MockAnalytics(),
-                                           featureFlagService: mockFeatureFlagService,
-                                           pluginsService: mockPluginsService)
+                                       orderService: mockOrderService,
+                                       receiptService: mockReceiptService,
+                                       analytics: MockPOSAnalytics(),
+                                       featureFlagService: mockFeatureFlagService,
+                                       pluginsService: mockPluginsService)
             let order = Order.fake()
 
             // When

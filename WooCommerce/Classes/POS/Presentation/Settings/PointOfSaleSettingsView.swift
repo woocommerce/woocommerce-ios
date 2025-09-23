@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.posAnalytics) private var analytics
     @State private var selection: SidebarNavigation? = .store
 
     let settingsController: PointOfSaleSettingsControllerProtocol
@@ -27,7 +28,7 @@ extension PointOfSaleSettingsView {
                 title: Localization.navigationTitle,
                 backButtonConfiguration: .init(state: .enabled,
                                                action: {
-                                                   ServiceLocator.analytics.track(.pointOfSaleSettingsCloseButtonTapped)
+                                                   analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                    dismiss()
                                                },
                                                buttonIcon: "xmark"))
@@ -39,7 +40,7 @@ extension PointOfSaleSettingsView {
                     item: .store,
                     isSelected: selection == .store,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
+                        analytics.track(.pointOfSaleSettingsStoreDetailsTapped)
                         selection = .store
                     }
                 )
@@ -48,7 +49,7 @@ extension PointOfSaleSettingsView {
                     item: .hardware,
                     isSelected: selection == .hardware,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsHardwareTapped)
+                        analytics.track(.pointOfSaleSettingsHardwareTapped)
                         selection = .hardware
                     }
                 )
@@ -70,7 +71,7 @@ extension PointOfSaleSettingsView {
                     item: .help,
                     isSelected: selection == .help,
                     onTap: {
-                        ServiceLocator.analytics.track(.pointOfSaleSettingsHelpTapped)
+                        analytics.track(.pointOfSaleSettingsHelpTapped)
                         selection = .help
                     }
                 )

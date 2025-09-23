@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundationCore
 
 /// View for the order detail
 ///

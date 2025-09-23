@@ -28,7 +28,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 401, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -50,7 +50,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "not_found"], statusCode: 404, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -72,7 +72,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let error = waitFor { promise in
             network.responseData(for: request) { data, error in
                 promise(error)
@@ -95,7 +95,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 500, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             network.responseData(for: request) { result in
                 promise(result)
@@ -117,7 +117,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             network.responseData(for: request) { result in
                 promise(result)
@@ -140,7 +140,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 500, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             self.responseDataSubscription = network.responseDataPublisher(for: request)
                 .sink { result in
@@ -163,7 +163,7 @@ final class AlamofireNetworkTests: XCTestCase {
         MockURLProtocol.Mocks.mockResponse(["error": "http_request_failed"], statusCode: 200, for: urlRequest)
 
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
         let result = waitFor { promise in
             self.responseDataSubscription = network.responseDataPublisher(for: request)
                 .sink { result in
@@ -180,7 +180,7 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_didFailToAuthenticateRequestWithAppPassword_adds_siteID_to_unsupported_list() {
         // Given
         let siteID: Int64 = 123
-        let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, userDefaults: userDefaults)
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.isEmpty)
 
         // When
@@ -195,7 +195,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let existingSiteID: Int64 = 456
         let newSiteID: Int64 = 123
         userDefaults.applicationPasswordUnsupportedList = [String(existingSiteID): Date()]
-        let network = AlamofireNetwork(credentials: nil, userDefaults: userDefaults)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, userDefaults: userDefaults)
 
         // When
         network.didFailToAuthenticateRequestWithAppPassword(siteID: newSiteID, error: NetworkError.notFound(response: nil))
@@ -211,7 +211,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let url = try XCTUnwrap(URL(string: "http://localhost:991929281"))
         let request = URLRequest(url: url, timeoutInterval: 0.001)
-        let network = AlamofireNetwork(credentials: nil, ensuresSessionManagerIsInitialized: true)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, ensuresSessionManagerIsInitialized: true)
 
         // When
         async let request1 = network.responseDataAndHeaders(for: request)
@@ -630,7 +630,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let siteID: Int64 = 333
         let jetpackRequest = createJetpackRequest(siteID: siteID, path: "test")
         let wpcomCredentials = createWPComCredentials()
-        let network = AlamofireNetwork(credentials: wpcomCredentials, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wpcomCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Mock Jetpack request to fail
         let jetpackUrlRequest = try XCTUnwrap(try? jetpackRequest.asURLRequest())
@@ -656,7 +659,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
 
         // When
-        let network = AlamofireNetwork(credentials: wporgCredentials, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wporgCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -672,7 +678,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let appPasswordCredentials = Credentials.applicationPassword(username: "user", password: "pass", siteAddress: "https://example.com")
 
         // When
-        let network = AlamofireNetwork(credentials: appPasswordCredentials, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: appPasswordCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -688,7 +697,10 @@ final class AlamofireNetworkTests: XCTestCase {
         let wpcomCredentials = createWPComCredentials()
 
         // When
-        let network = AlamofireNetwork(credentials: wpcomCredentials, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: wpcomCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -701,7 +713,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_authenticationMode_is_nil_for_no_credentials() {
         // When
-        let network = AlamofireNetwork(credentials: nil, sessionManager: createSessionWithMockURLProtocol())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should be set")
@@ -716,10 +728,16 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let siteID: Int64 = 123
         let wpcomCredentials = createWPComCredentials()
-        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+        let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
+        let network = createNetworkWithSelectedSite(
+            siteID: siteID,
+            credentials: wpcomCredentials,
+            userDefaults: userDefaults,
+            appPasswordSupport: appPasswordSupportStream.eraseToAnyPublisher()
+        )
 
         // When - Enable app password switching
-        network.updateAppPasswordSwitching(enabled: true)
+        appPasswordSupportStream.send(true)
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should change")
@@ -734,11 +752,17 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let siteID: Int64 = 456
         let wpcomCredentials = createWPComCredentials()
-        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+        let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
+        let network = createNetworkWithSelectedSite(
+            siteID: siteID,
+            credentials: wpcomCredentials,
+            userDefaults: userDefaults,
+            appPasswordSupport: appPasswordSupportStream.eraseToAnyPublisher()
+        )
 
         // When - Enable then disable app password switching
-        network.updateAppPasswordSwitching(enabled: true)
-        network.updateAppPasswordSwitching(enabled: false)
+        appPasswordSupportStream.send(true)
+        appPasswordSupportStream.send(false)
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should revert")
@@ -753,11 +777,17 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let siteID: Int64 = 789
         let wpcomCredentials = createWPComCredentials()
+        let appPasswordSupportStream = CurrentValueSubject<Bool, Never>(false)
         userDefaults.applicationPasswordUnsupportedList = [String(siteID): Date()]
-        let network = createNetworkWithSelectedSite(siteID: siteID, credentials: wpcomCredentials, userDefaults: userDefaults)
+        let network = createNetworkWithSelectedSite(
+            siteID: siteID,
+            credentials: wpcomCredentials,
+            userDefaults: userDefaults,
+            appPasswordSupport: appPasswordSupportStream.eraseToAnyPublisher()
+        )
 
         // When - Enable app password switching for an unsupported site
-        network.updateAppPasswordSwitching(enabled: true)
+        appPasswordSupportStream.send(true)
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should remain jetpackTunnel")
@@ -771,10 +801,10 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_authenticationMode_does_not_change_for_non_wpcom_credentials() {
         // Given
         let wporgCredentials = Credentials.wporg(username: "user", password: "pass", siteAddress: "https://example.com")
-        let network = AlamofireNetwork(credentials: wporgCredentials, sessionManager: createSessionWithMockURLProtocol())
-
-        // When - Try to enable app password switching (should have no effect)
-        network.updateAppPasswordSwitching(enabled: true)
+        let network = AlamofireNetwork(credentials: wporgCredentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
 
         // Then
         let expectation = XCTestExpectation(description: "Authentication mode should remain unchanged")
@@ -819,16 +849,21 @@ private extension AlamofireNetworkTests {
         return Just(site).eraseToAnyPublisher()
     }
 
-    func createNetworkWithSelectedSite(siteID: Int64, credentials: Credentials? = nil, userDefaults: UserDefaults? = nil) -> AlamofireNetwork {
+    func createNetworkWithSelectedSite(
+        siteID: Int64,
+        credentials: Credentials? = nil,
+        userDefaults: UserDefaults? = nil,
+        appPasswordSupport: AnyPublisher<Bool, Never> = Just(true).eraseToAnyPublisher()
+    ) -> AlamofireNetwork {
         let networkCredentials = credentials ?? createWPComCredentials()
         let selectedSite = createSelectedSitePublisher(siteID: siteID)
         let network = AlamofireNetwork(
             credentials: networkCredentials,
             selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupport,
             userDefaults: userDefaults ?? .standard,
             sessionManager: createSessionWithMockURLProtocol()
         )
-        network.updateAppPasswordSwitching(enabled: true)
         return network
     }
 

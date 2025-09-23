@@ -1,6 +1,7 @@
 import Foundation
 import Experiments
 import Yosemite
+import class WooFoundation.VersionHelpers
 
 /// Interface for checking if a site is eligible for creating Google ads campaigns from the app.
 ///

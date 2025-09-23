@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 struct UpgradeWaitingView: View {
     let planName: String

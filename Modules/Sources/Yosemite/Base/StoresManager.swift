@@ -63,6 +63,7 @@ public protocol StoresManager {
 
     /// The currently logged in store/site ID. Nil when the app is logged out.
     ///
+    /// periphery: ignore - used in tests
     var siteID: AnyPublisher<Int64?, Never> { get }
 
     /// Observable currently selected site.

@@ -8,7 +8,7 @@ final class BookingDetailsViewController: UIHostingController<BookingDetailsView
 
     init(viewModel: BookingDetailsViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: BookingDetailsView(viewModel: viewModel))
+        super.init(rootView: BookingDetailsView(viewModel))
     }
 
     @MainActor

@@ -3,44 +3,87 @@ import WooFoundation
 import Networking
 
 struct BookingDetailsView: View {
-    @ObservedObject var viewModel: BookingDetailsViewModel
+    @ObservedObject private var viewModel: BookingDetailsViewModel
 
-    enum Layout {
+    private enum Layout {
         static let contentSidePadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
+        static let appointmentDetailsRowVerticalPadding: CGFloat = 6
     }
 
-    enum TextFont {
-        static let headerBodyText = Font.body.weight(.medium)
+    fileprivate enum TextFont {
+        static var bodyMedium: Font {
+            Font.body.weight(.medium)
+        }
+
+        static var bodyRegular: Font {
+            Font.body.weight(.regular)
+        }
     }
 
-    enum ColorConstants {
-        static let bookingStatusLabel: Color = .gray
+    private enum ColorConstants {
+        static var bookingStatusLabel: Color {
+            return .gray
+        }
     }
 
+    init(_ viewModel: BookingDetailsViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        RefreshablePlainList(action: {
+            print("Refresh triggered")
+        }) {
+            VStack(alignment: .leading, spacing: .zero) {
+                ForEach(viewModel.sections) { section in
+                    sectionView(with: section)
+                    Divider()
+                }
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .background(Color(uiColor: .systemGroupedBackground))
+    }
+}
+
+private extension BookingDetailsView {
     func sectionView(with section: BookingDetailsViewModel.Section) -> some View {
-        VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
+        VStack(alignment: .leading, spacing: 0) {
             if let headerText = section.headerText {
                 Text(headerText)
-                    .font(.caption)
+                    .font(.footnote)
                     .foregroundColor(.gray)
+                    .padding(.vertical)
+                    .padding(.horizontal, Layout.contentSidePadding)
+                Divider()
             }
 
-            switch section.content {
-            case .header(let content):
-                headerView(with: content)
-            case .appointmentDetails(let content):
-                appointmentDetailsView(with: content)
-            default:
-                EmptyView()
-            }
+            sectionContentView(section.content)
+                .padding(.horizontal, Layout.contentSidePadding)
+                .padding(.vertical, 10)
+                .background(Color(uiColor: .listBackground))
 
             if let footerText = section.footerText {
+                Divider()
                 Text(footerText)
-                    .font(.caption)
+                    .padding(.horizontal, Layout.contentSidePadding)
+                    .font(.footnote)
                     .foregroundColor(.gray)
             }
+        }
+    }
+
+    @ViewBuilder
+    func sectionContentView(_ content: BookingDetailsViewModel.SectionContent) -> some View {
+        switch content {
+        case .header(let content):
+            headerView(with: content)
+        case .appointmentDetails(let content):
+            appointmentDetailsView(with: content)
+        default:
+            EmptyView()
         }
     }
 
@@ -50,9 +93,9 @@ struct BookingDetailsView: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
             Text(headerContent.serviceName)
-                .font(TextFont.headerBodyText)
+                .font(TextFont.bodyMedium)
             Text(headerContent.customerName)
-                .font(TextFont.headerBodyText)
+                .font(TextFont.bodyMedium)
                 .foregroundColor(.secondary)
             HStack {
                 ForEach(headerContent.status, id: \.self) { status in
@@ -65,47 +108,36 @@ struct BookingDetailsView: View {
             }
             .padding(.top, Layout.headerBadgesAdditionalTopPadding)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 6)
     }
 
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading) {
             ForEach(content.rows) { row in
                 DetailRow(title: row.title, value: row.value)
-                Divider()
-            }
-        }
-    }
+                    .padding(.vertical, Layout.appointmentDetailsRowVerticalPadding)
 
-    var body: some View {
-        RefreshablePlainList(action: {
-            print("Refresh triggered")
-        }) {
-            VStack(alignment: .leading) {
-                ForEach(viewModel.sections) { section in
-                    sectionView(with: section)
-                        .padding(.horizontal)
-
+                if row.id != content.rows.last?.id {
                     Divider()
+                        .padding(.trailing, -Layout.contentSidePadding)
                 }
             }
-            .padding(.vertical)
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .background(Color(uiColor: .listBackground))
     }
 }
 
 struct DetailRow: View {
     let title: String
     let value: String
-    var isBold: Bool = false
-
     var body: some View {
         HStack {
             Text(title)
+                .font(BookingDetailsView.TextFont.bodyMedium)
             Spacer()
             Text(value)
-                .fontWeight(isBold ? .bold : .regular)
+                .font(BookingDetailsView.TextFont.bodyRegular)
+                .foregroundColor(.secondary)
         }
     }
 }
@@ -135,7 +167,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             localTimezone: "America/New_York"
         )
         let viewModel = BookingDetailsViewModel(booking: sampleBooking)
-        return BookingDetailsView(viewModel: viewModel)
+        return BookingDetailsView(viewModel)
     }
 }
 #endif

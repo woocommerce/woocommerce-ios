@@ -32,6 +32,8 @@ struct BookingDetailsView: View {
                 headerView(with: content)
             case .appointmentDetails(let content):
                 appointmentDetailsView(with: content)
+            default:
+                EmptyView()
             }
 
             if let footerText = section.footerText {
@@ -85,93 +87,6 @@ struct BookingDetailsView: View {
 
                     Divider()
                 }
-
-//
-//                // Appointment Details
-//                appointmentDetailsSectionView
-//                .padding(.horizontal)
-//
-//                VStack(spacing: 12) {
-//                    Button(action: {
-//                        viewModel.rescheduleBooking()
-//                    }) {
-//                        Text("Reschedule")
-//                            .frame(maxWidth: .infinity)
-//                            .padding()
-//                            .background(Color.white)
-//                            .border(Color.gray, width: 1)
-//                            .cornerRadius(8)
-//                    }
-//
-//                    Button(action: {
-//                        viewModel.cancelBooking()
-//                    }) {
-//                        Text("Cancel booking")
-//                            .frame(maxWidth: .infinity)
-//                            .padding()
-//                            .background(Color.white)
-//                            .border(Color.gray, width: 1)
-//                            .cornerRadius(8)
-//                    }
-//                }
-//                .padding(.horizontal)
-//
-//                Divider()
-//
-//                // Payment Details
-//                VStack(alignment: .leading, spacing: 16) {
-//                    Text("PAYMENT")
-//                        .font(.caption)
-//                        .foregroundColor(.gray)
-//
-//                    DetailRow(title: "Services", value: viewModel.servicesCost)
-//                    DetailRow(title: "Tax", value: viewModel.tax)
-//                    DetailRow(title: "Total", value: viewModel.total, isBold: true)
-//                    DetailRow(title: "Paid", value: viewModel.paid, isBold: true)
-//                }
-//                .padding(.horizontal)
-//
-//                VStack(spacing: 12) {
-//                    Button(action: {
-//                        viewModel.markAsPaid()
-//                    }) {
-//                        Text("Mark as paid")
-//                            .frame(maxWidth: .infinity)
-//                            .padding()
-//                            .background(Color.accentColor)
-//                            .foregroundColor(.white)
-//                            .cornerRadius(8)
-//                    }
-//
-//                    Button(action: {
-//                        viewModel.viewOrder()
-//                    }) {
-//                        Text("View order")
-//                            .frame(maxWidth: .infinity)
-//                            .padding()
-//                            .background(Color.white)
-//                            .border(Color.gray, width: 1)
-//                            .cornerRadius(8)
-//                    }
-//                }
-//                .padding(.horizontal)
-//
-//                Divider()
-//
-//                // Customer Details
-//                VStack(alignment: .leading, spacing: 16) {
-//                    Text("CUSTOMER")
-//                        .font(.caption)
-//                        .foregroundColor(.gray)
-//
-//                    Text(viewModel.customerName).font(.headline)
-//                    Text(viewModel.customerEmail)
-//                    Text(viewModel.customerPhone)
-//
-//                    Text("Billing address").font(.headline).padding(.top)
-//                    Text(viewModel.billingAddress)
-//                }
-//                .padding(.horizontal)
             }
             .padding(.vertical)
         }
@@ -191,26 +106,6 @@ struct DetailRow: View {
             Spacer()
             Text(value)
                 .fontWeight(isBold ? .bold : .regular)
-        }
-    }
-}
-
-extension BookingDetailsViewModel.Status {
-    var labelText: String {
-        switch self {
-        case .booked:
-            return "Booked"
-        case .paid:
-            return "Paid"
-        }
-    }
-
-    var labelColor: Color {
-        switch self {
-        case .booked:
-            return Color(UIColor.systemGray6)
-        case .paid:
-            return Color(UIColor.systemGray6)
         }
     }
 }

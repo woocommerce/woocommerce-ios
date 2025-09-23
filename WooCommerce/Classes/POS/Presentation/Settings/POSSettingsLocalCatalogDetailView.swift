@@ -44,6 +44,8 @@ private extension POSSettingsLocalCatalogDetailView {
                 fieldRowView(label: Localization.lastFullSync, value: viewModel.lastFullSyncDate)
             }
             .padding(.bottom, POSPadding.medium)
+            .redacted(reason: viewModel.isLoading ? .placeholder : [])
+            .shimmering(active: viewModel.isLoading)
         }
     }
 

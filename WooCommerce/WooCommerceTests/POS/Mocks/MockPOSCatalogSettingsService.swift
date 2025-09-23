@@ -1,7 +1,9 @@
 @testable import Yosemite
 
 final class MockPOSCatalogSettingsService: POSCatalogSettingsServiceProtocol {
-    var catalogInfoResult: Result<POSCatalogInfo, Error> = .success(POSCatalogInfo(productCount: 0, variationCount: 0, lastFullSyncDate: nil, lastIncrementalSyncDate: nil))
+    var catalogInfoResult: Result<POSCatalogInfo, Error> = .success(
+        .init(productCount: 0, variationCount: 0, lastFullSyncDate: nil, lastIncrementalSyncDate: nil)
+    )
     var shouldDelayResponse = false
 
     func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {

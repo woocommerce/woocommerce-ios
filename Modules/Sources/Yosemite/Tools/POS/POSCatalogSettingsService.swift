@@ -3,32 +3,21 @@ import GRDB
 import protocol Storage.GRDBManagerProtocol
 
 public protocol POSCatalogSettingsServiceProtocol {
-    /// Gets catalog statistics for the specified site.
-    /// - Parameter siteID: The site ID to get catalog statistics for.
-    /// - Returns: Catalog statistics including product/variation counts.
-    func loadCatalogStatistics(for siteID: Int64) async throws -> POSCatalogStatistics
-
-    /// Gets the last sync dates for the specified site.
-    /// - Parameter siteID: The site ID to get sync dates for.
-    /// - Returns: Sync dates information.
-    func loadSyncDates(for siteID: Int64) async throws -> POSSyncDates
+    /// Gets catalog information for the specified site.
+    /// - Parameter siteID: The site ID to get catalog information for.
+    /// - Returns: Catalog information including statistics and sync dates.
+    func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo
 }
 
-public struct POSCatalogStatistics {
+public struct POSCatalogInfo {
     public let productCount: Int
     public let variationCount: Int
-
-    public init(productCount: Int, variationCount: Int) {
-        self.productCount = productCount
-        self.variationCount = variationCount
-    }
-}
-
-public struct POSSyncDates {
     public let lastFullSyncDate: Date?
     public let lastIncrementalSyncDate: Date?
 
-    public init(lastFullSyncDate: Date?, lastIncrementalSyncDate: Date?) {
+    public init(productCount: Int, variationCount: Int, lastFullSyncDate: Date?, lastIncrementalSyncDate: Date?) {
+        self.productCount = productCount
+        self.variationCount = variationCount
         self.lastFullSyncDate = lastFullSyncDate
         self.lastIncrementalSyncDate = lastIncrementalSyncDate
     }
@@ -41,18 +30,14 @@ public class POSCatalogSettingsService: POSCatalogSettingsServiceProtocol {
         self.grdbManager = grdbManager
     }
 
-    public func loadCatalogStatistics(for siteID: Int64) async throws -> POSCatalogStatistics {
+    public func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
         try await grdbManager.databaseConnection.read { db in
             let productCount = try PersistedProduct.filter { $0.siteID == siteID }.fetchCount(db)
             let variationCount = try PersistedProductVariation.filter { $0.siteID == siteID }.fetchCount(db)
-            return POSCatalogStatistics(productCount: productCount, variationCount: variationCount)
-        }
-    }
-
-    public func loadSyncDates(for siteID: Int64) async throws -> POSSyncDates {
-        try await grdbManager.databaseConnection.read { db in
             let site = try PersistedSite.filter(key: siteID).fetchOne(db)
-            return POSSyncDates(
+            return POSCatalogInfo(
+                productCount: productCount,
+                variationCount: variationCount,
                 lastFullSyncDate: site?.lastCatalogFullSyncDate,
                 lastIncrementalSyncDate: site?.lastCatalogIncrementalSyncDate
             )

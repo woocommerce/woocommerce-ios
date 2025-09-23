@@ -34,8 +34,9 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func loadCatalogData_sets_catalog_size_and_sync_dates_on_success() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 150, variationCount: 75))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 150,
+            variationCount: 75,
             lastFullSyncDate: Date(timeIntervalSinceNow: -3600), // 1 hour ago
             lastIncrementalSyncDate: Date(timeIntervalSinceNow: -1800) // 30 minutes ago
         ))
@@ -50,51 +51,46 @@ struct POSSettingsLocalCatalogViewModelTests {
         #expect(sut.isLoading == false)
     }
 
-    @Test func loadCatalogData_sets_catalog_size_to_unavailable_when_loadCatalogStatistics_returns_error() async throws {
+    @Test func loadCatalogData_sets_all_fields_to_unavailable_when_loadCatalogInfo_returns_error() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .failure(MockError.loadError)
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(lastFullSyncDate: Date().addingTimeInterval(-3600),
-                                                                       lastIncrementalSyncDate: Date().addingTimeInterval(-3600)))
+        catalogSettingsService.catalogInfoResult = .failure(MockError.loadError)
 
         // When
         await sut.loadCatalogData()
 
         // Then
         #expect(sut.catalogSize == "Catalog size unavailable")
-        #expect(sut.lastFullSyncDate.contains("ago"))
-        #expect(sut.lastIncrementalSyncDate.contains("ago"))
-    }
-
-    @Test func loadCatalogData_sets_sync_dates_to_unavailable_when_loadSyncDates_returns_error() async throws {
-        // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 100, variationCount: 50))
-        catalogSettingsService.syncDatesResult = .failure(MockError.loadError)
-
-        // When
-        await sut.loadCatalogData()
-
-        // Then
-        #expect(sut.catalogSize == "100 products, 50 variations")
         #expect(sut.lastFullSyncDate == "Sync date unavailable")
         #expect(sut.lastIncrementalSyncDate == "Sync date unavailable")
     }
 
     @Test func loadCatalogData_sets_sync_dates_to_placeholder_when_sync_dates_are_nil() async throws {
         // Given
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(lastFullSyncDate: nil, lastIncrementalSyncDate: nil))
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 100,
+            variationCount: 50,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
 
         // When
         await sut.loadCatalogData()
 
         // Then
+        #expect(sut.catalogSize == "100 products, 50 variations")
         #expect(sut.lastFullSyncDate == "Not synced")
         #expect(sut.lastIncrementalSyncDate == "Not synced")
     }
 
+
     @Test func loadCatalogData_sets_loading_state_correctly() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 0, variationCount: 0))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(lastFullSyncDate: nil, lastIncrementalSyncDate: nil))
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 0,
+            variationCount: 0,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
         catalogSettingsService.shouldDelayResponse = true
 
         // When
@@ -116,8 +112,9 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func refreshCatalog_performs_full_sync_and_reloads_data_when_sync_succeeds() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 200, variationCount: 100))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 200,
+            variationCount: 100,
             lastFullSyncDate: Date(),
             lastIncrementalSyncDate: Date()
         ))
@@ -134,8 +131,12 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func refreshCatalog_sets_refreshing_state_correctly() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 0, variationCount: 0))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(lastFullSyncDate: nil, lastIncrementalSyncDate: nil))
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 0,
+            variationCount: 0,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
         catalogSyncCoordinator.shouldDelayResponse = true
 
         // When
@@ -155,8 +156,12 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func refreshCatalog_does_not_update_catalog_size_when_sync_fails() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 50, variationCount: 25))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(lastFullSyncDate: nil, lastIncrementalSyncDate: nil))
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 50,
+            variationCount: 25,
+            lastFullSyncDate: nil,
+            lastIncrementalSyncDate: nil
+        ))
         catalogSyncCoordinator.performFullSyncResult = .failure(MockError.syncError)
 
         // When
@@ -164,7 +169,7 @@ struct POSSettingsLocalCatalogViewModelTests {
 
         // Then
         #expect(catalogSyncCoordinator.performFullSyncInvocationCount == 1)
-        #expect(sut.catalogSize != "50 products, 25 variations") // `loadCatalogStatistics` should not be invoked
+        #expect(sut.catalogSize != "50 products, 25 variations") // `loadCatalogInfo` should not be invoked
         #expect(sut.isRefreshingCatalog == false)
     }
 
@@ -172,8 +177,9 @@ struct POSSettingsLocalCatalogViewModelTests {
 
     @Test func concurrent_loadCatalogData_and_refreshCatalog_operations_work_correctly() async throws {
         // Given
-        catalogSettingsService.catalogStatisticsResult = .success(POSCatalogStatistics(productCount: 100, variationCount: 50))
-        catalogSettingsService.syncDatesResult = .success(POSSyncDates(
+        catalogSettingsService.catalogInfoResult = .success(POSCatalogInfo(
+            productCount: 100,
+            variationCount: 50,
             lastFullSyncDate: Date(),
             lastIncrementalSyncDate: Date()
         ))

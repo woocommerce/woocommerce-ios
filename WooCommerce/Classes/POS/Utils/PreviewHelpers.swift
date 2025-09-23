@@ -30,8 +30,7 @@ import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
-import struct Yosemite.POSCatalogStatistics
-import struct Yosemite.POSSyncDates
+import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
 
 // MARK: - PreviewProvider helpers
@@ -460,19 +459,13 @@ final class POSPreviewServices: POSDependencyProviding {
 // MARK: - Preview Catalog Services
 
 final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol {
-    func loadCatalogStatistics(for siteID: Int64) async throws -> POSCatalogStatistics {
-        // Simulate realistic catalog data
-        return POSCatalogStatistics(
-            productCount: 247,
-            variationCount: 89
-        )
-    }
-
-    func loadSyncDates(for siteID: Int64) async -> POSSyncDates {
+    func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
         let now = Date()
         let lastFullSync = now.addingTimeInterval(-2 * 60 * 60) // 2 hours ago
         let lastIncrementalSync = now.addingTimeInterval(-15 * 60) // 15 minutes ago
-        return POSSyncDates(
+        return POSCatalogInfo(
+            productCount: 247,
+            variationCount: 89,
             lastFullSyncDate: lastFullSync,
             lastIncrementalSyncDate: lastIncrementalSync
         )

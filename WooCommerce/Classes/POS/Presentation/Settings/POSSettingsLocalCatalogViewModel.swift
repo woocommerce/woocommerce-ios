@@ -33,14 +33,17 @@ final class POSSettingsLocalCatalogViewModel {
         isLoading = true
         defer { isLoading = false }
 
-        async let sizeData = loadCatalogSize()
-        async let syncDatesData = loadSyncDates()
-
-        let (size, syncDates) = await (sizeData, syncDatesData)
-
-        catalogSize = size
-        lastFullSyncDate = syncDates.full
-        lastIncrementalSyncDate = syncDates.incremental
+        do {
+            let catalogInfo = try await catalogSettingsService.loadCatalogInfo(for: siteID)
+            catalogSize = String(format: Localization.catalogSizeFormat, catalogInfo.productCount, catalogInfo.variationCount)
+            lastFullSyncDate = formatSyncDate(catalogInfo.lastFullSyncDate)
+            lastIncrementalSyncDate = formatSyncDate(catalogInfo.lastIncrementalSyncDate)
+        } catch {
+            DDLogError("⛔️ POSSettingsLocalCatalog: Error loading catalog data: \(error)")
+            catalogSize = Localization.catalogSizeUnavailable
+            lastFullSyncDate = Localization.syncDateUnavailable
+            lastIncrementalSyncDate = Localization.syncDateUnavailable
+        }
     }
 
     @MainActor
@@ -58,28 +61,6 @@ final class POSSettingsLocalCatalogViewModel {
 }
 
 private extension POSSettingsLocalCatalogViewModel {
-    func loadCatalogSize() async -> String {
-        do {
-            let statistics = try await catalogSettingsService.loadCatalogStatistics(for: siteID)
-            return String(format: Localization.catalogSizeFormat, statistics.productCount, statistics.variationCount)
-        } catch {
-            DDLogError("⛔️ POSSettingsLocalCatalog: Error loading catalog size: \(error)")
-            return Localization.catalogSizeUnavailable
-        }
-    }
-
-    func loadSyncDates() async -> (full: String, incremental: String) {
-        do {
-            let syncDates = try await catalogSettingsService.loadSyncDates(for: siteID)
-            let full = formatSyncDate(syncDates.lastFullSyncDate)
-            let incremental = formatSyncDate(syncDates.lastIncrementalSyncDate)
-            return (full, incremental)
-        } catch {
-            DDLogError("⛔️ POSSettingsLocalCatalog: Error loading sync dates: \(error)")
-            return (Localization.syncDateUnavailable, Localization.syncDateUnavailable)
-        }
-    }
-
     func formatSyncDate(_ date: Date?) -> String {
         guard let date else { return Localization.neverSynced }
         return dateFormatter.localizedString(for: date, relativeTo: Date())

@@ -19,15 +19,73 @@ struct BookingDetailsView: View {
         static let bookingStatusLabel: Color = .gray
     }
 
+    func sectionView(with section: BookingDetailsViewModel.Section) -> some View {
+        VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
+            if let headerText = section.headerText {
+                Text(headerText)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+
+            switch section.content {
+            case .header(let content):
+                headerView(with: content)
+            case .appointmentDetails(let content):
+                appointmentDetailsView(with: content)
+            }
+
+            if let footerText = section.footerText {
+                Text(footerText)
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+        }
+    }
+
+    func headerView(with headerContent: BookingDetailsViewModel.HeaderContent) -> some View {
+        VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
+            Text(headerContent.bookingDate)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text(headerContent.serviceName)
+                .font(TextFont.headerBodyText)
+            Text(headerContent.customerName)
+                .font(TextFont.headerBodyText)
+                .foregroundColor(.secondary)
+            HStack {
+                ForEach(headerContent.status, id: \.self) { status in
+                    Text(status.labelText)
+                        .font(.caption)
+                        .padding(4)
+                        .background(status.labelColor)
+                        .cornerRadius(4)
+                }
+            }
+            .padding(.top, Layout.headerBadgesAdditionalTopPadding)
+        }
+    }
+
+    func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            ForEach(content.rows) { row in
+                DetailRow(title: row.title, value: row.value)
+                Divider()
+            }
+        }
+    }
+
     var body: some View {
         RefreshablePlainList(action: {
             print("Refresh triggered")
         }) {
             VStack(alignment: .leading) {
-                headerView
-                .padding(.horizontal)
+                ForEach(viewModel.sections) { section in
+                    sectionView(with: section)
+                        .padding(.horizontal)
 
-                Divider()
+                    Divider()
+                }
+
 //
 //                // Appointment Details
 //                appointmentDetailsSectionView
@@ -135,46 +193,6 @@ struct DetailRow: View {
                 .fontWeight(isBold ? .bold : .regular)
         }
     }
-}
-
-private extension BookingDetailsView {
-    var headerView: some View {
-        VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
-            Text(viewModel.bookingDate)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text(viewModel.serviceName)
-                .font(TextFont.headerBodyText)
-            Text(viewModel.customerName)
-                .font(TextFont.headerBodyText)
-                .foregroundColor(.secondary)
-            HStack {
-                ForEach(viewModel.status, id: \.self) { status in
-                    Text(status.labelText)
-                        .font(.caption)
-                        .padding(4)
-                        .background(status.labelColor)
-                        .cornerRadius(4)
-                }
-            }
-            .padding(.top, Layout.headerBadgesAdditionalTopPadding)
-        }
-    }
-
-//    var appointmentDetailsSectionView: some View {
-//        VStack(alignment: .leading, spacing: 16) {
-//            Text("APPOINTMENT DETAILS")
-//                .font(.caption)
-//                .foregroundColor(.gray)
-//
-//            DetailRow(title: "Date", value: viewModel.appointmentDate)
-//            DetailRow(title: "Time", value: viewModel.appointmentTime)
-//            DetailRow(title: "Service", value: viewModel.service)
-//            DetailRow(title: "Quantity", value: "\(viewModel.quantity)")
-//            DetailRow(title: "Duration", value: viewModel.duration)
-//            DetailRow(title: "Cost", value: viewModel.cost)
-//        }
-//    }
 }
 
 extension BookingDetailsViewModel.Status {

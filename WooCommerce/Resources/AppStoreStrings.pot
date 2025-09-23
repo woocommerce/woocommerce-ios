@@ -63,7 +63,7 @@ msgstr ""
 
 msgctxt "v23.3-whats-new"
 msgid ""
-"Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and noticeably faster logins for WordPress.com users. All designed to streamline your daily workflow.\n"
+"Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

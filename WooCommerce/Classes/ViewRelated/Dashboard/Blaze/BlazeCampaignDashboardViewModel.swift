@@ -344,9 +344,6 @@ private extension BlazeCampaignDashboardViewModel {
             self?.updateResults()
         }
 
-        let productTransformer: (StorageProduct) -> BlazeCampaignProduct = {
-            BlazeCampaignProduct(storageProduct: $0)
-        }
         productResultsController.onDidChangeContent = { [weak self] in
             guard let self else { return }
             latestPublishedProduct = productResultsController.fetchedObjects.first

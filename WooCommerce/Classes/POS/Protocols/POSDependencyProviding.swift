@@ -2,6 +2,8 @@ import SwiftUI
 import WooFoundationCore
 import WooFoundation
 import enum Experiments.FeatureFlag
+import struct Yosemite.Coupon
+import enum Yosemite.POSItem
 
 /// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
@@ -39,9 +41,24 @@ protocol POSExternalNavigationProviding {
     func navigateToCreateOrder()
 }
 
-/// Protocol that provides external view creation capabilities for POS
+/// Protocol that provides access to complex Woo application views that depend on a lot of Woo app target dependencies
+/// and cannot be easily moved and reused in a shared module
+/// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
+///
 protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
+    func createFormattableAmountTextField(preset: Decimal?,
+                                          onSubmit: @escaping () -> Void,
+                                          onChange: @escaping (String) -> Void) -> AnyView
+    func createCouponCreationView(discountType: Coupon.DiscountType,
+                                  showTypeSelection: Binding<Bool>,
+                                  onSuccess: @escaping (Coupon) -> Void,
+                                  dismissHandler: @escaping () -> Void,
+                                  onDisappear: @escaping () -> Void) -> AnyView
+    func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
+                                          title: String,
+                                          cancelButtonTitle: String,
+                                          onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

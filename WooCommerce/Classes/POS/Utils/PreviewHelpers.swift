@@ -32,6 +32,7 @@ import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogStatistics
 import struct Yosemite.POSSyncDates
+import struct Yosemite.Site
 
 // MARK: - PreviewProvider helpers
 //
@@ -228,8 +229,9 @@ struct POSPreviewHelpers {
         featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(siteID: 0),
-                                                          featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(
+                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
+                featureFlagService: featureFlags),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,

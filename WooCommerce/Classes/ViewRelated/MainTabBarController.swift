@@ -118,12 +118,13 @@ final class MainTabBarController: UITabBarController {
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
+    private var cancellableSite: AnyCancellable?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager
     private let analytics: Analytics
-    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
+    private let posEligibilityCheckerFactory: ((_ site: Site) -> POSEntryPointEligibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
@@ -136,24 +137,25 @@ final class MainTabBarController: UITabBarController {
 
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
+    /// periphery: ignore - used in tests
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
-          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
+          posEligibilityCheckerFactory: ((Site) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.stores = stores
-        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
+        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = posEligibilityService
@@ -167,11 +169,11 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
-        self.posEligibilityCheckerFactory = { siteID in
+        self.posEligibilityCheckerFactory = { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = POSEligibilityService()
@@ -194,6 +196,7 @@ final class MainTabBarController: UITabBarController {
         // POS tab is hidden by default.
         updateTabViewControllers(isPOSTabVisible: false)
         observeSiteIDForViewControllers()
+        observeSiteForConditionalTabs()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -724,6 +727,18 @@ private extension MainTabBarController {
         }
     }
 
+    func observeSiteForConditionalTabs() {
+        cancellableSite = stores.site
+            .compactMap { $0 }
+            .sink { [weak self] site in
+                guard let self else {
+                    return
+                }
+
+                observeConditionalTabsAvailabilityWith(site)
+            }
+    }
+
     func observeSiteIDForViewControllers() {
         cancellableSiteID = stores.siteID.sink { [weak self] siteID in
             guard let self = self else {
@@ -733,8 +748,23 @@ private extension MainTabBarController {
         }
     }
 
+    func observeConditionalTabsAvailabilityWith(_ site: Site) {
+        // Configures POS tab coordinator once per logged in site session.
+        let posEligibilityChecker = posEligibilityCheckerFactory(site)
+        self.posEligibilityChecker = posEligibilityChecker
+        posTabCoordinator = POSTabCoordinator(
+            siteID: site.siteID,
+            tabContainerController: posContainerController,
+            viewControllerToPresent: self,
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
+        )
+
+        observePOSEligibilityForPOSTabVisibility(siteID: site.siteID)
+    }
+
     func updateViewControllers(siteID: Int64?) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
@@ -755,17 +785,6 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configures POS tab coordinator once per logged in site session.
-        let posEligibilityChecker = posEligibilityCheckerFactory(siteID)
-        self.posEligibilityChecker = posEligibilityChecker
-        posTabCoordinator = POSTabCoordinator(
-            siteID: siteID,
-            tabContainerController: posContainerController,
-            viewControllerToPresent: self,
-            storesManager: stores,
-            eligibilityChecker: posEligibilityChecker
-        )
-
         // Configure POS catalog sync coordinator for local catalog syncing
         // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
         posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
@@ -779,8 +798,6 @@ private extension MainTabBarController {
 
         // Set dashboard to be the default tab.
         selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)
-
-        observePOSEligibilityForPOSTabVisibility(siteID: siteID)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

@@ -5,6 +5,7 @@ import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
+import struct Yosemite.Site
 import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
@@ -30,7 +31,7 @@ protocol POSEntryPointEligibilityCheckerProtocol {
 }
 
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    private let siteID: Int64
+    private let site: Site
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
@@ -38,33 +39,54 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
-    init(siteID: Int64,
+    init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         systemStatusService: POSSystemStatusServiceProtocol = POSSystemStatusService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials,
-                                                                                      storageManager: ServiceLocator.storageManager),
-         siteSettingService: POSSiteSettingServiceProtocol = POSSiteSettingService(credentials: ServiceLocator.stores.sessionManager.defaultCredentials)) {
-        self.siteID = siteID
+         systemStatusService: POSSystemStatusServiceProtocol? = nil,
+         siteSettingService: POSSiteSettingServiceProtocol? = nil,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+        self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.systemStatusService = systemStatusService
-        self.siteSettingService = siteSettingService
+        self.appPasswordSupportState = ApplicationPasswordsExperimentState()
+
+        let credentials = stores.sessionManager.defaultCredentials
+        let selectedSite = stores.sessionManager.defaultSitePublisher.map { $0?.toJetpackSite() }.eraseToAnyPublisher()
+        let appPasswordSupport = appPasswordSupportState.$isAvailableAndEnabled.eraseToAnyPublisher()
+        self.systemStatusService = systemStatusService ?? POSSystemStatusService(
+            credentials: credentials,
+            selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupport,
+            storageManager: ServiceLocator.storageManager
+        )
+        self.siteSettingService = siteSettingService ?? POSSiteSettingService(
+            credentials: credentials,
+            selectedSite: selectedSite,
+            appPasswordSupportState: appPasswordSupport
+        )
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
     func checkInitialVisibility() -> Bool {
-        eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
+        eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
+            return .ineligible(reason: .unsupportedInCIABSites)
+        }
+
         guard #available(iOS 17.0, *) else {
             return .ineligible(reason: .unsupportedIOSVersion)
         }
@@ -89,6 +111,10 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
+            return false
+        }
+
         guard userInterfaceIdiom == .pad else {
             return false
         }
@@ -123,9 +149,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound:
             return await checkEligibility()
         case .featureSwitchDisabled:
-            _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
+            _ = try await siteSettingService.setFeature(siteID: site.siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
+            return await checkEligibility()
+        case .unsupportedInCIABSites:
             return await checkEligibility()
         }
     }
@@ -140,7 +168,7 @@ private extension POSTabEligibilityChecker {
     /// - Returns: The eligibility state for POS based on the WooCommerce plugin and POS feature switch.
     func checkPluginEligibility() async -> POSEligibilityState {
         do {
-            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
+            let info = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: site.siteID)
             let wcPluginEligibility = checkWooCommercePluginEligibility(wcPlugin: info.wcPlugin)
             switch wcPluginEligibility {
             case .eligible:
@@ -233,7 +261,7 @@ private extension POSTabEligibilityChecker {
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream.values {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
+            guard siteSettings.siteID == site.siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
             return siteSettings.settings
@@ -265,7 +293,7 @@ private extension POSTabEligibilityChecker {
             guard let self else {
                 return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
             }
-            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: site.siteID) { [weak self] error in
                 guard let self else {
                     return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
                 }

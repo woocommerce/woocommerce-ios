@@ -1,0 +1,1 @@
+Esta actualización mejora tu experiencia en WooCommerce con pagos en efectivo mejorados, acceso más fácil a los ajustes de POS y detalles precisos de HAZMAT en las etiquetas de envío. Además, solucionamos un problema de flujo de Blaze para que las campañas se comporten como se esperaba. Más rápido, más claro y más confiable: ¡justo como lo necesitas!

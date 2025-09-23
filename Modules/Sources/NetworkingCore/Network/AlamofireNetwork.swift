@@ -57,21 +57,25 @@ public class AlamofireNetwork: Network {
 
     public var session: URLSession { Session.default.session }
 
-    private var subscription: AnyCancellable?
+    private var siteSubscription: AnyCancellable?
 
     /// Thread-safe error handler for failure tracking and retry logic
     private let errorHandler: AlamofireNetworkErrorHandler
+
+    private var appPasswordSupportSubscription: AnyCancellable?
 
     /// Public Initializer
     ///
     /// - Parameters:
     ///   - credentials: Authentication credentials for requests.
     ///   - selectedSite: Publisher for site selection changes.
+    ///   This is necessary if you wish to enable network switching to direct requests while authenticated with WPCOM for better performance.
     ///   - sessionManager: Optional pre-configured session manager.
     ///   - ensuresSessionManagerIsInitialized: If true, the session is always set during initialization immediately to avoid lazy initialization race conditions.
     ///     Defaults to false for backward compatibility. Set to true when making concurrent requests immediately after initialization.
     public required init(credentials: Credentials?,
-                         selectedSite: AnyPublisher<JetpackSite?, Never>? = nil,
+                         selectedSite: AnyPublisher<JetpackSite?, Never>?,
+                         appPasswordSupportState: AnyPublisher<Bool, Never>?,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil,
                          ensuresSessionManagerIsInitialized: Bool = false) {
@@ -110,17 +114,8 @@ public class AlamofireNetwork: Network {
             }
         }()
         updateAuthenticationMode(authenticationMode)
-    }
-
-    public func updateAppPasswordSwitching(enabled: Bool) {
-        guard let credentials, case .wpcom = credentials else { return }
-        if enabled, let selectedSite {
-            observeSelectedSite(selectedSite)
-        } else {
-            requestConverter = RequestConverter(siteAddress: nil)
-            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
-            requestAuthenticator.delegate = nil
-            updateAuthenticationMode(.jetpackTunnel)
+        if let appPasswordSupportState {
+            observeAppPasswordSupportState(appPasswordSupportState)
         }
     }
 
@@ -277,6 +272,28 @@ public class AlamofireNetwork: Network {
 }
 
 private extension AlamofireNetwork {
+
+    func observeAppPasswordSupportState(_ appPasswordSupportState: AnyPublisher<Bool, Never>) {
+        appPasswordSupportSubscription = appPasswordSupportState
+            .removeDuplicates()
+            .sink { [weak self] enabled in
+                self?.updateAppPasswordSwitching(enabled: enabled)
+            }
+    }
+
+    func updateAppPasswordSwitching(enabled: Bool) {
+        guard let credentials, case .wpcom = credentials else { return }
+        if enabled, let selectedSite {
+            observeSelectedSite(selectedSite)
+        } else {
+            requestConverter = RequestConverter(siteAddress: nil)
+            requestAuthenticator.updateAuthenticator(DefaultRequestAuthenticator(credentials: credentials))
+            requestAuthenticator.delegate = nil
+            updateAuthenticationMode(.jetpackTunnel)
+            siteSubscription = nil
+        }
+    }
+
     /// Creates a session manager with request retrier and adapter
     ///
     func makeSession(configuration sessionConfiguration: URLSessionConfiguration) -> Alamofire.Session {
@@ -286,7 +303,7 @@ private extension AlamofireNetwork {
     /// Updates `requestConverter` and `requestAuthenticator` when selected site changes
     ///
     func observeSelectedSite(_ selectedSite: AnyPublisher<JetpackSite?, Never>) {
-        subscription = selectedSite
+        siteSubscription = selectedSite
             .removeDuplicates()
             .combineLatest(userDefaults.publisher(for: \.applicationPasswordUnsupportedList))
             .sink { [weak self] site, unsupportedList in

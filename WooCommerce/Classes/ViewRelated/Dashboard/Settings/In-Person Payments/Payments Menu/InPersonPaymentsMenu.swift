@@ -334,7 +334,18 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))))
+            wooPaymentsPayoutService: WooPaymentsPayoutService(
+                siteID: 0,
+                credentials: .init(authToken: ""),
+                selectedSite: ServiceLocator.stores.sessionManager.defaultSitePublisher
+                    .map { $0?.toJetpackSite() }
+                    .eraseToAnyPublisher(),
+                appPasswordSupportState: ApplicationPasswordsExperimentState()
+                    .$isAvailableAndEnabled
+                    .eraseToAnyPublisher()
+            )
+        )
+    )
     static var previews: some View {
         NavigationStack {
             InPersonPaymentsMenu(viewModel: viewModel)

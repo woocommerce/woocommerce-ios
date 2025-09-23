@@ -86,6 +86,7 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
@@ -111,8 +112,18 @@ final class HubMenuViewModel: ObservableObject {
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
-                wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: siteID,
-                                                                     credentials: credentials)))
+                wooPaymentsPayoutService: WooPaymentsPayoutService(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: stores.sessionManager.defaultSitePublisher
+                        .map { $0?.toJetpackSite() }
+                        .eraseToAnyPublisher(),
+                    appPasswordSupportState: appPasswordSupportState
+                        .$isAvailableAndEnabled
+                        .eraseToAnyPublisher()
+                )
+            )
+        )
     }()
 
     private let analytics: Analytics

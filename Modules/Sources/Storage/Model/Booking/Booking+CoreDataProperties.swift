@@ -1,14 +1,7 @@
-public import Foundation
-public import CoreData
-
-
-public typealias BookingCoreDataPropertiesSet = NSSet
+import Foundation
+import CoreData
 
 extension Booking {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Booking> {
-        return NSFetchRequest<Booking>(entityName: "Booking")
-    }
 
     @NSManaged public var bookingID: Int64
     @NSManaged public var siteID: Int64

@@ -1,7 +1,5 @@
-public import Foundation
-public import CoreData
-
-public typealias BookingCoreDataClassSet = NSSet
+import Foundation
+import CoreData
 
 @objc(Booking)
 public class Booking: NSManagedObject {

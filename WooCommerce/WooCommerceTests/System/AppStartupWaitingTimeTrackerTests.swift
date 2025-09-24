@@ -56,7 +56,7 @@ final class AppStartupWaitingTimeTrackerTests: XCTestCase {
         tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
 
         // When
-        tracker.end()
+        tracker.endWithoutTracking()
         completeAllStartupActions()
 
         // Then

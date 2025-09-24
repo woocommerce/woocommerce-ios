@@ -8,7 +8,7 @@ import TestKit
 
     func test_analytics_state_has_correct_initial_value_when_user_has_opt_out() {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         analytics.userHasOptedIn = false
 
         // When
@@ -20,7 +20,7 @@ import TestKit
 
     func test_analytics_state_has_correct_initial_value_when_user_has_opt_in() {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         analytics.userHasOptedIn = true
 
         // When
@@ -32,7 +32,7 @@ import TestKit
 
     func test_submit_changes_on_wpcom_account_triggers_network_request_and_updates_loading_state() {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         analytics.userHasOptedIn = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Store"))
@@ -62,7 +62,7 @@ import TestKit
 
     func test_submit_changes_using_wpcom_account_calls_completion_block() {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         analytics.userHasOptedIn = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Store"))
@@ -92,7 +92,7 @@ import TestKit
 
     func test_submit_changes_using_non_wpcom_account_calls_completion_block() {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         analytics.userHasOptedIn = true
 
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -113,7 +113,7 @@ import TestKit
 
     @MainActor func test_tapping_go_to_settings_tracks_analytic_event() async {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let viewModel = PrivacyBannerViewModel(analytics: analytics, stores: stores, onCompletion: { _ in })
 
@@ -126,7 +126,7 @@ import TestKit
 
     @MainActor func test_tapping_go_to_save_tracks_analytic_event() async {
         // Given
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let viewModel = PrivacyBannerViewModel(analytics: analytics, stores: stores, onCompletion: { _ in })
 

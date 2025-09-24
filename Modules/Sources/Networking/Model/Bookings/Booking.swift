@@ -22,8 +22,7 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     public let statusKey: String
     public let localTimezone: String
 
-    /// Computed Properties
-    ///
+    // periphery: ignore - to be used later
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
     }
@@ -172,8 +171,8 @@ enum BookingDecodingError: Error {
 // MARK: - Supporting Types
 //
 
+// periphery: ignore
 /// Represents a Booking Status.
-///
 public enum BookingStatus: String, CaseIterable {
     case complete
     case paid

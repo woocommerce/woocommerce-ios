@@ -1,6 +1,7 @@
 import Foundation
 import Networking
 
+// periphery: ignore
 /// BookingAction: Defines all of the Actions supported by the BookingStore.
 ///
 public enum BookingAction: Action {

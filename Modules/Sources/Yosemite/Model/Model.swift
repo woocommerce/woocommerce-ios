@@ -266,6 +266,7 @@ public typealias StorageBlazeCampaignListItem = Storage.BlazeCampaignListItem
 public typealias StorageBlazeTargetDevice = Storage.BlazeTargetDevice
 public typealias StorageBlazeTargetLanguage = Storage.BlazeTargetLanguage
 public typealias StorageBlazeTargetTopic = Storage.BlazeTargetTopic
+// periphery: ignore
 public typealias StorageBooking = Storage.Booking
 public typealias StorageCardReaderType = Storage.CardReaderType
 public typealias StorageCoupon = Storage.Coupon

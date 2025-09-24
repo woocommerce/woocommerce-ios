@@ -951,8 +951,8 @@ public extension StorageType {
         return allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
     }
 
+    // periphery: ignore
     /// Retrieves the Stored Booking.
-    ///
     func loadBooking(siteID: Int64, bookingID: Int64) -> Booking? {
         let predicate = \Booking.bookingID == bookingID && \Booking.siteID == siteID
         return firstObject(ofType: Booking.self, matching: predicate)

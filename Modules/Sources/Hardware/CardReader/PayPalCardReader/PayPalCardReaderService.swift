@@ -273,6 +273,9 @@ extension PayPalCardReaderService: CardReaderService {
 
     public func disconnect() -> Future<Void, Error> {
         Future { [weak self] promise in
+            if iZettleSDK.shared().isLoggedIn {
+                iZettleSDK.shared().logout()
+            }
             self?.connectedReadersSubject.send([])
             promise(.success(()))
         }
@@ -418,61 +421,27 @@ extension PayPalCardReaderService: CardReaderService {
                 promise(.failure(CardReaderServiceError.discovery(underlyingError: .unexpectedSDKError)))
                 return
             }
-            
-            print("💳🔌 [PayPalCardReaderService] Attempting to connect to PayPal reader: \(reader.name)")
-            
+
+            print("💳🔌 [PayPalCardReaderService] Attempting to connect to PayPal reader: \(String(describing: reader.name))")
+
             // For PayPal/iZettle, "connection" is really authentication
             // The SDK doesn't have separate reader discovery/connection - it handles this automatically during payments
             // We'll trigger the authentication flow by attempting to verify account status
-            
+
             let sdk = iZettleSDK.shared()
-            print(type(of: sdk))
-            print(sdk)
 
-            // Get current view controller for presenting login UI
-            guard let currentViewController = self.getCurrentViewController() else {
-                print("💳❌ [PayPalCardReaderService] No view controller available for login UI")
-                promise(.failure(CardReaderServiceError.discovery(underlyingError: .unexpectedSDKError)))
-                return
-            }
-            
-            // Use the proper login method to trigger authentication
-            print("💳🔐 [PayPalCardReaderService] Performing PayPal login")
-            Bundle.allFrameworks
-                .filter { $0.bundlePath.contains("ettle") }
-                .forEach { bundle in
-                    print("Zettle candidate bundle:", bundle.bundleIdentifier ?? "nil",
-                          "at", bundle.bundlePath)
+            DispatchQueue.main.async {
+                sdk.performLogin { error in
+                    if let error = error {
+                        print("💳❌ [PayPalCardReaderService] Login failed: \(error)")
+                        promise(.failure(CardReaderServiceError.discovery(underlyingError: UnderlyingError(with: error))))
+                    } else {
+                        print("💳✅ [PayPalCardReaderService] Login successful, reader 'connected'")
+                        self.connectedReadersSubject.send([reader])
+                        promise(.success(reader))
+                    }
                 }
-
-            if let bundle = Bundle(identifier: "com.zettle.SDK") {
-                print("Zettle SDK version:", bundle.infoDictionary?["CFBundleShortVersionString"] ?? "unknown")
-                print("Zettle SDK build:", bundle.infoDictionary?["CFBundleVersion"] ?? "unknown")
-            } else {
-                print("No Zettle bundle")
             }
-
-            self.connectedReadersSubject.send([reader])
-            promise(.success(reader))
-
-
-            /// The four `performLogin` functions crash 100% of the time here. They are optional, and only added in the latest release.
-            /// I've filed a bug with Zettle: `https://github.com/iZettle/sdk-ios/issues/490`
-            /// If this worked, it would enable us to connect the reader properly ahead of a sale.
-            /// As it is, the two lines above fake it, and connection happens during the first payment.
-
-//            DispatchQueue.main.async {
-//                sdk.performLogin { error in
-//                    if let error = error {
-//                        print("💳❌ [PayPalCardReaderService] Login failed: \(error)")
-//                        promise(.failure(CardReaderServiceError.discovery(underlyingError: UnderlyingError(with: error))))
-//                    } else {
-//                        print("💳✅ [PayPalCardReaderService] Login successful, reader 'connected'")
-//                        self.connectedReadersSubject.send([reader])
-//                        promise(.success(reader))
-//                    }
-//                }
-//            }
         }.eraseToAnyPublisher()
     }
 

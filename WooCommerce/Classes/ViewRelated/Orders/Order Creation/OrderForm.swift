@@ -241,6 +241,12 @@ struct OrderForm: View {
                 viewModel.saveInFlightOrderNotes()
                 viewModel.saveInflightCustomerDetails()
             }
+            .background(
+                GeometryReader { geometryProxy in
+                    Color.clear
+                        .preference(key: WidthPreferenceKey.self, value: geometryProxy.size.width)
+                }
+            )
     }
 
     private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
@@ -383,12 +389,6 @@ struct OrderForm: View {
             .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
             .background(Color(.listBackground).ignoresSafeArea())
             .ignoresSafeArea(.container, edges: [.horizontal])
-            .background(
-                GeometryReader { geometryProxy in
-                    Color.clear
-                        .preference(key: WidthPreferenceKey.self, value: geometryProxy.size.width)
-                }
-            )
         }
         .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
             bannerWidth = newWidth

@@ -5,15 +5,15 @@ import iZettleSDK
 /// Bridge between CardReaderConfigProvider and iZettleSDKAuthorizationProvider
 private class PayPalConfigAuthProvider: NSObject, iZettleSDKAuthorizationProvider {
     private let configProvider: CardReaderConfigProvider
-    
+
     init(configProvider: CardReaderConfigProvider) {
         self.configProvider = configProvider
         super.init()
     }
-    
+
     func authorizeAccount(completion: @escaping iZettleAuthorizationCompletion) {
         print("💳🔐 [PayPalConfigAuthProvider] authorizeAccount called")
-        
+
         configProvider.fetchToken { result in
             DispatchQueue.main.async {
                 switch result {
@@ -31,7 +31,7 @@ private class PayPalConfigAuthProvider: NSObject, iZettleSDKAuthorizationProvide
                         print("💳❌ [PayPalConfigAuthProvider] Failed to create token: \(error)")
                         completion(nil, error)
                     }
-                    
+
                 case .failure(let error):
                     print("💳❌ [PayPalConfigAuthProvider] Failed to fetch token: \(error)")
                     completion(nil, error)
@@ -39,7 +39,7 @@ private class PayPalConfigAuthProvider: NSObject, iZettleSDKAuthorizationProvide
             }
         }
     }
-    
+
     func verifyAccount(uuid: UUID, completion: @escaping iZettleAuthorizationCompletion) {
         print("💳🔐 [PayPalConfigAuthProvider] verifyAccount called for UUID: \(uuid)")
         // For verification, reuse the same authorization flow
@@ -71,21 +71,21 @@ public final class PayPalCardReaderService: NSObject {
     }
 
     // MARK: - PayPal SDK Configuration
-    
+
     private func startPayPalSDK(with configProvider: CardReaderConfigProvider) throws {
         guard !isSDKStarted else {
             print("💳✅ [PayPalCardReaderService] SDK already started")
             return
         }
-        
+
         print("💳🟢 [PayPalCardReaderService] Starting iZettle SDK with config provider")
-        
+
         // Store config provider for token fetching
         self.configProvider = configProvider
-        
+
         // Create custom auth provider that uses the config provider to fetch tokens
         let authProvider = PayPalConfigAuthProvider(configProvider: configProvider)
-        
+
         do {
             var isDebug = false
 //#if DEBUG
@@ -110,12 +110,12 @@ public final class PayPalCardReaderService: NSObject {
     private func setupBasicOAuthSDK() {
         print("💳🔧 [PayPalCardReaderService] Using basic OAuth - direct PayPal login")
         print("💳ℹ️ [PayPalCardReaderService] This will show PayPal login screen when needed")
-        
+
         guard !isSDKStarted else {
             print("💳✅ [PayPalCardReaderService] SDK already started")
             return
         }
-        
+
         do {
             // Use real Zettle client ID for testing - get this from Zettle Developer Portal
             let clientID = "YOUR_PAYPAL_CLIENT_ID" // Get from https://developer.zettle.com/
@@ -137,7 +137,7 @@ public final class PayPalCardReaderService: NSObject {
             DDLogInfo("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
             print("💳🟢 [PayPalCardReaderService] iZettle SDK initialized with basic OAuth successfully")
             print("💳✅ [PayPalCardReaderService] Basic auth ready - login will be handled during payment/connection")
-            
+
             isSDKStarted = true
 
         } catch {
@@ -226,7 +226,7 @@ extension PayPalCardReaderService: CardReaderService {
         // Check if user wants to use remote auth (site-managed) or basic auth
         let useRemoteAuth = UserDefaults.standard.bool(forKey: "UsePayPalRemoteAuth")
         print("💳🔧 [PayPalCardReaderService] Auth method: \(useRemoteAuth ? "Remote (site-managed)" : "Basic (direct login)")")
-        
+
         if useRemoteAuth {
             // Use site-managed authentication via plugin
             try startPayPalSDK(with: configProvider)
@@ -234,7 +234,7 @@ extension PayPalCardReaderService: CardReaderService {
             // Use basic OAuth with direct PayPal login
             setupBasicOAuthSDK()
         }
-        
+
         // Start reader discovery
         switchStatusToDiscovering()
 
@@ -296,7 +296,7 @@ extension PayPalCardReaderService: CardReaderService {
         connectedReadersSubject.send([])
         switchStatusToIdle()
     }
-    
+
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
         return Future<PaymentIntent, Error> { [weak self] promise in

@@ -208,7 +208,9 @@ private extension TopPerformersDashboardViewModel {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
                     analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .topPerformers))
                 }
-                waitingTracker?.end()
+                if let event = waitingTracker?.end() {
+                    analytics.track(event: event)
+                }
             }
             .store(in: &subscriptions)
     }

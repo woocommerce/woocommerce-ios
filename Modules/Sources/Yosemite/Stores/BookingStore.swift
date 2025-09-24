@@ -74,7 +74,7 @@ extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread* async.
     /// Also deletes existing bookings if requested.
-    func upsertStoredBookingsInBackground(readOnlyBookings: [Networking.Booking],
+    func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false) async {
         await withCheckedContinuation { [weak self] continuation in
@@ -93,7 +93,7 @@ extension BookingStore {
     /// Also deletes existing bookings if requested.
     /// `onCompletion` will be called on the main thread!
     ///
-    func upsertStoredBookingsInBackground(readOnlyBookings: [Networking.Booking],
+    func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false,
                                           onCompletion: @escaping () -> Void) {
@@ -123,7 +123,7 @@ extension BookingStore {
         for readOnlyBooking in readOnlyBookings {
             // Filter to find existing booking by booking ID
             let storageBooking = storedBookings.first { $0.bookingID == readOnlyBooking.bookingID } ??
-                storage.insertNewObject(ofType: Storage.Booking.self)
+                storage.insertNewObject(ofType: StorageBooking.self)
 
             storageBooking.update(with: readOnlyBooking)
         }

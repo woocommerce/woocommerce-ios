@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.SafariView
 
 struct PointOfSaleSettingsHardwareDetailView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize

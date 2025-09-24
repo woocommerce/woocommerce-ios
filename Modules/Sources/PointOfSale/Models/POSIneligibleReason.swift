@@ -11,6 +11,7 @@ public enum POSIneligibleReason: Equatable {
     case featureSwitchDisabled
     case unsupportedCurrency(countryCode: CountryCode, supportedCurrencies: [CurrencyCode])
     case selfDeallocated
+    case unsupportedInCIABSites
 }
 
 /// Represents the eligibility state for POS.

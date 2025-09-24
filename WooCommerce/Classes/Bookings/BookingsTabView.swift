@@ -16,6 +16,10 @@ final class BookingsTabViewHostingController: UIHostingController<BookingsTabVie
     override var shouldShowOfflineBanner: Bool {
         return true
     }
+
+    func didSwitchStore(id: Int64) {
+        // TODO: update view
+    }
 }
 
 private extension BookingsTabViewHostingController {

@@ -842,11 +842,15 @@ private extension MainTabBarController {
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
-        // Set dashboard to be the default tab - disable optional tabs by default.
-        selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: false,
-                                                    isBookingsTabVisible: false)
-        updateTabViewControllers(isPOSTabVisible: false,
-                                 isBookingsTabVisible: false)
+        // Sets dashboard to be the default tab.
+        selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
+                                                    isBookingsTabVisible: isBookingsTabVisible)
+
+        // Updates site ID for the POS coordinator to ensure correct data
+        posTabCoordinator?.didSwitchStore(id: siteID)
+
+        // Updates site ID for the bookings tab to display correct bookings
+        (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

@@ -17,6 +17,7 @@ final class BookingsTabViewHostingController: UIHostingController<BookingsTabVie
         return true
     }
 
+    // periphery: ignore
     func didSwitchStore(id: Int64) {
         // TODO: update view
     }

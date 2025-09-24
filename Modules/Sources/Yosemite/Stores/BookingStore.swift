@@ -129,14 +129,3 @@ extension BookingStore {
         }
     }
 }
-
-// MARK: - Unit Testing Helpers
-//
-extension BookingStore {
-
-    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Booking in a given Storage Layer.
-    ///
-    func upsertStoredBooking(readOnlyBooking: Networking.Booking, in storage: StorageType) {
-        upsertStoredBookings(readOnlyBookings: [readOnlyBooking], in: storage)
-    }
-}

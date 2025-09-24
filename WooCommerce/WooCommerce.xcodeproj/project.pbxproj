@@ -1543,7 +1543,6 @@
 		4A690C262BA7A08A00A8E0C5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4A690C252BA7A08500A8E0C5 /* PrivacyInfo.xcprivacy */; };
 		4A690C282BA7A5B400A8E0C5 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 4A690C272BA7A3F800A8E0C5 /* PrivacyInfo.xcprivacy */; };
 		532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */; };
-		532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */; };
 		53284E9AB1C65FD79E803694 /* EUShippingNoticeTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53284F4A66A725F479CD9584 /* EUShippingNoticeTopBannerFactory.swift */; };
 		570AAB052472FACB00516C0C /* OrderDetailsDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */; };
 		571CDD5A250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 571CDD59250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift */; };
@@ -2008,7 +2007,6 @@
 		B5FD111621D3F13700560344 /* BordersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FD111521D3F13700560344 /* BordersView.swift */; };
 		B60B5026292D308A00178C26 /* AnalyticsTimeRangeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */; };
 		B61F212A2AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61F21292AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift */; };
-		B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */; };
 		B626C71B287659D60083820C /* CustomFieldsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B626C71A287659D60083820C /* CustomFieldsListView.swift */; };
 		B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */; };
 		B63D9009293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B63D9008293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift */; };
@@ -4744,7 +4742,6 @@
 		4A690C272BA7A3F800A8E0C5 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		53284C9FD06F2BDABC554BEE /* OrderFormCustomerNoteViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderFormCustomerNoteViewModel.swift; sourceTree = "<group>"; };
 		53284F4A66A725F479CD9584 /* EUShippingNoticeTopBannerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EUShippingNoticeTopBannerFactory.swift; sourceTree = "<group>"; };
-		53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WaitingTimeTracker.swift; sourceTree = "<group>"; };
 		570AAB042472FACB00516C0C /* OrderDetailsDataSourceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OrderDetailsDataSourceTests.swift; path = "Order Details/OrderDetailsDataSourceTests.swift"; sourceTree = "<group>"; };
 		571CDD59250ACC470076B8CC /* UITableViewDiffableDataSource+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewDiffableDataSource+Helpers.swift"; sourceTree = "<group>"; };
 		571FDDAD24C768DC00D486A5 /* MockZendeskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockZendeskManager.swift; sourceTree = "<group>"; };
@@ -5238,7 +5235,6 @@
 		B5FD111521D3F13700560344 /* BordersView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BordersView.swift; sourceTree = "<group>"; };
 		B60B5025292D308A00178C26 /* AnalyticsTimeRangeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTimeRangeCard.swift; sourceTree = "<group>"; };
 		B61F21292AA13CA700B0C8EB /* ShippingLabelHazmatCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelHazmatCategory.swift; sourceTree = "<group>"; };
-		B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingTimeTrackerTests.swift; sourceTree = "<group>"; };
 		B626C71A287659D60083820C /* CustomFieldsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFieldsListView.swift; sourceTree = "<group>"; };
 		B63AAF4A254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+SurveyViewControllerTests.swift"; sourceTree = "<group>"; };
 		B63D9008293E56E300BB5C9D /* AnalyticsHubQuarterToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubQuarterToDateRangeData.swift; sourceTree = "<group>"; };
@@ -10250,7 +10246,6 @@
 				02C3FACD282A93020095440A /* WooAnalyticsEvent+Dashboard.swift */,
 				0247F511286F73EA009C177E /* WooAnalyticsEvent+ImageUpload.swift */,
 				02AC30CE2888EC8100146A25 /* WooAnalyticsEvent+LoginOnboarding.swift */,
-				53284FB62FF7F94F18F0D3FF /* WaitingTimeTracker.swift */,
 				CEC8188B2A3B7C8B00459843 /* AppStartupWaitingTimeTracker.swift */,
 				0263E3BA290BB21800E5F88F /* WooAnalyticsEvent+StoreCreation.swift */,
 				EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */,
@@ -10706,7 +10701,6 @@
 				9379E1A22255365F006A6BE4 /* TestingMode.storyboard */,
 				746791622108D7C0007CF1DC /* WooAnalyticsTests.swift */,
 				26B119C124D1CD3500FED5C7 /* WooConstantsTests.swift */,
-				B622BC73289CF19400B10CEC /* WaitingTimeTrackerTests.swift */,
 				CEC8188D2A3C75DD00459843 /* AppStartupWaitingTimeTrackerTests.swift */,
 			);
 			path = System;
@@ -17132,7 +17126,6 @@
 				01929C362CEF6D6E006C79ED /* CardPresentModalNonRetryableErrorWithoutEmail.swift in Sources */,
 				016582E72E789409001DBB6F /* POSIneligibleReason.swift in Sources */,
 				532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */,
-				532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */,
 				53284E9AB1C65FD79E803694 /* EUShippingNoticeTopBannerFactory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -17241,7 +17234,6 @@
 				DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */,
 				03B9E52F2A150EED005C77F5 /* MockCardReaderSupportDeterminer.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
-				B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */,
 				023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */,
 				26FE09E124DB8FA000B9BDF5 /* SurveyCoordinatorControllerTests.swift in Sources */,
 				CE91BEA029FBE9E100B6E1AF /* QuantityRulesViewModelTests.swift in Sources */,

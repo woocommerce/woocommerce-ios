@@ -157,9 +157,7 @@ struct PointOfSaleSettingsHardwareDetailView: View {
         }
         .navigationBarBackButtonHidden(true)
         .posFullScreenCover(isPresented: $showCardReaderDocumentationModal) {
-            if let url = URL(string: Constants.inPersonPaymentsLearnMoreWCPay.rawValue) {
-                SafariView(url: url)
-            }
+            SafariView(url: POSConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL())
         }
     }
 
@@ -383,13 +381,6 @@ private extension PointOfSaleSettingsHardwareDetailView {
             value: "Configure barcode scanner settings",
             comment: "Description of Barcode scanner settings configuration."
         )
-    }
-}
-
-private extension PointOfSaleSettingsHardwareDetailView {
-    enum Constants: String {
-        case inPersonPaymentsLearnMoreWCPay =
-                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
     }
 }
 

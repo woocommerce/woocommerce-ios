@@ -206,6 +206,103 @@ struct BookingStoreTests {
         #expect(result.isSuccess)
         #expect(storedBookingCount == 2)
     }
+
+    // MARK: - checkIfStoreHasBookings
+
+    @Test func checkIfStoreHasBookings_returns_true_when_bookings_exist_locally() async throws {
+        // Given
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 123)
+        storeBooking(booking)
+        #expect(storedBookingCount == 1)
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.checkIfStoreHasBookings(siteID: sampleSiteID,
+                                                                onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasBookings = try result.get()
+        #expect(hasBookings == true)
+    }
+
+    @Test func checkIfStoreHasBookings_returns_true_when_no_local_bookings_but_remote_has_bookings() async throws {
+        // Given
+        #expect(storedBookingCount == 0)
+        let remoteBooking = Booking.fake()
+        remote.whenLoadingAllBookings(thenReturn: .success([remoteBooking]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.checkIfStoreHasBookings(siteID: sampleSiteID,
+                                                                onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasBookings = try result.get()
+        #expect(hasBookings == true)
+    }
+
+    @Test func checkIfStoreHasBookings_returns_false_when_no_bookings_exist_locally_or_remotely() async throws {
+        // Given
+        #expect(storedBookingCount == 0)
+        remote.whenLoadingAllBookings(thenReturn: .success([]))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.checkIfStoreHasBookings(siteID: sampleSiteID,
+                                                                onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        let hasBookings = try result.get()
+        #expect(hasBookings == false)
+    }
+
+    @Test func checkIfStoreHasBookings_returns_error_on_remote_failure() async throws {
+        // Given
+        #expect(storedBookingCount == 0)
+        remote.whenLoadingAllBookings(thenReturn: .failure(NetworkError.timeout()))
+
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(BookingAction.checkIfStoreHasBookings(siteID: sampleSiteID,
+                                                                onCompletion: { result in
+                continuation.resume(returning: result)
+            }))
+        }
+
+        // Then
+        #expect(result.isFailure)
+        let error = result.failure as? NetworkError
+        #expect(error == .timeout())
+    }
 }
 
 private extension BookingStoreTests {

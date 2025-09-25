@@ -14,4 +14,10 @@ public enum BookingAction: Action {
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
                              onCompletion: (Result<Bool, Error>) -> Void)
+
+    /// Checks if the store already has any bookings.
+    /// Returns `false` if the store has no bookings.
+    ///
+    case checkIfStoreHasBookings(siteID: Int64,
+                                 onCompletion: (Result<Bool, Error>) -> Void)
 }

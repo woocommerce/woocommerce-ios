@@ -20,17 +20,6 @@ import class Yosemite.SiteAddress
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
 
-protocol POSEntryPointEligibilityCheckerProtocol {
-    /// Checks the initial visibility of the POS tab.
-    func checkInitialVisibility() -> Bool
-    /// Checks the final visibility of the POS tab.
-    func checkVisibility() async -> Bool
-    /// Determines whether the site is eligible for POS.
-    func checkEligibility() async -> POSEligibilityState
-    /// Refreshes the eligibility state based on the provided ineligible reason.
-    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState
-}
-
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let site: Site
     private let userInterfaceIdiom: UIUserInterfaceIdiom

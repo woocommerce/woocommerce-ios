@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @State private var selection: SidebarNavigation? = .store
 
     let settingsController: PointOfSaleSettingsControllerProtocol
@@ -55,7 +56,7 @@ extension PointOfSaleSettingsView {
                 )
 
                 // TODO: WOOMOB-1287 - integrate with local catalog feature eligibility
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                if featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
                     PointOfSaleSettingsCard(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,

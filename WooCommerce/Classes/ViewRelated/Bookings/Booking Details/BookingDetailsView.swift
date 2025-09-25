@@ -11,7 +11,6 @@ struct BookingDetailsView: View {
         static let contentSidePadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
-        static let appointmentDetailsRowVerticalPadding: CGFloat = 6
     }
 
     fileprivate enum TextFont {
@@ -21,12 +20,6 @@ struct BookingDetailsView: View {
 
         static var bodyRegular: Font {
             Font.body.weight(.regular)
-        }
-    }
-
-    private enum ColorConstants {
-        static var bookingStatusLabel: Color {
-            return .gray
         }
     }
 

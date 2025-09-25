@@ -1,5 +1,4 @@
 import Foundation
-import WooFoundation
 import struct Networking.Booking
 
 extension BookingDetailsViewModel {

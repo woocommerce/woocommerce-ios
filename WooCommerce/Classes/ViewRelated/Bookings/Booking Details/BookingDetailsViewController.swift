@@ -1,7 +1,7 @@
 import UIKit
 import SwiftUI
-import WooFoundation
 
+/// periphery: ignore - will be used after Booking list is ready
 final class BookingDetailsViewController: UIHostingController<BookingDetailsView> {
 
     private let viewModel: BookingDetailsViewModel

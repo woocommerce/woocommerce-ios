@@ -149,7 +149,6 @@ final class MainTabBarController: UITabBarController {
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private var posTabVisibilityChecker: POSTabVisibilityCheckerProtocol?
-    private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
     private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 

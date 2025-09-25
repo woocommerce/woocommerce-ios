@@ -570,7 +570,6 @@
 		02B653AC2429F7BF00A9C839 /* MockTaxClassStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */; };
 		02B7C4F62BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B7C4F52BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift */; };
 		02B8650F24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */; };
-		02B881832E1857E0009375F5 /* LegacyPOSTabEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B881822E1857DF009375F5 /* LegacyPOSTabEligibilityChecker.swift */; };
 		02B8E4192DFBC218001D01FD /* MainTabBarController+TabsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8E4182DFBC218001D01FD /* MainTabBarController+TabsTests.swift */; };
 		02B8E41B2DFBC33D001D01FD /* MockPOSEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B8E41A2DFBC33C001D01FD /* MockPOSEligibilityChecker.swift */; };
 		02B9243F2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B9243E2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift */; };
@@ -3785,7 +3784,6 @@
 		02B653AB2429F7BF00A9C839 /* MockTaxClassStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTaxClassStoresManager.swift; sourceTree = "<group>"; };
 		02B7C4F52BE375D800F8E93A /* CollapsibleCustomerCardHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleCustomerCardHeaderView.swift; sourceTree = "<group>"; };
 		02B8650E24A9E2D800265779 /* Product+SwiftUIPreviewHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+SwiftUIPreviewHelpers.swift"; sourceTree = "<group>"; };
-		02B881822E1857DF009375F5 /* LegacyPOSTabEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyPOSTabEligibilityChecker.swift; sourceTree = "<group>"; };
 		02B8E4182DFBC218001D01FD /* MainTabBarController+TabsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainTabBarController+TabsTests.swift"; sourceTree = "<group>"; };
 		02B8E41A2DFBC33C001D01FD /* MockPOSEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSEligibilityChecker.swift; sourceTree = "<group>"; };
 		02B9243E2C2200D600DC75F2 /* PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentReaderUpdateFailedLowBatteryAlertViewModel.swift; sourceTree = "<group>"; };
@@ -7951,7 +7949,6 @@
 			children = (
 				02F5DE5E2E852486002DEE24 /* POSTabVisibilityChecker.swift */,
 				026B2D162DF92290005B8CAA /* POSTabEligibilityChecker.swift */,
-				02B881822E1857DF009375F5 /* LegacyPOSTabEligibilityChecker.swift */,
 			);
 			path = POS;
 			sourceTree = "<group>";
@@ -16901,7 +16898,6 @@
 				AE7C957D27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift in Sources */,
 				4520A15C2721B2A9001FA573 /* FilterOrderListViewModel.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
-				02B881832E1857E0009375F5 /* LegacyPOSTabEligibilityChecker.swift in Sources */,
 				DA41043A2C247B6900E8456A /* PointOfSalePreviewOrderController.swift in Sources */,
 				20F6A46C2DE5FCEF0066D8CB /* POSItemFetchAnalytics.swift in Sources */,
 				B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */,

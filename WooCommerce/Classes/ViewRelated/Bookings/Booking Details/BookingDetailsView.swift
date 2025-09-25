@@ -121,7 +121,9 @@ private extension BookingDetailsView {
                     text: .constant(row.value),
                     fieldAlignment: .trailing,
                     keyboardType: .default,
-                    minHeight: 44,
+                    titleFont: BookingDetailsView.TextFont.bodyMedium,
+                    valueColor: .secondary,
+                    valueFont: BookingDetailsView.TextFont.bodyRegular,
                     horizontalPadding: 0 // Parent section padding is added elsewhere,
                 )
 

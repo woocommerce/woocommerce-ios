@@ -1,5 +1,4 @@
 import Foundation
-import WooFoundation
 import protocol Storage.StorageManagerType
 
 /// A service for system plugins.

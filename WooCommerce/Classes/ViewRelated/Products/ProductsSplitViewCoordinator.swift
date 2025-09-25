@@ -227,7 +227,9 @@ private extension ProductsSplitViewCoordinator {
                 guard let self else {
                     return false
                 }
-                return selectedProduct == nil && !splitViewController.isCollapsed
+                return selectedProduct == nil &&
+                    !splitViewController.isCollapsed &&
+                    splitViewController.traitCollection.horizontalSizeClass == .regular
             }
             .first()
             .sink { [weak self] selectedProduct, onDataReloaded in

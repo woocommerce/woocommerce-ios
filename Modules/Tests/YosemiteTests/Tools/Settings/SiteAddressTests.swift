@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 @testable import Networking
+@testable import Yosemite
 
 final class SiteAddressTests: XCTestCase {
 

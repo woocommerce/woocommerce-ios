@@ -225,9 +225,7 @@ struct POSPreviewHelpers {
         featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(
-                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
-                featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock())),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,

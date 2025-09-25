@@ -1,4 +1,4 @@
-protocol POSCollectOrderPaymentAnalyticsTracking {
+public protocol POSCollectOrderPaymentAnalyticsTracking {
     func trackCustomerInteractionStarted()
     func trackOrderSyncSuccess()
     func trackCardReaderReady()

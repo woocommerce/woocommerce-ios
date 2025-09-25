@@ -45,8 +45,16 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
             return false
         }
 
+        async let hasBookableProducts = await checkIfStoreHasBookableProducts()
+        async let hasBookings = await checkIfStoreHasBookings()
+
+        if await hasBookableProducts == false,
+           await hasBookings == false {
+            return false
+        }
+
         // Cache the result
-        let isVisible = await checkIfStoreHasBookableProducts()
+        let isVisible = true
         userDefaults.cacheBookingsTabVisibility(siteID: site.siteID, isVisible: isVisible)
 
         return isVisible
@@ -62,6 +70,16 @@ private extension BookingsTabEligibilityChecker {
             stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: site.siteID, type: .booking) { result in
                 let hasBookableProducts = (try? result.get()) ?? false
                 continuation.resume(returning: hasBookableProducts)
+            })
+        }
+    }
+
+    @MainActor
+    func checkIfStoreHasBookings() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(BookingAction.checkIfStoreHasBookings(siteID: site.siteID) { result in
+                let hasBookings = (try? result.get()) ?? false
+                continuation.resume(returning: hasBookings)
             })
         }
     }

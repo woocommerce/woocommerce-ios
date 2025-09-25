@@ -98,6 +98,7 @@ struct BookingsTabEligibilityCheckerTests {
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         setupStoreHasBookableProducts(hasProducts: true)
+        setupStoreHasBookings(hasBookings: true)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -111,11 +112,12 @@ struct BookingsTabEligibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func checkVisibility_returns_false_when_store_has_no_bookable_products() async throws {
+    @Test func checkVisibility_returns_false_when_store_has_no_bookable_products_and_no_bookings() async throws {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         setupStoreHasBookableProducts(hasProducts: false)
+        setupStoreHasBookings(hasBookings: false)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -129,11 +131,12 @@ struct BookingsTabEligibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func checkVisibility_returns_true_when_all_conditions_are_satisfied() async throws {
+    @Test func checkVisibility_returns_true_when_store_has_bookable_products() async throws {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         setupStoreHasBookableProducts(hasProducts: true)
+        setupStoreHasBookings(hasBookings: false)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -152,6 +155,7 @@ struct BookingsTabEligibilityCheckerTests {
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         setupStoreHasBookableProducts(hasProducts: true)
+        setupStoreHasBookings(hasBookings: false)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -171,6 +175,7 @@ struct BookingsTabEligibilityCheckerTests {
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         setupStoreHasBookableProducts(hasProducts: false)
+        setupStoreHasBookings(hasBookings: false)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -185,11 +190,88 @@ struct BookingsTabEligibilityCheckerTests {
         #expect(userDefaults.loadCachedBookingsTabVisibility(siteID: siteID) == false)
     }
 
-    @Test func checkVisibility_handles_store_check_failure_gracefully() async throws {
+    @Test func checkVisibility_handles_bookable_products_check_failure_gracefully() async throws {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
         setupStoreHasBookableProducts(hasProducts: false, shouldFail: true)
+        setupStoreHasBookings(hasBookings: false)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkVisibility_returns_true_when_store_has_bookings_but_no_bookable_products() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        setupStoreHasBookableProducts(hasProducts: false)
+        setupStoreHasBookings(hasBookings: true)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkVisibility_returns_true_when_store_has_both_bookings_and_bookable_products() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        setupStoreHasBookableProducts(hasProducts: true)
+        setupStoreHasBookings(hasBookings: true)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkVisibility_handles_bookings_check_failure_gracefully() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        setupStoreHasBookableProducts(hasProducts: false)
+        setupStoreHasBookings(hasBookings: false, shouldFail: true)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults)
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkVisibility_handles_both_checks_failure_gracefully() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        setupStoreHasBookableProducts(hasProducts: false, shouldFail: true)
+        setupStoreHasBookings(hasBookings: false, shouldFail: true)
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
@@ -270,6 +352,21 @@ private extension BookingsTabEligibilityCheckerTests {
                     } else {
                         completion(.success(hasProducts))
                     }
+                }
+            default:
+                break
+            }
+        }
+    }
+
+    func setupStoreHasBookings(hasBookings: Bool, shouldFail: Bool = false) {
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            switch action {
+            case .checkIfStoreHasBookings(_, let completion):
+                if shouldFail {
+                    completion(.failure(NSError(domain: "test", code: 500)))
+                } else {
+                    completion(.success(hasBookings))
                 }
             default:
                 break

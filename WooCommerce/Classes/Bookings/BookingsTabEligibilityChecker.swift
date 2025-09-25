@@ -45,16 +45,18 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
             return false
         }
 
-        async let hasBookableProducts = await checkIfStoreHasBookableProducts()
-        async let hasBookings = await checkIfStoreHasBookings()
-
-        if await hasBookableProducts == false,
-           await hasBookings == false {
-            return false
-        }
+        // Check if store has bookable products or bookings
+        let isVisible: Bool = await {
+            if await checkIfStoreHasBookableProducts() {
+                return true
+            } else if await checkIfStoreHasBookings() {
+                return true
+            } else {
+                return false
+            }
+        }()
 
         // Cache the result
-        let isVisible = true
         userDefaults.cacheBookingsTabVisibility(siteID: site.siteID, isVisible: isVisible)
 
         return isVisible

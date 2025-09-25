@@ -314,7 +314,11 @@ let package = Package(
         .testTarget(
             name: "PointOfSaleTests",
             dependencies: [
-                "PointOfSale"
+                "PointOfSale",
+                "Codegen",
+                "Fakes",
+                "TestKit",
+                "WooFoundation"
             ]
         ),
     ]

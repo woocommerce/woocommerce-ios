@@ -2838,6 +2838,7 @@
 		DED039292BC7A04B005D0571 /* StorePerformanceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED039282BC7A04B005D0571 /* StorePerformanceView.swift */; };
 		DED0392B2BC7A076005D0571 /* StorePerformanceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED0392A2BC7A076005D0571 /* StorePerformanceViewModel.swift */; };
 		DED0392D2BC7DAFD005D0571 /* StatsTimeRangePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED0392C2BC7DAFD005D0571 /* StatsTimeRangePicker.swift */; };
+		DED1E3172E8556270089909C /* BookingListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED1E3152E8556270089909C /* BookingListViewModelTests.swift */; };
 		DED91DFA2AD78A3A00CDCC53 /* BlazeCampaignItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */; };
 		DED9740B2AD7D09E00122EB4 /* BlazeCampaignListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */; };
 		DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */; };
@@ -6062,6 +6063,7 @@
 		DED039282BC7A04B005D0571 /* StorePerformanceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceView.swift; sourceTree = "<group>"; };
 		DED0392A2BC7A076005D0571 /* StorePerformanceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePerformanceViewModel.swift; sourceTree = "<group>"; };
 		DED0392C2BC7DAFD005D0571 /* StatsTimeRangePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangePicker.swift; sourceTree = "<group>"; };
+		DED1E3152E8556270089909C /* BookingListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingListViewModelTests.swift; sourceTree = "<group>"; };
 		DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignItemView.swift; sourceTree = "<group>"; };
 		DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListView.swift; sourceTree = "<group>"; };
 		DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModel.swift; sourceTree = "<group>"; };
@@ -12981,6 +12983,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				DED1E3162E8556270089909C /* Bookings */,
 				2D7A3E212E7891C400C46401 /* CIAB */,
 				864059FE2C6F67A000DA04DC /* Custom Fields */,
 				86023FAB2B16D80E00A28F07 /* Themes */,
@@ -13708,6 +13711,14 @@
 				DE74A44E2BCE2FCF0009C415 /* StorePerformanceViewModelTests.swift */,
 			);
 			path = StoreStats;
+			sourceTree = "<group>";
+		};
+		DED1E3162E8556270089909C /* Bookings */ = {
+			isa = PBXGroup;
+			children = (
+				DED1E3152E8556270089909C /* BookingListViewModelTests.swift */,
+			);
+			path = Bookings;
 			sourceTree = "<group>";
 		};
 		DED91DF72AD78A0C00CDCC53 /* Blaze */ = {
@@ -17223,6 +17234,7 @@
 				DE78DE442B2846AF002E58DE /* ThemesCarouselViewModelTests.swift in Sources */,
 				DE4D23B029B1D02A003A4B5D /* WPCom2FALoginViewModelTests.swift in Sources */,
 				03B9E52F2A150EED005C77F5 /* MockCardReaderSupportDeterminer.swift in Sources */,
+				DED1E3172E8556270089909C /* BookingListViewModelTests.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
 				B622BC74289CF19400B10CEC /* WaitingTimeTrackerTests.swift in Sources */,
 				023EC2E224DA8BAB0021DA91 /* MockProductSKUValidationStoresManager.swift in Sources */,

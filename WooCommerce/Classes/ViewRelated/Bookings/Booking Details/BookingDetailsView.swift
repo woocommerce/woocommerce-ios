@@ -3,6 +3,8 @@ import WooFoundation
 import Networking
 
 struct BookingDetailsView: View {
+    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
     @ObservedObject private var viewModel: BookingDetailsViewModel
 
     private enum Layout {
@@ -39,7 +41,6 @@ struct BookingDetailsView: View {
             VStack(alignment: .leading, spacing: .zero) {
                 ForEach(viewModel.sections) { section in
                     sectionView(with: section)
-                    Divider()
                 }
             }
         }
@@ -52,21 +53,20 @@ private extension BookingDetailsView {
     func sectionView(with section: BookingDetailsViewModel.Section) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             if let headerText = section.headerText {
-                Text(headerText)
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .padding(.vertical)
-                    .padding(.horizontal, Layout.contentSidePadding)
-                Divider()
+                ListHeaderView(
+                    text: headerText,
+                    alignment: .left
+                )
+                .padding(.horizontal, insets: safeAreaInsets)
+                .accessibility(addTraits: .isHeader)
             }
 
             sectionContentView(section.content)
                 .padding(.horizontal, Layout.contentSidePadding)
-                .padding(.vertical, 10)
                 .background(Color(uiColor: .listBackground))
+                .addingTopAndBottomDividers()
 
             if let footerText = section.footerText {
-                Divider()
                 Text(footerText)
                     .padding(.horizontal, Layout.contentSidePadding)
                     .font(.footnote)
@@ -113,31 +113,23 @@ private extension BookingDetailsView {
     }
 
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             ForEach(content.rows) { row in
-                DetailRow(title: row.title, value: row.value)
-                    .padding(.vertical, Layout.appointmentDetailsRowVerticalPadding)
+                TitleAndTextFieldRow(
+                    title: row.title,
+                    placeholder: String(),
+                    text: .constant(row.value),
+                    fieldAlignment: .trailing,
+                    keyboardType: .default,
+                    minHeight: 44,
+                    horizontalPadding: 0 // Parent section padding is added elsewhere,
+                )
 
                 if row.id != content.rows.last?.id {
                     Divider()
                         .padding(.trailing, -Layout.contentSidePadding)
                 }
             }
-        }
-    }
-}
-
-struct DetailRow: View {
-    let title: String
-    let value: String
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(BookingDetailsView.TextFont.bodyMedium)
-            Spacer()
-            Text(value)
-                .font(BookingDetailsView.TextFont.bodyRegular)
-                .foregroundColor(.secondary)
         }
     }
 }

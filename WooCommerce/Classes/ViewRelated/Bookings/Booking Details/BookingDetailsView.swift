@@ -56,7 +56,7 @@ private extension BookingDetailsView {
 
             sectionContentView(section.content)
                 .padding(.horizontal, Layout.contentSidePadding)
-                .background(Color(uiColor: .listBackground))
+                .background(Color(.systemBackground))
                 .addingTopAndBottomDividers()
 
             if let footerText = section.footerText {

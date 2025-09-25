@@ -290,15 +290,6 @@ private extension POSTabVisibilityCheckerTests {
         ].publisher.eraseToAnyPublisher()
     }
 
-    func createWooCommercePlugin(version: String) -> SystemPlugin {
-        SystemPlugin.fake().copy(
-            siteID: siteID,
-            plugin: "woocommerce/woocommerce.php",
-            version: version,
-            active: true
-        )
-    }
-
     func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {

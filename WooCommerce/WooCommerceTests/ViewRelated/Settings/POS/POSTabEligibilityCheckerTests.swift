@@ -494,11 +494,6 @@ private extension POSTabEligibilityCheckerTests {
         )
     }
 
-
-    func setupPOSTabVisibility(siteID: Int64, isVisible: Bool?) {
-        eligibilityService.cachedTabVisibility[siteID] = isVisible
-    }
-
     enum Country: String {
         case us = "US:CA"
         case ca = "CA:NS"

@@ -36,6 +36,7 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -57,6 +58,7 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -81,6 +83,7 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -99,6 +102,7 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -116,6 +120,7 @@ struct POSTabVisibilityCheckerTests {
         setupCountry(country: .us)
         accountWhitelistedInBackend(false)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -150,6 +155,7 @@ struct POSTabVisibilityCheckerTests {
 
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
@@ -188,6 +194,7 @@ struct POSTabVisibilityCheckerTests {
                                                                 mockedCIABSites: [site],
                                                                 mockedCIABDisabledFeatures: [.pointOfSale])
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService,
@@ -200,7 +207,7 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func checkVisibility_and_checkEligibility_return_expected_result_after_site_settings_available() async throws {
+    @Test func checkVisibility_returns_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
         let featureFlagService = MockFeatureFlagService()
         accountWhitelistedInBackend(true)
@@ -212,11 +219,12 @@ struct POSTabVisibilityCheckerTests {
         siteSettings.mockSettingsStream = settingsSubject.eraseToAnyPublisher()
 
         let checker = POSTabVisibilityChecker(site: site,
+                                              userInterfaceIdiom: .pad,
                                               siteSettings: siteSettings,
                                               stores: stores,
                                               featureFlagService: featureFlagService)
 
-        // When - Call checkVisibility and checkEligibility concurrently before site settings are available
+        // When - Call checkVisibility before site settings are available
         async let visibilityTask = checker.checkVisibility()
 
         // Simulate site settings becoming available after methods are called

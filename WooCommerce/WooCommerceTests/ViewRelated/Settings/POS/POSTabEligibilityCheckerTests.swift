@@ -65,7 +65,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test func checkVisibility_and_checkEligibility_return_expected_result_after_site_settings_available() async throws {
+    @Test func checkEligibility_returns_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
 
         // Creates a publisher that will emit values after a delay to simulate site settings loading
@@ -80,7 +80,7 @@ struct POSTabEligibilityCheckerTests {
                                                stores: stores,
                                                systemStatusService: mockSystemStatusService)
 
-        // When - Call checkVisibility and checkEligibility concurrently before site settings are available
+        // When - Call checkEligibility before site settings are available
         async let eligibilityTask = checker.checkEligibility()
 
         // Simulate site settings becoming available after methods are called

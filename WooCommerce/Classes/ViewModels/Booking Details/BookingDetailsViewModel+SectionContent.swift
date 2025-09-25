@@ -19,7 +19,7 @@ extension BookingDetailsViewModel.SectionContent: Identifiable {
         case .appointmentDetails:
             return "appointmentDetails"
         case .attendance:
-            return "ttendance"
+            return "attendance"
         case .payment:
             return "payment"
         case .customer:

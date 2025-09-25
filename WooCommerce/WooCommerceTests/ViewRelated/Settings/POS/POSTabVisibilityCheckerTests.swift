@@ -352,29 +352,3 @@ private extension POSTabVisibilityCheckerTests {
             )
     }
 }
-
-private final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
-    var mockSettingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>?
-    var siteSettings: [SiteSetting] = []
-
-    var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> {
-        return mockSettingsStream ?? Empty().eraseToAnyPublisher()
-    }
-
-    func refresh() {
-        // Mock implementation - no action needed.
-    }
-}
-
-private final class MockPOSSiteSettingService: POSSiteSettingServiceProtocol {
-    var setFeatureResult: Result<Bool, Error> = .success(true)
-
-    func setFeature(siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
-        switch setFeatureResult {
-        case .success(let result):
-            return result
-        case .failure(let error):
-            throw error
-        }
-    }
-}

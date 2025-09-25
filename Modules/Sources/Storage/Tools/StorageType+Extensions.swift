@@ -940,4 +940,30 @@ public extension StorageType {
         let predicate = \MetaData.product?.siteID == siteID && \MetaData.product?.productID == productID
         return allObjects(ofType: MetaData.self, matching: predicate, sortedBy: nil)
     }
+
+    // MARK: - Bookings
+
+    /// Retrieves the Stored Bookings given the IDs.
+    ///
+    func loadBookings(siteID: Int64, bookingIDs: [Int64]) -> [Booking] {
+        let predicate = NSPredicate(format: "siteID == %lld && bookingID in %@", siteID, bookingIDs)
+        let descriptor = NSSortDescriptor(keyPath: \Booking.bookingID, ascending: false)
+        return allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    // periphery: ignore
+    /// Retrieves the Stored Booking.
+    func loadBooking(siteID: Int64, bookingID: Int64) -> Booking? {
+        let predicate = \Booking.bookingID == bookingID && \Booking.siteID == siteID
+        return firstObject(ofType: Booking.self, matching: predicate)
+    }
+
+    /// Retrieves all stored bookings for a site.
+    ///
+    func loadBookings(siteID: Int64) -> [Booking]? {
+        let predicate = \Booking.siteID == siteID
+        let descriptor = NSSortDescriptor(keyPath: \Booking.bookingID, ascending: false)
+        let objects = allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
+        return objects.isEmpty ? nil : objects
+    }
 }

@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 import Networking
 
 struct BookingDetailsView: View {

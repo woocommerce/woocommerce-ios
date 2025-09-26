@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 
 struct PointOfSaleBarcodeScannerBarcodeView: View {
     let title: String

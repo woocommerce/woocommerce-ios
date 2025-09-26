@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import struct WooFoundation.WooAnalyticsEvent
 
 // MARK: - VoiceOver State Provider
 

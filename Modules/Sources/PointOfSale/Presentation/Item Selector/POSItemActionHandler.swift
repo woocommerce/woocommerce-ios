@@ -2,6 +2,7 @@ import Foundation
 import enum Yosemite.POSItem
 import enum Yosemite.POSItemType
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooAnalyticsEvent
 
 /// Protocol for handling actions on POS items
 protocol POSItemActionHandler {

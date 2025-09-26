@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import class Yosemite.SiteAddress
 import protocol Yosemite.PluginsServiceProtocol

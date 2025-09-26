@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 
 struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0

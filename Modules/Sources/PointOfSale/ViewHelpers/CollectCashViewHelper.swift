@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import SwiftUI
 import WooFoundation

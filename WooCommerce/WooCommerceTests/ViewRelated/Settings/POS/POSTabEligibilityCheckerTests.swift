@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import PointOfSale
 import Testing
 import WooFoundation
 import Yosemite

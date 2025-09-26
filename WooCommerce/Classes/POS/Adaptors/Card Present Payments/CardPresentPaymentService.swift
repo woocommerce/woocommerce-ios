@@ -1,4 +1,5 @@
 import Combine
+import PointOfSale
 import Foundation
 import struct Yosemite.Order
 import struct Yosemite.CardPresentPaymentsConfiguration

@@ -1,4 +1,5 @@
 import Foundation
+import PointOfSale
 import Combine
 import enum Yosemite.ServerSidePaymentCaptureError
 import enum Yosemite.CardReaderServiceError

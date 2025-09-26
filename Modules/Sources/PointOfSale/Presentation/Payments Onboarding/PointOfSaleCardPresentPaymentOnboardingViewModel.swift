@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import enum Yosemite.CardPresentPaymentOnboardingState
 
-protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
+public protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
     var showSupport: (() -> Void)? { get set }
     var showURL: ((URL) -> Void)? { get set }
     var state: CardPresentPaymentOnboardingState { get }
@@ -12,7 +12,7 @@ public class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equata
     @Published var configuration: any CardPresentPaymentsOnboardingViewConfiguration
     @Published var view: any View
 
-    init(configuration: any CardPresentPaymentsOnboardingViewConfiguration, view: any View = EmptyView()) {
+    public init(configuration: any CardPresentPaymentsOnboardingViewConfiguration, view: any View = EmptyView()) {
         self.configuration = configuration
         self.view = view
     }

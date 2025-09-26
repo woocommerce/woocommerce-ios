@@ -8,7 +8,7 @@ import enum Yosemite.PaymentMethod
 import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
-    enum PointOfSale {
+    public enum PointOfSale {
         /// Event property Key.
         private enum Key {
             static let paymentsOnboardingState = "onboarding_state"
@@ -202,11 +202,11 @@ extension WooAnalyticsEvent {
         /// Tracks the time elapsed preparing reader for payment, after successful order creation
         /// - Parameter waitingTime: Elapsed time from Order creation to card ready for payment
         ///
-        static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
+        public static func cardReaderReadyForCardPayment(waitingTime: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleReaderReadyForCardPayment, properties: [Key.waitingTime: "\(waitingTime)"])
         }
 
-        static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
+        public static func cardPresentCollectPaymentSuccess(forGatewayID: String?,
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
                                                      cardReaderModel: String?,
@@ -239,7 +239,7 @@ extension WooAnalyticsEvent {
             }
         }
 
-        static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+        public static func cashCollectPaymentSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: [
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
             ])

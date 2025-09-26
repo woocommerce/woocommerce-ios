@@ -7,7 +7,7 @@ public enum CardPresentPaymentRetryApproach {
     case tryAgain(retryAction: () -> Void)
     case tryAnotherPaymentMethod(retryAction: () -> Void)
 
-    init(error: any Error, retryAction: @escaping () -> Void) {
+    public init(error: any Error, retryAction: @escaping () -> Void) {
         guard let serviceError = error as? CardReaderServiceError else {
             self = .tryAgain(retryAction: retryAction)
             return

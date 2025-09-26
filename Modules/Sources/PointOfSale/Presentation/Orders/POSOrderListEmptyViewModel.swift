@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
     let isSearching: Bool
@@ -19,8 +20,8 @@ struct POSOrderListEmptyViewModel: POSListEmptyViewModelProtocol {
         isSearching ? nil : Localization.emptyOrdersButtonTitle
     }
 
-    var iconName: String {
-        PointOfSaleAssets.magnifierNotFound.imageName
+    var icon: Image {
+        PointOfSaleAssets.magnifierNotFound.decorativeImage
     }
 }
 

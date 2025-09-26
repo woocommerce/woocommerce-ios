@@ -9,7 +9,7 @@ struct POSErrorExclamationMark: View {
     }
 
     var body: some View {
-        Image(decorative: PointOfSaleAssets.exclamationMark.imageName)
+        PointOfSaleAssets.exclamationMark.decorativeImage
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(maxHeight: size.dimension)

@@ -1,10 +1,10 @@
 import SwiftUI
-import struct WooFoundation.ScrollableVStack
+import WooFoundation
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct POSListErrorView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    private let viewModel: POSListErrorViewModell
+    private let viewModel: POSListErrorViewModel
     private let onAction: (() -> Void)?
 
     @State private var viewWidth: CGFloat = 0
@@ -12,7 +12,7 @@ struct POSListErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
 
     init(error: PointOfSaleErrorState, onAction: (() -> Void)? = nil) {
-        self.viewModel = POSListErrorViewModell(error: error)
+        self.viewModel = POSListErrorViewModel(error: error)
         self.onAction = onAction
     }
 
@@ -21,8 +21,8 @@ struct POSListErrorView: View {
             Spacer()
             VStack(alignment: .center, spacing: POSSpacing.none) {
                 if !keyboard.isFullSizeKeyboardVisible {
-                    if let imageName = viewModel.imageAsset?.imageName {
-                        Image(decorative: imageName)
+                    if let image = viewModel.imageAsset {
+                        image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 88, height: 88)
@@ -68,11 +68,11 @@ struct POSListErrorView: View {
     }
 }
 
-struct POSListErrorViewModell {
+struct POSListErrorViewModel {
     let title: String
     let subtitle: String
     let buttonText: String
-    let imageAsset: PointOfSaleAssets?
+    let imageAsset: Image?
 
     init(error: PointOfSaleErrorState) {
         self.title = error.title
@@ -80,7 +80,7 @@ struct POSListErrorViewModell {
         self.buttonText = error.buttonText
         switch error.errorType {
         case .couponsDisabled:
-            self.imageAsset = PointOfSaleAssets.coupons
+            self.imageAsset = SharedImageAsset.coupons.decorativeImage
         default:
             self.imageAsset = nil
         }

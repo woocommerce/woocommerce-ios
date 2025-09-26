@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
     let progress: CGFloat
@@ -19,7 +20,9 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
                 )
                 .animation(.easeOut(duration: 0.2), value: progress)
 
-            Image(uiImage: isComplete ? .posCardReaderUpdateProgressCheckmark : .posCardReaderUpdateProgressArrow)
+            (
+                isComplete ? SharedImageAsset.cardReaderUpdateProgressCheckmark.decorativeImage : SharedImageAsset.cardReaderUpdateProgressArrow.decorativeImage
+            )
                 .renderingMode(.template)
                 .foregroundColor(Color(.posOnPrimary))
         }

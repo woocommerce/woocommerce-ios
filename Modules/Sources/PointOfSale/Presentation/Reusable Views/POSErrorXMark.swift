@@ -4,7 +4,7 @@ struct POSErrorXMark: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     var body: some View {
-        Image(decorative: PointOfSaleAssets.error.imageName)
+        PointOfSaleAssets.error.decorativeImage
             .font(.system(size: POSErrorAndAlertIconSize.large.dimension))
             .foregroundStyle(Color.posAlert)
             .accessibilityHidden(true)

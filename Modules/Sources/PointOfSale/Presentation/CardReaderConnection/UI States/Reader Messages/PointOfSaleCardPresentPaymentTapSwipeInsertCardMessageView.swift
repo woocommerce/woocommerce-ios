@@ -7,7 +7,7 @@ struct PointOfSaleCardPresentPaymentTapSwipeInsertCardMessageView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: Constants.imageAndTextSpacing) {
-            Image(decorative: viewModel.imageName)
+            Image(decorative: viewModel.imageName, bundle: .module)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: PointOfSaleCardPresentPaymentLayout.headerSize.width,

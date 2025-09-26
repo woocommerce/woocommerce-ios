@@ -32,7 +32,7 @@ struct PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView: View {
 }
 
 #Preview {
-    return PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(
+    PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(
         viewModel: PointOfSaleCardPresentPaymentDisplayReaderMessageMessageViewModel(
             message: "Remove card"),
         animation: .init(namespace: Namespace().wrappedValue)

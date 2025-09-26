@@ -186,7 +186,8 @@ let package = Package(
             dependencies: [
                 "WooFoundationCore",
                 .product(name: "Kingfisher", package: "Kingfisher")
-            ]
+            ],
+            resources: [.process("Resources")]
         ),
         .target(
             name: "WooFoundationCore",
@@ -243,7 +244,8 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                 .product(name: "Kingfisher", package: "Kingfisher"),
-            ]
+            ],
+            resources: [.process("Resources")]
         ),
         .testTarget(
             name: "ExperimentsTests",

@@ -88,7 +88,7 @@ struct PointOfSalePaymentSuccessView: View {
             Circle()
                 .frame(width: Constants.imageSize.width, height: Constants.imageSize.height)
                 .foregroundColor(.posSuccess)
-            Image(PointOfSaleAssets.successCheck.imageName)
+            PointOfSaleAssets.successCheck.image
                 .renderingMode(.template)
                 .foregroundColor(checkmarkColor)
                 .frame(width: Constants.checkmarkSize)

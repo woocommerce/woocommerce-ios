@@ -7,7 +7,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
     var body: some View {
         VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-                Image(decorative: viewModel.imageName)
+                Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {

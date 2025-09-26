@@ -8,6 +8,13 @@ import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
 
+protocol POSTabVisibilityCheckerProtocol {
+    /// Checks the initial visibility of the POS tab.
+    func checkInitialVisibility() -> Bool
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool
+}
+
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
 final class POSTabViewController: UIViewController {
@@ -23,7 +30,7 @@ final class POSTabViewController: UIViewController {
 /// Coordinator for the Point of Sale tab.
 ///
 final class POSTabCoordinator {
-    private(set) var siteID: Int64
+    private let siteID: Int64
     private let tabContainerController: TabContainerController
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
@@ -108,49 +115,6 @@ final class POSTabCoordinator {
 
     func onTabSelected() {
         presentPOSView(siteID: siteID)
-    }
-
-    func didSwitchStore(id: Int64) {
-        self.siteID = id
-
-        // Resets lazy properties so they get recreated with new siteID
-        posItemFetchStrategyFactory = PointOfSaleItemFetchStrategyFactory(
-            siteID: siteID,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported
-        )
-
-        posPopularItemFetchStrategyFactory =
-        PointOfSaleFixedItemFetchStrategyFactory(
-            fixedStrategy: posItemFetchStrategyFactory.popularStrategy()
-        )
-
-        posCouponFetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(
-            siteID: siteID,
-            currencySettings: currencySettings,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            storage: storageManager
-        )
-
-        posCouponProvider = PointOfSaleCouponService(
-            siteID: siteID,
-            currencySettings: currencySettings,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            storage: storageManager
-        )
-
-        barcodeScanService = PointOfSaleBarcodeScanService(
-            siteID: siteID,
-            credentials: credentials,
-            selectedSite: defaultSitePublisher,
-            appPasswordSupportState: isAppPasswordSupported,
-            currencySettings: currencySettings
-        )
     }
 }
 

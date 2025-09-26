@@ -234,12 +234,10 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
-        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker(),
-                                                          featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -415,8 +413,6 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
 }
 
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkInitialVisibility() -> Bool { true }
-    func checkVisibility() async -> Bool { true }
     func checkEligibility() async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }

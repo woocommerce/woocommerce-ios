@@ -103,7 +103,7 @@ public struct PointOfSaleEntryPointView: View {
             analyticsProvider: services.analytics
         )
         self.barcodeScanService = barcodeScanService
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker, featureFlagService: services.featureFlags)
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory)
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone

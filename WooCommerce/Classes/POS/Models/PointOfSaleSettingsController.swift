@@ -71,19 +71,6 @@ final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
 }
 
 final class PluginsServicePreview: PluginsServiceProtocol {
-    func waitForPluginInStorage(siteID: Int64, pluginPath: String, isActive: Bool) async -> SystemPlugin {
-        return SystemPlugin(siteID: 1234,
-                            plugin: "",
-                            name: "",
-                            version: "",
-                            versionLatest: "",
-                            url: "",
-                            authorName: "",
-                            authorUrl: "",
-                            networkActivated: false,
-                            active: true)
-    }
-
     func loadPluginInStorage(siteID: Int64, plugin: Plugin, isActive: Bool?) -> SystemPlugin? {
         return SystemPlugin(siteID: 1234,
                             plugin: "",

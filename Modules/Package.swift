@@ -316,7 +316,7 @@ let package = Package(
         .testTarget(
             name: "PointOfSaleTests",
             dependencies: [
-                "PointOfSale",
+                .target(name: "PointOfSale"),
                 "Codegen",
                 "Fakes",
                 "TestKit",

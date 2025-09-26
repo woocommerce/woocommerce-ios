@@ -137,6 +137,10 @@ public struct Booking: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     }
 }
 
+extension Booking: Identifiable {
+    public var id: Int64 { bookingID }
+}
+
 /// Defines all of the Booking CodingKeys
 ///
 private extension Booking {

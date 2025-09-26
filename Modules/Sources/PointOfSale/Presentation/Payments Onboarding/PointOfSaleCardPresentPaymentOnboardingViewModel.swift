@@ -8,7 +8,7 @@ protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
     var state: CardPresentPaymentOnboardingState { get }
 }
 
-final class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equatable, Identifiable {
+public class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equatable, Identifiable {
     @Published var configuration: any CardPresentPaymentsOnboardingViewConfiguration
     @Published var view: any View
 
@@ -17,7 +17,7 @@ final class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equatab
         self.view = view
     }
 
-    static func == (lhs: CardPresentPaymentOnboardingViewContainer, rhs: CardPresentPaymentOnboardingViewContainer) -> Bool {
+    public static func == (lhs: CardPresentPaymentOnboardingViewContainer, rhs: CardPresentPaymentOnboardingViewContainer) -> Bool {
         lhs.configuration.state == rhs.configuration.state
     }
 }

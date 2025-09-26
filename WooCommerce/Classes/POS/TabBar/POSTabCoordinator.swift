@@ -8,6 +8,13 @@ import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
 
+protocol POSTabVisibilityCheckerProtocol {
+    /// Checks the initial visibility of the POS tab.
+    func checkInitialVisibility() -> Bool
+    /// Checks the final visibility of the POS tab.
+    func checkVisibility() async -> Bool
+}
+
 /// View controller that provides the tab bar item for the Point of Sale tab.
 /// It is never visible on the screen, only used to provide the tab bar item as all POS UI is full-screen.
 final class POSTabViewController: UIViewController {
@@ -107,12 +114,12 @@ final class POSTabCoordinator {
     }
 
     func onTabSelected() {
-        presentPOSView()
+        presentPOSView(siteID: siteID)
     }
 }
 
 private extension POSTabCoordinator {
-    func presentPOSView() {
+    func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let serviceAdaptor = POSServiceLocatorAdaptor()

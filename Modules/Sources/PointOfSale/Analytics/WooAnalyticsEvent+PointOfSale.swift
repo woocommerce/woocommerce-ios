@@ -40,6 +40,99 @@ extension WooAnalyticsEvent {
             static let scanValue = "scan_value"
         }
 
+        /// Source of the event where the event is triggered
+        /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
+        ///
+        enum SourceView: String {
+            case product
+            case variation
+            case coupon
+            case cart
+            case error
+
+            init(itemType: POSItemType) {
+                switch itemType {
+                case .product:
+                    self = .product
+                case .variation:
+                    self = .variation
+                case .coupon:
+                    self = .coupon
+                }
+            }
+
+            init(itemListType: ItemListType) {
+                switch itemListType {
+                case .products:
+                    self = .product
+                case .coupons:
+                    self = .coupon
+                }
+            }
+        }
+
+        /// The state of the view where the event is triggered.
+        /// E.g. product list, procuct search, or product pre-search view where popular searches are shown.
+        ///
+        enum SourceViewType: String {
+            case list
+            case search
+            case preSearch = "pre_search"
+            case scanner
+
+            init(isSearching: Bool, searchTerm: String = "") {
+                switch (isSearching, searchTerm.isEmpty) {
+                case (false, _):
+                    self = .list
+                case (true, true):
+                    self = .preSearch
+                case (true, false):
+                    self = .search
+                }
+            }
+        }
+
+        /// Types of high-level items supported in the POS
+        ///
+        enum ItemType: String {
+            case product
+            case coupon
+            case loading
+            case error
+
+            init(cartItem: Cart.PurchasableItem) {
+                switch cartItem.state {
+                case .loaded:
+                    self = .product
+                case .loading:
+                    self = .loading
+                case .error:
+                    self = .error
+                }
+            }
+        }
+
+        /// Types of products supported in the POS
+        ///
+        enum CartItemProductType: String {
+            case simple
+            case variation
+
+            init?(cartItem: Cart.PurchasableItem) {
+                guard case let .loaded(item) = cartItem.state else {
+                    return nil
+                }
+
+                if item is POSSimpleProduct {
+                    self = .simple
+                } else if item is POSVariation {
+                    self = .variation
+                } else {
+                    return nil
+                }
+            }
+        }
+
         static func paymentsOnboardingShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSalePaymentsOnboardingShown, properties: [:])
         }
@@ -305,100 +398,5 @@ private extension WooAnalyticsEvent.PointOfSale {
 
     static func safeGatewayID(for gatewayID: String?) -> String {
         gatewayID ?? "unknown"
-    }
-}
-
-extension WooAnalyticsEvent.PointOfSale {
-    /// Source of the event where the event is triggered
-    /// Views: Product, Variation, and Coupon Lists. Cart view and Checkout error.
-    ///
-    enum SourceView: String {
-        case product
-        case variation
-        case coupon
-        case cart
-        case error
-
-        init(itemType: POSItemType) {
-            switch itemType {
-            case .product:
-                self = .product
-            case .variation:
-                self = .variation
-            case .coupon:
-                self = .coupon
-            }
-        }
-
-        init(itemListType: ItemListType) {
-            switch itemListType {
-            case .products:
-                self = .product
-            case .coupons:
-                self = .coupon
-            }
-        }
-    }
-
-    /// The state of the view where the event is triggered.
-    /// E.g. product list, procuct search, or product pre-search view where popular searches are shown.
-    ///
-    enum SourceViewType: String {
-        case list
-        case search
-        case preSearch = "pre_search"
-        case scanner
-
-        init(isSearching: Bool, searchTerm: String = "") {
-            switch (isSearching, searchTerm.isEmpty) {
-            case (false, _):
-                self = .list
-            case (true, true):
-                self = .preSearch
-            case (true, false):
-                self = .search
-            }
-        }
-    }
-
-    /// Types of high-level items supported in the POS
-    ///
-    enum ItemType: String {
-        case product
-        case coupon
-        case loading
-        case error
-
-        init(cartItem: Cart.PurchasableItem) {
-            switch cartItem.state {
-            case .loaded:
-                self = .product
-            case .loading:
-                self = .loading
-            case .error:
-                self = .error
-            }
-        }
-    }
-
-    /// Types of products supported in the POS
-    ///
-    enum CartItemProductType: String {
-        case simple
-        case variation
-
-        init?(cartItem: Cart.PurchasableItem) {
-            guard case let .loaded(item) = cartItem.state else {
-                return nil
-            }
-
-            if item is POSSimpleProduct {
-                self = .simple
-            } else if item is POSVariation {
-                self = .variation
-            } else {
-                return nil
-            }
-        }
     }
 }

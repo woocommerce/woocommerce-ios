@@ -8,12 +8,6 @@ public protocol ConnectivityObserver {
 
     /// Publisher for connectivity availability.
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { get }
-
-    /// Starts the observer.
-    func startObserving()
-
-    /// Stops the observer.
-    func stopObserving()
 }
 
 /// Defines the various states of network connectivity.

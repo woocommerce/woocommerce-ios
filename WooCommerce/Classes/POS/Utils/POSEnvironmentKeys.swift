@@ -109,8 +109,6 @@ class EmptyPOSConnectivityProvider: POSConnectivityProviding {
 class EmptyPOSConnectivity: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
-    func startObserving() {}
-    func stopObserving() {}
     init() {}
 }
 

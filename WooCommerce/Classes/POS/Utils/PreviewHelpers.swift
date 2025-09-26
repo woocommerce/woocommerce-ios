@@ -219,9 +219,6 @@ final class POSConnectivityObserverPreview: ConnectivityObserver {
     var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()
     }
-    func startObserving() {}
-
-    func stopObserving() {}
 }
 
 struct POSPreviewHelpers {

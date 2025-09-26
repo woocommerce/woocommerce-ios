@@ -19,8 +19,6 @@ struct TotalsView: View {
         viewHelper.shouldShowTotalsFields(for: posModel.paymentState)
     }
 
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
     var body: some View {
         HStack {
             switch posModel.orderState {
@@ -122,13 +120,11 @@ private extension TotalsView {
 
 private extension TotalsView {
     struct PaymentViewLayout {
-        let backgroundColor: Color
         let topPadding: CGFloat?
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat
 
         init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
-            self.backgroundColor = backgroundColor
             self.topPadding = topPadding
             self.bottomPadding = bottomPadding
             self.sidePadding = sidePadding
@@ -358,8 +354,6 @@ private struct TotalsFieldsContent: View {
 }
 
 private struct SubtotalFieldView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     let title: String
     let formattedPrice: String?
     let shimmeringActive: Bool
@@ -392,8 +386,6 @@ private struct SubtotalFieldView: View {
 }
 
 private struct TotalFieldView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     let formattedPrice: String?
     let shimmeringActive: Bool
 

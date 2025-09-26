@@ -18,10 +18,6 @@ private struct POSShadowLayer {
     let offset: CGSize
 }
 
-private struct POSShadowStyleDefinition {
-    let shadowLayers: [POSShadowLayer]
-}
-
 // MARK: - Main SwiftUI Modifier
 
 struct POSShadowStyleModifier: ViewModifier {

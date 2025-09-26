@@ -40,7 +40,6 @@ protocol PointOfSaleAggregateModelProtocol {
     func startNewCart()
 
     func saveSearchTerm(_ term: String, for itemType: POSItemType)
-    func searchHistory(for itemType: POSItemType) -> [String]
 
     var orderState: PointOfSaleOrderState { get }
     func checkOut() async
@@ -264,10 +263,6 @@ extension PointOfSaleAggregateModel {
 extension PointOfSaleAggregateModel {
     func saveSearchTerm(_ term: String, for itemType: POSItemType) {
         searchHistoryService.saveSuccessfulSearch(term: term, for: itemType)
-    }
-
-    func searchHistory(for itemType: POSItemType) -> [String] {
-        return searchHistoryService.searchHistory(for: itemType)
     }
 }
 
@@ -621,18 +616,3 @@ extension PointOfSaleAggregateModel {
         cancellables.forEach { $0.cancel() }
     }
 }
-
-private extension PointOfSaleAggregateModel {
-    enum Constants {
-        static let initialPage: Int = 1
-    }
-}
-
-#if DEBUG
-extension PointOfSaleAggregateModel {
-    func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
-        self.paymentState = paymentState
-        self.cardPresentPaymentInlineMessage = inlineMessage
-    }
-}
-#endif

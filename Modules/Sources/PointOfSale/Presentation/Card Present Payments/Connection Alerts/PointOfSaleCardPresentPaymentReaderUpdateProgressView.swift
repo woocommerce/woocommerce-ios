@@ -8,11 +8,11 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(Color(.posSecondary))
+                .fill(Color.posSecondary)
                 .frame(width: Constants.size, height: Constants.size)
 
             Circle()
-                .fill(Color(.posPrimary))
+                .fill(Color.posPrimary)
                 .frame(width: Constants.size - Constants.borderInset, height: Constants.size - Constants.borderInset)
                 .clipShape(
                     Rectangle()
@@ -24,7 +24,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateProgressView: View {
                 isComplete ? SharedImageAsset.cardReaderUpdateProgressCheckmark.decorativeImage : SharedImageAsset.cardReaderUpdateProgressArrow.decorativeImage
             )
                 .renderingMode(.template)
-                .foregroundColor(Color(.posOnPrimary))
+                .foregroundColor(Color.posOnPrimary)
         }
         .frame(width: Constants.size, height: Constants.size)
     }

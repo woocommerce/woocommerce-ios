@@ -111,7 +111,7 @@ private enum Localization {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold)
-                .foregroundColor(Color(.posPrimary))
+                .foregroundColor(Color.posPrimary)
         }
     }
     .padding()
@@ -127,7 +127,7 @@ private enum Localization {
             Text("This is a subtitle that explains more about the notice.")
             Text("Here's a hint about what to do next. Learn More")
                 .font(.posBodySmallBold)
-                .foregroundColor(Color(.posPrimary))
+                .foregroundColor(Color.posPrimary)
         }
     }
     .padding()

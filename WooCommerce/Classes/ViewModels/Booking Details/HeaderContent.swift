@@ -15,7 +15,7 @@ extension BookingDetailsViewModel {
         let status: [Status]
 
         init(_ booking: Booking) {
-            bookingDate = Self.dateFormatter.string(from: booking.startDate)
+            bookingDate = booking.startDate.formatted(date: .numeric, time: .omitted)
             serviceName = "Women's Haircut"
             customerName = "Margarita Nikolaevna"
             status = [.paid, .booked]

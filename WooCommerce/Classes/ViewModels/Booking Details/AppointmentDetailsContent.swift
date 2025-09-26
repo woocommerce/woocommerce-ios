@@ -3,18 +3,6 @@ import struct Networking.Booking
 
 extension BookingDetailsViewModel {
     struct AppointmentDetailsContent {
-        static let appointmentDateFormatter = {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "EEEE, dd MMMM yyyy"
-            return dateFormatter
-        }()
-
-        static let appointmentTimeFrameFormatter = {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "hh:mm a"
-            return dateFormatter
-        }()
-
         struct Row: Identifiable {
             let title: String
             let value: String
@@ -28,10 +16,10 @@ extension BookingDetailsViewModel {
 
         init(_ booking: Booking) {
             let durationMinutes = Int(booking.endDate.timeIntervalSince(booking.startDate) / 60)
-            let appointmentDate = Self.appointmentDateFormatter.string(from: booking.startDate)
+            let appointmentDate = booking.startDate.formatted(date: .numeric, time: .omitted)
             let appointmentTimeFrame = [
-                Self.appointmentTimeFrameFormatter.string(from: booking.startDate),
-                Self.appointmentTimeFrameFormatter.string(from: booking.endDate)
+                booking.startDate.formatted(date: .omitted, time: .shortened),
+                booking.endDate.formatted(date: .omitted, time: .shortened)
             ].joined(separator: " - ")
 
             rows = [

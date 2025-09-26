@@ -24,7 +24,6 @@ struct POSSearchField: View {
     @FocusState private var isSearchFieldFocused: Bool
     @State private var searchTask: Task<Void, Never>?
     @State private var didFinishSearch = true
-    @ScaledMetric private var searchFieldHeight: CGFloat = 56.0
 
     private let searchable: any POSSearchable
     private let onBack: () -> Void
@@ -103,7 +102,6 @@ struct POSSearchField: View {
 
 /// A reusable search content view for POS items
 struct POSSearchContentView<Content: View>: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
 
     private let searchable: any POSSearchable

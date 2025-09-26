@@ -14,6 +14,7 @@ import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 
+/// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
@@ -38,6 +39,7 @@ public struct PointOfSaleEntryPointView: View {
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
 
+    /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
          itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
          popularItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,

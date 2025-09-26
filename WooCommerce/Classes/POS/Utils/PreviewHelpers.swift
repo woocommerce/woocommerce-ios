@@ -507,10 +507,6 @@ final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
-
-    func fetchOrders(searchTerm: String, pageNumber: Int) async throws -> PagedItems<POSOrder> {
-        PagedItems(items: [], hasMorePages: false, totalItems: nil)
-    }
 }
 
 final class PointOfSaleCouponFetchStrategyPreview: PointOfSaleCouponFetchStrategy {

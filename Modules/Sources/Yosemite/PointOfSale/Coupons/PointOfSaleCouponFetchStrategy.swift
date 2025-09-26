@@ -8,7 +8,7 @@ public protocol PointOfSaleCouponFetchStrategy {
     func fetchLocalCoupons() async throws -> [POSItem]
 }
 
-public struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
+struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     private let siteID: Int64
     private let currencySettings: CurrencySettings
     private let storage: StorageManagerType

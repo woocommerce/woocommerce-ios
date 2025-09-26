@@ -28,14 +28,15 @@ struct BookingDetailsView: View {
     }
 
     var body: some View {
-        RefreshablePlainList(action: {
-            print("Refresh triggered")
-        }) {
+        ScrollView {
             VStack(alignment: .leading, spacing: .zero) {
                 ForEach(viewModel.sections) { section in
                     sectionView(with: section)
                 }
             }
+        }
+        .refreshable {
+            print("Refresh triggered")
         }
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .systemGroupedBackground))

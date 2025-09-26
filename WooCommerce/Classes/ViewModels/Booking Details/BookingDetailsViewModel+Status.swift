@@ -11,9 +11,9 @@ extension BookingDetailsViewModel.Status {
     var labelText: String {
         switch self {
         case .booked:
-            return "Booked"
+            return Localization.bookingStatusBooked
         case .paid:
-            return "Paid"
+            return Localization.bookingStatusPaid
         }
     }
 
@@ -24,5 +24,21 @@ extension BookingDetailsViewModel.Status {
         case .paid:
             return Color(UIColor.systemGray6)
         }
+    }
+}
+
+private extension BookingDetailsViewModel.Status {
+    enum Localization {
+        static let bookingStatusBooked = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.statusLabel.booked",
+            value: "Booked",
+            comment: "Title for the 'Booked' status label in the appointment details view."
+        )
+
+        static let bookingStatusPaid = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.statusLabel.paid",
+            value: "Paid",
+            comment: "Title for the 'Paid' status label in the appointment details view."
+        )
     }
 }

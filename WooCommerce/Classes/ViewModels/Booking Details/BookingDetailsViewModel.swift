@@ -24,7 +24,7 @@ final class BookingDetailsViewModel: ObservableObject {
         )
 
         let appointmentDetailsSection = Section(
-            headerText: "Appointment Details".uppercased(),
+            headerText: Localization.appointmentDetailsSectionHeaderTitle.uppercased(),
             content: .appointmentDetails(AppointmentDetailsContent(booking))
         )
 
@@ -32,5 +32,15 @@ final class BookingDetailsViewModel: ObservableObject {
             headerSection,
             appointmentDetailsSection
         ]
+    }
+}
+
+private extension BookingDetailsViewModel {
+    enum Localization {
+        static let appointmentDetailsSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.headerTitle",
+            value: "Appointment Details",
+            comment: "Header title for the 'Appointment Details' section in the booking details screen."
+        )
     }
 }

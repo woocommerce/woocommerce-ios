@@ -131,16 +131,10 @@ private extension BookingDetailsView {
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(content.rows) { row in
-                TitleAndTextFieldRow(
+                TitleAndValueRow(
                     title: row.title,
-                    placeholder: String(),
-                    text: .constant(row.value),
-                    fieldAlignment: .trailing,
-                    keyboardType: .default,
-                    titleFont: BookingDetailsView.TextFont.bodyMedium,
-                    valueColor: .secondary,
-                    valueFont: BookingDetailsView.TextFont.bodyRegular,
-                    horizontalPadding: 0 // Parent section padding is added elsewhere,
+                    value: .placeholder(row.value),
+                    horizontalPadding: 0
                 )
 
                 Divider()

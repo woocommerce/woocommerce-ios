@@ -124,20 +124,18 @@ private extension TotalsView {
         let bottomPadding: CGFloat?
         let sidePadding: CGFloat
 
-        init(backgroundColor: Color, topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
+        init(topPadding: CGFloat?, bottomPadding: CGFloat?, sidePadding: CGFloat = 8) {
             self.topPadding = topPadding
             self.bottomPadding = bottomPadding
             self.sidePadding = sidePadding
         }
 
         static let primary = PaymentViewLayout(
-            backgroundColor: .clear,
             topPadding: nil,
             bottomPadding: POSPadding.small
         )
 
         static let outlined = PaymentViewLayout(
-            backgroundColor: Color(.quaternarySystemFill),
             topPadding: POSPadding.xxLarge,
             bottomPadding: POSPadding.xxLarge
         )
@@ -173,8 +171,7 @@ private extension TotalsView {
 
         switch posModel.paymentState.activePaymentMethod {
         case .cash:
-            return PaymentViewLayout(backgroundColor: backgroundColor,
-                                     topPadding: POSPadding.none,
+            return PaymentViewLayout(topPadding: POSPadding.none,
                                      bottomPadding: posModel.paymentState.cash == .collectingCash ? nil : POSPadding.none,
                                      sidePadding: POSPadding.none)
         case .card:
@@ -183,13 +180,11 @@ private extension TotalsView {
                     .paymentIntentCreationError:
                 return .outlined
             case .paymentError:
-                return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: POSPadding.none,
+                return PaymentViewLayout(topPadding: POSPadding.none,
                                          bottomPadding: POSPadding.none,
                                          sidePadding: POSPadding.none)
             case .cardPaymentSuccessful:
-                return PaymentViewLayout(backgroundColor: backgroundColor,
-                                         topPadding: POSPadding.none,
+                return PaymentViewLayout(topPadding: POSPadding.none,
                                          bottomPadding: POSPadding.none,
                                          sidePadding: POSPadding.none)
             case .idle,

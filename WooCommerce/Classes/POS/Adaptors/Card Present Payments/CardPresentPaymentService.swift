@@ -146,7 +146,6 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             using: connectionMethod,
             siteID: siteID,
             preflightController: preflightController,
-            onboardingPresenter: onboardingAdaptor,
             configuration: cardPresentPaymentsConfiguration,
             alertsPresenter: paymentAlertsPresenterAdaptor,
             paymentEventSubject: paymentEventSubject,

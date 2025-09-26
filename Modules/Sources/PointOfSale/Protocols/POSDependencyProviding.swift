@@ -60,7 +60,7 @@ public protocol POSExternalViewProviding {
     func createDiscountTypeSelectionSheet(isPresented: Binding<Bool>,
                                           title: String,
                                           cancelButtonTitle: String,
-                                          onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView
+                                          onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
     func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView
 }
 

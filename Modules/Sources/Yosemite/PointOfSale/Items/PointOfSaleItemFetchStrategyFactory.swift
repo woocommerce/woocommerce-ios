@@ -10,8 +10,6 @@ public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
 
     func searchStrategy(searchTerm: String,
                         analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
-
-    func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy
 }
 
 public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
@@ -67,10 +65,6 @@ public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetc
 
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
-        fixedStrategy
-    }
-
-    public func popularStrategy(pageSize: Int) -> PointOfSalePurchasableItemFetchStrategy {
         fixedStrategy
     }
 }

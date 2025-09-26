@@ -24,7 +24,7 @@ struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
         self.couponStoreMethods = couponStoreMethods
     }
 
-    public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         // Update local storage with data from the remote
         let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
         // Return all local coupons, including updated ones from the remote
@@ -35,7 +35,7 @@ struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     /// fetchLocalCoupons provides an array of coupons that are stored locally
     /// It does not accept any sort of pagination
     /// Limited to default page size to match remote results
-    public func fetchLocalCoupons() async throws -> [POSItem] {
+    func fetchLocalCoupons() async throws -> [POSItem] {
         return await fetchLocalCoupons(limit: Constants.defaultPageSize)
     }
 }
@@ -66,7 +66,7 @@ extension PointOfSaleDefaultCouponFetchStrategy {
 
 // MARK: - Search Coupon Strategy
 
-public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
+struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     private let siteID: Int64
     private let couponStoreMethods: CouponStoreMethodsProtocol
     private let storage: StorageManagerType
@@ -89,7 +89,7 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
         self.analytics = analytics
     }
 
-    public func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+    func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
         let startTime = Date()
         try await couponStoreMethods.searchCoupons(siteID: siteID,
                                                    keyword: searchTerm,
@@ -116,7 +116,7 @@ public struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrate
         return resultsController.fetchCoupons(predicate: predicate)
     }
 
-    public func fetchLocalCoupons() async throws -> [POSItem] {
+    func fetchLocalCoupons() async throws -> [POSItem] {
         // No support for returning local search results
         return []
     }

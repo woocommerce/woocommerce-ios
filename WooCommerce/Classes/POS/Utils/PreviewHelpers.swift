@@ -477,10 +477,6 @@ final class PointOfSaleItemFetchStrategyFactoryPreview: PointOfSaleItemFetchStra
     func searchStrategy(searchTerm: String, analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
         PointOfSalePreviewPurchasableItemFetchStrategy()
     }
-
-    func popularStrategy(pageSize: Int) -> any PointOfSalePurchasableItemFetchStrategy {
-        PointOfSalePreviewPurchasableItemFetchStrategy()
-    }
 }
 
 final class POSOrderListFetchStrategyFactoryPreview: POSOrderListFetchStrategyFactoryProtocol {

@@ -18,6 +18,7 @@ struct TitleAndValueRow: View {
     private let bold: Bool
     private let selectionStyle: SelectionStyle
     private let isLoading: Bool
+    private let horizontalPadding: CGFloat
     private let action: () -> Void
 
     /// Static width for title label. Used to align values between different rows.
@@ -46,6 +47,7 @@ struct TitleAndValueRow: View {
          bold: Bool = false,
          selectionStyle: SelectionStyle = .none,
          isLoading: Bool = false,
+         horizontalPadding: CGFloat = Constants.horizontalPadding,
          action: @escaping () -> Void = {}) {
         self.title = title
         self.titleSuffixImage = titleSuffixImage
@@ -55,6 +57,7 @@ struct TitleAndValueRow: View {
         self.bold = bold
         self.selectionStyle = selectionStyle
         self.isLoading = isLoading
+        self.horizontalPadding = horizontalPadding
         self.action = action
     }
 
@@ -92,7 +95,7 @@ struct TitleAndValueRow: View {
         })
         .disabled(selectionStyle == .none)
         .frame(minHeight: Constants.minHeight)
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.horizontal, horizontalPadding)
         .accessibilityElement()
         .accessibilityLabel(Text(title))
         .accessibilityValue(Text(value.text))

@@ -21,11 +21,12 @@ final class BookingDetailsViewModel: ObservableObject {
         )
 
         let appointmentDetailsSection = Section(
-            headerText: Localization.appointmentDetailsSectionHeaderTitle.uppercased(),
+            header: .title(Localization.appointmentDetailsSectionHeaderTitle.uppercased()),
             content: .appointmentDetails(AppointmentDetailsContent(booking))
         )
 
         let attendanceSection = Section(
+            header: .empty,
             footerText: "Mark attendance to keep your reports accurate and spot booking trends.",
             content: .attendance(AttendanceContent())
         )

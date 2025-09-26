@@ -47,9 +47,18 @@ struct BookingDetailsView: View {
 private extension BookingDetailsView {
     func sectionView(with section: BookingDetailsViewModel.Section) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            if let headerText = section.headerText {
+            if let header = section.header {
+                let text = {
+                    switch header {
+                    case .empty:
+                        return ""
+                    case .title(let text):
+                        return text
+                    }
+                }()
+
                 ListHeaderView(
-                    text: headerText,
+                    text: text,
                     alignment: .left
                 )
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -78,6 +87,8 @@ private extension BookingDetailsView {
             headerView(with: content)
         case .appointmentDetails(let content):
             appointmentDetailsView(with: content)
+        case .attendance(let content):
+            attendanceView(with: content)
         default:
             EmptyView()
         }
@@ -106,6 +117,15 @@ private extension BookingDetailsView {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 6)
+    }
+
+    func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {
+        TitleAndValueRow(
+            title: Localization.attendanceRowTitle,
+            value: .placeholder(content.value),
+            selectionStyle: .disclosure,
+            horizontalPadding: 0
+        )
     }
 
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
@@ -151,6 +171,7 @@ private extension BookingDetailsView {
     enum Localization {
         static let rescheduleButtonTitle = "Reschedule"
         static let cancelBooking = "Cancel booking"
+        static let attendanceRowTitle = "Attendance"
     }
 }
 

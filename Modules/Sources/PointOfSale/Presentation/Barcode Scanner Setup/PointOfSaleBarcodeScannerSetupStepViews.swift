@@ -19,7 +19,7 @@ struct PointOfSaleBarcodeScannerBarcodeView: View {
                     .multilineTextAlignment(.center)
             }
 
-            Image(barcode.imageName)
+            Image(barcode.imageName, bundle: .module)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxHeight: Constants.maxBarcodeSize)
@@ -51,7 +51,7 @@ struct PointOfSaleBarcodeScannerPairingView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
-            Image(decorative: PointOfSaleAssets.gears.imageName)
+            PointOfSaleAssets.gears.decorativeImage
                 .resizable()
                 .frame(width: Constants.gearIconSize, height: Constants.gearIconSize)
 
@@ -187,7 +187,7 @@ struct PointOfSaleBarcodeScannerSetupCompleteView: View {
             Circle()
                 .frame(width: 88, height: 88)
                 .foregroundColor(.posSuccess)
-            Image(PointOfSaleAssets.successCheck.imageName)
+            PointOfSaleAssets.successCheck.image
                 .renderingMode(.template)
                 .resizable()
                 .frame(width: 36, height: 36)

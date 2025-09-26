@@ -112,7 +112,7 @@ struct ProductBarcodeSetupInformation: View {
                     .multilineTextAlignment(.center)
             }
 
-            Image(decorative: PointOfSaleAssets.barcodeFieldScreenshot.imageName)
+            PointOfSaleAssets.barcodeFieldScreenshot.image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         }

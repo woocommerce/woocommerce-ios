@@ -8,6 +8,7 @@ struct BookingDetailsView: View {
 
     private enum Layout {
         static let contentSidePadding: CGFloat = 16
+        static let contentVerticalPadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
     }
@@ -120,12 +121,34 @@ private extension BookingDetailsView {
                     horizontalPadding: 0 // Parent section padding is added elsewhere,
                 )
 
-                if row.id != content.rows.last?.id {
-                    Divider()
-                        .padding(.trailing, -Layout.contentSidePadding)
-                }
+                Divider()
+                    .padding(.trailing, -Layout.contentSidePadding)
             }
+
+            VStack(spacing: Layout.contentVerticalPadding) {
+                Button {
+                    /// On reschedule button tap
+                } label: {
+                    Text(Localization.rescheduleButtonTitle)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+
+                Button {
+                    /// On cancel booking button tap
+                } label: {
+                    Text(Localization.cancelBooking)
+                }
+                .buttonStyle(SecondaryButtonStyle())
+            }
+            .padding(.vertical, Layout.contentVerticalPadding)
         }
+    }
+}
+
+private extension BookingDetailsView {
+    enum Localization {
+        static let rescheduleButtonTitle = "Reschedule"
+        static let cancelBooking = "Cancel booking"
     }
 }
 

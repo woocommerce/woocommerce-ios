@@ -37,6 +37,8 @@ public class BookingStore: Store {
         switch action {
         case let .synchronizeBookings(siteID, pageNumber, pageSize, onCompletion):
             synchronizeBookings(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .checkIfStoreHasBookings(siteID, onCompletion):
+            checkIfStoreHasBookings(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -60,6 +62,31 @@ private extension BookingStore {
                 await upsertStoredBookingsInBackground(readOnlyBookings: bookings, siteID: siteID)
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Checks if the store already has any bookings.
+    /// Returns `false` if the store has no bookings.
+    ///
+    func checkIfStoreHasBookings(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        let derivedStorage = storageManager.viewStorage
+        let hasLocalBookings = derivedStorage.countObjects(ofType: StorageBooking.self, matching: NSPredicate(format: "siteID == %lld", siteID)) > 0
+
+        if hasLocalBookings {
+            onCompletion(.success(true))
+            return
+        }
+
+        Task { @MainActor in
+            do {
+                let bookings = try await remote.loadAllBookings(for: siteID,
+                                                                pageNumber: 1,
+                                                                pageSize: 1)
+                let hasRemoteBookings = !bookings.isEmpty
+                onCompletion(.success(hasRemoteBookings))
             } catch {
                 onCompletion(.failure(error))
             }

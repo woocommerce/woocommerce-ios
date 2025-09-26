@@ -66,7 +66,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         let connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
         self.connectedReaderPublisher = connectedReaderPublisher
 
-        readerConnectionStatusPublisher = connectedReaderPublisher
+        readerConnectionStatusPublisher = self.connectedReaderPublisher
             .map({ reader -> CardPresentPaymentReaderConnectionStatus in
                 guard let reader else {
                     return .disconnected

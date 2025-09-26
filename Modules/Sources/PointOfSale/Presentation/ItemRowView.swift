@@ -6,7 +6,6 @@ struct ItemRowView: View {
     private let onCancelLoading: (() -> Void)?
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Binding private var showProductImage: Bool
 
     private var dimension: CGFloat {

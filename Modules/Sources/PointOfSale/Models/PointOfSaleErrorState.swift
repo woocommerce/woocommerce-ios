@@ -7,7 +7,6 @@ struct PointOfSaleErrorState: Equatable {
         case variationsLoadError
         case productsNextPageError
         case variationsNextPageError
-        case couponsNotFound
         case couponsLoadError
         case couponsDisabled
         case couponsNextPageError

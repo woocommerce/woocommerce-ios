@@ -3,11 +3,9 @@ import enum Yosemite.POSItem
 import protocol Yosemite.POSOrderableItem
 
 struct ItemListView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
@@ -53,9 +51,6 @@ struct ItemListView: View {
             set: { _ in }
         )
     }
-
-    @State private var searchTask: Task<Void, Never>?
-    @State private var didFinishSearch = true
 
     private var isAddingCouponAllowed: Bool {
         guard case .coupons = selectedItemListType else { return false }
@@ -155,7 +150,7 @@ struct ItemListView: View {
         case .loading(let items),
                 .loaded(let items, _),
                 .inlineError(let items, _, _):
-            listView(items, itemListType: itemListType)
+            listView(itemListType: itemListType)
         case .error(let errorState):
             errorView(errorState)
         case .empty:
@@ -164,7 +159,7 @@ struct ItemListView: View {
     }
 
     @ViewBuilder
-    private func listView(_ items: [POSItem], itemListType: ItemListType) -> some View {
+    private func listView(itemListType: ItemListType) -> some View {
         ItemList(
             itemsController: itemsController(itemListType),
             node: .root,
@@ -390,10 +385,6 @@ private extension ItemListView {
 private extension ItemListView {
     enum Constants {
         static let animationDuration: CGFloat = 0.2
-    }
-
-    enum BannerState {
-        static let isSimpleProductsOnlyBannerDismissedKey = "isSimpleProductsOnlyBannerDismissed"
     }
 
     enum Localization {

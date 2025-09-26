@@ -12,7 +12,6 @@ struct PointOfSaleSound: Equatable, Hashable {
 }
 
 protocol PointOfSaleSoundPlayerProtocol {
-    func playSound(_ sound: PointOfSaleSound, completion: @escaping (() -> Void)) async
     func playSound(_ sound: PointOfSaleSound) async
 }
 

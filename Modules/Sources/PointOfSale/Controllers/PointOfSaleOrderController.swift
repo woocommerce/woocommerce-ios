@@ -250,7 +250,6 @@ extension PointOfSaleInternalOrderState: Equatable {
 
 extension PointOfSaleOrderController {
     enum PointOfSaleOrderControllerError: Error {
-        case noSiteID
         case noOrder
     }
 }

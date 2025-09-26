@@ -166,10 +166,6 @@ private extension PointOfSaleCollectCashView {
         return padding
     }
 
-    private var backgroundColor: Color {
-        .posSurfaceBright
-    }
-
     enum Localization {
         static let backNavigationTitle = NSLocalizedString(
             "pointOfSale.cashview.back.navigation.title",

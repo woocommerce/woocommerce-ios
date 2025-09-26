@@ -34,11 +34,6 @@ public final class AsyncPaginationTracker {
         pagesSynced.max()
     }
 
-    /// Returns the highest page number that is currently being synced, if any.
-    private var highestPageBeingSynced: Int? {
-        pagesBeingSynced.max()
-    }
-
     /// Designated Initializer
     public init(pageFirstIndex: Int = Defaults.pageFirstIndex) {
         self.pageFirstIndex = pageFirstIndex

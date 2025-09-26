@@ -7,7 +7,6 @@ struct CartView: View {
     @Environment(\.posAnalytics) private var analytics
     private let viewHelper = CartViewHelper()
 
-    @Environment(\.floatingControlAreaSize) var floatingControlAreaSize: CGSize
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var offSetPosition: CGFloat = 0.0
@@ -22,10 +21,6 @@ struct CartView: View {
         return posModel.cart.isNotEmpty &&
         cartContentHeight > scrollViewHeight &&
         abs(offSetPosition) < maxOffset
-    }
-
-    private var shouldShowCoupons: Bool {
-        posModel.cart.coupons.isNotEmpty
     }
 
     private var isPOSSettingsEnabled: Bool {
@@ -163,7 +158,6 @@ private extension CartView {
 }
 
 private enum Constants {
-    static let primaryFont: POSFontStyle = .posHeadingBold
     static let secondaryFont: POSFontStyle = .posBodyMediumRegular()
     static let itemsFont: POSFontStyle = .posBodySmallRegular()
     static let shoppingBagImageSize: CGFloat = 104

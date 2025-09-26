@@ -6,7 +6,7 @@ protocol PointOfSaleBarcodeScannerButtonCustomization {
 }
 
 // MARK: - Transition Types
-public enum PointOfSaleBarcodeScannerTransitionType: Hashable {
+enum PointOfSaleBarcodeScannerTransitionType: Hashable {
     case next
     case retry
     case back
@@ -14,16 +14,13 @@ public enum PointOfSaleBarcodeScannerTransitionType: Hashable {
 
 // MARK: - Setup Step
 struct PointOfSaleBarcodeScannerSetupStep {
-    let title: String
     let content: any View
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
     let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID]
 
-    init(title: String = "",
-         @ViewBuilder content: () -> any View,
+    init(@ViewBuilder content: () -> any View,
          buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
          transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [:]) {
-        self.title = title
         self.content = content()
         self.buttonCustomization = buttonCustomization
         self.transitions = transitions

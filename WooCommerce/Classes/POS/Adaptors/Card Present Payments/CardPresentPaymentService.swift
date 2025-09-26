@@ -158,7 +158,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         switch try await paymentTask.value {
         case .success:
             // TODO: fetch the receipt URL to return an accurate value.
-            let transaction = CardPresentPaymentTransaction(receiptURL: URL(string: "https://example.com")!)
+            let transaction = CardPresentPaymentTransaction()
             return .success(transaction)
         case .cancellation:
             return .cancellation

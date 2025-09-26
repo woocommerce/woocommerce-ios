@@ -1,3 +1,4 @@
+// periphery:ignore:all
 import SwiftUI
 
 extension Color {

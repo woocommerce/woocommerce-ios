@@ -8,6 +8,7 @@ struct ItemListView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
@@ -102,7 +103,9 @@ struct ItemListView: View {
         })
         .background(Color.posSurface)
         .accessibilityElement(children: .contain)
-        .posCouponCreationSheet(isPresented: $showCouponCreationModal, onSuccess: { couponItem in
+        .posCouponCreationSheet(isPresented: $showCouponCreationModal,
+                                currencySettings: currencyProvider.currencySettings,
+                                onSuccess: { couponItem in
             Task { @MainActor in
                 posModel.addToCart(couponItem)
                 await posModel.couponsController.refreshItems(base: .root)

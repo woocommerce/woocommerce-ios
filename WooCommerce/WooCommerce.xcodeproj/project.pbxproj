@@ -1248,6 +1248,7 @@
 		2D05D1A42E82D266004111FD /* AppointmentDetailsContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */; };
 		2D05D1A52E82D3F6004111FD /* BookingDetailsViewModel+SectionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A02E82D1EF004111FD /* BookingDetailsViewModel+SectionContent.swift */; };
 		2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */; };
+		2D05E80F2E86BE50004111FD /* AttendanceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */; };
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
@@ -4444,6 +4445,7 @@
 		2D05D1A12E82D233004111FD /* HeaderContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderContent.swift; sourceTree = "<group>"; };
 		2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppointmentDetailsContent.swift; sourceTree = "<group>"; };
 		2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Status.swift"; sourceTree = "<group>"; };
+		2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceContent.swift; sourceTree = "<group>"; };
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -9119,6 +9121,7 @@
 		2DAC251E2E829FF9008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */,
 				2D05D1A12E82D233004111FD /* HeaderContent.swift */,
 				2D05D1A32E82D25F004111FD /* AppointmentDetailsContent.swift */,
 				2DAC251F2E82A02C008521AF /* BookingDetailsViewModel.swift */,
@@ -16722,6 +16725,7 @@
 				021BCDF82D3648CD002E9F15 /* PointOfSaleItemListFullscreenErrorView.swift in Sources */,
 				E1C5E78226C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift in Sources */,
 				022F941E257F8E820011CD94 /* BoldableTextParser.swift in Sources */,
+				2D05E80F2E86BE50004111FD /* AttendanceContent.swift in Sources */,
 				26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */,
 				457151AB243B6E8000EB2DFA /* ProductSlugViewController.swift in Sources */,
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,

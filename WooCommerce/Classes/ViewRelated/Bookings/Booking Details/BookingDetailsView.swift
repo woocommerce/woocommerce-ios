@@ -11,6 +11,7 @@ struct BookingDetailsView: View {
         static let contentVerticalPadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
+        static let sectionFooterTextVerticalPadding: CGFloat = 8
     }
 
     fileprivate enum TextFont {
@@ -63,6 +64,7 @@ private extension BookingDetailsView {
             if let footerText = section.footerText {
                 Text(footerText)
                     .padding(.horizontal, Layout.contentSidePadding)
+                    .padding(.vertical, Layout.sectionFooterTextVerticalPadding)
                     .font(.footnote)
                     .foregroundColor(.gray)
             }

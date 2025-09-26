@@ -2,9 +2,6 @@ import Foundation
 import struct Networking.Booking
 
 extension BookingDetailsViewModel {
-    struct AttendanceContent {
-    }
-
     struct PaymentContent {
     }
 
@@ -28,9 +25,15 @@ final class BookingDetailsViewModel: ObservableObject {
             content: .appointmentDetails(AppointmentDetailsContent(booking))
         )
 
+        let attendanceSection = Section(
+            footerText: "Mark attendance to keep your reports accurate and spot booking trends.",
+            content: .attendance(AttendanceContent())
+        )
+
         sections = [
             headerSection,
-            appointmentDetailsSection
+            appointmentDetailsSection,
+            attendanceSection
         ]
     }
 }

@@ -39,6 +39,18 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - pageNumber: Page number for pagination.
     /// - Returns: Paginated list of POS product variations.
     func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+
+    /// Gets the total count of products for the specified site.
+    ///
+    /// - Parameter siteID: Site ID to get product count for.
+    /// - Returns: Total number of products.
+    func getProductCount(siteID: Int64) async throws -> Int
+
+    /// Gets the total count of product variations for the specified site.
+    ///
+    /// - Parameter siteID: Site ID to get variation count for.
+    /// - Returns: Total number of variations.
+    func getProductVariationCount(siteID: Int64) async throws -> Int
 }
 
 /// POS Catalog Sync: Remote Endpoints
@@ -67,7 +79,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -92,7 +111,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .wcAnalytics,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -117,7 +143,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProduct>(siteID: siteID)
         let (products, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
@@ -140,11 +173,70 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.fields: POSProductVariation.requestFields.joined(separator: ",")
         ]
 
-        let request = JetpackRequest(wooApiVersion: .wcAnalytics, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(
+            wooApiVersion: .wcAnalytics,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
         let mapper = ListMapper<POSProductVariation>(siteID: siteID)
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
         return createPagedItems(items: variations, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
+    }
+
+    // MARK: - Count Endpoints
+
+    /// Gets the total count of products for the specified site.
+    ///
+    /// - Parameter siteID: Site ID to get product count for.
+    /// - Returns: Total number of products.
+    public func getProductCount(siteID: Int64) async throws -> Int {
+        let path = Path.products
+        let parameters = [
+            ParameterKey.page: String(1),
+            ParameterKey.perPage: String(1),
+            ParameterKey.fields: POSProductVariation.requestFields.first ?? ""
+        ]
+
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let responseHeaders = try await enqueueWithResponseHeaders(request)
+
+        return totalItemsCount(from: responseHeaders) ?? 0
+    }
+
+    /// Gets the total count of product variations for the specified site.
+    ///
+    /// - Parameter siteID: Site ID to get variation count for.
+    /// - Returns: Total number of variations.
+    public func getProductVariationCount(siteID: Int64) async throws -> Int {
+        let path = Path.variations
+        let parameters = [
+            ParameterKey.page: String(1),
+            ParameterKey.perPage: String(1),
+            ParameterKey.fields: POSProductVariation.requestFields.first ?? ""
+        ]
+
+        let request = JetpackRequest(
+            wooApiVersion: .wcAnalytics,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+        let responseHeaders = try await enqueueWithResponseHeaders(request)
+
+        return totalItemsCount(from: responseHeaders) ?? 0
     }
 }
 

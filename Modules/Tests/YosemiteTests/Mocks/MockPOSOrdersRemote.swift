@@ -22,6 +22,25 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    var updatePOSOrderEmailCalled: Bool = false
+    var spyUpdatePOSOrderEmailSiteID: Int64?
+    var spyUpdatePOSOrderEmailOrderID: Int64?
+    var spyUpdatePOSOrderEmailAddress: String?
+    var updatePOSOrderEmailResult: Result<Void, Error> = .success(())
+
+    func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
+        updatePOSOrderEmailCalled = true
+        spyUpdatePOSOrderEmailSiteID = siteID
+        spyUpdatePOSOrderEmailOrderID = orderID
+        spyUpdatePOSOrderEmailAddress = emailAddress
+        switch updatePOSOrderEmailResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
     var createPOSOrderCalled: Bool = false
     var spyCreatePOSOrder: Order?
     var spyCreatePOSOrderFields: [OrdersRemote.CreateOrderField]?
@@ -68,6 +87,23 @@ final class MockPOSOrdersRemote: POSOrdersRemoteProtocol {
         switch mockSearchPagedOrdersResult {
         case .success(let pagedOrders):
             return pagedOrders
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    var loadPOSOrderCalled = false
+    var spyLoadPOSOrderID: Int64?
+    var loadPOSOrderResult: Result<Order, Error> = .success(Order.fake())
+
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        loadPOSOrderCalled = true
+        spySiteID = siteID
+        spyLoadPOSOrderID = orderID
+
+        switch loadPOSOrderResult {
+        case .success(let order):
+            return order
         case .failure(let error):
             throw error
         }

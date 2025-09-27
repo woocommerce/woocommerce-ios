@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
+import class WooFoundation.VersionHelpers
 
 final class CustomersListViewModel: ObservableObject {
 

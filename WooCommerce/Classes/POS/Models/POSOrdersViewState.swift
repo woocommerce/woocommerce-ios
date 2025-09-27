@@ -45,4 +45,17 @@ enum POSOrderListState: Equatable {
             return []
         }
     }
+
+    func updatingOrders(with updatedOrders: [POSOrder]) -> POSOrderListState {
+        switch self {
+        case .loaded(_, let hasMoreItems):
+            return .loaded(updatedOrders, hasMoreItems: hasMoreItems)
+        case .loading:
+            return .loading(updatedOrders)
+        case .inlineError(_, let error, let context):
+            return .inlineError(updatedOrders, error: error, context: context)
+        case .empty, .error:
+            return self
+        }
+    }
 }

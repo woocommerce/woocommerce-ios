@@ -2,6 +2,8 @@ import Foundation
 import Networking
 import class WooFoundation.CurrencyFormatter
 import enum WooFoundation.CurrencyCode
+import struct Combine.AnyPublisher
+import struct NetworkingCore.JetpackSite
 
 public protocol POSOrderServiceProtocol {
     /// Syncs order based on the cart.
@@ -9,7 +11,7 @@ public protocol POSOrderServiceProtocol {
     ///   - cart: Cart with different types of items and quantities.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
-    func updatePOSOrder(order: Order, recipientEmail: String) async throws
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
 }
 
@@ -17,12 +19,17 @@ public final class POSOrderService: POSOrderServiceProtocol {
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
 
-    public convenience init?(siteID: Int64, credentials: Credentials?) {
+    public convenience init?(siteID: Int64,
+                             credentials: Credentials?,
+                             selectedSite: AnyPublisher<JetpackSite?, Never>,
+                             appPasswordSupportState: AnyPublisher<Bool, Never>) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSOrderService due to not finding credentials")
             return nil
         }
-        let network = AlamofireNetwork(credentials: credentials)
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   ordersRemote: OrdersRemote(network: network))
     }
@@ -46,20 +53,9 @@ public final class POSOrderService: POSOrderServiceProtocol {
         return try await ordersRemote.createPOSOrder(siteID: siteID, order: order, fields: [.items, .status, .currency, .couponLines])
     }
 
-    public func updatePOSOrder(order: Order, recipientEmail: String) async throws {
-        guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
-            throw POSOrderServiceError.emailAlreadySet
-        }
-        let updatedBillingAddress = order.billingAddress?.copy(email: recipientEmail)
-        let updatedOrder = order.copy(billingAddress: updatedBillingAddress)
-
+    public func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         do {
-            let _ = try await ordersRemote.updatePOSOrder(
-                siteID: siteID,
-                order: updatedOrder,
-                cashPaymentChangeDueAmount: nil,
-                fields: [.billingAddress]
-            )
+            try await ordersRemote.updatePOSOrderEmail(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
         } catch {
             throw POSOrderServiceError.updateOrderFailed
         }
@@ -105,7 +101,6 @@ private extension Order {
 
 private extension POSOrderService {
     enum POSOrderServiceError: Error {
-        case emailAlreadySet
         case updateOrderFailed
     }
 }

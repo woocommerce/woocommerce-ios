@@ -20,7 +20,7 @@ struct POSReceiptServiceTests {
         let email = "test@example.com"
 
         // When
-        try await sut.sendReceipt(order: order, recipientEmail: email, isEligibleForPOSReceipt: false)
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: email, isEligibleForPOSReceipt: false)
 
         // Then
         #expect(receiptsRemote.sendReceiptCalled)
@@ -36,7 +36,7 @@ struct POSReceiptServiceTests {
 
         // When/Then
         do {
-            try await sut.sendReceipt(order: order, recipientEmail: "test@example.com", isEligibleForPOSReceipt: false)
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com", isEligibleForPOSReceipt: false)
             XCTFail("Expected error to be thrown")
         } catch {
             guard case POSReceiptService.POSReceiptServiceError.sendReceiptFailed = error else {
@@ -48,10 +48,17 @@ struct POSReceiptServiceTests {
 
     @Test
     func sendReceipt_calls_remote_when_isEligibleForPOSReceipt_is_true() async throws {
+        // Given
+        let email = "test@example.com"
+        let orderID: Int64 = 789
+
         // When
-        try await sut.sendReceipt(order: Order.fake(), recipientEmail: "test@example.com", isEligibleForPOSReceipt: true)
+        try await sut.sendReceipt(orderID: orderID, recipientEmail: email, isEligibleForPOSReceipt: true)
 
         // Then
         #expect(receiptsRemote.sendPOSReceiptCalled)
+        #expect(receiptsRemote.spySiteID == 123)
+        #expect(receiptsRemote.spyOrderID == orderID)
+        #expect(receiptsRemote.spyEmail == email)
     }
 }

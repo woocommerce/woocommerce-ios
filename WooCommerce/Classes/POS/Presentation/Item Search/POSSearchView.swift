@@ -18,6 +18,7 @@ protocol POSSearchable {
 /// A reusable search field view for POS items
 struct POSSearchField: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAnalytics) private var analytics
 
     @Binding private var searchTerm: String
     @FocusState private var isSearchFieldFocused: Bool
@@ -92,7 +93,7 @@ struct POSSearchField: View {
         }
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
-            ServiceLocator.analytics.track(.pointOfSaleKeyboardDismissedInSearch)
+            analytics.track(.pointOfSaleKeyboardDismissedInSearch)
         }
         .onAppear {
             isSearchFieldFocused = true
@@ -103,6 +104,7 @@ struct POSSearchField: View {
 /// A reusable search content view for POS items
 struct POSSearchContentView<Content: View>: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     private let searchable: any POSSearchable
     private let itemListType: ItemListType
@@ -134,8 +136,7 @@ struct POSSearchContentView<Content: View>: View {
         POSPreSearchView(savedSearches: searchable.searchHistory,
                          onSearchSelected: { selectedSearchTerm in
             searchTerm = selectedSearchTerm
-            ServiceLocator.analytics.track(
-                event: .PointOfSale.preSearchRecentTermTapped(itemListType: itemListType))
+            analytics.track(event: .PointOfSale.preSearchRecentTermTapped(itemListType: itemListType))
         },
                          itemListType: itemListType
         )

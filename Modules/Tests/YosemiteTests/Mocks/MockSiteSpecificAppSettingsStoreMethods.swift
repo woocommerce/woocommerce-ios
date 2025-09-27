@@ -1,4 +1,5 @@
 @testable import Yosemite
+import Foundation
 import Storage
 
 final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStoreMethodsProtocol {
@@ -26,6 +27,7 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var spySetSearchTermsItemType: POSItemType?
     var spySetSearchTermsSiteID: Int64?
     var mockSearchTerms: [POSItemType: [String]] = [:]
+
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -83,4 +85,5 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         spySetSearchTermsSiteID = siteID
         mockSearchTerms[itemType] = terms
     }
+
 }

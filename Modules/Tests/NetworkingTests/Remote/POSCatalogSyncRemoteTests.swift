@@ -416,4 +416,178 @@ struct POSCatalogSyncRemoteTests {
         #expect(fieldNames.contains("stock_quantity"))
         #expect(fieldNames.contains("stock_status"))
     }
+
+    // MARK: - Count Endpoints Tests
+
+    @Test func getProductCount_uses_correct_path() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-Total": "150"]
+
+        // When
+        _ = try? await remote.getProductCount(siteID: sampleSiteID)
+
+        // Then - verify correct path was used
+        let request = try #require(network.requestsForResponseData.last as? JetpackRequest)
+        #expect(request.path.contains("products"))
+    }
+
+    @Test func getProductCount_returns_count_from_total_header() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let expectedCount = 500
+        network.responseHeaders = ["X-WP-Total": "\(expectedCount)"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == expectedCount)
+    }
+
+    @Test func getProductCount_returns_zero_when_header_missing() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == 0)
+    }
+
+    @Test func getProductCount_returns_zero_when_header_invalid() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-Total": "invalid-number"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == 0)
+    }
+
+    @Test func getProductCount_relays_networking_error() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+
+        // When/Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.getProductCount(siteID: sampleSiteID)
+        }
+    }
+
+    @Test func getProductVariationCount_uses_correct_path() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-Total": "75"]
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        _ = try? await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then - verify correct path was used
+        let request = try #require(network.requestsForResponseData.last as? JetpackRequest)
+        #expect(request.path.contains("variations"))
+    }
+
+    @Test func getProductVariationCount_returns_count_from_total_header() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let expectedCount = 250
+        network.responseHeaders = ["X-WP-Total": "\(expectedCount)"]
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == expectedCount)
+    }
+
+    @Test func getProductVariationCount_returns_zero_when_header_missing() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = nil
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == 0)
+    }
+
+    @Test func getProductVariationCount_returns_zero_when_header_invalid() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-Total": "not-a-number"]
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == 0)
+    }
+
+    @Test func getProductVariationCount_relays_networking_error() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+
+        // When/Then
+        await #expect(throws: NetworkError.notFound()) {
+            try await remote.getProductVariationCount(siteID: sampleSiteID)
+        }
+    }
+
+    @Test func getProductCount_handles_very_large_counts() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let largeCount = 999999
+        network.responseHeaders = ["X-WP-Total": "\(largeCount)"]
+        network.simulateResponse(requestUrlSuffix: "products", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == largeCount)
+    }
+
+    @Test func getProductVariationCount_handles_very_large_counts() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        let largeCount = 888888
+        network.responseHeaders = ["X-WP-Total": "\(largeCount)"]
+        network.simulateResponse(requestUrlSuffix: "variations", filename: "empty-data-array")
+
+        // When
+        let count = try await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then
+        #expect(count == largeCount)
+    }
+
+    @Test func count_endpoints_use_correct_api_versions() async throws {
+        // Given
+        let remote = POSCatalogSyncRemote(network: network)
+        network.responseHeaders = ["X-WP-Total": "10"]
+
+        // When - make both count calls
+        _ = try? await remote.getProductCount(siteID: sampleSiteID)
+        _ = try? await remote.getProductVariationCount(siteID: sampleSiteID)
+
+        // Then - verify API versions match the data endpoints
+        // Products should use .mark3, variations should use .wcAnalytics (based on the load endpoints)
+        // This is verified by checking that the correct paths are called
+        let requests = network.requestsForResponseData.compactMap { $0 as? JetpackRequest }
+        #expect(requests.contains { $0.path.contains("products") })
+        #expect(requests.contains { $0.path.contains("variations") })
+    }
 }

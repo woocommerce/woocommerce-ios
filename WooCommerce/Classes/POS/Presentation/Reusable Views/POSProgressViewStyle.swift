@@ -1,5 +1,5 @@
 import SwiftUI
-import WooFoundation
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 struct POSProgressViewStyle: ProgressViewStyle {
     let size: CGFloat

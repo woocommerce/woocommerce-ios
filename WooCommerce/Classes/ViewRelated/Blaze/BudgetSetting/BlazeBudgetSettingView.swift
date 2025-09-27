@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View to set budget for a new Blaze campaign
 struct BlazeBudgetSettingView: View {

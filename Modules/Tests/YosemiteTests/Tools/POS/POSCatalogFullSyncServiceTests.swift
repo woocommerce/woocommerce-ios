@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import Combine
 @testable import Networking
 @testable import Yosemite
 @testable import Storage
@@ -137,7 +138,12 @@ struct POSCatalogFullSyncServiceTests {
         let grdbManager = try GRDBManager()
 
         // When
-        let service = POSCatalogFullSyncService(credentials: credentials, grdbManager: grdbManager)
+        let service = POSCatalogFullSyncService(
+            credentials: credentials,
+            selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
+            grdbManager: grdbManager
+        )
 
         // Then
         #expect(service != nil)
@@ -148,7 +154,12 @@ struct POSCatalogFullSyncServiceTests {
         let grdbManager = try GRDBManager()
 
         // When
-        let service = POSCatalogFullSyncService(credentials: nil, grdbManager: grdbManager)
+        let service = POSCatalogFullSyncService(
+            credentials: nil,
+            selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
+            appPasswordSupportState: Just(false).eraseToAnyPublisher(),
+            grdbManager: grdbManager
+        )
 
         // Then
         #expect(service == nil)
@@ -167,90 +178,5 @@ struct POSCatalogFullSyncServiceTests {
         // Then
         #expect(mockSyncRemote.loadProductsCallCount == 5)
         #expect(mockSyncRemote.loadProductVariationsCallCount == 5)
-    }
-}
-
-// MARK: - Mock POSCatalogSyncRemote
-
-final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
-    // Dictionary mapping pageNumber to Result for products and variations.
-    private(set) var productResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
-    private(set) var variationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
-
-    private(set) var loadProductsCallCount = 0
-    private(set) var loadProductVariationsCallCount = 0
-
-    // Fallback result when no specific page result is configured
-    private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
-    private let fallbackVariationResult = PagedItems(items: [] as [POSProductVariation], hasMorePages: false, totalItems: 0)
-
-    func setProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
-        productResults[pageNumber] = result
-    }
-
-    func setVariationResult(pageNumber: Int, result: Result<PagedItems<POSProductVariation>, Error>) {
-        variationResults[pageNumber] = result
-    }
-
-    func setProductResults(_ results: [PagedItems<POSProduct>]) {
-        for (index, pagedItems) in results.enumerated() {
-            productResults[index + 1] = .success(pagedItems)
-        }
-    }
-
-    func setVariationResults(_ results: [PagedItems<POSProductVariation>]) {
-        for (index, pagedItems) in results.enumerated() {
-            variationResults[index + 1] = .success(pagedItems)
-        }
-    }
-
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        try await loadProducts(siteID: siteID, pageNumber: pageNumber)
-    }
-
-    func loadProductVariations(modifiedAfter: Date, siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        try await loadProductVariations(siteID: siteID, pageNumber: pageNumber)
-    }
-
-    func loadProducts(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        loadProductsCallCount += 1
-
-        if let result = productResults[pageNumber] {
-            switch result {
-            case .success(let pagedItems):
-                return pagedItems
-            case .failure(let error):
-                throw error
-            }
-        }
-        return fallbackResult
-    }
-
-    func loadProductVariations(siteID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
-        loadProductVariationsCallCount += 1
-
-        if let result = variationResults[pageNumber] {
-            switch result {
-            case .success(let pagedItems):
-                return pagedItems
-            case .failure(let error):
-                throw error
-            }
-        }
-        return fallbackVariationResult
-    }
-}
-
-// MARK: - Mock POSCatalogPersistenceService
-
-final class MockPOSCatalogPersistenceService: POSCatalogPersistenceServiceProtocol {
-    private(set) var replaceAllCatalogDataCallCount = 0
-    private(set) var lastPersistedCatalog: POSCatalog?
-    private(set) var lastPersistedSiteID: Int64?
-
-    func replaceAllCatalogData(_ catalog: POSCatalog, siteID: Int64) async throws {
-        replaceAllCatalogDataCallCount += 1
-        lastPersistedSiteID = siteID
-        lastPersistedCatalog = catalog
     }
 }

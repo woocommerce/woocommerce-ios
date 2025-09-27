@@ -18,10 +18,6 @@ extension WooAnalyticsEvent {
                               properties: [Keys.isEditing: isEditing])
         }
 
-        /// When the user selects the custom range tab of Dashboard stats.
-        static func tabSelected() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .dashboardStatsCustomRangeTabSelected, properties: [:])
-        }
 
         /// When the user taps the button to edit the date range on the custom range tab of Dashboard stats.
         static func editButtonTapped() -> WooAnalyticsEvent {

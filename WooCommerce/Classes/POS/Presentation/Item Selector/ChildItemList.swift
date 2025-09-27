@@ -87,8 +87,8 @@ private extension ChildItemList {
     var emptyView: some View {
         VStack {
             headerView
-            PointOfSaleItemListEmptyView(
-                viewModel: PointOfSaleItemListEmptyViewModel(
+            POSListEmptyView(
+                viewModel: POSListEmptyViewModel(
                     itemListType: .products(search: false),
                     baseItem: node)) {
                 Task {
@@ -106,7 +106,7 @@ private extension ChildItemList {
                 Spacer()
             }
 
-            PointOfSaleItemListErrorView(error: error, onAction: {
+            POSListErrorView(error: error, onAction: {
                 Task {
                     await itemsController.loadItems(base: node)
                 }
@@ -173,7 +173,8 @@ private extension ChildItemList {
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
-                            sourceViewType: .list
+                            sourceViewType: .list,
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 
@@ -198,7 +199,8 @@ private extension ChildItemList {
                          itemActionHandler: PointOfSalePreviewItemActionHandler(),
                          analyticsTracker: PointOfSaleItemListAnalyticsTracker(
                             sourceView: .variation,
-                            sourceViewType: .list
+                            sourceViewType: .list,
+                            analytics: EmptyPOSAnalytics()
                          ))
 }
 

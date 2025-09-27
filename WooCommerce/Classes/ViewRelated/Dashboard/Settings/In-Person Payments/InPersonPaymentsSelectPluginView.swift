@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsSelectPluginRow: View {
     let icon: UIImage

@@ -3,10 +3,15 @@ import Yosemite
 import Networking
 import Storage
 import Combine
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        network.authenticationMode
+    }
 
     /// Dispatcher: Glues all of the Stores!
     ///
@@ -28,6 +33,14 @@ class AuthenticatedState: StoresManagerState {
 
     private var cancellables: Set<AnyCancellable> = []
 
+    /// POS Catalog Sync Coordinator (session-scoped)
+    ///
+    private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
+
+    // periphery:ignore - keep strong reference to keep the state publisher alive
+    private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
+    private var appPasswordSupportState: PassthroughSubject<Bool, Never>
+
     /// Designated Initializer
     ///
     init(credentials: Credentials, sessionManager: SessionManagerProtocol) {
@@ -37,7 +50,12 @@ class AuthenticatedState: StoresManagerState {
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
-        self.network = AlamofireNetwork(credentials: credentials, selectedSite: site)
+        self.appPasswordSupportState = .init()
+        self.network = AlamofireNetwork(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        )
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -108,7 +126,8 @@ class AuthenticatedState: StoresManagerState {
             StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 
@@ -136,14 +155,34 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
+        // Initialize POS catalog sync coordinator if feature flag is enabled
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1),
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
+                                                           selectedSite: site,
+                                                           appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                                                           grdbManager: ServiceLocator.grdbManager),
+           let incrementalSyncService = POSCatalogIncrementalSyncService(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+            grdbManager: ServiceLocator.grdbManager
+           ) {
+            let syncRemote = POSCatalogSyncRemote(network: network)
+            let catalogSizeChecker = POSCatalogSizeChecker(syncRemote: syncRemote)
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
+                grdbManager: ServiceLocator.grdbManager,
+                catalogSizeChecker: catalogSizeChecker
+            )
+        } else {
+            posCatalogSyncCoordinator = nil
+        }
+
         trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
 
         startListeningToNotifications()
-        observeExperimentFeatureSettings()
-
-        DispatchQueue.main.async {
-            self.checkApplicationPasswordExperimentFeatureState()
-        }
+        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer
@@ -197,16 +236,6 @@ private extension AuthenticatedState {
     func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
-
-    func checkApplicationPasswordExperimentFeatureState() {
-        Task {
-            let isAvailableAndEnabled = await ApplicationPasswordsExperimentState().isAvailableAndEnabled
-
-            await MainActor.run {
-                network.updateAppPasswordSwitching(enabled: isAvailableAndEnabled)
-            }
-        }
-    }
 }
 
 
@@ -223,19 +252,20 @@ private extension AuthenticatedState {
     }
 }
 
-/// Observe beta experiment settings
 private extension AuthenticatedState {
-    func observeExperimentFeatureSettings() {
-        ServiceLocator
-            .generalAppSettings
-            .betaFeatureEnabledPublisher(
-                .applicationPasswords
-            )
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] _ in
-                self?.checkApplicationPasswordExperimentFeatureState()
-            }
-            .store(in: &cancellables)
+    func observeAppPasswordSupportState() {
+        DispatchQueue.main.async { [self] in
+            /// The state needs to be created on the main thread to avoid creating a new ServiceLocator.stores in a different thread.
+            /// Without this, race condition can happen.
+            let appPasswordSupportStateHandler = ApplicationPasswordsExperimentState()
+            self.appPasswordSupportStateHandler = appPasswordSupportStateHandler // strong ref to keep the stream alive
+            appPasswordSupportStateHandler
+                .$isAvailableAndEnabled
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] enabled in
+                    self?.appPasswordSupportState.send(enabled)
+                }
+                .store(in: &cancellables)
+        }
     }
 }

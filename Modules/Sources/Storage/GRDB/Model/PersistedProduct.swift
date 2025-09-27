@@ -53,25 +53,33 @@ public struct PersistedProduct: Codable {
 extension PersistedProduct: FetchableRecord, PersistableRecord {
     public static var databaseTableName: String { "product" }
 
+    public static var primaryKey: [String] { [CodingKeys.siteID.stringValue, CodingKeys.id.stringValue] }
+
     public enum Columns {
-        static let id = Column(CodingKeys.id)
-        static let siteID = Column(CodingKeys.siteID)
-        static let name = Column(CodingKeys.name)
-        static let productTypeKey = Column(CodingKeys.productTypeKey)
-        static let fullDescription = Column(CodingKeys.fullDescription)
-        static let shortDescription = Column(CodingKeys.shortDescription)
-        static let sku = Column(CodingKeys.sku)
-        static let globalUniqueID = Column(CodingKeys.globalUniqueID)
-        static let price = Column(CodingKeys.price)
-        static let downloadable = Column(CodingKeys.downloadable)
-        static let parentID = Column(CodingKeys.parentID)
-        static let manageStock = Column(CodingKeys.manageStock)
-        static let stockQuantity = Column(CodingKeys.stockQuantity)
-        static let stockStatusKey = Column(CodingKeys.stockStatusKey)
+        public static let id = Column(CodingKeys.id)
+        public static let siteID = Column(CodingKeys.siteID)
+        public static let name = Column(CodingKeys.name)
+        public static let productTypeKey = Column(CodingKeys.productTypeKey)
+        public static let fullDescription = Column(CodingKeys.fullDescription)
+        public static let shortDescription = Column(CodingKeys.shortDescription)
+        public static let sku = Column(CodingKeys.sku)
+        public static let globalUniqueID = Column(CodingKeys.globalUniqueID)
+        public static let price = Column(CodingKeys.price)
+        public static let downloadable = Column(CodingKeys.downloadable)
+        public static let parentID = Column(CodingKeys.parentID)
+        public static let manageStock = Column(CodingKeys.manageStock)
+        public static let stockQuantity = Column(CodingKeys.stockQuantity)
+        public static let stockStatusKey = Column(CodingKeys.stockStatusKey)
     }
 
-    public static let images = hasMany(PersistedProductImage.self)
-    public static let attributes = hasMany(PersistedProductAttribute.self)
+    public static let images = hasMany(PersistedProductImage.self,
+                                       using: ForeignKey([PersistedProductImage.CodingKeys.siteID.stringValue,
+                                                          PersistedProductImage.CodingKeys.productID.stringValue],
+                                                         to: primaryKey))
+    public static let attributes = hasMany(PersistedProductAttribute.self,
+                                           using: ForeignKey([PersistedProductAttribute.CodingKeys.siteID.stringValue,
+                                                              PersistedProductAttribute.CodingKeys.productID.stringValue],
+                                                             to: primaryKey))
 }
 
 // periphery:ignore - TODO: remove ignore when populating database

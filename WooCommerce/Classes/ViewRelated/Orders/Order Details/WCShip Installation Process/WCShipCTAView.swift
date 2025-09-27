@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.SafariSheetView
 
 final class WCShipCTAHostingController: UIHostingController<WCShipCTAView> {
 

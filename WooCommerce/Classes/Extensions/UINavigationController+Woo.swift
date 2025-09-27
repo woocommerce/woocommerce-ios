@@ -95,12 +95,12 @@ extension UIViewController: NavigationSwipeBackHandler {
 /// This is necessary due to Swift 6 [SE-0364 proposal](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0364-retroactive-conformance-warning.md).
 extension UIViewController: @retroactive UIGestureRecognizerDelegate {
 
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         if gestureRecognizer.isEqual(navigationController?.interactivePopGestureRecognizer) && navigationController?.topViewController == self {
             return shouldPopOnSwipeBack()
         }
 
-        return false
+        return true
     }
 
     func handleSwipeBackGesture() {

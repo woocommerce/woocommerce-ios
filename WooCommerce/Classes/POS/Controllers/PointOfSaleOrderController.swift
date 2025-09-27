@@ -1,6 +1,7 @@
 import Foundation
 import Observation
-import protocol Yosemite.StoresManager
+import protocol Experiments.FeatureFlagService
+import class WooFoundation.VersionHelpers
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
@@ -18,6 +19,7 @@ import class Yosemite.PluginsService
 import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
+import class Yosemite.OrderTotalsCalculator
 
 enum SyncOrderState {
     case newOrder
@@ -40,34 +42,33 @@ protocol PointOfSaleOrderControllerProtocol {
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
-         receiptService: POSReceiptServiceProtocol,
-         stores: StoresManager = ServiceLocator.stores,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
+         receiptSender: POSReceiptSending,
+         currencySettingsProvider: POSCurrencySettingsProviding,
+         analytics: POSAnalyticsProviding,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
-        self.receiptService = receiptService
-        self.stores = stores
-        self.storeCurrency = currencySettings.currencyCode
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.receiptSender = receiptSender
+        self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
-        self.pluginsService = pluginsService
         self.celebration = celebration
     }
 
     private let orderService: POSOrderServiceProtocol
-    private let receiptService: POSReceiptServiceProtocol
-
-    private let currencyFormatter: CurrencyFormatter
+    private let receiptSender: POSReceiptSending
+    private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
-    private let storeCurrency: CurrencyCode
-    private let analytics: Analytics
-    private let stores: StoresManager
-    private let pluginsService: PluginsServiceProtocol
+    private let analytics: POSAnalyticsProviding
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
+
+    private var currencyFormatter: CurrencyFormatter {
+        CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
+    }
+
+    private var storeCurrency: CurrencyCode {
+        currencySettingsProvider.currencySettings.currencyCode
+    }
 
     @MainActor @discardableResult
     func syncOrder(for cart: Cart,
@@ -106,30 +107,11 @@ protocol PointOfSaleOrderControllerProtocol {
 
     @MainActor
     func sendReceipt(recipientEmail: String) async throws {
-        var isEligibleForPOSReceipt: Bool = false
-        do {
-            guard let order else {
-                throw PointOfSaleOrderControllerError.noOrder
-            }
-
-            isEligibleForPOSReceipt = isPluginSupported(
-                .wooCommerce,
-                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
-                siteID: order.siteID
-            )
-
-            try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
-
-            try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
-
-            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": isEligibleForPOSReceipt])
-        } catch {
-            let properties = [
-                "eligible_for_pos_receipt": isEligibleForPOSReceipt
-            ].compactMapValues( { $0 })
-            analytics.track(.receiptEmailFailed, properties: properties, error: error)
-            throw error
+        guard let order else {
+            throw PointOfSaleOrderControllerError.noOrder
         }
+
+        try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: recipientEmail)
     }
 
     func clearOrder() {
@@ -198,24 +180,6 @@ private extension PointOfSaleOrderController {
     }
 }
 
-private extension PointOfSaleOrderController {
-    @MainActor
-    func isPluginSupported(_ plugin: Plugin, minimumVersion: String, siteID: Int64) -> Bool {
-        // Plugin must be installed and active
-        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
-              systemPlugin.active else {
-            return false
-        }
-
-        // If plugin version is higher than minimum required version, mark as eligible
-        let isSupported = VersionHelpers.isVersionSupported(version: systemPlugin.version,
-                                                            minimumRequired: minimumVersion,
-                                                            includesDevAndBetaVersions: true)
-        return isSupported
-    }
-}
-
-
 // MARK: - Error Handling
 
 private extension PointOfSaleOrderController {
@@ -230,11 +194,6 @@ private extension PointOfSaleOrderController {
     }
 }
 
-private extension PointOfSaleOrderController {
-    enum POSReceiptEligibilityConstants {
-        static let wcPluginMinimumVersion = "10.0.0"
-    }
-}
 
 // This is named to note that it is for use within the AggregateModel and OrderController.
 // Conversely, PointOfSaleOrderState is available to the Views, as it doesn't include the Order.

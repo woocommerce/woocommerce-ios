@@ -428,6 +428,66 @@ extension Networking.BlazeTargetTopic {
     }
 }
 
+extension Networking.Booking {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        bookingID: CopiableProp<Int64> = .copy,
+        allDay: CopiableProp<Bool> = .copy,
+        cost: CopiableProp<String> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
+        dateCreated: CopiableProp<Date> = .copy,
+        dateModified: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy,
+        googleCalendarEventID: NullableCopiableProp<String> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        orderItemID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        resourceID: CopiableProp<Int64> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        statusKey: CopiableProp<String> = .copy,
+        localTimezone: CopiableProp<String> = .copy
+    ) -> Networking.Booking {
+        let siteID = siteID ?? self.siteID
+        let bookingID = bookingID ?? self.bookingID
+        let allDay = allDay ?? self.allDay
+        let cost = cost ?? self.cost
+        let customerID = customerID ?? self.customerID
+        let dateCreated = dateCreated ?? self.dateCreated
+        let dateModified = dateModified ?? self.dateModified
+        let endDate = endDate ?? self.endDate
+        let googleCalendarEventID = googleCalendarEventID ?? self.googleCalendarEventID
+        let orderID = orderID ?? self.orderID
+        let orderItemID = orderItemID ?? self.orderItemID
+        let parentID = parentID ?? self.parentID
+        let productID = productID ?? self.productID
+        let resourceID = resourceID ?? self.resourceID
+        let startDate = startDate ?? self.startDate
+        let statusKey = statusKey ?? self.statusKey
+        let localTimezone = localTimezone ?? self.localTimezone
+
+        return Networking.Booking(
+            siteID: siteID,
+            bookingID: bookingID,
+            allDay: allDay,
+            cost: cost,
+            customerID: customerID,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            endDate: endDate,
+            googleCalendarEventID: googleCalendarEventID,
+            orderID: orderID,
+            orderItemID: orderItemID,
+            parentID: parentID,
+            productID: productID,
+            resourceID: resourceID,
+            startDate: startDate,
+            statusKey: statusKey,
+            localTimezone: localTimezone
+        )
+    }
+}
+
 extension Networking.Coupon {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -2747,7 +2807,10 @@ extension Networking.Site {
         isAdmin: CopiableProp<Bool> = .copy,
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
         hasSSOEnabled: CopiableProp<Bool> = .copy,
-        applicationPasswordAvailable: CopiableProp<Bool> = .copy
+        applicationPasswordAvailable: CopiableProp<Bool> = .copy,
+        isGarden: CopiableProp<Bool> = .copy,
+        gardenName: NullableCopiableProp<String> = .copy,
+        gardenPartner: NullableCopiableProp<String> = .copy
     ) -> Networking.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -2772,6 +2835,9 @@ extension Networking.Site {
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
         let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
+        let isGarden = isGarden ?? self.isGarden
+        let gardenName = gardenName ?? self.gardenName
+        let gardenPartner = gardenPartner ?? self.gardenPartner
 
         return Networking.Site(
             siteID: siteID,
@@ -2796,7 +2862,10 @@ extension Networking.Site {
             isAdmin: isAdmin,
             wasEcommerceTrial: wasEcommerceTrial,
             hasSSOEnabled: hasSSOEnabled,
-            applicationPasswordAvailable: applicationPasswordAvailable
+            applicationPasswordAvailable: applicationPasswordAvailable,
+            isGarden: isGarden,
+            gardenName: gardenName,
+            gardenPartner: gardenPartner
         )
     }
 }

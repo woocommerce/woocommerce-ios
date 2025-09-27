@@ -69,6 +69,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isEligibleForInbox = false
 
+    @Published private(set) var isEligibleForStock = false
+
     @Published var showingCustomization = false
 
     @Published private(set) var showNewCardsNotice = false
@@ -83,6 +85,7 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
+    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
@@ -118,6 +121,7 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
         self.siteID = siteID
@@ -147,6 +151,7 @@ final class DashboardViewModel: ObservableObject {
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
+        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
@@ -164,6 +169,7 @@ final class DashboardViewModel: ObservableObject {
             self?.onInAppFeedbackCardAction()
         }
 
+        observeStockEligibility()
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
@@ -187,6 +193,7 @@ final class DashboardViewModel: ObservableObject {
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
+                             canShowStock: isEligibleForStock,
                              hasOrders: hasOrders)
 
         await reloadCardsWithBackgroundUpdateSupportIfNeeded()
@@ -487,18 +494,20 @@ private extension DashboardViewModel {
 private extension DashboardViewModel {
     func observeValuesForDashboardCards() {
         storeOnboardingViewModel.$canShowInDashboard
-            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard)
+            .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
+                           $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
                            $hasOrders,
                            $isEligibleForInbox)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((canShowOnboarding, canShowBlaze), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
+                let ((canShowOnboarding, canShowBlaze, canShowStock), canShowGoogle, hasOrders, isEligibleForInbox) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
                                      canShowInbox: isEligibleForInbox,
+                                     canShowStock: canShowStock,
                                      hasOrders: hasOrders)
             }
             .store(in: &subscriptions)
@@ -529,6 +538,26 @@ private extension DashboardViewModel {
 
     func checkInboxEligibility() {
         isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
+    }
+
+    func observeStockEligibility() {
+        stores.site
+            .removeDuplicates()
+            .map { [weak self] in
+                guard
+                    let self,
+                    let site = $0
+                else {
+                    return false
+                }
+
+                return siteIsCIABEligibilityChecker
+                    .isFeatureSupported(
+                        .productsStockDashboardCard,
+                        for: site
+                    )
+            }
+            .assign(to: &$isEligibleForStock)
     }
 
     func configureOrdersResultController() {
@@ -586,6 +615,7 @@ private extension DashboardViewModel {
                               canShowGoogle: Bool,
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
+                              canShowStock: Bool,
                               canShowInbox: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
@@ -616,7 +646,14 @@ private extension DashboardViewModel {
                                    enabled: false))
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
-        cards.append(DashboardCard(type: .stock, availability: .show, enabled: false))
+
+        cards.append(
+            DashboardCard(
+                type: .stock,
+                availability: canShowStock ? .show : .hide,
+                enabled: false
+            )
+        )
 
         // When not available, Last orders cards need to be hidden from Dashboard, but appear on Customize as "Unavailable"
         cards.append(DashboardCard(type: .lastOrders,
@@ -634,6 +671,7 @@ private extension DashboardViewModel {
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
                               canShowInbox: Bool,
+                              canShowStock: Bool,
                               hasOrders: Bool) {
 
         let canShowAnalytics = hasOrders
@@ -645,6 +683,7 @@ private extension DashboardViewModel {
                                                 canShowGoogle: canShowGoogle,
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
+                                                canShowStock: canShowStock,
                                                 canShowInbox: canShowInbox)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.

@@ -23,6 +23,10 @@ enum WooTab {
     ///
     case products
 
+    /// Bookings Tab
+    ///
+    case bookings
+
     /// Point of Sale Tab
     ///
     case pointOfSale
@@ -38,15 +42,18 @@ extension WooTab {
     /// - Parameters:
     ///   - visibleIndex: the index of visible tabs on the tab bar
     ///   - isPOSTabVisible: indicates if the Point of Sale tab is visible.
-    init(visibleIndex: Int, isPOSTabVisible: Bool) {
-        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
+    ///   - isBookingsTabVisible: indicates if the Bookings tab is visible.
+    init(visibleIndex: Int, isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) {
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         self = tabs[visibleIndex]
     }
 
     /// Returns the visible tab index.
-    /// - Parameter isPOSTabVisible: indicates if the Point of Sale tab is visible.
-    func visibleIndex(isPOSTabVisible: Bool) -> Int {
-        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
+    /// - Parameters:
+    ///   - isPOSTabVisible: indicates if the Point of Sale tab is visible.
+    ///   - isBookingsTabVisible: indicates if the Bookings tab is visible.
+    func visibleIndex(isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) -> Int {
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         guard let tabIndex = tabs.firstIndex(where: { $0 == self }) else {
             assertionFailure("Trying to get the visible tab index for tab \(self) while the visible tabs are: \(tabs)")
             return 0
@@ -56,14 +63,23 @@ extension WooTab {
 
     /// Note: currently only the Dashboard tab (My Store) view controller is set up in Main.storyboard.
     ///
-    /// - Parameter isPOSTabVisible: indicates if the Point of Sale tab is visible.
+    /// - Parameters:
+    ///   - isPOSTabVisible: indicates if the Point of Sale tab is visible.
+    ///   - isBookingsTabVisible: indicates if the Bookings tab is visible.
     /// - Returns: visible tabs in the tab bar.
-    static func visibleTabs(isPOSTabVisible: Bool) -> [WooTab] {
-        if isPOSTabVisible {
-            return [.myStore, .orders, .products, .pointOfSale, .hubMenu]
-        } else {
-            return [.myStore, .orders, .products, .hubMenu]
+    static func visibleTabs(isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) -> [WooTab] {
+        var tabs: [WooTab] = [.myStore, .orders, .products]
+
+        if isBookingsTabVisible {
+            tabs.append(.bookings)
         }
+
+        if isPOSTabVisible {
+            tabs.append(.pointOfSale)
+        }
+
+        tabs.append(.hubMenu)
+        return tabs
     }
 }
 
@@ -114,48 +130,63 @@ final class MainTabBarController: UITabBarController {
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
 
+    private let bookingsContainerController = TabContainerController()
+
     private let hubMenuContainerController = TabContainerController()
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
+    private var cancellableSite: AnyCancellable?
     private let featureFlagService: FeatureFlagService
     private let noticePresenter: NoticePresenter
     private let productImageUploader: ProductImageUploaderProtocol
     private let stores: StoresManager
     private let analytics: Analytics
-    private let posEligibilityCheckerFactory: ((_ siteID: Int64) -> POSEntryPointEligibilityCheckerProtocol)
+    private let posEligibilityCheckerFactory: ((_ site: Site) -> POSEntryPointEligibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
+    private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
     private var posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol?
     private var posEligibilityCheckTask: Task<Void, Never>?
+    private var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+
+    /// periphery: ignore - keeping strong ref of the checker to keep its async task alive
+    private var bookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol?
+    private var bookingsEligibilityCheckTask: Task<Void, Never>?
 
     private var isPOSTabVisible: Bool = false
+    private var isBookingsTabVisible: Bool = false
 
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
+    /// periphery: ignore - used in tests
     init?(coder: NSCoder,
           featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
           noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
           productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
           analytics: Analytics = ServiceLocator.analytics,
           stores: StoresManager = ServiceLocator.stores,
-          posEligibilityCheckerFactory: ((Int64) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
-          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService()) {
+          posEligibilityCheckerFactory: ((Site) -> POSEntryPointEligibilityCheckerProtocol)? = nil,
+          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+          bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
         self.analytics = analytics
         self.stores = stores
-        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { siteID in
+        self.posEligibilityCheckerFactory = posEligibilityCheckerFactory ?? { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = posEligibilityService
+        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory ?? { site in
+            BookingsTabEligibilityChecker(site: site)
+        }
         super.init(coder: coder)
     }
 
@@ -166,20 +197,24 @@ final class MainTabBarController: UITabBarController {
         self.productImageUploader = ServiceLocator.productImageUploader
         self.analytics = ServiceLocator.analytics
         self.stores = ServiceLocator.stores
-        self.posEligibilityCheckerFactory = { siteID in
+        self.posEligibilityCheckerFactory = { site in
             if featureFlagService.isFeatureFlagEnabled(.pointOfSaleAsATabi2) {
-                POSTabEligibilityChecker(siteID: siteID)
+                POSTabEligibilityChecker(site: site)
             } else {
-                LegacyPOSTabEligibilityChecker(siteID: siteID)
+                LegacyPOSTabEligibilityChecker(site: site)
             }
         }
         self.posEligibilityService = POSEligibilityService()
+        self.bookingsEligibilityCheckerFactory = { site in
+            BookingsTabEligibilityChecker(site: site)
+        }
         super.init(coder: coder)
     }
 
     deinit {
         cancellableSiteID?.cancel()
         posEligibilityCheckTask?.cancel()
+        bookingsEligibilityCheckTask?.cancel()
     }
 
     // MARK: - Overridden Methods
@@ -190,9 +225,10 @@ final class MainTabBarController: UITabBarController {
 
         delegate = self
 
-        // POS tab is hidden by default.
-        updateTabViewControllers(isPOSTabVisible: false)
+        // POS and Bookings tabs are hidden by default.
+        updateTabViewControllers(isPOSTabVisible: false, isBookingsTabVisible: false)
         observeSiteIDForViewControllers()
+        observeSiteForConditionalTabs()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -218,11 +254,11 @@ final class MainTabBarController: UITabBarController {
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible)
+        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex, isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
                 return
         }
-        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex, isPOSTabVisible: isPOSTabVisible)
+        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex, isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
@@ -252,7 +288,7 @@ final class MainTabBarController: UITabBarController {
     func navigateToTabWithViewController(_ tab: WooTab, animated: Bool = false, completion: ((UIViewController) -> Void)? = nil) {
         dismiss(animated: animated) { [weak self] in
             guard let self else { return }
-            selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+            selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             guard let selectedViewController else {
                 return
             }
@@ -359,6 +395,9 @@ private extension MainTabBarController {
         case .products:
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        case .bookings:
+            // TODO: Add bookings tab selected analytics
+            break
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -379,6 +418,9 @@ private extension MainTabBarController {
         case .products:
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        case .bookings:
+            // TODO: Add bookings tab reselected analytics
+            break
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break
@@ -665,14 +707,14 @@ extension MainTabBarController: DeepLinkNavigator {
 private extension MainTabBarController {
     func observePOSEligibilityForPOSTabVisibility(siteID: Int64) {
         guard let posEligibilityChecker else {
-            updateTabViewControllers(isPOSTabVisible: false)
+            updateTabViewControllers(isPOSTabVisible: false, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
             return
         }
 
         // Sets POS tab initial visibility based on cached value if available.
         let initialVisibility = posEligibilityChecker.checkInitialVisibility()
-        updateTabViewControllers(isPOSTabVisible: initialVisibility)
+        updateTabViewControllers(isPOSTabVisible: initialVisibility, isBookingsTabVisible: isBookingsTabVisible)
 
         // Cancels any existing task.
         posEligibilityCheckTask?.cancel()
@@ -683,24 +725,30 @@ private extension MainTabBarController {
             let isPOSTabVisible = await posEligibilityChecker.checkVisibility()
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
-            updateTabViewControllers(isPOSTabVisible: isPOSTabVisible)
+            updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
+
+            // Trigger POS catalog sync if tab is visible and feature flag is enabled
+            if isPOSTabVisible, ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                await triggerPOSCatalogSyncIfNeeded(for: siteID)
+            }
         }
     }
 
-    func updateTabViewControllers(isPOSTabVisible: Bool) {
-        guard isPOSTabVisible != self.isPOSTabVisible || (viewControllers?.count ?? 0) == 0 else {
+    func updateTabViewControllers(isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) {
+        guard isPOSTabVisible != self.isPOSTabVisible || isBookingsTabVisible != self.isBookingsTabVisible || (viewControllers?.count ?? 0) == 0 else {
             return
         }
         var controllers = [UIViewController]()
-        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible)
+        let tabs = WooTab.visibleTabs(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         tabs.forEach { tab in
-            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             let tabViewController = rootTabViewController(tab: tab)
             controllers.insert(tabViewController, at: tabIndex)
         }
         viewControllers = controllers
         self.isPOSTabVisible = isPOSTabVisible
+        self.isBookingsTabVisible = isBookingsTabVisible
     }
 
     func rootTabViewController(tab: WooTab) -> UIViewController {
@@ -711,11 +759,25 @@ private extension MainTabBarController {
                 return ordersContainerController
             case .products:
                 return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
+            case .bookings:
+                return bookingsContainerController
             case .hubMenu:
                 return hubMenuContainerController
             case .pointOfSale:
                 return posContainerController
         }
+    }
+
+    func observeSiteForConditionalTabs() {
+        cancellableSite = stores.site
+            .compactMap { $0 }
+            .sink { [weak self] site in
+                guard let self else {
+                    return
+                }
+
+                observeConditionalTabsAvailabilityWith(site)
+            }
     }
 
     func observeSiteIDForViewControllers() {
@@ -727,8 +789,28 @@ private extension MainTabBarController {
         }
     }
 
+    func observeConditionalTabsAvailabilityWith(_ site: Site) {
+        // Configures POS tab coordinator once per logged in site session.
+        let posEligibilityChecker = posEligibilityCheckerFactory(site)
+        self.posEligibilityChecker = posEligibilityChecker
+        posTabCoordinator = POSTabCoordinator(
+            siteID: site.siteID,
+            tabContainerController: posContainerController,
+            viewControllerToPresent: self,
+            storesManager: stores,
+            eligibilityChecker: posEligibilityChecker
+        )
+
+        observePOSEligibilityForPOSTabVisibility(siteID: site.siteID)
+
+        // Configures Booking tab.
+        let bookingsViewController = createBookingsViewController(siteID: site.siteID)
+        bookingsContainerController.wrappedController = bookingsViewController
+        observeBookingsEligibilityForBookingsTabVisibility(site: site)
+    }
+
     func updateViewControllers(siteID: Int64?) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
 
@@ -749,16 +831,9 @@ private extension MainTabBarController {
                                                                                    navigateToContent: { _ in })]
         }
 
-        // Configures POS tab coordinator once per logged in site session.
-        let posEligibilityChecker = posEligibilityCheckerFactory(siteID)
-        self.posEligibilityChecker = posEligibilityChecker
-        posTabCoordinator = POSTabCoordinator(
-            siteID: siteID,
-            tabContainerController: posContainerController,
-            viewControllerToPresent: self,
-            storesManager: stores,
-            eligibilityChecker: posEligibilityChecker
-        )
+        // Configure POS catalog sync coordinator for local catalog syncing
+        // Get POS catalog sync coordinator (will be nil if feature flag disabled or not authenticated)
+        posCatalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {
@@ -767,10 +842,15 @@ private extension MainTabBarController {
         }
         hubMenuTabCoordinator?.activate(siteID: siteID)
 
-        // Set dashboard to be the default tab.
-        selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+        // Sets dashboard to be the default tab.
+        selectedIndex = WooTab.myStore.visibleIndex(isPOSTabVisible: isPOSTabVisible,
+                                                    isBookingsTabVisible: isBookingsTabVisible)
 
-        observePOSEligibilityForPOSTabVisibility(siteID: siteID)
+        // Updates site ID for the POS coordinator to ensure correct data
+        posTabCoordinator?.didSwitchStore(id: siteID)
+
+        // Updates site ID for the bookings tab to display correct bookings
+        (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {
@@ -779,6 +859,33 @@ private extension MainTabBarController {
 
     func createOrdersViewController(siteID: Int64) -> UIViewController {
         OrdersSplitViewWrapperController(siteID: siteID)
+    }
+
+    func triggerPOSCatalogSyncIfNeeded(for siteID: Int64) async {
+        guard let coordinator = posCatalogSyncCoordinator else {
+            return
+        }
+
+        // Check if sync is needed (older than 24 hours)
+        let maxAge: TimeInterval = 24 * 60 * 60
+        guard await coordinator.shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
+            return
+        }
+
+        // Perform background sync
+        Task.detached {
+            do {
+                _ = try await coordinator.performFullSync(for: siteID)
+            } catch POSCatalogSyncError.syncAlreadyInProgress {
+                DDLogInfo("ℹ️ POS catalog sync already in progress for site \(siteID), skipping")
+            } catch {
+                DDLogError("⚠️ POS catalog sync failed: \(error)")
+            }
+        }
+    }
+
+    func createBookingsViewController(siteID: Int64) -> UIViewController {
+        BookingsTabViewHostingController(siteID: siteID)
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {
@@ -792,6 +899,26 @@ private extension MainTabBarController {
                 }
             }
         })
+    }
+
+    func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
+        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
+        self.bookingsEligibilityChecker = bookingsEligibilityChecker
+
+        // Sets Bookings tab initial visibility based on cached value if available.
+        let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
+        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialVisibility)
+
+        // Cancels any existing task.
+        bookingsEligibilityCheckTask?.cancel()
+
+        // Starts observing the Bookings eligibility state.
+        bookingsEligibilityCheckTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            let isBookingsTabVisible = await bookingsEligibilityChecker.checkVisibility()
+            // TODO: Add analytics tracking for bookings tab visibility
+            updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
+        }
     }
 }
 
@@ -813,7 +940,7 @@ private extension MainTabBarController {
 
     func updateMenuTabBadge(with action: NotificationBadgeActionType) {
         let tab = WooTab.hubMenu
-        let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+        let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         let input = NotificationsBadgeInput(action: action, tab: tab, tabBar: self.tabBar, tabIndex: tabIndex)
 
         self.notificationsBadge.updateBadge(with: input)
@@ -830,7 +957,7 @@ private extension MainTabBarController {
             }
 
             let tab = WooTab.orders
-            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible)
+            let tabIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
 
             guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
                 return

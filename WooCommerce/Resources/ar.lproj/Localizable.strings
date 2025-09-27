@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2025-08-25 14:54:04+0000 */
+/* Translation-Revision-Date: 2025-09-17 16:36:59+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -4947,6 +4947,26 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigates to Plugins screen. */
 "Plugins" = "الإضافات";
 
+/* The subtitle of the menu button to view documentation, shown in settings.
+   The title of the menu button to view documentation, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.documentation.button.subtitle" = "الوثائق";
+
+/* The subtitle of the menu button to contact support, shown in settings.
+   The title of the menu button to contact support, shown in settings. */
+"PointOfSaleSettingsHelpDetailView.help.getSupport.button.subtitle" = "الحصول على الدعم";
+
+/* The subtitle of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.subtitle" = "تعرف على المنتجات المدعومة في نقطة البيع (POS)";
+
+/* The title of the menu button to view product restrictions info, shown in settings. We only show simple and variable products in POS, this shows a modal to help explain that limitation. */
+"PointOfSaleSettingsHelpDetailView.help.productRestrictionsInfo.button.title" = "أين منتجاتي؟";
+
+/* Button to dismiss the support form from the POS settings. */
+"PointOfSaleSettingsHelpDetailView.help.support.cancel" = "إلغاء";
+
+/* Navigation title for the help settings list. */
+"PointOfSaleSettingsHelpDetailView.help.title" = "المساعدة";
+
 /* Country option for a site address. */
 "Poland" = "بولندا";
 
@@ -8773,11 +8793,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text indicating all locations for a Blaze campaign */
 "blazeCampaignCreationFormViewModel.everywhere" = "في كل مكان";
 
+/* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
+"blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays" = "أنا أوافق على فرض رسوم متكررة تصل إلى **$%1$.0f أسبوعيًا** بداية من **%2$@**. قد تُفرض الرسوم في أوقات مختلفة خلال الحملة.";
+
 /* First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays" = "أوافق على دفع رسوم تصل إلى **$%1$.0f** بداية من **%2$@**. قد تُفرض رسوم في عملية دفع واحدة أو أكثر عندما تكون الحملة نشطة.";
 
 /* First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. %1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text. */
 "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen" = "أوافق على فرض رسوم متكررة **رسوم أسبوعية تصل إلى $%1$.0f** بداية من **%2$@**. قد تُفرض الرسوم في أوقات مختلفة خلال الحملة.";
+
+/* Second part of checkbox text for accepting terms of service for finite Blaze campaigns. %@ is \"I can cancel anytime\" substring for a hyperlink. */
+"blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart" = "%@؛ سأدفع فقط مقابل الإعلانات المُسلمة حتى الإلغاء.";
 
 /* The formatted total budget for a Blaze campaign, fixed in USD. Reads as $11 USD. Keep %.0f as is. */
 "blazeCampaignCreationFormViewModel.totalBudget" = "$%.0f من الدولارات الأمريكية";
@@ -9148,6 +9174,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for the start date picker on the Blaze campaign duration setting screen */
 "blazeScheduleSettingView.startDateAccessibilityHint" = "انقر نقرة مزدوجة لتحرير تاريخ بدء الحملة";
 
+/* Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date. */
+"blazeScheduleSettingView.startDateAccessibilityLabel" = "تاريخ بدء الحملة هو %@";
+
 /* Title of the row to select all target devices for Blaze campaign creation */
 "blazeTargetDevicePickerView.allTitle" = "كل الأجهزة";
 
@@ -9419,14 +9448,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when collecting an In-Person Payment and the order total has changed remotely. */
 "collectOrderPaymentUseCase.error.message.orderTotalChanged" = "شهد إجمالي الطلبات تغييرًا منذ بداية الدفع. يرجى الرجوع والتحقق من أن الطلب صحيح، ثم محاولة الدفع مجددًا.";
 
-/* Error message when the cash amount entered is less than the order total. */
-"collectcashviewhelper.cashpaymentamountnotenough.errormessage" = "يجب أن يكون المبلغ أكبر من الإجمالي أو يساويه.";
-
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "التغيير المستحق: %1$@";
-
-/* Error message when the system fails to collect a cash payment. */
-"collectcashviewhelper.failedtocollectcashpayment.errormessage" = "خطأ في أثناء محاولة معالجة المدفوعات. حاول مرة أخرى.";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "يُحدِّد المنتج لحملة Blaze.";
@@ -9995,6 +10018,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label to expand an expandable bottom sheet */
 "expandableBottomSheet.chevron.expand" = "عرض التفاصيل";
+
+/* Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title. */
+"experimentalFeatures.applicationPasswords.description" = "قم بتمكين %@ للسماح للتطبيق بجلب البيانات مباشرة من موقع WooCommerce الخاص بك بدلاً من خلال اتصالات Jetpack";
+
+/* Link text to open Application Passwords documentation page */
+"experimentalFeatures.applicationPasswords.description.linkText" = "كلمات مرور التطبيقات";
+
+/* Cell title on the beta features screen to enable the application passwords feature */
+"experimentalFeatures.applicationPasswords.title" = "كلمات مرور التطبيقات";
 
 /* Title of dismiss button for redaction information alert in Custom Range stats tab */
 "fancyAlertViewControllerStats.dismissButton" = "موافق";
@@ -11334,6 +11366,114 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "إلغاء";
 
+/* Text displayed on Point of Sale settings when card reader battery is unknown. */
+"pointOfSaleSettingsHardwareDetailView.batteryLevelUnknown" = "غير معروف";
+
+/* Subtitle describing card reader documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationSubtitle" = "تعرف على المزيد حول قبول المدفوعات باستخدام الهاتف المحمول";
+
+/* Title for card reader documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderDocumentationTitle" = "الوثائق";
+
+/* Text displayed on Point of Sale settings when the card reader is not connected. */
+"pointOfSaleSettingsHardwareDetailView.cardReaderNotConnected" = "القارئ غير متصل";
+
+/* Navigation title for card readers settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.cardReadersTitle" = "قارئات البطاقات";
+
+/* Description of Barcode scanner settings configuration. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeSubtitle" = "تكوين إعدادات الماسح الضوئي للرمز الشريطي";
+
+/* Navigation title of Barcode scanner settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationBarcodeTitle" = "الماسحات الضوئية للرمز الشريطي";
+
+/* Description of Card reader settings for connections. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderSubtitle" = "إدارة عمليات ربط قارئ البطاقات";
+
+/* Navigation title of Card reader settings. */
+"pointOfSaleSettingsHardwareDetailView.hardwareNavigationCardReaderTitle" = "قارئات البطاقات";
+
+/* Navigation title for the hardware settings list. */
+"pointOfSaleSettingsHardwareDetailView.hardwareTitle" = "الأجهزة";
+
+/* Text displayed on Point of Sale settings pointing to the card reader battery. */
+"pointOfSaleSettingsHardwareDetailView.readerBatteryTitle" = "البطارية";
+
+/* Text displayed on Point of Sale settings pointing to the card reader model. */
+"pointOfSaleSettingsHardwareDetailView.readerModelTitle" = "النموذج";
+
+/* Subtitle describing barcode scanner documentation in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationSubtitle" = "تعرف على المزيد حول المسح الضوئي للرمز الشريطي في نقطة البيع (POS)";
+
+/* Title for barcode scanner documentation option in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerDocumentationTitle" = "الوثائق";
+
+/* Subtitle describing scanner setup in Point of Sale settings. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupSubtitle" = "قم بتكوين الماسح الضوئي للرمز الشريطي الخاص بك واختباره";
+
+/* Title for scanner setup option in barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannerSetupTitle" = "إعداد الماسح الضوئي";
+
+/* Navigation title for barcode scanners settings in Point of Sale. */
+"pointOfSaleSettingsHardwareDetailView.scannersTitle" = "الماسحات الضوئية للرمز الشريطي";
+
+/* Text displayed on Point of Sale settings when store has not been provided. */
+"pointOfSaleSettingsService.storeNameNotSet" = "لم يتم التعيين";
+
+/* Label for address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.address" = "العنوان";
+
+/* Label for email field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.email" = "البريد الإلكتروني";
+
+/* Text displayed on Point of Sale settings when any setting has not been provided. */
+"pointOfSaleSettingsStoreDetailView.notSet" = "لم يتم التعيين";
+
+/* Label for phone number field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.phoneNumber" = "رقم الهاتف";
+
+/* Label for physical address field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.physicalAddress" = "العنوان الفعلي";
+
+/* Section title for receipt information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptInformation" = "معلومات الإيصال";
+
+/* Label for receipt store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.receiptStoreName" = "اسم المتجر";
+
+/* Label for refund and returns policy field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.refundReturnsPolicy" = "سياسة الاسترداد والإرجاع";
+
+/* Section title for store information in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeInformation" = "معلومات المتجر";
+
+/* Label for store name field in Point of Sale settings. */
+"pointOfSaleSettingsStoreDetailView.storeName" = "اسم المتجر";
+
+/* Navigation title for the store details in POS settings. */
+"pointOfSaleSettingsStoreDetailView.storeTitle" = "المتجر";
+
+/* Title of the Point of Sale settings view. */
+"pointOfSaleSettingsView.navigationTitle" = "الإعدادات";
+
+/* Description of the settings to be found within the Hardware section. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareSubtitle" = "إدارة عمليات ربط الأجهزة";
+
+/* Title of the Hardware section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHardwareTitle" = "الأجهزة";
+
+/* Description of the Help section in Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpSubtitle" = "احصل على المساعدة والدعم";
+
+/* Title of the Help section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationHelpTitle" = "المساعدة";
+
+/* Description of the settings to be found within the Store section. */
+"pointOfSaleSettingsView.sidebarNavigationStoreSubtitle" = "تكوين المتجر والإعدادات";
+
+/* Title of the Store section within Point of Sale settings. */
+"pointOfSaleSettingsView.sidebarNavigationStoreTitle" = "المتجر";
+
 /* Heading for the barcode info modal in POS, introducing barcode scanning feature */
 "pos.barcodeInfoModal.heading" = "مسح الرمز الشريطي";
 
@@ -11375,6 +11515,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Link text for product barcode setup documentation. Used together with pos.barcodeInfoModal.productSetup.message. */
 "pos.barcodeInfoModal.productSetup.linkText" = "تفضَّل بزيارة الوثائق.";
+
+/* Message explaining how to set up barcodes in product inventory. %1$@ is replaced with a text and link to documentation. For example, visit the documentation. */
+"pos.barcodeInfoModal.productSetup.message" = "يمكنك إعداد الرموز الشريطية في حقول \"GTIN، UPC، EAN، ISBN\" من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل %1$@.";
 
 /* Accessible version of product setup message, announcing link for screen readers */
 "pos.barcodeInfoModal.productSetup.message.accessible" = "يمكنك إعداد الرموز الشريطية في حقول G-T-I-N, U-P-C, E-A-N, I-S-B-N من خلال علامة تبويب مخزون المنتج. للحصول على مزيد من التفاصيل، تفضَّل بزيارة الوثائق، الرابط.";
@@ -11502,8 +11645,14 @@ which should be translated separately and considered part of this sentence. */
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartHint" = "النقر على منتج إلى \n إضافته إلى عربة التسوق";
 
+/* Hint to add products to the Cart when this is empty. */
+"pos.cartView.addItemsToCartOrScanHint" = "النقر على منتج من أجل \n إضافته إلى عربة التسوق، أو ";
+
 /* Title at the header for the Cart view. */
 "pos.cartView.cartTitle" = "عربة التسوق";
+
+/* The title of the menu button to start a barcode scanner setup flow. */
+"pos.cartView.cartTitle.barcodeScanningSetup.button" = "مسح الكود الشريطي ضوئيًا";
 
 /* Title for the 'Checkout' button to process the Order. */
 "pos.cartView.checkoutButtonTitle" = "السداد";
@@ -11637,6 +11786,60 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for button to dismiss a notice banner */
 "pos.noticeView.dismiss.button.accessibiltyLabel" = "تجاهل";
 
+/* Section title for the products list */
+"pos.orderDetailsLoadingView.productsTitle" = "المنتجات";
+
+/* Title for the order details screen when no specific order is selected */
+"pos.orderDetailsLoadingView.title" = "الطلب";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsLoadingView.totalsTitle" = "الإجماليات";
+
+/* Label for discount total in the totals section */
+"pos.orderDetailsView.discountTotalLabel" = "إجمالي الخصم";
+
+/* Label for net payment amount after refunds */
+"pos.orderDetailsView.netPaymentLabel" = "المبلغ الصافي للمدفوعات";
+
+/* Order title with order number. %1$@ is the order number. */
+"pos.orderDetailsView.orderTitle" = "الطلب رقم %1$@";
+
+/* Label for the paid amount */
+"pos.orderDetailsView.paidLabel" = "المبلغ المدفوع";
+
+/* Label for products subtotal in the totals section */
+"pos.orderDetailsView.productsLabel" = "المنتجات";
+
+/* Section title for the products list */
+"pos.orderDetailsView.productsTitle" = "المنتجات";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.orderDetailsView.reasonLabel" = "السبب: %1$@";
+
+/* Label for a refund entry. %1$lld is the refund ID. */
+"pos.orderDetailsView.refundLabel" = "المبلغ المسترد";
+
+/* Label for taxes in the totals section */
+"pos.orderDetailsView.taxesLabel" = "الضرائب";
+
+/* Label for the order total */
+"pos.orderDetailsView.totalLabel" = "الإجمالي";
+
+/* Section title for the order totals breakdown */
+"pos.orderDetailsView.totalsTitle" = "الإجماليات";
+
+/* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
+"pos.orderList.failedToLoadOrdersNextPageTitle" = "يتعذر تحميل طلبات إضافية";
+
+/* Text appearing on the order list screen when there's an error loading orders. */
+"pos.orderList.failedToLoadOrdersTitle" = "يتعذر تحميل الطلبات";
+
+/* Title at the header for the Orders view. */
+"pos.orderListView.ordersTitle" = "الطلبات";
+
 /* Text indicating that there are options available for a parent product */
 "pos.parentProductCard.optionsAvailable" = "خيارات متوفرة";
 
@@ -11711,6 +11914,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label to be displayed in the product's card when out of stock */
 "pos.stockStatusLabel.outofstock" = "غير متوفر في المخزون";
+
+/* Title for the Point of Sale tab. */
+"pos.tab.title" = "POS";
 
 /* Button title for new order button */
 "pos.totalsView.button.newOrder" = "طلب جديد";
@@ -12265,6 +12471,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value for a shipping item row. The %1$@ is details text. The %2$@ is weight. The %3$@ is a total price */
 "shipping_item_row.accessibility_value.format" = "%1$@، الوزن: %2$@، السعر الإجمالي: %3$@";
 
+/* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
+"shipping_item_row.quantity.format" = "⁦%1$d⁩ من العناصر من %2$@";
+
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "إلغاء";
 
@@ -12719,8 +12928,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button to cancel confirming all agreements on the UPS Terms and Conditions view fails */
 "upsTermsView.cancel" = "إلغاء";
 
+/* The first checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Terms of Service. Reads as: 'I agree to the UPS® Terms of Service.' */
+"upsTermsView.checkbox1" = "أوافق على %1$@.";
+
 /* The second checkbox on the UPS Terms and Conditions view. The placeholder is a link to the list of prohibited items. Reads as: 'I will not ship any Prohibited Items that UPS® disallows, nor any regulated items without the necessary permissions.' */
 "upsTermsView.checkbox2" = "لن أشحن أي%1$@ لا تسمح بها UPS®، ولا أي عناصر منظَّمة من دون الحصول على الصلاحيات الضرورية.";
+
+/* The third checkbox on the UPS Terms and Conditions view. The placeholder is a link to the UPS Technology Agreement. Reads as: 'I also agree to the UPS® Technology Agreement.' */
+"upsTermsView.checkbox3" = "أوافق أيضا على %1$@.";
 
 /* Button to confirm all agreements on the UPS Terms and Conditions view */
 "upsTermsView.confirmButton" = "التأكيد والاستمرار";

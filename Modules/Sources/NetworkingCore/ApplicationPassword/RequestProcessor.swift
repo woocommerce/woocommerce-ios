@@ -1,13 +1,8 @@
 import Alamofire
 import Foundation
 
-enum AppPasswordFailureReason {
-    case notSupported
-    case unknown
-}
-
 protocol RequestProcessorDelegate: AnyObject {
-    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, reason: AppPasswordFailureReason)
+    func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error)
 }
 
 /// Authenticates and retries requests
@@ -90,9 +85,9 @@ private extension RequestProcessor {
                     generateApplicationPassword()
                 } else {
                     isAuthenticating = false
-                    completeRequests(false)
+                    completeRequests(false, error: error)
                     if let currentSiteID {
-                        notifyFailure(error, for: currentSiteID)
+                        notifyFailureIfNeeded(error, for: currentSiteID)
                     }
                 }
             }
@@ -120,22 +115,24 @@ private extension RequestProcessor {
         }
     }
 
-    func notifyFailure(_ error: Error, for siteID: Int64) {
-        let reason: AppPasswordFailureReason = {
+    func notifyFailureIfNeeded(_ error: Error, for siteID: Int64) {
+        let appPasswordNotSupported: Bool = {
             switch error {
             case NetworkError.notFound:
-                return .notSupported
+                return true
             case let networkError as NetworkError:
                 if let code = networkError.errorCode,
                    AppPasswordConstants.disabledCodes.contains(code) {
-                    return .notSupported
+                    return true
                 }
-                return .unknown
+                return false
             default:
-                return .unknown
+                return false
             }
         }()
-        delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, reason: reason)
+        if appPasswordNotSupported {
+            delegate?.didFailToAuthenticateRequestWithAppPassword(siteID: siteID, error: error)
+        }
     }
 
     func shouldRetry(_ error: Error) -> Bool {
@@ -149,8 +146,16 @@ private extension RequestProcessor {
         }
     }
 
-    func completeRequests(_ shouldRetry: Bool) {
-        let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
+    func completeRequests(_ shouldRetry: Bool, error: Error? = nil) {
+        let result: RetryResult = {
+            if shouldRetry {
+                .retryWithDelay(0)
+            } else if let error {
+                .doNotRetryWithError(error)
+            } else {
+                .doNotRetry
+            }
+        }()
         requestsToRetry.forEach { (completion) in
             completion(result)
         }
@@ -168,4 +173,12 @@ public extension NSNotification.Name {
     /// Posted when generating an application password fails
     ///
     static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
+
+    /// Posted when site is flagged as unsupported for app password
+    ///
+    static let JetpackSiteFlaggedUnsupportedForApplicationPassword = NSNotification.Name(rawValue: "JetpackSiteFlaggedUnsupportedForApplicationPassword")
+
+    /// Posted when site is detected as eligible for app password authentication
+    ///
+    static let JetpackSiteEligibleForAppPasswordSupport = NSNotification.Name(rawValue: "JetpackSiteEligibleForAppPasswordSupport")
 }

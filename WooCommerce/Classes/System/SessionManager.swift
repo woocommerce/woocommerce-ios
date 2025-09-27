@@ -227,6 +227,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.tapToPayAwarenessMomentFirstLaunchCompleted] = nil
         defaults[.applicationPasswordUnsupportedList] = nil
         defaults[.applicationPasswordsExperimentRemoteFFValue] = nil
+        defaults[.ciabBookingsTabAvailable] = nil
         resetTimestampsValues()
         imageCache.clearCache()
     }
@@ -247,7 +248,7 @@ final class SessionManager: SessionManagerProtocol {
                 guard let siteID = defaultStoreID else {
                     return nil
                 }
-                let network = AlamofireNetwork(credentials: credentials)
+                let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
                 return DefaultApplicationPasswordUseCase(type: .wpcom(siteID: siteID), network: network)
             case .none:
                 return nil

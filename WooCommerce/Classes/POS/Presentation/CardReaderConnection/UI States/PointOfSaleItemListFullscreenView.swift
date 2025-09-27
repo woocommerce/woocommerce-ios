@@ -30,7 +30,7 @@ private enum Localization {
 #Preview {
     PointOfSaleItemListFullscreenView(
         content: {
-            PointOfSaleItemListErrorView(
+            POSListErrorView(
                 error: .init(errorType: .productsLoadError, title: "Error", subtitle: "Something went wrong", buttonText: "Fix it"))
         })
 }

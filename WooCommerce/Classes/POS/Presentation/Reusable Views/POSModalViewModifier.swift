@@ -8,42 +8,41 @@ struct POSRootModalViewModifier: ViewModifier {
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
 
     func body(content: Content) -> some View {
-        ZStack {
-            content
-                .blur(radius: modalManager.isPresented ? 8 : 0)
-                .disabled(modalManager.isPresented)
-                .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
-
-            if modalManager.isPresented {
-                Color.posSurfaceDim.opacity(0.8)
-                    .edgesIgnoringSafeArea(.all)
-                    .onTapGesture {
-                        if modalManager.allowsInteractiveDismissal {
-                            modalManager.dismiss()
-                        }
-                    }
-                // Don't scale/fade in the backdrop
-                    .animation(nil, value: modalManager.isPresented)
-                ZStack {
-                    modalManager.getContent()
-                        .environment(\.posModalParentSize, modalParentSize)
-                        .background(Color.posSurfaceBright)
-                        .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
-                        .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
-                        .padding()
-                }
-                .zIndex(1)
-                // Scale the modal container in and out, fading appropriately.
-                // Unfortunately combined doesn't work on removal.
-                // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
-                // consistent even when animating out, which it wouldn't be if unspecified.
-                .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+        content
+            .blur(radius: modalManager.isPresented ? 8 : 0)
+            .disabled(modalManager.isPresented)
+            .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
+            .measureFrame { frame in
+                updateModalParentSize(with: frame.size)
             }
-        }
-        .measureFrame { frame in
-            updateModalParentSize(with: frame.size)
-        }
-        .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .overlay {
+                if modalManager.isPresented {
+                    Color.posSurfaceDim.opacity(0.8)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            if modalManager.allowsInteractiveDismissal {
+                                modalManager.dismiss()
+                            }
+                        }
+                    // Don't scale/fade in the backdrop
+                        .animation(nil, value: modalManager.isPresented)
+                    ZStack {
+                        modalManager.getContent()
+                            .environment(\.posModalParentSize, modalParentSize)
+                            .background(Color.posSurfaceBright)
+                            .cornerRadius(POSCornerRadiusStyle.extraLarge.value)
+                            .posShadow(.large, cornerRadius: POSCornerRadiusStyle.extraLarge.value)
+                            .padding()
+                    }
+                    .zIndex(1)
+                    // Scale the modal container in and out, fading appropriately.
+                    // Unfortunately combined doesn't work on removal.
+                    // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                    // consistent even when animating out, which it wouldn't be if unspecified.
+                    .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+                }
+            }
+            .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
     }
 
     private func updateModalParentSize(with size: CGSize) {
@@ -212,3 +211,50 @@ extension EnvironmentValues {
         set { self[POSModalParentSizeKey.self] = newValue }
     }
 }
+
+// MARK: - Previews for testing popular modals
+
+#if DEBUG
+#Preview("Card Present Alert") {
+    @Previewable @StateObject var modalManager = POSModalManager()
+    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
+    @Previewable @State var showModal = false
+
+    return VStack {
+        Color.blue
+            .ignoresSafeArea(.all)
+        .onAppear {
+            showModal = true
+        }
+    }
+    .posModal(isPresented: $showModal) {
+        PointOfSaleCardPresentPaymentAlert(alertType: .connectionSuccess(
+            viewModel: PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModel(doneAction: {
+            })
+        ))
+    }
+    .posRootModal()
+    .environmentObject(modalManager)
+    .environmentObject(coverManager)
+}
+
+#Preview("Barcode Scanner Setup") {
+    @Previewable @StateObject var modalManager = POSModalManager()
+    @Previewable @StateObject var coverManager = POSFullScreenCoverManager()
+    @Previewable @State var showModal = false
+
+    return VStack {
+        Color.blue
+            .ignoresSafeArea(.all)
+        .onAppear {
+            showModal = true
+        }
+    }
+    .posModal(isPresented: $showModal) {
+        PointOfSaleBarcodeScannerSetup(isPresented: $showModal, analytics: EmptyPOSAnalytics())
+    }
+    .posRootModal()
+    .environmentObject(modalManager)
+    .environmentObject(coverManager)
+}
+#endif

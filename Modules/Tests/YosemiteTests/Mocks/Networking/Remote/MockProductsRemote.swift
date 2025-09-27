@@ -370,6 +370,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
+                        productType: ProductType?,
                         completion: @escaping (Result<[Int64], Error>) -> Void) {
         // no-op
     }

@@ -8,6 +8,7 @@ import enum Networking.NetworkError
 import Yosemite
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
+import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 

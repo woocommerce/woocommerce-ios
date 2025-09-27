@@ -1,9 +1,11 @@
 import SwiftUI
+import class Yosemite.SiteAddress
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import enum Yosemite.Plugin
 import struct Yosemite.SiteSetting
 import struct Yosemite.POSReceiptInformation
+import WooFoundationCore
 
 final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty

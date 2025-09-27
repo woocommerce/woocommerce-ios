@@ -5,6 +5,7 @@ import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
 import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
+import struct Yosemite.Site
 import protocol Yosemite.POSEligibilityServiceProtocol
 import protocol Yosemite.StoresManager
 import class Yosemite.POSEligibilityService
@@ -13,6 +14,8 @@ import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PluginsService
+import class Yosemite.SiteAddress
+import class WooFoundation.VersionHelpers
 
 /// Legacy enum containing POS invisible reasons + POSIneligibleReason cases for i1.
 private enum LegacyPOSIneligibleReason: Equatable {
@@ -27,6 +30,7 @@ private enum LegacyPOSIneligibleReason: Equatable {
     case unsupportedCountry(supportedCountries: [CountryCode])
     case unsupportedCurrency(supportedCurrencies: [CurrencyCode])
     case selfDeallocated
+    case unsupportedInCIABSites
 }
 
 /// Legacy POS eligibility state for i1.
@@ -37,33 +41,36 @@ private enum LegacyPOSEligibilityState: Equatable {
 
 /// POS tab eligibility checker for i1. Will be replaced by `POSTabEligibilityCheckerI2` when removing `pointOfSaleAsATabi2` feature flag.
 final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    private let siteID: Int64
+    private let site: Site
     private let userInterfaceIdiom: UIUserInterfaceIdiom
     private let siteSettings: SelectedSiteSettingsProtocol
     private let pluginsService: PluginsServiceProtocol
     private let eligibilityService: POSEligibilityServiceProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-    init(siteID: Int64,
+    init(site: Site,
          userInterfaceIdiom: UIUserInterfaceIdiom = UIDevice.current.userInterfaceIdiom,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          eligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.siteID = siteID
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+        self.site = site
         self.userInterfaceIdiom = userInterfaceIdiom
         self.siteSettings = siteSettings
         self.pluginsService = pluginsService
         self.eligibilityService = eligibilityService
         self.stores = stores
         self.featureFlagService = featureFlagService
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks the initial visibility of the POS tab without dependance on network requests.
     func checkInitialVisibility() -> Bool {
-        eligibilityService.loadCachedPOSTabVisibility(siteID: siteID) ?? false
+        eligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
     }
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
@@ -72,6 +79,10 @@ final class LegacyPOSTabEligibilityChecker: POSEntryPointEligibilityCheckerProto
     }
 
     private func checkI1Eligibility() async -> LegacyPOSEligibilityState {
+        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
+            return .ineligible(reason: .unsupportedInCIABSites)
+        }
+
         switch checkDeviceEligibility() {
         case .eligible:
             break
@@ -138,7 +149,7 @@ private extension LegacyPOSTabEligibilityChecker {
 
 private extension LegacyPOSTabEligibilityChecker {
     func checkPluginEligibility() async -> LegacyPOSEligibilityState {
-        let wcPlugin = await fetchWooCommercePlugin(siteID: siteID)
+        let wcPlugin = await fetchWooCommercePlugin(siteID: site.siteID)
 
         guard VersionHelpers.isVersionSupported(version: wcPlugin.version,
                                                 minimumRequired: Constants.wcPluginMinimumVersion) else {
@@ -154,7 +165,7 @@ private extension LegacyPOSTabEligibilityChecker {
         }
 
         // For versions that support the feature switch, checks if the feature switch is enabled.
-        return await checkFeatureSwitchEnabled(siteID: siteID)
+        return await checkFeatureSwitchEnabled(siteID: site.siteID)
     }
 
     @MainActor
@@ -200,7 +211,7 @@ private extension LegacyPOSTabEligibilityChecker {
 
     func waitForSiteSettingsRefresh() async -> [SiteSetting] {
         for await siteSettings in siteSettings.settingsStream.values {
-            guard siteSettings.siteID == siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
+            guard siteSettings.siteID == site.siteID, siteSettings.settings.isNotEmpty, siteSettings.source != .initialLoad else {
                 continue
             }
             return siteSettings.settings

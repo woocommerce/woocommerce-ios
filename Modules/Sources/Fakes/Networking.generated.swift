@@ -317,6 +317,31 @@ extension Networking.BlazeTargetTopic {
         )
     }
 }
+extension Networking.Booking {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.Booking {
+        .init(
+            siteID: .fake(),
+            bookingID: .fake(),
+            allDay: .fake(),
+            cost: .fake(),
+            customerID: .fake(),
+            dateCreated: .fake(),
+            dateModified: .fake(),
+            endDate: .fake(),
+            googleCalendarEventID: .fake(),
+            orderID: .fake(),
+            orderItemID: .fake(),
+            parentID: .fake(),
+            productID: .fake(),
+            resourceID: .fake(),
+            startDate: .fake(),
+            statusKey: .fake(),
+            localTimezone: .fake()
+        )
+    }
+}
 extension Networking.CompositeComponentOptionType {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1774,7 +1799,10 @@ extension Networking.Site {
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
             hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            isGarden: .fake(),
+            gardenName: .fake(),
+            gardenPartner: .fake()
         )
     }
 }

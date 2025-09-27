@@ -1,10 +1,11 @@
 import SwiftUI
 import Combine
+import enum WooFoundation.ConnectivityStatus
 
 struct POSConnectivityView: View {
-    let connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver
     @State private var isVisible = false
     @State private var cancellable: AnyCancellable?
+    @Environment(\.posConnectivityProvider) private var provider
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -16,8 +17,8 @@ struct POSConnectivityView: View {
         .animation(.easeInOut(duration: Constants.connectivityAnimationDuration),
                    value: isVisible)
         .onAppear {
-            updateVisibility(connectivityObserver.currentStatus)
-            cancellable = connectivityObserver.statusPublisher
+            updateVisibility(provider.connectivityObserver.currentStatus)
+            cancellable = provider.connectivityObserver.statusPublisher
                 .receive(on: DispatchQueue.main)
                 .sink { status in
                     updateVisibility(status)

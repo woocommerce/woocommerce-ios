@@ -39,33 +39,27 @@ final class POSReceiptSender: POSReceiptSending {
 
     @MainActor
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {
-        var isEligibleForPOSReceipt: Bool?
+        var isEligibleForPOSReceipt: Bool = false
         do {
-            let posReceiptEligibility: Bool
-            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
-                posReceiptEligibility = isPluginSupported(
-                    .wooCommerce,
-                    minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
-                    siteID: siteID
-                )
-            } else {
-                posReceiptEligibility = false
-            }
-            isEligibleForPOSReceipt = posReceiptEligibility
+            isEligibleForPOSReceipt = isPluginSupported(
+                .wooCommerce,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: siteID
+            )
 
             // Only update order email for previous POS receipt API version
             // POS receipt now handles email update internally
-            if !posReceiptEligibility {
+            if !isEligibleForPOSReceipt {
                 try await orderService.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
             }
 
-            try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
+            try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
 
-            analytics.track(.receiptEmailSuccess, parameters: ["eligible_for_pos_receipt": posReceiptEligibility])
+            analytics.track(.receiptEmailSuccess, parameters: ["eligible_for_pos_receipt": isEligibleForPOSReceipt])
         } catch {
             let properties = [
                 "eligible_for_pos_receipt": isEligibleForPOSReceipt
-            ].compactMapValues( { $0 })
+            ]
             analytics.track(.receiptEmailFailed, parameters: properties, error: error)
             throw error
         }

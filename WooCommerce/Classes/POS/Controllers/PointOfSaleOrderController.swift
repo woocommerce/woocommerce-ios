@@ -112,13 +112,13 @@ protocol PointOfSaleOrderControllerProtocol {
                 throw PointOfSaleOrderControllerError.noOrder
             }
 
-            try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
-
             isEligibleForPOSReceipt = isPluginSupported(
                 .wooCommerce,
                 minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
                 siteID: order.siteID
             )
+
+            try await orderService.updatePOSOrder(order: order, recipientEmail: recipientEmail)
 
             try await receiptService.sendReceipt(order: order, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
 

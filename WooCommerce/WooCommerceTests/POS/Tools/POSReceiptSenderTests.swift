@@ -20,7 +20,6 @@ struct POSReceiptSenderTests {
                                     orderService: mockOrderService,
                                     receiptService: mockReceiptService,
                                     analytics: MockPOSAnalytics(),
-                                    featureFlagService: mockFeatureFlagService,
                                     pluginsService: mockPluginsService)
     }
 
@@ -66,7 +65,6 @@ struct POSReceiptSenderTests {
         func sendReceipt_when_feature_flag_enabled_and_eligible_plugin_version_sets_isEligibleForPOSReceipt_true(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
             mockPluginsService.setMockPlugin(.wooCommerce,
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
@@ -76,7 +74,6 @@ struct POSReceiptSenderTests {
                                        orderService: mockOrderService,
                                        receiptService: mockReceiptService,
                                        analytics: MockPOSAnalytics(),
-                                       featureFlagService: mockFeatureFlagService,
                                        pluginsService: mockPluginsService)
             let order = Order.fake()
 
@@ -92,7 +89,6 @@ struct POSReceiptSenderTests {
         func sendReceipt_when_feature_flag_enabled_and_ineligible_plugin_version_sets_isEligibleForPOSReceipt_false(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
             mockPluginsService.setMockPlugin(.wooCommerce,
                                              systemPlugin: SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php",
@@ -102,7 +98,6 @@ struct POSReceiptSenderTests {
                                        orderService: mockOrderService,
                                        receiptService: mockReceiptService,
                                        analytics: MockPOSAnalytics(),
-                                       featureFlagService: mockFeatureFlagService,
                                        pluginsService: mockPluginsService)
             let order = Order.fake()
 
@@ -122,14 +117,12 @@ struct POSReceiptSenderTests {
         func sendReceipt_when_feature_flag_enabled_and_plugin_unavailable_sets_isEligibleForPOSReceipt_false(plugin: SystemPlugin?) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
-            let mockFeatureFlagService = MockFeatureFlagService()
             let mockPluginsService = MockPluginsService()
             mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
             let sut = POSReceiptSender(siteID: 123,
                                        orderService: mockOrderService,
                                        receiptService: mockReceiptService,
                                        analytics: MockPOSAnalytics(),
-                                       featureFlagService: mockFeatureFlagService,
                                        pluginsService: mockPluginsService)
             let order = Order.fake()
 

@@ -1,5 +1,4 @@
 import Foundation
-import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -19,14 +18,12 @@ final class POSReceiptSender: POSReceiptSending {
          orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
          analytics: POSAnalyticsProviding,
-         featureFlagService: POSFeatureFlagProviding,
          pluginsService: PluginsServiceProtocol
     ) {
         self.siteID = siteID
         self.orderService = orderService
         self.receiptService = receiptService
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pluginsService = pluginsService
     }
 
@@ -34,7 +31,6 @@ final class POSReceiptSender: POSReceiptSending {
     private let orderService: POSOrderServiceProtocol
     private let receiptService: POSReceiptServiceProtocol
     private let analytics: POSAnalyticsProviding
-    private let featureFlagService: POSFeatureFlagProviding
     private let pluginsService: PluginsServiceProtocol
 
     @MainActor

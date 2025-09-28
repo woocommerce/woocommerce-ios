@@ -185,7 +185,6 @@ private extension POSTabCoordinator {
                                                      orderService: orderService,
                                                      receiptService: receiptService,
                                                      analytics: serviceAdaptor.analytics,
-                                                     featureFlagService: serviceAdaptor.featureFlags,
                                                      pluginsService: pluginsService
                 )
                 let posView = PointOfSaleEntryPointView(

@@ -3,6 +3,7 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
@@ -57,6 +58,7 @@ struct PointOfSaleCollectCashView: View {
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
                             externalViews.createFormattableAmountTextField(
                                 preset: viewHelper.parseCurrency(orderTotal),
+                                font: POSFontStyle.posHeadingRegular.font(maximumContentSizeCategory: UIContentSizeCategory(dynamicTypeSize)),
                                 onSubmit: {
                                     Task { @MainActor in
                                         await submitCashAmount()

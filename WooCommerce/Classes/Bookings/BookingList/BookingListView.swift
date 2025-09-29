@@ -75,28 +75,33 @@ private extension BookingListView {
     }
 
     var topTabView: some View {
-        HStack {
-            ForEach(Array(tabs.enumerated()), id: \.element) { (index, title) in
-                Button {
-                    selectedTabIndex = index
-                } label: {
-                    Text(title)
-                        .font(.subheadline)
-                        .foregroundStyle(selectedTabIndex == index ? Color.accentColor : Color.primary)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .overlay {
-                    VStack {
-                        Spacer()
-                        if selectedTabIndex == index {
-                            Color.accentColor
-                                .frame(height: Layout.selectedTabIndicatorHeight)
+        GeometryReader { geometry in
+            HStack {
+                ForEach(Array(tabs.enumerated()), id: \.element) { (index, title) in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            selectedTabIndex = index
                         }
+                    } label: {
+                        Text(title)
+                            .font(.subheadline)
+                            .foregroundStyle(selectedTabIndex == index ? Color.accentColor : Color.primary)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
                 }
             }
+            .overlay(alignment: .bottom) {
+                Color.accentColor
+                    .frame(width: geometry.size.width / CGFloat(tabs.count),
+                           height: Layout.selectedTabIndicatorHeight)
+                    .offset(x: tabIndicatorOffset(containerWidth: geometry.size.width,
+                                                  tabCount: tabs.count,
+                                                  selectedIndex: selectedTabIndex))
+                    .animation(.easeInOut(duration: 0.3), value: selectedTabIndex)
+            }
         }
+        .frame(height: Layout.topTabBarHeight)
         .background(Color(.listForeground(modal: false)))
     }
 
@@ -165,10 +170,25 @@ private extension BookingListView {
             .padding(.vertical, 4)
             .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
+
+    /// SwiftUI's coordinate system places (0,0) at the center of the container, so we need to:
+    /// 1. Calculate how far the selected tab is from the left edge
+    /// 2. Adjust for the center-based coordinate system
+    /// 3. Center the indicator within the selected tab
+    ///
+    func tabIndicatorOffset(containerWidth: CGFloat, tabCount: Int, selectedIndex: Int) -> CGFloat {
+        let tabWidth = containerWidth / CGFloat(tabCount)
+        let distanceFromLeftEdge = tabWidth * CGFloat(selectedIndex)
+        let adjustmentForCenterOrigin = containerWidth / 2
+        let centerWithinTab = tabWidth / 2
+
+        return distanceFromLeftEdge - adjustmentForCenterOrigin + centerWithinTab
+    }
 }
 private extension BookingListView {
     enum Layout {
         static let viewPadding: CGFloat = 16
+        static let topTabBarHeight: CGFloat = 44
         static let selectedTabIndicatorHeight: CGFloat = 3.0
         static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
     }

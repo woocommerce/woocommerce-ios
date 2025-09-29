@@ -12,9 +12,9 @@ struct POSCardPresentPaymentMessageViewImage: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(
-                minWidth: PointOfSaleCardPresentPaymentLayout.headerSize.width * 0.3,
+                minWidth: PointOfSaleCardPresentPaymentLayout.compactHeaderSize.width,
                 maxWidth: PointOfSaleCardPresentPaymentLayout.headerSize.width,
-                minHeight: PointOfSaleCardPresentPaymentLayout.headerSize.height * 0.3,
+                minHeight: PointOfSaleCardPresentPaymentLayout.compactHeaderSize.height,
                 maxHeight: PointOfSaleCardPresentPaymentLayout.headerSize.height
             )
             .accessibilityHidden(true)

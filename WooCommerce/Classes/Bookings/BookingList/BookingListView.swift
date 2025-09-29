@@ -5,7 +5,7 @@ struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
     @State private var selectedTabIndex = 0
 
-    private let tabs = ["Today", "Upcoming", "All"]
+    private let tabs = [Localization.today, Localization.upcoming, Localization.all]
 
     init(viewModel: BookingListViewModel) {
         self.viewModel = viewModel
@@ -169,6 +169,21 @@ private extension BookingListView {
             "bookingListView.filter",
             value: "Filter",
             comment: "Button to filter the booking list"
+        )
+        static let today = NSLocalizedString(
+            "bookingListView.today",
+            value: "Today",
+            comment: "Tab title for today's bookings"
+        )
+        static let upcoming = NSLocalizedString(
+            "bookingListView.upcoming",
+            value: "Upcoming",
+            comment: "Tab title for upcoming bookings"
+        )
+        static let all = NSLocalizedString(
+            "bookingListView.all",
+            value: "All",
+            comment: "Tab title for all bookings"
         )
     }
 }

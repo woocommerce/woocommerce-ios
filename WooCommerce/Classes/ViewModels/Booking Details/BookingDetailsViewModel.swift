@@ -5,9 +5,6 @@ extension BookingDetailsViewModel {
     struct PaymentContent {
     }
 
-    struct CustomerContent {
-    }
-
     struct TeamMemberContent {
     }
 }
@@ -31,9 +28,25 @@ final class BookingDetailsViewModel: ObservableObject {
             content: .attendance(AttendanceContent())
         )
 
+        let customerSection = Section(
+            header: .title(Localization.customerSectionHeaderTitle.uppercased()),
+            content: .customer(
+                /// Temporary hardcode
+                CustomerContent(
+                    nameText: "Margarita Nikolaevna",
+                    emailText: "margarita.n@mail.com",
+                    phoneText: "+1 742582943798",
+                    billingAddressText: """
+                        238 Willow Creek Drive Montgomery AL 36109
+                        """
+                )
+            )
+        )
+
         sections = [
             headerSection,
             appointmentDetailsSection,
+            customerSection,
             attendanceSection
         ]
     }
@@ -51,6 +64,12 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.attendance.headerTitle",
             value: "Attendance",
             comment: "Header title for the 'Attendance' section in the booking details screen."
+        )
+
+        static let customerSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.customer.headerTitle",
+            value: "Customer",
+            comment: "Header title for the 'Customer' section in the booking details screen."
         )
 
         static let attendanceSectionFooterText = NSLocalizedString(

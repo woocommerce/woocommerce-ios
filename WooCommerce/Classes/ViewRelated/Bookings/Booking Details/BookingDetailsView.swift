@@ -13,6 +13,7 @@ struct BookingDetailsView: View {
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let circleSeparatorSize: CGFloat = 3
+        static let rowTextVerticalPadding: CGFloat = 11
     }
 
     fileprivate enum TextFont {
@@ -90,6 +91,8 @@ private extension BookingDetailsView {
             appointmentDetailsView(with: content)
         case .attendance(let content):
             attendanceView(with: content)
+        case .customer(let content):
+            customerDetailsView(with: content)
         default:
             EmptyView()
         }
@@ -160,6 +163,89 @@ private extension BookingDetailsView {
             .buttonStyle(SecondaryButtonStyle())
             .padding(.vertical, Layout.contentVerticalPadding)
         }
+    }
+
+    func customerDetailsView(with content: BookingDetailsViewModel.CustomerContent) -> some View {
+        VStack(spacing: 0) {
+            /// Name
+            HStack {
+                Text(content.nameText)
+                    .rowTextStyle()
+                Spacer()
+            }
+            .padding(.vertical, Layout.rowTextVerticalPadding)
+
+            Divider()
+                .padding(.trailing, -Layout.contentSidePadding)
+
+            /// Email
+            HStack {
+                Text(content.emailText)
+                    .rowTextStyle()
+                Spacer()
+                Image(systemName: "doc.on.doc")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(Color(UIColor.primary))
+            }
+            .padding(.vertical, Layout.rowTextVerticalPadding)
+            .tappable {
+                print("On email copy")
+            }
+
+            Divider()
+                .padding(.trailing, -Layout.contentSidePadding)
+
+            /// Phone
+            HStack {
+                Text(content.phoneText)
+                    .rowTextStyle()
+                Spacer()
+                Image(systemName: "ellipsis")
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(Color(UIColor.primary))
+            }
+            .padding(.vertical, Layout.rowTextVerticalPadding)
+            .tappable {
+                print("On phone ellipsis")
+            }
+
+            Divider()
+                .padding(.trailing, -Layout.contentSidePadding)
+        }
+    }
+}
+
+private struct RowTextStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.body.weight(.medium))
+            .foregroundStyle(.primary)
+            .multilineTextAlignment(.leading)
+    }
+}
+
+private struct TappableRowModifier: ViewModifier {
+    let onTap: () -> Void
+
+    func body(content: Content) -> some View {
+        Button {
+            onTap()
+        } label: {
+            content
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+private extension Text {
+    func rowTextStyle() -> some View {
+        self.modifier(RowTextStyle())
+    }
+}
+
+private extension View {
+    func tappable(_ onTap: @escaping () -> Void) -> some View {
+        self.modifier(TappableRowModifier(onTap: onTap))
     }
 }
 

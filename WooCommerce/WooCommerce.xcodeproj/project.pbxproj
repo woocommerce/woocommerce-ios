@@ -113,7 +113,7 @@
 		01AAD8142D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */; };
 		01AB2D122DDC7AD300AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */; };
 		01AB2D142DDC7CD200AA67FD /* POSItemActionHandlerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */; };
-		01AB2D162DDC8CDA00AA67FD /* MockAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */; };
+		01AB2D162DDC8CDA00AA67FD /* MockPOSAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D152DDC8CD600AA67FD /* MockPOSAnalytics.swift */; };
 		01ABA0282E57579300829DC0 /* POSOrderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0252E57579300829DC0 /* POSOrderListView.swift */; };
 		01ABA0292E57579300829DC0 /* POSDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0242E57579300829DC0 /* POSDetailsView.swift */; };
 		01ABA02A2E57579300829DC0 /* POSOrdersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0262E57579300829DC0 /* POSOrdersView.swift */; };
@@ -3330,7 +3330,7 @@
 		01AAD8132D92E37A0081D60B /* PointOfSaleOrderSyncCouponsErrorMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleOrderSyncCouponsErrorMessageView.swift; sourceTree = "<group>"; };
 		01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListAnalyticsTrackerTests.swift; sourceTree = "<group>"; };
 		01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandlerFactoryTests.swift; sourceTree = "<group>"; };
-		01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalytics.swift; sourceTree = "<group>"; };
+		01AB2D152DDC8CD600AA67FD /* MockPOSAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSAnalytics.swift; sourceTree = "<group>"; };
 		01ABA0242E57579300829DC0 /* POSDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSDetailsView.swift; sourceTree = "<group>"; };
 		01ABA0252E57579300829DC0 /* POSOrderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderListView.swift; sourceTree = "<group>"; };
 		01ABA0262E57579300829DC0 /* POSOrdersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrdersView.swift; sourceTree = "<group>"; };
@@ -7868,7 +7868,7 @@
 				012ACB812E5D8DCD00A49458 /* MockPOSOrderListFetchStrategyFactory.swift */,
 				012ACB792E5C84D200A49458 /* MockPOSOrderListService.swift */,
 				01F935582DFC0D4800B50B03 /* MockPointOfSaleSoundPlayer.swift */,
-				01AB2D152DDC8CD600AA67FD /* MockAnalytics.swift */,
+				01AB2D152DDC8CD600AA67FD /* MockPOSAnalytics.swift */,
 				686A71B72DC9EB6D0006E835 /* MockPOSSearchHistoryService.swift */,
 				2050D2652DF07BF700C25211 /* MockPointOfSaleBarcodeScanService.swift */,
 				01A3093B2DAE768000B672F6 /* MockPointOfSaleCouponService.swift */,
@@ -17208,7 +17208,7 @@
 				CC33238C29CDF67D00CA9709 /* ComponentSettingsViewModelTests.swift in Sources */,
 				026878D82E2942E400DBFD34 /* PointOfSaleDashboardViewHelperTests.swift in Sources */,
 				86F5FFE42CA30D9200C767C4 /* CustomFieldsListViewModelTests.swift in Sources */,
-				01AB2D162DDC8CDA00AA67FD /* MockAnalytics.swift in Sources */,
+				01AB2D162DDC8CDA00AA67FD /* MockPOSAnalytics.swift in Sources */,
 				0261F5A728D454CF00B7AC72 /* ProductSearchUICommandTests.swift in Sources */,
 				098FFA1727AD7F5D002EBEE4 /* OrderStatusListDataSourceTests.swift in Sources */,
 				DA24152B2D116EAE0008F69A /* WooShippingAddPackageViewModelTests.swift in Sources */,

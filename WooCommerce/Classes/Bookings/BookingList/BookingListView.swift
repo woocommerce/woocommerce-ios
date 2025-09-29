@@ -130,7 +130,7 @@ private extension BookingListView {
                     .fontWeight(.medium)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                // TODO: fetch bookable products & customer to get name or wait for API update
+                // TODO: fetch bookable products & customer to get names or wait for API update
                 Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
                     .font(.footnote)
                     .fontWeight(.medium)
@@ -138,8 +138,9 @@ private extension BookingListView {
 
                 HStack {
                     // TODO: update this when attendance status is available
-                    statusBadge(text: "Booked", color: Color(.systemGray5))
-                    statusBadge(text: booking.bookingStatus.localizedTitle, color: Color(.systemGray5))
+                    // Update badge colors if design changes as statuses are not clarified now.
+                    statusBadge(text: "Booked", color: Layout.defaultBadgeColor)
+                    statusBadge(text: booking.bookingStatus.localizedTitle, color: Layout.defaultBadgeColor)
                     Spacer()
                 }
             }
@@ -148,7 +149,7 @@ private extension BookingListView {
             Divider()
                 .padding(.leading, Layout.viewPadding)
         }
-        .background(Color(.listForeground(modal: false)))
+        .background(Color(.listForeground(modal: false))) // TODO: update selected background color as part of selection handling
     }
 
     func statusBadge(text: String, color: Color) -> some View {
@@ -163,6 +164,7 @@ private extension BookingListView {
     enum Layout {
         static let viewPadding: CGFloat = 16
         static let selectedTabIndicatorHeight: CGFloat = 3.0
+        static let defaultBadgeColor = Color(uiColor: .init(light: .systemGray6, dark: .systemGray5))
     }
 
     enum Localization {

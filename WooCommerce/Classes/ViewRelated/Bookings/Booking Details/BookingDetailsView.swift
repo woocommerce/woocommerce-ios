@@ -95,8 +95,8 @@ private extension BookingDetailsView {
             customerDetailsView(with: content)
         case .payment(let content):
             paymentDetailsView(with: content)
-        default:
-            EmptyView()
+        case .bookingNotes:
+            bookingNotesView()
         }
     }
 
@@ -273,6 +273,21 @@ private extension BookingDetailsView {
         }
         .padding(.vertical)
     }
+
+    func bookingNotesView() -> some View {
+        HStack(spacing: Layout.contentSidePadding) {
+            Image(systemName: "plus")
+                .font(.title3.weight(.medium))
+            Text(Localization.bookingNotesRowText)
+                .rowTextStyle()
+            Spacer()
+        }
+        .foregroundStyle(Color(UIColor.primary))
+        .padding(.vertical, Layout.rowTextVerticalPadding)
+        .tappable {
+            print("On Add a note tap")
+        }
+    }
 }
 
 private struct RowTextStyle: ViewModifier {
@@ -321,6 +336,13 @@ private extension BookingDetailsView {
             "BookingDetailsView.customer.billingAddress.title",
             value: "Billing address",
             comment: "Billing address row title in customer section in booking details view."
+        )
+
+        /// Booking notes
+        static let bookingNotesRowText = NSLocalizedString(
+            "BookingDetailsView.bookingNotes.addANoteRow.title",
+            value: "Add a note",
+            comment: "Add a note row title in booking notes section in booking details view."
         )
     }
 }

@@ -1,11 +1,6 @@
 import Foundation
 import struct Networking.Booking
 
-extension BookingDetailsViewModel {
-    struct TeamMemberContent {
-    }
-}
-
 final class BookingDetailsViewModel: ObservableObject {
     let sections: [Section]
 
@@ -45,12 +40,18 @@ final class BookingDetailsViewModel: ObservableObject {
             content: .payment(PaymentContent(booking: booking))
         )
 
+        let bookingNotes = Section(
+            header: .title(Localization.bookingNotesSectionHeaderTitle.uppercased()),
+            content: .bookingNotes
+        )
+
         sections = [
             headerSection,
             appointmentDetailsSection,
             customerSection,
             attendanceSection,
-            paymentSection
+            paymentSection,
+            bookingNotes
         ]
     }
 }
@@ -85,6 +86,12 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.payment.headerTitle",
             value: "Payment",
             comment: "Header title for the 'Payment' section in the booking details screen."
+        )
+
+        static let bookingNotesSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.bookingNotes.headerTitle",
+            value: "Booking notes",
+            comment: "Header title for the 'Booking notes' section in the booking details screen."
         )
     }
 }

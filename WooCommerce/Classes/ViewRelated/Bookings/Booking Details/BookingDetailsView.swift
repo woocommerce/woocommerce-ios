@@ -142,21 +142,12 @@ private extension BookingDetailsView {
                     .padding(.trailing, -Layout.contentSidePadding)
             }
 
-            VStack(spacing: Layout.contentVerticalPadding) {
-                Button {
-                    /// On reschedule button tap
-                } label: {
-                    Text(Localization.rescheduleButtonTitle)
-                }
-                .buttonStyle(SecondaryButtonStyle())
-
-                Button {
-                    /// On cancel booking button tap
-                } label: {
-                    Text(Localization.cancelBooking)
-                }
-                .buttonStyle(SecondaryButtonStyle())
+            Button {
+                /// On cancel booking button tap
+            } label: {
+                Text(Localization.cancelBooking)
             }
+            .buttonStyle(SecondaryButtonStyle())
             .padding(.vertical, Layout.contentVerticalPadding)
         }
     }
@@ -164,7 +155,6 @@ private extension BookingDetailsView {
 
 private extension BookingDetailsView {
     enum Localization {
-        static let rescheduleButtonTitle = "Reschedule"
         static let cancelBooking = "Cancel booking"
 
         /// Attendance section

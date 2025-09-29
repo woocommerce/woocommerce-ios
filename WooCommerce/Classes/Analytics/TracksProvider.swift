@@ -165,8 +165,18 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupDismissed,
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupRetryTapped,
             WooAnalyticsStat.pointOfSaleBarcodeScannerSetupScannerConnected,
+            WooAnalyticsStat.pointOfSaleOrdersMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleOrdersListPullToRefresh,
+            WooAnalyticsStat.pointOfSaleOrdersListFetched,
+            WooAnalyticsStat.pointOfSaleOrdersListNextPageLoaded,
+            WooAnalyticsStat.pointOfSaleOrdersListRowTapped,
+            WooAnalyticsStat.pointOfSaleOrdersListSearchButtonTapped,
+            WooAnalyticsStat.pointOfSaleOrdersListSearchResultsFetched,
+            WooAnalyticsStat.pointOfSaleOrderDetailsLoaded,
+            WooAnalyticsStat.pointOfSaleOrderDetailsEmailReceiptTapped,
 
             // Order
+            WooAnalyticsStat.ordersListLoaded,
             WooAnalyticsStat.orderCreationSuccess,
             WooAnalyticsStat.orderCreationFailed,
 

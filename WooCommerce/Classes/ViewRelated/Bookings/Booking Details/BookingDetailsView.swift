@@ -211,6 +211,22 @@ private extension BookingDetailsView {
 
             Divider()
                 .padding(.trailing, -Layout.contentSidePadding)
+
+            /// Billing address
+            if let billingAddressText = content.billingAddressText, !billingAddressText.isEmpty {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(Localization.billingAddressRowTitle)
+                            .rowTextStyle()
+                        Text(billingAddressText)
+                            .font(.body.weight(.medium))
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.leading)
+                    }
+                    Spacer()
+                }
+                .padding(.vertical, Layout.rowTextVerticalPadding)
+            }
         }
     }
 }
@@ -255,6 +271,13 @@ private extension BookingDetailsView {
 
         /// Attendance section
         static let statusRowTitle = "Status"
+
+        /// Customer section
+        static let billingAddressRowTitle = NSLocalizedString(
+            "BookingDetailsView.customer.billingAddress.title",
+            value: "Billing address",
+            comment: "Billing address row title in customer section in booking details view."
+        )
     }
 }
 

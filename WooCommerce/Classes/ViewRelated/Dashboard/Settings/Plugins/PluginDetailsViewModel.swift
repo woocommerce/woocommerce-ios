@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import class WooFoundation.VersionHelpers
 
 final class PluginDetailsViewModel: ObservableObject {
     /// ID of the site to load plugins for

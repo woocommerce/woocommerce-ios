@@ -1,5 +1,6 @@
 import Combine
 @testable import WooCommerce
+import WooFoundation
 
 final class MockConnectivityObserver: ConnectivityObserver {
     @Published private(set) var currentStatus: ConnectivityStatus = .unknown

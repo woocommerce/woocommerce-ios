@@ -106,7 +106,8 @@ struct AddEditCoupon: View {
                                                      editable: true,
                                                      fieldAlignment: .leading,
                                                      keyboardType: .decimalPad,
-                                                     contentColor: viewModel.amountFieldColor,
+                                                     titleColor: viewModel.amountFieldColor,
+                                                     valueColor: viewModel.amountFieldColor,
                                                      inputFormatter: CouponAmountInputFormatter()) { beginningEditing in
                                                             if !beginningEditing {
                                                                 viewModel.validatePercentageAmountInput(withWarning: true)

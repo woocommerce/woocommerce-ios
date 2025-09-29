@@ -15,7 +15,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func products_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .products(search: false),
             searchTerm: "",
@@ -39,7 +39,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func coupons_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .coupons(search: false),
             searchTerm: "",
@@ -63,7 +63,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func products_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .products(search: true),
             searchTerm: "shoes",
@@ -87,7 +87,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func coupons_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.itemActionHandler(
             itemListType: .coupons(search: true),
             searchTerm: "discount",
@@ -111,7 +111,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func variation_list_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.variationActionHandler(
             itemListType: .products(search: false),
             searchTerm: "",
@@ -135,7 +135,7 @@ struct POSItemActionHandlerFactoryTests {
     @Test func variation_search_tracks_correct_analytics() async throws {
         // Given
         let posModel = MockPointOfSaleAggregateModel()
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSAnalytics()
         let handler = POSItemActionHandlerFactory.variationActionHandler(
             itemListType: .products(search: true),
             searchTerm: "blue shirt",

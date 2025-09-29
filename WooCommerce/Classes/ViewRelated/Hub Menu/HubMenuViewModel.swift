@@ -85,6 +85,7 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
@@ -110,12 +111,20 @@ final class HubMenuViewModel: ObservableObject {
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
-                wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: siteID,
-                                                                     credentials: credentials)))
+                wooPaymentsPayoutService: WooPaymentsPayoutService(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: stores.sessionManager.defaultSitePublisher
+                        .map { $0?.toJetpackSite() }
+                        .eraseToAnyPublisher(),
+                    appPasswordSupportState: appPasswordSupportState
+                        .$isAvailableAndEnabled
+                        .eraseToAnyPublisher()
+                )
+            )
+        )
     }()
 
-    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
-    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -145,7 +154,6 @@ final class HubMenuViewModel: ObservableObject {
         observePlanName()
         observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
-        createCardPresentPaymentService()
     }
 
     func viewDidAppear() async {
@@ -232,14 +240,6 @@ final class HubMenuViewModel: ObservableObject {
 // MARK: - Helper methods
 //
 private extension HubMenuViewModel {
-    func createCardPresentPaymentService() {
-        Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                             stores: stores,
-                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        }
-    }
-
     func setupSettingsElements() {
         settingsElements = [Settings()]
     }

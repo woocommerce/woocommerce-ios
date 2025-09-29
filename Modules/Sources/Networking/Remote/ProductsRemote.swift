@@ -48,6 +48,7 @@ public protocol ProductsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int,
                         productStatus: ProductStatus?,
+                        productType: ProductType?,
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 
@@ -593,12 +594,14 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
                                productStatus: ProductStatus? = nil,
+                               productType: ProductType? = nil,
                                completion: @escaping (Result<[Int64], Error>) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.fields: ParameterKey.id,
-            ParameterKey.productStatus: productStatus?.rawValue ?? ""
+            ParameterKey.productStatus: productStatus?.rawValue ?? "",
+            ParameterKey.productType: productType?.rawValue ?? ""
         ].filter({ $0.value.isEmpty == false })
 
         let path = Path.products

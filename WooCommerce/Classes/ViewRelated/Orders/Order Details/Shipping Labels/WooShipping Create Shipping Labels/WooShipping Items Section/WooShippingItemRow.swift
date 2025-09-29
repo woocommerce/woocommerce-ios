@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Row for an item to ship with the Woo Shipping extension.
 struct WooShippingItemRow: View {

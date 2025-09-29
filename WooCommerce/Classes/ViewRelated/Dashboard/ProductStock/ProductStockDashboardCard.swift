@@ -2,6 +2,7 @@ import Kingfisher
 import SwiftUI
 import struct Yosemite.ProductReport
 import struct Yosemite.DashboardCard
+import WooFoundation
 
 /// View for displaying stock based on status on the dashboard.
 ///

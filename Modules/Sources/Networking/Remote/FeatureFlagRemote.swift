@@ -29,6 +29,7 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
 public enum RemoteFeatureFlag: Decodable {
     case storeCreationCompleteNotification
     case pointOfSale
+    case appPasswordsForJetpackSites
 
     init?(rawValue: String) {
         switch rawValue {
@@ -36,6 +37,8 @@ public enum RemoteFeatureFlag: Decodable {
             self = .storeCreationCompleteNotification
         case "woo_pos":
             self = .pointOfSale
+        case "woo_app_passwords_for_jetpack_sites":
+            self = .appPasswordsForJetpackSites
         default:
             return nil
         }

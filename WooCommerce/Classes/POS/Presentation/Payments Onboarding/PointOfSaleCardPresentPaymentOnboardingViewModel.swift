@@ -1,16 +1,38 @@
 import Foundation
+import SwiftUI
+import enum Yosemite.CardPresentPaymentOnboardingState
+
+protocol CardPresentPaymentsOnboardingViewConfiguration: ObservableObject {
+    var showSupport: (() -> Void)? { get set }
+    var showURL: ((URL) -> Void)? { get set }
+    var state: CardPresentPaymentOnboardingState { get }
+}
+
+final class CardPresentPaymentOnboardingViewContainer: ObservableObject, Equatable, Identifiable {
+    @Published var configuration: any CardPresentPaymentsOnboardingViewConfiguration
+    @Published var view: any View
+
+    init(configuration: any CardPresentPaymentsOnboardingViewConfiguration, view: any View = EmptyView()) {
+        self.configuration = configuration
+        self.view = view
+    }
+
+    static func == (lhs: CardPresentPaymentOnboardingViewContainer, rhs: CardPresentPaymentOnboardingViewContainer) -> Bool {
+        lhs.configuration.state == rhs.configuration.state
+    }
+}
 
 final class PointOfSaleCardPresentPaymentOnboardingViewModel: ObservableObject {
-    let onboardingViewModel: CardPresentPaymentsOnboardingViewModel
     @Published var onboardingURL: URL?
+    @Published var onboardingViewContainer: CardPresentPaymentOnboardingViewContainer
 
     private let onDismissTap: (() -> Void)?
 
-    init(onboardingViewModel: CardPresentPaymentsOnboardingViewModel,
+    init(onboardingViewContainer: CardPresentPaymentOnboardingViewContainer,
          onDismissTap: (() -> Void)?) {
-        self.onboardingViewModel = onboardingViewModel
+        self.onboardingViewContainer = onboardingViewContainer
         self.onDismissTap = onDismissTap
-        onboardingViewModel.showURL = { [weak self] url in
+        self.onboardingViewContainer.configuration.showURL = { [weak self] url in
             self?.onboardingURL = url
         }
     }

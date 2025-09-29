@@ -10,12 +10,7 @@ final class AddProductImageCollectionViewCell: UICollectionViewCell {
         configureBackground()
         configureImageView()
         configureCellAppearance()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        // Border color is not automatically updated on trait collection changes and thus manually updated here.
-        contentView.layer.borderColor = Colors.borderColor.cgColor
+        observeInterfaceStyleChange()
     }
 }
 
@@ -37,6 +32,13 @@ private extension AddProductImageCollectionViewCell {
         contentView.layer.borderWidth = Constants.borderWidth
         contentView.layer.borderColor = Colors.borderColor.cgColor
         contentView.layer.masksToBounds = Settings.maskToBounds
+    }
+
+    func observeInterfaceStyleChange() {
+        /// The border color is not automatically updated on trait collection changes so we observe for changes and update it manually.
+        applyContentBorderColorOnInterfaceStyleChange {
+            return Colors.borderColor
+        }
     }
 }
 

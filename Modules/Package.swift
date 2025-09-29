@@ -179,7 +179,10 @@ let package = Package(
         ),
         .target(
             name: "WooFoundation",
-            dependencies: ["WooFoundationCore"]
+            dependencies: [
+                "WooFoundationCore",
+                .product(name: "Kingfisher", package: "Kingfisher")
+            ]
         ),
         .target(
             name: "WooFoundationCore",

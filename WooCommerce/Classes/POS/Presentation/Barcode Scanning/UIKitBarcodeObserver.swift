@@ -23,13 +23,13 @@ final class UIKitBarcodeObserver {
     ///   - timeProvider: The time provider to use for timing operations. Defaults to the system time provider.
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
+        analytics: POSAnalyticsProviding,
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
-        analyticsTracker: BarcodeAnalyticsTracker = BarcodeAnalyticsTracker(),
         timeProvider: TimeProvider = DefaultTimeProvider()
     ) {
         self.onScan = onScan
         self.configuration = configuration
-        self.analyticsTracker = analyticsTracker
+        self.analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
         self.timeProvider = timeProvider
     }
 

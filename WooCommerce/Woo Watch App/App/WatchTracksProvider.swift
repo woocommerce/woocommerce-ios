@@ -1,5 +1,6 @@
 import Foundation
 import WatchConnectivity
+import enum WooFoundationCore.WooAnalyticsStat
 
 /// Delegate track events to the paired counterpart using the `WCSession`
 ///

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// A view that displays an error message with a retry CTA when the list of POS items fails to load.
 struct POSListErrorView: View {

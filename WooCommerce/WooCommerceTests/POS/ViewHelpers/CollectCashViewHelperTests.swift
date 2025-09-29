@@ -1,9 +1,10 @@
 import Foundation
 import Testing
 @testable import WooCommerce
+import class WooFoundation.CurrencySettings
 
 struct CollectCashViewHelperTests {
-    let sut = CollectCashViewHelper()
+    let sut = CollectCashViewHelper(currencySettings: CurrencySettings())
 
     @Test func updatechangeDueMessage_when_invalid_orderDecimal_then_returns_nil() {
         // Given

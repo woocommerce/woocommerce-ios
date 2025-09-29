@@ -1,3 +1,4 @@
+import Foundation
 import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
@@ -37,6 +38,11 @@ extension WooAnalyticsEvent {
             static let scanner = "scanner"
             static let step = "step"
             static let scanValue = "scan_value"
+            static let orderID = "order_id"
+            static let orderStatus = "order_status"
+            static let listPosition = "list_position"
+            static let daysSinceCreated = "days_since_created"
+            static let pageNumber = "page_number"
         }
 
         /// Source of the event where the event is triggered
@@ -376,6 +382,65 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBarcodeScannerSetupScannerConnected,
                               properties: [Key.scanner: scanner.analyticsName])
         }
+
+        // MARK: - Orders Analytics Events
+
+        static func ordersMenuItemTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersMenuItemTapped, properties: [:])
+        }
+
+        static func ordersListPullToRefresh() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListPullToRefresh, properties: [:])
+        }
+
+        static func ordersListFetched(millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListFetched,
+                              properties: [Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"])
+        }
+
+        static func ordersListNextPageLoaded(pageNumber: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListNextPageLoaded,
+                              properties: [Key.pageNumber: "\(pageNumber)"])
+        }
+
+        static func ordersListRowTapped(orderID: Int64,
+                                        orderStatus: String,
+                                        listPosition: Int,
+                                        orderCreatedDate: Date,
+                                        siteTimezone: TimeZone) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListRowTapped,
+                              properties: [
+                                Key.orderID: "\(orderID)",
+                                Key.orderStatus: orderStatus,
+                                Key.listPosition: "\(listPosition)",
+                                Key.daysSinceCreated: "\(daysSinceCreated(from: orderCreatedDate, using: siteTimezone))"
+                              ])
+        }
+
+        static func ordersListSearchButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListSearchButtonTapped, properties: [:])
+        }
+
+        static func ordersListSearchResultsFetched(millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrdersListSearchResultsFetched,
+                              properties: [Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"])
+        }
+
+        static func orderDetailsLoaded(orderID: Int64,
+                                       orderStatus: String,
+                                       orderCreatedDate: Date,
+                                       siteTimezone: TimeZone) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrderDetailsLoaded,
+                              properties: [
+                                Key.orderID: "\(orderID)",
+                                Key.orderStatus: orderStatus,
+                                Key.daysSinceCreated: "\(daysSinceCreated(from: orderCreatedDate, using: siteTimezone))"
+                              ])
+        }
+
+        static func orderDetailsEmailReceiptTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleOrderDetailsEmailReceiptTapped, properties: [:])
+        }
     }
 }
 
@@ -386,5 +451,11 @@ private extension WooAnalyticsEvent.PointOfSale {
 
     static func safeGatewayID(for gatewayID: String?) -> String {
         gatewayID ?? "unknown"
+    }
+
+    static func daysSinceCreated(from date: Date, using siteTimezone: TimeZone) -> Int {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        return calendar.dateComponents([.day], from: date, to: Date()).day ?? 0
     }
 }

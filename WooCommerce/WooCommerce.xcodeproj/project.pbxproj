@@ -115,7 +115,7 @@
 		01AB2D142DDC7CD200AA67FD /* POSItemActionHandlerFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */; };
 		01AB2D162DDC8CDA00AA67FD /* MockPOSAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01AB2D152DDC8CD600AA67FD /* MockPOSAnalytics.swift */; };
 		01ABA0282E57579300829DC0 /* POSOrderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0252E57579300829DC0 /* POSOrderListView.swift */; };
-		01ABA0292E57579300829DC0 /* POSDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0242E57579300829DC0 /* POSDetailsView.swift */; };
+		01ABA0292E57579300829DC0 /* POSOrderDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0242E57579300829DC0 /* POSOrderDetailsView.swift */; };
 		01ABA02A2E57579300829DC0 /* POSOrdersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ABA0262E57579300829DC0 /* POSOrdersView.swift */; };
 		01ADC1362C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */; };
 		01ADC1382C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ADC1372C9AB6050036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageView.swift */; };
@@ -3331,7 +3331,7 @@
 		01AB2D112DDC7AD100AA67FD /* PointOfSaleItemListAnalyticsTrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleItemListAnalyticsTrackerTests.swift; sourceTree = "<group>"; };
 		01AB2D132DDC7CD000AA67FD /* POSItemActionHandlerFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSItemActionHandlerFactoryTests.swift; sourceTree = "<group>"; };
 		01AB2D152DDC8CD600AA67FD /* MockPOSAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPOSAnalytics.swift; sourceTree = "<group>"; };
-		01ABA0242E57579300829DC0 /* POSDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSDetailsView.swift; sourceTree = "<group>"; };
+		01ABA0242E57579300829DC0 /* POSOrderDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderDetailsView.swift; sourceTree = "<group>"; };
 		01ABA0252E57579300829DC0 /* POSOrderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrderListView.swift; sourceTree = "<group>"; };
 		01ABA0262E57579300829DC0 /* POSOrdersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSOrdersView.swift; sourceTree = "<group>"; };
 		01ADC1352C9AB4810036F7D2 /* PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel.swift; sourceTree = "<group>"; };
@@ -6627,7 +6627,7 @@
 				01B7C9C92E71C8D00004BE9D /* POSOrderListEmptyViewModel.swift */,
 				01C21AB72E66EC14008E4D77 /* POSOrderDetailsEmptyView.swift */,
 				01C21AB52E66EB70008E4D77 /* POSOrderDetailsLoadingView.swift */,
-				01ABA0242E57579300829DC0 /* POSDetailsView.swift */,
+				01ABA0242E57579300829DC0 /* POSOrderDetailsView.swift */,
 				01ABA0252E57579300829DC0 /* POSOrderListView.swift */,
 				01ABA0262E57579300829DC0 /* POSOrdersView.swift */,
 			);
@@ -15370,7 +15370,7 @@
 				EE9D031B2B89E4470077CED1 /* FilterOrdersByProduct+Analytics.swift in Sources */,
 				20C6E7512CDE4AEA00CD124C /* ItemListState.swift in Sources */,
 				01ABA0282E57579300829DC0 /* POSOrderListView.swift in Sources */,
-				01ABA0292E57579300829DC0 /* POSDetailsView.swift in Sources */,
+				01ABA0292E57579300829DC0 /* POSOrderDetailsView.swift in Sources */,
 				01ABA02A2E57579300829DC0 /* POSOrdersView.swift in Sources */,
 				2DB891662E27F0830001B175 /* Address+Shared.swift in Sources */,
 				DEC17AE02D82C513005A6E6D /* WooShippingHazmatDetailView.swift in Sources */,

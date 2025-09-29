@@ -1,5 +1,4 @@
 import Foundation
-import protocol Experiments.FeatureFlagService
 import protocol Yosemite.StoresManager
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -8,6 +7,7 @@ import struct Yosemite.Order
 import enum Yosemite.Plugin
 import protocol WooFoundation.Analytics
 import class Yosemite.PluginsService
+import WooFoundationCore
 
 protocol POSReceiptSending {
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws
@@ -17,54 +17,46 @@ final class POSReceiptSender: POSReceiptSending {
     init(siteID: Int64,
          orderService: POSOrderServiceProtocol,
          receiptService: POSReceiptServiceProtocol,
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
+         analytics: POSAnalyticsProviding,
+         pluginsService: PluginsServiceProtocol
+    ) {
         self.siteID = siteID
         self.orderService = orderService
         self.receiptService = receiptService
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pluginsService = pluginsService
     }
 
     private let siteID: Int64
     private let orderService: POSOrderServiceProtocol
     private let receiptService: POSReceiptServiceProtocol
-    private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
+    private let analytics: POSAnalyticsProviding
     private let pluginsService: PluginsServiceProtocol
 
     @MainActor
     func sendReceipt(orderID: Int64, recipientEmail: String) async throws {
-        var isEligibleForPOSReceipt: Bool?
+        var isEligibleForPOSReceipt: Bool = false
         do {
-            let posReceiptEligibility: Bool
-            if featureFlagService.isFeatureFlagEnabled(.pointOfSaleReceipts) {
-                posReceiptEligibility = isPluginSupported(
-                    .wooCommerce,
-                    minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
-                    siteID: siteID
-                )
-            } else {
-                posReceiptEligibility = false
-            }
-            isEligibleForPOSReceipt = posReceiptEligibility
+            isEligibleForPOSReceipt = isPluginSupported(
+                .wooCommerce,
+                minimumVersion: POSReceiptEligibilityConstants.wcPluginMinimumVersion,
+                siteID: siteID
+            )
 
             // Only update order email for previous POS receipt API version
             // POS receipt now handles email update internally
-            if !posReceiptEligibility {
+            if !isEligibleForPOSReceipt {
                 try await orderService.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
             }
 
-            try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: posReceiptEligibility)
+            try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
 
-            analytics.track(.receiptEmailSuccess, withProperties: ["eligible_for_pos_receipt": posReceiptEligibility])
+            analytics.track(.receiptEmailSuccess, parameters: ["eligible_for_pos_receipt": isEligibleForPOSReceipt])
         } catch {
             let properties = [
                 "eligible_for_pos_receipt": isEligibleForPOSReceipt
-            ].compactMapValues( { $0 })
-            analytics.track(.receiptEmailFailed, properties: properties, error: error)
+            ]
+            analytics.track(.receiptEmailFailed, parameters: properties, error: error)
             throw error
         }
     }

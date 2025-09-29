@@ -279,7 +279,7 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
                                                                     }
                                                                     return false
                                                                 })
-        ]) ?? false
+                                                            ]) ?? false
 
         // Even though WooCommerce Core returns Int or null values,
         // some plugins alter the field value from Int to Decimal or String.
@@ -309,7 +309,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
         let menuOrder = try container.decode(Int64.self, forKey: .menuOrder)
 
         // Subscription settings for subscription variations
-        let subscription = try? container.decodeIfPresent(ProductMetadataExtractor.self, forKey: .metadata)?.extractProductSubscription()
+        let allMetaData = [MetaData].decodeFlexibly(from: container, forKey: .metadata)
+        let metaDataExtractor = ProductMetadataExtractor(metadata: allMetaData)
+        let subscription = try? metaDataExtractor.extractProductSubscription()
 
         // Min/Max Quantities properties
         let minAllowedQuantity = container.failsafeDecodeIfPresent(stringForKey: .minAllowedQuantity)

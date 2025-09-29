@@ -73,6 +73,9 @@ extension UserDefaults {
 
         // Application passwords experiment remote FF cached value
         case applicationPasswordsExperimentRemoteFFValue
+
+        // CIAB Bookings tab availability
+        case ciabBookingsTabAvailable
     }
 }
 

@@ -1,5 +1,6 @@
 import Foundation
 import WordPressShared
+import NetworkingCore
 
 /// Helper to extract specific data from inside `Product` metadata.
 /// Sample Json:
@@ -21,25 +22,23 @@ import WordPressShared
 /// }
 /// ]
 ///
-internal struct ProductMetadataExtractor: Decodable {
+struct ProductMetadataExtractor {
 
-    private typealias DecodableDictionary = [String: AnyDecodable]
     private typealias AnyDictionary = [String: Any?]
 
     /// Internal metadata representation
     ///
-    private let metadata: [DecodableDictionary]
+    private let metadata: [MetaData]
 
-    /// Decode main metadata array as an untyped dictionary.
+    /// Initialize with already-decoded metadata array
     ///
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.metadata = try container.decode([DecodableDictionary].self)
+    init(metadata: [MetaData]) {
+        self.metadata = metadata
     }
 
     /// Searches product metadata for subscription data and converts it to a `ProductSubscription` if possible.
     ///
-    internal func extractProductSubscription() throws -> ProductSubscription? {
+    func extractProductSubscription() throws -> ProductSubscription? {
         let subscriptionMetadata = filterMetadata(with: Constants.subscriptionPrefix)
 
         guard !subscriptionMetadata.isEmpty else {
@@ -54,7 +53,7 @@ internal struct ProductMetadataExtractor: Decodable {
 
     /// Extracts a `String` metadata value for the provided key.
     ///
-    internal func extractStringValue(forKey key: String) -> String? {
+    func extractStringValue(forKey key: String) -> String? {
         let metaData = filterMetadata(with: key)
         let keyValueMetadata = getKeyValueDictionary(from: metaData)
         return keyValueMetadata.valueAsString(forKey: key)
@@ -62,22 +61,25 @@ internal struct ProductMetadataExtractor: Decodable {
 
     /// Filters product metadata using the provided prefix.
     ///
-    private func filterMetadata(with prefix: String) -> [DecodableDictionary] {
-        metadata.filter { object in
-            let objectKey = object["key"]?.value as? String ?? ""
-            return objectKey.hasPrefix(prefix)
-        }
+    private func filterMetadata(with prefix: String) -> [MetaData] {
+        metadata.filter { $0.key.hasPrefix(prefix) }
     }
 
     /// Parses provided metadata to return a dictionary with each metadata object's key and value.
     ///
-    private func getKeyValueDictionary(from metadata: [DecodableDictionary]) -> AnyDictionary {
-        metadata.reduce(AnyDictionary()) { (dict, object) in
-            var newDict = dict
-            let objectKey = object["key"]?.value as? String ?? ""
-            let objectValue = object["value"]?.value
-            newDict.updateValue(objectValue, forKey: objectKey)
-            return newDict
+    private func getKeyValueDictionary(from metadata: [MetaData]) -> AnyDictionary {
+        metadata.reduce(into: AnyDictionary()) { dict, object in
+            // For JSON values, decode them to get the actual object
+            if object.value.isJson {
+                if let data = object.value.stringValue.data(using: .utf8),
+                   let jsonObject = try? JSONSerialization.jsonObject(with: data, options: []) {
+                    dict[object.key] = jsonObject
+                } else {
+                    dict[object.key] = object.value.stringValue
+                }
+            } else {
+                dict[object.key] = object.value.stringValue
+            }
         }
     }
 

@@ -22,7 +22,7 @@ final class MockCIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 
     func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
-        return !mockedCIABDisabledFeatures.contains(feature)
+        return !mockedCIABDisabledFeatures.contains(feature) || !isCurrentSiteCIAB
     }
 
     func isFeatureSupported(_ feature: CIABAffectedFeature, for site: Site) -> Bool {

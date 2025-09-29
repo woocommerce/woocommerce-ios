@@ -120,8 +120,8 @@ public class ProductStore: Store {
             validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         case let .replaceProductLocally(product, onCompletion):
             replaceProductLocally(product: product, onCompletion: onCompletion)
-        case let .checkIfStoreHasProducts(siteID, status, onCompletion):
-            checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: onCompletion)
+        case let .checkIfStoreHasProducts(siteID, status, productType, onCompletion):
+            checkIfStoreHasProducts(siteID: siteID, status: status, productType: productType, onCompletion: onCompletion)
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
@@ -562,19 +562,18 @@ private extension ProductStore {
     /// Checks if the store already has any products with the given status.
     /// Returns `false` if the store has no products.
     ///
-    func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus?, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasProducts(siteID: Int64,
+                                 status: ProductStatus?,
+                                 productType: ProductType?,
+                                 onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
-        if let products = storage.loadProducts(siteID: siteID), !products.isEmpty {
-            if let status, (products.filter { $0.statusKey == status.rawValue }.isEmpty) == false {
-                return onCompletion(.success(true))
-            } else if status == nil {
-                return onCompletion(.success(true))
-            }
+        if storage.hasProducts(siteID: siteID, status: status?.rawValue, type: productType?.rawValue) {
+            return onCompletion(.success(true))
         }
 
         // If there are no locally stored products, then check remote.
-        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status) { result in
+        remote.loadProductIDs(for: siteID, pageNumber: 1, pageSize: 1, productStatus: status, productType: productType) { result in
             switch result {
             case .success(let ids):
                 onCompletion(.success(ids.isEmpty == false))
@@ -1368,6 +1367,7 @@ public enum ProductUpdateError: Error, Equatable {
     case duplicatedSKU
     case invalidSKU
     case invalidGlobalUniqueIdentifier
+    case invalidOrDuplicatedGlobalUniqueID
     case passwordCannotBeUpdated
     case notFoundInStorage
     case variationInvalidImageId
@@ -1394,6 +1394,7 @@ public enum ProductUpdateError: Error, Equatable {
 
     private enum ErrorCode: String {
         case invalidSKU = "product_invalid_sku"
+        case invalidOrDuplicatedGlobalUniqueID = "product_invalid_global_unique_id"
         case variationInvalidImageId = "woocommerce_variation_invalid_image_id"
         case invalidMaxQuantity = "woocommerce_rest_invalid_max_quantity"
         case invalidMinQuantity = "woocommerce_rest_invalid_min_quantity"
@@ -1408,6 +1409,8 @@ public enum ProductUpdateError: Error, Equatable {
                 return .variationInvalidImageId
             case .invalidMaxQuantity, .invalidMinQuantity, .invalidVariationMaxQuantity, .invalidVariationMinQuantity:
                 return .generic(message: message ?? "")
+            case .invalidOrDuplicatedGlobalUniqueID:
+                return .invalidOrDuplicatedGlobalUniqueID
             }
         }
     }
@@ -1426,6 +1429,10 @@ extension ProductUpdateError: LocalizedError {
             return NSLocalizedString("productInventorySettings.invalidGlobalUniqueIdentifier.error",
                                      value: "Please enter only numbers and hyphens (-).",
                                      comment: "The message of the alert when there is an error updating the product global unique identifier")
+        case .invalidOrDuplicatedGlobalUniqueID:
+            return NSLocalizedString("productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID",
+                                     value: "Invalid or duplicated GTIN, UPC, EAN or ISBN.",
+                                     comment: "Error message when saving an invalid or duplicated product global unique ID")
         case .generic(let message):
             return message
         case .unknown(let error):

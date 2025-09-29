@@ -31,6 +31,9 @@ extension Storage.Site: ReadOnlyConvertible {
         isAdmin = site.isAdmin
         wasEcommerceTrial = site.wasEcommerceTrial
         hasSSOEnabled = site.hasSSOEnabled
+        isGarden = site.isGarden
+        gardenName = site.gardenName
+        gardenPartner = site.gardenPartner
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -58,6 +61,9 @@ extension Storage.Site: ReadOnlyConvertible {
                     isAdmin: isAdmin,
                     wasEcommerceTrial: wasEcommerceTrial,
                     hasSSOEnabled: hasSSOEnabled,
-                    applicationPasswordAvailable: false) // to be updated separately
+                    applicationPasswordAvailable: false, // to be updated separately
+                    isGarden: isGarden,
+                    gardenName: gardenName,
+                    gardenPartner: gardenPartner)
     }
 }

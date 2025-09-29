@@ -3,19 +3,21 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @FocusState private var isTextFieldFocused: Bool
 
-    private let viewHelper = CollectCashViewHelper()
+    private let viewHelper: CollectCashViewHelper
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var changeDueMessage: String?
 
-    let orderTotal: String
+    private let orderTotal: String
 
     @State private var buttonFrame: CGRect = .zero
     @State private var keyboardFrame: CGRect = .zero
@@ -31,10 +33,10 @@ struct PointOfSaleCollectCashView: View {
                                           isLoading: isLoading)
     }
 
-    @StateObject private var textFieldViewModel = FormattableAmountTextFieldViewModel(size: .extraLarge,
-                                                                                      locale: Locale.autoupdatingCurrent,
-                                                                                      storeCurrencySettings: ServiceLocator.currencySettings,
-                                                                                      allowNegativeNumber: false)
+    init(orderTotal: String, currencySettings: CurrencySettings) {
+        self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
+        self.orderTotal = orderTotal
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -54,18 +56,20 @@ struct PointOfSaleCollectCashView: View {
                         Spacer()
 
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
-                            FormattableAmountTextField(viewModel: textFieldViewModel, style: .pos)
-                                .focused($isTextFieldFocused)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                                .onSubmit {
+                            externalViews.createFormattableAmountTextField(
+                                preset: viewHelper.parseCurrency(orderTotal),
+                                font: POSFontStyle.posHeadingRegular.font(maximumContentSizeCategory: UIContentSizeCategory(dynamicTypeSize)),
+                                onSubmit: {
                                     Task { @MainActor in
                                         await submitCashAmount()
                                     }
-                                }
-                                .onChange(of: textFieldViewModel.amount) { _, newValue in
+                                },
+                                onChange: { newValue in
                                     textFieldAmountInput = newValue
                                     updateChangeDueMessage()
                                 }
+                            )
+                            .focused($isTextFieldFocused)
 
                             if let changeDue = changeDueMessage {
                                 Text(changeDue)
@@ -117,7 +121,7 @@ struct PointOfSaleCollectCashView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            prefillOrderTotal()
+            isTextFieldFocused = true
         }
     }
 
@@ -130,7 +134,7 @@ struct PointOfSaleCollectCashView: View {
 
 private extension PointOfSaleCollectCashView {
     private func submitCashAmount() async {
-        ServiceLocator.analytics.track(.pointOfSaleCashPaymentTapped)
+        analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true
         do {
             try await markComplete()
@@ -145,13 +149,6 @@ private extension PointOfSaleCollectCashView {
         changeDueMessage = viewHelper.updatechangeDueMessage(
             orderTotal: orderTotal,
             textFieldAmountInput: textFieldAmountInput)
-    }
-
-    private func prefillOrderTotal() {
-        if let orderDecimal = viewHelper.parseCurrency(orderTotal) {
-            textFieldViewModel.presetAmount(orderDecimal)
-        }
-        isTextFieldFocused = true
     }
 }
 
@@ -200,7 +197,7 @@ private extension PointOfSaleCollectCashView {
 
 #if DEBUG
 #Preview {
-    PointOfSaleCollectCashView(orderTotal: "$1.23")
+    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// Hosting controller that wraps the `AdminRoleRequiredView`.
 final class AdminRoleRequiredHostingController: UIHostingController<AdminRoleRequiredView> {

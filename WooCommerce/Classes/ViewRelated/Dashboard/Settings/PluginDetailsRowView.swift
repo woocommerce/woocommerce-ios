@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import WooFoundation
 
 struct PluginListView: View {
     private let siteID: Int64

@@ -7,6 +7,7 @@ struct ItemList<HeaderView: View>: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
+    @Environment(\.posAnalytics) private var analytics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     // Navigation only uses this on iOS 17
@@ -87,7 +88,9 @@ struct ItemList<HeaderView: View>: View {
                                                 sourceViewType: .init(
                                                     isSearching: posModel.viewStateCoordinatorForView.selectedItemListType.isSearching,
                                                     searchTerm: posModel.viewStateCoordinatorForView.searchTerm
-                                                )))
+                                                ),
+                                                analytics: analytics
+                                               ))
                     .barcodeScanning { scannedCode in
                         posModel.barcodeScanned(scannedCode)
                     },
@@ -113,7 +116,7 @@ struct ItemList<HeaderView: View>: View {
                 GhostItemCardView()
             }
         case .inlineError(_, let errorState, .pagination):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadNextItems(base: node)
@@ -127,7 +130,7 @@ struct ItemList<HeaderView: View>: View {
     @ViewBuilder var headerRows: some View {
         switch state {
         case .inlineError(_, let errorState, .refresh):
-            ItemListErrorCardView(errorState: errorState,
+            POSListInlineErrorView(errorState: errorState,
                                   buttonAction: {
                 Task { @MainActor in
                     await itemsController.loadItems(base: .root)

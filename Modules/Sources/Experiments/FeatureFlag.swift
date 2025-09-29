@@ -179,10 +179,6 @@ public enum FeatureFlag: Int {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables sending POS specific email receipts for eligible stores
-    ///
-    case pointOfSaleReceipts
-
     /// Enables displaying POS as a tab in the tab bar for stores in eligible countries
     ///
     case pointOfSaleAsATabi2
@@ -207,12 +203,12 @@ public enum FeatureFlag: Int {
     ///
     case pointOfSaleHistoricalOrdersi1
 
-    /// Enables switching Jetpack requests to use application password
-    ///
-    case applicationPasswordExperiment
-
     /// Enables Local Catalog i1 in Point of Sale.
     /// It syncs products and variations to local storage and display them in POS for quick access.
     ///
     case pointOfSaleLocalCatalogi1
+
+    /// Enables a new Bookings tab for CIAB sites
+    ///
+    case ciabBookings
 }

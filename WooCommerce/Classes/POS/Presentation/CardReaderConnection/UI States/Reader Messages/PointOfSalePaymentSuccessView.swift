@@ -6,7 +6,6 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var isShowingSendReceiptView: Bool = false
-    @State private var isShowingReceiptNotEligibleBanner: Bool = false
     @State private var isViewLoaded: Bool = false
 
     var body: some View {
@@ -71,26 +70,16 @@ struct PointOfSalePaymentSuccessView: View {
 
                 Spacer().frame(height: POSSpacing.xxLarge)
 
-                PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView,
-                                      isShowingReceiptNotEligibleBanner: $isShowingReceiptNotEligibleBanner)
-                .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
-                .opacity(isViewLoaded ? 1 : 0)
+                PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView)
+                    .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
+                    .opacity(isViewLoaded ? 1 : 0)
 
                 Spacer()
             }
             .multilineTextAlignment(.center)
 
-            if isShowingReceiptNotEligibleBanner {
-                VStack {
-                    Spacer()
-                    POSReceiptEligibilityBanner(isVisible: $isShowingReceiptNotEligibleBanner)
-                        .transition(.move(edge: .bottom))
-                        .padding(.bottom)
-                }
-                .edgesIgnoringSafeArea(.bottom)
-            }
         }
     }
 

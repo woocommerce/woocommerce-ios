@@ -1898,6 +1898,26 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(hasPublishedProducts)
     }
 
+    func test_checkIfStoreHasProducts_returns_expected_result_when_local_storage_has_no_product_of_given_product_type_and_remote_returns_empty_array() throws {
+        // Given
+        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID, productTypeKey: "simple"))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-ids-only-empty")
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = ProductAction.checkIfStoreHasProducts(siteID: self.sampleSiteID, type: .booking) { result in
+                promise(result)
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasBookableProducts = try XCTUnwrap(result.get())
+        XCTAssertFalse(hasBookableProducts)
+    }
+
     // MARK: - ProductAction.generateProductDescription
 
     func test_generateProductDescription_returns_text_on_success() throws {

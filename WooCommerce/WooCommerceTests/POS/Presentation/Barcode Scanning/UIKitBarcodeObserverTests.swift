@@ -15,6 +15,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -47,6 +48,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -66,6 +68,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -90,6 +93,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -119,6 +123,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -148,6 +153,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -180,6 +186,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )
@@ -209,9 +216,9 @@ struct UIKitBarcodeObserverTests {
     func uikit_observer_with_special_characters_when_scanned_produces_correct_barcode() {
         // Given
         var results: [Result<String, HIDBarcodeParserError>] = []
-        let viewController = UIViewController()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: {
                 results.append($0)
             }
@@ -244,6 +251,7 @@ struct UIKitBarcodeObserverTests {
         let mockTimeProvider = MockTimeProvider()
         let observer = UIKitBarcodeObserver(
             configuration: Self.testConfiguration,
+            analytics: MockPOSAnalytics(),
             onScan: { results.append($0) },
             timeProvider: mockTimeProvider
         )

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// The size variant of the POS button.
 enum POSButtonSize {
@@ -6,18 +7,31 @@ enum POSButtonSize {
     case extraSmall
 }
 
-/// Filled button style in POS that can show a loading indicator.
+/// Button state for different visual presentations
+enum POSButtonState {
+    case idle
+    case loading
+    case success
+}
+
+/// Filled button style in POS that can show loading and success states.
 struct POSFilledButtonStyle: ButtonStyle {
     private let size: POSButtonSize
-    private let isLoading: Bool
+    private let state: POSButtonState
 
     init(size: POSButtonSize, isLoading: Bool = false) {
         self.size = size
-        self.isLoading = isLoading
+        self.state = isLoading ? .loading : .idle
+    }
+
+    init(size: POSButtonSize, state: POSButtonState) {
+        self.size = size
+        self.state = state
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        POSButton(configuration: configuration, variant: .filled, size: size, isLoading: isLoading)
+        POSButtonStyleInternal(configuration: configuration, variant: .filled, size: size, state: state)
+            .disabled(state != .idle)
     }
 }
 
@@ -30,9 +44,10 @@ struct POSOutlinedButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        POSButton(configuration: configuration, variant: .outlined, size: size, isLoading: false)
+        POSButtonStyleInternal(configuration: configuration, variant: .outlined, size: size, state: .idle)
     }
 }
+
 
 /// The visual variant of the POS button.
 fileprivate enum POSButtonVariant {
@@ -40,22 +55,24 @@ fileprivate enum POSButtonVariant {
     case outlined
 }
 
-private struct POSButton: View {
+private struct POSButtonStyleInternal: View {
     @Environment(\.isEnabled) var isEnabled
 
     let configuration: ButtonStyleConfiguration
     let variant: POSButtonVariant
     let size: POSButtonSize
-    let isLoading: Bool
+    let state: POSButtonState
 
     var body: some View {
         Group {
             containerView {
                 ZStack(alignment: .center) {
                     configuration.label
-                        .opacity(isLoading ? 0 : 1)
+                        .opacity(state == .idle ? 1 : 0)
                     progressView
-                        .renderedIf(isLoading)
+                        .renderedIf(state == .loading)
+                    successView
+                        .renderedIf(state == .success)
                 }
             }
         }
@@ -91,12 +108,18 @@ private struct POSButton: View {
             .progressViewStyle(POSButtonProgressViewStyle(size: size.progressViewDimensions.size, lineWidth: size.progressViewDimensions.lineWidth))
     }
 
+    private var successView: some View {
+        Image(systemName: "checkmark.circle")
+            .font(size == .normal ? .title2 : .body)
+            .foregroundColor(.posOnPrimaryContainer)
+    }
+
     private var backgroundColor: Color {
         switch (variant, isEnabled) {
         case (.filled, true):
                 .posPrimaryContainer
         case (.filled, false):
-                isLoading ? .posPrimaryContainer : .posDisabledContainer
+                state != .idle ? .posPrimaryContainer : .posDisabledContainer
         case (.outlined, _):
                 .clear
         }
@@ -125,9 +148,9 @@ private struct POSButton: View {
     }
 }
 
-// MARK: - POSButton Constants
+// MARK: - POSButtonStyleInternal Constants
 
-private extension POSButton {
+private extension POSButtonStyleInternal {
     enum Constants {
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
         static let borderStrokeWidth: CGFloat = 2.0
@@ -190,6 +213,10 @@ struct POSButtonStyle_Previews: View {
                 LoadingPreviewSection(title: "Loading Buttons - Normal", size: .normal)
 
                 LoadingPreviewSection(title: "Loading Buttons - Extra Small", size: .extraSmall)
+
+                LoadingStatePreviewSection(title: "Loading State Buttons - Normal", size: .normal)
+
+                LoadingStatePreviewSection(title: "Loading State Buttons - Extra Small", size: .extraSmall)
 
                 // Example with long text
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -258,6 +285,40 @@ private struct LoadingPreviewSection: View {
             Button("Disabled Loading Button") {}
                 .buttonStyle(POSFilledButtonStyle(size: size, isLoading: true))
                 .disabled(true)
+        }
+    }
+}
+
+private struct LoadingStatePreviewSection: View {
+    let title: String
+    let size: POSButtonSize
+    @State private var currentState: POSButtonState = .idle
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(title)
+                .font(.headline)
+
+            Button("Cycle States") {
+                switch currentState {
+                case .idle:
+                    currentState = .loading
+                case .loading:
+                    currentState = .success
+                case .success:
+                    currentState = .idle
+                }
+            }
+            .buttonStyle(POSFilledButtonStyle(size: size, state: currentState))
+
+            Button("Idle State") {}
+                .buttonStyle(POSFilledButtonStyle(size: size, state: .idle))
+
+            Button("Loading State") {}
+                .buttonStyle(POSFilledButtonStyle(size: size, state: .loading))
+
+            Button("Success State") {}
+                .buttonStyle(POSFilledButtonStyle(size: size, state: .success))
         }
     }
 }

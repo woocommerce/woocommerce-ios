@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 enum POSItemImageState {
     case normal

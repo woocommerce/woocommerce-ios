@@ -7,7 +7,7 @@ struct PointOfSaleEntryPointView: View {
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
-    @State private var orderListModel: PointOfSaleOrderListModel
+    @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -24,12 +24,13 @@ struct PointOfSaleEntryPointView: View {
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteTimezone: TimeZone
+    private let services: POSDependencyProviding
 
     init(itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
          couponsController: PointOfSaleCouponsControllerProtocol,
          couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
-         ordersController: PointOfSaleSearchingOrderListControllerProtocol,
+         ordersController: POSSearchingOrderListControllerProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderController: PointOfSaleOrderControllerProtocol,
@@ -40,7 +41,8 @@ struct PointOfSaleEntryPointView: View {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         siteTimezone: TimeZone = .current) {
+         siteTimezone: TimeZone = .current,
+         services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         self.itemsController = itemsController
@@ -54,9 +56,10 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
-        self.orderListModel = PointOfSaleOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker, featureFlagService: services.featureFlags)
+        self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
+        self.services = services
     }
 
     var body: some View {
@@ -81,11 +84,18 @@ struct PointOfSaleEntryPointView: View {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController,
                 settingsController: settingsController,
+                analytics: services.analytics,
                 collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService)
         }
+        .environment(\.posAnalytics, services.analytics)
+        .environment(\.posCurrencyProvider, services.currency)
+        .environment(\.posFeatureFlags, services.featureFlags)
+        .environment(\.posConnectivityProvider, services.connectivity)
+        .environment(\.posExternalNavigation, services.externalNavigation)
+        .environment(\.posExternalViews, services.externalViews)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
@@ -109,7 +119,7 @@ struct PointOfSaleEntryPointView: View {
                               purchasableItemsSearchController: PointOfSalePreviewItemsController(),
                               couponsController: PointOfSalePreviewCouponsController(),
                               couponsSearchController: PointOfSalePreviewCouponsController(),
-                              ordersController: PointOfSalePreviewOrderListController(),
+                              ordersController: POSConfigurablePreviewOrderListController(),
                               onPointOfSaleModeActiveStateChange: { _ in },
                               cardPresentPaymentService: CardPresentPaymentPreviewService(),
                               orderController: PointOfSalePreviewOrderController(),
@@ -119,7 +129,8 @@ struct PointOfSaleEntryPointView: View {
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 0))
+                              posEligibilityChecker: POSTabEligibilityChecker(site: .defaultMock()),
+                              services: POSPreviewServices())
 }
 
 #endif

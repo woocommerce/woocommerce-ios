@@ -7,6 +7,7 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
 
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
         GeometryReader { geometry in
@@ -33,12 +34,10 @@ struct PointOfSaleOrderSyncCouponsErrorMessageView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
 
                         Button(retryActionTitle, action: {
-                            ServiceLocator.analytics.track(
-                                event: .PointOfSale.itemRemovedFromCart(
+                            analytics.track(event: .PointOfSale.itemRemovedFromCart(
                                     sourceView: .error,
                                     itemType: .coupon
-                                )
-                            )
+                                ))
                             posModel.removeAllItemsFromCart(types: [.coupon])
                             retryHandler()
                         })

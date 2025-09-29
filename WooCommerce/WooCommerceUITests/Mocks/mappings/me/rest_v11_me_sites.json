@@ -4,7 +4,7 @@
         "method": "GET",
         "queryParameters": {
           "fields": {
-            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities,was_ecommerce_trial,plan,jetpack_modules"
+            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities,was_ecommerce_trial,plan,jetpack_modules,is_garden,garden_name,garden_partner"
           },
           "options": {
             "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public,can_blaze"
@@ -57,6 +57,9 @@
                       "jetpack": true,
                       "jetpack_connection": true,
                       "was_ecommerce_trial": false,
+                      "is_garden": false,
+                      "garden_name": null,
+                      "garden_partner": null,
                       "options": {
                         "timezone": "",
                         "gmt_offset": 0,

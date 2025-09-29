@@ -1,4 +1,5 @@
 import Foundation
+import WooFoundation
 
 struct CartViewHelper {
     func itemsInCartLabel(for itemsCount: Int) -> String? {

@@ -28,6 +28,8 @@ private extension POSIneligibleReason {
             return "unknown_wc_plugin"
         case .unsupportedIOSVersion:
             return "ios_version"
+        case .unsupportedInCIABSites:
+            return "feature_unsupported_in_ciab"
         case .siteSettingsNotAvailable,
              .selfDeallocated:
             return "other"

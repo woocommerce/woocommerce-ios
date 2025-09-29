@@ -598,6 +598,24 @@ public extension OrdersRemote {
         case customerID
         case currency
     }
+
+    /// Loads a single order asynchronously for POS
+    /// - Parameters:
+    ///   - siteID: Site for which we'll fetch the order.
+    ///   - orderID: ID of the order to load.
+    /// - Returns: The loaded Order.
+    /// - Throws: Network or parsing errors.
+    func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        let path = "\(Constants.ordersPath)/\(orderID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                   method: .get,
+                                   siteID: siteID,
+                                   path: path,
+                                   availableAsRESTRequest: true)
+        let mapper = OrderMapper(siteID: siteID)
+
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 private extension OrdersRemote.OrderCreationSource {

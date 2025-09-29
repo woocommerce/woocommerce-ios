@@ -1,0 +1,1 @@
+Dieses Update vereinfacht dein WooCommerce-Erlebnis durch verbesserte Barzahlungen, einfacheren Zugriff auf POS-Einstellungen und genaue HAZMAT-Details auf Versandetiketten. Außerdem haben wir ein Blaze-Flow-Problem behoben, sodass sich Kampagnen wie erwartet verhalten. Schneller, übersichtlicher und zuverlässiger – genau so, wie du es brauchst!

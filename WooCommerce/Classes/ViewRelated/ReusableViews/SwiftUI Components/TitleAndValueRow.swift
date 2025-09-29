@@ -19,6 +19,7 @@ struct TitleAndValueRow: View {
     private let selectionStyle: SelectionStyle
     private let isLoading: Bool
     private let horizontalPadding: CGFloat
+    private let isMultiline: Bool
     private let action: () -> Void
 
     /// Static width for title label. Used to align values between different rows.
@@ -48,6 +49,7 @@ struct TitleAndValueRow: View {
          selectionStyle: SelectionStyle = .none,
          isLoading: Bool = false,
          horizontalPadding: CGFloat = Constants.horizontalPadding,
+         isMultiline: Bool = true,
          action: @escaping () -> Void = {}) {
         self.title = title
         self.titleSuffixImage = titleSuffixImage
@@ -58,6 +60,7 @@ struct TitleAndValueRow: View {
         self.selectionStyle = selectionStyle
         self.isLoading = isLoading
         self.horizontalPadding = horizontalPadding
+        self.isMultiline = isMultiline
         self.action = action
     }
 
@@ -82,6 +85,8 @@ struct TitleAndValueRow: View {
                     Text(value.text)
                         .style(for: value, bold: bold, highlighted: false)
                         .multilineTextAlignment(valueTextAlignment)
+                        .lineLimit(isMultiline ? nil : 1)
+                        .truncationMode(.tail)
                         .frame(maxWidth: .infinity, alignment: valueFrameAlignment)
                         .padding(.vertical, Constants.verticalPadding)
                         .redacted(reason: isLoading ? .placeholder : [])

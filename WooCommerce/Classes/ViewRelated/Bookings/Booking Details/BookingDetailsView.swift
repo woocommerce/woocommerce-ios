@@ -134,7 +134,8 @@ private extension BookingDetailsView {
                 TitleAndValueRow(
                     title: row.title,
                     value: .placeholder(row.value),
-                    horizontalPadding: 0
+                    horizontalPadding: 0,
+                    isMultiline: false
                 )
 
                 Divider()

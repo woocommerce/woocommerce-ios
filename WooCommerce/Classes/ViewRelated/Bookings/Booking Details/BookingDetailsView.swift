@@ -121,7 +121,7 @@ private extension BookingDetailsView {
 
     func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {
         TitleAndValueRow(
-            title: Localization.attendanceRowTitle,
+            title: Localization.statusRowTitle,
             value: .placeholder(content.value),
             selectionStyle: .disclosure,
             horizontalPadding: 0
@@ -165,7 +165,9 @@ private extension BookingDetailsView {
     enum Localization {
         static let rescheduleButtonTitle = "Reschedule"
         static let cancelBooking = "Cancel booking"
-        static let attendanceRowTitle = "Attendance"
+
+        /// Attendance section
+        static let statusRowTitle = "Status"
     }
 }
 

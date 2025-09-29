@@ -26,8 +26,8 @@ final class BookingDetailsViewModel: ObservableObject {
         )
 
         let attendanceSection = Section(
-            header: .empty,
-            footerText: "Mark attendance to keep your reports accurate and spot booking trends.",
+            header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
+            footerText: Localization.attendanceSectionFooterText,
             content: .attendance(AttendanceContent())
         )
 
@@ -45,6 +45,18 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.appointmentDetails.headerTitle",
             value: "Appointment Details",
             comment: "Header title for the 'Appointment Details' section in the booking details screen."
+        )
+
+        static let attendanceSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.attendance.headerTitle",
+            value: "Attendance",
+            comment: "Header title for the 'Attendance' section in the booking details screen."
+        )
+
+        static let attendanceSectionFooterText = NSLocalizedString(
+            "BookingDetailsView.attendance.footerText",
+            value: "Mark attendance to keep your reports accurate and spot booking trends.",
+            comment: "Footer text for the 'Attendance' section in the booking details screen."
         )
     }
 }

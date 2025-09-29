@@ -30,7 +30,6 @@ struct BookingListView: View {
                 }
             }
             .navigationTitle(Localization.viewTitle)
-            .toolbarBackground(Color(.listForeground(modal: false)), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {

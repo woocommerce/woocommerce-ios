@@ -14,18 +14,21 @@ public final class POSOrderListFetchStrategyFactory: POSOrderListFetchStrategyFa
     private let siteID: Int64
     private let ordersRemote: OrdersRemote
     private let currencyFormatter: CurrencyFormatter
+    private let analytics: POSOrderListFetchAnalyticsTracking
 
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
-                currencyFormatter: CurrencyFormatter) {
+                currencyFormatter: CurrencyFormatter,
+                analytics: POSOrderListFetchAnalyticsTracking) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.ordersRemote = OrdersRemote(network: network)
         self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
     }
 
     public func defaultStrategy() -> POSOrderListFetchStrategy {
@@ -34,7 +37,8 @@ public final class POSOrderListFetchStrategyFactory: POSOrderListFetchStrategyFa
                 siteID: siteID,
                 ordersRemote: ordersRemote,
                 currencyFormatter: currencyFormatter
-            )
+            ),
+            analytics: analytics
         )
     }
 
@@ -45,7 +49,8 @@ public final class POSOrderListFetchStrategyFactory: POSOrderListFetchStrategyFa
                 ordersRemote: ordersRemote,
                 currencyFormatter: currencyFormatter
             ),
-            searchTerm: searchTerm
+            searchTerm: searchTerm,
+            analytics: analytics
         )
     }
 }

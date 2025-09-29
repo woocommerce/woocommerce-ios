@@ -55,10 +55,12 @@ final class BookingListViewModel: ObservableObject {
     }
 
     /// Called when the user pulls down the list to refresh.
-    /// - Parameter completion: called when the refresh completes.
-    func onRefreshAction(completion: @escaping () -> Void) {
-        paginationTracker.resync(reason: nil) {
-            completion()
+    @MainActor
+    func onRefreshAction() async {
+        await withCheckedContinuation { continuation in
+            paginationTracker.resync(reason: nil) {
+                continuation.resume(returning: ())
+            }
         }
     }
 }

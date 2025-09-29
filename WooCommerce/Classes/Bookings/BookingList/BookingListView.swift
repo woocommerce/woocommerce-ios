@@ -5,6 +5,8 @@ struct BookingListView: View {
     @ObservedObject private var viewModel: BookingListViewModel
     @State private var selectedTabIndex = 0
 
+    @Namespace var topID
+
     private let tabs = [Localization.today, Localization.upcoming, Localization.all]
 
     init(viewModel: BookingListViewModel) {
@@ -28,6 +30,7 @@ struct BookingListView: View {
                 }
             }
             .navigationTitle(Localization.viewTitle)
+            .toolbarBackground(Color(.listForeground(modal: false)), for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
@@ -99,26 +102,30 @@ private extension BookingListView {
     }
 
     var bookingList: some View {
-        ScrollView {
-            LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
-                Section {
-                    ForEach(viewModel.bookings) { item in
-                        bookingItem(item)
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
+                    Section {
+                        ForEach(viewModel.bookings) { item in
+                            bookingItem(item)
+                        }
+                    } header: {
+                        headerView
                     }
-                } header: {
-                    headerView
+                    .id(topID)
+
+                    InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                        .padding(.top, Layout.viewPadding)
+                        .onAppear {
+                            viewModel.onLoadNextPageAction()
+                        }
                 }
-                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
-                    .padding(.top, Layout.viewPadding)
-                    .onAppear {
-                        viewModel.onLoadNextPageAction()
-                    }
             }
-        }
-        .refreshable {
-            viewModel.onRefreshAction(completion: {
-                // TODO: show/hide ghost animation if needed
-            })
+            .refreshable {
+                await viewModel.onRefreshAction()
+                // workaround as navigation bar is not snapped back after refreshing
+                proxy.scrollTo(topID, anchor: .top)
+            }
         }
     }
 

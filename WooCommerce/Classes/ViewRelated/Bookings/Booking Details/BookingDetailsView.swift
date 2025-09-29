@@ -12,6 +12,7 @@ struct BookingDetailsView: View {
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
         static let sectionFooterTextVerticalPadding: CGFloat = 8
+        static let circleSeparatorSize: CGFloat = 3
     }
 
     fileprivate enum TextFont {
@@ -97,18 +98,27 @@ private extension BookingDetailsView {
     func headerView(with headerContent: BookingDetailsViewModel.HeaderContent) -> some View {
         VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
             Text(headerContent.bookingDate)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            Text(headerContent.serviceName)
-                .font(TextFont.bodyMedium)
-            Text(headerContent.customerName)
-                .font(TextFont.bodyMedium)
-                .foregroundColor(.secondary)
+                .font(.body.weight(.medium))
+                .foregroundColor(.primary)
+            HStack {
+                Text(headerContent.serviceName)
+                Circle()
+                    .fill(.tertiary)
+                    .frame(
+                        width: Layout.circleSeparatorSize,
+                        height: Layout.circleSeparatorSize
+                    )
+                Text(headerContent.customerName)
+            }
+            .font(.footnote.weight(.medium))
+            .foregroundColor(.secondary)
+
             HStack {
                 ForEach(headerContent.status, id: \.self) { status in
                     Text(status.labelText)
-                        .font(.caption)
-                        .padding(4)
+                        .font(.caption2)
+                        .padding(.vertical, 4.5)
+                        .padding(.horizontal, 8)
                         .background(status.labelColor)
                         .cornerRadius(4)
                 }
@@ -116,7 +126,7 @@ private extension BookingDetailsView {
             .padding(.top, Layout.headerBadgesAdditionalTopPadding)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 6)
+        .padding(.vertical)
     }
 
     func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {

@@ -9,10 +9,16 @@ extension BookingDetailsViewModel {
         let status: [Status]
 
         init(_ booking: Booking) {
-            bookingDate = booking.startDate.formatted(date: .numeric, time: .omitted)
+            bookingDate = booking.startDate.formatted(.dateTime
+                .month(.twoDigits)
+                .day(.twoDigits)
+                .year(.defaultDigits)
+                .hour(.twoDigits(amPM: .abbreviated))
+                .minute(.twoDigits)
+            )
             serviceName = "Women's Haircut"
             customerName = "Margarita Nikolaevna"
-            status = [.paid, .booked]
+            status = [.booked, .payAtLocation]
         }
     }
 }

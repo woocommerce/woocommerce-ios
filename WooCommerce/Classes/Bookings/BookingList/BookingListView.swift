@@ -18,7 +18,7 @@ struct BookingListView: View {
                 case .empty:
                     headerView
                     Spacer()
-                    Text("No bookings found") // TODO: update this
+                    Text("No bookings found") // TODO: update this in WOOMOB-1394
                     Spacer()
                 case .syncingFirstPage:
                     headerView
@@ -100,18 +100,16 @@ private extension BookingListView {
 
     var bookingList: some View {
         ScrollView {
-            LazyVStack(spacing: Layout.viewPadding, pinnedViews: .sectionHeaders) {
+            LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
                 Section {
                     ForEach(viewModel.bookings) { item in
                         bookingItem(item)
-                            .padding([.top, .horizontal], Layout.viewPadding)
-                        Divider()
-                            .padding(.leading, Layout.viewPadding)
                     }
                 } header: {
                     headerView
                 }
                 InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                    .padding(.top, Layout.viewPadding)
                     .onAppear {
                         viewModel.onLoadNextPageAction()
                     }
@@ -125,27 +123,40 @@ private extension BookingListView {
     }
 
     func bookingItem(_ booking: Booking) -> some View {
-        VStack(alignment: .leading) {
-            Text(booking.dateCreated.formatted(date: .numeric, time: .shortened))
-                .captionStyle()
-                .foregroundStyle(Color.secondary)
-
-            HStack {
-                Text("Women's Hair cut")
+        VStack(spacing: 0) {
+            VStack(alignment: .leading) {
+                Text(booking.startDate.formatted(date: .numeric, time: .shortened))
                     .font(.body)
                     .fontWeight(.medium)
-                Spacer()
-                Text(String(format: "$%@", booking.cost))
-                Image(systemName: "chevron.forward")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                // TODO: fetch bookable products & customer to get name or wait for API update
+                Text(String(format: "%@  •  %@", "Women's Hair cut", "Marianne"))
+                    .font(.footnote)
                     .fontWeight(.medium)
                     .foregroundStyle(Color.secondary)
-            }
 
-            Text("Marianne")
-                .font(.body)
-                .fontWeight(.medium)
-                .foregroundStyle(Color.secondary)
+                HStack {
+                    // TODO: update this when attendance status is available
+                    statusBadge(text: "Booked", color: Color(.systemGray5))
+                    statusBadge(text: booking.bookingStatus.localizedTitle, color: Color(.systemGray5))
+                    Spacer()
+                }
+            }
+            .padding(Layout.viewPadding)
+
+            Divider()
+                .padding(.leading, Layout.viewPadding)
         }
+        .background(Color(.listForeground(modal: false)))
+    }
+
+    func statusBadge(text: String, color: Color) -> some View {
+        Text(text)
+            .font(.caption2)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.clipShape(RoundedRectangle(cornerRadius: 4)))
     }
 }
 private extension BookingListView {

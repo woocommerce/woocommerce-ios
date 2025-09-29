@@ -184,6 +184,5 @@ public enum BookingStatus: String, CaseIterable {
     case cancelled
     case pendingConfirmation = "pending-confirmation"
     case confirmed
-    case inCart = "in-cart"
     case unknown
 }

@@ -24,7 +24,9 @@ struct BookingListView: View {
                     Spacer()
                 case .syncingFirstPage:
                     headerView
+                    Spacer()
                     ProgressView().progressViewStyle(.circular)
+                    Spacer()
                 case .results:
                     bookingList
                 }

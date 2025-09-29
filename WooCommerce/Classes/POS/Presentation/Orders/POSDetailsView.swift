@@ -29,7 +29,7 @@ struct POSOrderDetailsView: View {
             POSPageHeaderView(
                 title: Localization.orderTitle(order.number),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: { PointOfSaleOrderBadgeView(order: order) },
+                trailingContent: { POSOrderBadgeView(order: order) },
                 bottomContent: { headerBottomContent(for: order) }
             )
 
@@ -440,5 +440,6 @@ private enum Localization {
         order: POSPreviewHelpers.makePreviewOrder(),
         onBack: {}
     )
+    .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
 #endif

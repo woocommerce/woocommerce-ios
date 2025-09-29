@@ -1,0 +1,36 @@
+import SwiftUI
+import WooFoundation
+import struct Yosemite.POSOrder
+
+struct POSOrderBadgeView: View {
+    private let order: POSOrder
+
+    init(order: POSOrder) {
+        self.order = order
+    }
+
+    var body: some View {
+        Text(order.status.localizedName)
+            .font(.posCaptionRegular)
+            .foregroundStyle(.black)
+            .padding(.horizontal, POSPadding.small)
+            .padding(.vertical, POSPadding.xSmall)
+            .background(statusBackgroundColor)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+    }
+
+    private var statusBackgroundColor: Color {
+        switch order.status {
+        case .completed:
+            return Color(uiColor: .withColorStudio(.blue, shade: .shade5))
+        case .failed:
+            return Color(uiColor: .withColorStudio(.red, shade: .shade5))
+        case .processing:
+            return Color(uiColor: .withColorStudio(.green, shade: .shade5))
+        case .onHold:
+            return Color(uiColor: .withColorStudio(.orange, shade: .shade5))
+        default:
+            return Color(uiColor: .gray(.shade5))
+        }
+    }
+}

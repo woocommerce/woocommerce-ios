@@ -137,6 +137,7 @@ struct POSOrderListView: View {
                     footerRows
                 }
                 .padding(.horizontal)
+                .padding(.top, POSPadding.xSmall)
                 .padding(.bottom, POSPadding.medium)
             }
         )
@@ -180,44 +181,59 @@ private struct OrderRowView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text("#\(order.number)") // TODO: WOOMOB-1142
-                    .font(.posBodySmallBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .fixedSize(horizontal: false, vertical: true)
-
-
-                if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
-                    Text(customerEmail)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-            }
-            .multilineTextAlignment(.leading)
-
-            Spacer()
-
-            VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                Text(order.formattedTotal)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-
-                PointOfSaleOrderBadgeView(order: order)
-            }
-            .multilineTextAlignment(.trailing)
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            orderHeaderRow
+            orderDetailsColumn
+            orderBadgeRow
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
         .background(isSelected ? Color.posSurfaceDim : Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    private var orderHeaderRow: some View {
+        HStack(alignment: .center) {
+            Text("#\(order.number)")
+                .font(.posBodySmallBold)
+                .foregroundStyle(Color.posOnSurface)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+
+            Text(order.formattedTotal)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    @ViewBuilder
+    private var orderDetailsColumn: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let customerEmail = order.customerEmail, customerEmail.isNotEmpty {
+                Text(customerEmail)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var orderBadgeRow: some View {
+        HStack {
+            PointOfSaleOrderBadgeView(order: order)
+            Spacer()
+        }
     }
 }
 
@@ -231,40 +247,10 @@ private struct GhostOrderRowView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                Spacer()
-                HStack(alignment: .center, spacing: POSSpacing.medium) {
-                    VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                        Rectangle()
-                            .fill(Color.posOnSurfaceVariantLowest)
-                            .frame(width: geometry.size.width * 0.2, height: 16)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .shimmering()
-
-                        Rectangle()
-                            .fill(Color.posOnSurfaceVariantLowest)
-                            .frame(width: geometry.size.width * 0.4, height: 14)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .shimmering()
-                    }
-
-                    Spacer()
-
-                    VStack(alignment: .trailing, spacing: POSSpacing.xSmall) {
-                        Rectangle()
-                            .fill(Color.posOnSurfaceVariantLowest)
-                            .frame(width: geometry.size.width * 0.25, height: 18)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .shimmering()
-
-                        Rectangle()
-                            .fill(Color.posOnSurfaceVariantLowest)
-                            .frame(width: geometry.size.width * 0.28, height: 14)
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .shimmering()
-                    }
-                }
-                Spacer()
+            VStack(alignment: .leading, spacing: POSSpacing.small) {
+                ghostHeaderRow(geometry: geometry)
+                ghostDetailsColumn(geometry: geometry)
+                ghostBadgeRow(geometry: geometry)
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
@@ -273,6 +259,48 @@ private struct GhostOrderRowView: View {
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
+    }
+
+    @ViewBuilder
+    private func ghostHeaderRow(geometry: GeometryProxy) -> some View {
+        HStack(alignment: .center) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: geometry.size.width * 0.25, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+
+            Spacer()
+
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: geometry.size.width * 0.25, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+        }
+    }
+
+    @ViewBuilder
+    private func ghostDetailsColumn(geometry: GeometryProxy) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: geometry.size.width * 0.4, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+        }
+    }
+
+    @ViewBuilder
+    private func ghostBadgeRow(geometry: GeometryProxy) -> some View {
+        HStack {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: geometry.size.width * 0.28, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+            Spacer()
+        }
     }
 }
 

@@ -212,8 +212,10 @@ private extension POSTabCoordinator {
                             credentials: credentials,
                             selectedSite: defaultSitePublisher,
                             appPasswordSupportState: isAppPasswordSupported,
-                            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
-                        )
+                            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                            analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
+                        ),
+                        analytics: serviceAdaptor.analytics
                     ),
 
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

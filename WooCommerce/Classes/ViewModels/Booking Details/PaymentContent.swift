@@ -8,7 +8,7 @@ extension BookingDetailsViewModel {
 
         init(booking: Booking) {
             amounts = [
-                .init(value: "$55.00", type: .service),
+                .init(value: booking.cost, type: .service),
                 .init(value: "$0", type: .tax),
                 .init(value: "-", type: .discount),
                 .init(value: "$55.00", type: .total, emphasized: true),

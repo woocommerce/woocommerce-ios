@@ -20,10 +20,6 @@ struct BookingDetailsView: View {
         static var bodyMedium: Font {
             Font.body.weight(.medium)
         }
-
-        static var bodyRegular: Font {
-            Font.body.weight(.regular)
-        }
     }
 
     init(_ viewModel: BookingDetailsViewModel) {
@@ -103,7 +99,7 @@ private extension BookingDetailsView {
     func headerView(with headerContent: BookingDetailsViewModel.HeaderContent) -> some View {
         VStack(alignment: .leading, spacing: Layout.headerContentVerticalPadding) {
             Text(headerContent.bookingDate)
-                .font(.body.weight(.medium))
+                .font(TextFont.bodyMedium)
                 .foregroundColor(.primary)
             HStack {
                 Text(headerContent.serviceName)
@@ -186,7 +182,7 @@ private extension BookingDetailsView {
                     .rowTextStyle()
                 Spacer()
                 Image(systemName: "doc.on.doc")
-                    .font(.body.weight(.medium))
+                    .font(TextFont.bodyMedium)
                     .foregroundStyle(Color(UIColor.primary))
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
@@ -203,7 +199,7 @@ private extension BookingDetailsView {
                     .rowTextStyle()
                 Spacer()
                 Image(systemName: "ellipsis")
-                    .font(.body.weight(.medium))
+                    .font(TextFont.bodyMedium)
                     .foregroundStyle(Color(UIColor.primary))
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
@@ -221,7 +217,7 @@ private extension BookingDetailsView {
                         Text(Localization.billingAddressRowTitle)
                             .rowTextStyle()
                         Text(billingAddressText)
-                            .font(.body.weight(.medium))
+                            .font(TextFont.bodyMedium)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.leading)
                     }
@@ -293,7 +289,7 @@ private extension BookingDetailsView {
 private struct RowTextStyle: ViewModifier {
     func body(content: Content) -> some View {
         content
-            .font(.body.weight(.medium))
+            .font(BookingDetailsView.TextFont.bodyMedium)
             .foregroundStyle(.primary)
             .multilineTextAlignment(.leading)
     }
@@ -356,7 +352,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             siteID: 1,
             bookingID: 123,
             allDay: false,
-            cost: "70.00",
+            cost: "$70.00",
             customerID: 456,
             dateCreated: now,
             dateModified: now,

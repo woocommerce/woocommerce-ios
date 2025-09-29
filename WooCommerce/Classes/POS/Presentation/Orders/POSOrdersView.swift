@@ -54,7 +54,7 @@ struct POSOrdersView: View {
             }
             .animation(.default, value: orderListModel.ordersController.ordersViewState.orders.isEmpty)
             .onAppear {
-                analytics.track(.ordersListLoaded)
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListLoaded())
             }
         }
     }

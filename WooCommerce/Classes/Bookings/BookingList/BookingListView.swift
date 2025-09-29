@@ -13,10 +13,19 @@ struct BookingListView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                headerView
-                Divider()
-                contentView
+            VStack {
+                switch viewModel.syncState {
+                case .empty:
+                    headerView
+                    Spacer()
+                    Text("No bookings found") // TODO: update this
+                    Spacer()
+                case .syncingFirstPage:
+                    headerView
+                    ProgressView().progressViewStyle(.circular)
+                case .results:
+                    bookingList
+                }
             }
             .navigationTitle(Localization.viewTitle)
             .toolbar {
@@ -58,6 +67,8 @@ private extension BookingListView {
                 }
             }
             .padding()
+            .background(Color(.listForeground(modal: false)))
+            Divider()
         }
     }
 
@@ -78,42 +89,38 @@ private extension BookingListView {
                         Spacer()
                         if selectedTabIndex == index {
                             Color.accentColor
-                                .frame(height: 3)
+                                .frame(height: Layout.selectedTabIndicatorHeight)
                         }
                     }
                 }
             }
         }
-    }
-
-    var contentView: some View {
-        VStack {
-            switch viewModel.syncState {
-            case .empty:
-                Spacer()
-                Text("No bookings found") // TODO: update this
-                Spacer()
-            case .syncingFirstPage:
-                ProgressView().progressViewStyle(.circular)
-            case .results:
-                bookingList
-            }
-        }
+        .background(Color(.listForeground(modal: false)))
     }
 
     var bookingList: some View {
-        RefreshableInfiniteScrollList(spacing: Layout.viewPadding,
-                                      isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                      loadAction: viewModel.onLoadNextPageAction,
-                                      refreshAction: { completion in
-            viewModel.onRefreshAction(completion: completion)
-        }) {
-            ForEach(viewModel.bookings) { item in
-                bookingItem(item)
-                    .padding([.top, .horizontal], Layout.viewPadding)
-                Divider()
-                    .padding(.leading, Layout.viewPadding)
+        ScrollView {
+            LazyVStack(spacing: Layout.viewPadding, pinnedViews: .sectionHeaders) {
+                Section {
+                    ForEach(viewModel.bookings) { item in
+                        bookingItem(item)
+                            .padding([.top, .horizontal], Layout.viewPadding)
+                        Divider()
+                            .padding(.leading, Layout.viewPadding)
+                    }
+                } header: {
+                    headerView
+                }
+                InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                    .onAppear {
+                        viewModel.onLoadNextPageAction()
+                    }
             }
+        }
+        .refreshable {
+            viewModel.onRefreshAction(completion: {
+                // TODO: show/hide ghost animation if needed
+            })
         }
     }
 

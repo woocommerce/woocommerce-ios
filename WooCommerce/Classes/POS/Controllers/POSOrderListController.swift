@@ -31,7 +31,6 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
-    private let analytics: POSAnalyticsProviding
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -42,11 +41,9 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     }
 
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
-         analytics: POSAnalyticsProviding,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
-        self.analytics = analytics
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
     }
 

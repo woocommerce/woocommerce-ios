@@ -9,8 +9,7 @@ import struct Yosemite.POSOrder
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
-    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
-                                                  analytics: MockPOSAnalytics())
+    private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)

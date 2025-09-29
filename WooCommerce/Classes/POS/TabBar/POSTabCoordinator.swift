@@ -214,8 +214,7 @@ private extension POSTabCoordinator {
                             appPasswordSupportState: isAppPasswordSupported,
                             currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                             analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
-                        ),
-                        analytics: serviceAdaptor.analytics
+                        )
                     ),
 
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

@@ -4,6 +4,7 @@ import struct Networking.Booking
 extension BookingDetailsViewModel {
     struct PaymentContent {
         let amounts: [Amount]
+        let actions: [Action]
 
         init(booking: Booking) {
             amounts = [
@@ -11,6 +12,11 @@ extension BookingDetailsViewModel {
                 .init(value: "$0", type: .tax),
                 .init(value: "-", type: .discount),
                 .init(value: "$55.00", type: .total, emphasized: true),
+            ]
+
+            actions = [
+                .markAsPaid,
+                .viewOrder
             ]
         }
     }
@@ -62,6 +68,40 @@ extension BookingDetailsViewModel.PaymentContent.Amount.AmountType {
     }
 }
 
+extension BookingDetailsViewModel.PaymentContent {
+    enum Action: String, Identifiable {
+        case markAsPaid
+        case markAsRefunded
+        case viewOrder
+
+        var id: String {
+            return rawValue
+        }
+    }
+}
+
+extension BookingDetailsViewModel.PaymentContent.Action {
+    var buttonTitle: String {
+        switch self {
+        case .markAsPaid:
+            return Localization.paymentMarkAsPaidButtonTitle
+        case .markAsRefunded:
+            return Localization.paymentMarkAsRefundedButtonTitle
+        case .viewOrder:
+            return Localization.paymentViewOrderButtonTitle
+        }
+    }
+
+    var isEmphasized: Bool {
+        switch self {
+        case .markAsPaid:
+            return true
+        case .markAsRefunded, .viewOrder:
+            return false
+        }
+    }
+}
+
 private enum Localization {
     static let paymentServiceRowTitle = NSLocalizedString(
         "BookingDetailsView.payment.serviceRow.title",
@@ -85,5 +125,23 @@ private enum Localization {
         "BookingDetailsView.payment.totalRow.title",
         value: "Total",
         comment: "Total row title in payment section in booking details view."
+    )
+
+    static let paymentMarkAsPaidButtonTitle = NSLocalizedString(
+        "BookingDetailsView.payment.markAsPaid.title",
+        value: "Mark as paid",
+        comment: "Title for 'Mark as paid' button in payment section in booking details view."
+    )
+
+    static let paymentMarkAsRefundedButtonTitle = NSLocalizedString(
+        "BookingDetailsView.payment.markAsRefunded.title",
+        value: "Mark as refunded",
+        comment: "Title for 'Mark as refunded' button in payment section in booking details view."
+    )
+
+    static let paymentViewOrderButtonTitle = NSLocalizedString(
+        "BookingDetailsView.payment.viewOrder.title",
+        value: "View order",
+        comment: "Title for 'View order' button in payment section in booking details view."
     )
 }

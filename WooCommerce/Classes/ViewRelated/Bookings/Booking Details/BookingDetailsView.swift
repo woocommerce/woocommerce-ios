@@ -233,20 +233,43 @@ private extension BookingDetailsView {
     }
 
     func paymentDetailsView(with content: BookingDetailsViewModel.PaymentContent) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(content.amounts) { amount in
-                HStack {
-                    Text(amount.title)
-                    Spacer()
-                    Text(amount.value)
-                }
-                .if(!amount.emphasized) { view in
-                    view.rowTextStyle()
-                }
-                .if(amount.emphasized) { view in
-                    view.font(.body.weight(.bold))
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(content.amounts) { amount in
+                    HStack {
+                        Text(amount.title)
+                        Spacer()
+                        Text(amount.value)
+                    }
+                    .if(!amount.emphasized) { view in
+                        view.rowTextStyle()
+                    }
+                    .if(amount.emphasized) { view in
+                        view.font(.body.weight(.bold))
+                    }
                 }
             }
+            .padding(.bottom)
+
+            Divider()
+                .padding(.trailing, -Layout.contentSidePadding)
+
+            VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
+                ForEach(content.actions) { action in
+                    Button {
+                        /// On action tap
+                    } label: {
+                        Text(action.buttonTitle)
+                    }
+                    .if(action.isEmphasized) {
+                        $0.buttonStyle(PrimaryButtonStyle())
+                    }
+                    .if(!action.isEmphasized) {
+                        $0.buttonStyle(SecondaryButtonStyle())
+                    }
+                }
+            }
+            .padding(.top)
         }
         .padding(.vertical)
     }

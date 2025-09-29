@@ -93,6 +93,8 @@ private extension BookingDetailsView {
             attendanceView(with: content)
         case .customer(let content):
             customerDetailsView(with: content)
+        case .payment(let content):
+            paymentDetailsView(with: content)
         default:
             EmptyView()
         }
@@ -229,6 +231,25 @@ private extension BookingDetailsView {
             }
         }
     }
+
+    func paymentDetailsView(with content: BookingDetailsViewModel.PaymentContent) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            ForEach(content.amounts) { amount in
+                HStack {
+                    Text(amount.title)
+                    Spacer()
+                    Text(amount.value)
+                }
+                .if(!amount.emphasized) { view in
+                    view.rowTextStyle()
+                }
+                .if(amount.emphasized) { view in
+                    view.font(.body.weight(.bold))
+                }
+            }
+        }
+        .padding(.vertical)
+    }
 }
 
 private struct RowTextStyle: ViewModifier {
@@ -253,7 +274,7 @@ private struct TappableRowModifier: ViewModifier {
     }
 }
 
-private extension Text {
+private extension View {
     func rowTextStyle() -> some View {
         self.modifier(RowTextStyle())
     }

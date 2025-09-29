@@ -2,9 +2,6 @@ import Foundation
 import struct Networking.Booking
 
 extension BookingDetailsViewModel {
-    struct PaymentContent {
-    }
-
     struct TeamMemberContent {
     }
 }
@@ -43,11 +40,17 @@ final class BookingDetailsViewModel: ObservableObject {
             )
         )
 
+        let paymentSection = Section(
+            header: .title(Localization.paymentSectionHeaderTitle.uppercased()),
+            content: .payment(PaymentContent(booking: booking))
+        )
+
         sections = [
             headerSection,
             appointmentDetailsSection,
             customerSection,
-            attendanceSection
+            attendanceSection,
+            paymentSection
         ]
     }
 }
@@ -76,6 +79,12 @@ private extension BookingDetailsViewModel {
             "BookingDetailsView.attendance.footerText",
             value: "Mark attendance to keep your reports accurate and spot booking trends.",
             comment: "Footer text for the 'Attendance' section in the booking details screen."
+        )
+
+        static let paymentSectionHeaderTitle = NSLocalizedString(
+            "BookingDetailsView.payment.headerTitle",
+            value: "Payment",
+            comment: "Header title for the 'Payment' section in the booking details screen."
         )
     }
 }

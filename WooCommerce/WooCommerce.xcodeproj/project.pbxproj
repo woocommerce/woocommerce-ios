@@ -1250,6 +1250,7 @@
 		2D05D1A72E82D49F004111FD /* BookingDetailsViewModel+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */; };
 		2D05E80F2E86BE50004111FD /* AttendanceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */; };
 		2D05E8112E8A9905004111FD /* CustomerContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8102E8A98FE004111FD /* CustomerContent.swift */; };
+		2D05E8132E8AADB9004111FD /* PaymentContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8122E8AADB2004111FD /* PaymentContent.swift */; };
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
@@ -4448,6 +4449,7 @@
 		2D05D1A62E82D49D004111FD /* BookingDetailsViewModel+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BookingDetailsViewModel+Status.swift"; sourceTree = "<group>"; };
 		2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceContent.swift; sourceTree = "<group>"; };
 		2D05E8102E8A98FE004111FD /* CustomerContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerContent.swift; sourceTree = "<group>"; };
+		2D05E8122E8AADB2004111FD /* PaymentContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentContent.swift; sourceTree = "<group>"; };
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -9123,6 +9125,7 @@
 		2DAC251E2E829FF9008521AF /* Booking Details */ = {
 			isa = PBXGroup;
 			children = (
+				2D05E8122E8AADB2004111FD /* PaymentContent.swift */,
 				2D05E8102E8A98FE004111FD /* CustomerContent.swift */,
 				2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */,
 				2D05D1A12E82D233004111FD /* HeaderContent.swift */,
@@ -16756,6 +16759,7 @@
 				4535EE7A281ADD56004212B4 /* CouponCodeInputFormatter.swift in Sources */,
 				0373A1312A1E3FD700731236 /* TapToPayBadgePromotionChecker.swift in Sources */,
 				DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */,
+				2D05E8132E8AADB9004111FD /* PaymentContent.swift in Sources */,
 				035DBA45292D0164003E5125 /* CollectOrderPaymentUseCase.swift in Sources */,
 				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				027F83ED29B046D2002688C6 /* TopPerformersPeriodViewModel.swift in Sources */,

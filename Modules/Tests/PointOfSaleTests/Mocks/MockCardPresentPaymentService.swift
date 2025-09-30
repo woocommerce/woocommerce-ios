@@ -1,6 +1,5 @@
 import Foundation
 import Combine
-import PointOfSale
 import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
 @testable import PointOfSale

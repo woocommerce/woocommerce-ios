@@ -50,9 +50,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         environmentBackButtonConfiguration ?? backButtonConfiguration
     }
 
-    private var hStackAlignment: VerticalAlignment {
-        items.first?.subtitle == nil ? .center: .firstTextBaseline
-    }
+    private var hStackAlignment: VerticalAlignment
 
     private var showsBackButton: Bool {
         effectiveBackButtonConfiguration != nil
@@ -63,6 +61,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        alignment: VerticalAlignment? = nil,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
@@ -72,11 +71,17 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
+        if let alignment {
+            hStackAlignment = alignment
+        } else {
+            hStackAlignment = subtitle == nil ? .center: .firstTextBaseline
+        }
     }
 
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        alignment: VerticalAlignment? = nil,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
@@ -86,66 +91,73 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
+        if let alignment {
+            hStackAlignment = alignment
+        } else {
+            hStackAlignment = items.first?.subtitle == nil ? .center: .firstTextBaseline
+        }
     }
 
     var body: some View {
-        HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
-            leadingContent
+        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                leadingContent
 
-            if showsBackButton {
-                backButton
-            }
+                if showsBackButton {
+                    backButton
+                }
 
-            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
-                    ForEach(0..<items.count, id: \.self) { index in
-                        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                            HStack(spacing: POSSpacing.small) {
-                                if items[index].title.isNotEmpty {
-                                    Button(action: {
-                                        items[index].action?()
-                                    }) {
-                                        Text(items[index].title)
-                                            .font(.posHeadingBold)
-                                            .lineLimit(1)
-                                            .minimumScaleFactor(0.5)
-                                            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                            .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                    HStack(alignment: hStackAlignment, spacing: POSSpacing.large) {
+                        ForEach(0..<items.count, id: \.self) { index in
+                            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                                HStack(spacing: POSSpacing.small) {
+                                    if items[index].title.isNotEmpty {
+                                        Button(action: {
+                                            items[index].action?()
+                                        }) {
+                                            Text(items[index].title)
+                                                .font(.posHeadingBold)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.5)
+                                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                        }
+                                        .disabled(items[index].isSelected)
+                                        .accessibilityElement()
+                                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                        .accessibilityLabel(items[index].title)
                                     }
-                                    .disabled(items[index].isSelected)
-                                    .accessibilityElement()
-                                    .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                                    .accessibilityLabel(items[index].title)
+
+                                    if items[index].isLoading {
+                                        ProgressView()
+                                            .progressViewStyle(.circular)
+                                            .scaleEffect(0.7)
+                                            .transition(.opacity.combined(with: .scale))
+                                    }
                                 }
 
-                                if items[index].isLoading {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                        .scaleEffect(0.7)
-                                        .transition(.opacity.combined(with: .scale))
+                                if let subtitle = items[index].subtitle {
+                                    Text(subtitle)
+                                        .font(.posBodyLargeRegular())
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                        .foregroundColor(.posOnSurface)
                                 }
-                            }
-
-                            if let subtitle = items[index].subtitle {
-                                Text(subtitle)
-                                    .font(.posBodyLargeRegular())
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
-                                    .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                    .foregroundColor(.posOnSurface)
                             }
                         }
                     }
                 }
 
-                bottomContent
+                if items.isNotEmpty {
+                    Spacer()
+                }
+
+                trailingContent
             }
 
-            if items.isNotEmpty {
-                Spacer()
-            }
-
-            trailingContent
+            bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)

@@ -112,10 +112,6 @@ struct POSIneligibleView: View {
 
     private var suggestionText: String {
         switch reason {
-        case .unsupportedIOSVersion:
-            return NSLocalizedString("pos.ineligible.suggestion.unsupportedIOSVersion.1",
-                                     value: "The POS system requires iOS 17 or later. Please update your device to iOS 17+ to use this feature.",
-                                     comment: "Suggestion for unsupported iOS version: update iOS")
         case let .unsupportedWooCommerceVersion(minimumVersion):
             let format = NSLocalizedString("pos.ineligible.suggestion.unsupportedWooCommerceVersion",
                                      value: "Your WooCommerce version is not supported. " +
@@ -155,12 +151,6 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
                                      value: "Try relaunching the app to resolve this issue.",
                                      comment: "Suggestion for self deallocated: relaunch")
-        case .unsupportedInCIABSites:
-            return NSLocalizedString(
-                "pos.ineligible.suggestion.notSupportedForCIAB",
-                value: "The POS system is not supported for your store.",
-                comment: "Suggestion for CIAB sites: feature is not supported"
-            )
         }
     }
 }
@@ -184,9 +174,6 @@ private extension POSIneligibleView {
 private extension POSIneligibleReason {
     var shouldShowRetryButton: Bool {
         switch self {
-        case .unsupportedIOSVersion,
-                .unsupportedInCIABSites:
-            return false
         case .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
                 .wooCommercePluginNotFound,
@@ -205,8 +192,7 @@ private extension POSIneligibleReason {
                 value: "Enable POS feature",
                 comment: "Button title to enable the POS feature switch and refresh POS eligibility check"
             )
-        case .unsupportedIOSVersion,
-                .unsupportedWooCommerceVersion,
+        case .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
                 .wooCommercePluginNotFound,
                 .unsupportedCurrency,
@@ -216,9 +202,6 @@ private extension POSIneligibleReason {
                 value: "Retry",
                 comment: "Button title to refresh POS eligibility check"
             )
-        case .unsupportedInCIABSites:
-            assertionFailure("Retry button should not be shown for `unsupportedInCIABSites`")
-            return String()
         }
     }
 }
@@ -229,15 +212,6 @@ private extension POSIneligibleReason {
     if #available(iOS 17.0, *) {
         POSIneligibleView(
             reason: .unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]),
-            onRefresh: {}
-        )
-    }
-}
-
-#Preview("Unsupported iOS version") {
-    if #available(iOS 17.0, *) {
-        POSIneligibleView(
-            reason: .unsupportedIOSVersion,
             onRefresh: {}
         )
     }

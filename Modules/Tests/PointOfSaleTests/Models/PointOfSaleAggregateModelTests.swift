@@ -966,7 +966,6 @@ private func makeLoadedOrderState(cartTotal: String = "",
     )
 }
 
-@available(iOS 17.0, *)
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

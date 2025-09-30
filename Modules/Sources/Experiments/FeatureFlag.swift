@@ -179,10 +179,6 @@ public enum FeatureFlag: Int {
     ///
     case inventoryProductLabelsInPOS
 
-    /// Enables sending POS specific email receipts for eligible stores
-    ///
-    case pointOfSaleReceipts
-
     /// Enables displaying Point Of Sale details in order list and order details
     ///
     case pointOfSaleOrdersi1

@@ -97,7 +97,6 @@ private func makeProductItem() -> POSItem {
                                 stockStatusKey: ""))
 }
 
-@available(iOS 17.0, *)
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

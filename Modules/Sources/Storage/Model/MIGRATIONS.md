@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 127 (Release 23.4.0.0)
+- @itsmeichigo 2025-09-23
+  - Added new `Booking` entity.
+
 ## Model 126 (Release 23.3.0.0)
 - @rafaelkayumov 2025-09-15
   - Added `isGarden` attribute to `Site` entity.

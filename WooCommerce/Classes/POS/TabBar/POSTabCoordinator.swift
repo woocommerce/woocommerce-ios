@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
+import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
@@ -23,7 +24,7 @@ final class POSTabViewController: UIViewController {
 /// Coordinator for the Point of Sale tab.
 ///
 final class POSTabCoordinator {
-    private let siteID: Int64
+    private(set) var siteID: Int64
     private let tabContainerController: TabContainerController
     private let viewControllerToPresent: UIViewController
     private let storesManager: StoresManager
@@ -107,12 +108,55 @@ final class POSTabCoordinator {
     }
 
     func onTabSelected() {
-        presentPOSView()
+        presentPOSView(siteID: siteID)
+    }
+
+    func didSwitchStore(id: Int64) {
+        self.siteID = id
+
+        // Resets lazy properties so they get recreated with new siteID
+        posItemFetchStrategyFactory = PointOfSaleItemFetchStrategyFactory(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported
+        )
+
+        posPopularItemFetchStrategyFactory =
+        PointOfSaleFixedItemFetchStrategyFactory(
+            fixedStrategy: posItemFetchStrategyFactory.popularStrategy()
+        )
+
+        posCouponFetchStrategyFactory = PointOfSaleCouponFetchStrategyFactory(
+            siteID: siteID,
+            currencySettings: currencySettings,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            storage: storageManager
+        )
+
+        posCouponProvider = PointOfSaleCouponService(
+            siteID: siteID,
+            currencySettings: currencySettings,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            storage: storageManager
+        )
+
+        barcodeScanService = PointOfSaleBarcodeScanService(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            currencySettings: currencySettings
+        )
     }
 }
 
 private extension POSTabCoordinator {
-    func presentPOSView() {
+    func presentPOSView(siteID: Int64) {
         Task { @MainActor [weak self] in
             guard let self else { return }
             let serviceAdaptor = POSServiceLocatorAdaptor()
@@ -128,6 +172,8 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
+            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -142,7 +188,6 @@ private extension POSTabCoordinator {
                                                      orderService: orderService,
                                                      receiptService: receiptService,
                                                      analytics: serviceAdaptor.analytics,
-                                                     featureFlagService: serviceAdaptor.featureFlags,
                                                      pluginsService: pluginsService
                 )
                 let posView = PointOfSaleEntryPointView(
@@ -188,7 +233,9 @@ private extension POSTabCoordinator {
                                                                       cardPresentPaymentService: cardPresentPaymentService,
                                                                       pluginsService: pluginsService,
                                                                       defaultSiteName: storesManager.sessionManager.defaultSite?.name,
-                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings),
+                                                                      siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                                                                      grdbManager: grdbManager,
+                                                                      catalogSyncCoordinator: catalogSyncCoordinator),
                     collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
                     searchHistoryService: POSSearchHistoryService(siteID: siteID),
                     popularPurchasableItemsController: PointOfSaleItemsController(

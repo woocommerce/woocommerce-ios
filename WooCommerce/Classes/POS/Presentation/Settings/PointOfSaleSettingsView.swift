@@ -55,7 +55,7 @@ extension PointOfSaleSettingsView {
                 )
 
                 // TODO: WOOMOB-1287 - integrate with local catalog feature eligibility
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) {
+                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) && settingsController.localCatalogViewModel != nil {
                     PointOfSaleSettingsCard(
                         item: .localCatalog,
                         isSelected: selection == .localCatalog,
@@ -89,7 +89,11 @@ extension PointOfSaleSettingsView {
         case .hardware:
             PointOfSaleSettingsHardwareDetailView(settingsController: settingsController)
         case .localCatalog:
-            POSSettingsLocalCatalogDetailView()
+            if let viewModel = settingsController.localCatalogViewModel {
+                POSSettingsLocalCatalogDetailView(viewModel: viewModel)
+            } else {
+                EmptyView()
+            }
         case .help:
             PointOfSaleSettingsHelpDetailView()
         default:

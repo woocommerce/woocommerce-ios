@@ -14,6 +14,7 @@ import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
 import protocol Yosemite.PluginsServiceProtocol
 import class Yosemite.PluginsService
+import class Yosemite.SiteAddress
 import class WooFoundation.VersionHelpers
 
 /// Legacy enum containing POS invisible reasons + POSIneligibleReason cases for i1.

@@ -3,7 +3,7 @@
 
 23.4
 -----
-
+- [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]
 
 23.3
 -----

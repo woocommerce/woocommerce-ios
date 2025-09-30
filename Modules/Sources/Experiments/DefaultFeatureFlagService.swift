@@ -84,8 +84,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .inventoryProductLabelsInPOS:
             return false
-        case .pointOfSaleReceipts:
-            return true
         case .productImageOptimizedHandling:
             return true
         case .pointOfSaleAsATabi2:

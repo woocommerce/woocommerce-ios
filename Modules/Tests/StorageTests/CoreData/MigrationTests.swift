@@ -2755,6 +2755,32 @@ final class MigrationTests: XCTestCase {
         let updatedCategory = migratedLabel.value(forKey: "hazmatCategory") as? String
         XCTAssertEqual(updatedCategory, category)
     }
+
+    func test_migrating_126_to_127_adds_new_booking_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 126")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. Booking should not exist in Model 126
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "Booking", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 127")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "Booking"), 0)
+
+        let booking = insertBooking(to: targetContext)
+        XCTAssertNoThrow(try targetContext.save())
+
+        XCTAssertEqual(try targetContext.count(entityName: "Booking"), 1)
+        let insertedBooking = try XCTUnwrap(targetContext.firstObject(ofType: Booking.self))
+        XCTAssertEqual(insertedBooking, booking)
+        XCTAssertEqual(insertedBooking.parentID, 0) // default value
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3677,6 +3703,14 @@ private extension MigrationTests {
         context.insert(entityName: "WooShippingOriginAddress", properties: [
             "siteID": 1,
             "id": "test-address"
+        ])
+    }
+
+    @discardableResult
+    func insertBooking(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "Booking", properties: [
+            "siteID": 1,
+            "bookingID": 23
         ])
     }
 }

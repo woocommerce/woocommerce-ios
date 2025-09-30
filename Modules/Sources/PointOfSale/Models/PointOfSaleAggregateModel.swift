@@ -617,3 +617,12 @@ extension PointOfSaleAggregateModel {
         cancellables.forEach { $0.cancel() }
     }
 }
+
+#if DEBUG
+extension PointOfSaleAggregateModel {
+    func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
+        self.paymentState = paymentState
+        self.cardPresentPaymentInlineMessage = inlineMessage
+    }
+}
+#endif

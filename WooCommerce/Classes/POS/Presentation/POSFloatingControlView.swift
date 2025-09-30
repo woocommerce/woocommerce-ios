@@ -99,6 +99,7 @@ private extension POSFloatingControlView {
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 showOrders = true
             } label: {
                 Label(
@@ -168,6 +169,7 @@ private extension POSFloatingControlView {
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
             Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 showOrders = true
             } label: {
                 Label(

@@ -238,22 +238,24 @@ private extension POSOrderDetailsView {
         totalsRow(
             title: Localization.totalLabel,
             amount: order.formattedTotal,
-            titleFont: .posBodyMediumBold
+            titleColor: .posOnSurface,
+            titleFont: .posBodySmallBold
         )
     }
 
     @ViewBuilder
     func paidAmountRow(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
             totalsRow(
                 title: Localization.paidLabel,
                 amount: order.formattedPaymentTotal,
-                titleFont: .posBodyMediumBold
+                titleColor: .posOnSurface,
+                titleFont: .posBodySmallBold
             )
 
             if order.paymentMethodTitle.isNotEmpty {
                 Text(order.paymentMethodTitle)
-                    .font(.posBodySmallRegular())
+                    .font(.posCaptionRegular)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
@@ -264,6 +266,7 @@ private extension POSOrderDetailsView {
         if !order.refunds.isEmpty {
             ForEach(order.refunds, id: \.refundID) { refund in
                 refundRow(refund: refund)
+                divider
             }
 
             if let netAmount = order.formattedNetAmount {
@@ -278,12 +281,13 @@ private extension POSOrderDetailsView {
             totalsRow(
                 title: Localization.refundLabel,
                 amount: refund.formattedTotal,
-                titleFont: .posBodyMediumBold
+                titleColor: .posOnSurface,
+                titleFont: .posBodySmallBold
             )
 
             if let reason = refund.reason, !reason.isEmpty {
                 Text(Localization.reasonLabel(reason))
-                    .font(.posBodySmallRegular())
+                    .font(.posCaptionRegular)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
         }
@@ -294,7 +298,8 @@ private extension POSOrderDetailsView {
         totalsRow(
             title: Localization.netPaymentLabel,
             amount: netAmount,
-            titleFont: .posBodyMediumBold
+            titleColor: .posOnSurface,
+            titleFont: .posBodySmallBold
         )
     }
 
@@ -302,15 +307,17 @@ private extension POSOrderDetailsView {
     func totalsRow(
         title: String,
         amount: String,
-        titleFont: POSFontStyle = .posBodyMediumRegular(),
-        amountFont: POSFontStyle = .posBodyMediumRegular()
+        titleColor: Color = .posOnSurfaceVariantHighest,
+        titleFont: POSFontStyle = .posBodySmallRegular()
     ) -> some View {
         HStack {
             Text(title)
                 .font(titleFont)
+                .foregroundStyle(titleColor)
             Spacer()
             Text(amount)
-                .font(amountFont)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurface)
         }
     }
 }

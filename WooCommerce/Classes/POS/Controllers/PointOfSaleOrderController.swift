@@ -20,6 +20,7 @@ import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
 import class Yosemite.OrderTotalsCalculator
+import protocol Yosemite.StoresManager
 
 enum SyncOrderState {
     case newOrder
@@ -45,11 +46,13 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
+         stores: StoresManager,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
+        self.stores = stores
         self.celebration = celebration
     }
 
@@ -58,6 +61,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
     private let analytics: POSAnalyticsProviding
+    private let stores: StoresManager
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil

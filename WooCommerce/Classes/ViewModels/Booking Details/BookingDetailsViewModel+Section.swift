@@ -6,18 +6,25 @@ extension BookingDetailsViewModel {
             return content.id
         }
 
-        let headerText: String?
+        let header: Header?
         let footerText: String?
         let content: SectionContent
 
         init(
-            headerText: String? = nil,
+            header: Header? = nil,
             footerText: String? = nil,
             content: SectionContent
         ) {
-            self.headerText = headerText
+            self.header = header
             self.footerText = footerText
             self.content = content
         }
+    }
+}
+
+extension BookingDetailsViewModel.Section {
+    enum Header {
+        case empty
+        case title(String)
     }
 }

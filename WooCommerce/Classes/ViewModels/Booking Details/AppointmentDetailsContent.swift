@@ -25,10 +25,10 @@ extension BookingDetailsViewModel {
             rows = [
                 Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
-                Row(title: Localization.appointmentDetailsServiceTitle, value: "Women's Haircut"),
-                Row(title: Localization.appointmentDetailsQuantityTitle, value: "1"),
+                Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: "Marianne Renoir"), /// Temporarily hardcoded
+                Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
                 Row(title: Localization.appointmentDetailsDurationTitle, value: String(durationMinutes)),
-                Row(title: Localization.appointmentDetailsCostTitle, value: booking.cost)
+                Row(title: Localization.appointmentDetailsPriceTitle, value: booking.cost)
             ]
         }
     }
@@ -48,16 +48,16 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
             comment: "Time row title in appointment details section in booking details view."
         )
 
-        static let appointmentDetailsServiceTitle = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.serviceRow.title",
-            value: "Service",
-            comment: "Service name row title in appointment details section in booking details view."
+        static let appointmentDetailsAssignedStaffTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.assignedStaff.title",
+            value: "Assigned staff",
+            comment: "Assigned staff row title in appointment details section in booking details view."
         )
 
-        static let appointmentDetailsQuantityTitle = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.quantityRow.title",
-            value: "Quantity",
-            comment: "Quantity row title in appointment details section in booking details view."
+        static let appointmentDetailsLocationTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.locationRow.title",
+            value: "Location",
+            comment: "Location row title in appointment details section in booking details view."
         )
 
         static let appointmentDetailsDurationTitle = NSLocalizedString(
@@ -66,10 +66,10 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
             comment: "Duration row title in appointment details section in booking details view."
         )
 
-        static let appointmentDetailsCostTitle = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.costRow.title",
-            value: "Cost",
-            comment: "Cost row title in appointment details section in booking details view."
+        static let appointmentDetailsPriceTitle = NSLocalizedString(
+            "BookingDetailsView.appointmentDetails.priceRow.title",
+            value: "Price",
+            comment: "Price row title in appointment details section in booking details view."
         )
     }
 }

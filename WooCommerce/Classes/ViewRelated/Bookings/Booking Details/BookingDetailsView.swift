@@ -183,7 +183,7 @@ private extension BookingDetailsView {
                 Spacer()
                 Image(systemName: "doc.on.doc")
                     .font(TextFont.bodyMedium)
-                    .foregroundStyle(Color(UIColor.primary))
+                    .foregroundStyle(.primary)
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
@@ -200,7 +200,7 @@ private extension BookingDetailsView {
                 Spacer()
                 Image(systemName: "ellipsis")
                     .font(TextFont.bodyMedium)
-                    .foregroundStyle(Color(UIColor.primary))
+                    .foregroundStyle(.primary)
             }
             .padding(.vertical, Layout.rowTextVerticalPadding)
             .tappable {
@@ -278,7 +278,7 @@ private extension BookingDetailsView {
                 .rowTextStyle()
             Spacer()
         }
-        .foregroundStyle(Color(UIColor.primary))
+        .foregroundStyle(.primary)
         .padding(.vertical, Layout.rowTextVerticalPadding)
         .tappable {
             print("On Add a note tap")

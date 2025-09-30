@@ -153,13 +153,12 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     func productRow(item: POSOrderItem) -> some View {
-        HStack(alignment: .top, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
             productImageView(item: item)
             productDetailsView(item: item)
             Spacer()
             productTotalView(item: item)
         }
-        .padding(.vertical, POSPadding.small)
     }
 
     @ViewBuilder

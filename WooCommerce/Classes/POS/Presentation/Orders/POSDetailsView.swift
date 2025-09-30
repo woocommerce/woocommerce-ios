@@ -96,22 +96,26 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func totalsSection(_ order: POSOrder) -> some View {
-
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.totalsTitle)
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: POSSpacing.small) {
                 productsSubtotalRow(order)
                 discountTotalRow(order)
                 taxTotalRow(order)
 
-                Divider()
-                    .background(Color.posSurfaceDim)
+                divider
 
                 mainTotalRow(order)
+
+                divider
+
                 paidAmountRow(order)
+
+                divider
+
                 refundsSection(order)
             }
         }

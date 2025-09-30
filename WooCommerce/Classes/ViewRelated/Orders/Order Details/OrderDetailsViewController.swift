@@ -96,7 +96,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
         syncEverything { [weak self] in
-            waitingTracker.end()
+            ServiceLocator.analytics.track(event: waitingTracker.end())
 
             self?.topLoaderView.isHidden = true
 

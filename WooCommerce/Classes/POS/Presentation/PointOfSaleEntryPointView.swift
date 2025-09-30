@@ -1,8 +1,23 @@
 import SwiftUI
+import protocol Storage.GRDBManagerProtocol
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
+import protocol Yosemite.PluginsServiceProtocol
+import class Yosemite.PointOfSaleFixedItemFetchStrategyFactory
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
+import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
+import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
+import class Yosemite.PointOfSaleItemService
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
+import struct Yosemite.SiteSetting
+import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 
-struct PointOfSaleEntryPointView: View {
+/// periphery: ignore - public in preparation of move to POS module
+public struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
@@ -26,43 +41,83 @@ struct PointOfSaleEntryPointView: View {
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
 
-    init(itemsController: PointOfSaleItemsControllerProtocol,
-         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
-         couponsController: PointOfSaleCouponsControllerProtocol,
-         couponsSearchController: PointOfSaleSearchingItemsControllerProtocol,
-         ordersController: POSSearchingOrderListControllerProtocol,
+    /// periphery: ignore - public in preparation of move to POS module
+    public init(siteID: Int64,
+         itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
+         popularItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol,
+         couponProvider: PointOfSaleCouponServiceProtocol,
+         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
+         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
+         orderService: POSOrderServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
          cardPresentPaymentService: CardPresentPaymentFacade,
-         orderController: PointOfSaleOrderControllerProtocol,
-         receiptSender: POSReceiptSending,
-         settingsController: PointOfSaleSettingsControllerProtocol,
+         receiptService: POSReceiptServiceProtocol,
+         pluginsService: PluginsServiceProtocol,
+         settingsService: PointOfSaleSettingsServiceProtocol,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          searchHistoryService: POSSearchHistoryProviding,
-         popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          posEligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
          siteTimezone: TimeZone = .current,
+         defaultSiteName: String?,
+         siteSettings: [SiteSetting],
+         grdbManager: GRDBManagerProtocol?,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
-        self.itemsController = itemsController
-        self.purchasableItemsSearchController = purchasableItemsSearchController
-        self.couponsController = couponsController
-        self.couponsSearchController = couponsSearchController
+        self.itemsController = PointOfSaleItemsController(
+            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+            itemFetchStrategyFactory: itemFetchStrategyFactory,
+            analyticsProvider: services.analytics
+        )
+        self.purchasableItemsSearchController = PointOfSaleItemsController(
+            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+            itemFetchStrategyFactory: itemFetchStrategyFactory,
+            initialState: .init(containerState: .content,
+                                itemsStack: .init(root: .loaded([], hasMoreItems: true), itemStates: [:])),
+            analyticsProvider: services.analytics
+        )
+        self.couponsController = PointOfSaleCouponsController(itemProvider: couponProvider,
+                                                              fetchStrategyFactory: couponFetchStrategyFactory,
+                                                              analyticsProvider: services.analytics)
+        self.couponsSearchController = PointOfSaleCouponsController(itemProvider: couponProvider,
+                                                                    fetchStrategyFactory: couponFetchStrategyFactory,
+                                                                    analyticsProvider: services.analytics)
         self.cardPresentPaymentService = cardPresentPaymentService
-        self.orderController = orderController
-        self.settingsController = settingsController
+        let receiptSender = POSReceiptSender(siteID: siteID,
+                                             orderService: orderService,
+                                             receiptService: receiptService,
+                                             analytics: services.analytics,
+                                             pluginsService: pluginsService)
+        self.orderController = PointOfSaleOrderController(orderService: orderService,
+                                                          receiptSender: receiptSender,
+                                                          currencySettingsProvider: services.currency,
+                                                          analytics: services.analytics)
+        self.settingsController = PointOfSaleSettingsController(siteID: siteID,
+                                                                settingsService: settingsService,
+                                                                cardPresentPaymentService: cardPresentPaymentService,
+                                                                pluginsService: pluginsService,
+                                                                defaultSiteName: defaultSiteName,
+                                                                siteSettings: siteSettings,
+                                                                grdbManager: grdbManager,
+                                                                catalogSyncCoordinator: catalogSyncCoordinator)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
-        self.popularPurchasableItemsController = popularPurchasableItemsController
+        self.popularPurchasableItemsController = PointOfSaleItemsController(
+            itemProvider: PointOfSaleItemService(currencySettings: services.currency.currencySettings),
+            itemFetchStrategyFactory: popularItemFetchStrategyFactory,
+            analyticsProvider: services.analytics
+        )
         self.barcodeScanService = barcodeScanService
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker, featureFlagService: services.featureFlags)
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory)
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services
     }
 
-    var body: some View {
+    public var body: some View {
         Group {
             if let posModel {
                 PointOfSaleDashboardView()
@@ -115,22 +170,29 @@ struct PointOfSaleEntryPointView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleEntryPointView(itemsController: PointOfSalePreviewItemsController(),
-                              purchasableItemsSearchController: PointOfSalePreviewItemsController(),
-                              couponsController: PointOfSalePreviewCouponsController(),
-                              couponsSearchController: PointOfSalePreviewCouponsController(),
-                              ordersController: POSConfigurablePreviewOrderListController(),
-                              onPointOfSaleModeActiveStateChange: { _ in },
-                              cardPresentPaymentService: CardPresentPaymentPreviewService(),
-                              orderController: PointOfSalePreviewOrderController(),
-                              receiptSender: POSReceiptSenderPreview(),
-                              settingsController: PointOfSaleSettingsPreviewController(),
-                              collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
-                              searchHistoryService: PointOfSalePreviewHistoryService(),
-                              popularPurchasableItemsController: PointOfSalePreviewItemsController(),
-                              barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-                              posEligibilityChecker: POSTabEligibilityChecker(site: .defaultMock()),
-                              services: POSPreviewServices())
+    PointOfSaleEntryPointView(
+        siteID: 1,
+        itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryPreview(),
+        popularItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryPreview(),
+        couponProvider: PointOfSaleCouponServicePreview(),
+        couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
+        orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
+        orderService: POSOrderServicePreview(),
+        onPointOfSaleModeActiveStateChange: { _ in },
+        cardPresentPaymentService: CardPresentPaymentPreviewService(),
+        receiptService: POSReceiptServicePreview(),
+        pluginsService: PluginsServicePreview(),
+        settingsService: PointOfSaleSettingsServicePreview(),
+        collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics(),
+        searchHistoryService: PointOfSalePreviewHistoryService(),
+        barcodeScanService: PointOfSalePreviewBarcodeScanService(),
+        posEligibilityChecker: PointOfSalePreviewTabEligibilityChecker(),
+        defaultSiteName: "Demo Store",
+        siteSettings: [],
+        grdbManager: nil,
+        catalogSyncCoordinator: nil,
+        services: POSPreviewServices()
+    )
 }
 
 #endif

@@ -145,20 +145,20 @@ private extension POSSettingsLocalCatalogDetailView {
         )
 
         static let managingDataUsage = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.managingDataUsage",
-            value: "Managing data usage",
+            "posSettingsLocalCatalogDetailView.managingDataUsage.1",
+            value: "Managing Data Usage",
             comment: "Section title for managing data usage in Point of Sale settings."
         )
 
         static let lastIncrementalUpdate = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastIncrementalUpdate",
-            value: "Last incremental update",
+            "posSettingsLocalCatalogDetailView.lastIncrementalSync",
+            value: "Last update",
             comment: "Label for last incremental update field in Point of Sale settings."
         )
 
         static let lastFullSync = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.lastFullSync",
-            value: "Last full sync",
+            "posSettingsLocalCatalogDetailView.lastFullSync.1",
+            value: "Last full update",
             comment: "Label for last full sync field in Point of Sale settings."
         )
 
@@ -170,8 +170,8 @@ private extension POSSettingsLocalCatalogDetailView {
 
 
         static let allowFullSyncOnCellular = NSLocalizedString(
-            "posSettingsLocalCatalogDetailView.allowFullSyncOnCellular",
-            value: "Allow full sync on cellular data",
+            "posSettingsLocalCatalogDetailView.allowFullSyncOnCellular.1",
+            value: "Allow full update on cellular data",
             comment: "Label for allow full sync on cellular data toggle in Point of Sale settings."
         )
 

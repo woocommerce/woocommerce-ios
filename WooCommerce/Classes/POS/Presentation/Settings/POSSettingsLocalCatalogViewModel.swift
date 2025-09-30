@@ -84,14 +84,14 @@ private extension POSSettingsLocalCatalogViewModel {
 
         static let neverSynced = NSLocalizedString(
             "posSettingsLocalCatalogViewModel.neverSynced",
-            value: "Not synced",
-            comment: "Text shown when no sync has been performed yet."
+            value: "Not updated",
+            comment: "Text shown when no update has been performed yet."
         )
 
         static let syncDateUnavailable = NSLocalizedString(
             "posSettingsLocalCatalogViewModel.syncDateUnavailable",
-            value: "Sync date unavailable",
-            comment: "Text shown when sync date cannot be determined."
+            value: "Update date unavailable",
+            comment: "Text shown when update date cannot be determined."
         )
     }
 }

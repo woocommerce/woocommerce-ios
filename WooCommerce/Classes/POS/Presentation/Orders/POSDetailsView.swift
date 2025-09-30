@@ -134,7 +134,11 @@ private extension POSOrderDetailsView {
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .fixedSize(horizontal: false, vertical: true)
             }
+
+            Spacer().frame(height: POSSpacing.xSmall)
+            POSOrderBadgeView(order: order)
         }
+        .padding(.top, POSSpacing.xSmall)
         .multilineTextAlignment(.leading)
     }
 

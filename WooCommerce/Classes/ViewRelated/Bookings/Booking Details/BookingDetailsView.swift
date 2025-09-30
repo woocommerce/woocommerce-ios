@@ -101,19 +101,9 @@ private extension BookingDetailsView {
             Text(headerContent.bookingDate)
                 .font(TextFont.bodyMedium)
                 .foregroundColor(.primary)
-            HStack {
-                Text(headerContent.serviceName)
-                Circle()
-                    .fill(.tertiary)
-                    .frame(
-                        width: Layout.circleSeparatorSize,
-                        height: Layout.circleSeparatorSize
-                    )
-                Text(headerContent.customerName)
-            }
-            .font(.footnote.weight(.medium))
-            .foregroundColor(.secondary)
-
+            Text(headerContent.serviceAndCustomerLine)
+                .font(.footnote.weight(.medium))
+                .foregroundColor(.secondary)
             HStack {
                 ForEach(headerContent.status, id: \.self) { status in
                     Text(status.labelText)

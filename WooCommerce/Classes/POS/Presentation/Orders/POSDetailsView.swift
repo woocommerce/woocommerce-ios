@@ -322,49 +322,12 @@ private extension POSOrderDetailsView {
     }
 }
 
-// MARK: - Actions
-
 private extension POSOrderDetailsView {
-    enum POSOrderDetailsAction: Identifiable, CaseIterable {
-        case emailReceipt
-
-        var id: String { title }
-
-        var title: String {
-            switch self {
-            case .emailReceipt:
-                Localization.emailReceiptActionTitle
-            }
-        }
-
-        func available(for order: POSOrder) -> Bool {
-            switch self {
-            case .emailReceipt:
-                order.status == .completed
-            }
-        }
-    }
-
-    var actions: [POSOrderDetailsAction] {
-        POSOrderDetailsAction.allCases.filter { $0.available(for: order) }
-    }
-
     @ViewBuilder
-    func actionsSection(_ actions: [POSOrderDetailsAction]) -> some View {
-        HStack {
-            ForEach(actions) { action in
-                Button(action: {
-                    switch action {
-                    case .emailReceipt:
-                        isShowingEmailReceiptView = true
-                    }
-                }) {
-                    Text(action.title)
-                }
-                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
-            }
-        }
-        .padding(.vertical)
+    var divider: some View {
+        Divider()
+            .overlay(Color.posOutlineVariant.opacity(0.5))
+            .padding(.vertical, POSSpacing.small)
     }
 }
 
@@ -426,8 +389,8 @@ private enum Localization {
     )
 
     static let paidLabel = NSLocalizedString(
-        "pos.orderDetailsView.paidLabel",
-        value: "Paid",
+        "pos.orderDetailsView.paidLabel2",
+        value: "Total paid",
         comment: "Label for the paid amount"
     )
 

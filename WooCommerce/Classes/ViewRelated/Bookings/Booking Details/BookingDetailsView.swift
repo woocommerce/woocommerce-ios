@@ -12,7 +12,6 @@ struct BookingDetailsView: View {
         static let headerContentVerticalPadding: CGFloat = 6
         static let headerBadgesAdditionalTopPadding: CGFloat = 4
         static let sectionFooterTextVerticalPadding: CGFloat = 8
-        static let circleSeparatorSize: CGFloat = 3
         static let rowTextVerticalPadding: CGFloat = 11
     }
 

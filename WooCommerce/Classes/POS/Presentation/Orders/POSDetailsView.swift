@@ -29,16 +29,17 @@ struct POSOrderDetailsView: View {
             POSPageHeaderView(
                 title: "#\(order.number)",
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack, buttonIcon: "xmark") : nil,
+                alignment: .firstTextBaseline,
                 trailingContent: {
                     if order.status == .completed {
-                        VStack {
-                            Button(action: {
-                                isShowingEmailReceiptView = true
-                            }) {
-                                Text(Localization.emailReceiptActionTitle)
-                            }
-                            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                        Button(action: {
+                            isShowingEmailReceiptView = true
+                        }) {
+                            Text(Localization.emailReceiptActionTitle)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
                         }
+                        .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
                     }
                 },
                 bottomContent: {
@@ -79,7 +80,7 @@ private extension POSOrderDetailsView {
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.none) {
+            VStack(spacing: POSSpacing.small) {
                 ForEach(Array(order.lineItems.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
@@ -107,16 +108,15 @@ private extension POSOrderDetailsView {
                 taxTotalRow(order)
 
                 divider
-
                 mainTotalRow(order)
 
                 divider
-
                 paidAmountRow(order)
 
-                divider
-
-                refundsSection(order)
+                if !order.refunds.isEmpty {
+                    divider
+                    refundsSection(order)
+                }
             }
         }
         .padding(POSPadding.medium)
@@ -146,7 +146,6 @@ private extension POSOrderDetailsView {
             Spacer().frame(height: POSSpacing.xSmall)
             POSOrderBadgeView(order: order)
         }
-        .padding(.top, POSSpacing.xSmall)
         .multilineTextAlignment(.leading)
     }
 
@@ -263,15 +262,13 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func refundsSection(_ order: POSOrder) -> some View {
-        if !order.refunds.isEmpty {
-            ForEach(order.refunds, id: \.refundID) { refund in
-                refundRow(refund: refund)
-                divider
-            }
+        ForEach(order.refunds, id: \.refundID) { refund in
+            refundRow(refund: refund)
+            divider
+        }
 
-            if let netAmount = order.formattedNetAmount {
-                netPaymentRow(netAmount: netAmount)
-            }
+        if let netAmount = order.formattedNetAmount {
+            netPaymentRow(netAmount: netAmount)
         }
     }
 

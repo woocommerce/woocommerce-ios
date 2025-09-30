@@ -46,6 +46,7 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {

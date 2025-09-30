@@ -145,7 +145,7 @@ final class CoreDataIterativeMigrator_MigrationStepTests: XCTestCase {
         let sourceModel = try XCTUnwrap(modelsInventory.model(for: modelVersion37))
 
         // Find the index of Model 87 in the current inventory
-        // which only contains Models 80-127 as per latest update on [TBD]
+        // which only contains Models 80-127 as per latest update on [https://github.com/woocommerce/woocommerce-ios/pull/16181]
         let sourceModelIndex = try XCTUnwrap(modelsInventory.versions.firstIndex { $0.name == sourceModelName },
                                              "Model 87 should exist in the inventory")
         // When

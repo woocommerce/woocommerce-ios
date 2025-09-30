@@ -436,7 +436,7 @@ private extension AppDelegate {
     /// Cancel the app startup waiting time tracker
     ///
     func cancelStartupWaitingTimeTracker() {
-        ServiceLocator.startupWaitingTimeTracker.end()
+        ServiceLocator.startupWaitingTimeTracker.endWithoutTracking()
     }
 
     func handleLaunchArguments() {

@@ -237,7 +237,7 @@ private extension StoreOnboardingViewModel {
                         return StoreOnboardingTask(isComplete: true, type: .launchStore)
                     }))
                 case .failure(let error):
-                    self?.waitingTimeTracker.end() // Stop the tracker if there is an error.
+                    self?.waitingTimeTracker.endWithoutTracking() // Stop the tracker if there is an error.
                     return continuation.resume(throwing: error)
                 }
             })

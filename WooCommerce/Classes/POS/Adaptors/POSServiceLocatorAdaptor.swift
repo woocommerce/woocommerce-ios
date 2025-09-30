@@ -5,6 +5,7 @@ import Yosemite
 import protocol Experiments.FeatureFlagService
 import enum Experiments.FeatureFlag
 import protocol Storage.StorageManagerType
+
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     var analytics: POSAnalyticsProviding {
         POSAnalyticsAdaptor()
@@ -28,6 +29,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
+    }
+
+    var orderManagement: POSOrderManagementServiceProtocol {
+        POSOrderManagementServiceAdaptor()
     }
 }
 
@@ -115,5 +120,14 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
             cancelButtonTitle: cancelButtonTitle,
             onSelection: onSelection
         ))
+    }
+}
+
+private struct POSOrderManagementServiceAdaptor: POSOrderManagementServiceProtocol {
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let action = OrderAction.deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
+        Task { @MainActor in
+            ServiceLocator.stores.dispatch(action)
+        }
     }
 }

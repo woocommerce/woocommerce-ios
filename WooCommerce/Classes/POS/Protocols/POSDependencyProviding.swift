@@ -5,6 +5,7 @@ import enum Experiments.FeatureFlag
 import struct Yosemite.Coupon
 import enum Yosemite.CouponDiscountType
 import enum Yosemite.POSItem
+import protocol Yosemite.POSOrderManagementServiceProtocol
 
 /// POSDepenencyProviding is part of the POS entry point that defines the external dependencies from the Woo app that POS depends on
 
@@ -72,4 +73,5 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
+    var orderManagement: POSOrderManagementServiceProtocol { get }
 }

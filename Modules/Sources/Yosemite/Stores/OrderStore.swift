@@ -8,9 +8,20 @@ import Storage
 //
 public class OrderStore: Store {
     private let remote: OrdersRemote
+    private let methods: OrderStoreMethods
+
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: OrdersRemote) {
+        self.remote = remote
+        self.methods = OrderStoreMethods(storageManager: storageManager, remote: remote)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = OrdersRemote(network: network)
+        self.methods = OrderStoreMethods(storageManager: storageManager, remote: self.remote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -85,7 +96,7 @@ public class OrderStore: Store {
         case let .markOrderAsPaidLocally(siteID, orderID, datePaid, onCompletion):
             markOrderAsPaidLocally(siteID: siteID, orderID: orderID, datePaid: datePaid, onCompletion: onCompletion)
         case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
-            deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
+            methods.deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
         case let .observeInsertedOrders(siteID, completion):
             observeInsertedOrders(siteID: siteID, completion: completion)
         case let .checkIfStoreHasOrders(siteID, completion):

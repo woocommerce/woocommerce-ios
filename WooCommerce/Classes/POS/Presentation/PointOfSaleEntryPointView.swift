@@ -94,7 +94,7 @@ public struct PointOfSaleEntryPointView: View {
                                                           receiptSender: receiptSender,
                                                           currencySettingsProvider: services.currency,
                                                           analytics: services.analytics,
-                                                          stores: ServiceLocator.stores) // Temporary, to resolve merge conflict
+                                                          orderManagement: services.orderManagement)
         self.settingsController = PointOfSaleSettingsController(siteID: siteID,
                                                                 settingsService: settingsService,
                                                                 cardPresentPaymentService: cardPresentPaymentService,

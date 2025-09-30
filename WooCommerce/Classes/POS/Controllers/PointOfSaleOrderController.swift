@@ -20,7 +20,7 @@ import enum WooFoundation.CurrencyCode
 import protocol WooFoundation.Analytics
 import enum Alamofire.AFError
 import class Yosemite.OrderTotalsCalculator
-import protocol Yosemite.StoresManager
+import protocol Yosemite.POSOrderManagementServiceProtocol
 
 enum SyncOrderState {
     case newOrder
@@ -46,13 +46,13 @@ protocol PointOfSaleOrderControllerProtocol {
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
          analytics: POSAnalyticsProviding,
-         stores: StoresManager,
+         orderManagement: POSOrderManagementServiceProtocol,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
-        self.stores = stores
+        self.orderManagement = orderManagement
         self.celebration = celebration
     }
 
@@ -61,7 +61,7 @@ protocol PointOfSaleOrderControllerProtocol {
     private let currencySettingsProvider: POSCurrencySettingsProviding
     private let celebration: PaymentCaptureCelebrationProtocol
     private let analytics: POSAnalyticsProviding
-    private let stores: StoresManager
+    private let orderManagement: POSOrderManagementServiceProtocol
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
     private var order: Order? = nil
@@ -128,11 +128,10 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order, order.status == .autoDraft else { return }
 
         await withCheckedContinuation { continuation in
-            Task { @MainActor [weak self] in
-                let action = OrderAction.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in
+            Task { @MainActor in
+                orderManagement.deleteOrder(siteID: order.siteID, order: order, deletePermanently: true) { _ in
                     continuation.resume()
                 }
-                self?.stores.dispatch(action)
             }
         }
     }

@@ -2,6 +2,7 @@ import Observation
 import enum Yosemite.POSItem
 import enum Yosemite.PointOfSaleCouponServiceError
 import protocol Yosemite.PointOfSaleItemServiceProtocol
+import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import struct Yosemite.PointOfSaleCouponFetchStrategyFactory
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
@@ -19,12 +20,12 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
     private let paginationTracker: AsyncPaginationTracker
     private var childPaginationTrackers: [POSItem: AsyncPaginationTracker] = [:]
     private let couponProvider: PointOfSaleCouponServiceProtocol
-    private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory
+    private let fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol
     private var fetchStrategy: PointOfSaleCouponFetchStrategy
     private let analyticsProvider: POSAnalyticsProviding
 
     init(itemProvider: PointOfSaleCouponServiceProtocol,
-         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactory,
+         fetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          analyticsProvider: POSAnalyticsProviding) {
         self.couponProvider = itemProvider
         self.fetchStrategyFactory = fetchStrategyFactory

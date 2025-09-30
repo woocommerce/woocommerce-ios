@@ -2,7 +2,7 @@ import Foundation
 import enum Yosemite.CardReaderServiceError
 import enum Yosemite.CardReaderServiceUnderlyingError
 
-enum CardPresentPaymentRetryApproach {
+public enum CardPresentPaymentRetryApproach {
     case dontRetry
     case tryAgain(retryAction: () -> Void)
     case tryAnotherPaymentMethod(retryAction: () -> Void)

@@ -3,7 +3,7 @@ import enum Yosemite.PaymentChannel
 import struct Yosemite.Order
 import Combine
 
-protocol CardPresentPaymentFacade {
+public protocol CardPresentPaymentFacade {
     /// `paymentEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages.
     /// This is a long lasting stream, and will not finish during the life of the façade, instead it will publish events for each payment attempt.

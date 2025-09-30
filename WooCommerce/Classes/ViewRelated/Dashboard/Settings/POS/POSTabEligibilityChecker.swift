@@ -54,10 +54,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     /// Determines whether the POS entry point can be shown based on the selected store and feature gates.
     func checkEligibility() async -> POSEligibilityState {
-        guard #available(iOS 17.0, *) else {
-            return .ineligible(reason: .unsupportedIOSVersion)
-        }
-
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
@@ -78,11 +74,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
         switch ineligibleReason {
-        case .unsupportedIOSVersion:
-            // TODO: WOOMOB-768 - hide refresh CTA in this case
-            return .ineligible(reason: .unsupportedIOSVersion)
-        case .unsupportedInCIABSites:
-            return .ineligible(reason: .unsupportedInCIABSites)
         case .siteSettingsNotAvailable, .unsupportedCurrency:
             do {
                 try await syncSiteSettingsRemotely()

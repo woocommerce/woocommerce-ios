@@ -220,19 +220,6 @@ struct POSTabEligibilityCheckerTests {
 
     // MARK: - `refreshEligibility` Tests
 
-    @Test func refreshEligibility_returns_ineligible_for_unsupportedIOSVersion() async throws {
-        // Given
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores)
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .unsupportedIOSVersion)
-
-        // Then
-        #expect(result == .ineligible(reason: .unsupportedIOSVersion))
-    }
-
     @Test(arguments: [
         POSIneligibleReason.siteSettingsNotAvailable,
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])

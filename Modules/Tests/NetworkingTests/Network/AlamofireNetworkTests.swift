@@ -211,7 +211,7 @@ final class AlamofireNetworkTests: XCTestCase {
         // Given
         let url = try XCTUnwrap(URL(string: "http://localhost:991929281"))
         let request = URLRequest(url: url, timeoutInterval: 0.001)
-        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, ensuresSessionManagerIsInitialized: true)
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil, ensuresSessionManagerIsInitialized: false)
 
         // When
         async let request1 = network.responseDataAndHeaders(for: request)

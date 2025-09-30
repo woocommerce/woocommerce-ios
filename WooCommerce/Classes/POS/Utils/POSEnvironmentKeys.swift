@@ -125,6 +125,7 @@ struct EmptyPOSAnalytics: POSAnalyticsProviding {
 struct EmptyPOSExternalView: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView { AnyView(EmptyView()) }
     func createFormattableAmountTextField(preset: Decimal?,
+                                          font: Font,
                                           onSubmit: @escaping () -> Void,
                                           onChange: @escaping (String) -> Void) -> AnyView {
         AnyView(EmptyView())

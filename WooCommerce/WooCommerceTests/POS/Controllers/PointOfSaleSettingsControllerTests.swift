@@ -18,7 +18,9 @@ struct PointOfSaleSettingsControllerTests {
                                                 cardPresentPaymentService: mockCardPresentPaymentService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
-                                                siteSettings: [])
+                                                siteSettings: [],
+                                                grdbManager: nil,
+                                                catalogSyncCoordinator: nil)
 
         // When
         let cardReader = sut.connectedCardReader
@@ -35,7 +37,9 @@ struct PointOfSaleSettingsControllerTests {
                                                 cardPresentPaymentService: mockService,
                                                 pluginsService: mockPluginService,
                                                 defaultSiteName: "Test Store",
-                                                siteSettings: [])
+                                                siteSettings: [],
+                                                grdbManager: nil,
+                                                catalogSyncCoordinator: nil)
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -76,4 +80,5 @@ final class MockPointOfSaleSettingsController: PointOfSaleSettingsControllerProt
                                                                               pluginsService: MockPluginsService(),
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [])
+    var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 }

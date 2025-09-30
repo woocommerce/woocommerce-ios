@@ -36,6 +36,10 @@ private struct MockPOSOrderListFetchStrategy: POSOrderListFetchStrategy {
     func loadOrder(orderID: Int64) async throws -> Yosemite.POSOrder {
         try await orderService.loadOrder(orderID: orderID)
     }
+
+    func trackFetched(millisecondsSinceRequestSent: Int) {}
+
+    func trackNextPageLoaded(pageNumber: Int) {}
 }
 
 private struct MockPOSOrderListSearchFetchStrategy: POSOrderListFetchStrategy {
@@ -53,4 +57,8 @@ private struct MockPOSOrderListSearchFetchStrategy: POSOrderListFetchStrategy {
     func loadOrder(orderID: Int64) async throws -> Yosemite.POSOrder {
         try await orderService.loadOrder(orderID: orderID)
     }
+
+    func trackFetched(millisecondsSinceRequestSent: Int) {}
+
+    func trackNextPageLoaded(pageNumber: Int) {}
 }

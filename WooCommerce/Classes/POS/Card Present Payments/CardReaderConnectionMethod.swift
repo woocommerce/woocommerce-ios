@@ -1,6 +1,6 @@
 import Foundation
 
-enum CardReaderConnectionMethod {
+public enum CardReaderConnectionMethod {
     case bluetooth
     case tapToPay
 }

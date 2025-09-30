@@ -86,8 +86,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .productImageOptimizedHandling:
             return true
-        case .pointOfSaleAsATabi2:
-            return true
         case .pointOfSaleOrdersi1:
             return true
         case .pointOfSaleOrdersi2:

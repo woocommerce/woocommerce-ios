@@ -2,18 +2,7 @@ import Foundation
 @testable import WooCommerce
 
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    var initialVisibility: Bool = false
-    var visibility: Bool = false
     var eligibility: POSEligibilityState = .eligible
-
-    func checkInitialVisibility() -> Bool {
-        initialVisibility
-    }
-
-    @MainActor
-    func checkVisibility() async -> Bool {
-        visibility
-    }
 
     @MainActor
     func checkEligibility() async -> POSEligibilityState {

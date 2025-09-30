@@ -1,6 +1,6 @@
 import Foundation
 
-enum CardPresentPaymentResult {
+public enum CardPresentPaymentResult {
     case success(CardPresentPaymentTransaction)
     case cancellation
 }

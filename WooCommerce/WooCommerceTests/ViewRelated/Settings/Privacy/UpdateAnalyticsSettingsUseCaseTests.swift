@@ -1,5 +1,7 @@
 import XCTest
 import TestKit
+import protocol WooFoundation.Analytics
+import protocol WooFoundation.AnalyticsProvider
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -17,7 +19,7 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
                 break
             }
         }
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
 
         // When
@@ -40,7 +42,7 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
                 break
             }
         }
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
 
         // When
@@ -55,7 +57,7 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
     @MainActor func test_using_a_non_wpcom_account_opt_in_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
 
         // When
@@ -70,7 +72,7 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
     @MainActor func test_using_a_non_wpcom_account_opt_out_analytics_updates_analytics_state() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
 
         // When
@@ -94,7 +96,7 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
                 break
             }
         }
-        let analytics = WaitingTimeTrackerTests.TestAnalytics()
+        let analytics = TestAnalytics()
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "TestingSuite"))
         analytics.setUserHasOptedOut(true)
 
@@ -111,4 +113,29 @@ final class UpdateAnalyticsSettingsUseCaseTests: XCTestCase {
         super.tearDown()
         SessionManager.removeTestingDatabase()
     }
+}
+
+final class TestAnalytics: Analytics {
+    var lastReceivedEventName: String? = nil
+    var lastReceivedWaitingTime: TimeInterval? = nil
+
+    // MARK: - Protocol conformance
+
+    func initialize() {
+    }
+
+    func track(_ eventName: String, properties: [AnyHashable: Any]?, error: Error?) {
+        lastReceivedEventName = eventName
+        lastReceivedWaitingTime = properties?["waiting_time"] as? TimeInterval
+    }
+
+    func refreshUserData() {
+    }
+
+    func setUserHasOptedOut(_ optedOut: Bool) {
+        userHasOptedIn = !optedOut
+    }
+
+    var userHasOptedIn: Bool = true
+    private(set) var analyticsProvider: AnalyticsProvider = MockAnalyticsProvider()
 }

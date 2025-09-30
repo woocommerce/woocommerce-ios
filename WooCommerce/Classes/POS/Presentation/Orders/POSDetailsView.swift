@@ -48,19 +48,17 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    if actions.isNotEmpty {
-                        actionsSection(actions)
-                    }
-
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
                     totalsSection(order)
                 }
+                .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.medium)
             }
         }
-        .background(Color.posSurface)
+        .background(Color.posSurfaceBright)
         .navigationBarHidden(true)
         .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
             POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in

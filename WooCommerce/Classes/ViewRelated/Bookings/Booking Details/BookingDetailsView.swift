@@ -303,10 +303,18 @@ private extension View {
 
 private extension BookingDetailsView {
     enum Localization {
-        static let cancelBooking = "Cancel booking"
+        static let cancelBooking = NSLocalizedString(
+            "BookingDetailsView.customer.cancelBookingButton.title",
+            value: "Cancel booking",
+            comment: "'Cancel booking' button title in appointment details section in booking details view."
+        )
 
         /// Attendance section
-        static let statusRowTitle = "Status"
+        static let statusRowTitle = NSLocalizedString(
+            "BookingDetailsView.customer.status.title",
+            value: "Status",
+            comment: "'Status' row title in attendance section in booking details view."
+        )
 
         /// Customer section
         static let billingAddressRowTitle = NSLocalizedString(

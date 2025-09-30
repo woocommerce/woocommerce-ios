@@ -175,7 +175,7 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func productDetailsView(item: POSOrderItem) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             Text(item.name)
                 .font(.posBodySmallBold)
                 .foregroundStyle(Color.posOnSurface)

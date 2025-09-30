@@ -28,6 +28,9 @@ import struct Yosemite.POSOrderRefund
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCatalogSettingsServiceProtocol
+import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
 import struct Yosemite.Order
 import struct Yosemite.POSCart
@@ -530,6 +533,38 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+}
+
+// MARK: - Preview Catalog Services
+
+final class POSPreviewCatalogSettingsService: POSCatalogSettingsServiceProtocol {
+    func loadCatalogInfo(for siteID: Int64) async throws -> POSCatalogInfo {
+        let now = Date()
+        let lastFullSync = now.addingTimeInterval(-2 * 60 * 60) // 2 hours ago
+        let lastIncrementalSync = now.addingTimeInterval(-15 * 60) // 15 minutes ago
+        return POSCatalogInfo(
+            productCount: 247,
+            variationCount: 89,
+            lastFullSyncDate: lastFullSync,
+            lastIncrementalSyncDate: lastIncrementalSync
+        )
+    }
+}
+
+final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
+    func performFullSync(for siteID: Int64) async throws {
+        // Simulates a full sync operation with a 1 second delay.
+        try await Task.sleep(nanoseconds: 1_000_000_000)
+    }
+
+    func shouldPerformFullSync(for siteID: Int64, maxAge: TimeInterval) async -> Bool {
+        true
+    }
+
+    func performIncrementalSyncIfApplicable(for siteID: Int64, forceSync: Bool) async throws {
+        // Simulates an incremental sync operation with a 0.5 second delay.
+        try await Task.sleep(nanoseconds: 500_000_000)
+    }
 }
 
 #endif

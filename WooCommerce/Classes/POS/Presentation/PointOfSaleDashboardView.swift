@@ -4,6 +4,7 @@ import WooFoundation
 struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
 
     @State private var showExitPOSModal: Bool = false
@@ -230,7 +231,8 @@ private extension PointOfSaleDashboardView {
 
     func trackElapsedTimeForInitialLoadingState() {
         if let waitingTimeTracker {
-            waitingTimeTracker.end(using: .milliseconds)
+            let event = waitingTimeTracker.end(using: .milliseconds)
+            analytics.track(event: event)
             self.waitingTimeTracker = nil
         }
     }

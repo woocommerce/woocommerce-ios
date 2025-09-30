@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import class WooFoundation.CurrencySettings
+import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.JetpackSite
@@ -135,6 +136,8 @@ private extension POSTabCoordinator {
             let pluginsService = PluginsService(storageManager: storageManager)
             let siteTimezone = storesManager.sessionManager.defaultSite?.siteTimezone ?? .current
 
+            let grdbManager: GRDBManagerProtocol? = serviceAdaptor.featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) ? ServiceLocator.grdbManager : nil
+            let catalogSyncCoordinator = ServiceLocator.posCatalogSyncCoordinator
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -173,6 +176,8 @@ private extension POSTabCoordinator {
                     siteTimezone: siteTimezone,
                     defaultSiteName: storesManager.sessionManager.defaultSite?.name,
                     siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                    grdbManager: grdbManager,
+                    catalogSyncCoordinator: catalogSyncCoordinator,
                     services: serviceAdaptor
                 )
 

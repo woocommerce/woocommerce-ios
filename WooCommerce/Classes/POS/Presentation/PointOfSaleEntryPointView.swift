@@ -1,4 +1,6 @@
 import SwiftUI
+import protocol Storage.GRDBManagerProtocol
+import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -59,6 +61,8 @@ public struct PointOfSaleEntryPointView: View {
          siteTimezone: TimeZone = .current,
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
+         grdbManager: GRDBManagerProtocol?,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          services: POSDependencyProviding) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
@@ -85,7 +89,6 @@ public struct PointOfSaleEntryPointView: View {
                                              orderService: orderService,
                                              receiptService: receiptService,
                                              analytics: services.analytics,
-                                             featureFlagService: services.featureFlags,
                                              pluginsService: pluginsService)
         self.orderController = PointOfSaleOrderController(orderService: orderService,
                                                           receiptSender: receiptSender,
@@ -96,7 +99,9 @@ public struct PointOfSaleEntryPointView: View {
                                                                 cardPresentPaymentService: cardPresentPaymentService,
                                                                 pluginsService: pluginsService,
                                                                 defaultSiteName: defaultSiteName,
-                                                                siteSettings: siteSettings)
+                                                                siteSettings: siteSettings,
+                                                                grdbManager: grdbManager,
+                                                                catalogSyncCoordinator: catalogSyncCoordinator)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -184,6 +189,8 @@ public struct PointOfSaleEntryPointView: View {
         posEligibilityChecker: PointOfSalePreviewTabEligibilityChecker(),
         defaultSiteName: "Demo Store",
         siteSettings: [],
+        grdbManager: nil,
+        catalogSyncCoordinator: nil,
         services: POSPreviewServices()
     )
 }

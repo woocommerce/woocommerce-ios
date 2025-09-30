@@ -171,15 +171,11 @@ private extension POSOrderDetailsView {
 
     @ViewBuilder
     func productDetailsView(item: POSOrderItem) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
             Text(item.name)
-                .font(.posBodyMediumBold)
+                .font(.posBodySmallBold)
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
-
-            if !item.attributes.isEmpty {
-                productAttributesView(item.attributes)
-            }
 
             Text(Localization.quantityLabel(item.quantity.intValue,
                                             item.formattedPrice))
@@ -199,7 +195,7 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func productTotalView(item: POSOrderItem) -> some View {
         Text(item.formattedTotal)
-            .font(.posBodyMediumRegular())
+            .font(.posBodySmallRegular())
             .foregroundStyle(Color.posOnSurface)
     }
 }

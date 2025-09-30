@@ -7883,6 +7883,8 @@
 		02CD3BFC2C35D01600E575C4 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
+				02F5E5DE2E857A90002DEE24 /* MockSelectedSiteSettings.swift */,
+				02F5E5DC2E857A50002DEE24 /* MockPOSSiteSettingService.swift */,
 				02C470B92E7BDDCF00F5F716 /* MockPOSCatalogSettingsService.swift */,
 				02C470B72E7BDD9400F5F716 /* MockPOSCatalogSyncCoordinator.swift */,
 				016582E12E787187001DBB6F /* MockOnboardingViewFactoryConfiguration.swift */,

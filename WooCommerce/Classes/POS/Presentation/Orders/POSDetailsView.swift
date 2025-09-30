@@ -79,9 +79,13 @@ private extension POSOrderDetailsView {
                 .font(.posBodyLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
-            VStack(spacing: POSSpacing.small) {
-                ForEach(order.lineItems, id: \.itemID) { item in
+            VStack(spacing: POSSpacing.none) {
+                ForEach(Array(order.lineItems.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
+
+                    if index < order.lineItems.count - 1 {
+                        divider
+                    }
                 }
             }
         }

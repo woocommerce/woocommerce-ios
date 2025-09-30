@@ -128,7 +128,7 @@ struct POSOrderListView: View {
                         Button(action: {
                             orderListModel.ordersController.selectOrder(order)
                         }) {
-                            OrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                            POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -150,12 +150,12 @@ struct POSOrderListView: View {
         case .loading(let orders):
             if orders.isEmpty {
                 ForEach(0..<8, id: \.self) { _ in
-                    GhostOrderRowView()
+                    POSGhostOrderRowView()
                 }
                 .opacity(orders.isEmpty ? 1 : 0)
                 .animation(.default, value: orders.isEmpty)
             } else {
-                GhostOrderRowView()
+                POSGhostOrderRowView()
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState) {
@@ -169,7 +169,7 @@ struct POSOrderListView: View {
     }
 }
 
-private struct OrderRowView: View {
+private struct POSOrderRowView: View {
     let order: POSOrder
     let isSelected: Bool
 
@@ -181,10 +181,11 @@ private struct OrderRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             orderHeaderRow
             orderDetailsColumn
-            orderBadgeRow
+            Spacer().frame(height: POSSpacing.xSmall)
+            POSOrderBadgeView(order: order)
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
@@ -227,17 +228,9 @@ private struct OrderRowView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
-
-    @ViewBuilder
-    private var orderBadgeRow: some View {
-        HStack {
-            POSOrderBadgeView(order: order)
-            Spacer()
-        }
-    }
 }
 
-private struct GhostOrderRowView: View {
+private struct POSGhostOrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
@@ -247,15 +240,18 @@ private struct GhostOrderRowView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            VStack(alignment: .leading, spacing: POSSpacing.small) {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Spacer().frame(minHeight: 0)
                 ghostHeaderRow(geometry: geometry)
                 ghostDetailsColumn(geometry: geometry)
+                Spacer().frame(height: POSSpacing.xSmall)
                 ghostBadgeRow(geometry: geometry)
+                Spacer().frame(minHeight: 0)
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
-        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, maxHeight: .infinity, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
@@ -293,14 +289,11 @@ private struct GhostOrderRowView: View {
 
     @ViewBuilder
     private func ghostBadgeRow(geometry: GeometryProxy) -> some View {
-        HStack {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.28, height: POSPadding.medium)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-            Spacer()
-        }
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: geometry.size.width * 0.28, height: POSPadding.medium)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 }
 
@@ -346,7 +339,7 @@ final class POSOrderSearchable: POSSearchable {
 // MARK: - Constants
 
 private enum Constants {
-    static let orderCardMinHeight: CGFloat = 90
+    static let orderCardMinHeight: CGFloat = 112
     static let maximumOrderCardHeight: CGFloat = Constants.orderCardMinHeight * 2
     static let animationDuration: CGFloat = 0.2
     static let searchControlID = "searchControl"

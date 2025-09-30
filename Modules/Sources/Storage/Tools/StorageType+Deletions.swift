@@ -243,4 +243,17 @@ public extension StorageType {
             deleteObject($0)
         }
     }
+
+    // MARK: - Bookings
+
+    /// Deletes all of the stored Bookings for the provided siteID.
+    ///
+    func deleteBookings(siteID: Int64) {
+        guard let bookings = loadBookings(siteID: siteID) else {
+            return
+        }
+        for booking in bookings {
+            deleteObject(booking)
+        }
+    }
 }

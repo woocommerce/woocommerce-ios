@@ -1,4 +1,5 @@
 import SwiftUI
+import class Yosemite.SiteAddress
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import enum Yosemite.Plugin

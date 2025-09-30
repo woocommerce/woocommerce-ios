@@ -14,6 +14,10 @@ final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
         $readerConnectionStatus.eraseToAnyPublisher()
     }
 
+    init(connectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected) {
+        self.readerConnectionStatus = connectionStatus
+    }
+
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))
     }

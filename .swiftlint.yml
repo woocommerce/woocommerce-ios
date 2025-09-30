@@ -1,6 +1,7 @@
 swiftlint_version: 0.58.2
 
 excluded:
+  - build
   - BuildTools/.build
   - DerivedData
   - fastlane

@@ -295,28 +295,9 @@ private struct RowTextStyle: ViewModifier {
     }
 }
 
-private struct TappableRowModifier: ViewModifier {
-    let onTap: () -> Void
-
-    func body(content: Content) -> some View {
-        Button {
-            onTap()
-        } label: {
-            content
-        }
-        .buttonStyle(.plain)
-    }
-}
-
 private extension View {
     func rowTextStyle() -> some View {
         self.modifier(RowTextStyle())
-    }
-}
-
-private extension View {
-    func tappable(_ onTap: @escaping () -> Void) -> some View {
-        self.modifier(TappableRowModifier(onTap: onTap))
     }
 }
 

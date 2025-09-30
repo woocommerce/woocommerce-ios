@@ -1251,6 +1251,7 @@
 		2D05E80F2E86BE50004111FD /* AttendanceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */; };
 		2D05E8112E8A9905004111FD /* CustomerContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8102E8A98FE004111FD /* CustomerContent.swift */; };
 		2D05E8132E8AADB9004111FD /* PaymentContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05E8122E8AADB2004111FD /* PaymentContent.swift */; };
+		2D05F7102E8BE921004111FD /* View+Tappable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D05F70F2E8BE91E004111FD /* View+Tappable.swift */; };
 		2D09E0D12E61BC7F005C26F3 /* ApplicationPasswordsExperimentState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */; };
 		2D09E0D52E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */; };
 		2D7A3E232E7891DB00C46401 /* CIABEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */; };
@@ -4450,6 +4451,7 @@
 		2D05E80E2E86BE4F004111FD /* AttendanceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceContent.swift; sourceTree = "<group>"; };
 		2D05E8102E8A98FE004111FD /* CustomerContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerContent.swift; sourceTree = "<group>"; };
 		2D05E8122E8AADB2004111FD /* PaymentContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentContent.swift; sourceTree = "<group>"; };
+		2D05F70F2E8BE91E004111FD /* View+Tappable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Tappable.swift"; sourceTree = "<group>"; };
 		2D09E0D02E61BC7D005C26F3 /* ApplicationPasswordsExperimentState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentState.swift; sourceTree = "<group>"; };
 		2D09E0D42E65C9B9005C26F3 /* ApplicationPasswordsExperimentStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordsExperimentStateTests.swift; sourceTree = "<group>"; };
 		2D7A3E222E7891D200C46401 /* CIABEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CIABEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -8644,6 +8646,7 @@
 		262A097F2628A8BF0033AD20 /* View Modifiers */ = {
 			isa = PBXGroup;
 			children = (
+				2D05F70F2E8BE91E004111FD /* View+Tappable.swift */,
 				DE4B3B5526A68DD000EEF2D8 /* View+InsetPaddings.swift */,
 				26281775278F0B0100C836D3 /* View+NoticesModifier.swift */,
 				AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */,
@@ -15353,6 +15356,7 @@
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
 				02F3A6842A618CD7004CD2E8 /* WordPressMediaLibraryPickerCoordinator.swift in Sources */,
 				DE6F99802BEE04310007B2DD /* InboxDashboardCardViewModel.swift in Sources */,
+				2D05F7102E8BE921004111FD /* View+Tappable.swift in Sources */,
 				026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,

@@ -2,20 +2,24 @@ import SwiftUI
 
 struct POSOrderDetailsLoadingView: View {
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: Localization.orderDetailsTitle,
                 backButtonConfiguration: nil,
+                alignment: .firstTextBaseline,
                 trailingContent: { shimmeringHeaderTrailingContent },
                 bottomContent: { shimmeringHeaderBottomContent }
             )
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     shimmeringProductsSection
                     shimmeringTotalsSection
                 }
+                .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.medium)
             }
         }
         .background(Color.posSurface)
@@ -26,31 +30,34 @@ struct POSOrderDetailsLoadingView: View {
 
     @ViewBuilder
     private var shimmeringHeaderTrailingContent: some View {
-        GeometryReader { geometry in
-            HStack {
-                Spacer()
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: geometry.size.width * 0.3, height: 16)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+        HStack {
+            Spacer()
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shortRowWidth, height: POSPadding.large)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         }
-        .frame(height: 16)
     }
 
     @ViewBuilder
     private var shimmeringHeaderBottomContent: some View {
-        GeometryReader { geometry in
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: geometry.size.width * 0.5, height: 16)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.longRowWidth, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+
+            Spacer().frame(height: POSSpacing.xSmall)
+
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shortRowWidth, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         }
-        .frame(height: 16)
+        .multilineTextAlignment(.leading)
     }
 
     @ViewBuilder
@@ -61,8 +68,12 @@ struct POSOrderDetailsLoadingView: View {
                 .foregroundStyle(Color.posOnSurface)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(0..<2, id: \.self) { _ in
+                ForEach(0..<2, id: \.self) { index in
                     shimmeringProductRow
+
+                    if index < 1 {
+                        divider
+                    }
                 }
             }
         }
@@ -73,39 +84,35 @@ struct POSOrderDetailsLoadingView: View {
 
     @ViewBuilder
     private var shimmeringProductRow: some View {
-        GeometryReader { geometry in
-            HStack(alignment: .top, spacing: POSSpacing.medium) {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: POSPadding.xxLarge, height: POSPadding.xxLarge)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Rectangle()
                     .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 40, height: 40)
+                    .frame(width: Constants.longRowWidth, height: POSPadding.medium)
                     .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                     .shimmering()
 
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Rectangle()
-                        .fill(Color.posOnSurfaceVariantLowest)
-                        .frame(width: geometry.size.width * 0.45, height: 20)
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                        .shimmering()
-
-                    Rectangle()
-                        .fill(Color.posOnSurfaceVariantLowest)
-                        .frame(width: geometry.size.width * 0.35, height: 16)
-                        .clipShape(RoundedRectangle(cornerRadius: 4))
-                        .shimmering()
-                }
-
-                Spacer()
-
                 Rectangle()
                     .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: geometry.size.width * 0.2, height: 20)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .frame(width: Constants.shortRowWidth, height: POSPadding.medium)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                     .shimmering()
             }
-            .padding(.vertical, POSPadding.small)
+
+            Spacer()
+
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shortRowWidth, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         }
-        .frame(height: 60)
     }
 
     @ViewBuilder
@@ -120,10 +127,10 @@ struct POSOrderDetailsLoadingView: View {
                 shimmeringTotalsRow
                 shimmeringTotalsRow
 
-                Divider()
-                    .background(Color.posSurfaceDim)
-
+                divider
                 shimmeringTotalsRow
+
+                divider
                 shimmeringTotalsRow
             }
         }
@@ -134,25 +141,35 @@ struct POSOrderDetailsLoadingView: View {
 
     @ViewBuilder
     private var shimmeringTotalsRow: some View {
-        GeometryReader { geometry in
-            HStack {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: geometry.size.width * 0.3, height: 20)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
+        HStack {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.mediumRowWidth, height: POSPadding.large)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
 
-                Spacer()
+            Spacer()
 
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: geometry.size.width * 0.25, height: 20)
-                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                    .shimmering()
-            }
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.shortRowWidth, height: POSPadding.large)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
         }
-        .frame(height: 20)
     }
+
+    @ViewBuilder
+    private var divider: some View {
+        Divider()
+            .overlay(Color.posOutlineVariant.opacity(0.5))
+            .padding(.vertical, POSSpacing.small)
+    }
+}
+
+private enum Constants {
+    static let longRowWidth: CGFloat = 120
+    static let mediumRowWidth: CGFloat = 100
+    static let shortRowWidth: CGFloat = 80
 }
 
 private enum Localization {

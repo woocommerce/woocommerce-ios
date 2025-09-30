@@ -301,6 +301,54 @@ struct POSPreviewHelpers {
             formattedNetAmount: nil
         )
     }
+
+    static func makePreviewOrderWithRefund() -> POSOrder {
+        return POSOrder(
+            id: 2,
+            number: "1002",
+            dateCreated: Date().addingTimeInterval(-3600),
+            status: .completed,
+            formattedTotal: "$89.50",
+            formattedSubtotal: "$89.96",
+            customerEmail: "customer.with.refund@example.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [
+                POSOrderItem(
+                    itemID: 3,
+                    name: "Artisan Chocolate Box",
+                    quantity: 3.0,
+                    formattedPrice: "$19.99",
+                    formattedTotal: "$59.97",
+                    imageSrc: nil,
+                    attributes: []
+                ),
+                POSOrderItem(
+                    itemID: 4,
+                    name: "Gourmet Cookie Set - Mixed",
+                    quantity: 1.0,
+                    formattedPrice: "$29.99",
+                    formattedTotal: "$29.99",
+                    imageSrc: nil,
+                    attributes: [
+                        OrderItemAttribute(metaID: 3, name: "Flavor", value: "Mixed"),
+                        OrderItemAttribute(metaID: 4, name: "Packaging", value: "Gift Box")
+                    ]
+                )
+            ],
+            refunds: [
+                POSOrderRefund(
+                    refundID: 1,
+                    formattedTotal: "-$19.99",
+                    reason: "Customer requested partial refund"
+                )
+            ],
+            formattedDiscountTotal: "-$15.00",
+            formattedTotalTax: "$8.95",
+            formattedPaymentTotal: "$89.50",
+            formattedNetAmount: "$69.51"
+        )
+    }
 }
 
 // MARK: - Preview Orders Controller

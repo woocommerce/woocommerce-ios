@@ -1,6 +1,6 @@
 import SwiftUI
 
-protocol POSEntryPointEligibilityCheckerProtocol {
+public protocol POSEntryPointEligibilityCheckerProtocol {
     /// Determines whether the site is eligible for POS.
     func checkEligibility() async -> POSEligibilityState
     /// Refreshes the eligibility state based on the provided ineligible reason.

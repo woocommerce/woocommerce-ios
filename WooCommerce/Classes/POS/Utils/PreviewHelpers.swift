@@ -32,6 +32,19 @@ import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
 import struct Yosemite.POSCatalogInfo
 import struct Yosemite.Site
+import struct Yosemite.Order
+import struct Yosemite.POSCart
+import struct Yosemite.POSReceiptInformation
+import protocol Yosemite.POSOrderServiceProtocol
+import protocol Yosemite.POSReceiptServiceProtocol
+import protocol Yosemite.PointOfSaleCouponServiceProtocol
+import protocol Yosemite.PointOfSaleCouponFetchStrategy
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
+import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
+import protocol Yosemite.POSItemFetchAnalyticsTracking
+import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSOrderListFetchStrategy
+import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 
 // MARK: - PreviewProvider helpers
 //
@@ -425,28 +438,92 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func resetCheckoutTapCountTracker() {}
 
     func trackSuccessfulCashPayment() {}
+}
 
-    var connectedReaderModel: String?
+final class POSOrderServicePreview: POSOrderServiceProtocol {
+    func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+        .empty
+    }
 
-    func preflightResultReceived(_ result: CardReaderPreflightResult?) {}
+    func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
-    func trackProcessingCompletion(intent: PaymentIntent) {}
+    func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+}
 
-    func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {}
+final class POSReceiptServicePreview: POSReceiptServiceProtocol {
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {}
+}
 
-    func trackPaymentFailure(with error: any Error) {}
+final class PointOfSaleCouponServicePreview: PointOfSaleCouponServiceProtocol {
+    func provideLocalPointOfSaleCoupons(fetchStrategy: any PointOfSaleCouponFetchStrategy) async throws -> [POSItem] {
+        []
+    }
 
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {}
+    func providePointOfSaleCoupons(pageNumber: Int, fetchStrategy: any Yosemite.PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: false, totalItems: 0)
+    }
 
-    func trackEmailTapped() {}
+    func enableCoupons() async throws {}
+}
 
-    func trackReceiptPrintTapped() {}
+final class PointOfSaleSettingsServicePreview: PointOfSaleSettingsServiceProtocol {
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        .empty
+    }
+}
 
-    func trackReceiptPrintSuccess() {}
+final class PointOfSaleItemFetchStrategyFactoryPreview: PointOfSaleItemFetchStrategyFactoryProtocol {
+    func defaultStrategy(analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
+        PointOfSalePreviewPurchasableItemFetchStrategy()
+    }
 
-    func trackReceiptPrintCanceled() {}
+    func searchStrategy(searchTerm: String, analytics: any POSItemFetchAnalyticsTracking) -> any PointOfSalePurchasableItemFetchStrategy {
+        PointOfSalePreviewPurchasableItemFetchStrategy()
+    }
+}
 
-    func trackReceiptPrintFailed(error: any Error) {}
+final class POSOrderListFetchStrategyFactoryPreview: POSOrderListFetchStrategyFactoryProtocol {
+    func defaultStrategy() -> any POSOrderListFetchStrategy {
+        POSOrderListFetchStrategyPreview()
+    }
+
+    func searchStrategy(searchTerm: String) -> any Yosemite.POSOrderListFetchStrategy {
+        POSOrderListFetchStrategyPreview()
+    }
+}
+
+final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        POSPreviewHelpers.makePreviewOrder()
+    }
+
+    var supportsCaching: Bool = true
+
+    var showsLoadingWithItems: Bool = false
+
+    var id: String = ""
+
+    func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+}
+
+final class PointOfSaleCouponFetchStrategyPreview: PointOfSaleCouponFetchStrategy {
+    func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
+        .init(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    func fetchLocalCoupons() async throws -> [POSItem] {
+        []
+    }
+}
+
+final class PointOfSaleCouponFetchStrategyFactoryPreview: PointOfSaleCouponFetchStrategyFactoryProtocol {
+    let defaultStrategy: PointOfSaleCouponFetchStrategy = PointOfSaleCouponFetchStrategyPreview()
+
+    func searchStrategy(searchTerm: String, analytics: POSItemFetchAnalyticsTracking) -> PointOfSaleCouponFetchStrategy {
+        PointOfSaleCouponFetchStrategyPreview()
+    }
 }
 
 final class POSPreviewServices: POSDependencyProviding {

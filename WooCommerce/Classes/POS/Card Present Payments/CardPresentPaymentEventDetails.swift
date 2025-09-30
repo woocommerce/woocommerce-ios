@@ -1,7 +1,7 @@
 import Foundation
 import struct Yosemite.CardReaderInput
 
-enum CardPresentPaymentEventDetails {
+public enum CardPresentPaymentEventDetails {
     case scanningForReaders(endSearch: () -> Void)
     case scanningFailed(error: Error,
                         endSearch: () -> Void)

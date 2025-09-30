@@ -25,12 +25,25 @@ struct POSOrderDetailsView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: Localization.orderTitle(order.number),
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: { POSOrderBadgeView(order: order) },
-                bottomContent: { headerBottomContent(for: order) }
+                title: "#\(order.number)",
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack, buttonIcon: "xmark") : nil,
+                trailingContent: {
+                    if order.status == .completed {
+                        VStack {
+                            Button(action: {
+                                isShowingEmailReceiptView = true
+                            }) {
+                                Text(Localization.emailReceiptActionTitle)
+                            }
+                            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                        }
+                    }
+                },
+                bottomContent: {
+                    headerBottomContent(for: order)
+                }
             )
 
             ScrollView {

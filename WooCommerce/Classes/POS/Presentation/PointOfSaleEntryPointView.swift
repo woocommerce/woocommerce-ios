@@ -56,7 +56,7 @@ struct PointOfSaleEntryPointView: View {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
-        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker, featureFlagService: services.featureFlags)
+        self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         self.siteTimezone = siteTimezone
         self.services = services
@@ -129,7 +129,7 @@ struct PointOfSaleEntryPointView: View {
                               searchHistoryService: PointOfSalePreviewHistoryService(),
                               popularPurchasableItemsController: PointOfSalePreviewItemsController(),
                               barcodeScanService: PointOfSalePreviewBarcodeScanService(),
-                              posEligibilityChecker: POSTabEligibilityChecker(site: .defaultMock()),
+                              posEligibilityChecker: POSTabEligibilityChecker(siteID: 1),
                               services: POSPreviewServices())
 }
 

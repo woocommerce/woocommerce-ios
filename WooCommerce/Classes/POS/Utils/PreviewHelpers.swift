@@ -224,13 +224,10 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
-        analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
-        featureFlags: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+        analytics: POSAnalyticsProviding = EmptyPOSAnalytics()
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
-            entryPointController: POSEntryPointController(
-                eligibilityChecker: LegacyPOSTabEligibilityChecker(site: Site.defaultMock()),
-                featureFlagService: featureFlags),
+            entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
             purchasableItemsSearchController: purchasableItemsSearchController,
             couponsController: couponsController,
@@ -403,6 +400,11 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     func getItem(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSItem {
         return mockSimpleProductItem(id: 5, price: "35.50")
     }
+}
+
+final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
+    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 
 final class POSReceiptSenderPreview: POSReceiptSending {

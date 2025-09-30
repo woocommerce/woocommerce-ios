@@ -13,40 +13,6 @@ struct PluginsServiceTests {
         sut = PluginsService(storageManager: storageManager)
     }
 
-    @Test func waitForPluginInStorage_returns_plugin_when_already_in_storage() async {
-        // Given
-        await storageManager.reset()
-        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "1.0.0")
-
-        // When
-        let result = await sut.waitForPluginInStorage(siteID: siteID, pluginPath: "woocommerce/woocommerce.php", isActive: true)
-
-        // Then
-        #expect(result.siteID == siteID)
-        #expect(result.plugin == "woocommerce/woocommerce.php")
-        #expect(result.active == true)
-        #expect(result.version == "1.0.0")
-    }
-
-    @Test func waitForPluginInStorage_waits_to_return_plugin_when_not_in_storage_initially() async {
-        // Given
-        // Resets any existing state, otherwise test might fail if run multiple times.
-        await storageManager.reset()
-
-        // When
-        async let plugin = sut.waitForPluginInStorage(siteID: siteID, pluginPath: "woocommerce/woocommerce.php", isActive: true)
-        #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 0)
-        storageManager.insertPlugin(siteID: siteID, plugin: .wooCommerce, isActive: true, version: "2.0.0")
-        #expect(storageManager.viewStorage.loadSystemPlugins(siteID: siteID).count == 1)
-
-        // Then
-        let result = await plugin
-        #expect(result.siteID == siteID)
-        #expect(result.plugin == "woocommerce/woocommerce.php")
-        #expect(result.active == true)
-        #expect(result.version == "2.0.0")
-    }
-
     // MARK: - `loadPluginInStorage`
 
     @Test(arguments: [(Plugin.wooCommerce, true, "1.5.0"),
